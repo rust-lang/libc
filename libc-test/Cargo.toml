@@ -1,10 +1,11 @@
 [package]
 name = "libc-test"
-version = "0.2.151"
+version = "0.2.155"
 edition = "2021"
 authors = ["The Rust Project Developers"]
 license = "MIT OR Apache-2.0"
 build = "build.rs"
+publish = false
 repository = "https://github.com/rust-lang/libc"
 homepage = "https://github.com/rust-lang/libc"
 description = """
@@ -13,7 +14,7 @@ A test crate for the libc crate.
 
 [dependencies.libc]
 path = ".."
-version = "0.2.151"
+version = "0.2.164"
 default-features = false
 
 [build-dependencies]
