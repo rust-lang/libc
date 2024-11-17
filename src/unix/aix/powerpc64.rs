@@ -308,18 +308,18 @@ cfg_if! {
         impl Eq for siginfo_t {}
         impl ::fmt::Debug for siginfo_t {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("siginfo_t");
-                struct_formatter.field("si_signo", &self.si_signo);
-                struct_formatter.field("si_errno", &self.si_errno);
-                struct_formatter.field("si_code", &self.si_code);
-                struct_formatter.field("si_pid", &self.si_pid);
-                struct_formatter.field("si_uid", &self.si_uid);
-                struct_formatter.field("si_status", &self.si_status);
-                struct_formatter.field("si_addr", &self.si_addr);
-                struct_formatter.field("si_band", &self.si_band);
-                struct_formatter.field("si_value", &self.si_value);
-                struct_formatter.field("__si_flags", &self.__si_flags);
-                struct_formatter.finish()
+                f.debug_struct("siginfo_t")
+                    .field("si_signo", &self.si_signo)
+                    .field("si_errno", &self.si_errno)
+                    .field("si_code", &self.si_code)
+                    .field("si_pid", &self.si_pid)
+                    .field("si_uid", &self.si_uid)
+                    .field("si_status", &self.si_status)
+                    .field("si_addr", &self.si_addr)
+                    .field("si_band", &self.si_band)
+                    .field("si_value", &self.si_value)
+                    .field("__si_flags", &self.__si_flags)
+                    .finish()
             }
         }
         impl ::hash::Hash for siginfo_t {
@@ -375,13 +375,13 @@ cfg_if! {
         impl Eq for fileops_t {}
         impl ::fmt::Debug for fileops_t {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("fileops_t");
-                struct_formatter.field("fo_rw", &self.fo_rw);
-                struct_formatter.field("fo_ioctl", &self.fo_ioctl);
-                struct_formatter.field("fo_select", &self.fo_select);
-                struct_formatter.field("fo_close", &self.fo_close);
-                struct_formatter.field("fo_fstat", &self.fo_fstat);
-                struct_formatter.finish()
+                f.debug_struct("fileops_t")
+                    .field("fo_rw", &self.fo_rw)
+                    .field("fo_ioctl", &self.fo_ioctl)
+                    .field("fo_select", &self.fo_select)
+                    .field("fo_close", &self.fo_close)
+                    .field("fo_fstat", &self.fo_fstat)
+                    .finish()
             }
         }
         impl ::hash::Hash for fileops_t {
@@ -416,23 +416,23 @@ cfg_if! {
         impl Eq for file {}
         impl ::fmt::Debug for file {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("file");
-                struct_formatter.field("f_flag", &self.f_flag);
-                struct_formatter.field("f_count", &self.f_count);
-                struct_formatter.field("f_options", &self.f_options);
-                struct_formatter.field("f_type", &self.f_type);
-                struct_formatter.field("f_data", &self.f_data);
-                struct_formatter.field("f_offset", &self.f_offset);
-                struct_formatter.field("f_dir_off", &self.f_dir_off);
-                struct_formatter.field("f_cred", &self.f_cred);
-                struct_formatter.field("f_lock", &self.f_lock);
-                struct_formatter.field("f_offset_lock", &self.f_offset_lock);
-                struct_formatter.field("f_vinfo", &self.f_vinfo);
-                struct_formatter.field("f_ops", &self.f_ops);
-                struct_formatter.field("f_parentp", &self.f_parentp);
-                struct_formatter.field("f_fnamep", &self.f_fnamep);
-                struct_formatter.field("f_fdata", &self.f_fdata);
-                struct_formatter.finish()
+                f.debug_struct("file")
+                    .field("f_flag", &self.f_flag)
+                    .field("f_count", &self.f_count)
+                    .field("f_options", &self.f_options)
+                    .field("f_type", &self.f_type)
+                    .field("f_data", &self.f_data)
+                    .field("f_offset", &self.f_offset)
+                    .field("f_dir_off", &self.f_dir_off)
+                    .field("f_cred", &self.f_cred)
+                    .field("f_lock", &self.f_lock)
+                    .field("f_offset_lock", &self.f_offset_lock)
+                    .field("f_vinfo", &self.f_vinfo)
+                    .field("f_ops", &self.f_ops)
+                    .field("f_parentp", &self.f_parentp)
+                    .field("f_fnamep", &self.f_fnamep)
+                    .field("f_fdata", &self.f_fdata)
+                    .finish()
             }
         }
         impl ::hash::Hash for file {
@@ -499,16 +499,16 @@ cfg_if! {
         impl Eq for ld_info {}
         impl ::fmt::Debug for ld_info {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("ld_info");
-                struct_formatter.field("ldinfo_next", &self.ldinfo_next);
-                struct_formatter.field("ldinfo_flags", &self.ldinfo_flags);
-                struct_formatter.field("ldinfo_textorg", &self.ldinfo_textorg);
-                struct_formatter.field("ldinfo_textsize", &self.ldinfo_textsize);
-                struct_formatter.field("ldinfo_dataorg", &self.ldinfo_dataorg);
-                struct_formatter.field("ldinfo_datasize", &self.ldinfo_datasize);
-                struct_formatter.field("ldinfo_filename", &self.ldinfo_filename);
-                struct_formatter.field("_file", &self._file);
-                struct_formatter.finish()
+                f.debug_struct("ld_info")
+                    .field("ldinfo_next", &self.ldinfo_next)
+                    .field("ldinfo_flags", &self.ldinfo_flags)
+                    .field("ldinfo_textorg", &self.ldinfo_textorg)
+                    .field("ldinfo_textsize", &self.ldinfo_textsize)
+                    .field("ldinfo_dataorg", &self.ldinfo_dataorg)
+                    .field("ldinfo_datasize", &self.ldinfo_datasize)
+                    .field("ldinfo_filename", &self.ldinfo_filename)
+                    .field("_file", &self._file)
+                    .finish()
             }
         }
         impl ::hash::Hash for ld_info {
@@ -564,12 +564,12 @@ cfg_if! {
         impl Eq for pollfd_ext {}
         impl ::fmt::Debug for pollfd_ext {
             fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
-                let mut struct_formatter = f.debug_struct("pollfd_ext");
-                struct_formatter.field("fd", &self.fd);
-                struct_formatter.field("events", &self.events);
-                struct_formatter.field("revents", &self.revents);
-                struct_formatter.field("data", &self.data);
-                struct_formatter.finish()
+                f.debug_struct("pollfd_ext")
+                    .field("fd", &self.fd)
+                    .field("events", &self.events)
+                    .field("revents", &self.revents)
+                    .field("data", &self.data)
+                    .finish()
             }
         }
         impl ::hash::Hash for pollfd_ext {
