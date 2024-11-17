@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+## [0.2.165](https://github.com/rust-lang/libc/compare/0.2.164...0.2.165) - 2024-11-17
+
+### Other
+
+- Merge pull request [#4078](https://github.com/rust-lang/libc/pull/4078) from tgross35/posix-spawn-diff-indicators
+- Take documentation from `main`
+- fix some typos
+- Drop the `ptr_addr_of` conditional
+- Require rust >= 1.40 and drop libc_non_exhaustive conditional
+- Require rust >= 1.33 and drop libc_cfg_target_vendor conditional
+- Require rust >= 1.33 and drop libc_packedN conditional
+- Require rust >= 1.30 and drop libc_core_cvoid conditional
+- Require rust >= 1.26 and drop libc_int128 conditional
+- Drop warnings about deprecated cargo features
+- Require rust >= 1.25 and drop libc_align conditional
+- Explicitly set the edition to 2015
+
 ## [0.2.164](https://github.com/rust-lang/libc/compare/0.2.163...0.2.164) - 2024-11-16
 
 ### MSRV
