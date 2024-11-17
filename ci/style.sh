@@ -11,7 +11,7 @@ rustfmt -V
 cargo fmt --all -- --check
 
 if shellcheck --version ; then
-    find . -name '*.sh' -exec shellcheck {} ';'
+    find . -name '*.sh' -print0 | xargs -0 shellcheck
 else
     echo "shellcheck not found"
     exit 1
@@ -27,6 +27,14 @@ for file in libc-test/semver/*.txt; do
 
     if ! sort -C "$file"; then
         echo "Unsorted semver file $file"
+        exit 1
+    fi
+
+    duplicates=$(uniq -d "$file")
+    if [ -n "$duplicates" ]; then
+        echo "Semver file $file contains duplicates:"
+        echo "$duplicates"
+
         exit 1
     fi
 done
