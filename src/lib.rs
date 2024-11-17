@@ -61,6 +61,8 @@ use core::num;
 #[allow(unused_imports)]
 use core::option::Option;
 
+pub use core::ffi::c_void;
+
 cfg_if! {
     if #[cfg(windows)] {
         mod fixed_width_ints;

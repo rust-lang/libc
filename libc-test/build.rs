@@ -318,6 +318,9 @@ fn test_apple(target: &str) {
             // FIXME: Requires the macOS 14.4 SDK.
             "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
 
+            // FIXME: "'__uint128' undeclared" in C
+            "__uint128" => true,
+
             _ => false,
         }
     });
@@ -379,8 +382,7 @@ fn test_apple(target: &str) {
             // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
             ("__darwin_arm_neon_state64", "__v") => true,
-            // MAXPATHLEN is too big for auto-derive traits on arrays.
-            ("vnode_info_path", "vip_path") => true,
+
             ("ifreq", "ifr_ifru") => true,
             ("in6_ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
@@ -1798,12 +1800,13 @@ fn test_android(target: &str) {
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
-            // FIXME: Somehow fails to test after removing cfg hacks:
-            "__uint128" => true,
-
             // These are intended to be opaque
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
+
+            // FIXME: "'__uint128' undeclared" in C
+            "__uint128" => true,
+
             _ => false,
         }
     });
@@ -2688,8 +2691,6 @@ fn test_freebsd(target: &str) {
             ("umutex", "m_owner") => true,
             // c_has_waiters field is a volatile int32_t
             ("ucond", "c_has_waiters") => true,
-            // is PATH_MAX long but tests can't accept multi array as equivalent.
-            ("kinfo_vmentry", "kve_path") => true,
 
             // a_un field is a union
             ("Elf32_Auxinfo", "a_un") => true,
@@ -2717,10 +2718,6 @@ fn test_freebsd(target: &str) {
 
             // Anonymous type.
             ("filestat", "next") => true,
-
-            // We ignore this field because we needed to use a hack in order to make rust 1.19
-            // happy...
-            ("kinfo_proc", "ki_sparestrings") => true,
 
             // `__sem_base` is a private struct field
             ("semid_ds", "__sem_base") => true,
@@ -3659,7 +3656,7 @@ fn test_linux(target: &str) {
             "priority_t" if musl => true,
             "name_t" if musl => true,
 
-            // FIXME: Somehow fails to test after removing cfg hacks:
+            // FIXME: "'__uint128' undeclared" in C
             "__uint128" => true,
 
             t => {

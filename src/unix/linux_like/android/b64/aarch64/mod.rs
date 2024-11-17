@@ -56,6 +56,38 @@ s! {
         pub pc: u64,
         pub pstate: u64,
     }
+
+    pub struct ucontext_t {
+        pub uc_flags: ::c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: ::stack_t,
+        pub uc_sigmask: ::sigset_t,
+        pub uc_mcontext: mcontext_t,
+    }
+
+    #[repr(align(16))]
+    pub struct mcontext_t {
+        pub fault_address: ::c_ulonglong,
+        pub regs: [::c_ulonglong; 31],
+        pub sp: ::c_ulonglong,
+        pub pc: ::c_ulonglong,
+        pub pstate: ::c_ulonglong,
+        __reserved: [u64; 512],
+    }
+
+    pub struct user_fpsimd_struct {
+        pub vregs: [::__uint128_t; 32],
+        pub fpsr: u32,
+        pub fpcr: u32,
+    }
+}
+
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f32; 8]
+    }
 }
 
 pub const O_DIRECT: ::c_int = 0x10000;
@@ -438,9 +470,3 @@ pub const PROT_MTE: ::c_int = 0x20;
 // From NDK's asm/auxvec.h
 pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
 pub const AT_VECTOR_SIZE_ARCH: ::c_ulong = 2;
-
-mod align;
-pub use self::align::*;
-
-mod int128;
-pub use self::int128::*;

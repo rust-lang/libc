@@ -1,5 +1,6 @@
 //! Interface to VxWorks C library
 
+use c_void;
 use core::mem::size_of;
 use core::ptr::null_mut;
 
@@ -2012,8 +2013,6 @@ pub unsafe fn posix_memalign(
         }
     }
 }
-
-pub use ffi::c_void;
 
 cfg_if! {
     if #[cfg(target_arch = "aarch64")] {

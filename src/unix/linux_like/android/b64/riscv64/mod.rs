@@ -52,6 +52,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f32; 8]
+    }
+}
+
 pub const O_DIRECT: ::c_int = 0x40000;
 pub const O_DIRECTORY: ::c_int = 0x200000;
 pub const O_NOFOLLOW: ::c_int = 0x400000;
@@ -373,6 +381,3 @@ pub const AT_L2_CACHEGEOMETRY: ::c_ulong = 45;
 pub const AT_L3_CACHESIZE: ::c_ulong = 46;
 pub const AT_L3_CACHEGEOMETRY: ::c_ulong = 47;
 pub const AT_VECTOR_SIZE_ARCH: ::c_ulong = 9;
-
-mod align;
-pub use self::align::*;

@@ -163,6 +163,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [f32; 4]
+    }
+}
+
 pub const SIGSTKSZ: ::size_t = 8192;
 pub const MINSIGSTKSZ: ::size_t = 2048;
 
@@ -779,6 +787,3 @@ pub const SYS_memfd_secret: ::c_long = 4000 + 447;
 pub const SYS_process_mrelease: ::c_long = 4000 + 448;
 pub const SYS_futex_waitv: ::c_long = 4000 + 449;
 pub const SYS_set_mempolicy_home_node: ::c_long = 4000 + 450;
-
-mod align;
-pub use self::align::*;

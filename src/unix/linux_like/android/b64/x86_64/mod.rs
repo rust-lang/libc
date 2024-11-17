@@ -110,6 +110,12 @@ s_no_extra_traits! {
         uc_sigmask: ::sigset_t,
         uc_sigmask64: ::sigset64_t,
     }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
+    }
 }
 
 cfg_if! {
@@ -811,6 +817,3 @@ pub const REG_CR2: ::c_int = 22;
 // From NDK's asm/auxvec.h
 pub const AT_SYSINFO_EHDR: ::c_ulong = 33;
 pub const AT_VECTOR_SIZE_ARCH: ::c_ulong = 3;
-
-mod align;
-pub use self::align::*;

@@ -49,6 +49,12 @@ s_no_extra_traits! {
         __padding_rt_sigset: u32,
         __fpregs_mem: _libc_fpstate,
     }
+
+    #[allow(missing_debug_implementations)]
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [f64; 2]
+    }
 }
 
 cfg_if! {
@@ -631,6 +637,3 @@ f! {
         ::syscall(SYS_socketcall, SYS_ACCEPT4, args[..].as_mut_ptr())
     }
 }
-
-mod align;
-pub use self::align::*;

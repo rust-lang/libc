@@ -2,9 +2,8 @@
 // `wasi-libc` project provides multiple libraries including emulated features, but we list only basic features with `libc.a` here.
 
 use super::{Send, Sync};
+use c_void;
 use core::iter::Iterator;
-
-pub use ffi::c_void;
 
 pub type c_char = i8;
 pub type c_uchar = u8;
@@ -383,16 +382,16 @@ cfg_if! {
         // unsafe code here is required in the stable, but not in nightly
         #[allow(unused_unsafe)]
         pub static CLOCK_MONOTONIC: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_MONOTONIC)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_MONOTONIC));
         #[allow(unused_unsafe)]
         pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_PROCESS_CPUTIME_ID));
         #[allow(unused_unsafe)]
         pub static CLOCK_REALTIME: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_REALTIME)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_REALTIME));
         #[allow(unused_unsafe)]
         pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
-            unsafe { clockid_t(ptr_addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
+            clockid_t(core::ptr::addr_of!(_CLOCK_THREAD_CPUTIME_ID));
     }
 }
 

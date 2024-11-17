@@ -156,6 +156,14 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [f32; 4]
+    }
+}
+
 pub const O_LARGEFILE: ::c_int = 0x2000;
 
 pub const SYS_syscall: ::c_long = 4000 + 0;
@@ -811,6 +819,3 @@ pub const B3500000: ::speed_t = 0o010016;
 pub const B4000000: ::speed_t = 0o010017;
 
 pub const EHWPOISON: ::c_int = 168;
-
-mod align;
-pub use self::align::*;

@@ -468,7 +468,7 @@ s! {
         pub direction: ::__u16,
         pub trigger: ff_trigger,
         pub replay: ff_replay,
-        // FIXME this is actually a union
+        // FIXME(1.0): this is actually a union
         #[cfg(target_pointer_width = "64")]
         pub u: [u64; 4],
         #[cfg(target_pointer_width = "32")]
@@ -635,7 +635,7 @@ s_no_extra_traits! {
     pub struct prop_info {
         __name: [::c_char; 32],
         __serial: ::c_uint,
-        __value: [[::c_char; 4]; 23],
+        __value: [::c_char; 92],
     }
 
     pub union __c_anonymous_ifr_ifru {
