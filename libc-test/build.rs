@@ -580,6 +580,10 @@ fn test_openbsd(target: &str) {
             // Good chance it's going to be wrong depending on the host release
             "KERN_MAXID" | "NET_RT_MAXID" => true,
             "EV_SYSFLAGS" => true,
+
+            // Removed in OpenBSD 7.7 (unused since 1991)
+            "ATF_COM" | "ATF_PERM" | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+
             _ => false,
         }
     });
