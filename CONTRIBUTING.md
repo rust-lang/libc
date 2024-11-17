@@ -3,12 +3,43 @@
 Welcome! If you are reading this document, it means you are interested in
 contributing to the `libc` crate.
 
-## v0.2 changes
+## v1.0 Roadmap
 
-If you want to add your changes to v0.2, please submit them to the `libc-0.2`
-branch. If you want to add any breaking changes, it should be submitted to the
-main branch, which has changes for v0.3. We will support and make a new release
-for v0.2 until we make the first release of v0.3.
+`libc` has two active branches: `main` and `libc-0.2`. `main` is for active
+development of the upcoming v1.0 release, and should be the target of all pull
+requests. `libc-0.2` is for updates to the currently released version.
+
+If a pull request to `main` is a good candidate for inclusion in an `0.2.x`
+release, include `@rustbot label stable-nominated` in a comment to propose this.
+Good candidates will usually meet the following:
+
+1. The included changes are non-breaking.
+2. The change applies cleanly to both branches.
+3. There is a usecase that justifies inclusion in a stable release (all
+   additions should always have a usecase, hopefully).
+
+Once a `stable-nominated` PR targeting `main` has merged, it can be cherry
+picked to the `libc-0.2` branch. A maintainer will likely do these cherry picks
+in a batch.
+
+Alternatively, you can start this process yourself by creating a new branch
+based on `libc-0.2` and running `git cherry-pick -xe commit-sha-on-main`
+(`git
+cherry-pick -xe start-sha^..end-sha` if a range of commits is needed).
+`git` will automatically add the "cherry picked from commit" note, but try to
+add a backport note so the original PR gets crosslinked:
+
+```
+# ... original commit message ...
+
+(backport <https://github.com/rust-lang/libc/pull/1234>)             # add manually
+(cherry picked from commit 104b6a4ae31c726814c36318dc718470cc96e167) # added by git
+```
+
+Once the cherry-pick is complete, open a PR targeting `libc-0.2`.
+
+See the [tracking issue](https://github.com/rust-lang/libc/issues/3248) for
+details.
 
 ## Adding an API
 
@@ -51,7 +82,7 @@ With that in mind, the steps for adding a new API are:
 5. Wait for a merge!
 
 <sup>1</sup>: Note that this list has nothing to do with any Unix or Posix
-standard, it's just a list shared between all OSs that declare `#[cfg(unix)]`.
+standard, it's just a list shared among all OSs that declare `#[cfg(unix)]`.
 
 ## Test before you commit
 
@@ -79,13 +110,12 @@ are:
   - The `note` field should have a reason to deprecate and a tracking issue to
     call for comments (e.g., "We consider removing this as the upstream removed
     it. If you're using it, please comment on #XXX").
-
 2. If we don't see any concerns for a while, do the change actually.
 
 ## Supported target policy
 
 When Rust removes a support for a target, the libc crate also may remove the
-support anytime.
+support at any time.
 
 ## Releasing your change to crates.io
 

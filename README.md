@@ -20,14 +20,16 @@ More detailed information about the design of this library can be found in its
 [rfc]: https://github.com/rust-lang/rfcs/blob/HEAD/text/1291-promote-libc.md
 [windows-sys]: https://docs.rs/windows-sys
 
-## v0.3 Roadmap
+## v1.0 Roadmap
 
-The main branch is now for v0.3 which has some breaking changes.
+Currently, `libc` has two active branches: `main` for the upcoming v1.0 release,
+and `libc-0.2` for the currently published version. By default all pull requests
+should target `main`; once reviewed, they can be cherry picked to the `libc-0.2`
+branch if needed.
 
-For v0.2, please submit PRs to the `libc-0.2` branch instead. We will stop
-making new v0.2 releases once we release v0.3 on crates.io.
+We will stop making new v0.2 releases once v1.0 is released.
 
-See the [tracking issue](https://github.com/rust-lang/libc/issues/3248) for
+See the section in [CONTRIBUTING.md](CONTRIBUTING.md#v10-roadmap) for more
 details.
 
 ## Usage
@@ -51,14 +53,13 @@ libc = "0.2"
   use Rust >= 1.62, this feature is implicitly enabled. Otherwise it requires a
   nightly rustc.
 
-* **deprecated**: `use_std` is deprecated, and is equivalent to `std`.
-
 ## Rust version support
 
 The minimum supported Rust toolchain version is currently **Rust 1.63**.
 
 Increases to the MSRV are allowed to change without a major (i.e. semver-
-breaking) release in order to avoid a ripple effect in the ecosystem.
+breaking) release in order to avoid a ripple effect in the ecosystem. A policy
+for when this may change is a work in progress.
 
 `libc` may continue to compile with Rust versions older than the current MSRV
 but this is not guaranteed.
