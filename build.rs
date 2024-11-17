@@ -17,7 +17,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "libc_deny_warnings",
     "libc_long_array",
     "libc_thread_local",
-    "libc_underscore_const_names",
     "libc_ctest",
 ];
 
@@ -81,11 +80,6 @@ fn main() {
     // Rust >= 1.47 supports long array:
     if rustc_minor_ver >= 47 || rustc_dep_of_std {
         set_cfg("libc_long_array");
-    }
-
-    // Rust >= 1.37.0 allows underscores as anonymous constant names.
-    if rustc_minor_ver >= 37 || rustc_dep_of_std {
-        set_cfg("libc_underscore_const_names");
     }
 
     // #[thread_local] is currently unstable
