@@ -652,6 +652,7 @@ lio_listio
 mallinfo
 mallinfo2
 malloc_info
+malloc_stats
 malloc_trim
 malloc_usable_size
 mallopt

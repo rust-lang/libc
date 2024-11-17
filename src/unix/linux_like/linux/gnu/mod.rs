@@ -1495,6 +1495,7 @@ extern "C" {
     pub fn pthread_sigqueue(thread: ::pthread_t, sig: ::c_int, value: ::sigval) -> ::c_int;
     pub fn mallinfo() -> ::mallinfo;
     pub fn mallinfo2() -> ::mallinfo2;
+    pub fn malloc_stats();
     pub fn malloc_info(options: ::c_int, stream: *mut ::FILE) -> ::c_int;
     pub fn malloc_usable_size(ptr: *mut ::c_void) -> ::size_t;
     pub fn getpwent_r(

@@ -150,6 +150,7 @@ accept
 access
 aligned_free
 aligned_malloc
+aligned_realloc
 atexit
 atof
 atoi
