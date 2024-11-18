@@ -7,6 +7,7 @@ IP_PKTINFO
 IP_TOS
 IP_TTL
 PIPE_BUF
+_POSIX_VDISABLE
 arc4random
 arc4random_buf
 arc4random_uniform
