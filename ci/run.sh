@@ -3,7 +3,7 @@
 # Builds and runs tests for a particular target passed as an argument to this
 # script.
 
-set -ex
+set -eux
 
 mirrors_url="https://ci-mirrors.rust-lang.org/libc"
 

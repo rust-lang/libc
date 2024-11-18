@@ -3,7 +3,7 @@
 # Install musl and musl-sanitized linux kernel headers
 # to musl-{$1} directory
 
-set -ex
+set -eux
 
 musl_version=1.1.24
 musl="musl-${musl_version}"

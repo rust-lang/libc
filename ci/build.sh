@@ -5,7 +5,7 @@
 # The FILTER environment variable can be used to select which target(s) to build.
 # For example: set FILTER to vxworks to select the targets that has vxworks in name
 
-set -ex
+set -eux
 
 : "${TOOLCHAIN?The TOOLCHAIN environment variable must be set.}"
 : "${OS?The OS environment variable must be set.}"

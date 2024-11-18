@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -ex
+set -eux
 
 ndk=android-ndk-r27
 wget --tries=20 -q "https://dl.google.com/android/repository/${ndk}-linux.zip"

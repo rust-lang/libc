@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -ex
+set -eux
 
 # Prep the SDK and emulator
 #
