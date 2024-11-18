@@ -2,13 +2,18 @@
 
 set -ex
 
+if [ -n "${CI:-}" ]; then
+    rustup toolchain install nightly -c rustfmt --allow-downgrade
+    rustup override set nightly
+
+    check="--check"
+fi
+
 rustc ci/style.rs && ./style src
 
-rustup toolchain install nightly -c rustfmt --allow-downgrade
-rustup override set nightly
 command -v rustfmt
 rustfmt -V
-cargo fmt --all -- --check
+cargo fmt --all -- ${check:+"$check"}
 
 if shellcheck --version ; then
     find . -name '*.sh' -print0 | xargs -0 shellcheck
