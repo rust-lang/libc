@@ -232,6 +232,7 @@ fn test_apple(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet6/in6_var.h",
         "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
@@ -401,6 +402,7 @@ fn test_apple(target: &str) {
             ("__darwin_arm_neon_state64", "__v") => true,
 
             ("ifreq", "ifr_ifru") => true,
+            ("in6_ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
             ("ifconf", "ifc_ifcu") => true,
             // FIXME: this field has been incorporated into a resized `rmx_filler` array.
@@ -1789,6 +1791,8 @@ fn test_android(target: &str) {
                 "linux/netfilter/nfnetlink_log.h",
                 "linux/netfilter/nfnetlink_queue.h",
                 "linux/netfilter/nf_tables.h",
+                "linux/netfilter_arp.h",
+                "linux/netfilter_bridge.h",
                 "linux/netfilter_ipv4.h",
                 "linux/netfilter_ipv6.h",
                 "linux/netfilter_ipv6/ip6_tables.h",
@@ -1858,6 +1862,7 @@ fn test_android(target: &str) {
 
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
+
             // These are intended to be opaque
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
@@ -2463,7 +2468,7 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // Added in in FreeBSD 13.0 (r367776 and r367287)
+            // Added in FreeBSD 13.0 (r367776 and r367287)
             "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
 
             // Added in FreeBSD 14
@@ -2593,6 +2598,13 @@ fn test_freebsd(target: &str) {
                 true
             }
 
+            // Added in FreeBSD 14.1
+            "KCMP_FILE" | "KCMP_FILEOBJ" | "KCMP_FILES" | "KCMP_SIGHAND" | "KCMP_VM"
+                if Some(14) > freebsd_ver =>
+            {
+                true
+            }
+
             // FIXME: Removed in FreeBSD 15:
             "LOCAL_CONNWAIT" if freebsd_ver >= Some(15) => true,
 
@@ -2712,6 +2724,9 @@ fn test_freebsd(target: &str) {
             "timerfd_create" | "timerfd_gettime" | "timerfd_settime" if Some(14) > freebsd_ver => {
                 true
             }
+
+            // Those are introduced in FreeBSD 14.1.
+            "kcmp" => true,
 
             _ => false,
         }
@@ -3591,6 +3606,8 @@ fn test_linux(target: &str) {
         "linux/netfilter/nfnetlink_log.h",
         "linux/netfilter/nfnetlink_queue.h",
         "linux/netfilter/nf_tables.h",
+        "linux/netfilter_arp.h",
+        "linux/netfilter_bridge.h",
         "linux/netfilter_ipv4.h",
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
@@ -3678,6 +3695,14 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_type(move |ty| {
+        // FIXME: very recent additions to musl, not yet released.
+        // also apparently some glibc versions
+        if ty == "Elf32_Relr" || ty == "Elf64_Relr" {
+            return true;
+        }
+        if sparc64 && (ty == "Elf32_Rela" || ty == "Elf64_Rela") {
+            return true;
+        }
         match ty {
             // FIXME: `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
@@ -4112,9 +4137,15 @@ fn test_linux(target: &str) {
             | "MINSIGSTKSZ"
                 if gnu => true,
 
-            // FIXME: Linux >= 5.16 changed its value:
+            // FIXME: Linux >= 5.10:
+            // https://github.com/torvalds/linux/commit/d25e2e9388eda61b6e298585024ee3355f50c493
+            "NF_INET_INGRESS" if musl => true,
+
+            // FIXME: Linux >= 5.16:
             // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
-            "NF_NETDEV_NUMHOOKS" => true,
+            "NF_NETDEV_EGRESS" if musl || sparc64 => true,
+            // value changed
+            "NF_NETDEV_NUMHOOKS" if musl || sparc64 => true,
 
             // FIXME: requires Linux >= 5.6:
             | "RESOLVE_BENEATH"

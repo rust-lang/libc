@@ -78,11 +78,15 @@ copy_file_range
 ctermid
 dirname
 eaccess
+endutxent
 euidaccess
 explicit_bzero
 futimes
 getauxval
 getloadavg
+getutxent
+getutxid
+getutxline
 lio_listio
 ntptimeval
 open_wmemstream
@@ -94,8 +98,10 @@ prlimit
 prlimit64
 process_vm_readv
 process_vm_writev
+pututxline
 pwritev2
 pwritev64
 reallocarray
+setutxent
 tcp_info
 timex

@@ -1,4 +1,4 @@
-# The following symbols are not not available in some combinations of
+# The following symbols are not available in some combinations of
 # musl/gnu/android and/or architecture.
 KEYCTL_CAPABILITIES
 KEYCTL_CAPS0_BIG_KEY
