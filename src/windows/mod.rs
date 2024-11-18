@@ -256,6 +256,8 @@ pub const SIG_GET: ::sighandler_t = 2;
 pub const SIG_SGE: ::sighandler_t = 3;
 pub const SIG_ACK: ::sighandler_t = 4;
 
+// DIFF(main): removed in 458c58f409
+// FIXME(msrv): done by `std` starting in 1.79.0
 // inline comment below appeases style checker
 #[cfg(all(target_env = "msvc", feature = "rustc-dep-of-std"))] // " if "
 #[link(name = "msvcrt", cfg(not(target_feature = "crt-static")))]
