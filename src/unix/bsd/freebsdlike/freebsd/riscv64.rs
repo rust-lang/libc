@@ -36,8 +36,6 @@ s_no_extra_traits! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_longlong>() - 1;
-
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for gpregs {
@@ -141,6 +139,8 @@ cfg_if! {
         }
     }
 }
+
+pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_longlong>() - 1;
 
 pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;

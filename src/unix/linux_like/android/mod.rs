@@ -4153,6 +4153,8 @@ extern "C" {
     pub fn fflush_unlocked(stream: *mut ::FILE) -> ::c_int;
     pub fn fgets_unlocked(buf: *mut ::c_char, size: ::c_int, stream: *mut ::FILE) -> *mut ::c_char;
 
+    pub fn klogctl(syslog_type: ::c_int, bufp: *mut ::c_char, len: ::c_int) -> ::c_int;
+
     pub fn memfd_create(name: *const ::c_char, flags: ::c_uint) -> ::c_int;
     pub fn renameat2(
         olddirfd: ::c_int,
@@ -4168,8 +4170,6 @@ extern "C" {
         mask: ::c_uint,
         statxbuf: *mut statx,
     ) -> ::c_int;
-
-    pub fn klogctl(syslog_type: ::c_int, bufp: *mut ::c_char, len: ::c_int) -> ::c_int;
 }
 
 cfg_if! {

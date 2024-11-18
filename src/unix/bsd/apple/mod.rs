@@ -1175,6 +1175,7 @@ s! {
         pub ifs6_pfx_expiry_cnt: ::u_quad_t,
         pub ifs6_defrtr_expiry_cnt: ::u_quad_t,
     }
+
     pub struct icmp6_ifstat {
         pub ifs6_in_msg: ::u_quad_t,
         pub ifs6_in_error: ::u_quad_t,

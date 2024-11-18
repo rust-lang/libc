@@ -1723,13 +1723,12 @@ cfg_if! {
                     && self.cr_uid == other.cr_uid
                     && self.cr_ngroups == other.cr_ngroups
                     && self.cr_groups == other.cr_groups
-                    && self.cr_pid__c_anonymous_union
-                        == other.cr_pid__c_anonymous_union
+                    && self.cr_pid__c_anonymous_union == other.cr_pid__c_anonymous_union
             }
         }
         impl Eq for xucred {}
         impl ::fmt::Debug for xucred {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("xucred")
                     .field("cr_version", &self.cr_version)
                     .field("cr_uid", &self.cr_uid)
@@ -4904,15 +4903,15 @@ pub const TFD_CLOEXEC: ::c_int = O_CLOEXEC;
 pub const TFD_TIMER_ABSTIME: ::c_int = 0x01;
 pub const TFD_TIMER_CANCEL_ON_SET: ::c_int = 0x02;
 
+// sys/unistd.h
+
+pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
+
 pub const KCMP_FILE: ::c_int = 100;
 pub const KCMP_FILEOBJ: ::c_int = 101;
 pub const KCMP_FILES: ::c_int = 102;
 pub const KCMP_SIGHAND: ::c_int = 103;
 pub const KCMP_VM: ::c_int = 104;
-
-// sys/unistd.h
-
-pub const CLOSE_RANGE_CLOEXEC: ::c_uint = 1 << 2;
 
 pub const fn MAP_ALIGNED(a: ::c_int) -> ::c_int {
     a << 24
@@ -5632,18 +5631,18 @@ extern "C" {
     pub fn closefrom(lowfd: ::c_int);
     pub fn close_range(lowfd: ::c_uint, highfd: ::c_uint, flags: ::c_int) -> ::c_int;
 
+    pub fn execvpe(
+        file: *const ::c_char,
+        argv: *const *const ::c_char,
+        envp: *const *const ::c_char,
+    ) -> ::c_int;
+
     pub fn kcmp(
         pid1: ::pid_t,
         pid2: ::pid_t,
         type_: ::c_int,
         idx1: ::c_ulong,
         idx2: ::c_ulong,
-    ) -> ::c_int;
-
-    pub fn execvpe(
-        file: *const ::c_char,
-        argv: *const *const ::c_char,
-        envp: *const *const ::c_char,
     ) -> ::c_int;
 }
 

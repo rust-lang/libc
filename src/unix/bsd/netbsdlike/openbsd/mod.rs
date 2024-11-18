@@ -1045,11 +1045,10 @@ cfg_if! {
             }
         }
 
-        impl Eq for statfs { }
+        impl Eq for statfs {}
 
         impl ::fmt::Debug for statfs {
-            fn fmt(&self, f: &mut ::fmt::Formatter)
-                    -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("statfs")
                     .field("f_flags", &self.f_flags)
                     .field("f_bsize", &self.f_bsize)
