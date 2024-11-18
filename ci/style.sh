@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -eux
 
 rustc ci/style.rs && ./style src
 

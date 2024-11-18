@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -eux
 
 me="$1"
 shift
