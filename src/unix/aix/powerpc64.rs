@@ -307,7 +307,7 @@ cfg_if! {
         }
         impl Eq for siginfo_t {}
         impl ::fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("siginfo_t")
                     .field("si_signo", &self.si_signo)
                     .field("si_errno", &self.si_errno)
@@ -347,7 +347,7 @@ cfg_if! {
         }
         impl Eq for _kernel_simple_lock {}
         impl ::fmt::Debug for _kernel_simple_lock {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("_kernel_simple_lock")
                     .field("_slock", unsafe { &self._slock })
                     .field("_slockp", unsafe { &self._slockp })
@@ -410,12 +410,12 @@ cfg_if! {
                     && self.f_fnamep == other.f_fnamep
                     && self.f_fdata == other.f_fdata
                     && self.f_lock == other.f_lock
-                    && self.f_offset_lock == other.f_offset_lock;
+                    && self.f_offset_lock == other.f_offset_lock
             }
         }
         impl Eq for file {}
         impl ::fmt::Debug for file {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("file")
                     .field("f_flag", &self.f_flag)
                     .field("f_count", &self.f_count)
@@ -466,7 +466,7 @@ cfg_if! {
         }
         impl Eq for __ld_info_file {}
         impl ::fmt::Debug for __ld_info_file {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("__ld_info_file")
                     .field("_ldinfo_fd", unsafe { &self._ldinfo_fd })
                     .field("_ldinfo_fp", unsafe { &self._ldinfo_fp })
@@ -498,7 +498,7 @@ cfg_if! {
         }
         impl Eq for ld_info {}
         impl ::fmt::Debug for ld_info {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("ld_info")
                     .field("ldinfo_next", &self.ldinfo_next)
                     .field("ldinfo_flags", &self.ldinfo_flags)
@@ -535,7 +535,7 @@ cfg_if! {
         }
         impl Eq for __pollfd_ext_u {}
         impl ::fmt::Debug for __pollfd_ext_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("__pollfd_ext_u")
                     .field("addr", unsafe { &self.addr })
                     .field("data32", unsafe { &self.data32 })
@@ -563,7 +563,7 @@ cfg_if! {
         }
         impl Eq for pollfd_ext {}
         impl ::fmt::Debug for pollfd_ext {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("pollfd_ext")
                     .field("fd", &self.fd)
                     .field("events", &self.events)

@@ -1595,7 +1595,7 @@ s_no_extra_traits! {
         _os_unfair_lock_opaque: u32,
     }
 
-   #[repr(packed(1))]
+    #[repr(packed(1))]
     pub struct sockaddr_vm {
         pub svm_len: ::c_uchar,
         pub svm_family: ::sa_family_t,
@@ -1722,8 +1722,7 @@ cfg_if! {
         }
         impl Eq for semun {}
         impl ::fmt::Debug for semun {
-            fn fmt(&self, f: &mut ::fmt::Formatter)
-                   -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("semun")
                     .field("val", unsafe { &self.val })
                     .finish()
@@ -1775,7 +1774,6 @@ cfg_if! {
                     && self.udata == other.udata
             }
         }
-
         impl Eq for kevent {}
         impl ::fmt::Debug for kevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {

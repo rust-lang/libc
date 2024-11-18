@@ -60,6 +60,7 @@ pub type posix_spawn_file_actions_t = *mut ::c_char;
 pub type iconv_t = *mut ::c_void;
 
 e! {
+    #[repr(u32)]
     pub enum uio_rw {
         UIO_READ = 0,
         UIO_WRITE,
@@ -573,7 +574,7 @@ cfg_if! {
         }
         impl Eq for __sigaction_sa_union {}
         impl ::fmt::Debug for __sigaction_sa_union {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("__sigaction_sa_union")
                     .field("__su_handler", unsafe { &self.__su_handler })
                     .field("__su_sigaction", unsafe { &self.__su_sigaction })
@@ -598,7 +599,7 @@ cfg_if! {
         }
         impl Eq for sigaction {}
         impl ::fmt::Debug for sigaction {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("sigaction")
                     .field("sa_union", &self.sa_union)
                     .field("sa_mask", &self.sa_mask)
@@ -625,7 +626,7 @@ cfg_if! {
         }
         impl Eq for __poll_ctl_ext_u {}
         impl ::fmt::Debug for __poll_ctl_ext_u {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("__poll_ctl_ext_u")
                     .field("addr", unsafe { &self.addr })
                     .field("data32", unsafe { &self.data32 })
@@ -655,7 +656,7 @@ cfg_if! {
         }
         impl Eq for poll_ctl_ext {}
         impl ::fmt::Debug for poll_ctl_ext {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter<'_>) -> ::fmt::Result {
                 f.debug_struct("poll_ctl_ext")
                     .field("version", &self.version)
                     .field("command", &self.command)
