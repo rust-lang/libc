@@ -308,10 +308,7 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
-    #[deprecated(
-        since = "0.2.55",
-        note = "Use the `mach2` crate instead",
-    )]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_timebase_info {
         pub numer: u32,
         pub denom: u32,
@@ -671,10 +668,7 @@ s! {
         pub cr_groups: [::gid_t;16]
     }
 
-    #[deprecated(
-        since = "0.2.55",
-        note = "Use the `mach2` crate instead",
-    )]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header {
         pub magic: u32,
         pub cputype: cpu_type_t,
@@ -685,10 +679,7 @@ s! {
         pub flags: u32,
     }
 
-    #[deprecated(
-        since = "0.2.55",
-        note = "Use the `mach2` crate instead",
-    )]
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header_64 {
         pub magic: u32,
         pub cputype: cpu_type_t,
@@ -5944,7 +5935,9 @@ extern "C" {
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut ::mach_timebase_info) -> ::c_int;
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_host_self() -> mach_port_t;
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_thread_self() -> mach_port_t;
     pub fn pthread_once(
         once_control: *mut ::pthread_once_t,
@@ -6603,6 +6596,8 @@ extern "C" {
     pub fn CCRandomGenerateBytes(bytes: *mut ::c_void, size: ::size_t) -> ::CCRNGStatus;
     pub fn getentropy(buf: *mut ::c_void, buflen: ::size_t) -> ::c_int;
 
+    // FIXME(1.0): should this actually be deprecated?
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _NSGetExecutablePath(buf: *mut ::c_char, bufsize: *mut u32) -> ::c_int;
 
     // crt_externs.h
@@ -6611,6 +6606,7 @@ extern "C" {
     pub fn _NSGetEnviron() -> *mut *mut *mut ::c_char;
     pub fn _NSGetProgname() -> *mut *mut ::c_char;
 
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_vm_map(
         target_task: ::vm_map_t,
         address: *mut ::mach_vm_address_t,
