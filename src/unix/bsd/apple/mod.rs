@@ -1186,56 +1186,6 @@ s! {
         pub tcpi_rxretransmitpackets: u64,
     }
 
-    // mach/host_info.h
-    pub struct host_cpu_load_info {
-        pub cpu_ticks: [::natural_t; CPU_STATE_MAX as usize],
-    }
-
-    // net/if_mib.h
-    pub struct ifmibdata {
-        /// Name of interface
-        pub ifmd_name: [::c_char; ::IFNAMSIZ],
-        /// Number of promiscuous listeners
-        pub ifmd_pcount: ::c_uint,
-        /// Interface flags
-        pub ifmd_flags: ::c_uint,
-        /// Instantaneous length of send queue
-        pub ifmd_snd_len: ::c_uint,
-        /// Maximum length of send queue
-        pub ifmd_snd_maxlen: ::c_uint,
-        /// Number of drops in send queue
-        pub ifmd_snd_drops: ::c_uint,
-        /// For future expansion
-        pub ifmd_filler: [::c_uint; 4],
-        /// Generic information and statistics
-        pub ifmd_data: if_data64,
-    }
-
-    pub struct ifs_iso_8802_3 {
-        pub dot3StatsAlignmentErrors: u32,
-        pub dot3StatsFCSErrors: u32,
-        pub dot3StatsSingleCollisionFrames: u32,
-        pub dot3StatsMultipleCollisionFrames: u32,
-        pub dot3StatsSQETestErrors: u32,
-        pub dot3StatsDeferredTransmissions: u32,
-        pub dot3StatsLateCollisions: u32,
-        pub dot3StatsExcessiveCollisions: u32,
-        pub dot3StatsInternalMacTransmitErrors: u32,
-        pub dot3StatsCarrierSenseErrors: u32,
-        pub dot3StatsFrameTooLongs: u32,
-        pub dot3StatsInternalMacReceiveErrors: u32,
-        pub dot3StatsEtherChipSet: u32,
-        pub dot3StatsMissedFrames: u32,
-        pub dot3StatsCollFrequencies: [u32; 16],
-        pub dot3Compliance: u32,
-    }
-
-    pub struct if_family_id {
-        pub iffmid_len: u32,
-        pub iffmid_id: u32,
-        pub iffmid_str: [::c_char; 1],
-    }
-
     pub struct in6_addrlifetime {
         pub ia6t_expire: time_t,
         pub ia6t_preferred: time_t,
@@ -1306,6 +1256,56 @@ s! {
         pub ifs6_out_mldquery: ::u_quad_t,
         pub ifs6_out_mldreport: ::u_quad_t,
         pub ifs6_out_mlddone: ::u_quad_t,
+    }
+
+    // mach/host_info.h
+    pub struct host_cpu_load_info {
+        pub cpu_ticks: [::natural_t; CPU_STATE_MAX as usize],
+    }
+
+    // net/if_mib.h
+    pub struct ifmibdata {
+        /// Name of interface
+        pub ifmd_name: [::c_char; ::IFNAMSIZ],
+        /// Number of promiscuous listeners
+        pub ifmd_pcount: ::c_uint,
+        /// Interface flags
+        pub ifmd_flags: ::c_uint,
+        /// Instantaneous length of send queue
+        pub ifmd_snd_len: ::c_uint,
+        /// Maximum length of send queue
+        pub ifmd_snd_maxlen: ::c_uint,
+        /// Number of drops in send queue
+        pub ifmd_snd_drops: ::c_uint,
+        /// For future expansion
+        pub ifmd_filler: [::c_uint; 4],
+        /// Generic information and statistics
+        pub ifmd_data: if_data64,
+    }
+
+    pub struct ifs_iso_8802_3 {
+        pub dot3StatsAlignmentErrors: u32,
+        pub dot3StatsFCSErrors: u32,
+        pub dot3StatsSingleCollisionFrames: u32,
+        pub dot3StatsMultipleCollisionFrames: u32,
+        pub dot3StatsSQETestErrors: u32,
+        pub dot3StatsDeferredTransmissions: u32,
+        pub dot3StatsLateCollisions: u32,
+        pub dot3StatsExcessiveCollisions: u32,
+        pub dot3StatsInternalMacTransmitErrors: u32,
+        pub dot3StatsCarrierSenseErrors: u32,
+        pub dot3StatsFrameTooLongs: u32,
+        pub dot3StatsInternalMacReceiveErrors: u32,
+        pub dot3StatsEtherChipSet: u32,
+        pub dot3StatsMissedFrames: u32,
+        pub dot3StatsCollFrequencies: [u32; 16],
+        pub dot3Compliance: u32,
+    }
+
+    pub struct if_family_id {
+        pub iffmid_len: u32,
+        pub iffmid_id: u32,
+        pub iffmid_str: [::c_char; 1],
     }
 }
 

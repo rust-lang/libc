@@ -1,3 +1,8 @@
+//! [wasi-libc](https://github.com/WebAssembly/wasi-libc) definitions.
+//!
+//! `wasi-libc` project provides multiple libraries including emulated features, but we list only
+//! basic features with `libc.a` here.
+
 use core::iter::Iterator;
 
 use super::{Send, Sync};

@@ -212,14 +212,6 @@ s! {
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
-pub const IN6ADDR_LOOPBACK_INIT: in6_addr = in6_addr {
-    s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-};
-
-pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
-    s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-};
-
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
@@ -320,6 +312,14 @@ pub const INADDR_LOOPBACK: in_addr_t = 2130706433;
 pub const INADDR_ANY: in_addr_t = 0;
 pub const INADDR_BROADCAST: in_addr_t = 4294967295;
 pub const INADDR_NONE: in_addr_t = 4294967295;
+
+pub const IN6ADDR_LOOPBACK_INIT: in6_addr = in6_addr {
+    s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+};
+
+pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
+    s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+};
 
 pub const ARPOP_REQUEST: u16 = 1;
 pub const ARPOP_REPLY: u16 = 2;
@@ -901,6 +901,7 @@ extern "C" {
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
+
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
     pub fn execle(path: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execlp(file: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
