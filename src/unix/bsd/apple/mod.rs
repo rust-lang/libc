@@ -1262,6 +1262,12 @@ s! {
         pub iffmid_id: u32,
         pub iffmid_str: [::c_char; 1],
     }
+
+    // kern_control.h
+    pub struct ctl_info {
+        pub ctl_id: u32,
+        pub ctl_name: [::c_char; MAX_KCTL_NAME],
+    }
 }
 
 s_no_extra_traits! {
@@ -5565,6 +5571,9 @@ pub const NETLINK_GENERIC: ::c_int = 0;
 pub const DOT3COMPLIANCE_STATS: ::c_int = 1;
 pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
 
+// kern_control.h
+pub const MAX_KCTL_NAME: usize = 96;
+
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
                        cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
@@ -6584,6 +6593,3 @@ cfg_if! {
         // Unknown target_arch
     }
 }
-
-mod long_array;
-pub use self::long_array::*;
