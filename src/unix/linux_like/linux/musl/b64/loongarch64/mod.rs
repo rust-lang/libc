@@ -11,10 +11,6 @@ pub type __u64 = ::c_ulonglong;
 pub type __s64 = ::c_longlong;
 
 s! {
-    pub struct pthread_attr_t {
-        __size: [::c_ulong; 7],
-    }
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino_t,
@@ -59,21 +55,6 @@ s! {
         __unused: [::c_int; 2],
     }
 
-    pub struct statfs {
-        pub f_type: ::c_long,
-        pub f_bsize: ::c_long,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_long,
-        pub f_frsize: ::c_long,
-        pub f_flags: ::c_long,
-        pub f_spare: [::c_long; 4],
-    }
-
     pub struct statfs64 {
         pub f_type: ::c_long,
         pub f_bsize: ::c_long,
@@ -96,7 +77,7 @@ s! {
         pub cuid: ::uid_t,
         pub cgid: ::gid_t,
         pub mode: ::c_uint,
-        pub __seq: ::c_ushort,
+        pub __seq: ::c_int,
         __pad2: ::c_ushort,
         __unused1: ::c_ulong,
         __unused2: ::c_ulong,
@@ -127,10 +108,10 @@ s! {
 
     #[repr(align(16))]
     pub struct mcontext_t {
-        pub __pc: ::c_ulonglong,
-        pub __gregs: [::c_ulonglong; 32],
+        pub __pc: ::c_ulong,
+        pub __gregs: [::c_ulong; 32],
         pub __flags: ::c_uint,
-        pub __extcontext: [::c_ulonglong; 0],
+        pub __extcontext: [::c_ulong; 0],
     }
 
     #[repr(align(8))]
@@ -468,7 +449,7 @@ pub const SYS_futex_requeue: ::c_long = 456;
 pub const O_APPEND: ::c_int = 1024;
 pub const O_DIRECT: ::c_int = 0x4000;
 pub const O_DIRECTORY: ::c_int = 0x10000;
-pub const O_LARGEFILE: ::c_int = 0;
+pub const O_LARGEFILE: ::c_int = 0o0100000;
 pub const O_NOFOLLOW: ::c_int = 0x20000;
 pub const O_CREAT: ::c_int = 64;
 pub const O_EXCL: ::c_int = 128;
@@ -477,7 +458,7 @@ pub const O_NONBLOCK: ::c_int = 2048;
 pub const O_SYNC: ::c_int = 1052672;
 pub const O_RSYNC: ::c_int = 1052672;
 pub const O_DSYNC: ::c_int = 4096;
-pub const O_ASYNC: ::c_int = 4096;
+pub const O_ASYNC: ::c_int = 0o20000;
 
 pub const SIGSTKSZ: ::size_t = 16384;
 pub const MINSIGSTKSZ: ::size_t = 4096;
@@ -661,6 +642,7 @@ pub const ECHOPRT: ::tcflag_t = 0x00000400;
 pub const ECHOCTL: ::tcflag_t = 0x00000200;
 pub const ISIG: ::tcflag_t = 0x00000001;
 pub const ICANON: ::tcflag_t = 0x00000002;
+pub const XCASE: ::tcflag_t = 0x00000004;
 pub const PENDIN: ::tcflag_t = 0x00004000;
 pub const NOFLSH: ::tcflag_t = 0x00000080;
 pub const CIBAUD: ::tcflag_t = 0o02003600000;
