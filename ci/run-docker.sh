@@ -89,13 +89,13 @@ build_switch() {
 }
 
 if [ -z "${1}" ]; then
-  for d in ci/docker/*; do
-    run "${d}"
-  done
+    for d in ci/docker/*; do
+        run "${d}"
+    done
 else
-  if [ "${1}" != "switch" ]; then
-    run "${1}"
-  else
-    build_switch
-  fi
+    if [ "${1}" != "switch" ]; then
+        run "${1}"
+    else
+        build_switch
+    fi
 fi
