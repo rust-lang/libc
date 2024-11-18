@@ -316,6 +316,7 @@ pub const INADDR_NONE: in_addr_t = 4294967295;
 pub const IN6ADDR_LOOPBACK_INIT: in6_addr = in6_addr {
     s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 };
+
 pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
     s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
@@ -900,6 +901,7 @@ extern "C" {
     pub fn close(fd: ::c_int) -> ::c_int;
     pub fn dup(fd: ::c_int) -> ::c_int;
     pub fn dup2(src: ::c_int, dst: ::c_int) -> ::c_int;
+
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> ::c_int;
     pub fn execle(path: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
     pub fn execlp(file: *const ::c_char, arg0: *const ::c_char, ...) -> ::c_int;
@@ -910,6 +912,7 @@ extern "C" {
         envp: *const *mut c_char,
     ) -> ::c_int;
     pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> ::c_int;
+
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: ::c_int, name: ::c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: ::size_t) -> *mut c_char;

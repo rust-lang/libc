@@ -59,28 +59,29 @@ cfg_if! {
         /// C __uint128_t (alternate name for [__uint128][])
         pub type __uint128_t = u128;
 
-        macro_rules! static_assert_eq {
-            ($a:expr, $b:expr) => {
-                const _: [(); $a] = [(); $b];
-            };
-        }
-
         // NOTE: if you add more platforms to here, you may need to cfg
         // these consts. They should always match the platform's values
         // for `sizeof(__int128)` and `_Alignof(__int128)`.
         const _SIZE_128: usize = 16;
         const _ALIGN_128: usize = 16;
 
-        // Since Rust doesn't officially guarantee that these types
-        // have compatible ABIs, we const assert that these values have the
-        // known size/align of the target platform's libc. If rustc ever
-        // tries to regress things, it will cause a compilation error.
+        // FIXME(ctest): ctest doesn't handle `_` as an identifier so these tests are temporarily
+        // disabled.
+        // macro_rules! static_assert_eq {
+        //     ($a:expr, $b:expr) => {
+        //         const _: [(); $a] = [(); $b];
+        //     };
+        // }
         //
-        // This isn't a bullet-proof solution because e.g. it doesn't
-        // catch the fact that llvm and gcc disagree on how x64 __int128
-        // is actually *passed* on the stack (clang underaligns it for
-        // the same reason that rustc *never* properly aligns it).
-        // FIXME: temporarily disabled because of a ctest2 bug.
+        // // Since Rust doesn't officially guarantee that these types
+        // // have compatible ABIs, we const assert that these values have the
+        // // known size/align of the target platform's libc. If rustc ever
+        // // tries to regress things, it will cause a compilation error.
+        // //
+        // // This isn't a bullet-proof solution because e.g. it doesn't
+        // // catch the fact that llvm and gcc disagree on how x64 __int128
+        // // is actually *passed* on the stack (clang underaligns it for
+        // // the same reason that rustc *never* properly aligns it).
         // static_assert_eq!(core::mem::size_of::<__int128>(), _SIZE_128);
         // static_assert_eq!(core::mem::align_of::<__int128>(), _ALIGN_128);
 
@@ -93,9 +94,9 @@ cfg_if! {
         // static_assert_eq!(core::mem::size_of::<__uint128_t>(), _SIZE_128);
         // static_assert_eq!(core::mem::align_of::<__uint128_t>(), _ALIGN_128);
     } else if #[cfg(all(target_arch = "aarch64", any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "watchos")))] {
-        /// /// C `__int128_t`
+        /// C `__int128_t`
         pub type __int128_t = i128;
-        /// /// C `__uint128_t`
+        /// C `__uint128_t`
         pub type __uint128_t = u128;
     }
 }

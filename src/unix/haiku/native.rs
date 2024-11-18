@@ -1328,6 +1328,7 @@ extern "C" {
         pathString: *mut ::c_char,
         length: i32,
     ) -> status_t;
+
     pub fn get_cpuid(info: *mut cpuid_info, eaxRegister: u32, cpuNum: u32) -> status_t;
 }
 

@@ -6,7 +6,7 @@ s! {
         __private: [::uintptr_t; 18], // FIXME: needs arm64 auth pointers support
     }
 
-     pub struct ucontext_t {
+    pub struct ucontext_t {
         pub uc_onstack: ::c_int,
         pub uc_sigmask: ::sigset_t,
         pub uc_stack: ::stack_t,

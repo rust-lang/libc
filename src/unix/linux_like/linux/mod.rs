@@ -1,5 +1,7 @@
 //! Linux-specific definitions for linux-like values
 
+use core::mem;
+
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
@@ -422,7 +424,7 @@ s! {
         pub direction: ::__u16,
         pub trigger: ff_trigger,
         pub replay: ff_replay,
-        // FIXME this is actually a union
+        // FIXME(1.0): this is actually a union
         #[cfg(target_pointer_width = "64")]
         pub u: [u64; 4],
         #[cfg(target_pointer_width = "32")]
@@ -930,23 +932,27 @@ s! {
         pub disabled: __u8,
         pub flags: __u16,
     }
+
     pub struct iw_point {
         pub pointer: *mut ::c_void,
         pub length: __u16,
         pub flags: __u16,
     }
+
     pub struct iw_freq {
         pub m: __s32,
         pub e: __s16,
         pub i: __u8,
         pub flags: __u8,
     }
+
     pub struct iw_quality {
         pub qual: __u8,
         pub level: __u8,
         pub noise: __u8,
         pub updated: __u8,
     }
+
     pub struct iw_discarded {
         pub nwid: __u32,
         pub code: __u32,
@@ -954,9 +960,11 @@ s! {
         pub retries: __u32,
         pubmisc: __u32,
     }
+
     pub struct iw_missed {
         pub beacon: __u32,
     }
+
     pub struct iw_scan_req {
         pub scan_type: __u8,
         pub essid_len: __u8,
@@ -968,6 +976,7 @@ s! {
         pub max_channel_time: __u32,
         pub channel_list: [iw_freq; IW_MAX_FREQUENCIES],
     }
+
     pub struct iw_encode_ext {
         pub ext_flags: __u32,
         pub tx_seq: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
@@ -977,22 +986,26 @@ s! {
         pub key_len: __u16,
         pub key: [__u8;0],
     }
+
     pub struct iw_pmksa {
         pub cmd: __u32,
         pub bssid: ::sockaddr,
         pub pmkid: [__u8; IW_PMKID_LEN],
     }
+
     pub struct iw_pmkid_cand {
         pub flags: __u32,
         pub index: __u32,
         pub bssid: ::sockaddr,
     }
+
     pub struct iw_statistics {
         pub status: __u16,
         pub qual: iw_quality,
         pub discard: iw_discarded,
         pub miss: iw_missed,
     }
+
     pub struct iw_range {
         pub throughput: __u32,
         pub min_nwid: __u32,
@@ -1038,6 +1051,7 @@ s! {
         pub freq: [iw_freq; IW_MAX_FREQUENCIES],
         pub enc_capa: __u32,
     }
+
     pub struct iw_priv_args {
         pub cmd: __u32,
         pub set_args: __u16,
@@ -1127,16 +1141,19 @@ cfg_if! {
                 pub low: iw_quality,
                 pub high: iw_quality,
             }
+
             pub struct iw_mlme {
                 pub cmd: __u16,
                 pub reason_code: __u16,
                 pub addr: ::sockaddr,
             }
+
             pub struct iw_michaelmicfailure {
                 pub flags: __u32,
                 pub src_addr: ::sockaddr,
                 pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
             }
+
             pub struct __c_anonymous_elf32_rela {
                 pub r_offset: Elf32_Addr,
                 pub r_info: Elf32_Word,
@@ -1251,7 +1268,10 @@ s_no_extra_traits! {
         pub ifcu_req: *mut ::ifreq,
     }
 
+    /// Structure used in SIOCGIFCONF request.  Used to retrieve interface configuration for
+    /// machine (useful for programs which must know all networks accessible).
     pub struct ifconf {
+        /// Size of buffer
         pub ifc_len: ::c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
@@ -1400,6 +1420,13 @@ s_no_extra_traits! {
         size: [u8; ::__SIZEOF_PTHREAD_BARRIER_T],
     }
 
+    // linux/net_tstamp.h
+    #[allow(missing_debug_implementations)]
+    pub struct sock_txtime {
+        pub clockid: ::clockid_t,
+        pub flags: ::__u32,
+    }
+
     // linux/can.h
     #[repr(align(8))]
     #[allow(missing_debug_implementations)]
@@ -1433,19 +1460,7 @@ s_no_extra_traits! {
         pub af: u32,
         pub data: [u8; CANXL_MAX_DLEN],
     }
-}
 
-s_no_extra_traits! {
-    // linux/net_tstamp.h
-    #[allow(missing_debug_implementations)]
-    pub struct sock_txtime {
-        pub clockid: ::clockid_t,
-        pub flags: ::__u32,
-    }
-}
-
-s_no_extra_traits! {
-    // linux/can.h
     #[allow(missing_debug_implementations)]
     pub union __c_anonymous_sockaddr_can_can_addr {
         pub tp: __c_anonymous_sockaddr_can_tp,
@@ -1458,9 +1473,7 @@ s_no_extra_traits! {
         pub can_ifindex: ::c_int,
         pub can_addr: __c_anonymous_sockaddr_can_can_addr,
     }
-}
 
-s_no_extra_traits! {
     // linux/wireless.h
     pub union iwreq_data {
             pub name: [c_char; ::IFNAMSIZ],
@@ -1933,6 +1946,7 @@ cfg_if! {
                 self.sched_period.hash(state);
             }
         }
+
         impl ::fmt::Debug for iwreq_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("iwreq_data")
@@ -2700,6 +2714,7 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
 };
+
 pub const PTHREAD_BARRIER_SERIAL_THREAD: ::c_int = -1;
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_MUTEX_NORMAL: ::c_int = 0;
@@ -3517,16 +3532,19 @@ pub const TP_STATUS_TS_SOFTWARE: ::__u32 = 1 << 29;
 pub const TP_STATUS_TS_SYS_HARDWARE: ::__u32 = 1 << 30;
 pub const TP_STATUS_TS_RAW_HARDWARE: ::__u32 = 1 << 31;
 
+pub const TP_FT_REQ_FILL_RXHASH: ::__u32 = 1;
+
 pub const TPACKET_ALIGNMENT: usize = 16;
-pub const TPACKET_HDRLEN: usize = ((core::mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
+
+pub const TPACKET_HDRLEN: usize = ((mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + core::mem::size_of::<::sockaddr_ll>();
-pub const TPACKET2_HDRLEN: usize =
-    ((core::mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1))
-        + core::mem::size_of::<::sockaddr_ll>();
-pub const TPACKET3_HDRLEN: usize =
-    ((core::mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1))
-        + core::mem::size_of::<::sockaddr_ll>();
+    + mem::size_of::<::sockaddr_ll>();
+pub const TPACKET2_HDRLEN: usize = ((mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
+    & !(TPACKET_ALIGNMENT - 1))
+    + mem::size_of::<::sockaddr_ll>();
+pub const TPACKET3_HDRLEN: usize = ((mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
+    & !(TPACKET_ALIGNMENT - 1))
+    + mem::size_of::<::sockaddr_ll>();
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
@@ -5046,7 +5064,7 @@ pub const CANXL_SEC: ::c_int = 0x01;
 pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
 pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
 pub const CANXL_MTU: usize = ::mem::size_of::<canxl_frame>();
-// FIXME: use `core::mem::offset_of!` once that is available
+// FIXME(offset_of): use `core::mem::offset_of!` once that is available
 // https://github.com/rust-lang/rfcs/pull/3308
 // pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
 pub const CANXL_HDR_SIZE: usize = 12;
@@ -5560,7 +5578,6 @@ f! {
     pub fn TPACKET_ALIGN(x: usize) -> usize {
         (x + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1)
     }
-
 
     pub fn BPF_RVAL(code: ::__u32) -> ::__u32 {
         code & 0x18
