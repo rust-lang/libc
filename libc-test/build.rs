@@ -3567,8 +3567,7 @@ fn test_linux(target: &str) {
     // Include linux headers at the end:
     headers! {
         cfg:
-        [loongarch64]: "asm/hwcap.h",
-        [riscv64]: "asm/hwcap.h",
+        [loongarch64 || riscv64]: "asm/hwcap.h",
         "asm/mman.h",
         [gnu]: "linux/aio_abi.h",
         "linux/can.h",
@@ -3767,17 +3766,19 @@ fn test_linux(target: &str) {
         if musl && (ty.ends_with("64") || ty.ends_with("64_t")) {
             return true;
         }
+
         // FIXME: sparc64 CI has old headers
         if sparc64 && (ty == "uinput_ff_erase" || ty == "uinput_abs_setup") {
             return true;
         }
-        // FIXME(https://github.com/rust-lang/libc/issues/1558): passing by
-        // value corrupts the value for reasons not understood.
+
+        // FIXME(#1558): passing by value corrupts the value for reasons not understood.
         if (gnu && sparc64) && (ty == "ip_mreqn" || ty == "hwtstamp_config") {
             return true;
         }
-        // FIXME(https://github.com/rust-lang/rust/issues/43894): pass by value for structs that are not an even 32/64 bits on
-        // big-endian systems corrupts the value for unknown reasons.
+
+        // FIXME(rust-lang/rust#43894): pass by value for structs that are not an even 32/64 bits
+        // on big-endian systems corrupts the value for unknown reasons.
         if (sparc64 || ppc || ppc64 || s390x)
             && (ty == "sockaddr_pkt"
                 || ty == "tpacket_auxdata"
@@ -3788,6 +3789,7 @@ fn test_linux(target: &str) {
         {
             return true;
         }
+
         // FIXME: musl doesn't compile with `struct fanout_args` for unknown reasons.
         if musl && ty == "fanout_args" {
             return true;
