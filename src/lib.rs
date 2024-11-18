@@ -46,6 +46,8 @@ cfg_if! {
 #[allow(unused_imports)]
 use core::clone::Clone;
 #[allow(unused_imports)]
+use core::ffi;
+#[allow(unused_imports)]
 use core::fmt;
 #[allow(unused_imports)]
 use core::hash;

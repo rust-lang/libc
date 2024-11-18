@@ -154,7 +154,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_uint; 2 * FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_uint; 2 * FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct tm {

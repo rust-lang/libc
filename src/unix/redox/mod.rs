@@ -116,7 +116,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [::c_ulong; ::FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; ::FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct in_addr {

@@ -183,7 +183,7 @@ s! {
     }
 
     pub struct fd_set { // Unverified
-        fds_bits: [::c_ulong; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [::c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
     }
 
     pub struct passwd { // Unverified

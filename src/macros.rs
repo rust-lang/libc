@@ -98,7 +98,7 @@ macro_rules! s_paren {
     ($(
         $(#[$attr:meta])*
         pub struct $i:ident ( $($field:tt)* );
-    )* ) => ($(
+    )*) => ($(
         __item! {
             #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
             #[derive(Copy, Clone)]
