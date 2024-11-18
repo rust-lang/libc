@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -eux
 
 URL=https://dl.google.com/android/repository/sys-img/android
 

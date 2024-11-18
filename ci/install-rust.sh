@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # This is intended to be used in CI only.
 
-set -ex
+set -eux
 
 echo "Setup toolchain"
 toolchain=

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -eux
 
 # Note: keep in sync with:
 # https://github.com/rust-lang/rust/blob/master/src/ci/docker/scripts/emscripten.sh
