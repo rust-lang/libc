@@ -15,7 +15,6 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd14",
     "freebsd15",
     "libc_deny_warnings",
-    "libc_long_array",
     "libc_thread_local",
     "libc_ctest",
 ];
@@ -75,11 +74,6 @@ fn main() {
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
-    }
-
-    // Rust >= 1.47 supports long array:
-    if rustc_minor_ver >= 47 || rustc_dep_of_std {
-        set_cfg("libc_long_array");
     }
 
     // #[thread_local] is currently unstable
