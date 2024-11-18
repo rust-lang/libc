@@ -1871,6 +1871,8 @@ pub const _PC_FILESIZEBITS: ::c_int = 67;
 pub const _PC_XATTR_ENABLED: ::c_int = 100;
 pub const _PC_XATTR_EXISTS: ::c_int = 101;
 
+pub const _POSIX_VDISABLE: ::cc_t = 0;
+
 pub const _SC_ARG_MAX: ::c_int = 1;
 pub const _SC_CHILD_MAX: ::c_int = 2;
 pub const _SC_CLK_TCK: ::c_int = 3;
