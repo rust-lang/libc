@@ -876,6 +876,7 @@ s! {
         pub release: [::c_char; _UTSNAME_LENGTH],
         pub version: [::c_char; _UTSNAME_LENGTH],
         pub machine: [::c_char; _UTSNAME_LENGTH],
+        pub domainname: [::c_char; _UTSNAME_LENGTH],
     }
 
     pub struct rlimit64 {
