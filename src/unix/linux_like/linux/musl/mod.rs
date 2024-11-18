@@ -355,14 +355,16 @@ s! {
         pub tcpi_backoff: u8,
         pub tcpi_options: u8,
         /*
-         * FIXME(musl): when musl headers are more up to date
+         * FIXME(musl): enable on all targets once musl headers are more up to date
+         */
         /// This contains the bitfields `tcpi_snd_wscale` and `tcpi_rcv_wscale`.
         /// Each is 4 bits.
+        #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_rcv_wscale: u8,
         /// This contains the bitfields `tcpi_delivery_rate_app_limited` (1 bit) and
         /// `tcpi_fastopen_client_fail` (2 bits).
+        #[cfg(target_arch = "loongarch64")]
         pub tcpi_delivery_fastopen_bitfields: u8,
-        */
         pub tcpi_rto: u32,
         pub tcpi_ato: u32,
         pub tcpi_snd_mss: u32,
@@ -407,9 +409,11 @@ s! {
         pub tcpi_bytes_retrans: u64,
         pub tcpi_dsack_dups: u32,
         pub tcpi_reord_seen: u32,
-        // FIXME(musl): to uncomment once CI musl is updated
-        //pub tcpi_rcv_ooopack: u32,
-        //pub tcpi_snd_wnd: u32,
+        // FIXME(musl): enable on all targets once CI musl is updated
+        #[cfg(target_arch = "loongarch64")]
+        pub tcpi_rcv_ooopack: u32,
+        #[cfg(target_arch = "loongarch64")]
+        pub tcpi_snd_wnd: u32,
     }
 }
 
@@ -449,7 +453,16 @@ s_no_extra_traits! {
         pub ut_exit: __exit_status,
 
         #[cfg(target_env = "musl")]
+        #[cfg(not(target_arch = "loongarch64"))]
         pub ut_session: ::c_long,
+
+        #[cfg(target_env = "musl")]
+        #[cfg(target_arch = "loongarch64")]
+        pub ut_session: ::c_int,
+
+        #[cfg(target_env = "musl")]
+        #[cfg(target_arch = "loongarch64")]
+        __ut_pad2: ::c_int,
 
         #[cfg(target_env = "ohos")]
         #[cfg(target_endian = "little")]
@@ -712,7 +725,10 @@ pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
+#[cfg(not(target_arch = "loongarch64"))]
 pub const CPU_SETSIZE: ::c_int = 128;
+#[cfg(target_arch = "loongarch64")]
+pub const CPU_SETSIZE: ::c_int = 1024;
 
 pub const PTRACE_TRACEME: ::c_int = 0;
 pub const PTRACE_PEEKTEXT: ::c_int = 1;
