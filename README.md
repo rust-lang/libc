@@ -49,10 +49,6 @@ libc = "0.2"
 * `extra_traits`: all `struct`s implemented in `libc` are `Copy` and `Clone`.
   This feature derives `Debug`, `Eq`, `Hash`, and `PartialEq`.
 
-* `const-extern-fn`: Changes some `extern fn`s into `const extern fn`s. If you
-  use Rust >= 1.62, this feature is implicitly enabled. Otherwise it requires a
-  nightly rustc.
-
 ## Rust version support
 
 The minimum supported Rust toolchain version is currently **Rust 1.63**.
