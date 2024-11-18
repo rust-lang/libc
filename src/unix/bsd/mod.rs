@@ -591,7 +591,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= ::mem::size_of::<::cmsghdr>() {
             (*mhdr).msg_control as *mut ::cmsghdr
         } else {
-            0 as *mut ::cmsghdr
+            core::ptr::null_mut()
         }
     }
 
