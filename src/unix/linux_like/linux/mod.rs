@@ -1,5 +1,7 @@
 //! Linux-specific definitions for linux-like values
 
+use core::mem;
+
 pub type useconds_t = u32;
 pub type dev_t = u64;
 pub type socklen_t = u32;
@@ -244,6 +246,13 @@ s! {
         pub tp_feature_req_word: ::c_uint,
     }
 
+    #[repr(align(8))]
+    pub struct tpacket_rollover_stats {
+        pub tp_all: ::__u64,
+        pub tp_huge: ::__u64,
+        pub tp_failed: ::__u64,
+    }
+
     pub struct tpacket_stats {
         pub tp_packets: ::c_uint,
         pub tp_drops: ::c_uint,
@@ -271,6 +280,17 @@ s! {
     pub struct tpacket_bd_ts {
         pub ts_sec: ::c_uint,
         pub ts_usec: ::c_uint,
+    }
+
+    #[repr(align(8))]
+    pub struct tpacket_hdr_v1 {
+        pub block_status: ::__u32,
+        pub num_pkts: ::__u32,
+        pub offset_to_first_pkt: ::__u32,
+        pub blk_len: ::__u32,
+        pub seq_num: ::__u64,
+        pub ts_first_pkt: ::tpacket_bd_ts,
+        pub ts_last_pkt: ::tpacket_bd_ts,
     }
 
     pub struct cpu_set_t {
@@ -976,24 +996,6 @@ s! {
         pub resolve: ::__u64,
     }
 
-    #[repr(align(8))]
-    pub struct tpacket_rollover_stats {
-        pub tp_all: ::__u64,
-        pub tp_huge: ::__u64,
-        pub tp_failed: ::__u64,
-    }
-
-    #[repr(align(8))]
-    pub struct tpacket_hdr_v1 {
-        pub block_status: ::__u32,
-        pub num_pkts: ::__u32,
-        pub offset_to_first_pkt: ::__u32,
-        pub blk_len: ::__u32,
-        pub seq_num: ::__u64,
-        pub ts_first_pkt: ::tpacket_bd_ts,
-        pub ts_last_pkt: ::tpacket_bd_ts,
-    }
-
     // linux/wireless.h
 
     pub struct iw_param {
@@ -1133,6 +1135,25 @@ s! {
 cfg_if! {
     if #[cfg(not(target_arch = "sparc64"))] {
         s!{
+            pub struct iw_thrspy {
+                pub addr: ::sockaddr,
+                pub qual: iw_quality,
+                pub low: iw_quality,
+                pub high: iw_quality,
+            }
+
+            pub struct iw_mlme {
+                pub cmd: __u16,
+                pub reason_code: __u16,
+                pub addr: ::sockaddr,
+            }
+
+            pub struct iw_michaelmicfailure {
+                pub flags: __u32,
+                pub src_addr: ::sockaddr,
+                pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
+            }
+
             pub struct __c_anonymous_elf32_rela {
                 pub r_offset: Elf32_Addr,
                 pub r_info: Elf32_Word,
@@ -1143,23 +1164,6 @@ cfg_if! {
                 pub r_offset: Elf64_Addr,
                 pub r_info: Elf64_Xword,
                 pub r_addend: Elf64_Sxword,
-            }
-
-            pub struct iw_thrspy {
-                pub addr: ::sockaddr,
-                pub qual: iw_quality,
-                pub low: iw_quality,
-                pub high: iw_quality,
-            }
-            pub struct iw_mlme {
-                pub cmd: __u16,
-                pub reason_code: __u16,
-                pub addr: ::sockaddr,
-            }
-            pub struct iw_michaelmicfailure {
-                pub flags: __u32,
-                pub src_addr: ::sockaddr,
-                pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
             }
         }
     }
@@ -1270,11 +1274,11 @@ s_no_extra_traits! {
         pub ifcu_req: *mut ::ifreq,
     }
 
-    /*  Structure used in SIOCGIFCONF request.  Used to retrieve interface
-    configuration for machine (useful for programs which must know all
-    networks accessible).  */
+    /// Structure used in SIOCGIFCONF request.  Used to retrieve interface configuration for
+    /// machine (useful for programs which must know all networks accessible).
     pub struct ifconf {
-        pub ifc_len: ::c_int,       /* Size of buffer.  */
+        /// Size of buffer
+        pub ifc_len: ::c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
@@ -3577,15 +3581,15 @@ pub const TP_FT_REQ_FILL_RXHASH: ::__u32 = 1;
 
 pub const TPACKET_ALIGNMENT: usize = 16;
 
-pub const TPACKET_HDRLEN: usize = ((::mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
+pub const TPACKET_HDRLEN: usize = ((mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + ::mem::size_of::<::sockaddr_ll>();
-pub const TPACKET2_HDRLEN: usize = ((::mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
+    + mem::size_of::<::sockaddr_ll>();
+pub const TPACKET2_HDRLEN: usize = ((mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + ::mem::size_of::<::sockaddr_ll>();
-pub const TPACKET3_HDRLEN: usize = ((::mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
+    + mem::size_of::<::sockaddr_ll>();
+pub const TPACKET3_HDRLEN: usize = ((mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + ::mem::size_of::<::sockaddr_ll>();
+    + mem::size_of::<::sockaddr_ll>();
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;

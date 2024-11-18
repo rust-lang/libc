@@ -724,6 +724,32 @@ s_no_extra_traits! {
         pub ifru_data: ::caddr_t,
         pub ifru_index: ::c_uint,
     }
+
+    // This type uses the union mount_info:
+    pub struct statfs {
+        pub f_flags: u32,
+        pub f_bsize: u32,
+        pub f_iosize: u32,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: i64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: i64,
+        pub f_syncwrites: u64,
+        pub f_syncreads: u64,
+        pub f_asyncwrites: u64,
+        pub f_asyncreads: u64,
+        pub f_fsid: ::fsid_t,
+        pub f_namemax: u32,
+        pub f_owner: ::uid_t,
+        pub f_ctime: u64,
+        pub f_fstypename: [::c_char; 16],
+        pub f_mntonname: [::c_char; 90],
+        pub f_mntfromname: [::c_char; 90],
+        pub f_mntfromspec: [::c_char; 90],
+        pub mount_info: mount_info,
+    }
 }
 
 cfg_if! {
@@ -980,39 +1006,7 @@ cfg_if! {
                 }
             }
         }
-    }
-}
 
-s_no_extra_traits! {
-    // This type uses the union mount_info:
-    pub struct statfs {
-        pub f_flags: u32,
-        pub f_bsize: u32,
-        pub f_iosize: u32,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: i64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: i64,
-        pub f_syncwrites: u64,
-        pub f_syncreads: u64,
-        pub f_asyncwrites: u64,
-        pub f_asyncreads: u64,
-        pub f_fsid: ::fsid_t,
-        pub f_namemax: u32,
-        pub f_owner: ::uid_t,
-        pub f_ctime: u64,
-        pub f_fstypename: [::c_char; 16],
-        pub f_mntonname: [::c_char; 90],
-        pub f_mntfromname: [::c_char; 90],
-        pub f_mntfromspec: [::c_char; 90],
-        pub mount_info: mount_info,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
         impl PartialEq for statfs {
             fn eq(&self, other: &statfs) -> bool {
                 self.f_flags == other.f_flags
@@ -1052,11 +1046,10 @@ cfg_if! {
             }
         }
 
-        impl Eq for statfs { }
+        impl Eq for statfs {}
 
         impl ::fmt::Debug for statfs {
-            fn fmt(&self, f: &mut ::fmt::Formatter)
-                   -> ::fmt::Result {
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("statfs")
                     .field("f_flags", &self.f_flags)
                     .field("f_bsize", &self.f_bsize)

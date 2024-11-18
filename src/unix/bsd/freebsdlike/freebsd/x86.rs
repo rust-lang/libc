@@ -107,8 +107,7 @@ cfg_if! {
                     .field("mc_fpformat", &self.mc_fpformat)
                     .field("mc_ownedfp", &self.mc_ownedfp)
                     .field("mc_flags", &self.mc_flags)
-                    // FIXME(msrv) debug not supported for arrays in old MSRV
-                    // .field("mc_fpstate", &self.mc_fpstate)
+                    .field("mc_fpstate", &self.mc_fpstate)
                     .field("mc_fsbase", &self.mc_fsbase)
                     .field("mc_gsbase", &self.mc_gsbase)
                     .field("mc_xfpustate", &self.mc_xfpustate)
