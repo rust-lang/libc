@@ -6657,6 +6657,7 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> ::kern_return_t;
 
+    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub static mut mach_task_self_: ::mach_port_t;
     pub fn task_for_pid(
         host: ::mach_port_t,
@@ -6774,6 +6775,8 @@ extern "C" {
     ) -> ::c_int;
 }
 
+#[allow(deprecated)]
+#[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
 pub unsafe fn mach_task_self() -> ::mach_port_t {
     mach_task_self_
 }
