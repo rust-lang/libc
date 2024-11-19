@@ -2252,6 +2252,7 @@ PTHREAD_PRIO_PROTECT
 PTHREAD_PROCESS_PRIVATE
 PTHREAD_PROCESS_SHARED
 PTHREAD_STACK_MIN
+PTP_CLOCK_CAPS_RSV_LEN
 PTP_CLOCK_GETCAPS
 PTP_CLOCK_GETCAPS2
 PTP_ENABLE_PPS
@@ -3580,6 +3581,8 @@ __WNOTHREAD
 __c_anonymous_ifc_ifcu
 __c_anonymous_ifr_ifru
 __c_anonymous_ifru_map
+__c_anonymous_ptp_perout_request_1
+__c_anonymous_ptp_perout_request_2
 __c_anonymous_sockaddr_can_can_addr
 __c_anonymous_sockaddr_can_j1939
 __c_anonymous_sockaddr_can_tp
@@ -3938,6 +3941,16 @@ pthread_spin_lock
 pthread_spin_trylock
 pthread_spin_unlock
 pthread_spinlock_t
+ptp_clock_caps
+ptp_clock_time
+ptp_extts_event
+ptp_extts_request
+ptp_perout_request
+ptp_pin_desc
+ptp_pin_function
+ptp_sys_offset
+ptp_sys_offset_extended
+ptp_sys_offset_precise
 ptrace
 ptsname_r
 pwrite64
