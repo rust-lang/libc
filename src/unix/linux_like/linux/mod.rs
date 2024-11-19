@@ -1412,26 +1412,160 @@ s_no_extra_traits! {
         pub offset_to_priv: ::__u32,
         pub hdr: ::tpacket_bd_header_u,
     }
-}
 
-s! {
-    // linux/ptp_clock.h
-    pub struct ptp_sys_offset {
-        pub n_samples: ::c_uint,
-        pub rsv: [::c_uint; 3],
-        pub ts: [ptp_clock_time; 2 * PTP_MAX_SAMPLES as usize + 1],
+    #[cfg_attr(
+        all(
+            any(target_env = "musl", target_env = "ohos"),
+            target_pointer_width = "32"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            any(target_env = "musl", target_env = "ohos"),
+            target_pointer_width = "64"
+        ),
+        repr(align(8))
+    )]
+    #[cfg_attr(
+        all(
+            not(any(target_env = "musl", target_env = "ohos")),
+            target_arch = "x86"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            not(any(target_env = "musl", target_env = "ohos")),
+            not(target_arch = "x86")
+        ),
+        repr(align(8))
+    )]
+    pub struct pthread_cond_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_COND_T],
     }
 
-    pub struct ptp_pin_desc {
-        pub name: [::c_char; 64],
-        pub index: ::c_uint,
-        pub func: ::c_uint,
-        pub chan: ::c_uint,
-        pub rsv: [::c_uint; 5],
+    #[cfg_attr(
+        all(
+            target_pointer_width = "32",
+            any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            )
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "64",
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            ))
+        ),
+        repr(align(8))
+    )]
+    pub struct pthread_mutex_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
     }
-}
 
-s_no_extra_traits! {
+    #[cfg_attr(
+        all(
+            target_pointer_width = "32",
+            any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            )
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "64",
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            ))
+        ),
+        repr(align(8))
+    )]
+    pub struct pthread_rwlock_t {
+        size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
+    }
+
+    #[cfg_attr(
+        all(
+            target_pointer_width = "32",
+            any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            )
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "64",
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            ))
+        ),
+        repr(align(8))
+    )]
+    pub struct pthread_barrier_t {
+        size: [u8; ::__SIZEOF_PTHREAD_BARRIER_T],
+    }
+
     // linux/net_tstamp.h
     #[allow(missing_debug_implementations)]
     pub struct sock_txtime {
