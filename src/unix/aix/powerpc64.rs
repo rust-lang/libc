@@ -34,7 +34,7 @@ s! {
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
         pub f_fstr: [::c_char; 32],
-        pub f_filler: [::c_ulong; 16]
+        pub f_filler: [::c_ulong; 16],
     }
 
     pub struct pthread_rwlock_t {
@@ -206,14 +206,28 @@ s_no_extra_traits! {
     }
 
     pub struct fileops_t {
-        pub fo_rw: extern fn(file: *mut file, rw: ::uio_rw, io: *mut ::c_void, ext: ::c_long,
-                             secattr: *mut ::c_void) -> ::c_int,
-        pub fo_ioctl: extern fn(file: *mut file, a: ::c_long, b: ::caddr_t, c: ::c_long,
-                                d: ::c_long) -> ::c_int,
-        pub fo_select: extern fn(file: *mut file, a: ::c_int, b: *mut ::c_ushort,
-                                 c: extern fn()) -> ::c_int,
-        pub fo_close: extern fn(file: *mut file) -> ::c_int,
-        pub fo_fstat: extern fn(file: *mut file, sstat: *mut ::stat) -> ::c_int,
+        pub fo_rw: extern "C" fn(
+            file: *mut file,
+            rw: ::uio_rw,
+            io: *mut ::c_void,
+            ext: ::c_long,
+            secattr: *mut ::c_void,
+        ) -> ::c_int,
+        pub fo_ioctl: extern "C" fn(
+            file: *mut file,
+            a: ::c_long,
+            b: ::caddr_t,
+            c: ::c_long,
+            d: ::c_long,
+        ) -> ::c_int,
+        pub fo_select: extern "C" fn(
+            file: *mut file,
+            a: ::c_int,
+            b: *mut ::c_ushort,
+            c: extern "C" fn(),
+        ) -> ::c_int,
+        pub fo_close: extern "C" fn(file: *mut file) -> ::c_int,
+        pub fo_fstat: extern "C" fn(file: *mut file, sstat: *mut ::stat) -> ::c_int,
     }
 
     pub struct file {
@@ -339,10 +353,7 @@ cfg_if! {
 
         impl PartialEq for _kernel_simple_lock {
             fn eq(&self, other: &_kernel_simple_lock) -> bool {
-                unsafe {
-                    self._slock == other._slock
-                        && self._slockp == other._slockp
-                }
+                unsafe { self._slock == other._slock && self._slockp == other._slockp }
             }
         }
         impl Eq for _kernel_simple_lock {}

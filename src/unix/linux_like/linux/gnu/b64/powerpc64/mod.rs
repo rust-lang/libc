@@ -19,7 +19,7 @@ s! {
         #[cfg(target_arch = "sparc64")]
         __reserved0: ::c_int,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct statfs {
@@ -142,7 +142,7 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [u64; 7]
+        __size: [u64; 7],
     }
 
     pub struct ipc_perm {
@@ -168,7 +168,7 @@ s! {
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
         __unused4: ::c_ulong,
-        __unused5: ::c_ulong
+        __unused5: ::c_ulong,
     }
 
     pub struct siginfo_t {
@@ -177,8 +177,8 @@ s! {
         pub si_code: ::c_int,
         #[doc(hidden)]
         #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
+            since = "0.2.54",
+            note = "Please leave a comment on \
                   https://github.com/rust-lang/libc/pull/1316 if you're using \
                   this field"
         )]
@@ -189,7 +189,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 }
 
@@ -197,7 +197,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [i64; 4]
+        priv_: [i64; 4],
     }
 }
 

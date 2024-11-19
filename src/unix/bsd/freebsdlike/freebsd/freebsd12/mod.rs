@@ -326,15 +326,15 @@ cfg_if! {
                     && self.f_fsid == other.f_fsid
                     && self.f_fstypename == other.f_fstypename
                     && self
-                    .f_mntfromname
-                    .iter()
-                    .zip(other.f_mntfromname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntfromname
+                        .iter()
+                        .zip(other.f_mntfromname.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .f_mntonname
-                    .iter()
-                    .zip(other.f_mntonname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntonname
+                        .iter()
+                        .zip(other.f_mntonname.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for statfs {}
@@ -394,11 +394,10 @@ cfg_if! {
                     && self.d_reclen == other.d_reclen
                     && self.d_type == other.d_type
                     && self.d_namlen == other.d_namlen
-                    && self
-                    .d_name[..self.d_namlen as _]
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                    && self.d_name[..self.d_namlen as _]
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for dirent {}
@@ -430,14 +429,14 @@ cfg_if! {
                 let self_vn_devname: &[::c_char] = &self.vn_devname;
                 let other_vn_devname: &[::c_char] = &other.vn_devname;
 
-                self.vn_fileid == other.vn_fileid &&
-                self.vn_size == other.vn_size &&
-                self.vn_dev == other.vn_dev &&
-                self.vn_fsid == other.vn_fsid &&
-                self.vn_mntdir == other.vn_mntdir &&
-                self.vn_type == other.vn_type &&
-                self.vn_mode == other.vn_mode &&
-                self_vn_devname == other_vn_devname
+                self.vn_fileid == other.vn_fileid
+                    && self.vn_size == other.vn_size
+                    && self.vn_dev == other.vn_dev
+                    && self.vn_fsid == other.vn_fsid
+                    && self.vn_mntdir == other.vn_mntdir
+                    && self.vn_type == other.vn_type
+                    && self.vn_mode == other.vn_mode
+                    && self_vn_devname == other_vn_devname
             }
         }
         impl Eq for vnstat {}

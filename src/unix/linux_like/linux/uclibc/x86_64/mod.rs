@@ -34,7 +34,7 @@ s! {
         pub __seq: ::c_ushort,
         __pad2: ::c_ushort,
         __unused1: ::c_ulong,
-        __unused2: ::c_ulong
+        __unused2: ::c_ulong,
     }
 
     #[cfg(not(target_os = "l4re"))]
@@ -55,9 +55,9 @@ s! {
     }
 
     pub struct siginfo_t {
-        si_signo: ::c_int, // signal number
-        si_errno: ::c_int, // if not zero: error value of signal, see errno.h
-        si_code: ::c_int,  // signal code
+        si_signo: ::c_int,       // signal number
+        si_errno: ::c_int,       // if not zero: error value of signal, see errno.h
+        si_code: ::c_int,        // signal code
         pub _pad: [::c_int; 28], // unported union
         _align: [usize; 0],
     }
@@ -72,7 +72,7 @@ s! {
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
         __unused1: ::c_ulong,
-        __unused2: ::c_ulong
+        __unused2: ::c_ulong,
     }
 
     pub struct msqid_ds {
@@ -119,7 +119,7 @@ s! {
         pub st_uid: ::uid_t,
         pub st_gid: ::gid_t,
         pub st_rdev: ::c_ulong, // dev_t
-        pub st_size: off_t, // file size
+        pub st_size: off_t,     // file size
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
         pub st_atime: ::time_t,
@@ -128,23 +128,25 @@ s! {
         pub st_mtime_nsec: ::c_ulong,
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_ulong,
-        st_pad4: [::c_long; 3]
+        st_pad4: [::c_long; 3],
     }
 
     pub struct sigaction {
         pub sa_handler: ::sighandler_t,
         pub sa_flags: ::c_ulong,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
         pub sa_mask: ::sigset_t,
     }
 
-    pub struct stack_t { // FIXME
+    pub struct stack_t {
+        // FIXME
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
-    pub struct statfs { // FIXME
+    pub struct statfs {
+        // FIXME
         pub f_type: fsword_t,
         pub f_bsize: fsword_t,
         pub f_blocks: ::fsblkcnt_t,
@@ -189,7 +191,8 @@ s! {
         __f_spare: [::c_int; 6],
     }
 
-    pub struct msghdr { // FIXME
+    pub struct msghdr {
+        // FIXME
         pub msg_name: *mut ::c_void,
         pub msg_namelen: ::socklen_t,
         pub msg_iov: *mut ::iovec,
@@ -199,7 +202,8 @@ s! {
         pub msg_flags: ::c_int,
     }
 
-    pub struct termios { // FIXME
+    pub struct termios {
+        // FIXME
         pub c_iflag: ::tcflag_t,
         pub c_oflag: ::tcflag_t,
         pub c_cflag: ::tcflag_t,
@@ -208,11 +212,13 @@ s! {
         pub c_cc: [::cc_t; ::NCCS],
     }
 
-    pub struct sigset_t { // FIXME
+    pub struct sigset_t {
+        // FIXME
         __val: [::c_ulong; 16],
     }
 
-    pub struct sysinfo { // FIXME
+    pub struct sysinfo {
+        // FIXME
         pub uptime: ::c_long,
         pub loads: [::c_ulong; 3],
         pub totalram: ::c_ulong,
@@ -229,7 +235,8 @@ s! {
         pub _f: [::c_char; 0],
     }
 
-    pub struct glob_t { // FIXME
+    pub struct glob_t {
+        // FIXME
         pub gl_pathc: ::size_t,
         pub gl_pathv: *mut *mut c_char,
         pub gl_offs: ::size_t,
@@ -241,14 +248,16 @@ s! {
         __unused5: *mut ::c_void,
     }
 
-    pub struct cpu_set_t { // FIXME
+    pub struct cpu_set_t {
+        // FIXME
         #[cfg(target_pointer_width = "32")]
         bits: [u32; 32],
         #[cfg(target_pointer_width = "64")]
         bits: [u64; 16],
     }
 
-    pub struct fsid_t { // FIXME
+    pub struct fsid_t {
+        // FIXME
         __val: [::c_int; 2],
     }
 

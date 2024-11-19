@@ -108,7 +108,6 @@ s! {
         pub csr_era: u64,
         pub csr_badv: u64,
         pub reserved: [u64; 10],
-
     }
 
     pub struct user_fp_struct {
@@ -153,7 +152,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 4]
+        priv_: [f64; 4],
     }
 }
 

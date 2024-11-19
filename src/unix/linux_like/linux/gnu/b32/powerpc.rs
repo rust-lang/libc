@@ -6,7 +6,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct statfs {
@@ -148,8 +148,8 @@ s! {
         pub si_code: ::c_int,
         #[doc(hidden)]
         #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
+            since = "0.2.54",
+            note = "Please leave a comment on \
                   https://github.com/rust-lang/libc/pull/1316 if you're using \
                   this field"
         )]
@@ -160,7 +160,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 }
 

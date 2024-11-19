@@ -18,7 +18,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         __glibc_reserved0: ::c_int,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
         pub sa_mask: ::sigset_t,
     }
 
@@ -64,7 +64,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct stat {
@@ -110,7 +110,7 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [::c_ulong; 7]
+        __size: [::c_ulong; 7],
     }
 
     pub struct ipc_perm {
@@ -123,7 +123,7 @@ s! {
         pub __seq: ::c_ushort,
         __pad1: ::c_ushort,
         __unused1: ::c_ulong,
-        __unused2: ::c_ulong
+        __unused2: ::c_ulong,
     }
 
     pub struct shmid_ds {
@@ -136,7 +136,7 @@ s! {
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
         __unused4: ::c_ulong,
-        __unused5: ::c_ulong
+        __unused5: ::c_ulong,
     }
 
     pub struct statvfs {
@@ -231,9 +231,7 @@ cfg_if! {
 
         impl ::fmt::Debug for fpreg_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("fpreg_t")
-                    .field("d", &self.d)
-                    .finish()
+                f.debug_struct("fpreg_t").field("d", &self.d).finish()
             }
         }
 

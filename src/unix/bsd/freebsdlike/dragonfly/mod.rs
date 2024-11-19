@@ -84,7 +84,7 @@ s! {
 
     pub struct exit_status {
         pub e_termination: u16,
-        pub e_exit: u16
+        pub e_exit: u16,
     }
 
     pub struct aiocb {
@@ -96,7 +96,7 @@ s! {
         pub aio_lio_opcode: ::c_int,
         pub aio_reqprio: ::c_int,
         _aio_val: ::c_int,
-        _aio_err: ::c_int
+        _aio_err: ::c_int,
     }
 
     pub struct uuid {
@@ -294,7 +294,7 @@ s! {
         pub kl_sigmask: ::sigset_t,
         pub kl_wchan: ::uintptr_t,
         pub kl_wmesg: [::c_char; 9],
-        pub kl_comm: [::c_char; MAXCOMLEN+1],
+        pub kl_comm: [::c_char; MAXCOMLEN + 1],
     }
 
     pub struct kinfo_proc {
@@ -310,7 +310,7 @@ s! {
         pub kp_sigcatch: ::sigset_t,
         pub kp_sigflag: ::c_int,
         pub kp_start: ::timeval,
-        pub kp_comm: [::c_char; MAXCOMLEN+1],
+        pub kp_comm: [::c_char; MAXCOMLEN + 1],
         pub kp_uid: ::uid_t,
         pub kp_ngroups: ::c_short,
         pub kp_groups: [::gid_t; NGROUPS],
@@ -477,12 +477,12 @@ s_no_extra_traits! {
         // The union is 8-byte in size, so it is aligned at a 8-byte offset.
         #[cfg(target_pointer_width = "64")]
         __unused1: ::c_int,
-        pub sigev_signo: ::c_int,       //actually a union
+        pub sigev_signo: ::c_int, //actually a union
         // pad the union
         #[cfg(target_pointer_width = "64")]
         __unused2: ::c_int,
         pub sigev_value: ::sigval,
-        __unused3: *mut ::c_void        //actually a function pointer
+        __unused3: *mut ::c_void, //actually a function pointer
     }
 
     pub struct mcontext_t {
@@ -539,10 +539,10 @@ cfg_if! {
                     && self.ut_id == other.ut_id
                     && self.ut_line == other.ut_line
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
                     && self.ut_unused == other.ut_unused
                     && self.ut_session == other.ut_session
                     && self.ut_type == other.ut_type
@@ -648,8 +648,8 @@ cfg_if! {
                 self.d_fileno.hash(state);
                 self.d_namlen.hash(state);
                 self.d_type.hash(state);
-                    // Ignore __unused1
-                    // Ignore __unused2
+                // Ignore __unused1
+                // Ignore __unused2
                 self.d_name.hash(state);
             }
         }
@@ -671,17 +671,17 @@ cfg_if! {
                     && self.f_asyncwrites == other.f_asyncwrites
                     && self.f_fstypename == other.f_fstypename
                     && self
-                    .f_mntonname
-                    .iter()
-                    .zip(other.f_mntonname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntonname
+                        .iter()
+                        .zip(other.f_mntonname.iter())
+                        .all(|(a, b)| a == b)
                     && self.f_syncreads == other.f_syncreads
                     && self.f_asyncreads == other.f_asyncreads
                     && self
-                    .f_mntfromname
-                    .iter()
-                    .zip(other.f_mntfromname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntfromname
+                        .iter()
+                        .zip(other.f_mntfromname.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for statfs {}
@@ -757,36 +757,36 @@ cfg_if! {
         }
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
-                self.mc_onstack == other.mc_onstack &&
-                self.mc_rdi == other.mc_rdi &&
-                self.mc_rsi == other.mc_rsi &&
-                self.mc_rdx == other.mc_rdx &&
-                self.mc_rcx == other.mc_rcx &&
-                self.mc_r8 == other.mc_r8 &&
-                self.mc_r9 == other.mc_r9 &&
-                self.mc_rax == other.mc_rax &&
-                self.mc_rbx == other.mc_rbx &&
-                self.mc_rbp == other.mc_rbp &&
-                self.mc_r10 == other.mc_r10 &&
-                self.mc_r11 == other.mc_r11 &&
-                self.mc_r12 == other.mc_r12 &&
-                self.mc_r13 == other.mc_r13 &&
-                self.mc_r14 == other.mc_r14 &&
-                self.mc_r15 == other.mc_r15 &&
-                self.mc_xflags == other.mc_xflags &&
-                self.mc_trapno == other.mc_trapno &&
-                self.mc_addr == other.mc_addr &&
-                self.mc_flags == other.mc_flags &&
-                self.mc_err == other.mc_err &&
-                self.mc_rip == other.mc_rip &&
-                self.mc_cs == other.mc_cs &&
-                self.mc_rflags == other.mc_rflags &&
-                self.mc_rsp == other.mc_rsp &&
-                self.mc_ss == other.mc_ss &&
-                self.mc_len == other.mc_len &&
-                self.mc_fpformat == other.mc_fpformat &&
-                self.mc_ownedfp == other.mc_ownedfp &&
-                self.mc_fpregs == other.mc_fpregs
+                self.mc_onstack == other.mc_onstack
+                    && self.mc_rdi == other.mc_rdi
+                    && self.mc_rsi == other.mc_rsi
+                    && self.mc_rdx == other.mc_rdx
+                    && self.mc_rcx == other.mc_rcx
+                    && self.mc_r8 == other.mc_r8
+                    && self.mc_r9 == other.mc_r9
+                    && self.mc_rax == other.mc_rax
+                    && self.mc_rbx == other.mc_rbx
+                    && self.mc_rbp == other.mc_rbp
+                    && self.mc_r10 == other.mc_r10
+                    && self.mc_r11 == other.mc_r11
+                    && self.mc_r12 == other.mc_r12
+                    && self.mc_r13 == other.mc_r13
+                    && self.mc_r14 == other.mc_r14
+                    && self.mc_r15 == other.mc_r15
+                    && self.mc_xflags == other.mc_xflags
+                    && self.mc_trapno == other.mc_trapno
+                    && self.mc_addr == other.mc_addr
+                    && self.mc_flags == other.mc_flags
+                    && self.mc_err == other.mc_err
+                    && self.mc_rip == other.mc_rip
+                    && self.mc_cs == other.mc_cs
+                    && self.mc_rflags == other.mc_rflags
+                    && self.mc_rsp == other.mc_rsp
+                    && self.mc_ss == other.mc_ss
+                    && self.mc_len == other.mc_len
+                    && self.mc_fpformat == other.mc_fpformat
+                    && self.mc_ownedfp == other.mc_ownedfp
+                    && self.mc_fpregs == other.mc_fpregs
             }
         }
         impl Eq for mcontext_t {}
@@ -1543,33 +1543,27 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
-        (cmsg as *mut ::c_uchar)
-            .offset(_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+        (cmsg as *mut ::c_uchar).offset(_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize)
-            as ::c_uint
+        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + length as usize) as ::c_uint
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
-        -> *mut ::cmsghdr
-    {
-        let next = cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize)
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
+        let next = cmsg as usize
+            + _CMSG_ALIGN((*cmsg).cmsg_len as usize)
             + _CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next <= max {
-            (cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize))
-                as *mut ::cmsghdr
+            (cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut ::cmsghdr
         } else {
             0 as *mut ::cmsghdr
         }
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) +
-            _CMSG_ALIGN(length as usize)) as ::c_uint
+        (_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) + _CMSG_ALIGN(length as usize)) as ::c_uint
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
@@ -1596,7 +1590,7 @@ f! {
     }
 
     pub fn major(dev: ::dev_t) -> ::c_int {
-         ((dev >> 8) & 0xff) as ::c_int
+        ((dev >> 8) & 0xff) as ::c_int
     }
 
     pub fn minor(dev: ::dev_t) -> ::c_int {

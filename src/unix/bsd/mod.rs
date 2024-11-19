@@ -35,13 +35,15 @@ s! {
         pub pw_shell: *mut ::c_char,
         pub pw_expire: ::time_t,
 
-        #[cfg(not(any(target_os = "macos",
-                      target_os = "ios",
-                      target_os = "tvos",
-                      target_os = "watchos",
-                      target_os = "visionos",
-                      target_os = "netbsd",
-                      target_os = "openbsd")))]
+        #[cfg(not(any(
+            target_os = "macos",
+            target_os = "ios",
+            target_os = "tvos",
+            target_os = "watchos",
+            target_os = "visionos",
+            target_os = "netbsd",
+            target_os = "openbsd"
+        )))]
         pub pw_fields: ::c_int,
     }
 
@@ -54,15 +56,19 @@ s! {
         pub ifa_dstaddr: *mut ::sockaddr,
         pub ifa_data: *mut ::c_void,
         #[cfg(target_os = "netbsd")]
-        pub ifa_addrflags: ::c_uint
+        pub ifa_addrflags: ::c_uint,
     }
 
     pub struct fd_set {
-        #[cfg(all(target_pointer_width = "64",
-                  any(target_os = "freebsd", target_os = "dragonfly")))]
+        #[cfg(all(
+            target_pointer_width = "64",
+            any(target_os = "freebsd", target_os = "dragonfly")
+        ))]
         fds_bits: [i64; FD_SETSIZE as usize / 64],
-        #[cfg(not(all(target_pointer_width = "64",
-                      any(target_os = "freebsd", target_os = "dragonfly"))))]
+        #[cfg(not(all(
+            target_pointer_width = "64",
+            any(target_os = "freebsd", target_os = "dragonfly")
+        )))]
         fds_bits: [i32; FD_SETSIZE as usize / 32],
     }
 
@@ -129,7 +135,7 @@ s_no_extra_traits! {
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 104]
+        pub sun_path: [::c_char; 104],
     }
 
     pub struct utsname {
@@ -154,7 +160,6 @@ s_no_extra_traits! {
         #[cfg(target_os = "dragonfly")]
         pub machine: [::c_char; 32],
     }
-
 }
 
 cfg_if! {
@@ -164,10 +169,10 @@ cfg_if! {
                 self.sun_len == other.sun_len
                     && self.sun_family == other.sun_family
                     && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a,b)| a == b)
+                        .sun_path
+                        .iter()
+                        .zip(other.sun_path.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -178,7 +183,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_un")
                     .field("sun_len", &self.sun_len)
                     .field("sun_family", &self.sun_family)
-                // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME: .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -196,27 +201,27 @@ cfg_if! {
                 self.sysname
                     .iter()
                     .zip(other.sysname.iter())
-                    .all(|(a,b)| a == b)
+                    .all(|(a, b)| a == b)
                     && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a,b)| a == b)
+                        .nodename
+                        .iter()
+                        .zip(other.nodename.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a,b)| a == b)
+                        .release
+                        .iter()
+                        .zip(other.release.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a,b)| a == b)
+                        .version
+                        .iter()
+                        .zip(other.version.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a,b)| a == b)
+                        .machine
+                        .iter()
+                        .zip(other.machine.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -225,11 +230,11 @@ cfg_if! {
         impl ::fmt::Debug for utsname {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
+                    // FIXME: .field("sysname", &self.sysname)
+                    // FIXME: .field("nodename", &self.nodename)
+                    // FIXME: .field("release", &self.release)
+                    // FIXME: .field("version", &self.version)
+                    // FIXME: .field("machine", &self.machine)
                     .finish()
             }
         }
@@ -599,20 +604,20 @@ f! {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
-        return
+        return;
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
+        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
-        return
+        return;
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
@@ -969,7 +974,13 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "watchos", target_os = "visionos"))] {
+    if #[cfg(any(
+        target_os = "macos",
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos"
+    ))] {
         mod apple;
         pub use self::apple::*;
     } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd"))] {

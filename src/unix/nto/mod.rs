@@ -102,9 +102,9 @@ s! {
         pub st_nblocks: i32,
         pub st_blksize: ::blksize_t,
         pub st_blocks: ::blkcnt_t,
-        pub st_mtim:    ::timespec,
-        pub st_atim:    ::timespec,
-        pub st_ctim:    ::timespec,
+        pub st_mtim: ::timespec,
+        pub st_atim: ::timespec,
+        pub st_ctim: ::timespec,
     }
 
     pub struct ip_mreq {
@@ -230,7 +230,7 @@ s! {
         pub _Nostr: *mut ::c_char,
         pub _Yesstr: *mut ::c_char,
         pub _Reserved: [*mut ::c_char; 8],
-        }
+    }
 
     pub struct in_pktinfo {
         pub ipi_addr: ::in_addr,
@@ -244,7 +244,7 @@ s! {
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
         pub ifa_dstaddr: *mut ::sockaddr,
-        pub ifa_data: *mut ::c_void
+        pub ifa_data: *mut ::c_void,
     }
 
     pub struct arpreq {
@@ -437,7 +437,7 @@ s! {
         pub wd: ::c_int,
         pub mask: u32,
         pub cookie: u32,
-        pub len: u32
+        pub len: u32,
     }
 
     pub struct regmatch_t {
@@ -534,7 +534,7 @@ s! {
 
     pub struct pthread_attr_t {
         __data1: ::c_long,
-        __data2: [u8; 96]
+        __data2: [u8; 96],
     }
 
     pub struct ipc_perm {
@@ -647,7 +647,7 @@ s_no_extra_traits! {
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 104]
+        pub sun_path: [::c_char; 104],
     }
 
     pub struct sockaddr_storage {
@@ -673,7 +673,6 @@ s_no_extra_traits! {
         pub __padding2: ::c_int,
         pub sigev_value: ::sigval,
         __sigev_un2: usize, // union
-
     }
     pub struct dirent {
         pub d_ino: ::ino_t,
@@ -734,13 +733,14 @@ s_no_extra_traits! {
     }
 
     pub struct sync_t {
-        __u: ::c_uint,                     // union
+        __u: ::c_uint, // union
         pub __owner: ::c_uint,
     }
 
     #[repr(align(4))]
-    pub struct pthread_barrier_t {         // union
-        __pad: [u8; 28],                   // union
+    pub struct pthread_barrier_t {
+        // union
+        __pad: [u8; 28], // union
     }
 
     pub struct pthread_rwlock_t {
@@ -748,9 +748,9 @@ s_no_extra_traits! {
         pub __blockedwriters: ::c_int,
         pub __blockedreaders: ::c_int,
         pub __heavy: ::c_int,
-        pub __lock: ::pthread_mutex_t,     // union
-        pub __rcond: ::pthread_cond_t,     // union
-        pub __wcond: ::pthread_cond_t,     // union
+        pub __lock: ::pthread_mutex_t, // union
+        pub __rcond: ::pthread_cond_t, // union
+        pub __wcond: ::pthread_cond_t, // union
         pub __owner: ::c_uint,
         pub __spare: ::c_uint,
     }
@@ -764,8 +764,7 @@ cfg_if! {
                 self.sigev_notify == other.sigev_notify
                     && self.sigev_signo == other.sigev_signo
                     && self.sigev_value == other.sigev_value
-                    && self.__sigev_un2
-                        == other.__sigev_un2
+                    && self.__sigev_un2 == other.__sigev_un2
             }
         }
         impl Eq for sigevent {}
@@ -775,8 +774,7 @@ cfg_if! {
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_value", &self.sigev_value)
-                    .field("__sigev_un2",
-                        &self.__sigev_un2)
+                    .field("__sigev_un2", &self.__sigev_un2)
                     .finish()
             }
         }
@@ -794,10 +792,10 @@ cfg_if! {
                 self.sun_len == other.sun_len
                     && self.sun_family == other.sun_family
                     && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a,b)| a == b)
+                        .sun_path
+                        .iter()
+                        .zip(other.sun_path.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for sockaddr_un {}
@@ -847,7 +845,7 @@ cfg_if! {
                     .field("msg_type", &self.msg_type)
                     .field("msg_ts", &self.msg_ts)
                     .field("msg_spot", &self.msg_spot)
-                .finish()
+                    .finish()
             }
         }
 
@@ -894,10 +892,10 @@ cfg_if! {
                     && self.sdl_alen == other.sdl_alen
                     && self.sdl_slen == other.sdl_slen
                     && self
-                    .sdl_data
-                    .iter()
-                    .zip(other.sdl_data.iter())
-                    .all(|(a,b)| a == b)
+                        .sdl_data
+                        .iter()
+                        .zip(other.sdl_data.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for sockaddr_dl {}
@@ -946,7 +944,7 @@ cfg_if! {
                     .field("__wcond", &self.__wcond)
                     .field("__owner", &self.__owner)
                     .field("__spare", &self.__spare)
-                .finish()
+                    .finish()
             }
         }
 
@@ -986,27 +984,27 @@ cfg_if! {
                 self.sysname
                     .iter()
                     .zip(other.sysname.iter())
-                    .all(|(a,b)| a == b)
+                    .all(|(a, b)| a == b)
                     && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a,b)| a == b)
+                        .nodename
+                        .iter()
+                        .zip(other.nodename.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a,b)| a == b)
+                        .release
+                        .iter()
+                        .zip(other.release.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a,b)| a == b)
+                        .version
+                        .iter()
+                        .zip(other.version.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a,b)| a == b)
+                        .machine
+                        .iter()
+                        .zip(other.machine.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1015,11 +1013,11 @@ cfg_if! {
         impl ::fmt::Debug for utsname {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
+                    // FIXME: .field("sysname", &self.sysname)
+                    // FIXME: .field("nodename", &self.nodename)
+                    // FIXME: .field("release", &self.release)
+                    // FIXME: .field("version", &self.version)
+                    // FIXME: .field("machine", &self.machine)
                     .finish()
             }
         }
@@ -1036,13 +1034,13 @@ cfg_if! {
 
         impl PartialEq for mq_attr {
             fn eq(&self, other: &mq_attr) -> bool {
-                self.mq_maxmsg == other.mq_maxmsg &&
-                self.mq_msgsize == other.mq_msgsize &&
-                self.mq_flags == other.mq_flags &&
-                self.mq_curmsgs == other.mq_curmsgs &&
-                self.mq_msgsize == other.mq_msgsize &&
-                self.mq_sendwait == other.mq_sendwait &&
-                self.mq_recvwait == other.mq_recvwait
+                self.mq_maxmsg == other.mq_maxmsg
+                    && self.mq_msgsize == other.mq_msgsize
+                    && self.mq_flags == other.mq_flags
+                    && self.mq_curmsgs == other.mq_curmsgs
+                    && self.mq_msgsize == other.mq_msgsize
+                    && self.mq_sendwait == other.mq_sendwait
+                    && self.mq_recvwait == other.mq_recvwait
             }
         }
 
@@ -1079,10 +1077,10 @@ cfg_if! {
                     && self.__ss_pad1 == other.__ss_pad1
                     && self.__ss_align == other.__ss_align
                     && self
-                    .__ss_pad2
-                    .iter()
-                    .zip(other.__ss_pad2.iter())
-                    .all(|(a, b)| a == b)
+                        .__ss_pad2
+                        .iter()
+                        .zip(other.__ss_pad2.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1116,11 +1114,10 @@ cfg_if! {
                     && self.d_offset == other.d_offset
                     && self.d_reclen == other.d_reclen
                     && self.d_namelen == other.d_namelen
-                    && self
-                    .d_name[..self.d_namelen as _]
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                    && self.d_name[..self.d_namelen as _]
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -2714,7 +2711,7 @@ const_fn! {
     }
 
     {const} fn _ALIGN(p: usize, b: usize) -> usize {
-        (p + b - 1) & !(b-1)
+        (p + b - 1) & !(b - 1)
     }
 }
 
@@ -2727,21 +2724,18 @@ f! {
         }
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
-        -> *mut ::cmsghdr
-    {
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
         let msg = _CMSG_ALIGN((*cmsg).cmsg_len as usize);
         let next = cmsg as usize + msg + _CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
         if next > (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize {
-           0 as *mut ::cmsghdr
+            0 as *mut ::cmsghdr
         } else {
             (cmsg as usize + msg) as *mut ::cmsghdr
         }
     }
 
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
-        (cmsg as *mut ::c_uchar)
-            .offset(_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+        (cmsg as *mut ::c_uchar).offset(_CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
@@ -2749,28 +2743,27 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (_CMSG_ALIGN(::mem::size_of::<cmsghdr>()) + _CMSG_ALIGN(length as usize) )
-            as ::c_uint
+        (_CMSG_ALIGN(::mem::size_of::<cmsghdr>()) + _CMSG_ALIGN(length as usize)) as ::c_uint
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
+        return;
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
+        return;
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
@@ -2799,16 +2792,13 @@ f! {
 
     pub fn _DEXTRA_NEXT(_x: *const ::dirent_extra) -> *mut ::dirent_extra {
         _ALIGN(
-            _x as usize + ::mem::size_of::<::dirent_extra>() + (*_x).d_datalen as usize, 8
+            _x as usize + ::mem::size_of::<::dirent_extra>() + (*_x).d_datalen as usize,
+            8,
         ) as *mut ::dirent_extra
     }
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
-        let ngrps = if ngrps > 0 {
-            ngrps - 1
-        } else {
-            0
-        };
+        let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 
@@ -3498,12 +3488,10 @@ cfg_if! {
     if #[cfg(target_arch = "x86_64")] {
         mod x86_64;
         pub use self::x86_64::*;
-    }
-    else if #[cfg(target_arch = "aarch64")] {
+    } else if #[cfg(target_arch = "aarch64")] {
         mod aarch64;
         pub use self::aarch64::*;
-    }
-    else {
+    } else {
         panic!("Unsupported arch");
     }
 }

@@ -51,7 +51,7 @@ e! {
         B_THREAD_RECEIVING,
         B_THREAD_ASLEEP,
         B_THREAD_SUSPENDED,
-        B_THREAD_WAITING
+        B_THREAD_WAITING,
     }
 
     // kernel/image.h
@@ -59,7 +59,7 @@ e! {
         B_APP_IMAGE = 1,
         B_LIBRARY_IMAGE,
         B_ADD_ON_IMAGE,
-        B_SYSTEM_IMAGE
+        B_SYSTEM_IMAGE,
     }
 
     // kernel/scheduler.h
@@ -221,7 +221,7 @@ e! {
         B_CPU_MIPS,
         B_CPU_SH,
         B_CPU_SPARC,
-        B_CPU_RISC_V
+        B_CPU_RISC_V,
     }
 
     pub enum cpu_vendor {
@@ -239,7 +239,7 @@ e! {
         B_CPU_VENDOR_NEC,
         B_CPU_VENDOR_HYGON,
         B_CPU_VENDOR_SUN,
-        B_CPU_VENDOR_FUJITSU
+        B_CPU_VENDOR_FUJITSU,
     }
 }
 
@@ -256,7 +256,7 @@ s! {
         pub copy_count: u32,
         pub in_count: u32,
         pub out_count: u32,
-        pub address: *mut ::c_void
+        pub address: *mut ::c_void,
     }
 
     pub struct port_info {
@@ -272,7 +272,7 @@ s! {
         pub size: ::size_t,
         pub sender: ::uid_t,
         pub sender_group: ::gid_t,
-        pub sender_team: ::team_id
+        pub sender_team: ::team_id,
     }
 
     pub struct team_info {
@@ -285,7 +285,7 @@ s! {
         pub argc: i32,
         pub args: [::c_char; 64],
         pub uid: ::uid_t,
-        pub gid: ::gid_t
+        pub gid: ::gid_t,
     }
 
     pub struct sem_info {
@@ -293,12 +293,12 @@ s! {
         pub team: team_id,
         pub name: [::c_char; B_OS_NAME_LENGTH],
         pub count: i32,
-        pub latest_holder: thread_id
+        pub latest_holder: thread_id,
     }
 
     pub struct team_usage_info {
         pub user_time: bigtime_t,
-        pub kernel_time: bigtime_t
+        pub kernel_time: bigtime_t,
     }
 
     pub struct thread_info {
@@ -311,13 +311,13 @@ s! {
         pub user_time: bigtime_t,
         pub kernel_time: bigtime_t,
         pub stack_base: *mut ::c_void,
-        pub stack_end: *mut ::c_void
+        pub stack_end: *mut ::c_void,
     }
 
     pub struct cpu_info {
         pub active_time: bigtime_t,
         pub enabled: bool,
-        pub current_frequency: u64
+        pub current_frequency: u64,
     }
 
     pub struct system_info {
@@ -345,13 +345,13 @@ s! {
         pub kernel_build_date: [::c_char; B_OS_NAME_LENGTH],
         pub kernel_build_time: [::c_char; B_OS_NAME_LENGTH],
         pub kernel_version: i64,
-        pub abi: u32
+        pub abi: u32,
     }
 
     pub struct object_wait_info {
         pub object: i32,
         pub type_: u16,
-        pub events: u16
+        pub events: u16,
     }
 
     pub struct cpu_topology_root_info {
@@ -370,7 +370,7 @@ s! {
     // kernel/fs_attr.h
     pub struct attr_info {
         pub type_: u32,
-        pub size: ::off_t
+        pub size: ::off_t,
     }
 
     // kernel/fs_index.h
@@ -380,7 +380,7 @@ s! {
         pub modification_time: ::time_t,
         pub creation_time: ::time_t,
         pub uid: ::uid_t,
-        pub gid: ::gid_t
+        pub gid: ::gid_t,
     }
 
     //kernel/fs_info.h
@@ -396,7 +396,7 @@ s! {
         pub free_nodes: ::off_t,
         pub device_name: [::c_char; 128],
         pub volume_name: [::c_char; B_FILE_NAME_LENGTH],
-        pub fsh_name: [::c_char; B_OS_NAME_LENGTH]
+        pub fsh_name: [::c_char; B_OS_NAME_LENGTH],
     }
 
     // kernel/image.h
@@ -415,7 +415,7 @@ s! {
         pub text_size: i32,
         pub data_size: i32,
         pub api_version: i32,
-        pub abi: i32
+        pub abi: i32,
     }
 
     pub struct __c_anonymous_eax_0 {
@@ -488,12 +488,12 @@ cfg_if! {
         impl PartialEq for cpuid_info {
             fn eq(&self, other: &cpuid_info) -> bool {
                 unsafe {
-                self.eax_0 == other.eax_0
-                    || self.eax_1 == other.eax_1
-                    || self.eax_2 == other.eax_2
-                    || self.eax_3 == other.eax_3
-                    || self.as_chars == other.as_chars
-                    || self.regs == other.regs
+                    self.eax_0 == other.eax_0
+                        || self.eax_1 == other.eax_1
+                        || self.eax_2 == other.eax_2
+                        || self.eax_3 == other.eax_3
+                        || self.as_chars == other.as_chars
+                        || self.regs == other.regs
                 }
             }
         }
@@ -501,14 +501,14 @@ cfg_if! {
         impl ::fmt::Debug for cpuid_info {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
-                f.debug_struct("cpuid_info")
-                    .field("eax_0", &self.eax_0)
-                    .field("eax_1", &self.eax_1)
-                    .field("eax_2", &self.eax_2)
-                    .field("eax_3", &self.eax_3)
-                    .field("as_chars", &self.as_chars)
-                    .field("regs", &self.regs)
-                    .finish()
+                    f.debug_struct("cpuid_info")
+                        .field("eax_0", &self.eax_0)
+                        .field("eax_1", &self.eax_1)
+                        .field("eax_2", &self.eax_2)
+                        .field("eax_3", &self.eax_3)
+                        .field("as_chars", &self.as_chars)
+                        .field("regs", &self.regs)
+                        .finish()
                 }
             }
         }
@@ -516,9 +516,9 @@ cfg_if! {
         impl PartialEq for __c_anonymous_cpu_topology_info_data {
             fn eq(&self, other: &__c_anonymous_cpu_topology_info_data) -> bool {
                 unsafe {
-                self.root == other.root
-                    || self.package == other.package
-                    || self.core == other.core
+                    self.root == other.root
+                        || self.package == other.package
+                        || self.core == other.core
                 }
             }
         }
@@ -526,20 +526,18 @@ cfg_if! {
         impl ::fmt::Debug for __c_anonymous_cpu_topology_info_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
-                f.debug_struct("__c_anonymous_cpu_topology_info_data")
-                    .field("root", &self.root)
-                    .field("package", &self.package)
-                    .field("core", &self.core)
-                    .finish()
+                    f.debug_struct("__c_anonymous_cpu_topology_info_data")
+                        .field("root", &self.root)
+                        .field("package", &self.package)
+                        .field("core", &self.core)
+                        .finish()
                 }
             }
         }
 
         impl PartialEq for cpu_topology_node_info {
             fn eq(&self, other: &cpu_topology_node_info) -> bool {
-                self.id == other.id
-                    && self.type_ == other.type_
-                    && self.level == other.level
+                self.id == other.id && self.type_ == other.type_ && self.level == other.level
             }
         }
 

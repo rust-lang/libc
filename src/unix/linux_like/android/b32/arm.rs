@@ -58,11 +58,9 @@ s_no_extra_traits! {
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for __c_anonymous_uc_sigmask_with_padding {
-            fn eq(
-                &self, other: &__c_anonymous_uc_sigmask_with_padding
-            ) -> bool {
+            fn eq(&self, other: &__c_anonymous_uc_sigmask_with_padding) -> bool {
                 self.uc_sigmask == other.uc_sigmask
-                    // Ignore padding
+                // Ignore padding
             }
         }
         impl Eq for __c_anonymous_uc_sigmask_with_padding {}
@@ -77,7 +75,7 @@ cfg_if! {
         impl ::hash::Hash for __c_anonymous_uc_sigmask_with_padding {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.uc_sigmask.hash(state)
-                    // Ignore padding
+                // Ignore padding
             }
         }
 
@@ -106,10 +104,9 @@ cfg_if! {
                     && self.uc_link == other.uc_link
                     && self.uc_stack == other.uc_stack
                     && self.uc_mcontext == other.uc_mcontext
-                    && self.uc_sigmask__c_anonymous_union
-                        == other.uc_sigmask__c_anonymous_union
+                    && self.uc_sigmask__c_anonymous_union == other.uc_sigmask__c_anonymous_union
                     && &self.uc_regspace[..] == &other.uc_regspace[..]
-                    // Ignore padding field
+                // Ignore padding field
             }
         }
         impl Eq for ucontext_t {}
@@ -122,7 +119,7 @@ cfg_if! {
                     .field("uc_mcontext", &self.uc_mcontext)
                     .field(
                         "uc_sigmask__c_anonymous_union",
-                        &self.uc_sigmask__c_anonymous_union
+                        &self.uc_sigmask__c_anonymous_union,
                     )
                     .field("uc_regspace", &&self.uc_regspace[..])
                     // Ignore padding field
@@ -558,7 +555,7 @@ f! {
         fd: ::c_int,
         addr: *mut ::sockaddr,
         len: *mut ::socklen_t,
-        flg: ::c_int
+        flg: ::c_int,
     ) -> ::c_int {
         ::syscall(SYS_accept4, fd, addr, len, flg) as ::c_int
     }

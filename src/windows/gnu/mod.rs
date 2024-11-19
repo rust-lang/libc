@@ -4,7 +4,7 @@ cfg_if! {
             #[allow(missing_debug_implementations)]
             #[repr(align(16))]
             pub struct max_align_t {
-                priv_: [f64; 4]
+                priv_: [f64; 4],
             }
         }
     } else if #[cfg(target_pointer_width = "32")] {
@@ -12,7 +12,7 @@ cfg_if! {
             #[allow(missing_debug_implementations)]
             #[repr(align(16))]
             pub struct max_align_t {
-                priv_: [i64; 6]
+                priv_: [i64; 6],
             }
         }
     }

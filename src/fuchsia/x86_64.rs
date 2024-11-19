@@ -60,7 +60,7 @@ s! {
         pub mode: ::mode_t,
         pub __seq: ::c_int,
         __unused1: ::c_long,
-        __unused2: ::c_long
+        __unused2: ::c_long,
     }
 }
 
@@ -85,10 +85,10 @@ cfg_if! {
                     && self.uc_mcontext == other.uc_mcontext
                     && self.uc_sigmask == other.uc_sigmask
                     && self
-                    .__private
-                    .iter()
-                    .zip(other.__private.iter())
-                    .all(|(a,b)| a == b)
+                        .__private
+                        .iter()
+                        .zip(other.__private.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for ucontext_t {}

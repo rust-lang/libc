@@ -8,7 +8,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct statfs {
@@ -49,13 +49,13 @@ s! {
         pub l_start: ::off64_t,
         pub l_len: ::off64_t,
         pub l_pid: ::pid_t,
-        __reserved:  ::c_short,
+        __reserved: ::c_short,
     }
 
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct stat {
@@ -197,7 +197,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
-        priv_: [i64; 3]
+        priv_: [i64; 3],
     }
 }
 
