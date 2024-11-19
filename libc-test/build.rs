@@ -3903,6 +3903,22 @@ fn test_linux(target: &str) {
             {
                 return true;
             }
+            // FIXME: Requires >= 4.20 kernel headers
+            if name == "PTP_SYS_OFFSET_EXTENDED" {
+                return true;
+            }
+            // FIXME: Requires >= 5.4 kernel headers
+            if name == "PTP_ENABLE_PPS2" 
+                || name == "PTP_EXTTS_REQUEST2"
+                || name == "PTP_PEROUT_REQUEST2"
+                || name == "PTP_PIN_GETFUNC2"
+                || name == "PTP_PIN_SETFUNC2"
+                || name == "PTP_SYS_OFFSET2"
+                || name == "PTP_SYS_OFFSET_PRECISE2"
+                || name == "PTP_SYS_OFFSET_EXTENDED2"
+            {
+                return true;
+            }
             // FIXME: Requires >= 5.4.1 kernel headers
             if name.starts_with("J1939")
                 || name.starts_with("RTEXT_FILTER_")
