@@ -53,18 +53,16 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
-        priv_: [f64; 2]
+        priv_: [f64; 2],
     }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for __c_anonymous_uc_sigmask_with_padding {
-            fn eq(
-                &self, other: &__c_anonymous_uc_sigmask_with_padding
-            ) -> bool {
+            fn eq(&self, other: &__c_anonymous_uc_sigmask_with_padding) -> bool {
                 self.uc_sigmask == other.uc_sigmask
-                    // Ignore padding
+                // Ignore padding
             }
         }
         impl Eq for __c_anonymous_uc_sigmask_with_padding {}
@@ -79,7 +77,7 @@ cfg_if! {
         impl ::hash::Hash for __c_anonymous_uc_sigmask_with_padding {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 self.uc_sigmask.hash(state)
-                    // Ignore padding
+                // Ignore padding
             }
         }
 
@@ -108,9 +106,8 @@ cfg_if! {
                     && self.uc_link == other.uc_link
                     && self.uc_stack == other.uc_stack
                     && self.uc_mcontext == other.uc_mcontext
-                    && self.uc_sigmask__c_anonymous_union
-                        == other.uc_sigmask__c_anonymous_union
-                    // Ignore padding field
+                    && self.uc_sigmask__c_anonymous_union == other.uc_sigmask__c_anonymous_union
+                // Ignore padding field
             }
         }
         impl Eq for ucontext_t {}
@@ -123,7 +120,7 @@ cfg_if! {
                     .field("uc_mcontext", &self.uc_mcontext)
                     .field(
                         "uc_sigmask__c_anonymous_union",
-                        &self.uc_sigmask__c_anonymous_union
+                        &self.uc_sigmask__c_anonymous_union,
                     )
                     // Ignore padding field
                     .finish()
@@ -624,7 +621,7 @@ f! {
         fd: ::c_int,
         addr: *mut ::sockaddr,
         len: *mut ::socklen_t,
-        flg: ::c_int
+        flg: ::c_int,
     ) -> ::c_int {
         // Arguments are passed as array of `long int`
         // (which is big enough on x86 for a pointer).

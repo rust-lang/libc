@@ -3,7 +3,6 @@ pub type wchar_t = u32;
 pub type stat64 = ::stat;
 
 s! {
-
     pub struct stat {
         pub st_dev: ::dev_t,
         pub st_ino: ::c_ulonglong,
@@ -24,13 +23,13 @@ s! {
         pub st_ctime: ::time_t,
         pub st_ctime_nsec: ::c_long,
 
-        __unused: [::c_int;2],
+        __unused: [::c_int; 2],
     }
 
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct ipc_perm {

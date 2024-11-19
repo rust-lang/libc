@@ -1383,7 +1383,7 @@ s! {
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: u8,
-        pub sa_data: [u8;14],
+        pub sa_data: [u8; 14],
     }
 
     pub struct in_addr {

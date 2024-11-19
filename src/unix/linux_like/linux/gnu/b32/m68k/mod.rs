@@ -6,7 +6,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct statfs {
@@ -152,7 +152,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 }
 
@@ -160,7 +160,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(2))]
     pub struct max_align_t {
-        priv_: [i8; 20]
+        priv_: [i8; 20],
     }
 }
 

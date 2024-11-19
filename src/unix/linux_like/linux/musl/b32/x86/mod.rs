@@ -49,7 +49,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct ipc_perm {
@@ -61,7 +61,7 @@ s! {
         pub mode: ::mode_t,
         pub __seq: ::c_int,
         __unused1: ::c_long,
-        __unused2: ::c_long
+        __unused2: ::c_long,
     }
 
     pub struct shmid_ds {
@@ -113,7 +113,7 @@ s! {
     }
 
     pub struct mcontext_t {
-        __private: [u32; 22]
+        __private: [u32; 22],
     }
 
     pub struct siginfo_t {
@@ -185,7 +185,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
-        priv_: [f64; 3]
+        priv_: [f64; 3],
     }
 }
 
@@ -223,10 +223,10 @@ cfg_if! {
                     .field("foo", &self.foo)
                     .field("fos", &self.fos)
                     .field("mxcsr", &self.mxcsr)
-                // Ignore __reserved field
+                    // Ignore __reserved field
                     .field("st_space", &self.st_space)
                     .field("xmm_space", &self.xmm_space)
-                // Ignore padding field
+                    // Ignore padding field
                     .finish()
             }
         }
@@ -257,10 +257,10 @@ cfg_if! {
                     && self.uc_mcontext == other.uc_mcontext
                     && self.uc_sigmask == other.uc_sigmask
                     && self
-                    .__private
-                    .iter()
-                    .zip(other.__private.iter())
-                    .all(|(a,b)| a == b)
+                        .__private
+                        .iter()
+                        .zip(other.__private.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -274,7 +274,7 @@ cfg_if! {
                     .field("uc_stack", &self.uc_stack)
                     .field("uc_mcontext", &self.uc_mcontext)
                     .field("uc_sigmask", &self.uc_sigmask)
-                // Ignore __private field
+                    // Ignore __private field
                     .finish()
             }
         }

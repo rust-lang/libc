@@ -10,7 +10,7 @@ s! {
     pub struct mcontext_t {
         pub __gregs: [c___greg_t; 26],
         pub _mc_tlsbase: c___greg_t,
-        pub __fpregs: [[::c_char;32]; 16],
+        pub __fpregs: [[::c_char; 32]; 16],
     }
 
     pub struct ucontext_t {

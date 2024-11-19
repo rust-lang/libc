@@ -82,10 +82,10 @@ cfg_if! {
                     && self.ut_syslen == other.ut_syslen
                     && self.ut_pad == other.ut_pad
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -127,8 +127,7 @@ cfg_if! {
 
         impl PartialEq for epoll_event {
             fn eq(&self, other: &epoll_event) -> bool {
-                self.events == other.events
-                    && self.u64 == other.u64
+                self.events == other.events && self.u64 == other.u64
             }
         }
         impl Eq for epoll_event {}

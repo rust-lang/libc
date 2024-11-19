@@ -62,8 +62,7 @@ s! {
         pub ai_protocol: ::c_int,
         pub ai_addrlen: socklen_t,
 
-        #[cfg(any(target_os = "linux",
-                  target_os = "emscripten"))]
+        #[cfg(any(target_os = "linux", target_os = "emscripten"))]
         pub ai_addr: *mut ::sockaddr,
 
         pub ai_canonname: *mut c_char,
@@ -81,7 +80,7 @@ s! {
         pub sll_hatype: ::c_ushort,
         pub sll_pkttype: ::c_uchar,
         pub sll_halen: ::c_uchar,
-        pub sll_addr: [::c_uchar; 8]
+        pub sll_addr: [::c_uchar; 8],
     }
 
     pub struct fd_set {
@@ -161,7 +160,7 @@ s! {
         pub ifa_addr: *mut ::sockaddr,
         pub ifa_netmask: *mut ::sockaddr,
         pub ifa_ifu: *mut ::sockaddr, // FIXME This should be a union
-        pub ifa_data: *mut ::c_void
+        pub ifa_data: *mut ::c_void,
     }
 
     pub struct in6_rtmsg {
@@ -212,9 +211,12 @@ s_no_extra_traits! {
             all(
                 target_arch = "x86",
                 not(target_env = "musl"),
-                not(target_os = "android")),
-            target_arch = "x86_64"),
-        repr(packed))]
+                not(target_os = "android")
+            ),
+            target_arch = "x86_64"
+        ),
+        repr(packed)
+    )]
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
@@ -222,7 +224,7 @@ s_no_extra_traits! {
 
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 108]
+        pub sun_path: [::c_char; 108],
     }
 
     pub struct sockaddr_storage {
@@ -240,7 +242,7 @@ s_no_extra_traits! {
         pub release: [::c_char; 65],
         pub version: [::c_char; 65],
         pub machine: [::c_char; 65],
-        pub domainname: [::c_char; 65]
+        pub domainname: [::c_char; 65],
     }
 
     pub struct sigevent {
@@ -253,7 +255,7 @@ s_no_extra_traits! {
         #[cfg(target_pointer_width = "64")]
         __unused1: [::c_int; 11],
         #[cfg(target_pointer_width = "32")]
-        __unused1: [::c_int; 12]
+        __unused1: [::c_int; 12],
     }
 }
 
@@ -261,8 +263,7 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for epoll_event {
             fn eq(&self, other: &epoll_event) -> bool {
-                self.events == other.events
-                    && self.u64 == other.u64
+                self.events == other.events && self.u64 == other.u64
             }
         }
         impl Eq for epoll_event {}
@@ -289,10 +290,10 @@ cfg_if! {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_family == other.sun_family
                     && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a, b)| a == b)
+                        .sun_path
+                        .iter()
+                        .zip(other.sun_path.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for sockaddr_un {}
@@ -300,7 +301,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME: .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -315,10 +316,10 @@ cfg_if! {
             fn eq(&self, other: &sockaddr_storage) -> bool {
                 self.ss_family == other.ss_family
                     && self
-                    .__ss_pad2
-                    .iter()
-                    .zip(other.__ss_pad2.iter())
-                    .all(|(a, b)| a == b)
+                        .__ss_pad2
+                        .iter()
+                        .zip(other.__ss_pad2.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -329,7 +330,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
-                // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
                     .finish()
             }
         }
@@ -348,30 +349,30 @@ cfg_if! {
                     .zip(other.sysname.iter())
                     .all(|(a, b)| a == b)
                     && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a, b)| a == b)
+                        .nodename
+                        .iter()
+                        .zip(other.nodename.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a, b)| a == b)
+                        .release
+                        .iter()
+                        .zip(other.release.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a, b)| a == b)
+                        .version
+                        .iter()
+                        .zip(other.version.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a, b)| a == b)
+                        .machine
+                        .iter()
+                        .zip(other.machine.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .domainname
-                    .iter()
-                    .zip(other.domainname.iter())
-                    .all(|(a, b)| a == b)
+                        .domainname
+                        .iter()
+                        .zip(other.domainname.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -380,12 +381,12 @@ cfg_if! {
         impl ::fmt::Debug for utsname {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
-                // FIXME: .field("domainname", &self.domainname)
+                    // FIXME: .field("sysname", &self.sysname)
+                    // FIXME: .field("nodename", &self.nodename)
+                    // FIXME: .field("release", &self.release)
+                    // FIXME: .field("version", &self.version)
+                    // FIXME: .field("machine", &self.machine)
+                    // FIXME: .field("domainname", &self.domainname)
                     .finish()
             }
         }
@@ -406,8 +407,7 @@ cfg_if! {
                 self.sigev_value == other.sigev_value
                     && self.sigev_signo == other.sigev_signo
                     && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_thread_id
-                        == other.sigev_notify_thread_id
+                    && self.sigev_notify_thread_id == other.sigev_notify_thread_id
             }
         }
         impl Eq for sigevent {}
@@ -417,8 +417,7 @@ cfg_if! {
                     .field("sigev_value", &self.sigev_value)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_notify_thread_id",
-                           &self.sigev_notify_thread_id)
+                    .field("sigev_notify_thread_id", &self.sigev_notify_thread_id)
                     .finish()
             }
         }
@@ -1006,11 +1005,10 @@ pub const TCP_QUICKACK: ::c_int = 12;
 pub const TCP_CONGESTION: ::c_int = 13;
 pub const TCP_MD5SIG: ::c_int = 14;
 cfg_if! {
-    if #[cfg(all(target_os = "linux", any(
-            target_env = "gnu",
-            target_env = "musl",
-            target_env = "ohos"
-        )))] {
+    if #[cfg(all(
+        target_os = "linux",
+        any(target_env = "gnu", target_env = "musl", target_env = "ohos")
+    ))] {
         // WARN: deprecated
         pub const TCP_COOKIE_TRANSACTIONS: ::c_int = 15;
     }
@@ -1551,8 +1549,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
-            as ::c_uint
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>())) as ::c_uint
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
@@ -1563,20 +1560,20 @@ f! {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
+        return;
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
+        return;
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
@@ -1657,10 +1654,11 @@ safe_f! {
 
     #[allow(ellipsis_inclusive_range_patterns)]
     pub {const} fn KERNEL_VERSION(a: u32, b: u32, c: u32) -> u32 {
-        ((a << 16) + (b << 8)) + match c {
-            0 ... 255 => c,
-            _ => 255,
-        }
+        ((a << 16) + (b << 8))
+            + match c {
+                0...255 => c,
+                _ => 255,
+            }
     }
 }
 
@@ -1837,7 +1835,7 @@ cfg_if! {
                 fd: ::c_int,
                 buf: *mut ::c_void,
                 count: ::size_t,
-                offset: off64_t
+                offset: off64_t,
             ) -> ::ssize_t;
             pub fn pwrite64(
                 fd: ::c_int,
@@ -1858,7 +1856,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_env = "uclibc", target_env = "musl", target_os = "emscripten")))] {
+    if #[cfg(not(any(
+        target_env = "uclibc",
+        target_env = "musl",
+        target_os = "emscripten"
+    )))] {
         extern "C" {
             pub fn preadv64(
                 fd: ::c_int,

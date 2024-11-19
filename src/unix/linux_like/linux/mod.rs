@@ -294,11 +294,9 @@ s! {
     }
 
     pub struct cpu_set_t {
-        #[cfg(all(target_pointer_width = "32",
-                  not(target_arch = "x86_64")))]
+        #[cfg(all(target_pointer_width = "32", not(target_arch = "x86_64")))]
         bits: [u32; 32],
-        #[cfg(not(all(target_pointer_width = "32",
-                      not(target_arch = "x86_64"))))]
+        #[cfg(not(all(target_pointer_width = "32", not(target_arch = "x86_64"))))]
         bits: [u64; 16],
     }
 
@@ -657,7 +655,7 @@ s! {
         pub wd: ::c_int,
         pub mask: u32,
         pub cookie: u32,
-        pub len: u32
+        pub len: u32,
     }
 
     pub struct fanotify_response {
@@ -682,7 +680,7 @@ s! {
         pub svm_reserved1: ::c_ushort,
         pub svm_port: ::c_uint,
         pub svm_cid: ::c_uint,
-        pub svm_zero: [u8; 4]
+        pub svm_zero: [u8; 4],
     }
 
     pub struct regmatch_t {
@@ -810,11 +808,11 @@ s! {
         pub port: ::c_uchar,
     }
 
-   pub struct in6_ifreq {
-       pub ifr6_addr: ::in6_addr,
-       pub ifr6_prefixlen: u32,
-       pub ifr6_ifindex: ::c_int,
-   }
+    pub struct in6_ifreq {
+        pub ifr6_addr: ::in6_addr,
+        pub ifr6_prefixlen: u32,
+        pub ifr6_ifindex: ::c_int,
+    }
 
     pub struct option {
         pub name: *const ::c_char,
@@ -925,41 +923,55 @@ s! {
         pub __pad: u8, // Must be zero
     }
 
-    #[cfg_attr(any(target_pointer_width = "32",
-                   target_arch = "x86_64",
-                   target_arch = "powerpc64",
-                   target_arch = "mips64",
-                   target_arch = "mips64r6",
-                   target_arch = "s390x",
-                   target_arch = "sparc64",
-                   target_arch = "aarch64",
-                   target_arch = "riscv64",
-                   target_arch = "riscv32",
-                   target_arch = "loongarch64"),
-               repr(align(4)))]
-    #[cfg_attr(not(any(target_pointer_width = "32",
-                       target_arch = "x86_64",
-                       target_arch = "powerpc64",
-                       target_arch = "mips64",
-                       target_arch = "mips64r6",
-                       target_arch = "s390x",
-                       target_arch = "sparc64",
-                       target_arch = "aarch64",
-                       target_arch = "riscv64",
-                       target_arch = "riscv32",
-                       target_arch = "loongarch64")),
-               repr(align(8)))]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "32",
+            target_arch = "x86_64",
+            target_arch = "powerpc64",
+            target_arch = "mips64",
+            target_arch = "mips64r6",
+            target_arch = "s390x",
+            target_arch = "sparc64",
+            target_arch = "aarch64",
+            target_arch = "riscv64",
+            target_arch = "riscv32",
+            target_arch = "loongarch64"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        not(any(
+            target_pointer_width = "32",
+            target_arch = "x86_64",
+            target_arch = "powerpc64",
+            target_arch = "mips64",
+            target_arch = "mips64r6",
+            target_arch = "s390x",
+            target_arch = "sparc64",
+            target_arch = "aarch64",
+            target_arch = "riscv64",
+            target_arch = "riscv32",
+            target_arch = "loongarch64"
+        )),
+        repr(align(8))
+    )]
     pub struct pthread_mutexattr_t {
         #[doc(hidden)]
         size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
-    #[cfg_attr(any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(not(target_env = "musl"),
-                   not(target_env = "ohos"),
-                   target_pointer_width = "64"),
-               repr(align(8)))]
+    #[cfg_attr(
+        any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            not(target_env = "musl"),
+            not(target_env = "ohos"),
+            target_pointer_width = "64"
+        ),
+        repr(align(8))
+    )]
     pub struct pthread_rwlockattr_t {
         #[doc(hidden)]
         size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
@@ -1056,7 +1068,7 @@ s! {
         pub addr: ::sockaddr,
         pub alg: __u16,
         pub key_len: __u16,
-        pub key: [__u8;0],
+        pub key: [__u8; 0],
     }
 
     pub struct iw_pmksa {
@@ -1108,7 +1120,7 @@ s! {
         pub encoding_login_index: __u8,
         pub txpower_capa: __u16,
         pub num_txpower: __u8,
-        pub txpower: [__s32;IW_MAX_TXPOWER],
+        pub txpower: [__s32; IW_MAX_TXPOWER],
         pub we_version_compiled: __u8,
         pub we_version_source: __u8,
         pub retry_capa: __u16,
@@ -1134,7 +1146,7 @@ s! {
 
 cfg_if! {
     if #[cfg(not(target_arch = "sparc64"))] {
-        s!{
+        s! {
             pub struct iw_thrspy {
                 pub addr: ::sockaddr,
                 pub qual: iw_quality,
@@ -1174,7 +1186,7 @@ s_no_extra_traits! {
         pub nl_family: ::sa_family_t,
         nl_pad: ::c_ushort,
         pub nl_pid: u32,
-        pub nl_groups: u32
+        pub nl_groups: u32,
     }
 
     pub struct dirent {
@@ -1325,103 +1337,155 @@ s_no_extra_traits! {
         pub hdr: ::tpacket_bd_header_u,
     }
 
-    #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
-                   target_pointer_width = "32"),
-               repr(align(4)))]
-    #[cfg_attr(all(any(target_env = "musl", target_env = "ohos"),
-                   target_pointer_width = "64"),
-               repr(align(8)))]
-    #[cfg_attr(all(not(any(target_env = "musl", target_env = "ohos")),
-                   target_arch = "x86"),
-               repr(align(4)))]
-    #[cfg_attr(all(not(any(target_env = "musl", target_env = "ohos")),
-                   not(target_arch = "x86")),
-               repr(align(8)))]
+    #[cfg_attr(
+        all(
+            any(target_env = "musl", target_env = "ohos"),
+            target_pointer_width = "32"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            any(target_env = "musl", target_env = "ohos"),
+            target_pointer_width = "64"
+        ),
+        repr(align(8))
+    )]
+    #[cfg_attr(
+        all(
+            not(any(target_env = "musl", target_env = "ohos")),
+            target_arch = "x86"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            not(any(target_env = "musl", target_env = "ohos")),
+            not(target_arch = "x86")
+        ),
+        repr(align(8))
+    )]
     pub struct pthread_cond_t {
         #[doc(hidden)]
         size: [u8; ::__SIZEOF_PTHREAD_COND_T],
     }
 
-    #[cfg_attr(all(target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "mips32r6",
-                       target_arch = "arm",
-                       target_arch = "hexagon",
-                       target_arch = "m68k",
-                       target_arch = "csky",
-                       target_arch = "powerpc",
-                       target_arch = "sparc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(any(target_pointer_width = "64",
-                   not(any(target_arch = "mips",
-                           target_arch = "mips32r6",
-                           target_arch = "arm",
-                           target_arch = "hexagon",
-                           target_arch = "m68k",
-                           target_arch = "csky",
-                           target_arch = "powerpc",
-                           target_arch = "sparc",
-                           target_arch = "x86_64",
-                           target_arch = "x86"))),
-               repr(align(8)))]
+    #[cfg_attr(
+        all(
+            target_pointer_width = "32",
+            any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            )
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "64",
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            ))
+        ),
+        repr(align(8))
+    )]
     pub struct pthread_mutex_t {
         #[doc(hidden)]
         size: [u8; ::__SIZEOF_PTHREAD_MUTEX_T],
     }
 
-    #[cfg_attr(all(target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "mips32r6",
-                       target_arch = "arm",
-                       target_arch = "hexagon",
-                       target_arch = "m68k",
-                       target_arch = "csky",
-                       target_arch = "powerpc",
-                       target_arch = "sparc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(any(target_pointer_width = "64",
-                   not(any(target_arch = "mips",
-                           target_arch = "mips32r6",
-                           target_arch = "arm",
-                           target_arch = "hexagon",
-                           target_arch = "m68k",
-                           target_arch = "powerpc",
-                           target_arch = "sparc",
-                           target_arch = "x86_64",
-                           target_arch = "x86"))),
-               repr(align(8)))]
+    #[cfg_attr(
+        all(
+            target_pointer_width = "32",
+            any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            )
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "64",
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            ))
+        ),
+        repr(align(8))
+    )]
     pub struct pthread_rwlock_t {
         size: [u8; ::__SIZEOF_PTHREAD_RWLOCK_T],
     }
 
-    #[cfg_attr(all(target_pointer_width = "32",
-                   any(target_arch = "mips",
-                       target_arch = "mips32r6",
-                       target_arch = "arm",
-                       target_arch = "hexagon",
-                       target_arch = "m68k",
-                       target_arch = "csky",
-                       target_arch = "powerpc",
-                       target_arch = "sparc",
-                       target_arch = "x86_64",
-                       target_arch = "x86")),
-               repr(align(4)))]
-    #[cfg_attr(any(target_pointer_width = "64",
-                   not(any(target_arch = "mips",
-                           target_arch = "mips32r6",
-                           target_arch = "arm",
-                           target_arch = "hexagon",
-                           target_arch = "m68k",
-                           target_arch = "csky",
-                           target_arch = "powerpc",
-                           target_arch = "sparc",
-                           target_arch = "x86_64",
-                           target_arch = "x86"))),
-               repr(align(8)))]
+    #[cfg_attr(
+        all(
+            target_pointer_width = "32",
+            any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            )
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        any(
+            target_pointer_width = "64",
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "arm",
+                target_arch = "hexagon",
+                target_arch = "m68k",
+                target_arch = "csky",
+                target_arch = "powerpc",
+                target_arch = "sparc",
+                target_arch = "x86_64",
+                target_arch = "x86"
+            ))
+        ),
+        repr(align(8))
+    )]
     pub struct pthread_barrier_t {
         size: [u8; ::__SIZEOF_PTHREAD_BARRIER_T],
     }
@@ -1482,24 +1546,24 @@ s_no_extra_traits! {
 
     // linux/wireless.h
     pub union iwreq_data {
-            pub name: [c_char; ::IFNAMSIZ],
-            pub essid: iw_point,
-            pub nwid: iw_param,
-            pub freq: iw_freq,
-            pub sens: iw_param,
-            pub bitrate: iw_param,
-            pub txpower: iw_param,
-            pub rts: iw_param,
-            pub frag: iw_param,
-            pub mode: __u32,
-            pub retry: iw_param,
-            pub encoding: iw_point,
-            pub power: iw_param,
-            pub qual: iw_quality,
-            pub ap_addr: ::sockaddr,
-            pub addr: ::sockaddr,
-            pub param: iw_param,
-            pub data: iw_point,
+        pub name: [c_char; ::IFNAMSIZ],
+        pub essid: iw_point,
+        pub nwid: iw_param,
+        pub freq: iw_freq,
+        pub sens: iw_param,
+        pub bitrate: iw_param,
+        pub txpower: iw_param,
+        pub rts: iw_param,
+        pub frag: iw_param,
+        pub mode: __u32,
+        pub retry: iw_param,
+        pub encoding: iw_point,
+        pub power: iw_param,
+        pub qual: iw_quality,
+        pub ap_addr: ::sockaddr,
+        pub addr: ::sockaddr,
+        pub param: iw_param,
+        pub data: iw_point,
     }
 
     pub struct iw_event {
@@ -1522,9 +1586,9 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for sockaddr_nl {
             fn eq(&self, other: &sockaddr_nl) -> bool {
-                self.nl_family == other.nl_family &&
-                    self.nl_pid == other.nl_pid &&
-                    self.nl_groups == other.nl_groups
+                self.nl_family == other.nl_family
+                    && self.nl_pid == other.nl_pid
+                    && self.nl_groups == other.nl_groups
             }
         }
         impl Eq for sockaddr_nl {}
@@ -1552,10 +1616,10 @@ cfg_if! {
                     && self.d_reclen == other.d_reclen
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1568,7 +1632,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                // FIXME: .field("d_name", &self.d_name)
+                    // FIXME: .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1590,10 +1654,10 @@ cfg_if! {
                     && self.d_reclen == other.d_reclen
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1606,7 +1670,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                // FIXME: .field("d_name", &self.d_name)
+                    // FIXME: .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1623,7 +1687,7 @@ cfg_if! {
 
         impl PartialEq for pthread_cond_t {
             fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
             }
         }
 
@@ -1632,7 +1696,7 @@ cfg_if! {
         impl ::fmt::Debug for pthread_cond_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("pthread_cond_t")
-                // FIXME: .field("size", &self.size)
+                    // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
@@ -1645,7 +1709,7 @@ cfg_if! {
 
         impl PartialEq for pthread_mutex_t {
             fn eq(&self, other: &pthread_mutex_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
             }
         }
 
@@ -1654,7 +1718,7 @@ cfg_if! {
         impl ::fmt::Debug for pthread_mutex_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("pthread_mutex_t")
-                // FIXME: .field("size", &self.size)
+                    // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
@@ -1667,7 +1731,7 @@ cfg_if! {
 
         impl PartialEq for pthread_rwlock_t {
             fn eq(&self, other: &pthread_rwlock_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
             }
         }
 
@@ -1676,7 +1740,7 @@ cfg_if! {
         impl ::fmt::Debug for pthread_rwlock_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
-                // FIXME: .field("size", &self.size)
+                    // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
@@ -1689,7 +1753,7 @@ cfg_if! {
 
         impl PartialEq for pthread_barrier_t {
             fn eq(&self, other: &pthread_barrier_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a,b)| a == b)
+                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
             }
         }
 
@@ -1713,18 +1777,18 @@ cfg_if! {
             fn eq(&self, other: &sockaddr_alg) -> bool {
                 self.salg_family == other.salg_family
                     && self
-                    .salg_type
-                    .iter()
-                    .zip(other.salg_type.iter())
-                    .all(|(a, b)| a == b)
+                        .salg_type
+                        .iter()
+                        .zip(other.salg_type.iter())
+                        .all(|(a, b)| a == b)
                     && self.salg_feat == other.salg_feat
                     && self.salg_mask == other.salg_mask
                     && self
-                    .salg_name
-                    .iter()
-                    .zip(other.salg_name.iter())
-                    .all(|(a, b)| a == b)
-           }
+                        .salg_name
+                        .iter()
+                        .zip(other.salg_name.iter())
+                        .all(|(a, b)| a == b)
+            }
         }
 
         impl Eq for sockaddr_alg {}
@@ -1756,7 +1820,7 @@ cfg_if! {
                 self.id == other.id
                     && self.name[..] == other.name[..]
                     && self.ff_effects_max == other.ff_effects_max
-           }
+            }
         }
         impl Eq for uinput_setup {}
 
@@ -1780,14 +1844,14 @@ cfg_if! {
 
         impl PartialEq for uinput_user_dev {
             fn eq(&self, other: &uinput_user_dev) -> bool {
-                 self.name[..] == other.name[..]
+                self.name[..] == other.name[..]
                     && self.id == other.id
                     && self.ff_effects_max == other.ff_effects_max
                     && self.absmax[..] == other.absmax[..]
                     && self.absmin[..] == other.absmin[..]
                     && self.absfuzz[..] == other.absfuzz[..]
                     && self.absflat[..] == other.absflat[..]
-           }
+            }
         }
         impl Eq for uinput_user_dev {}
 
@@ -1820,12 +1884,7 @@ cfg_if! {
         #[allow(deprecated)]
         impl af_alg_iv {
             fn as_slice(&self) -> &[u8] {
-                unsafe {
-                    ::core::slice::from_raw_parts(
-                        self.iv.as_ptr(),
-                        self.ivlen as usize
-                    )
-                }
+                unsafe { ::core::slice::from_raw_parts(self.iv.as_ptr(), self.ivlen as usize) }
             }
         }
 
@@ -1833,7 +1892,7 @@ cfg_if! {
         impl PartialEq for af_alg_iv {
             fn eq(&self, other: &af_alg_iv) -> bool {
                 *self.as_slice() == *other.as_slice()
-           }
+            }
         }
 
         #[allow(deprecated)]
@@ -1857,10 +1916,10 @@ cfg_if! {
 
         impl PartialEq for mq_attr {
             fn eq(&self, other: &mq_attr) -> bool {
-                self.mq_flags == other.mq_flags &&
-                self.mq_maxmsg == other.mq_maxmsg &&
-                self.mq_msgsize == other.mq_msgsize &&
-                self.mq_curmsgs == other.mq_curmsgs
+                self.mq_flags == other.mq_flags
+                    && self.mq_maxmsg == other.mq_maxmsg
+                    && self.mq_msgsize == other.mq_msgsize
+                    && self.mq_curmsgs == other.mq_curmsgs
             }
         }
         impl Eq for mq_attr {}
@@ -1937,9 +1996,9 @@ cfg_if! {
         }
         impl PartialEq for hwtstamp_config {
             fn eq(&self, other: &hwtstamp_config) -> bool {
-                self.flags == other.flags &&
-                self.tx_type == other.tx_type &&
-                self.rx_filter == other.rx_filter
+                self.flags == other.flags
+                    && self.tx_type == other.tx_type
+                    && self.rx_filter == other.rx_filter
             }
         }
         impl Eq for hwtstamp_config {}
@@ -1967,14 +2026,14 @@ cfg_if! {
         }
         impl PartialEq for sched_attr {
             fn eq(&self, other: &sched_attr) -> bool {
-                self.size == other.size &&
-                self.sched_policy == other.sched_policy &&
-                self.sched_flags == other.sched_flags &&
-                self.sched_nice == other.sched_nice &&
-                self.sched_priority == other.sched_priority &&
-                self.sched_runtime == other.sched_runtime &&
-                self.sched_deadline == other.sched_deadline &&
-                self.sched_period == other.sched_period
+                self.size == other.size
+                    && self.sched_policy == other.sched_policy
+                    && self.sched_flags == other.sched_flags
+                    && self.sched_nice == other.sched_nice
+                    && self.sched_priority == other.sched_priority
+                    && self.sched_runtime == other.sched_runtime
+                    && self.sched_deadline == other.sched_deadline
+                    && self.sched_period == other.sched_period
             }
         }
         impl Eq for sched_attr {}
@@ -2019,9 +2078,9 @@ cfg_if! {
         impl ::fmt::Debug for iw_event {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("iw_event")
-                    .field("len", &self.len )
-                    .field("cmd", &self.cmd )
-                    .field("u", &self.u )
+                    .field("len", &self.len)
+                    .field("cmd", &self.cmd)
+                    .field("u", &self.u)
                     .finish()
             }
         }
@@ -2037,8 +2096,8 @@ cfg_if! {
         impl ::fmt::Debug for iwreq {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("iwreq")
-                    .field("ifr_ifrn", &self.ifr_ifrn )
-                    .field("u", &self.u )
+                    .field("ifr_ifrn", &self.ifr_ifrn)
+                    .field("u", &self.u)
                     .finish()
             }
         }
@@ -2046,8 +2105,10 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(all(any(target_env = "gnu", target_env = "musl", target_env = "ohos"),
-                 any(target_arch = "x86_64", target_arch = "x86")))] {
+    if #[cfg(all(
+        any(target_env = "gnu", target_env = "musl", target_env = "ohos"),
+        any(target_arch = "x86_64", target_arch = "x86")
+    ))] {
         extern "C" {
             pub fn iopl(level: ::c_int) -> ::c_int;
             pub fn ioperm(from: ::c_ulong, num: ::c_ulong, turn_on: ::c_int) -> ::c_int;
@@ -2056,7 +2117,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_env = "gnu", target_env = "musl", target_env = "ohos"))] {
+    if #[cfg(any(
+        target_env = "gnu",
+        target_env = "musl",
+        target_env = "ohos"
+    ))] {
         pub const ABDAY_1: ::nl_item = 0x20000;
         pub const ABDAY_2: ::nl_item = 0x20001;
         pub const ABDAY_3: ::nl_item = 0x20002;
@@ -5495,21 +5560,17 @@ pub const EPIOCGPARAMS: ::Ioctl = 0x80088a02;
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {
-        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1)
+        return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1);
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
-                       cmsg: *const cmsghdr) -> *mut cmsghdr {
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as usize) < ::mem::size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
-        let next = (cmsg as usize +
-                    super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
-            as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
-        if (next.wrapping_offset(1)) as usize > max ||
-            next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
+        let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+        if (next.wrapping_offset(1)) as usize > max
+            || next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
             0 as *mut cmsghdr
         } else {
@@ -5530,16 +5591,14 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()
@@ -5556,7 +5615,7 @@ f! {
         let size_of_mask = ::mem::size_of_val(&cpuset.bits[0]);
         for i in cpuset.bits[..(size / size_of_mask)].iter() {
             s += i.count_ones();
-        };
+        }
         s as ::c_int
     }
 
@@ -5633,11 +5692,21 @@ f! {
     }
 
     pub fn BPF_STMT(code: ::__u16, k: ::__u32) -> sock_filter {
-        sock_filter{code: code, jt: 0, jf: 0, k: k}
+        sock_filter {
+            code: code,
+            jt: 0,
+            jf: 0,
+            k: k,
+        }
     }
 
     pub fn BPF_JUMP(code: ::__u16, k: ::__u32, jt: ::__u8, jf: ::__u8) -> sock_filter {
-        sock_filter{code: code, jt: jt, jf: jf, k: k}
+        sock_filter {
+            code: code,
+            jt: jt,
+            jf: jf,
+            k: k,
+        }
     }
 
     pub fn ELF32_R_SYM(val: Elf32_Word) -> Elf32_Word {
@@ -5738,10 +5807,7 @@ cfg_if! {
                 servlen: ::socklen_t,
                 flags: ::c_int,
             ) -> ::c_int;
-            pub fn getloadavg(
-                loadavg: *mut ::c_double,
-                nelem: ::c_int
-            ) -> ::c_int;
+            pub fn getloadavg(loadavg: *mut ::c_double, nelem: ::c_int) -> ::c_int;
             pub fn process_vm_readv(
                 pid: ::pid_t,
                 local_iov: *const ::iovec,
@@ -5758,10 +5824,7 @@ cfg_if! {
                 riovcnt: ::c_ulong,
                 flags: ::c_ulong,
             ) -> isize;
-            pub fn futimes(
-                fd: ::c_int,
-                times: *const ::timeval
-            ) -> ::c_int;
+            pub fn futimes(fd: ::c_int, times: *const ::timeval) -> ::c_int;
         }
     }
 }
@@ -5814,7 +5877,7 @@ cfg_if! {
             pub fn mq_setattr(
                 mqd: ::mqd_t,
                 newattr: *const ::mq_attr,
-                oldattr: *mut ::mq_attr
+                oldattr: *mut ::mq_attr,
             ) -> ::c_int;
 
             pub fn pthread_mutex_consistent(mutex: *mut pthread_mutex_t) -> ::c_int;
@@ -6492,7 +6555,7 @@ cfg_if! {
                 fd: ::c_int,
                 mode: ::c_int,
                 offset: ::off64_t,
-                len: ::off64_t
+                len: ::off64_t,
             ) -> ::c_int;
             pub fn fgetpos64(stream: *mut ::FILE, ptr: *mut fpos64_t) -> ::c_int;
             pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut ::FILE;

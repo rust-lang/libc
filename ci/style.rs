@@ -97,7 +97,10 @@ enum State {
 
 fn check_style(file: &str, path: &Path, err: &mut Errors) {
     let mut state = State::Start;
-    let mut s_macros = 0;
+
+    // FIXME: see below
+    // let mut s_macros = 0;
+    
     let mut f_macros = 0;
     let mut in_impl = false;
 
@@ -140,7 +143,8 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         } else if line.starts_with("type ") && !in_impl {
             State::Typedefs
         } else if line.starts_with("s! {") {
-            s_macros += 1;
+            // FIXME: see below
+            // s_macros += 1;
             State::Structs
         } else if line.starts_with("s_no_extra_traits! {") {
             // multiple macros of this type are allowed
@@ -175,10 +179,13 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
             f_macros += 1;
             err.error(path, i, "multiple f! macros in one module");
         }
-        if s_macros == 2 {
-            s_macros += 1;
-            err.error(path, i, "multiple s! macros in one module");
-        }
+
+        // FIXME(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
+        // For now just disable this and check by hand.
+        // if s_macros == 2 {
+        //     s_macros += 1;
+        //     err.error(path, i, "multiple s! macros in one module");
+        // }
 
         state = line_state;
     }

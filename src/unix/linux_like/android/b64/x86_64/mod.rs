@@ -102,7 +102,6 @@ s! {
         pub error_code: ::c_ulong,
         pub fault_address: ::c_ulong,
     }
-
 }
 
 s_no_extra_traits! {
@@ -114,7 +113,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 4]
+        priv_: [f64; 4],
     }
 }
 
@@ -196,9 +195,8 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for _libc_fpxreg {
             fn eq(&self, other: &Self) -> bool {
-                self.significand == other.significand
-                    && self.exponent == other.exponent
-                    // Ignore padding field
+                self.significand == other.significand && self.exponent == other.exponent
+                // Ignore padding field
             }
         }
         impl Eq for _libc_fpxreg {}
@@ -231,7 +229,7 @@ cfg_if! {
                     && self.mxcr_mask == other.mxcr_mask
                     && self._st == other._st
                     && self._xmm == other._xmm
-                    // Ignore padding field
+                // Ignore padding field
             }
         }
         impl Eq for _libc_fpstate {}
@@ -270,9 +268,8 @@ cfg_if! {
 
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &Self) -> bool {
-                self.gregs == other.gregs
-                    && self.fpregs == other.fpregs
-                    // Ignore padding field
+                self.gregs == other.gregs && self.fpregs == other.fpregs
+                // Ignore padding field
             }
         }
         impl Eq for mcontext_t {}
@@ -300,7 +297,7 @@ cfg_if! {
                     && self.uc_stack == other.uc_stack
                     && self.uc_mcontext == other.uc_mcontext
                     && self.uc_sigmask64 == other.uc_sigmask64
-                    // Ignore padding field
+                // Ignore padding field
             }
         }
         impl Eq for ucontext_t {}
@@ -339,10 +336,10 @@ cfg_if! {
                     && self.mxcr_mask == other.mxcr_mask
                     && self.st_space == other.st_space
                     && self
-                    .xmm_space
-                    .iter()
-                    .zip(other.xmm_space.iter())
-                    .all(|(a,b)| a == b)
+                        .xmm_space
+                        .iter()
+                        .zip(other.xmm_space.iter())
+                        .all(|(a, b)| a == b)
                 // Ignore padding field
             }
         }
@@ -361,8 +358,8 @@ cfg_if! {
                     .field("mxcsr", &self.mxcsr)
                     .field("mxcr_mask", &self.mxcr_mask)
                     .field("st_space", &self.st_space)
-                // FIXME: .field("xmm_space", &self.xmm_space)
-                // Ignore padding field
+                    // FIXME: .field("xmm_space", &self.xmm_space)
+                    // Ignore padding field
                     .finish()
             }
         }

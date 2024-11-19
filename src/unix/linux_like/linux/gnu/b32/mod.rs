@@ -107,7 +107,7 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [u32; 9]
+        __size: [u32; 9],
     }
 
     pub struct sigset_t {
@@ -140,12 +140,20 @@ s! {
         #[cfg(target_arch = "powerpc")]
         __reserved: ::__syscall_ulong_t,
         pub sem_otime: ::time_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6", target_arch = "powerpc")))]
+        #[cfg(not(any(
+            target_arch = "mips",
+            target_arch = "mips32r6",
+            target_arch = "powerpc"
+        )))]
         __reserved: ::__syscall_ulong_t,
         #[cfg(target_arch = "powerpc")]
         __reserved2: ::__syscall_ulong_t,
         pub sem_ctime: ::time_t,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6", target_arch = "powerpc")))]
+        #[cfg(not(any(
+            target_arch = "mips",
+            target_arch = "mips32r6",
+            target_arch = "powerpc"
+        )))]
         __reserved2: ::__syscall_ulong_t,
         pub sem_nsems: ::__syscall_ulong_t,
         __glibc_reserved3: ::__syscall_ulong_t,

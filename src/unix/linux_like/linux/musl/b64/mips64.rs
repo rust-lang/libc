@@ -94,7 +94,7 @@ s! {
         pub __seq: ::c_int,
         __pad1: ::c_int,
         __unused1: ::c_ulong,
-        __unused2: ::c_ulong
+        __unused2: ::c_ulong,
     }
 }
 

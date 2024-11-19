@@ -203,15 +203,13 @@ cfg_if! {
         macro_rules! f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
-                    $($body:stmt);*
-                }
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                    $body:block
             )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub $($constness)* unsafe extern fn $i($($arg: $argty),*) -> $ret {
-                    $($body);*
-                }
+                pub $($constness)* unsafe extern fn $i($($arg: $argty),*) -> $ret
+                    $body
             )*)
         }
 
@@ -219,15 +217,13 @@ cfg_if! {
         macro_rules! safe_f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
-                    $($body:stmt);*
-                }
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                    $body:block
             )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub $($constness)* extern fn $i($($arg: $argty),*) -> $ret {
-                    $($body);*
-                }
+                pub $($constness)* extern fn $i($($arg: $argty),*) -> $ret
+                    $body
             )*)
         }
 
@@ -235,15 +231,13 @@ cfg_if! {
         macro_rules! const_fn {
             ($(
                 $(#[$attr:meta])*
-                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
-                    $($body:stmt);*
-                }
+                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                    $body:block
             )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                $($constness)* fn $i($($arg: $argty),*) -> $ret {
-                    $($body);*
-                }
+                $($constness)* fn $i($($arg: $argty),*) -> $ret
+                    $body
             )*)
         }
     } else {
@@ -251,15 +245,13 @@ cfg_if! {
         macro_rules! f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
-                    $($body:stmt);*
-                }
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                    $body:block
             )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub unsafe extern fn $i($($arg: $argty),*) -> $ret {
-                    $($body);*
-                }
+                pub unsafe extern fn $i($($arg: $argty),*) -> $ret
+                    $body
             )*)
         }
 
@@ -267,15 +259,13 @@ cfg_if! {
         macro_rules! safe_f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
-                    $($body:stmt);*
-                }
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                    $body:block
             )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                pub extern fn $i($($arg: $argty),*) -> $ret {
-                    $($body);*
-                }
+                pub extern fn $i($($arg: $argty),*) -> $ret
+                    $body
             )*)
         }
 
@@ -283,15 +273,13 @@ cfg_if! {
         macro_rules! const_fn {
             ($(
                 $(#[$attr:meta])*
-                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),*) -> $ret:ty {
-                    $($body:stmt);*
-                }
+                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                    $body:block
             )*) => ($(
                 #[inline]
                 $(#[$attr])*
-                fn $i($($arg: $argty),*) -> $ret {
-                    $($body);*
-                }
+                fn $i($($arg: $argty),*) -> $ret
+                    $body
             )*)
         }
     }

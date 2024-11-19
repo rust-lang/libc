@@ -8,7 +8,7 @@ pub type regoff_t = ::c_int;
 
 s! {
     pub struct pthread_attr_t {
-        __size: [u32; 9]
+        __size: [u32; 9],
     }
 
     pub struct sigset_t {

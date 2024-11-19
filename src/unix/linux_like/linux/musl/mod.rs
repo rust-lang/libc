@@ -141,7 +141,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct statvfs {
@@ -492,7 +492,7 @@ cfg_if! {
                         .__reserved
                         .iter()
                         .zip(other.__reserved.iter())
-                        .all(|(a,b)| a == b)
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1007,22 +1007,27 @@ mod lfs64;
 pub use self::lfs64::*;
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86_64",
-                 target_arch = "aarch64",
-                 target_arch = "mips64",
-                 target_arch = "powerpc64",
-                 target_arch = "s390x",
-                 target_arch = "riscv64",
-                 target_arch = "loongarch64"))] {
+    if #[cfg(any(
+        target_arch = "x86_64",
+        target_arch = "aarch64",
+        target_arch = "mips64",
+        target_arch = "powerpc64",
+        target_arch = "s390x",
+        target_arch = "riscv64",
+        target_arch = "loongarch64"
+    ))] {
         mod b64;
         pub use self::b64::*;
-    } else if #[cfg(any(target_arch = "x86",
-                        target_arch = "mips",
-                        target_arch = "powerpc",
-                        target_arch = "hexagon",
-                        target_arch = "riscv32",
-                        target_arch = "arm"))] {
+    } else if #[cfg(any(
+        target_arch = "x86",
+        target_arch = "mips",
+        target_arch = "powerpc",
+        target_arch = "hexagon",
+        target_arch = "riscv32",
+        target_arch = "arm"
+    ))] {
         mod b32;
         pub use self::b32::*;
-    } else { }
+    } else {
+    }
 }

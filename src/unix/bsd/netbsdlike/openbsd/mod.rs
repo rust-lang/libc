@@ -65,11 +65,11 @@ s! {
     }
 
     pub struct glob_t {
-        pub gl_pathc:   ::size_t,
-        pub gl_matchc:  ::size_t,
-        pub gl_offs:    ::size_t,
-        pub gl_flags:   ::c_int,
-        pub gl_pathv:   *mut *mut ::c_char,
+        pub gl_pathc: ::size_t,
+        pub gl_matchc: ::size_t,
+        pub gl_offs: ::size_t,
+        pub gl_flags: ::c_int,
+        pub gl_pathv: *mut *mut ::c_char,
         __unused1: *mut ::c_void,
         __unused2: *mut ::c_void,
         __unused3: *mut ::c_void,
@@ -762,10 +762,10 @@ cfg_if! {
                     && self.d_type == other.d_type
                     && self.d_namlen == other.d_namlen
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -779,7 +779,7 @@ cfg_if! {
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
                     .field("d_namlen", &self.d_namlen)
-                // FIXME: .field("d_name", &self.d_name)
+                    // FIXME: .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -797,8 +797,7 @@ cfg_if! {
 
         impl PartialEq for sockaddr_storage {
             fn eq(&self, other: &sockaddr_storage) -> bool {
-                self.ss_len == other.ss_len
-                    && self.ss_family == other.ss_family
+                self.ss_len == other.ss_len && self.ss_family == other.ss_family
             }
         }
 
@@ -855,15 +854,15 @@ cfg_if! {
             fn eq(&self, other: &lastlog) -> bool {
                 self.ll_time == other.ll_time
                     && self
-                    .ll_line
-                    .iter()
-                    .zip(other.ll_line.iter())
-                    .all(|(a,b)| a == b)
+                        .ll_line
+                        .iter()
+                        .zip(other.ll_line.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .ll_host
-                    .iter()
-                    .zip(other.ll_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ll_host
+                        .iter()
+                        .zip(other.ll_host.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -873,8 +872,8 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("lastlog")
                     .field("ll_time", &self.ll_time)
-                // FIXME: .field("ll_line", &self.ll_line)
-                // FIXME: .field("ll_host", &self.ll_host)
+                    // FIXME: .field("ll_line", &self.ll_line)
+                    // FIXME: .field("ll_host", &self.ll_host)
                     .finish()
             }
         }
@@ -891,20 +890,20 @@ cfg_if! {
             fn eq(&self, other: &utmp) -> bool {
                 self.ut_time == other.ut_time
                     && self
-                    .ut_line
-                    .iter()
-                    .zip(other.ut_line.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_line
+                        .iter()
+                        .zip(other.ut_line.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .ut_name
-                    .iter()
-                    .zip(other.ut_name.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_name
+                        .iter()
+                        .zip(other.ut_name.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -913,9 +912,9 @@ cfg_if! {
         impl ::fmt::Debug for utmp {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utmp")
-                // FIXME: .field("ut_line", &self.ut_line)
-                // FIXME: .field("ut_name", &self.ut_name)
-                // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME: .field("ut_line", &self.ut_line)
+                    // FIXME: .field("ut_name", &self.ut_name)
+                    // FIXME: .field("ut_host", &self.ut_host)
                     .field("ut_time", &self.ut_time)
                     .finish()
             }
@@ -936,17 +935,17 @@ cfg_if! {
                     self.align
                         .iter()
                         .zip(other.align.iter())
-                        .all(|(a,b)| a == b)
+                        .all(|(a, b)| a == b)
                 }
             }
         }
 
-        impl Eq for mount_info { }
+        impl Eq for mount_info {}
 
         impl ::fmt::Debug for mount_info {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("mount_info")
-                // FIXME: .field("align", &self.align)
+                    // FIXME: .field("align", &self.align)
                     .finish()
             }
         }
@@ -1026,22 +1025,26 @@ cfg_if! {
                     && self.f_namemax == other.f_namemax
                     && self.f_owner == other.f_owner
                     && self.f_ctime == other.f_ctime
-                    && self.f_fstypename
-                    .iter()
-                    .zip(other.f_fstypename.iter())
-                    .all(|(a,b)| a == b)
-                    && self.f_mntonname
-                    .iter()
-                    .zip(other.f_mntonname.iter())
-                    .all(|(a,b)| a == b)
-                    && self.f_mntfromname
-                    .iter()
-                    .zip(other.f_mntfromname.iter())
-                    .all(|(a,b)| a == b)
-                    && self.f_mntfromspec
-                    .iter()
-                    .zip(other.f_mntfromspec.iter())
-                    .all(|(a,b)| a == b)
+                    && self
+                        .f_fstypename
+                        .iter()
+                        .zip(other.f_fstypename.iter())
+                        .all(|(a, b)| a == b)
+                    && self
+                        .f_mntonname
+                        .iter()
+                        .zip(other.f_mntonname.iter())
+                        .all(|(a, b)| a == b)
+                    && self
+                        .f_mntfromname
+                        .iter()
+                        .zip(other.f_mntfromname.iter())
+                        .all(|(a, b)| a == b)
+                    && self
+                        .f_mntfromspec
+                        .iter()
+                        .zip(other.f_mntfromspec.iter())
+                        .all(|(a, b)| a == b)
                     && self.mount_info == other.mount_info
             }
         }
@@ -1068,10 +1071,10 @@ cfg_if! {
                     .field("f_namemax", &self.f_namemax)
                     .field("f_owner", &self.f_owner)
                     .field("f_ctime", &self.f_ctime)
-                // FIXME: .field("f_fstypename", &self.f_fstypename)
-                // FIXME: .field("f_mntonname", &self.f_mntonname)
-                // FIXME: .field("f_mntfromname", &self.f_mntfromname)
-                // FIXME: .field("f_mntfromspec", &self.f_mntfromspec)
+                    // FIXME: .field("f_fstypename", &self.f_fstypename)
+                    // FIXME: .field("f_mntonname", &self.f_mntonname)
+                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME: .field("f_mntfromspec", &self.f_mntfromspec)
                     .field("mount_info", &self.mount_info)
                     .finish()
             }
@@ -1961,38 +1964,33 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
-        (cmsg as *mut ::c_uchar)
-            .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+        (cmsg as *mut ::c_uchar).offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
         _ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
-        -> *mut ::cmsghdr
-    {
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
         if cmsg.is_null() {
             return ::CMSG_FIRSTHDR(mhdr);
         };
-        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)
+        let next = cmsg as usize
+            + _ALIGN((*cmsg).cmsg_len as usize)
             + _ALIGN(::mem::size_of::<::cmsghdr>());
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
             0 as *mut ::cmsghdr
         } else {
-            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize))
-                as *mut ::cmsghdr
+            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)) as *mut ::cmsghdr
         }
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
-            as ::c_uint
+        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize)) as ::c_uint
     }
 
-    pub fn major(dev: ::dev_t) -> ::c_uint{
+    pub fn major(dev: ::dev_t) -> ::c_uint {
         ((dev as ::c_uint) >> 8) & 0xff
     }
 

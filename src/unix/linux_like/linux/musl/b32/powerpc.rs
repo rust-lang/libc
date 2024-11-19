@@ -47,7 +47,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct ipc_perm {
@@ -60,7 +60,7 @@ s! {
         pub __seq: ::c_int,
         __pad1: ::c_int,
         __pad2: ::c_longlong,
-        __pad3: ::c_longlong
+        __pad3: ::c_longlong,
     }
 
     pub struct shmid_ds {

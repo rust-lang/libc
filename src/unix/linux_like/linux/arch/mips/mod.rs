@@ -280,9 +280,7 @@ pub const IBSHIFT: ::tcflag_t = 16;
 // RLIMIT Constants
 
 cfg_if! {
-    if #[cfg(any(target_env = "gnu",
-                 target_env = "uclibc"))] {
-
+    if #[cfg(any(target_env = "gnu", target_env = "uclibc"))] {
         pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
         pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
         pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
@@ -302,9 +300,7 @@ cfg_if! {
         #[allow(deprecated)]
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
-
     } else if #[cfg(target_env = "musl")] {
-
         pub const RLIMIT_CPU: ::c_int = 0;
         pub const RLIMIT_FSIZE: ::c_int = 1;
         pub const RLIMIT_DATA: ::c_int = 2;
@@ -341,17 +337,19 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "mips64", target_arch = "mips64r6"),
-         any(target_env = "gnu",
-             target_env = "uclibc"))] {
+    if #[cfg(
+        any(target_arch = "mips64", target_arch = "mips64r6"),
+        any(target_env = "gnu", target_env = "uclibc")
+    )] {
         pub const RLIM_INFINITY: ::rlim_t = !0;
     }
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "mips", target_arch = "mips32r6"),
-         any(target_env = "gnu",
-             target_env = "uclibc"))] {
+    if #[cfg(
+        any(target_arch = "mips", target_arch = "mips32r6"),
+        any(target_env = "gnu", target_env = "uclibc")
+    )] {
         pub const RLIM_INFINITY: ::rlim_t = 0x7fffffff;
     }
 }

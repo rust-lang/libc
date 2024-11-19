@@ -16,7 +16,7 @@ s! {
         pub sa_flags: ::c_int,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct rlimit64 {
@@ -136,7 +136,7 @@ s_no_extra_traits! {
     }
 
     pub struct sigset64_t {
-        __bits: [::c_ulong; 1]
+        __bits: [::c_ulong; 1],
     }
 }
 
@@ -146,10 +146,10 @@ cfg_if! {
             fn eq(&self, other: &pthread_mutex_t) -> bool {
                 self.value == other.value
                     && self
-                    .__reserved
-                    .iter()
-                    .zip(other.__reserved.iter())
-                    .all(|(a,b)| a == b)
+                        .__reserved
+                        .iter()
+                        .zip(other.__reserved.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -175,10 +175,10 @@ cfg_if! {
             fn eq(&self, other: &pthread_cond_t) -> bool {
                 self.value == other.value
                     && self
-                    .__reserved
-                    .iter()
-                    .zip(other.__reserved.iter())
-                    .all(|(a,b)| a == b)
+                        .__reserved
+                        .iter()
+                        .zip(other.__reserved.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -208,10 +208,10 @@ cfg_if! {
                     && self.pendingWriters == other.pendingWriters
                     && self.attr == other.attr
                     && self
-                    .__reserved
-                    .iter()
-                    .zip(other.__reserved.iter())
-                    .all(|(a,b)| a == b)
+                        .__reserved
+                        .iter()
+                        .zip(other.__reserved.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -298,7 +298,7 @@ f! {
         fd: ::c_int,
         addr: *mut ::sockaddr,
         len: *mut ::socklen_t,
-        flg: ::c_int
+        flg: ::c_int,
     ) -> ::c_int {
         ::syscall(SYS_accept4, fd, addr, len, flg) as ::c_int
     }
