@@ -16,7 +16,7 @@ s! {
     }
 
     pub struct iov_t {
-        pub iov_base: *mut ::c_void,  // union
+        pub iov_base: *mut ::c_void, // union
         pub iov_len: ::size_t,
     }
 
@@ -130,7 +130,8 @@ s! {
         pub coid: ::c_int,
     }
 
-    pub struct _channel_connect_attr {  // union
+    pub struct _channel_connect_attr {
+        // union
         pub ev: ::__c_anonymous_struct_ev,
     }
 
@@ -180,7 +181,7 @@ s! {
         pub flags: u32,
         pub rr_interval_mul: u32,
         pub timer_load_hi: u32,
-        pub nsec_stable: u64,      // volatile
+        pub nsec_stable: u64, // volatile
         pub timer_load_max: u64,
         pub timer_prog_time: u32,
         spare: [u32; 7],
@@ -212,7 +213,6 @@ s! {
 }
 
 s_no_extra_traits! {
-
     #[repr(align(8))]
     pub struct syspage_entry {
         pub size: u16,

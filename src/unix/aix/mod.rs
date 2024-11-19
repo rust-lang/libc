@@ -94,7 +94,7 @@ s! {
         pub d_ino: ::ino_t,
         pub d_reclen: ::c_ushort,
         pub d_namlen: ::c_ushort,
-        pub d_name: [::c_char; 256]
+        pub d_name: [::c_char; 256],
     }
 
     pub struct termios {
@@ -102,7 +102,7 @@ s! {
         pub c_oflag: ::tcflag_t,
         pub c_cflag: ::tcflag_t,
         pub c_lflag: ::tcflag_t,
-        pub c_cc: [::cc_t; ::NCCS]
+        pub c_cc: [::cc_t; ::NCCS],
     }
 
     pub struct flock64 {
@@ -139,7 +139,7 @@ s! {
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
         pub f_fstr: [::c_char; 32],
-        pub f_filler: [::c_ulong; 16]
+        pub f_filler: [::c_ulong; 16],
     }
 
     pub struct lconv {
@@ -180,7 +180,7 @@ s! {
         pub tm_year: ::c_int,
         pub tm_wday: ::c_int,
         pub tm_yday: ::c_int,
-        pub tm_isdst: ::c_int
+        pub tm_isdst: ::c_int,
     }
 
     pub struct addrinfo {
@@ -196,7 +196,7 @@ s! {
     }
 
     pub struct in_addr {
-        pub s_addr: in_addr_t
+        pub s_addr: in_addr_t,
     }
 
     pub struct ip_mreq_source {
@@ -227,7 +227,7 @@ s! {
         pub sin_family: sa_family_t,
         pub sin_port: in_port_t,
         pub sin_addr: in_addr,
-        pub sin_zero: [::c_char; 8]
+        pub sin_zero: [::c_char; 8],
     }
 
     pub struct sockaddr_in6 {
@@ -236,7 +236,7 @@ s! {
         pub sin6_port: ::uint16_t,
         pub sin6_flowinfo: ::uint32_t,
         pub sin6_addr: ::in6_addr,
-        pub sin6_scope_id: ::uint32_t
+        pub sin6_scope_id: ::uint32_t,
     }
 
     pub struct sockaddr_storage {
@@ -250,7 +250,7 @@ s! {
     pub struct sockaddr_un {
         pub sun_len: ::c_uchar,
         pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 1023]
+        pub sun_path: [::c_char; 1023],
     }
 
     pub struct st_timespec {
@@ -286,7 +286,7 @@ s! {
         pub pw_gid: ::gid_t,
         pub pw_gecos: *mut ::c_char,
         pub pw_dir: *mut ::c_char,
-        pub pw_shell: *mut ::c_char
+        pub pw_shell: *mut ::c_char,
     }
 
     pub struct utsname {
@@ -313,7 +313,7 @@ s! {
         pub sigev_value: ::sigval,
         pub sigev_signo: ::c_int,
         pub sigev_notify: ::c_int,
-        pub sigev_notify_function: extern fn(val: ::sigval),
+        pub sigev_notify_function: extern "C" fn(val: ::sigval),
         pub sigev_notify_attributes: *mut pthread_attr_t,
     }
 
@@ -536,8 +536,8 @@ s! {
 
 s_no_extra_traits! {
     pub union __sigaction_sa_union {
-        pub __su_handler: extern fn(c: ::c_int),
-        pub __su_sigaction: extern fn(c: ::c_int, info: *mut siginfo_t, ptr: *mut ::c_void),
+        pub __su_handler: extern "C" fn(c: ::c_int),
+        pub __su_sigaction: extern "C" fn(c: ::c_int, info: *mut siginfo_t, ptr: *mut ::c_void),
     }
 
     pub struct sigaction {
@@ -2514,8 +2514,9 @@ f! {
         if cmsg.is_null() {
             CMSG_FIRSTHDR(mhdr)
         } else {
-            if (cmsg as usize + (*cmsg).cmsg_len as usize + ::mem::size_of::<::cmsghdr>()) >
-                ((*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize) {
+            if (cmsg as usize + (*cmsg).cmsg_len as usize + ::mem::size_of::<::cmsghdr>())
+                > ((*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize)
+            {
                 0 as *mut ::cmsghdr
             } else {
                 // AIX does not have any alignment/padding for ancillary data, so we don't need _CMSG_ALIGN here.
@@ -2546,20 +2547,20 @@ f! {
         let bits = ::mem::size_of::<::c_long>() * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
-        return
+        return;
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {
         let bits = ::mem::size_of::<::c_long>() * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
-        return
+        return;
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let bits = ::mem::size_of::<::c_long>() * 8;
         let fd = fd as usize;
-        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0
+        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
     }
 
     pub fn major(dev: ::dev_t) -> ::c_uint {

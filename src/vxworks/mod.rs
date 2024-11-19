@@ -145,14 +145,14 @@ s! {
     }
 
     // b_pthread_cond_t.h
-    pub struct pthread_cond_t{
+    pub struct pthread_cond_t {
         pub condSemId: ::_Vx_SEM_ID,
         pub condValid: ::c_int,
         pub condInitted: ::c_int,
         pub condRefCount: ::c_int,
         pub condMutex: *mut ::pthread_mutex_t,
         pub condAttr: ::pthread_condattr_t,
-        pub condSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX]
+        pub condSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX],
     }
 
     // b_pthread_rwlockattr_t.h
@@ -165,12 +165,12 @@ s! {
 
     // b_pthread_rwlock_t.h
     pub struct pthread_rwlock_t {
-        pub rwlockSemId: :: _Vx_SEM_ID,
+        pub rwlockSemId: ::_Vx_SEM_ID,
         pub rwlockReadersRefCount: ::c_uint,
         pub rwlockValid: ::c_int,
         pub rwlockInitted: ::c_int,
         pub rwlockAttr: ::pthread_rwlockattr_t,
-        pub rwlockSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX]
+        pub rwlockSemName: [::c_char; _PTHREAD_SHARED_SEM_NAME_MAX],
     }
 
     // b_struct_timeval.h
@@ -186,9 +186,9 @@ s! {
     }
 
     pub struct sockaddr {
-        pub sa_len    : ::c_uchar,
-        pub sa_family : sa_family_t,
-        pub sa_data   : [::c_char; 14],
+        pub sa_len: ::c_uchar,
+        pub sa_family: sa_family_t,
+        pub sa_data: [::c_char; 14],
     }
 
     pub struct iovec {
@@ -214,91 +214,90 @@ s! {
 
     // poll.h
     pub struct pollfd {
-        pub fd      : ::c_int,
-        pub events  : ::c_short,
-        pub revents : ::c_short,
+        pub fd: ::c_int,
+        pub events: ::c_short,
+        pub revents: ::c_short,
     }
 
     // resource.h
     pub struct rlimit {
-                           pub rlim_cur : ::rlim_t,
-                           pub rlim_max : ::rlim_t,
+        pub rlim_cur: ::rlim_t,
+        pub rlim_max: ::rlim_t,
     }
 
     // stat.h
     pub struct stat {
-                         pub st_dev       : ::dev_t,
-                         pub st_ino       : ::ino_t,
-                         pub st_mode      : ::mode_t,
-                         pub st_nlink     : ::nlink_t,
-                         pub st_uid       : ::uid_t,
-                         pub st_gid       : ::gid_t,
-                         pub st_rdev      : ::dev_t,
-                         pub st_size      : ::off_t,
-                         pub st_atime     : ::time_t,
-                         pub st_mtime     : ::time_t,
-                         pub st_ctime     : ::time_t,
-                         pub st_blksize   : ::blksize_t,
-                         pub st_blocks    : ::blkcnt_t,
-                         pub st_attrib    : ::c_uchar,
-                         pub st_reserved1 : ::c_int,
-                         pub st_reserved2 : ::c_int,
-                         pub st_reserved3 : ::c_int,
-                         pub st_reserved4 : ::c_int,
+        pub st_dev: ::dev_t,
+        pub st_ino: ::ino_t,
+        pub st_mode: ::mode_t,
+        pub st_nlink: ::nlink_t,
+        pub st_uid: ::uid_t,
+        pub st_gid: ::gid_t,
+        pub st_rdev: ::dev_t,
+        pub st_size: ::off_t,
+        pub st_atime: ::time_t,
+        pub st_mtime: ::time_t,
+        pub st_ctime: ::time_t,
+        pub st_blksize: ::blksize_t,
+        pub st_blocks: ::blkcnt_t,
+        pub st_attrib: ::c_uchar,
+        pub st_reserved1: ::c_int,
+        pub st_reserved2: ::c_int,
+        pub st_reserved3: ::c_int,
+        pub st_reserved4: ::c_int,
     }
 
     //b_struct__Timespec.h
     pub struct _Timespec {
-        pub tv_sec  : ::time_t,
-        pub tv_nsec : ::c_long,
+        pub tv_sec: ::time_t,
+        pub tv_nsec: ::c_long,
     }
 
     // b_struct__Sched_param.h
     pub struct sched_param {
-        pub sched_priority: ::c_int, /* scheduling priority */
+        pub sched_priority: ::c_int,           /* scheduling priority */
         pub sched_ss_low_priority: ::c_int,    /* low scheduling priority */
         pub sched_ss_repl_period: ::_Timespec, /* replenishment period */
         pub sched_ss_init_budget: ::_Timespec, /* initial budget */
         pub sched_ss_max_repl: ::c_int,        /* max pending replenishment */
-
     }
 
     // b_pthread_attr_t.h
     pub struct pthread_attr_t {
-        pub threadAttrStatus          : ::c_int,
-        pub threadAttrStacksize       : ::size_t,
-        pub threadAttrStackaddr       : *mut ::c_void,
-        pub threadAttrGuardsize       : ::size_t,
-        pub threadAttrDetachstate     : ::c_int,
-        pub threadAttrContentionscope : ::c_int,
-        pub threadAttrInheritsched    : ::c_int,
-        pub threadAttrSchedpolicy     : ::c_int,
-        pub threadAttrName            : *mut ::c_char,
-        pub threadAttrOptions         : ::c_int,
-        pub threadAttrSchedparam      : ::sched_param,
+        pub threadAttrStatus: ::c_int,
+        pub threadAttrStacksize: ::size_t,
+        pub threadAttrStackaddr: *mut ::c_void,
+        pub threadAttrGuardsize: ::size_t,
+        pub threadAttrDetachstate: ::c_int,
+        pub threadAttrContentionscope: ::c_int,
+        pub threadAttrInheritsched: ::c_int,
+        pub threadAttrSchedpolicy: ::c_int,
+        pub threadAttrName: *mut ::c_char,
+        pub threadAttrOptions: ::c_int,
+        pub threadAttrSchedparam: ::sched_param,
     }
 
     // signal.h
 
     pub struct sigaction {
-        pub sa_u     : ::sa_u_t,
-        pub sa_mask  : ::sigset_t,
-        pub sa_flags : ::c_int,
+        pub sa_u: ::sa_u_t,
+        pub sa_mask: ::sigset_t,
+        pub sa_flags: ::c_int,
     }
 
     // b_stack_t.h
     pub struct stack_t {
-        pub ss_sp    : *mut ::c_void,
-        pub ss_size  : ::size_t,
-        pub ss_flags : ::c_int,
+        pub ss_sp: *mut ::c_void,
+        pub ss_size: ::size_t,
+        pub ss_flags: ::c_int,
     }
 
     // signal.h
     pub struct siginfo_t {
-        pub si_signo : ::c_int,
-        pub si_code  : ::c_int,
-        pub si_value : ::sigval,
-        pub si_errno : ::c_int,
+        pub si_signo: ::c_int,
+        pub si_code: ::c_int,
+        pub si_value: ::sigval,
+        pub si_errno: ::c_int,
         pub si_status: ::c_int,
         pub si_addr: *mut ::c_void,
         pub si_uid: ::uid_t,
@@ -308,16 +307,16 @@ s! {
     // pthread.h (krnl)
     // b_pthread_mutexattr_t.h (usr)
     pub struct pthread_mutexattr_t {
-        mutexAttrStatus      : ::c_int,
-        mutexAttrPshared     : ::c_int,
-        mutexAttrProtocol    : ::c_int,
-        mutexAttrPrioceiling : ::c_int,
-        mutexAttrType        : ::c_int,
+        mutexAttrStatus: ::c_int,
+        mutexAttrPshared: ::c_int,
+        mutexAttrProtocol: ::c_int,
+        mutexAttrPrioceiling: ::c_int,
+        mutexAttrType: ::c_int,
     }
 
     // pthread.h (krnl)
     // b_pthread_mutex_t.h (usr)
-    pub struct pthread_mutex_t  {
+    pub struct pthread_mutex_t {
         pub mutexSemId: ::_Vx_SEM_ID, /*_Vx_SEM_ID ..*/
         pub mutexValid: ::c_int,
         pub mutexInitted: ::c_int,
@@ -371,32 +370,32 @@ s! {
 
     // netdb.h
     pub struct addrinfo {
-        pub ai_flags    : ::c_int,
-        pub ai_family   : ::c_int,
-        pub ai_socktype : ::c_int,
-        pub ai_protocol : ::c_int,
-        pub ai_addrlen  : ::size_t,
+        pub ai_flags: ::c_int,
+        pub ai_family: ::c_int,
+        pub ai_socktype: ::c_int,
+        pub ai_protocol: ::c_int,
+        pub ai_addrlen: ::size_t,
         pub ai_canonname: *mut ::c_char,
-        pub ai_addr     : *mut ::sockaddr,
-        pub ai_next     : *mut ::addrinfo,
+        pub ai_addr: *mut ::sockaddr,
+        pub ai_next: *mut ::addrinfo,
     }
 
     // in.h
     pub struct sockaddr_in {
-        pub sin_len   : u8,
+        pub sin_len: u8,
         pub sin_family: u8,
-        pub sin_port  : u16,
-        pub sin_addr  : ::in_addr,
-        pub sin_zero  : [::c_char; 8],
+        pub sin_port: u16,
+        pub sin_addr: ::in_addr,
+        pub sin_zero: [::c_char; 8],
     }
 
     // in6.h
     pub struct sockaddr_in6 {
-        pub sin6_len     : u8,
-        pub sin6_family  : u8,
-        pub sin6_port    : u16,
+        pub sin6_len: u8,
+        pub sin6_family: u8,
+        pub sin6_port: u16,
         pub sin6_flowinfo: u32,
-        pub sin6_addr    : ::in6_addr,
+        pub sin6_addr: ::in6_addr,
         pub sin6_scope_id: u32,
     }
 
@@ -408,9 +407,9 @@ s! {
     }
 
     pub struct mq_attr {
-        pub mq_maxmsg:  ::c_long,
+        pub mq_maxmsg: ::c_long,
         pub mq_msgsize: ::c_long,
-        pub mq_flags:   ::c_long,
+        pub mq_flags: ::c_long,
         pub mq_curmsgs: ::c_long,
     }
 }
@@ -418,47 +417,46 @@ s! {
 s_no_extra_traits! {
     // dirent.h
     pub struct dirent {
-        pub d_ino  : ::ino_t,
-        pub d_name : [::c_char; _PARM_NAME_MAX as usize + 1],
+        pub d_ino: ::ino_t,
+        pub d_name: [::c_char; _PARM_NAME_MAX as usize + 1],
     }
 
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
-        pub sun_path: [::c_char; 104]
+        pub sun_path: [::c_char; 104],
     }
 
     // rtpLibCommon.h
     pub struct RTP_DESC {
-        pub status    : ::c_int,
-        pub options   : u32,
-        pub entrAddr  : *mut ::c_void,
+        pub status: ::c_int,
+        pub options: u32,
+        pub entrAddr: *mut ::c_void,
         pub initTaskId: ::TASK_ID,
-        pub parentId  : ::RTP_ID,
-        pub pathName  : [::c_char; VX_RTP_NAME_LENGTH as usize + 1],
-        pub taskCnt   : ::c_int,
-        pub textStart : *mut ::c_void,
-        pub textEnd   : *mut ::c_void,
+        pub parentId: ::RTP_ID,
+        pub pathName: [::c_char; VX_RTP_NAME_LENGTH as usize + 1],
+        pub taskCnt: ::c_int,
+        pub textStart: *mut ::c_void,
+        pub textEnd: *mut ::c_void,
     }
     // socket.h
     pub struct sockaddr_storage {
-        pub ss_len     : ::c_uchar,
-        pub ss_family  : ::sa_family_t,
-        pub __ss_pad1  : [::c_char; _SS_PAD1SIZE],
-        pub __ss_align : i32,
-        pub __ss_pad2  : [::c_char; _SS_PAD2SIZE],
+        pub ss_len: ::c_uchar,
+        pub ss_family: ::sa_family_t,
+        pub __ss_pad1: [::c_char; _SS_PAD1SIZE],
+        pub __ss_align: i32,
+        pub __ss_pad2: [::c_char; _SS_PAD2SIZE],
     }
 
     pub union sa_u_t {
-        pub sa_handler : ::Option<unsafe extern "C" fn(::c_int) -> !>,
-        pub sa_sigaction: ::Option<unsafe extern "C" fn(::c_int,
-                                                        *mut ::siginfo_t,
-                                                        *mut ::c_void) -> !>,
+        pub sa_handler: ::Option<unsafe extern "C" fn(::c_int) -> !>,
+        pub sa_sigaction:
+            ::Option<unsafe extern "C" fn(::c_int, *mut ::siginfo_t, *mut ::c_void) -> !>,
     }
 
     pub union sigval {
-        pub sival_int : ::c_int,
-        pub sival_ptr : *mut ::c_void,
+        pub sival_int: ::c_int,
+        pub sival_ptr: *mut ::c_void,
     }
 }
 
@@ -534,9 +532,7 @@ cfg_if! {
                         None => 0 as usize,
                     };
 
-                    f.debug_struct("sa_u_t")
-                        .field("sa_handler", &h)
-                        .finish()
+                    f.debug_struct("sa_u_t").field("sa_handler", &h).finish()
                 }
             }
         }
@@ -1100,22 +1096,20 @@ f! {
         len + ::mem::size_of::<usize>() - 1 & !(::mem::size_of::<usize>() - 1)
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
-                       cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+        let next = cmsg as usize
+            + CMSG_ALIGN((*cmsg).cmsg_len as usize)
             + CMSG_ALIGN(::mem::size_of::<::cmsghdr>());
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next <= max {
-            (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize))
-                as *mut ::cmsghdr
+            (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut ::cmsghdr
         } else {
             0 as *mut ::cmsghdr
         }
     }
 
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize > 0  {
+        if (*mhdr).msg_controllen as usize > 0 {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
             0 as *mut cmsghdr
@@ -1123,13 +1117,11 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut ::c_uchar {
-        (cmsg as *mut ::c_uchar)
-            .offset(CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+        (cmsg as *mut ::c_uchar).offset(CMSG_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>()))
-            as ::c_uint
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::mem::size_of::<cmsghdr>())) as ::c_uint
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
@@ -2011,7 +2003,7 @@ cfg_if! {
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
-    }  else if #[cfg(target_arch = "x86")] {
+    } else if #[cfg(target_arch = "x86")] {
         mod x86;
         pub use self::x86::*;
     } else if #[cfg(target_arch = "x86_64")] {

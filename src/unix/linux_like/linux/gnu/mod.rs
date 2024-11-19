@@ -64,7 +64,7 @@ s! {
         pub aio_offset: off_t,
         #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
         __unused1: [::c_char; 4],
-        __glibc_reserved: [::c_char; 32]
+        __glibc_reserved: [::c_char; 32],
     }
 
     pub struct __exit_status {
@@ -119,7 +119,8 @@ s! {
             target_arch = "mips",
             target_arch = "mips32r6",
             target_arch = "mips64",
-            target_arch = "mips64r6")))]
+            target_arch = "mips64r6"
+        )))]
         pub c_ispeed: ::speed_t,
         #[cfg(not(any(
             target_arch = "sparc",
@@ -127,7 +128,8 @@ s! {
             target_arch = "mips",
             target_arch = "mips32r6",
             target_arch = "mips64",
-            target_arch = "mips64r6")))]
+            target_arch = "mips64r6"
+        )))]
         pub c_ospeed: ::speed_t,
     }
 
@@ -504,10 +506,8 @@ s! {
     }
 
     // FIXME(1.0) this is actually a union
-    #[cfg_attr(target_pointer_width = "32",
-               repr(align(4)))]
-    #[cfg_attr(target_pointer_width = "64",
-               repr(align(8)))]
+    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct sem_t {
         #[cfg(target_pointer_width = "32")]
         __size: [::c_char; 16],
@@ -623,30 +623,34 @@ s_no_extra_traits! {
         pub ut_host: [::c_char; __UT_HOSTSIZE],
         pub ut_exit: __exit_status,
 
-        #[cfg(any(target_arch = "aarch64",
-                  target_arch = "s390x",
-                  target_arch = "loongarch64",
-                  all(target_pointer_width = "32",
-                      not(target_arch = "x86_64"))))]
+        #[cfg(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        ))]
         pub ut_session: ::c_long,
-        #[cfg(any(target_arch = "aarch64",
-                  target_arch = "s390x",
-                  target_arch = "loongarch64",
-                  all(target_pointer_width = "32",
-                      not(target_arch = "x86_64"))))]
+        #[cfg(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        ))]
         pub ut_tv: ::timeval,
 
-        #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "s390x",
-                      target_arch = "loongarch64",
-                      all(target_pointer_width = "32",
-                          not(target_arch = "x86_64")))))]
+        #[cfg(not(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        )))]
         pub ut_session: i32,
-        #[cfg(not(any(target_arch = "aarch64",
-                      target_arch = "s390x",
-                      target_arch = "loongarch64",
-                      all(target_pointer_width = "32",
-                          not(target_arch = "x86_64")))))]
+        #[cfg(not(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        )))]
         pub ut_tv: __timeval,
 
         pub ut_addr_v6: [i32; 4],
@@ -664,10 +668,10 @@ cfg_if! {
                     && self.ut_id == other.ut_id
                     && self.ut_user == other.ut_user
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
                     && self.ut_exit == other.ut_exit
                     && self.ut_session == other.ut_session
                     && self.ut_tv == other.ut_tv
@@ -686,7 +690,7 @@ cfg_if! {
                     .field("ut_line", &self.ut_line)
                     .field("ut_id", &self.ut_id)
                     .field("ut_user", &self.ut_user)
-                // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME: .field("ut_host", &self.ut_host)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_session", &self.ut_session)
                     .field("ut_tv", &self.ut_tv)
@@ -715,9 +719,9 @@ cfg_if! {
         impl PartialEq for __c_anonymous_ptrace_syscall_info_data {
             fn eq(&self, other: &__c_anonymous_ptrace_syscall_info_data) -> bool {
                 unsafe {
-                self.entry == other.entry ||
-                    self.exit == other.exit ||
-                    self.seccomp == other.seccomp
+                    self.entry == other.entry
+                        || self.exit == other.exit
+                        || self.seccomp == other.seccomp
                 }
             }
         }
@@ -727,11 +731,11 @@ cfg_if! {
         impl ::fmt::Debug for __c_anonymous_ptrace_syscall_info_data {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
-                f.debug_struct("__c_anonymous_ptrace_syscall_info_data")
-                    .field("entry", &self.entry)
-                    .field("exit", &self.exit)
-                    .field("seccomp", &self.seccomp)
-                    .finish()
+                    f.debug_struct("__c_anonymous_ptrace_syscall_info_data")
+                        .field("entry", &self.entry)
+                        .field("exit", &self.exit)
+                        .field("seccomp", &self.seccomp)
+                        .finish()
                 }
             }
         }
@@ -739,9 +743,9 @@ cfg_if! {
         impl ::hash::Hash for __c_anonymous_ptrace_syscall_info_data {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
-                self.entry.hash(state);
-                self.exit.hash(state);
-                self.seccomp.hash(state);
+                    self.entry.hash(state);
+                    self.exit.hash(state);
+                    self.seccomp.hash(state);
                 }
             }
         }
@@ -1129,10 +1133,12 @@ pub const KEYCTL_SUPPORTS_DECRYPT: u32 = 0x02;
 pub const KEYCTL_SUPPORTS_SIGN: u32 = 0x04;
 pub const KEYCTL_SUPPORTS_VERIFY: u32 = 0x08;
 cfg_if! {
-    if #[cfg(not(any(target_arch = "mips",
-                     target_arch = "mips32r6",
-                     target_arch = "mips64",
-                     target_arch = "mips64r6")))] {
+    if #[cfg(not(any(
+        target_arch = "mips",
+        target_arch = "mips32r6",
+        target_arch = "mips64",
+        target_arch = "mips64r6"
+    )))] {
         pub const KEYCTL_MOVE: u32 = 30;
         pub const KEYCTL_CAPABILITIES: u32 = 31;
 
@@ -1286,10 +1292,7 @@ cfg_if! {
         target_arch = "riscv32"
     ))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 16384;
-    } else if #[cfg(any(
-               target_arch = "sparc",
-               target_arch = "sparc64"
-           ))] {
+    } else if #[cfg(any(target_arch = "sparc", target_arch = "sparc64"))] {
         pub const PTHREAD_STACK_MIN: ::size_t = 0x6000;
     } else {
         pub const PTHREAD_STACK_MIN: ::size_t = 131072;
@@ -1304,21 +1307,25 @@ pub const REG_ESIZE: ::c_int = 15;
 pub const REG_ERPAREN: ::c_int = 16;
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86",
-                 target_arch = "x86_64",
-                 target_arch = "arm",
-                 target_arch = "aarch64",
-                 target_arch = "loongarch64",
-                 target_arch = "riscv64",
-                 target_arch = "s390x"))] {
+    if #[cfg(any(
+        target_arch = "x86",
+        target_arch = "x86_64",
+        target_arch = "arm",
+        target_arch = "aarch64",
+        target_arch = "loongarch64",
+        target_arch = "riscv64",
+        target_arch = "s390x"
+    ))] {
         pub const TUNSETCARRIER: ::Ioctl = 0x400454e2;
         pub const TUNGETDEVNETNS: ::Ioctl = 0x54e3;
-    } else if #[cfg(any(target_arch = "mips",
-                        target_arch = "mips64",
-                        target_arch = "powerpc",
-                        target_arch = "powerpc64",
-                        target_arch = "sparc",
-                        target_arch = "sparc64"))] {
+    } else if #[cfg(any(
+        target_arch = "mips",
+        target_arch = "mips64",
+        target_arch = "powerpc",
+        target_arch = "powerpc64",
+        target_arch = "sparc",
+        target_arch = "sparc64"
+    ))] {
         pub const TUNSETCARRIER: ::Ioctl = 0x800454e2;
         pub const TUNGETDEVNETNS: ::Ioctl = 0x200054e3;
     } else {
@@ -1611,26 +1618,30 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86",
-                 target_arch = "arm",
-                 target_arch = "m68k",
-                 target_arch = "csky",
-                 target_arch = "mips",
-                 target_arch = "mips32r6",
-                 target_arch = "powerpc",
-                 target_arch = "sparc",
-                 target_arch = "riscv32"))] {
+    if #[cfg(any(
+        target_arch = "x86",
+        target_arch = "arm",
+        target_arch = "m68k",
+        target_arch = "csky",
+        target_arch = "mips",
+        target_arch = "mips32r6",
+        target_arch = "powerpc",
+        target_arch = "sparc",
+        target_arch = "riscv32"
+    ))] {
         mod b32;
         pub use self::b32::*;
-    } else if #[cfg(any(target_arch = "x86_64",
-                        target_arch = "aarch64",
-                        target_arch = "powerpc64",
-                        target_arch = "mips64",
-                        target_arch = "mips64r6",
-                        target_arch = "s390x",
-                        target_arch = "sparc64",
-                        target_arch = "riscv64",
-                        target_arch = "loongarch64"))] {
+    } else if #[cfg(any(
+        target_arch = "x86_64",
+        target_arch = "aarch64",
+        target_arch = "powerpc64",
+        target_arch = "mips64",
+        target_arch = "mips64r6",
+        target_arch = "s390x",
+        target_arch = "sparc64",
+        target_arch = "riscv64",
+        target_arch = "loongarch64"
+    ))] {
         mod b64;
         pub use self::b64::*;
     } else {

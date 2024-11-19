@@ -163,7 +163,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct ipc_perm {
@@ -175,7 +175,7 @@ s! {
         pub mode: ::mode_t,
         pub __seq: ::c_int,
         __unused1: ::c_long,
-        __unused2: ::c_long
+        __unused2: ::c_long,
     }
 
     pub struct termios {
@@ -198,7 +198,7 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [u32; 11]
+        __size: [u32; 11],
     }
 
     pub struct sigset_t {
@@ -252,7 +252,7 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
 
     pub struct shmid_ds {
@@ -372,13 +372,11 @@ s_no_extra_traits! {
         pub mq_maxmsg: ::c_long,
         pub mq_msgsize: ::c_long,
         pub mq_curmsgs: ::c_long,
-        pad: [::c_long; 4]
+        pad: [::c_long; 4],
     }
 
-    #[cfg_attr(target_pointer_width = "32",
-               repr(align(4)))]
-    #[cfg_attr(target_pointer_width = "64",
-               repr(align(8)))]
+    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct pthread_cond_t {
         size: [u8; ::__SIZEOF_PTHREAD_COND_T],
     }
@@ -386,7 +384,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
-        priv_: [f64; 3]
+        priv_: [f64; 3],
     }
 }
 
@@ -399,10 +397,10 @@ cfg_if! {
                     && self.d_reclen == other.d_reclen
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for dirent {}
@@ -443,10 +441,10 @@ cfg_if! {
                     && self.freehigh == other.freehigh
                     && self.mem_unit == other.mem_unit
                     && self
-                    .__reserved
-                    .iter()
-                    .zip(other.__reserved.iter())
-                    .all(|(a,b)| a == b)
+                        .__reserved
+                        .iter()
+                        .zip(other.__reserved.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for sysinfo {}
@@ -491,10 +489,10 @@ cfg_if! {
 
         impl PartialEq for mq_attr {
             fn eq(&self, other: &mq_attr) -> bool {
-                self.mq_flags == other.mq_flags &&
-                self.mq_maxmsg == other.mq_maxmsg &&
-                self.mq_msgsize == other.mq_msgsize &&
-                self.mq_curmsgs == other.mq_curmsgs
+                self.mq_flags == other.mq_flags
+                    && self.mq_maxmsg == other.mq_maxmsg
+                    && self.mq_msgsize == other.mq_msgsize
+                    && self.mq_curmsgs == other.mq_curmsgs
             }
         }
         impl Eq for mq_attr {}
@@ -519,10 +517,7 @@ cfg_if! {
 
         impl PartialEq for pthread_cond_t {
             fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size
-                    .iter()
-                    .zip(other.size.iter())
-                    .all(|(a,b)| a == b)
+                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
             }
         }
         impl Eq for pthread_cond_t {}
@@ -1416,16 +1411,12 @@ pub const PRIO_USER: ::c_int = 2;
 pub const SOMAXCONN: ::c_int = 128;
 
 f! {
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
-                       cmsg: *const cmsghdr) -> *mut cmsghdr {
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as usize) < ::mem::size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
-        let next = (cmsg as usize +
-                    super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
-            as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
+        let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if (next.offset(1)) as usize > max {
             0 as *mut cmsghdr
         } else {
@@ -1440,16 +1431,14 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * ::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()

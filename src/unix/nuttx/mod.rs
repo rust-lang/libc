@@ -63,18 +63,28 @@ s! {
         pub pw_gecos: *const c_char,
         pub pw_dir: *const c_char,
         pub pw_shell: *const c_char,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__]
+        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
     }
 
-    pub struct sem_t { __val: [usize; __SEM_SIZE__] }
+    pub struct sem_t {
+        __val: [usize; __SEM_SIZE__],
+    }
 
-    pub struct pthread_attr_t { __val: [usize; __PTHREAD_ATTR_SIZE__] }
+    pub struct pthread_attr_t {
+        __val: [usize; __PTHREAD_ATTR_SIZE__],
+    }
 
-    pub struct pthread_mutex_t { __val: [usize; __PTHREAD_MUTEX_SIZE__] }
+    pub struct pthread_mutex_t {
+        __val: [usize; __PTHREAD_MUTEX_SIZE__],
+    }
 
-    pub struct pthread_cond_t { __val: [usize; __PTHREAD_COND_SIZE__] }
+    pub struct pthread_cond_t {
+        __val: [usize; __PTHREAD_COND_SIZE__],
+    }
 
-    pub struct pthread_condattr_t { __val: [usize; __PTHREAD_CONDATTR_SIZE__] }
+    pub struct pthread_condattr_t {
+        __val: [usize; __PTHREAD_CONDATTR_SIZE__],
+    }
 
     pub struct Dl_info {
         pub dli_fname: *const c_char,

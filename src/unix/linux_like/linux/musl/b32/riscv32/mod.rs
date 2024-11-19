@@ -119,8 +119,8 @@ s! {
         pub si_code: ::c_int,
         #[doc(hidden)]
         #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
+            since = "0.2.54",
+            note = "Please leave a comment on \
                   https://github.com/rust-lang/libc/pull/1316 if you're using \
                   this field"
         )]
@@ -190,7 +190,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
-        priv_: (i64, f64)
+        priv_: (i64, f64),
     }
 }
 

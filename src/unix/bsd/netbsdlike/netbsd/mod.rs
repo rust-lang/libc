@@ -136,15 +136,15 @@ s! {
         pub aio_sigevent: ::sigevent,
         _state: ::c_int,
         _errno: ::c_int,
-        _retval: ::ssize_t
+        _retval: ::ssize_t,
     }
 
     pub struct glob_t {
-        pub gl_pathc:   ::size_t,
-        pub gl_matchc:  ::size_t,
-        pub gl_offs:    ::size_t,
-        pub gl_flags:   ::c_int,
-        pub gl_pathv:   *mut *mut ::c_char,
+        pub gl_pathc: ::size_t,
+        pub gl_matchc: ::size_t,
+        pub gl_offs: ::size_t,
+        pub gl_flags: ::c_int,
+        pub gl_pathv: *mut *mut ::c_char,
 
         __unused3: *mut ::c_void,
 
@@ -224,13 +224,21 @@ s! {
     pub struct pthread_mutex_t {
         ptm_magic: ::c_uint,
         ptm_errorcheck: __pthread_spin_t,
-        #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-                  target_arch = "x86", target_arch = "x86_64"))]
+        #[cfg(any(
+            target_arch = "sparc",
+            target_arch = "sparc64",
+            target_arch = "x86",
+            target_arch = "x86_64"
+        ))]
         ptm_pad1: [u8; 3],
         // actually a union with a non-unused, 0-initialized field
         ptm_unused: __pthread_spin_t,
-        #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-                  target_arch = "x86", target_arch = "x86_64"))]
+        #[cfg(any(
+            target_arch = "sparc",
+            target_arch = "sparc64",
+            target_arch = "x86",
+            target_arch = "x86_64"
+        ))]
         ptm_pad2: [u8; 3],
         ptm_owner: ::pthread_t,
         ptm_waiters: *mut u8,
@@ -422,13 +430,13 @@ s! {
         pub ut_line: [::c_char; UT_LINESIZE],
         pub ut_name: [::c_char; UT_NAMESIZE],
         pub ut_host: [::c_char; UT_HOSTSIZE],
-        pub ut_time: ::time_t
+        pub ut_time: ::time_t,
     }
 
     pub struct lastlog {
         pub ll_line: [::c_char; UT_LINESIZE],
         pub ll_host: [::c_char; UT_HOSTSIZE],
-        pub ll_time: ::time_t
+        pub ll_time: ::time_t,
     }
 
     pub struct timex {
@@ -507,7 +515,7 @@ s! {
     }
 
     pub struct _cpuset {
-        bits: [u32; 0]
+        bits: [u32; 0],
     }
 
     pub struct accept_filter_arg {
@@ -780,7 +788,6 @@ s! {
 }
 
 s_no_extra_traits! {
-
     pub struct utmpx {
         pub ut_name: [::c_char; _UTX_USERSIZE],
         pub ut_id: [::c_char; _UTX_IDSIZE],
@@ -886,8 +893,8 @@ s_no_extra_traits! {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
         pub sigev_value: ::sigval,
-        __unused1: *mut ::c_void,       //actually a function pointer
-        pub sigev_notify_attributes: *mut ::c_void
+        __unused1: *mut ::c_void, //actually a function pointer
+        pub sigev_notify_attributes: *mut ::c_void,
     }
 
     pub union __c_anonymous_posix_spawn_fae {
@@ -915,15 +922,15 @@ cfg_if! {
                     && self.ut_tv == other.ut_tv
                     && self.ut_ss == other.ut_ss
                     && self
-                    .ut_pad
-                    .iter()
-                    .zip(other.ut_pad.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_pad
+                        .iter()
+                        .zip(other.ut_pad.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -935,14 +942,14 @@ cfg_if! {
                     .field("ut_name", &self.ut_name)
                     .field("ut_id", &self.ut_id)
                     .field("ut_line", &self.ut_line)
-                // FIXME .field("ut_host", &self.ut_host)
+                    // FIXME .field("ut_host", &self.ut_host)
                     .field("ut_session", &self.ut_session)
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_ss", &self.ut_ss)
                     .field("ut_tv", &self.ut_tv)
-                // FIXME .field("ut_pad", &self.ut_pad)
+                    // FIXME .field("ut_pad", &self.ut_pad)
                     .finish()
             }
         }
@@ -969,10 +976,10 @@ cfg_if! {
                     && self.ll_line == other.ll_line
                     && self.ll_ss == other.ll_ss
                     && self
-                    .ll_host
-                    .iter()
-                    .zip(other.ll_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ll_host
+                        .iter()
+                        .zip(other.ll_host.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -983,7 +990,7 @@ cfg_if! {
                 f.debug_struct("lastlogx")
                     .field("ll_tv", &self.ll_tv)
                     .field("ll_line", &self.ll_line)
-                // FIXME.field("ll_host", &self.ll_host)
+                    // FIXME.field("ll_host", &self.ll_host)
                     .field("ll_ss", &self.ll_ss)
                     .finish()
             }
@@ -1000,8 +1007,7 @@ cfg_if! {
 
         impl PartialEq for in_pktinfo {
             fn eq(&self, other: &in_pktinfo) -> bool {
-                self.ipi_addr == other.ipi_addr
-                    && self.ipi_ifindex == other.ipi_ifindex
+                self.ipi_addr == other.ipi_addr && self.ipi_ifindex == other.ipi_ifindex
             }
         }
         impl Eq for in_pktinfo {}
@@ -1066,9 +1072,7 @@ cfg_if! {
         impl ::fmt::Debug for in_addr {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 let s_addr = self.s_addr;
-                f.debug_struct("in_addr")
-                    .field("s_addr", &s_addr)
-                    .finish()
+                f.debug_struct("in_addr").field("s_addr", &s_addr).finish()
             }
         }
         impl ::hash::Hash for in_addr {
@@ -1138,10 +1142,10 @@ cfg_if! {
                     && self.d_namlen == other.d_namlen
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for dirent {}
@@ -1191,15 +1195,15 @@ cfg_if! {
                     && self.f_spare == other.f_spare
                     && self.f_fstypename == other.f_fstypename
                     && self
-                    .f_mntonname
-                    .iter()
-                    .zip(other.f_mntonname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntonname
+                        .iter()
+                        .zip(other.f_mntonname.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .f_mntfromname
-                    .iter()
-                    .zip(other.f_mntfromname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntfromname
+                        .iter()
+                        .zip(other.f_mntfromname.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for statvfs {}
@@ -1269,10 +1273,10 @@ cfg_if! {
                     && self.__ss_pad1 == other.__ss_pad1
                     && self.__ss_pad2 == other.__ss_pad2
                     && self
-                    .__ss_pad3
-                    .iter()
-                    .zip(other.__ss_pad3.iter())
-                    .all(|(a,b)| a == b)
+                        .__ss_pad3
+                        .iter()
+                        .zip(other.__ss_pad3.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for sockaddr_storage {}
@@ -1302,8 +1306,7 @@ cfg_if! {
                 self.sigev_notify == other.sigev_notify
                     && self.sigev_signo == other.sigev_signo
                     && self.sigev_value == other.sigev_value
-                    && self.sigev_notify_attributes
-                        == other.sigev_notify_attributes
+                    && self.sigev_notify_attributes == other.sigev_notify_attributes
             }
         }
         impl Eq for sigevent {}
@@ -1313,8 +1316,7 @@ cfg_if! {
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_value", &self.sigev_value)
-                    .field("sigev_notify_attributes",
-                           &self.sigev_notify_attributes)
+                    .field("sigev_notify_attributes", &self.sigev_notify_attributes)
                     .finish()
             }
         }
@@ -1331,10 +1333,7 @@ cfg_if! {
 
         impl PartialEq for __c_anonymous_posix_spawn_fae {
             fn eq(&self, other: &__c_anonymous_posix_spawn_fae) -> bool {
-                unsafe {
-                    self.open == other.open
-                        || self.dup2 == other.dup2
-                }
+                unsafe { self.open == other.open || self.dup2 == other.dup2 }
             }
         }
 
@@ -1362,10 +1361,7 @@ cfg_if! {
 
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
-                unsafe {
-                    self.ifcu_buf == other.ifcu_buf
-                        || self.ifcu_req == other.ifcu_req
-                }
+                unsafe { self.ifcu_buf == other.ifcu_buf || self.ifcu_req == other.ifcu_req }
             }
         }
 
@@ -1934,10 +1930,13 @@ pub const PL_EVENT_SIGNAL: ::c_int = 1;
 pub const PL_EVENT_SUSPENDED: ::c_int = 2;
 
 cfg_if! {
-    if #[cfg(any(target_arch = "sparc", target_arch = "sparc64",
-                 target_arch = "x86", target_arch = "x86_64"))] {
-        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t
-          = pthread_mutex_t {
+    if #[cfg(any(
+        target_arch = "sparc",
+        target_arch = "sparc64",
+        target_arch = "x86",
+        target_arch = "x86_64"
+    ))] {
+        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
             ptm_magic: 0x33330003,
             ptm_errorcheck: 0,
             ptm_pad1: [0; 3],
@@ -1949,8 +1948,7 @@ cfg_if! {
             ptm_spare2: 0 as *mut _,
         };
     } else {
-        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t
-          = pthread_mutex_t {
+        pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
             ptm_magic: 0x33330003,
             ptm_errorcheck: 0,
             ptm_unused: 0,
@@ -2437,35 +2435,30 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
-        (cmsg as *mut ::c_uchar)
-            .offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
+        (cmsg as *mut ::c_uchar).offset(_ALIGN(::mem::size_of::<::cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
         _ALIGN(::mem::size_of::<::cmsghdr>()) as ::c_uint + length
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr)
-        -> *mut ::cmsghdr
-    {
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
         if cmsg.is_null() {
             return ::CMSG_FIRSTHDR(mhdr);
         };
-        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)
+        let next = cmsg as usize
+            + _ALIGN((*cmsg).cmsg_len as usize)
             + _ALIGN(::mem::size_of::<::cmsghdr>());
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
             0 as *mut ::cmsghdr
         } else {
-            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize))
-                as *mut ::cmsghdr
+            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)) as *mut ::cmsghdr
         }
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize))
-            as ::c_uint
+        (_ALIGN(::mem::size_of::<::cmsghdr>()) + _ALIGN(length as usize)) as ::c_uint
     }
 
     // dirfd() is a macro on netbsd to access
@@ -2476,11 +2469,7 @@ f! {
     }
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
-        let ngrps = if ngrps > 0 {
-            ngrps - 1
-        } else {
-            0
-        };
+        let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         ::mem::size_of::<sockcred>() + ::mem::size_of::<::gid_t>() * ngrps
     }
 
@@ -2493,7 +2482,7 @@ f! {
     }
 
     pub fn major(dev: ::dev_t) -> ::c_int {
-        (((dev as u32) & 0x000fff00) >>  8) as ::c_int
+        (((dev as u32) & 0x000fff00) >> 8) as ::c_int
     }
 
     pub fn minor(dev: ::dev_t) -> ::c_int {

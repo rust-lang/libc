@@ -110,9 +110,7 @@ cfg_if! {
 
         impl ::fmt::Debug for fpreg_t {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                f.debug_struct("fpreg_t")
-                    .field("d", &self.d)
-                    .finish()
+                f.debug_struct("fpreg_t").field("d", &self.d).finish()
             }
         }
 

@@ -65,8 +65,7 @@ s! {
         __unused5: ::c_ulong,
     }
 
-    pub struct stat64
-    {
+    pub struct stat64 {
         pub st_dev: ::c_ulonglong,
         pub __pad1: ::c_uint,
         pub __st_ino: ::ino_t,
@@ -167,7 +166,7 @@ s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_flags: ::c_ulong,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
         pub sa_mask: sigset_t,
     }
 
@@ -243,10 +242,8 @@ s! {
     }
 
     // FIXME(1.0) this is actually a union
-    #[cfg_attr(target_pointer_width = "32",
-               repr(align(4)))]
-    #[cfg_attr(target_pointer_width = "64",
-               repr(align(8)))]
+    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct sem_t {
         #[cfg(target_pointer_width = "32")]
         __size: [::c_char; 16],

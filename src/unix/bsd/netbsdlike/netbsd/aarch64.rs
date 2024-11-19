@@ -44,11 +44,11 @@ cfg_if! {
         impl PartialEq for __c_anonymous__freg {
             fn eq(&self, other: &__c_anonymous__freg) -> bool {
                 unsafe {
-                self.__b8 == other.__b8
-                    || self.__h16 == other.__h16
-                    || self.__s32 == other.__s32
-                    || self.__d64 == other.__d64
-                    || self.__q128 == other.__q128
+                    self.__b8 == other.__b8
+                        || self.__h16 == other.__h16
+                        || self.__s32 == other.__s32
+                        || self.__d64 == other.__d64
+                        || self.__q128 == other.__q128
                 }
             }
         }
@@ -56,24 +56,24 @@ cfg_if! {
         impl ::fmt::Debug for __c_anonymous__freg {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 unsafe {
-                f.debug_struct("__c_anonymous__freg")
-                    .field("__b8", &self.__b8)
-                    .field("__h16", &self.__h16)
-                    .field("__s32", &self.__s32)
-                    .field("__d64", &self.__d64)
-                    .field("__q128", &self.__q128)
-                    .finish()
+                    f.debug_struct("__c_anonymous__freg")
+                        .field("__b8", &self.__b8)
+                        .field("__h16", &self.__h16)
+                        .field("__s32", &self.__s32)
+                        .field("__d64", &self.__d64)
+                        .field("__q128", &self.__q128)
+                        .finish()
                 }
             }
         }
         impl ::hash::Hash for __c_anonymous__freg {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
-                self.__b8.hash(state);
-                self.__h16.hash(state);
-                self.__s32.hash(state);
-                self.__d64.hash(state);
-                self.__q128.hash(state);
+                    self.__b8.hash(state);
+                    self.__h16.hash(state);
+                    self.__s32.hash(state);
+                    self.__d64.hash(state);
+                    self.__q128.hash(state);
                 }
             }
         }

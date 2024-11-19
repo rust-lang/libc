@@ -260,7 +260,6 @@ pub const IBSHIFT: ::tcflag_t = 16;
 
 cfg_if! {
     if #[cfg(target_env = "gnu")] {
-
         pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
         pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
         pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
@@ -282,9 +281,7 @@ cfg_if! {
         #[allow(deprecated)]
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
-
     } else if #[cfg(target_env = "musl")] {
-
         pub const RLIMIT_CPU: ::c_int = 0;
         pub const RLIMIT_FSIZE: ::c_int = 1;
         pub const RLIMIT_DATA: ::c_int = 2;

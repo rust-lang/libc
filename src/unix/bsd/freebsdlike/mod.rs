@@ -107,11 +107,11 @@ s! {
     }
 
     pub struct glob_t {
-        pub gl_pathc:  ::size_t,
+        pub gl_pathc: ::size_t,
         pub gl_matchc: ::size_t,
-        pub gl_offs:   ::size_t,
-        pub gl_flags:  ::c_int,
-        pub gl_pathv:  *mut *mut ::c_char,
+        pub gl_offs: ::size_t,
+        pub gl_flags: ::c_int,
+        pub gl_pathv: *mut *mut ::c_char,
         __unused3: *mut ::c_void,
         __unused4: *mut ::c_void,
         __unused5: *mut ::c_void,
@@ -401,10 +401,10 @@ cfg_if! {
                     && self.__ss_pad1 == other.__ss_pad1
                     && self.__ss_align == other.__ss_align
                     && self
-                    .__ss_pad2
-                    .iter()
-                    .zip(other.__ss_pad2.iter())
-                    .all(|(a, b)| a == b)
+                        .__ss_pad2
+                        .iter()
+                        .zip(other.__ss_pad2.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for sockaddr_storage {}

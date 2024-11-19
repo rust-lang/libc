@@ -26,15 +26,15 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
-                self.mc_vers == other.mc_vers &&
-                self.mc_flags == other.mc_flags &&
-                self.mc_onstack == other.mc_onstack &&
-                self.mc_len == other.mc_len &&
-                self.mc_avec == other.mc_avec &&
-                self.mc_av == other.mc_av &&
-                self.mc_frame == other.mc_frame &&
-                self.mc_fpreg == other.mc_fpreg &&
-                self.mc_vsxfpreg == other.mc_vsxfpreg
+                self.mc_vers == other.mc_vers
+                    && self.mc_flags == other.mc_flags
+                    && self.mc_onstack == other.mc_onstack
+                    && self.mc_len == other.mc_len
+                    && self.mc_avec == other.mc_avec
+                    && self.mc_av == other.mc_av
+                    && self.mc_frame == other.mc_frame
+                    && self.mc_fpreg == other.mc_fpreg
+                    && self.mc_vsxfpreg == other.mc_vsxfpreg
             }
         }
         impl Eq for mcontext_t {}
