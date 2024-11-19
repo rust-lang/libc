@@ -7,7 +7,7 @@ s! {
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
         pub sa_flags: ::c_int,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct statfs {
@@ -127,7 +127,7 @@ s! {
         pub __seq: ::c_ushort,
         __pad2: ::c_ushort,
         __unused1: ::c_ulong,
-        __unused2: ::c_ulong
+        __unused2: ::c_ulong,
     }
 
     pub struct stat64 {
@@ -196,7 +196,7 @@ s! {
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
         __unused4: ::c_ulong,
-        __unused5: ::c_ulong
+        __unused5: ::c_ulong,
     }
 
     pub struct msqid_ds {
@@ -222,8 +222,8 @@ s! {
         pub si_code: ::c_int,
         #[doc(hidden)]
         #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
+            since = "0.2.54",
+            note = "Please leave a comment on \
                   https://github.com/rust-lang/libc/pull/1316 if you're using \
                   this field"
         )]
@@ -234,9 +234,8 @@ s! {
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
-        pub ss_size: ::size_t
+        pub ss_size: ::size_t,
     }
-
 }
 
 s_no_extra_traits! {
@@ -269,7 +268,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 6]
+        priv_: [f64; 6],
     }
 }
 
@@ -307,10 +306,10 @@ cfg_if! {
                     .field("foo", &self.foo)
                     .field("fos", &self.fos)
                     .field("mxcsr", &self.mxcsr)
-                // Ignore __reserved field
+                    // Ignore __reserved field
                     .field("st_space", &self.st_space)
                     .field("xmm_space", &self.xmm_space)
-                // Ignore padding field
+                    // Ignore padding field
                     .finish()
             }
         }
@@ -354,7 +353,7 @@ cfg_if! {
                     .field("uc_stack", &self.uc_stack)
                     .field("uc_mcontext", &self.uc_mcontext)
                     .field("uc_sigmask", &self.uc_sigmask)
-                // Ignore __private field
+                    // Ignore __private field
                     .finish()
             }
         }

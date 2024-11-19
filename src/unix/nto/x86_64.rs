@@ -52,7 +52,7 @@ s! {
         pub fpu_op: u32,
         pub fpu_ds: u32,
         pub st_regs: [u8; 80],
-   }
+    }
 
     pub struct fxsave_area_64 {
         pub fpu_control_word: u16,

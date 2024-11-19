@@ -22,10 +22,14 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
-                self.__gregs == other.__gregs &&
-                self.mc_vfp_size == other.mc_vfp_size &&
-                self.mc_vfp_ptr == other.mc_vfp_ptr &&
-                self.mc_spare.iter().zip(other.mc_spare.iter()).all(|(a, b)| a == b)
+                self.__gregs == other.__gregs
+                    && self.mc_vfp_size == other.mc_vfp_size
+                    && self.mc_vfp_ptr == other.mc_vfp_ptr
+                    && self
+                        .mc_spare
+                        .iter()
+                        .zip(other.mc_spare.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for mcontext_t {}

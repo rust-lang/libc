@@ -75,17 +75,13 @@ s_no_extra_traits! {
 
     pub struct sockaddr_un {
         pub sun_family: ::sa_family_t,
-        pub sun_path: [::c_char; 108]
+        pub sun_path: [::c_char; 108],
     }
 
     pub struct sockaddr_storage {
         pub ss_family: ::sa_family_t,
-        __ss_padding: [
-            u8;
-            128 -
-            ::core::mem::size_of::<sa_family_t>() -
-            ::core::mem::size_of::<c_ulong>()
-        ],
+        __ss_padding:
+            [u8; 128 - ::core::mem::size_of::<sa_family_t>() - ::core::mem::size_of::<c_ulong>()],
         __ss_align: ::c_ulong,
     }
 }
@@ -162,7 +158,7 @@ s! {
     pub struct sigaction {
         pub sa_sigaction: ::sighandler_t,
         pub sa_flags: ::c_ulong,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
         pub sa_mask: ::sigset_t,
     }
 
@@ -1022,20 +1018,20 @@ f! {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
+        return;
     }
 
     pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
     }
 
     pub fn FD_SET(fd: ::c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
+        return;
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
@@ -1268,10 +1264,10 @@ cfg_if! {
                     && self.d_reclen == other.d_reclen
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1284,7 +1280,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                // FIXME: .field("d_name", &self.d_name)
+                    // FIXME: .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1303,10 +1299,10 @@ cfg_if! {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_family == other.sun_family
                     && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a,b)| a == b)
+                        .sun_path
+                        .iter()
+                        .zip(other.sun_path.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1316,7 +1312,7 @@ cfg_if! {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME: .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -1333,10 +1329,10 @@ cfg_if! {
                 self.ss_family == other.ss_family
                     && self.__ss_align == self.__ss_align
                     && self
-                    .__ss_padding
-                    .iter()
-                    .zip(other.__ss_padding.iter())
-                    .all(|(a,b)| a == b)
+                        .__ss_padding
+                        .iter()
+                        .zip(other.__ss_padding.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1347,7 +1343,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
-                // FIXME: .field("__ss_padding", &self.__ss_padding)
+                    // FIXME: .field("__ss_padding", &self.__ss_padding)
                     .finish()
             }
         }
@@ -1367,30 +1363,30 @@ cfg_if! {
                     .zip(other.sysname.iter())
                     .all(|(a, b)| a == b)
                     && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a, b)| a == b)
+                        .nodename
+                        .iter()
+                        .zip(other.nodename.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a, b)| a == b)
+                        .release
+                        .iter()
+                        .zip(other.release.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a, b)| a == b)
+                        .version
+                        .iter()
+                        .zip(other.version.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a, b)| a == b)
+                        .machine
+                        .iter()
+                        .zip(other.machine.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .domainname
-                    .iter()
-                    .zip(other.domainname.iter())
-                    .all(|(a, b)| a == b)
+                        .domainname
+                        .iter()
+                        .zip(other.domainname.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1399,12 +1395,12 @@ cfg_if! {
         impl ::fmt::Debug for utsname {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
-                // FIXME: .field("domainname", &self.domainname)
+                    // FIXME: .field("sysname", &self.sysname)
+                    // FIXME: .field("nodename", &self.nodename)
+                    // FIXME: .field("release", &self.release)
+                    // FIXME: .field("version", &self.version)
+                    // FIXME: .field("machine", &self.machine)
+                    // FIXME: .field("domainname", &self.domainname)
                     .finish()
             }
         }

@@ -20,9 +20,9 @@ s! {
         /// | MSB              |                 LSB |
         /// | ---------------- | ------------------- |
         /// | 8bit granularity | 24bit offset ..     |
-        gran_offset: l4_umword_t ,
+        gran_offset: l4_umword_t,
         /// Bitmap of CPUs.
-        map: l4_umword_t ,
+        map: l4_umword_t,
     }
 }
 

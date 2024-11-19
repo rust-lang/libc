@@ -118,7 +118,7 @@ s! {
         pub mode: ::mode_t,
         pub __seq: ::c_int,
         __unused1: ::c_long,
-        __unused2: ::c_long
+        __unused2: ::c_long,
     }
 
     #[repr(align(8))]
@@ -164,7 +164,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 4]
+        priv_: [f64; 4],
     }
 }
 
@@ -182,10 +182,10 @@ cfg_if! {
                     && self.mxcr_mask == other.mxcr_mask
                     && self.st_space == other.st_space
                     && self
-                    .xmm_space
-                    .iter()
-                    .zip(other.xmm_space.iter())
-                    .all(|(a,b)| a == b)
+                        .xmm_space
+                        .iter()
+                        .zip(other.xmm_space.iter())
+                        .all(|(a, b)| a == b)
                 // Ignore padding field
             }
         }
@@ -203,8 +203,8 @@ cfg_if! {
                     .field("mxcsr", &self.mxcsr)
                     .field("mxcr_mask", &self.mxcr_mask)
                     .field("st_space", &self.st_space)
-                // FIXME: .field("xmm_space", &self.xmm_space)
-                // Ignore padding field
+                    // FIXME: .field("xmm_space", &self.xmm_space)
+                    // Ignore padding field
                     .finish()
             }
         }
@@ -232,10 +232,10 @@ cfg_if! {
                     && self.uc_mcontext == other.uc_mcontext
                     && self.uc_sigmask == other.uc_sigmask
                     && self
-                    .__private
-                    .iter()
-                    .zip(other.__private.iter())
-                    .all(|(a,b)| a == b)
+                        .__private
+                        .iter()
+                        .zip(other.__private.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -249,7 +249,7 @@ cfg_if! {
                     .field("uc_stack", &self.uc_stack)
                     .field("uc_mcontext", &self.uc_mcontext)
                     .field("uc_sigmask", &self.uc_sigmask)
-                // Ignore __private field
+                    // Ignore __private field
                     .finish()
             }
         }

@@ -96,7 +96,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 4]
+        priv_: [f64; 4],
     }
 
     #[repr(align(16))]
@@ -146,13 +146,14 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for fpreg32 {
             fn eq(&self, other: &fpreg32) -> bool {
-                self.fpr_env == other.fpr_env &&
-                    self.fpr_acc == other.fpr_acc &&
-                    self.fpr_ex_sw == other.fpr_ex_sw &&
-                    self.fpr_pad
+                self.fpr_env == other.fpr_env
+                    && self.fpr_acc == other.fpr_acc
+                    && self.fpr_ex_sw == other.fpr_ex_sw
+                    && self
+                        .fpr_pad
                         .iter()
                         .zip(other.fpr_pad.iter())
-                        .all(|(a,b)| a == b)
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for fpreg32 {}
@@ -177,10 +178,10 @@ cfg_if! {
 
         impl PartialEq for fpreg {
             fn eq(&self, other: &fpreg) -> bool {
-                self.fpr_env == other.fpr_env &&
-                    self.fpr_acc == other.fpr_acc &&
-                    self.fpr_xacc == other.fpr_xacc &&
-                    self.fpr_spare == other.fpr_spare
+                self.fpr_env == other.fpr_env
+                    && self.fpr_acc == other.fpr_acc
+                    && self.fpr_xacc == other.fpr_xacc
+                    && self.fpr_spare == other.fpr_spare
             }
         }
         impl Eq for fpreg {}
@@ -205,13 +206,14 @@ cfg_if! {
 
         impl PartialEq for xmmreg {
             fn eq(&self, other: &xmmreg) -> bool {
-                self.xmm_env == other.xmm_env &&
-                    self.xmm_acc == other.xmm_acc &&
-                    self.xmm_reg == other.xmm_reg &&
-                    self.xmm_pad
+                self.xmm_env == other.xmm_env
+                    && self.xmm_acc == other.xmm_acc
+                    && self.xmm_reg == other.xmm_reg
+                    && self
+                        .xmm_pad
                         .iter()
                         .zip(other.xmm_pad.iter())
-                        .all(|(a,b)| a == b)
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for xmmreg {}
@@ -236,9 +238,11 @@ cfg_if! {
 
         impl PartialEq for __c_anonymous_elf64_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf64_auxv_union) -> bool {
-                unsafe { self.a_val == other.a_val
+                unsafe {
+                    self.a_val == other.a_val
                         || self.a_ptr == other.a_ptr
-                        || self.a_fcn == other.a_fcn }
+                        || self.a_fcn == other.a_fcn
+                }
             }
         }
         impl Eq for __c_anonymous_elf64_auxv_union {}
@@ -251,8 +255,7 @@ cfg_if! {
         }
         impl PartialEq for Elf64_Auxinfo {
             fn eq(&self, other: &Elf64_Auxinfo) -> bool {
-                self.a_type == other.a_type
-                    && self.a_un == other.a_un
+                self.a_type == other.a_type && self.a_un == other.a_un
             }
         }
         impl Eq for Elf64_Auxinfo {}
@@ -265,48 +268,50 @@ cfg_if! {
             }
         }
 
-
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
-                self.mc_onstack == other.mc_onstack &&
-                self.mc_rdi == other.mc_rdi &&
-                self.mc_rsi == other.mc_rsi &&
-                self.mc_rdx == other.mc_rdx &&
-                self.mc_rcx == other.mc_rcx &&
-                self.mc_r8 == other.mc_r8 &&
-                self.mc_r9 == other.mc_r9 &&
-                self.mc_rax == other.mc_rax &&
-                self.mc_rbx == other.mc_rbx &&
-                self.mc_rbp == other.mc_rbp &&
-                self.mc_r10 == other.mc_r10 &&
-                self.mc_r11 == other.mc_r11 &&
-                self.mc_r12 == other.mc_r12 &&
-                self.mc_r13 == other.mc_r13 &&
-                self.mc_r14 == other.mc_r14 &&
-                self.mc_r15 == other.mc_r15 &&
-                self.mc_trapno == other.mc_trapno &&
-                self.mc_fs == other.mc_fs &&
-                self.mc_gs == other.mc_gs &&
-                self.mc_addr == other.mc_addr &&
-                self.mc_flags == other.mc_flags &&
-                self.mc_es == other.mc_es &&
-                self.mc_ds == other.mc_ds &&
-                self.mc_err == other.mc_err &&
-                self.mc_rip == other.mc_rip &&
-                self.mc_cs == other.mc_cs &&
-                self.mc_rflags == other.mc_rflags &&
-                self.mc_rsp == other.mc_rsp &&
-                self.mc_ss == other.mc_ss &&
-                self.mc_len == other.mc_len &&
-                self.mc_fpformat == other.mc_fpformat &&
-                self.mc_ownedfp == other.mc_ownedfp &&
-                self.mc_fpstate.iter().zip(other.mc_fpstate.iter())
-                .all(|(a, b)| a == b) &&
-                self.mc_fsbase == other.mc_fsbase &&
-                self.mc_gsbase == other.mc_gsbase &&
-                self.mc_xfpustate == other.mc_xfpustate &&
-                self.mc_xfpustate_len == other.mc_xfpustate_len &&
-                self.mc_spare == other.mc_spare
+                self.mc_onstack == other.mc_onstack
+                    && self.mc_rdi == other.mc_rdi
+                    && self.mc_rsi == other.mc_rsi
+                    && self.mc_rdx == other.mc_rdx
+                    && self.mc_rcx == other.mc_rcx
+                    && self.mc_r8 == other.mc_r8
+                    && self.mc_r9 == other.mc_r9
+                    && self.mc_rax == other.mc_rax
+                    && self.mc_rbx == other.mc_rbx
+                    && self.mc_rbp == other.mc_rbp
+                    && self.mc_r10 == other.mc_r10
+                    && self.mc_r11 == other.mc_r11
+                    && self.mc_r12 == other.mc_r12
+                    && self.mc_r13 == other.mc_r13
+                    && self.mc_r14 == other.mc_r14
+                    && self.mc_r15 == other.mc_r15
+                    && self.mc_trapno == other.mc_trapno
+                    && self.mc_fs == other.mc_fs
+                    && self.mc_gs == other.mc_gs
+                    && self.mc_addr == other.mc_addr
+                    && self.mc_flags == other.mc_flags
+                    && self.mc_es == other.mc_es
+                    && self.mc_ds == other.mc_ds
+                    && self.mc_err == other.mc_err
+                    && self.mc_rip == other.mc_rip
+                    && self.mc_cs == other.mc_cs
+                    && self.mc_rflags == other.mc_rflags
+                    && self.mc_rsp == other.mc_rsp
+                    && self.mc_ss == other.mc_ss
+                    && self.mc_len == other.mc_len
+                    && self.mc_fpformat == other.mc_fpformat
+                    && self.mc_ownedfp == other.mc_ownedfp
+                    && self
+                        .mc_fpstate
+                        .iter()
+                        .zip(other.mc_fpstate.iter())
+                        .all(|(a, b)| a == b)
+                    && self.mc_fsbase == other.mc_fsbase
+                    && self.mc_gsbase == other.mc_gsbase
+                    && self.mc_xfpustate == other.mc_xfpustate
+                    && self.mc_xfpustate_len == other.mc_xfpustate_len
+                    && self.mc_spare == other.mc_spare
             }
         }
         impl Eq for mcontext_t {}

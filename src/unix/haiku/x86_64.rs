@@ -67,12 +67,17 @@ cfg_if! {
                     && self.rdp == other.rdp
                     && self.mxcsr == other.mxcsr
                     && self.mscsr_mask == other.mscsr_mask
-                    && self._fpreg.iter().zip(other._fpreg.iter()).all(|(a, b)| a == b)
+                    && self
+                        ._fpreg
+                        .iter()
+                        .zip(other._fpreg.iter())
+                        .all(|(a, b)| a == b)
                     && self._xmm.iter().zip(other._xmm.iter()).all(|(a, b)| a == b)
-                    && self._reserved_416_511.
-                        iter().
-                        zip(other._reserved_416_511.iter()).
-                        all(|(a, b)| a == b)
+                    && self
+                        ._reserved_416_511
+                        .iter()
+                        .zip(other._reserved_416_511.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for fpu_state {}
@@ -113,7 +118,11 @@ cfg_if! {
             fn eq(&self, other: &xstate_hdr) -> bool {
                 self.bv == other.bv
                     && self.xcomp_bv == other.xcomp_bv
-                    && self._reserved.iter().zip(other._reserved.iter()).all(|(a, b)| a == b)
+                    && self
+                        ._reserved
+                        .iter()
+                        .zip(other._reserved.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for xstate_hdr {}
@@ -138,7 +147,11 @@ cfg_if! {
             fn eq(&self, other: &savefpu) -> bool {
                 self.fp_fxsave == other.fp_fxsave
                     && self.fp_xstate == other.fp_xstate
-                    && self._fp_ymm.iter().zip(other._fp_ymm.iter()).all(|(a, b)| a == b)
+                    && self
+                        ._fp_ymm
+                        .iter()
+                        .zip(other._fp_ymm.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for savefpu {}
@@ -206,7 +219,6 @@ cfg_if! {
                     .field("rflags", &self.rflags)
                     .field("fpu", &self.fpu)
                     .finish()
-
             }
         }
         impl ::hash::Hash for mcontext_t {

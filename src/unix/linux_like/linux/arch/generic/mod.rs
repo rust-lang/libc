@@ -92,12 +92,16 @@ pub const SO_BINDTOIFINDEX: ::c_int = 62;
 cfg_if! {
     // Some of these platforms in CI already have these constants.
     // But they may still not have those _OLD ones.
-    if #[cfg(all(any(target_arch = "x86",
-                     target_arch = "x86_64",
-                     target_arch = "aarch64",
-                     target_arch = "csky",
-                     target_arch = "loongarch64"),
-                 not(any(target_env = "musl", target_env = "ohos"))))] {
+    if #[cfg(all(
+        any(
+            target_arch = "x86",
+            target_arch = "x86_64",
+            target_arch = "aarch64",
+            target_arch = "csky",
+            target_arch = "loongarch64"
+        ),
+        not(any(target_env = "musl", target_env = "ohos"))
+    ))] {
         pub const SO_TIMESTAMP_NEW: ::c_int = 63;
         pub const SO_TIMESTAMPNS_NEW: ::c_int = 64;
         pub const SO_TIMESTAMPING_NEW: ::c_int = 65;
@@ -110,14 +114,16 @@ cfg_if! {
 // pub const SO_BUSY_POLL_BUDGET: ::c_int = 70;
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86",
-                 target_arch = "x86_64",
-                 target_arch = "arm",
-                 target_arch = "aarch64",
-                 target_arch = "riscv64",
-                 target_arch = "s390x",
-                 target_arch = "csky",
-                 target_arch = "loongarch64"))] {
+    if #[cfg(any(
+        target_arch = "x86",
+        target_arch = "x86_64",
+        target_arch = "arm",
+        target_arch = "aarch64",
+        target_arch = "riscv64",
+        target_arch = "s390x",
+        target_arch = "csky",
+        target_arch = "loongarch64"
+    ))] {
         pub const FICLONE: ::c_ulong = 0x40049409;
         pub const FICLONERANGE: ::c_ulong = 0x4020940D;
     }
@@ -246,7 +252,11 @@ cfg_if! {
     // where S stands for size (int, long, struct...)
     // where T stands for type ('f','v','X'...)
     // where N stands for NR (NumbeR)
-    if #[cfg(any(target_arch = "x86", target_arch = "arm", target_arch = "csky"))] {
+    if #[cfg(any(
+        target_arch = "x86",
+        target_arch = "arm",
+        target_arch = "csky"
+    ))] {
         pub const FS_IOC_GETFLAGS: ::Ioctl = 0x80046601;
         pub const FS_IOC_SETFLAGS: ::Ioctl = 0x40046602;
         pub const FS_IOC_GETVERSION: ::Ioctl = 0x80047601;
@@ -258,11 +268,13 @@ cfg_if! {
         pub const TUNATTACHFILTER: ::Ioctl = 0x400854d5;
         pub const TUNDETACHFILTER: ::Ioctl = 0x400854d6;
         pub const TUNGETFILTER: ::Ioctl = 0x800854db;
-    } else if #[cfg(any(target_arch = "x86_64",
-                        target_arch = "riscv64",
-                        target_arch = "aarch64",
-                        target_arch = "s390x",
-                        target_arch = "loongarch64"))] {
+    } else if #[cfg(any(
+        target_arch = "x86_64",
+        target_arch = "riscv64",
+        target_arch = "aarch64",
+        target_arch = "s390x",
+        target_arch = "loongarch64"
+    ))] {
         pub const FS_IOC_GETFLAGS: ::Ioctl = 0x80086601;
         pub const FS_IOC_SETFLAGS: ::Ioctl = 0x40086602;
         pub const FS_IOC_GETVERSION: ::Ioctl = 0x80087601;
@@ -278,8 +290,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "arm",
-                 target_arch = "s390x"))] {
+    if #[cfg(any(target_arch = "arm", target_arch = "s390x"))] {
         pub const FIOQSIZE: ::Ioctl = 0x545E;
     } else {
         pub const FIOQSIZE: ::Ioctl = 0x5460;
@@ -304,9 +315,7 @@ pub const IBSHIFT: ::tcflag_t = 16;
 // RLIMIT Constants
 
 cfg_if! {
-    if #[cfg(any(target_env = "gnu",
-                 target_env = "uclibc"))] {
-
+    if #[cfg(any(target_env = "gnu", target_env = "uclibc"))] {
         pub const RLIMIT_CPU: ::__rlimit_resource_t = 0;
         pub const RLIMIT_FSIZE: ::__rlimit_resource_t = 1;
         pub const RLIMIT_DATA: ::__rlimit_resource_t = 2;
@@ -326,9 +335,7 @@ cfg_if! {
         #[allow(deprecated)]
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: ::__rlimit_resource_t = RLIM_NLIMITS;
-
     } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
-
         pub const RLIMIT_CPU: ::c_int = 0;
         pub const RLIMIT_FSIZE: ::c_int = 1;
         pub const RLIMIT_DATA: ::c_int = 2;
@@ -357,8 +364,7 @@ cfg_if! {
     if #[cfg(target_env = "gnu")] {
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIM_NLIMITS: ::__rlimit_resource_t = 16;
-    }
-    else if #[cfg(target_env = "uclibc")] {
+    } else if #[cfg(target_env = "uclibc")] {
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIM_NLIMITS: ::__rlimit_resource_t = 15;
     }

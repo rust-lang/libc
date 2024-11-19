@@ -63,7 +63,7 @@ s! {
         pub mode: ::mode_t,
         pub __seq: ::c_int,
         __unused1: ::c_long,
-        __unused2: ::c_long
+        __unused2: ::c_long,
     }
 
     pub struct shmid_ds {
@@ -167,7 +167,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
-        priv_: [f32; 4]
+        priv_: [f32; 4],
     }
 }
 

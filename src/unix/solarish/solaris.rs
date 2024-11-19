@@ -64,7 +64,7 @@ s_no_extra_traits! {
     #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub struct door_desc_t__d_data__d_desc {
         pub d_descriptor: ::c_int,
-        pub d_id: ::door_id_t
+        pub d_id: ::door_id_t,
     }
 
     #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
@@ -102,7 +102,6 @@ s_no_extra_traits! {
         pub ut_syslen: ::c_short,
         pub ut_host: [::c_char; 257],
     }
-
 }
 
 cfg_if! {
@@ -120,10 +119,10 @@ cfg_if! {
                     && self.ut_syslen == other.ut_syslen
                     && self.pad == other.pad
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 

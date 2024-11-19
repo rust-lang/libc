@@ -274,15 +274,15 @@ s! {
         pub aio_nbytes: ::size_t,
         pub aio_reqprio: ::c_int,
         pub aio_sigevent: sigevent,
-        pub aio_lio_opcode: ::c_int
+        pub aio_lio_opcode: ::c_int,
     }
 
     pub struct glob_t {
-        pub gl_pathc:  ::size_t,
+        pub gl_pathc: ::size_t,
         __unused1: ::c_int,
-        pub gl_offs:   ::size_t,
+        pub gl_offs: ::size_t,
         __unused2: ::c_int,
-        pub gl_pathv:  *mut *mut ::c_char,
+        pub gl_pathv: *mut *mut ::c_char,
 
         __unused3: *mut ::c_void,
 
@@ -652,7 +652,7 @@ s! {
         pub cr_version: ::c_uint,
         pub cr_uid: ::uid_t,
         pub cr_ngroups: ::c_short,
-        pub cr_groups: [::gid_t;16]
+        pub cr_groups: [::gid_t; 16],
     }
 
     pub struct segment_command {
@@ -773,11 +773,11 @@ s! {
     // sys/socket.h
 
     pub struct sa_endpoints_t {
-        pub sae_srcif: ::c_uint, // optional source interface
+        pub sae_srcif: ::c_uint,            // optional source interface
         pub sae_srcaddr: *const ::sockaddr, // optional source address
-        pub sae_srcaddrlen: ::socklen_t, // size of source address
+        pub sae_srcaddrlen: ::socklen_t,    // size of source address
         pub sae_dstaddr: *const ::sockaddr, // destination address
-        pub sae_dstaddrlen: ::socklen_t, // size of destination address
+        pub sae_dstaddrlen: ::socklen_t,    // size of destination address
     }
 
     pub struct timex {
@@ -1307,9 +1307,9 @@ s_no_extra_traits! {
         pub shm_lpid: ::pid_t,
         pub shm_cpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
-        pub shm_atime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
-        pub shm_dtime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
-        pub shm_ctime: ::time_t,  // FIXME: 64-bit wrong align => wrong offset
+        pub shm_atime: ::time_t, // FIXME: 64-bit wrong align => wrong offset
+        pub shm_dtime: ::time_t, // FIXME: 64-bit wrong align => wrong offset
+        pub shm_ctime: ::time_t, // FIXME: 64-bit wrong align => wrong offset
         // FIXME: 64-bit wrong align => wrong offset:
         pub shm_internal: *mut ::c_void,
     }
@@ -1395,8 +1395,8 @@ s_no_extra_traits! {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
         pub sigev_value: ::sigval,
-        __unused1: *mut ::c_void,       //actually a function pointer
-        pub sigev_notify_attributes: *mut ::pthread_attr_t
+        __unused1: *mut ::c_void, //actually a function pointer
+        pub sigev_notify_attributes: *mut ::pthread_attr_t,
     }
 
     pub struct processor_cpu_load_info {
@@ -1880,10 +1880,11 @@ cfg_if! {
                     && self.pth_curpri == other.pth_curpri
                     && self.pth_priority == other.pth_priority
                     && self.pth_maxpriority == other.pth_maxpriority
-                    && self.pth_name
-                           .iter()
-                           .zip(other.pth_name.iter())
-                           .all(|(a,b)| a == b)
+                    && self
+                        .pth_name
+                        .iter()
+                        .zip(other.pth_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for proc_threadinfo {}
@@ -1900,7 +1901,7 @@ cfg_if! {
                     .field("pth_curpri", &self.pth_curpri)
                     .field("pth_priority", &self.pth_priority)
                     .field("pth_maxpriority", &self.pth_maxpriority)
-                      // FIXME: .field("pth_name", &self.pth_name)
+                    // FIXME: .field("pth_name", &self.pth_name)
                     .finish()
             }
         }
@@ -1936,15 +1937,15 @@ cfg_if! {
                     && self.f_fstypename == other.f_fstypename
                     && self.f_type == other.f_type
                     && self
-                    .f_mntonname
-                    .iter()
-                    .zip(other.f_mntonname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntonname
+                        .iter()
+                        .zip(other.f_mntonname.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .f_mntfromname
-                    .iter()
-                    .zip(other.f_mntfromname.iter())
-                    .all(|(a,b)| a == b)
+                        .f_mntfromname
+                        .iter()
+                        .zip(other.f_mntfromname.iter())
+                        .all(|(a, b)| a == b)
                     && self.f_reserved == other.f_reserved
             }
         }
@@ -1966,8 +1967,8 @@ cfg_if! {
                     .field("f_fssubtype", &self.f_fssubtype)
                     .field("f_fstypename", &self.f_fstypename)
                     .field("f_type", &self.f_type)
-                // FIXME: .field("f_mntonname", &self.f_mntonname)
-                // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME: .field("f_mntonname", &self.f_mntonname)
+                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
                     .field("f_reserved", &self.f_reserved)
                     .finish()
             }
@@ -2002,10 +2003,10 @@ cfg_if! {
                     && self.d_namlen == other.d_namlen
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for dirent {}
@@ -2034,11 +2035,11 @@ cfg_if! {
         impl PartialEq for pthread_rwlock_t {
             fn eq(&self, other: &pthread_rwlock_t) -> bool {
                 self.__sig == other.__sig
-                    && self.
-                    __opaque
-                    .iter()
-                    .zip(other.__opaque.iter())
-                    .all(|(a,b)| a == b)
+                    && self
+                        .__opaque
+                        .iter()
+                        .zip(other.__opaque.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for pthread_rwlock_t {}
@@ -2060,11 +2061,11 @@ cfg_if! {
         impl PartialEq for pthread_mutex_t {
             fn eq(&self, other: &pthread_mutex_t) -> bool {
                 self.__sig == other.__sig
-                    && self.
-                    __opaque
-                    .iter()
-                    .zip(other.__opaque.iter())
-                    .all(|(a,b)| a == b)
+                    && self
+                        .__opaque
+                        .iter()
+                        .zip(other.__opaque.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -2089,11 +2090,11 @@ cfg_if! {
         impl PartialEq for pthread_cond_t {
             fn eq(&self, other: &pthread_cond_t) -> bool {
                 self.__sig == other.__sig
-                    && self.
-                    __opaque
-                    .iter()
-                    .zip(other.__opaque.iter())
-                    .all(|(a,b)| a == b)
+                    && self
+                        .__opaque
+                        .iter()
+                        .zip(other.__opaque.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -2120,16 +2121,16 @@ cfg_if! {
                 self.ss_len == other.ss_len
                     && self.ss_family == other.ss_family
                     && self
-                    .__ss_pad1
-                    .iter()
-                    .zip(other.__ss_pad1.iter())
-                    .all(|(a, b)| a == b)
+                        .__ss_pad1
+                        .iter()
+                        .zip(other.__ss_pad1.iter())
+                        .all(|(a, b)| a == b)
                     && self.__ss_align == other.__ss_align
                     && self
-                    .__ss_pad2
-                    .iter()
-                    .zip(other.__ss_pad2.iter())
-                    .all(|(a, b)| a == b)
+                        .__ss_pad2
+                        .iter()
+                        .zip(other.__ss_pad2.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -2162,17 +2163,17 @@ cfg_if! {
                 self.ut_user
                     .iter()
                     .zip(other.ut_user.iter())
-                    .all(|(a,b)| a == b)
+                    .all(|(a, b)| a == b)
                     && self.ut_id == other.ut_id
                     && self.ut_line == other.ut_line
                     && self.ut_pid == other.ut_pid
                     && self.ut_type == other.ut_type
                     && self.ut_tv == other.ut_tv
                     && self
-                    .ut_host
-                    .iter()
-                    .zip(other.ut_host.iter())
-                    .all(|(a,b)| a == b)
+                        .ut_host
+                        .iter()
+                        .zip(other.ut_host.iter())
+                        .all(|(a, b)| a == b)
                     && self.ut_pad == other.ut_pad
             }
         }
@@ -2212,8 +2213,7 @@ cfg_if! {
                 self.sigev_notify == other.sigev_notify
                     && self.sigev_signo == other.sigev_signo
                     && self.sigev_value == other.sigev_value
-                    && self.sigev_notify_attributes
-                        == other.sigev_notify_attributes
+                    && self.sigev_notify_attributes == other.sigev_notify_attributes
             }
         }
 
@@ -2225,8 +2225,7 @@ cfg_if! {
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_value", &self.sigev_value)
-                    .field("sigev_notify_attributes",
-                           &self.sigev_notify_attributes)
+                    .field("sigev_notify_attributes", &self.sigev_notify_attributes)
                     .finish()
             }
         }
@@ -2342,8 +2341,7 @@ cfg_if! {
 
         impl PartialEq for time_value_t {
             fn eq(&self, other: &time_value_t) -> bool {
-                self.seconds == other.seconds
-                    && self.microseconds == other.microseconds
+                self.seconds == other.seconds && self.microseconds == other.microseconds
             }
         }
         impl Eq for time_value_t {}
@@ -2412,10 +2410,11 @@ cfg_if! {
                     && self.pth_curpri == other.pth_curpri
                     && self.pth_priority == other.pth_priority
                     && self.pth_maxpriority == other.pth_maxpriority
-                    && self.pth_name
-                           .iter()
-                           .zip(other.pth_name.iter())
-                           .all(|(a,b)| a == b)
+                    && self
+                        .pth_name
+                        .iter()
+                        .zip(other.pth_name.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for thread_extended_info {}
@@ -2432,7 +2431,7 @@ cfg_if! {
                     .field("pth_curpri", &self.pth_curpri)
                     .field("pth_priority", &self.pth_priority)
                     .field("pth_maxpriority", &self.pth_maxpriority)
-                      // FIXME: .field("pth_name", &self.pth_name)
+                    // FIXME: .field("pth_name", &self.pth_name)
                     .finish()
             }
         }
@@ -2477,31 +2476,31 @@ cfg_if! {
         }
         impl PartialEq for if_data64 {
             fn eq(&self, other: &if_data64) -> bool {
-                self.ifi_type == other.ifi_type &&
-                self.ifi_typelen == other.ifi_typelen &&
-                self.ifi_physical == other.ifi_physical &&
-                self.ifi_addrlen == other.ifi_addrlen &&
-                self.ifi_hdrlen == other.ifi_hdrlen &&
-                self.ifi_recvquota == other.ifi_recvquota &&
-                self.ifi_xmitquota == other.ifi_xmitquota &&
-                self.ifi_unused1 == other.ifi_unused1 &&
-                self.ifi_mtu == other.ifi_mtu &&
-                self.ifi_metric == other.ifi_metric &&
-                self.ifi_baudrate == other.ifi_baudrate &&
-                self.ifi_ipackets == other.ifi_ipackets &&
-                self.ifi_ierrors == other.ifi_ierrors &&
-                self.ifi_opackets == other.ifi_opackets &&
-                self.ifi_oerrors == other.ifi_oerrors &&
-                self.ifi_collisions == other.ifi_collisions &&
-                self.ifi_ibytes == other.ifi_ibytes &&
-                self.ifi_obytes == other.ifi_obytes &&
-                self.ifi_imcasts == other.ifi_imcasts &&
-                self.ifi_omcasts == other.ifi_omcasts &&
-                self.ifi_iqdrops == other.ifi_iqdrops &&
-                self.ifi_noproto == other.ifi_noproto &&
-                self.ifi_recvtiming == other.ifi_recvtiming &&
-                self.ifi_xmittiming == other.ifi_xmittiming &&
-                self.ifi_lastchange == other.ifi_lastchange
+                self.ifi_type == other.ifi_type
+                    && self.ifi_typelen == other.ifi_typelen
+                    && self.ifi_physical == other.ifi_physical
+                    && self.ifi_addrlen == other.ifi_addrlen
+                    && self.ifi_hdrlen == other.ifi_hdrlen
+                    && self.ifi_recvquota == other.ifi_recvquota
+                    && self.ifi_xmitquota == other.ifi_xmitquota
+                    && self.ifi_unused1 == other.ifi_unused1
+                    && self.ifi_mtu == other.ifi_mtu
+                    && self.ifi_metric == other.ifi_metric
+                    && self.ifi_baudrate == other.ifi_baudrate
+                    && self.ifi_ipackets == other.ifi_ipackets
+                    && self.ifi_ierrors == other.ifi_ierrors
+                    && self.ifi_opackets == other.ifi_opackets
+                    && self.ifi_oerrors == other.ifi_oerrors
+                    && self.ifi_collisions == other.ifi_collisions
+                    && self.ifi_ibytes == other.ifi_ibytes
+                    && self.ifi_obytes == other.ifi_obytes
+                    && self.ifi_imcasts == other.ifi_imcasts
+                    && self.ifi_omcasts == other.ifi_omcasts
+                    && self.ifi_iqdrops == other.ifi_iqdrops
+                    && self.ifi_noproto == other.ifi_noproto
+                    && self.ifi_recvtiming == other.ifi_recvtiming
+                    && self.ifi_xmittiming == other.ifi_xmittiming
+                    && self.ifi_lastchange == other.ifi_lastchange
             }
         }
         impl Eq for if_data64 {}
@@ -2617,17 +2616,17 @@ cfg_if! {
         }
         impl PartialEq for if_msghdr2 {
             fn eq(&self, other: &if_msghdr2) -> bool {
-                self.ifm_msglen == other.ifm_msglen &&
-                self.ifm_version == other.ifm_version &&
-                self.ifm_type == other.ifm_type &&
-                self.ifm_addrs == other.ifm_addrs &&
-                self.ifm_flags == other.ifm_flags &&
-                self.ifm_index == other.ifm_index &&
-                self.ifm_snd_len == other.ifm_snd_len &&
-                self.ifm_snd_maxlen == other.ifm_snd_maxlen &&
-                self.ifm_snd_drops == other.ifm_snd_drops &&
-                self.ifm_timer == other.ifm_timer &&
-                self.ifm_data == other.ifm_data
+                self.ifm_msglen == other.ifm_msglen
+                    && self.ifm_version == other.ifm_version
+                    && self.ifm_type == other.ifm_type
+                    && self.ifm_addrs == other.ifm_addrs
+                    && self.ifm_flags == other.ifm_flags
+                    && self.ifm_index == other.ifm_index
+                    && self.ifm_snd_len == other.ifm_snd_len
+                    && self.ifm_snd_maxlen == other.ifm_snd_maxlen
+                    && self.ifm_snd_drops == other.ifm_snd_drops
+                    && self.ifm_timer == other.ifm_timer
+                    && self.ifm_data == other.ifm_data
             }
         }
         impl Eq for if_msghdr2 {}
@@ -2689,30 +2688,30 @@ cfg_if! {
             fn eq(&self, other: &vm_statistics64) -> bool {
                 // Otherwise rustfmt crashes...
                 let total_uncompressed = self.total_uncompressed_pages_in_compressor;
-                self.free_count == other.free_count &&
-                self.active_count == other.active_count &&
-                self.inactive_count == other.inactive_count &&
-                self.wire_count == other.wire_count &&
-                self.zero_fill_count == other.zero_fill_count &&
-                self.reactivations == other.reactivations &&
-                self.pageins == other.pageins &&
-                self.pageouts == other.pageouts &&
-                self.faults == other.faults &&
-                self.cow_faults == other.cow_faults &&
-                self.lookups == other.lookups &&
-                self.hits == other.hits &&
-                self.purges == other.purges &&
-                self.purgeable_count == other.purgeable_count &&
-                self.speculative_count == other.speculative_count &&
-                self.decompressions == other.decompressions &&
-                self.compressions == other.compressions &&
-                self.swapins == other.swapins &&
-                self.swapouts == other.swapouts &&
-                self.compressor_page_count == other.compressor_page_count &&
-                self.throttled_count == other.throttled_count &&
-                self.external_page_count == other.external_page_count &&
-                self.internal_page_count == other.internal_page_count &&
-                total_uncompressed == other.total_uncompressed_pages_in_compressor
+                self.free_count == other.free_count
+                    && self.active_count == other.active_count
+                    && self.inactive_count == other.inactive_count
+                    && self.wire_count == other.wire_count
+                    && self.zero_fill_count == other.zero_fill_count
+                    && self.reactivations == other.reactivations
+                    && self.pageins == other.pageins
+                    && self.pageouts == other.pageouts
+                    && self.faults == other.faults
+                    && self.cow_faults == other.cow_faults
+                    && self.lookups == other.lookups
+                    && self.hits == other.hits
+                    && self.purges == other.purges
+                    && self.purgeable_count == other.purgeable_count
+                    && self.speculative_count == other.speculative_count
+                    && self.decompressions == other.decompressions
+                    && self.compressions == other.compressions
+                    && self.swapins == other.swapins
+                    && self.swapouts == other.swapouts
+                    && self.compressor_page_count == other.compressor_page_count
+                    && self.throttled_count == other.throttled_count
+                    && self.external_page_count == other.external_page_count
+                    && self.internal_page_count == other.internal_page_count
+                    && total_uncompressed == other.total_uncompressed_pages_in_compressor
             }
         }
         impl Eq for vm_statistics64 {}
@@ -2767,7 +2766,10 @@ cfg_if! {
                     .field("throttled_count", &throttled_count)
                     .field("external_page_count", &external_page_count)
                     .field("internal_page_count", &internal_page_count)
-                    .field("total_uncompressed_pages_in_compressor", &total_uncompressed)
+                    .field(
+                        "total_uncompressed_pages_in_compressor",
+                        &total_uncompressed,
+                    )
                     .finish()
             }
         }
@@ -2949,11 +2951,11 @@ cfg_if! {
                 let svm_cid = self.svm_cid;
 
                 f.debug_struct("sockaddr_vm")
-                    .field("svm_len",&svm_len)
-                    .field("svm_family",&svm_family)
-                    .field("svm_reserved1",&svm_reserved1)
-                    .field("svm_port",&svm_port)
-                    .field("svm_cid",&svm_cid)
+                    .field("svm_len", &svm_len)
+                    .field("svm_family", &svm_family)
+                    .field("svm_reserved1", &svm_reserved1)
+                    .field("svm_port", &svm_port)
+                    .field("svm_cid", &svm_cid)
                     .finish()
             }
         }
@@ -3004,10 +3006,7 @@ cfg_if! {
 
         impl PartialEq for __c_anonymous_ifk_data {
             fn eq(&self, other: &__c_anonymous_ifk_data) -> bool {
-                unsafe {
-                    self.ifk_ptr == other.ifk_ptr
-                        && self.ifk_value == other.ifk_value
-                }
+                unsafe { self.ifk_ptr == other.ifk_ptr && self.ifk_value == other.ifk_value }
             }
         }
 
@@ -3032,8 +3031,7 @@ cfg_if! {
 
         impl PartialEq for ifkpi {
             fn eq(&self, other: &ifkpi) -> bool {
-                self.ifk_module_id == other.ifk_module_id
-                    && self.ifk_type == other.ifk_type
+                self.ifk_module_id == other.ifk_module_id && self.ifk_type == other.ifk_type
             }
         }
 
@@ -3072,7 +3070,11 @@ cfg_if! {
                         && self.ifru_kpi == other.ifru_kpi
                         && self.ifru_wake_flags == other.ifru_wake_flags
                         && self.ifru_route_refcnt == other.ifru_route_refcnt
-                        && self.ifru_cap.iter().zip(other.ifru_cap.iter()).all(|(a,b)| a == b)
+                        && self
+                            .ifru_cap
+                            .iter()
+                            .zip(other.ifru_cap.iter())
+                            .all(|(a, b)| a == b)
                         && self.ifru_functional_type == other.ifru_functional_type
                 }
             }
@@ -3098,7 +3100,9 @@ cfg_if! {
                     .field("ifru_wake_flags", unsafe { &self.ifru_wake_flags })
                     .field("ifru_route_refcnt", unsafe { &self.ifru_route_refcnt })
                     .field("ifru_cap", unsafe { &self.ifru_cap })
-                    .field("ifru_functional_type", unsafe { &self.ifru_functional_type })
+                    .field("ifru_functional_type", unsafe {
+                        &self.ifru_functional_type
+                    })
                     .finish()
             }
         }
@@ -3128,8 +3132,7 @@ cfg_if! {
 
         impl PartialEq for ifreq {
             fn eq(&self, other: &ifreq) -> bool {
-                self.ifr_name == other.ifr_name
-                    && self.ifr_ifru == other.ifr_ifru
+                self.ifr_name == other.ifr_name && self.ifr_ifru == other.ifr_ifru
             }
         }
 
@@ -3173,10 +3176,11 @@ cfg_if! {
                         && self.ifru_metrics == other.ifru_metrics
                         && self.ifru_intval == other.ifru_intval
                         && self.ifru_data == other.ifru_data
-                        && self.ifru_scope_id
+                        && self
+                            .ifru_scope_id
                             .iter()
                             .zip(other.ifru_scope_id.iter())
-                            .all(|(a,b)| a == b)
+                            .all(|(a, b)| a == b)
                 }
             }
         }
@@ -3215,8 +3219,7 @@ cfg_if! {
 
         impl PartialEq for in6_ifreq {
             fn eq(&self, other: &in6_ifreq) -> bool {
-                self.ifr_name == other.ifr_name
-                    && self.ifr_ifru == other.ifr_ifru
+                self.ifr_name == other.ifr_name && self.ifr_ifru == other.ifr_ifru
             }
         }
 
@@ -5575,15 +5578,13 @@ pub const DOT3COMPLIANCE_COLLS: ::c_int = 2;
 pub const MAX_KCTL_NAME: usize = 96;
 
 f! {
-    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr,
-                       cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
+    pub fn CMSG_NXTHDR(mhdr: *const ::msghdr, cmsg: *const ::cmsghdr) -> *mut ::cmsghdr {
         if cmsg.is_null() {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let cmsg_len = (*cmsg).cmsg_len as usize;
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
-        let max = (*mhdr).msg_control as usize
-                    + (*mhdr).msg_controllen as usize;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next + __DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) > max {
             core::ptr::null_mut()
         } else {
@@ -5592,19 +5593,16 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const ::cmsghdr) -> *mut ::c_uchar {
-        (cmsg as *mut ::c_uchar)
-            .add(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()))
+        (cmsg as *mut ::c_uchar).add(__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()))
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>())
-            + __DARWIN_ALIGN32(length as usize))
+        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + __DARWIN_ALIGN32(length as usize))
             as ::c_uint
     }
 
     pub {const} fn CMSG_LEN(length: ::c_uint) -> ::c_uint {
-        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize)
-            as ::c_uint
+        (__DARWIN_ALIGN32(::mem::size_of::<::cmsghdr>()) + length as usize) as ::c_uint
     }
 
     pub {const} fn VM_MAKE_TAG(id: u8) -> u32 {
@@ -6565,7 +6563,12 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "tvos", target_os = "visionos"))] {
+    if #[cfg(any(
+        target_os = "macos",
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "visionos"
+    ))] {
         extern "C" {
             pub fn memmem(
                 haystack: *const ::c_void,
@@ -6573,10 +6576,11 @@ cfg_if! {
                 needle: *const ::c_void,
                 needlelen: ::size_t,
             ) -> *mut ::c_void;
-            pub fn task_set_info(target_task: ::task_t,
-                                 flavor: ::task_flavor_t,
-                                 task_info_in: ::task_info_t,
-                                 task_info_inCnt: ::mach_msg_type_number_t
+            pub fn task_set_info(
+                target_task: ::task_t,
+                flavor: ::task_flavor_t,
+                task_info_in: ::task_info_t,
+                task_info_inCnt: ::mach_msg_type_number_t,
             ) -> ::kern_return_t;
         }
     }

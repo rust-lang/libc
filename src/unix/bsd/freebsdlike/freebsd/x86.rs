@@ -49,36 +49,44 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
-                self.mc_onstack == other.mc_onstack &&
-                self.mc_gs == other.mc_gs &&
-                self.mc_fs == other.mc_fs &&
-                self.mc_es == other.mc_es &&
-                self.mc_ds == other.mc_ds &&
-                self.mc_edi == other.mc_edi &&
-                self.mc_esi == other.mc_esi &&
-                self.mc_ebp == other.mc_ebp &&
-                self.mc_isp == other.mc_isp &&
-                self.mc_ebx == other.mc_ebx &&
-                self.mc_edx == other.mc_edx &&
-                self.mc_ecx == other.mc_ecx &&
-                self.mc_eax == other.mc_eax &&
-                self.mc_trapno == other.mc_trapno &&
-                self.mc_err == other.mc_err &&
-                self.mc_eip == other.mc_eip &&
-                self.mc_cs == other.mc_cs &&
-                self.mc_eflags == other.mc_eflags &&
-                self.mc_esp == other.mc_esp &&
-                self.mc_ss == other.mc_ss &&
-                self.mc_len == other.mc_len &&
-                self.mc_fpformat == other.mc_fpformat &&
-                self.mc_ownedfp == other.mc_ownedfp &&
-                self.mc_flags == other.mc_flags &&
-                self.mc_fpstate.iter().zip(other.mc_fpstate.iter()).all(|(a, b)| a == b) &&
-                self.mc_fsbase == other.mc_fsbase &&
-                self.mc_gsbase == other.mc_gsbase &&
-                self.mc_xfpustate == other.mc_xfpustate &&
-                self.mc_xfpustate_len == other.mc_xfpustate_len &&
-                self.mc_spare2.iter().zip(other.mc_spare2.iter()).all(|(a, b)| a == b)
+                self.mc_onstack == other.mc_onstack
+                    && self.mc_gs == other.mc_gs
+                    && self.mc_fs == other.mc_fs
+                    && self.mc_es == other.mc_es
+                    && self.mc_ds == other.mc_ds
+                    && self.mc_edi == other.mc_edi
+                    && self.mc_esi == other.mc_esi
+                    && self.mc_ebp == other.mc_ebp
+                    && self.mc_isp == other.mc_isp
+                    && self.mc_ebx == other.mc_ebx
+                    && self.mc_edx == other.mc_edx
+                    && self.mc_ecx == other.mc_ecx
+                    && self.mc_eax == other.mc_eax
+                    && self.mc_trapno == other.mc_trapno
+                    && self.mc_err == other.mc_err
+                    && self.mc_eip == other.mc_eip
+                    && self.mc_cs == other.mc_cs
+                    && self.mc_eflags == other.mc_eflags
+                    && self.mc_esp == other.mc_esp
+                    && self.mc_ss == other.mc_ss
+                    && self.mc_len == other.mc_len
+                    && self.mc_fpformat == other.mc_fpformat
+                    && self.mc_ownedfp == other.mc_ownedfp
+                    && self.mc_flags == other.mc_flags
+                    && self
+                        .mc_fpstate
+                        .iter()
+                        .zip(other.mc_fpstate.iter())
+                        .all(|(a, b)| a == b)
+                    && self.mc_fsbase == other.mc_fsbase
+                    && self.mc_gsbase == other.mc_gsbase
+                    && self.mc_xfpustate == other.mc_xfpustate
+                    && self.mc_xfpustate_len == other.mc_xfpustate_len
+                    && self
+                        .mc_spare2
+                        .iter()
+                        .zip(other.mc_spare2.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for mcontext_t {}

@@ -135,14 +135,14 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [::c_ulong; 7]
+        __size: [::c_ulong; 7],
     }
 
     pub struct sigaction {
         pub sa_flags: ::c_int,
         pub sa_sigaction: ::sighandler_t,
         pub sa_mask: ::sigset_t,
-        pub sa_restorer: ::Option<extern fn()>,
+        pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
     pub struct stack_t {
@@ -169,7 +169,7 @@ s! {
         pub __seq: ::c_ushort,
         __pad1: ::c_ushort,
         __unused1: ::c_ulong,
-        __unused2: ::c_ulong
+        __unused2: ::c_ulong,
     }
 
     pub struct shmid_ds {
@@ -182,7 +182,7 @@ s! {
         pub shm_lpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
         __unused4: ::c_ulong,
-        __unused5: ::c_ulong
+        __unused5: ::c_ulong,
     }
 }
 
@@ -190,7 +190,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 4]
+        priv_: [f64; 4],
     }
 }
 
