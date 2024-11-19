@@ -3,7 +3,7 @@
 # Builds and runs tests for a particular target passed as an argument to this
 # script.
 
-set -ex
+set -eux
 
 mirrors_url="https://ci-mirrors.rust-lang.org/libc"
 
@@ -15,7 +15,7 @@ target="$1"
 #
 # It's assume that all images, when run with two disks, will run the `run.sh`
 # script from the second which we place inside.
-if [ "$QEMU" != "" ]; then
+if [ -n "${QEMU:-}" ]; then
     tmpdir=/tmp/qemu-img-creation
     mkdir -p "${tmpdir}"
 

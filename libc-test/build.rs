@@ -580,6 +580,10 @@ fn test_openbsd(target: &str) {
             // Good chance it's going to be wrong depending on the host release
             "KERN_MAXID" | "NET_RT_MAXID" => true,
             "EV_SYSFLAGS" => true,
+
+            // Removed in OpenBSD 7.7 (unused since 1991)
+            "ATF_COM" | "ATF_PERM" | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+
             _ => false,
         }
     });
@@ -4551,14 +4555,14 @@ fn test_linux(target: &str) {
         (struct_ == "iw_encode_ext" && field == "key") ||
         // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
         (struct_ == "tcp_info" && field == "tcpi_snd_rcv_wscale") ||
-        // the `tcpi_delivery_rate_app_limited` field is a bitfield on musl
-        (musl && struct_ == "tcp_info" && field == "tcpi_delivery_rate_app_limited") ||
-        // the `tcpi_fast_open_client_fail` field is a bitfield on musl
-        (musl && struct_ == "tcp_info" && field == "tcpi_fast_open_client_fail") ||
+        // the `tcpi_delivery_fastopen_bitfields` map two bitfield fields stored in a u8
+        (musl && struct_ == "tcp_info" && field == "tcpi_delivery_fastopen_bitfields") ||
         // either fsid_t or int[2] type
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
-        (struct_ == "fanotify_event_info_fid" && field == "handle")
+        (struct_ == "fanotify_event_info_fid" && field == "handle") ||
+        // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
+        (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
     });
 
     cfg.skip_roundtrip(move |s| match s {

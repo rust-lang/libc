@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -eux
 
 if [ -n "${CI:-}" ]; then
     rustup toolchain install nightly -c rustfmt --allow-downgrade

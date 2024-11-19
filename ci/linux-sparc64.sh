@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -ex
+set -eux
 
 mkdir -m 777 /qemu
 cd /qemu

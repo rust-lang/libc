@@ -6,7 +6,7 @@
 # Small script to run tests for a target (or all targets) inside all the
 # respective docker images.
 
-set -ex
+set -eux
 
 # Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
 # subdir) from where the `cargo` binary in `$PATH` lives.
@@ -89,13 +89,13 @@ build_switch() {
 }
 
 if [ -z "${1}" ]; then
-  for d in ci/docker/*; do
-    run "${d}"
-  done
+    for d in ci/docker/*; do
+        run "${d}"
+    done
 else
-  if [ "${1}" != "switch" ]; then
-    run "${1}"
-  else
-    build_switch
-  fi
+    if [ "${1}" != "switch" ]; then
+        run "${1}"
+    else
+        build_switch
+    fi
 fi
