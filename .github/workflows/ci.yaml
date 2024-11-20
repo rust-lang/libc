@@ -1,0 +1,192 @@
+name: CI
+
+on:
+  merge_group:
+  pull_request:
+    branches:
+      - libc-0.2
+
+env:
+  CARGO_TERM_VERBOSE: true
+  LIBC_CI: 1
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  style_check:
+    name: Style check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - name: Check style
+        run: ./ci/style.sh
+
+  # This runs `cargo build --target ...` for all T1 and T2 targets`
+  verify_build:
+    name: Verify build
+    strategy:
+      matrix:
+        toolchain: [stable, nightly, 1.63.0]
+        os: [ubuntu-24.04, macos-14, windows-2022]
+        include:
+          - toolchain: beta
+            os: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
+    env:
+      TOOLCHAIN: ${{ matrix.toolchain }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - name: Execute build.sh
+        run: ./ci/verify-build.sh
+
+  test_tier1:
+    name: Test tier1
+    strategy:
+      matrix:
+        include:
+          - target: i686-unknown-linux-gnu
+            docker: true
+            os: ubuntu-24.04
+          - target: x86_64-unknown-linux-gnu
+            docker: true
+            os: ubuntu-24.04
+          - target: aarch64-apple-darwin
+            os: macos-14
+          - target: x86_64-pc-windows-gnu
+            os: windows-2022
+            env:
+              ARCH_BITS: 64
+              ARCH: x86_64
+          - target: x86_64-pc-windows-msvc
+            os: windows-2022
+          # FIXME: It currently causes segfaults.
+          #- target: i686-pc-windows-gnu
+          #  env:
+          #    ARCH_BITS: 32
+          #    ARCH: i686
+          - target: i686-pc-windows-msvc
+            os: windows-2022
+    runs-on: ${{ matrix.os }}
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - name: Run natively
+        if: "!matrix.docker"
+        run: ./ci/run.sh ${{ matrix.target }}
+      - name: Run in Docker
+        if: "matrix.docker"
+        run: ./ci/run-docker.sh ${{ matrix.target }}
+
+  test_tier2:
+    name: Test tier2
+    needs: [test_tier1, style_check]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: true
+      max-parallel: 12
+      matrix:
+        target:
+          # FIXME(sparc): this takes much longer to run than any other job, put
+          # it first to make sure it gets a head start.
+          - sparc64-unknown-linux-gnu
+          - aarch64-linux-android
+          - aarch64-unknown-linux-gnu
+          - aarch64-unknown-linux-musl
+          - arm-linux-androideabi
+          - arm-unknown-linux-gnueabihf
+          - arm-unknown-linux-musleabihf
+          - i686-linux-android
+          - i686-unknown-linux-musl
+          - loongarch64-unknown-linux-gnu
+          - loongarch64-unknown-linux-musl
+          - powerpc-unknown-linux-gnu
+          - powerpc64-unknown-linux-gnu
+          - powerpc64le-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - wasm32-unknown-emscripten
+          - wasm32-wasip1
+          - wasm32-wasip2
+          - x86_64-linux-android
+          # FIXME: Exec format error (os error 8)
+          # - x86_64-unknown-linux-gnux32
+          - x86_64-unknown-linux-musl
+          # FIXME: It seems some items in `src/unix/mod.rs`
+          # aren't defined on redox actually.
+          # - x86_64-unknown-redox
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - name: Execute run-docker.sh
+        run: ./ci/run-docker.sh ${{ matrix.target }}
+
+  test_tier2_vm:
+    name: Test tier2 VM
+    needs: [test_tier1, style_check]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        target:
+          - x86_64-pc-solaris
+    steps:
+      - uses: actions/checkout@v4
+      - name: test on Solaris
+        uses: vmactions/solaris-vm@v1
+        with:
+          release: "11.4-gcc"
+          usesh: true
+          mem: 4096
+          copyback: false
+          prepare: |
+            set -x
+            source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
+            rustc --version
+            uname -a
+          run: |
+            export PATH=$HOME/.rust_solaris/bin:$PATH
+            ./ci/run.sh ${{ matrix.target }}
+
+  check_cfg:
+    name: "Check #[cfg]s"
+    runs-on: ubuntu-24.04
+    env:
+      TOOLCHAIN: nightly
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - name: Build with check-cfg
+        run: LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
+
+  # One job that "summarizes" the success state of this pipeline. This can then be added to branch
+  # protection, rather than having to add each job separately.
+  success:
+    name: success
+    runs-on: ubuntu-24.04
+    needs:
+      - style_check
+      - test_tier1
+      - test_tier2
+      - test_tier2_vm
+      - verify_build
+    # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
+    # failed" as success. So we have to do some contortions to ensure the job fails if any of its
+    # dependencies fails.
+    if: always() # make sure this is never "skipped"
+    steps:
+      # Manually check the status of all dependencies. `if: failure()` does not work.
+      - name: check if any dependency failed
+        run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
