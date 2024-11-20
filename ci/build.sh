@@ -11,6 +11,7 @@ set -eux
 : "${OS?The OS environment variable must be set.}"
 
 rust="$TOOLCHAIN"
+filter="${FILTER:-}"
 
 echo "Testing Rust $rust on $OS"
 
@@ -196,13 +197,15 @@ case "${OS}" in
 esac
 
 for target in $targets; do
-    if echo "$target" | grep -q "$FILTER"; then
+    if echo "$target" | grep -q "$filter"; then
         if [ "${OS}" = "windows" ]; then
             TARGET="$target" sh ./ci/install-rust.sh
             test_target build "$target"
         else
             test_target build "$target"
         fi
+
+        test_run=1
     fi
 done
 
@@ -276,8 +279,10 @@ x86_64-wrs-vxworks \
 if [ "${rust}" = "nightly" ] && [ "${OS}" = "linux" ]; then
     for target in $rust_linux_no_core_targets; do
         if echo "$target" | grep -q "$FILTER"; then
-            test_target build "$target" 1
+            test_target "$target" 1
         fi
+
+        test_run=1
     done
 fi
 
@@ -290,7 +295,15 @@ i386-apple-ios \
 if [ "${rust}" = "nightly" ] && [ "${OS}" = "macos" ]; then
     for target in $rust_apple_no_core_targets; do
         if echo "$target" | grep -q "$FILTER"; then
-            test_target build "$target" 1
+            test_target "$target" 1
         fi
+
+        test_run=1
     done
+fi
+
+# Make sure we didn't accidentally filter everything
+if [ "${test_run:-}" != 1 ]; then
+    echo "No tests were run"
+    exit 1
 fi
