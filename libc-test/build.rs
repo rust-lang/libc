@@ -4522,7 +4522,11 @@ fn test_linux(target: &str) {
             (struct_ == "timex" && field == "jitcnt") ||
             (struct_ == "timex" && field == "calcnt") ||
             (struct_ == "timex" && field == "errcnt") ||
-            (struct_ == "timex" && field == "stbcnt")
+            (struct_ == "timex" && field == "stbcnt") ||
+
+            // glibc type depends on `__USE_TIME64_REDIRECTS
+            (struct_ == "timeval" && field == "tv_sec") ||
+            (struct_ == "timeval" && field == "tv_usec") 
         )) ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
