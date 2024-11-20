@@ -24,6 +24,8 @@ test_target() {
     target="${2}"
     no_std="${3:-}"
 
+    RUSTFLAGS="${RUSTFLAGS:-}"
+
     # If there is a std component, fetch it:
     if [ "${no_std}" != "1" ]; then
         # FIXME: rustup often fails to download some artifacts due to network
@@ -37,15 +39,17 @@ test_target() {
             n=$((n+1))
             sleep 1
         done
+
+        # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
+        RUSTFLAGS="${RUSTFLAGS:-} -Aimproper_ctypes_definitions"
+        export RUSTFLAGS
     fi
 
     # Test that libc builds without any default features (no std)
     if [ "$no_std" != "1" ]; then
         cargo "+$rust" "$build_cmd" --no-default-features --target "$target"
     else
-        # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
-        RUSTFLAGS="-A improper_ctypes_definitions" \
-            cargo "+$rust" "$build_cmd" \
+        cargo "+$rust" "$build_cmd" \
             -Z build-std=core,alloc \
             --no-default-features \
             --target "$target"
@@ -56,8 +60,7 @@ test_target() {
     if [ "$no_std" != "1" ]; then
         cargo "+$rust" "$build_cmd" --target "$target"
     else
-        RUSTFLAGS="-A improper_ctypes_definitions" \
-            cargo "+$rust" "${build_cmd}" \
+        cargo "+$rust" "${build_cmd}" \
             -Z build-std=core,alloc \
             --target "$target"
     fi
@@ -69,8 +72,7 @@ test_target() {
             --features extra_traits \
             --target "$target"
     else
-        RUSTFLAGS="-A improper_ctypes_definitions" \
-            cargo "+$rust" "$build_cmd" \
+        cargo "+$rust" "$build_cmd" \
             -Z build-std=core,alloc \
             --no-default-features \
             --features extra_traits \
@@ -85,8 +87,7 @@ test_target() {
                 --features const-extern-fn \
                 --target "$target"
         else
-            RUSTFLAGS="-A improper_ctypes_definitions" \
-                cargo "+$rust" "$build_cmd" \
+            cargo "+$rust" "$build_cmd" \
                 -Z build-std=core,alloc \
                 --no-default-features \
                 --features const-extern-fn \
@@ -100,8 +101,7 @@ test_target() {
             --target "$target" \
             --features extra_traits
     else
-        RUSTFLAGS="-A improper_ctypes_definitions" \
-            cargo "+$rust" "$build_cmd" \
+        cargo "+$rust" "$build_cmd" \
             -Z build-std=core,alloc \
             --target "$target" \
             --features extra_traits
