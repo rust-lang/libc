@@ -100,7 +100,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
 
     // FIXME: see below
     // let mut s_macros = 0;
-    
+
     let mut f_macros = 0;
     let mut in_impl = false;
 

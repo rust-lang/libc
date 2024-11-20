@@ -75,7 +75,7 @@ fi
 export LC_ALL=C
 
 for file in libc-test/semver/*.txt; do
-    case "$file" in 
+    case "$file" in
       *TODO*) continue ;;
     esac
 
