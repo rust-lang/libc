@@ -8,16 +8,24 @@ echo "Setup toolchain"
 toolchain="${TOOLCHAIN:-nightly}"
 os="${OS:-}"
 
-if [ "$os" = "windows" ]; then
-    : "${TARGET?The TARGET environment variable must be set.}"
+case "$(uname -s)" in
+    Linux*)     os=linux ;;
+    Darwin*)    os=macos ;;
+    MINGW*)     os=windows ;;
+    *)
+        echo "Unknown system $(uname -s)"
+        exit 1
+        ;;
+esac
+
+if [ "$os" = "windows" ] && [ -n "${TARGET:-}" ]; then
+    toolchain="$toolchain-$TARGET"
     rustup set profile minimal
-    rustup update --force "$toolchain-$TARGET"
-    rustup default "$toolchain-$TARGET"
-else
-    rustup set profile minimal
-    rustup update --force "$toolchain"
-    rustup default "$toolchain"
 fi
+
+rustup set profile minimal
+rustup update --force "$toolchain"
+rustup default "$toolchain"
 
 if [ -n "${TARGET:-}" ]; then
     echo "Install target"
@@ -50,9 +58,6 @@ if [ "$os" = "windows" ]; then
 fi
 
 echo "Query rust and cargo versions"
-command -v rustc
-command -v cargo
-command -v rustup
 rustc -Vv
 cargo -V
 rustup -Vv
