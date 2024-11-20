@@ -9,6 +9,10 @@ env:
   CARGO_TERM_VERBOSE: true
   LIBC_CI: 1
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   style_check:
     name: Style check
@@ -16,9 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: sh ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Check style
-        run: sh ci/style.sh
+        run: ./ci/style.sh
 
   build_channels_linux:
     name: Build Channels Linux
@@ -37,9 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/install-rust.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} ./ci/install-rust.sh
       - name: Execute build.sh
-        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} ./ci/build.sh
 
   build_channels_macos:
     name: Build Channels macOS
@@ -59,9 +63,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/install-rust.sh
+        run: TOOLCHAIN=${{ matrix.target.toolchain }} ./ci/install-rust.sh
       - name: Execute build.sh
-        run: TOOLCHAIN=${{ matrix.target.toolchain }} sh ./ci/build.sh
+        run: TOOLCHAIN=${{ matrix.target.toolchain }} ./ci/build.sh
 
   build_channels_windows:
     name: Build Channels Windows
@@ -80,7 +84,7 @@ jobs:
         run: rustup self update
         shell: bash
       - name: Execute build.sh
-        run: TOOLCHAIN=${{ matrix.toolchain }} sh ./ci/build.sh
+        run: TOOLCHAIN=${{ matrix.toolchain }} ./ci/build.sh
         shell: bash
 
   macos:
@@ -94,9 +98,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
       - name: Execute run.sh
-        run: sh ./ci/run.sh ${{ matrix.target }}
+        run: ./ci/run.sh ${{ matrix.target }}
 
   windows:
     name: Windows
@@ -124,10 +128,10 @@ jobs:
         run: rustup self update
         shell: bash
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
         shell: bash
       - name: Execute run.sh
-        run: sh ./ci/run.sh ${{ matrix.target }}
+        run: ./ci/run.sh ${{ matrix.target }}
         shell: bash
 
   
@@ -143,9 +147,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
       - name: Execute run-docker.sh
-        run: sh ./ci/run-docker.sh ${{ matrix.target }}
+        run: ./ci/run-docker.sh ${{ matrix.target }}
 
   docker_linux_tier2:
     name: Docker Linux Tier2
@@ -185,9 +189,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
       - name: Execute run-docker.sh
-        run: sh ./ci/run-docker.sh ${{ matrix.target }}
+        run: ./ci/run-docker.sh ${{ matrix.target }}
 
   solaris:
     name: Solaris
@@ -214,7 +218,7 @@ jobs:
             uname -a
           run: |
             export PATH=$HOME/.rust_solaris/bin:$PATH
-            bash ./ci/run.sh ${{ matrix.target }}
+            ./ci/run.sh ${{ matrix.target }}
 
   check_cfg:
     name: "Check #[cfg]s"
@@ -222,7 +226,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TOOLCHAIN=nightly sh ./ci/install-rust.sh
+        run: TOOLCHAIN=nightly ./ci/install-rust.sh
       - name: Build with check-cfg
         run: LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
 

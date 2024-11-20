@@ -9,7 +9,7 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         gcc-multilib make libc6-dev git curl ca-certificates libc6-i386
 
 COPY install-musl.sh /
-RUN sh /install-musl.sh i686
+RUN /install-musl.sh i686
 
 ENV PATH=$PATH:/musl-i686/bin:/rust/bin \
     CC_i686_unknown_linux_musl=musl-gcc \

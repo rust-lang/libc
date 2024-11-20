@@ -1,7 +1,7 @@
 FROM ubuntu:24.10
 
 COPY wasi.sh /
-RUN bash /wasi.sh
+RUN /wasi.sh
 
 # Note that most of these are copied from `wasm32-wasip1/Dockerfile`
 #

@@ -199,7 +199,7 @@ esac
 for target in $targets; do
     if echo "$target" | grep -q "$filter"; then
         if [ "${OS}" = "windows" ]; then
-            TARGET="$target" sh ./ci/install-rust.sh
+            TARGET="$target" ./ci/install-rust.sh
             test_target build "$target"
         else
             test_target build "$target"

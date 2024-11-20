@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         p7zip-full cpio linux-libc-dev-sparc64-cross
 
 COPY linux-sparc64.sh /
-RUN bash /linux-sparc64.sh
+RUN /linux-sparc64.sh
 
 COPY test-runner-linux /
 

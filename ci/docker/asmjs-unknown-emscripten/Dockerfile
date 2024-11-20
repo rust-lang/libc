@@ -18,7 +18,7 @@ RUN apt-get install -y --no-install-recommends \
     bzip2
 
 COPY emscripten.sh /
-RUN bash /emscripten.sh
+RUN /emscripten.sh
 
 ENV PATH=$PATH:/rust/bin \
     CARGO_TARGET_ASMJS_UNKNOWN_EMSCRIPTEN_RUNNER=node
