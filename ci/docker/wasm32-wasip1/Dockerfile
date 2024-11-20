@@ -1,7 +1,7 @@
 FROM ubuntu:24.10
 
 COPY wasi.sh /
-RUN bash /wasi.sh
+RUN /wasi.sh
 
 # Note that `-D_WASI_EMULATED_PROCESS_CLOCKS` is used to enable access to
 # clock-related defines even though they're emulated. Also note that the usage

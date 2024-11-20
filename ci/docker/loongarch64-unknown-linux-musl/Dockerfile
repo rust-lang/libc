@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates curl gcc git libc6-dev make qemu-user xz-utils
 
 COPY install-musl-cross.sh /
-RUN sh /install-musl-cross.sh loongarch64-unknown-linux-musl
+RUN /install-musl-cross.sh loongarch64-unknown-linux-musl
 
 ENV CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_MUSL_LINKER=loongarch64-unknown-linux-musl-gcc \
     CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_MUSL_RUNNER="qemu-loongarch64" \
