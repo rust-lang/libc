@@ -8,6 +8,8 @@
 
 set -eux
 
+target="$1"
+
 # Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
 # subdir) from where the `cargo` binary in `$PATH` lives.
 default_cargo_home="$(dirname "$(dirname "$(command -v cargo)")")"
@@ -18,17 +20,17 @@ export CARGO_HOME="${CARGO_HOME:-$default_cargo_home}"
 echo "${HOME}"
 pwd
 
-# Avoid "no space left on device" failure.
-if [ "${1}" = "aarch64-linux-android" ] ; then
+# Avoid "no space left on device" failure if running in CI
+if [ "${CI:-0}" != "0" ] && [ "$target" = "aarch64-linux-android" ] ; then
     docker system prune -af
     docker system df
 fi
 
 run() {
-    echo "Building docker container for target ${1}"
+    echo "Building docker container for target $target"
 
     # use -f so we can use ci/ as build context
-    docker build -t "libc-${1}" -f "ci/docker/${1}/Dockerfile" ci/
+    docker build -t "libc-$target" -f "ci/docker/$target/Dockerfile" ci/
     mkdir -p target
     if [ -w /dev/kvm ]; then
         kvm="--volume /dev/kvm:/dev/kvm"
@@ -50,8 +52,8 @@ run() {
         $kvm \
         --init \
         --workdir /checkout \
-        "libc-${1}" \
-        sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
+        "libc-$target" \
+        sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh $target"
 }
 
 build_switch() {
@@ -88,13 +90,13 @@ build_switch() {
             && cargo build -Z build-std=core,alloc --target ci/switch.json"
 }
 
-if [ -z "${1}" ]; then
+if [ -z "$target" ]; then
     for d in ci/docker/*; do
         run "${d}"
     done
 else
-    if [ "${1}" != "switch" ]; then
-        run "${1}"
+    if [ "$target" != "switch" ]; then
+        run "$target"
     else
         build_switch
     fi
