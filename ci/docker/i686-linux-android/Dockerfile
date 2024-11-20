@@ -1,4 +1,4 @@
-FROM ubuntu:23.10
+FROM ubuntu:24.10
 
 RUN dpkg --add-architecture i386
 RUN apt-get update
@@ -8,7 +8,6 @@ RUN apt-get install -y --no-install-recommends \
   wget \
   ca-certificates \
   python3 \
-  python3-distutils \
   unzip \
   expect \
   openjdk-8-jre \

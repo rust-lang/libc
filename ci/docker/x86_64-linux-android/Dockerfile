@@ -1,4 +1,4 @@
-FROM ubuntu:23.10
+FROM ubuntu:24.10
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -7,7 +7,6 @@ RUN apt-get update && \
   gcc \
   libc-dev \
   python3 \
-  python3-distutils \
   unzip
 
 WORKDIR /android/
