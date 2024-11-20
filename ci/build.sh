@@ -20,14 +20,24 @@ if [ "$TOOLCHAIN" = "nightly" ] ; then
 fi
 
 test_target() {
-    build_cmd="${1}"
-    target="${2}"
-    no_std="${3:-}"
+    target="${1}"
+    no_dist="${2:-0}"
 
     RUSTFLAGS="${RUSTFLAGS:-}"
 
-    # If there is a std component, fetch it:
-    if [ "${no_std}" != "1" ]; then
+    # The basic command that is run each time
+    cmd="cargo +$rust build --target $target"
+
+    if [ "${no_dist}" != "0" ]; then
+        # If we can't download a `core`, we need to build it
+        cmd="$cmd -Zbuild-std=core,alloc"
+
+        # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
+        RUSTFLAGS="${RUSTFLAGS:-} -Aimproper_ctypes_definitions"
+        export RUSTFLAGS
+    else
+        # Otherwise it is available for download; fetch it:
+
         # FIXME: rustup often fails to download some artifacts due to network
         # issues, so we retry this N times.
         N=5
@@ -39,73 +49,16 @@ test_target() {
             n=$((n+1))
             sleep 1
         done
-
-        # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
-        RUSTFLAGS="${RUSTFLAGS:-} -Aimproper_ctypes_definitions"
-        export RUSTFLAGS
     fi
 
-    # Test that libc builds without any default features (no std)
-    if [ "$no_std" != "1" ]; then
-        cargo "+$rust" "$build_cmd" --no-default-features --target "$target"
-    else
-        cargo "+$rust" "$build_cmd" \
-            -Z build-std=core,alloc \
-            --no-default-features \
-            --target "$target"
-    fi
+    # Test with expected combinations of features
+    $cmd
+    $cmd --features const-extern-fn
+    $cmd --features extra_traits
 
-    # Test that libc builds with default features (e.g. std)
-    # if the target supports std
-    if [ "$no_std" != "1" ]; then
-        cargo "+$rust" "$build_cmd" --target "$target"
-    else
-        cargo "+$rust" "${build_cmd}" \
-            -Z build-std=core,alloc \
-            --target "$target"
-    fi
-
-    # Test that libc builds with the `extra_traits` feature
-    if [ "$no_std" != "1" ]; then
-        cargo "+$rust" "$build_cmd" \
-            --no-default-features \
-            --features extra_traits \
-            --target "$target"
-    else
-        cargo "+$rust" "$build_cmd" \
-            -Z build-std=core,alloc \
-            --no-default-features \
-            --features extra_traits \
-            --target "$target"
-    fi
-
-    # Test the 'const-extern-fn' feature on nightly
-    if [ "${rust}" = "nightly" ]; then
-        if [ "${no_std}" != "1" ]; then
-            cargo "+$rust" "$build_cmd" \
-                --no-default-features \
-                --features const-extern-fn \
-                --target "$target"
-        else
-            cargo "+$rust" "$build_cmd" \
-                -Z build-std=core,alloc \
-                --no-default-features \
-                --features const-extern-fn \
-                --target "$target"
-        fi
-    fi
-
-    # Also test that it builds with `extra_traits` and default features:
-    if [ "$no_std" != "1" ]; then
-        cargo "+$rust" "$build_cmd" \
-            --target "$target" \
-            --features extra_traits
-    else
-        cargo "+$rust" "$build_cmd" \
-            -Z build-std=core,alloc \
-            --target "$target" \
-            --features extra_traits
-    fi
+    # Test again without default features, i.e. without "std"
+    $cmd --no-default-features
+    $cmd --no-default-features --features extra_traits
 }
 
 rust_linux_targets="\
@@ -173,48 +126,10 @@ x86_64-pc-windows-gnu \
 i686-pc-windows-msvc \
 "
 
-# The targets are listed here alphabetically
-targets=""
-case "${OS}" in
-    linux*)
-        targets="$rust_linux_targets"
-
-        if [ "$rust" = "nightly" ]; then
-            targets="$targets $rust_nightly_linux_targets"
-        fi
-
-        ;;
-    macos*)
-        targets="$rust_apple_targets"
-
-        if [ "$rust" = "nightly" ]; then
-            targets="$targets $rust_nightly_apple_targets"
-        fi
-
-        ;;
-    windows*)
-        targets=${rust_nightly_windows_targets}
-        ;;
-    *) ;;
-esac
-
-for target in $targets; do
-    if echo "$target" | grep -q "$filter"; then
-        if [ "${OS}" = "windows" ]; then
-            TARGET="$target" ./ci/install-rust.sh
-            test_target build "$target"
-        else
-            test_target build "$target"
-        fi
-
-        test_run=1
-    fi
-done
-
 # Targets which are not available via rustup and must be built with -Zbuild-std
 # FIXME(hexagon): hexagon-unknown-linux-musl should be tested but currently has
 # duplicate symbol errors from `compiler_builtins`.
-rust_linux_no_core_targets="\
+rust_linux_no_dist_targets="\
 aarch64-pc-windows-msvc \
 aarch64-unknown-freebsd \
 aarch64-unknown-hermit \
@@ -279,31 +194,69 @@ x86_64-unknown-openbsd \
 x86_64-wrs-vxworks \
 "
 
-if [ "${rust}" = "nightly" ] && [ "${OS}" = "linux" ]; then
-    for target in $rust_linux_no_core_targets; do
-        if echo "$target" | grep -q "$FILTER"; then
-            test_target "$target" 1
-        fi
-
-        test_run=1
-    done
-fi
-
-rust_apple_no_core_targets="\
+rust_apple_no_dist_targets="\
 armv7s-apple-ios \
 i686-apple-darwin \
 i386-apple-ios \
 "
 
-if [ "${rust}" = "nightly" ] && [ "${OS}" = "macos" ]; then
-    for target in $rust_apple_no_core_targets; do
-        if echo "$target" | grep -q "$FILTER"; then
+# The targets are listed here alphabetically
+targets=""
+no_dist_targets=""
+
+case "${OS}" in
+    linux*)
+        targets="$rust_linux_targets"
+
+        if [ "$rust" = "nightly" ]; then
+            targets="$targets $rust_nightly_linux_targets"
+            no_dist_targets="$rust_linux_no_dist_targets"
+        fi
+
+        ;;
+    macos*)
+        targets="$rust_apple_targets"
+
+        if [ "$rust" = "nightly" ]; then
+            targets="$targets $rust_nightly_apple_targets"
+            no_dist_targets="$rust_apple_no_dist_targets"
+        fi
+
+        ;;
+    windows*)
+        targets=${rust_nightly_windows_targets}
+        ;;
+    *)
+        echo "Unrecognized OS $OS"
+        exit 1
+        ;;
+esac
+
+for target in $targets; do
+    if echo "$target" | grep -q "$filter"; then
+        if [ "${OS}" = "windows" ]; then
+            TARGET="$target" ./ci/install-rust.sh
+            test_target "$target"
+        else
+            test_target "$target"
+        fi
+
+        test_run=1
+    fi
+done
+
+for target in $no_dist_targets; do
+    if echo "$target" | grep -q "$filter"; then
+        if [ "${OS}" = "windows" ]; then
+            TARGET="$target" ./ci/install-rust.sh
+            test_target "$target" 1
+        else
             test_target "$target" 1
         fi
 
         test_run=1
-    done
-fi
+    fi
+done
 
 # Make sure we didn't accidentally filter everything
 if [ "${test_run:-}" != 1 ]; then
