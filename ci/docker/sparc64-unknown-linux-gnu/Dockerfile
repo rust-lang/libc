@@ -1,3 +1,10 @@
+# FIXME(sparc): newer versions of Ubuntu get the following errors
+# ```
+# /prog: /lib/sparc64-linux-gnu/libm.so.6: version `GLIBC_2.38' not found (required by /prog)
+# /prog: /lib/sparc64-linux-gnu/libc.so.6: version `GLIBC_2.39' not found (required by /prog)
+# ```
+# Not sure if this is a problem from rustc, our libc, or Ubuntu so we just
+# stick with an old LTS for now.
 FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
