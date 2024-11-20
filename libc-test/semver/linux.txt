@@ -2252,6 +2252,7 @@ PTHREAD_PRIO_PROTECT
 PTHREAD_PROCESS_PRIVATE
 PTHREAD_PROCESS_SHARED
 PTHREAD_STACK_MIN
+PTP_CLOCK_GETCAPS2
 PTP_ENABLE_PPS
 PTP_ENABLE_PPS2
 PTP_EXTTS_REQUEST
@@ -3946,6 +3947,7 @@ pthread_spin_lock
 pthread_spin_trylock
 pthread_spin_unlock
 pthread_spinlock_t
+ptp_clock_caps
 ptp_clock_time
 ptp_extts_event
 ptp_extts_request
