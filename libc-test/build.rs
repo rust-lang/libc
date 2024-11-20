@@ -3370,13 +3370,14 @@ fn test_linux(target: &str) {
 
     let arm = target.contains("arm");
     let aarch64 = target.contains("aarch64");
+    let i586 = target.contains("i586");
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
     let ppc64 = target.contains("powerpc64");
     let s390x = target.contains("s390x");
     let sparc64 = target.contains("sparc64");
     let x32 = target.contains("x32");
-    let x86_32 = target.contains("i686");
+    let x86_32 = i586 || i686;
     let x86_64 = target.contains("x86_64");
     let aarch64_musl = aarch64 && musl;
     let gnueabihf = target.contains("gnueabihf");
@@ -3384,6 +3385,8 @@ fn test_linux(target: &str) {
     let riscv64 = target.contains("riscv64");
     let loongarch64 = target.contains("loongarch64");
     let uclibc = target.contains("uclibc");
+
+    let bit32 = arm || x86_32 || ppc;
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -4499,9 +4502,28 @@ fn test_linux(target: &str) {
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
-        // FIXME(time): Ubuntu24.10 seems to no longer define `__WORDSIZE_TIME64_COMPAT32=1`, which
+        // FIXME(time): Ubuntu24.04 no longer defines `__WORDSIZE_TIME64_COMPAT32=1`, which
         // means `ut_session` is now a `long` rather than `int32_t`.
-        (struct_ == "utmpx" && field == "ut_session" && x86_32) ||
+        (bit32 && (
+            (struct_ == "utmpx" && field == "ut_session") ||
+            (struct_ == "input_envent" && field == "time" ) ||
+            // Almost the entire `timex` struct but not everything
+            (struct_ == "timex" && field == "offset") ||
+            (struct_ == "timex" && field == "freq") ||
+            (struct_ == "timex" && field == "maxerror") ||
+            (struct_ == "timex" && field == "esterror") ||
+            (struct_ == "timex" && field == "constant") ||
+            (struct_ == "timex" && field == "precision") ||
+            (struct_ == "timex" && field == "tolerance") ||
+            (struct_ == "timex" && field == "tick") ||
+            (struct_ == "timex" && field == "ppsfreq") ||
+            (struct_ == "timex" && field == "jitter") ||
+            (struct_ == "timex" && field == "stabil") ||
+            (struct_ == "timex" && field == "jitcnt") ||
+            (struct_ == "timex" && field == "calcnt") ||
+            (struct_ == "timex" && field == "errcnt") ||
+            (struct_ == "timex" && field == "stbcnt")
+        )) ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
     });
