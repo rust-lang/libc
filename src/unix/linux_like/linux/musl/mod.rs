@@ -311,6 +311,7 @@ s! {
         pub chunk_size: ::__u32,
         pub headroom: ::__u32,
         pub flags: ::__u32,
+        pub tx_metadata_len: ::__u32,
     }
 
     pub struct xdp_umem_reg_v1 {
