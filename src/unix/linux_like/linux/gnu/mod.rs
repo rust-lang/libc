@@ -436,15 +436,6 @@ s! {
         pub options: ::__u32,
     }
 
-    pub struct xsk_tx_metadata_completion {
-        pub tx_timestamp: ::__u64,
-    }
-
-    pub struct xsk_tx_metadata_request {
-        pub csum_start: ::__u16,
-        pub csum_offset: ::__u16,
-    }
-
     pub struct iocb {
         pub aio_data: ::__u64,
         #[cfg(target_endian = "little")]
@@ -665,18 +656,6 @@ s_no_extra_traits! {
 
         pub ut_addr_v6: [i32; 4],
         __glibc_reserved: [::c_char; 20],
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub struct xsk_tx_metadata {
-        pub flags: ::__u64,
-        pub xsk_tx_metadata_union: __c_anonymous_xsk_tx_metadata_union,
-    }
-
-    #[allow(missing_debug_implementations)]
-    pub union __c_anonymous_xsk_tx_metadata_union {
-        pub request: xsk_tx_metadata_request,
-        pub completion: xsk_tx_metadata_completion,
     }
 }
 
@@ -1109,8 +1088,6 @@ pub const XDP_USE_NEED_WAKEUP: ::__u16 = 1 << 3;
 pub const XDP_USE_SG: ::__u16 = 1 << 4;
 
 pub const XDP_UMEM_UNALIGNED_CHUNK_FLAG: ::__u32 = 1 << 0;
-pub const XDP_UMEM_TX_SW_CSUM: ::__u32 = 1 << 1;
-pub const XDP_UMEM_TX_METADATA_LEN: ::__u32 = 1 << 2;
 
 pub const XDP_RING_NEED_WAKEUP: ::__u32 = 1 << 0;
 
@@ -1133,11 +1110,7 @@ pub const XDP_UMEM_PGOFF_COMPLETION_RING: ::c_ulonglong = 0x180000000;
 pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: ::c_int = 48;
 pub const XSK_UNALIGNED_BUF_ADDR_MASK: ::c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
 
-pub const XDP_TXMD_FLAGS_TIMESTAMP: ::__u32 = 1 << 0;
-pub const XDP_TXMD_FLAGS_CHECKSUM: ::__u32 = 1 << 1;
-
 pub const XDP_PKT_CONTD: ::__u32 = 1 << 0;
-pub const XDP_TX_METADATA: ::__u32 = 1 << 1;
 
 pub const ELFOSABI_ARM_AEABI: u8 = 64;
 
