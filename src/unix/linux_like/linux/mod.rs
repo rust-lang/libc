@@ -1195,6 +1195,19 @@ s! {
         pub rsv: [::c_uint; 5],
     }
 
+    pub struct ptp_clock_caps {
+        pub max_adj: ::c_int,
+        pub n_alarm: ::c_int,
+        pub n_ext_ts: ::c_int,
+        pub n_per_out: ::c_int,
+        pub pps: ::c_int,
+        pub n_pins: ::c_int,
+        pub cross_timestamping: ::c_int,
+        pub adjust_phase: ::c_int,
+        pub max_phase_adj: ::c_int,
+        pub rsv: [::c_int; 11],
+    }
+
     // linux/if_xdp.h
     pub struct xsk_tx_metadata_completion {
         pub tx_timestamp: ::__u64,
@@ -4566,8 +4579,7 @@ pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement 
 
 const PTP_CLK_MAGIC: u32 = b'=' as u32;
 
-// FIXME: needs the ptp_clock_caps struct
-// pub const PTP_CLOCK_GETCAPS: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
+pub const PTP_CLOCK_GETCAPS: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
 pub const PTP_EXTTS_REQUEST: ::c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
 pub const PTP_PEROUT_REQUEST: ::c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
 pub const PTP_ENABLE_PPS: ::c_uint = _IOW::<::c_int>(PTP_CLK_MAGIC, 4);
@@ -4577,8 +4589,7 @@ pub const PTP_PIN_SETFUNC: ::c_uint = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
 pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
 pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
 
-// FIXME: needs the ptp_clock_caps struct
-// pub const PTP_CLOCK_GETCAPS2: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
+pub const PTP_CLOCK_GETCAPS2: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
 pub const PTP_EXTTS_REQUEST2: ::c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
 pub const PTP_PEROUT_REQUEST2: ::c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
 pub const PTP_ENABLE_PPS2: ::c_uint = _IOW::<::c_int>(PTP_CLK_MAGIC, 13);
