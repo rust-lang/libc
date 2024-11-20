@@ -8,12 +8,21 @@
 set -eux
 
 : "${TOOLCHAIN?The TOOLCHAIN environment variable must be set.}"
-: "${OS?The OS environment variable must be set.}"
 
 rust="$TOOLCHAIN"
 filter="${FILTER:-}"
 
-echo "Testing Rust $rust on $OS"
+case "$(uname -s)" in
+    Linux*)     os=linux ;;
+    Darwin*)    os=macos ;;
+    MINGW*)     os=windows ;;
+    *)
+        echo "Unknown system $(uname -s)"
+        exit 1
+        ;;
+esac
+
+echo "Testing Rust $rust on $os"
 
 if [ "$TOOLCHAIN" = "nightly" ] ; then
     rustup component add rust-src
@@ -198,40 +207,30 @@ i386-apple-ios \
 "
 
 # The targets are listed here alphabetically
-targets=""
-no_dist_targets=""
+if [ "$os" = "linux" ]; then
+    targets="$rust_linux_targets"
+    nightly_targets="$rust_nightly_linux_targets"
+    no_dist_targets="$rust_linux_no_dist_targets"
+elif [ "$os" = "macos" ]; then
+    targets="$rust_apple_targets"
+    nightly_targets="$rust_nightly_apple_targets"
+    no_dist_targets="$rust_apple_no_dist_targets"
+elif [ "$os" = "windows" ]; then
+    targets=${rust_nightly_windows_targets}
+else
+    exit 1
+fi
 
-case "${OS}" in
-    linux*)
-        targets="$rust_linux_targets"
-
-        if [ "$rust" = "nightly" ]; then
-            targets="$targets $rust_nightly_linux_targets"
-            no_dist_targets="$rust_linux_no_dist_targets"
-        fi
-
-        ;;
-    macos*)
-        targets="$rust_apple_targets"
-
-        if [ "$rust" = "nightly" ]; then
-            targets="$targets $rust_nightly_apple_targets"
-            no_dist_targets="$rust_apple_no_dist_targets"
-        fi
-
-        ;;
-    windows*)
-        targets=${rust_nightly_windows_targets}
-        ;;
-    *)
-        echo "Unrecognized OS $OS"
-        exit 1
-        ;;
-esac
+if [ "$rust" = "nightly" ]; then
+    targets="$targets ${nightly_targets:-}"
+else
+    # build-std requires nightly
+    no_dist_targets=""
+fi
 
 for target in $targets; do
     if echo "$target" | grep -q "$filter"; then
-        if [ "${OS}" = "windows" ]; then
+        if [ "$os" = "windows" ]; then
             TARGET="$target" ./ci/install-rust.sh
             test_target "$target"
         else
@@ -242,9 +241,9 @@ for target in $targets; do
     fi
 done
 
-for target in $no_dist_targets; do
+for target in ${no_dist_targets:-}; do
     if echo "$target" | grep -q "$filter"; then
-        if [ "${OS}" = "windows" ]; then
+        if [ "$os" = "windows" ]; then
             TARGET="$target" ./ci/install-rust.sh
             test_target "$target" 1
         else

@@ -1,4 +1,4 @@
-name: full CI
+name: CI
 
 on:
   merge_group:
@@ -24,71 +24,25 @@ jobs:
       - name: Check style
         run: ./ci/style.sh
 
-  build_channels_linux:
-    name: Build Channels Linux
-    runs-on: ubuntu-22.04
+  # This runs `cargo build --target ...` for all T1 and T2 targets`
+  verify_build:
+    name: Verify build
     strategy:
-      fail-fast: true
-      max-parallel: 5
       matrix:
-        toolchain:
-          - stable
-          - beta
-          - nightly
-          - 1.63.0
+        toolchain: [stable, nightly, 1.63.0]
+        os: [ubuntu-22.04, macos-14, windows-2022]
+        include:
+          - toolchain: beta
+            os: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     env:
-      OS: linux
       TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
       - name: Execute build.sh
-        run: ./ci/build.sh
-
-  build_channels_macos:
-    name: Build Channels macOS
-    needs: macos
-    strategy:
-      fail-fast: true
-      max-parallel: 4
-      matrix:
-        target:
-          - { toolchain: stable, os: macos-14 }
-          - { toolchain: beta, os: macos-14 }
-          - { toolchain: nightly, os: macos-14 }
-          - { toolchain: 1.63.0, os: macos-14 }
-    runs-on: ${{ matrix.target.os }}
-    env:
-      OS: macos
-      TOOLCHAIN: ${{ matrix.toolchain }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
-      - name: Execute build.sh
-        run: ./ci/build.sh
-
-  build_channels_windows:
-    name: Build Channels Windows
-    runs-on: windows-2022
-    strategy:
-      fail-fast: true
-      matrix:
-        toolchain:
-          - 1.63.0
-          - stable
-    env:
-      OS: windows
-      TOOLCHAIN: ${{ matrix.toolchain }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Self-update rustup
-        run: rustup self update
-        shell: bash
-      - name: Execute build.sh
-        run: ./ci/build.sh
-        shell: bash
+        run: ./ci/verify-build.sh
 
   macos:
     name: macOS
@@ -254,9 +208,7 @@ jobs:
       - windows
       - solaris
       - style_check
-      - build_channels_linux
-      - build_channels_macos
-      - build_channels_windows
+      - verify_build
     # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
