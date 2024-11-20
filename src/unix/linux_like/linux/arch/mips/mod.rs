@@ -359,10 +359,17 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(
+    if #[cfg(all(
         any(target_arch = "mips", target_arch = "mips32r6"),
-        any(target_env = "gnu", target_env = "uclibc")
-    )] {
+        any(target_env = "uclibc", target_env = "gnu"),
+        linux_time_bits64
+    ))] {
+        pub const RLIM_INFINITY: crate::rlim_t = !0;
+    } else if #[cfg(all(
+        any(target_arch = "mips", target_arch = "mips32r6"),
+        any(target_env = "uclibc", target_env = "gnu"),
+        not(linux_time_bits64)
+    ))] {
         pub const RLIM_INFINITY: crate::rlim_t = 0x7fffffff;
     }
 }
