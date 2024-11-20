@@ -17,7 +17,6 @@ RUN apt-get install -y --no-install-recommends \
     libc6-dev \
     libxml2 \
     python3 \
-    python3-distutils \
     cmake \
     sudo \
     gdb \

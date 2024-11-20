@@ -8,7 +8,6 @@ RUN apt-get install -y --no-install-recommends \
   wget \
   ca-certificates \
   python3 \
-  python3-distutils \
   unzip \
   expect \
   openjdk-8-jre \
