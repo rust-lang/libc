@@ -27,8 +27,6 @@ jobs:
   build_channels_linux:
     name: Build Channels Linux
     runs-on: ubuntu-22.04
-    env:
-      OS: linux
     strategy:
       fail-fast: true
       max-parallel: 5
@@ -38,18 +36,19 @@ jobs:
           - beta
           - nightly
           - 1.63.0
+    env:
+      OS: linux
+      TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TOOLCHAIN=${{ matrix.toolchain }} ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Execute build.sh
-        run: TOOLCHAIN=${{ matrix.toolchain }} ./ci/build.sh
+        run: ./ci/build.sh
 
   build_channels_macos:
     name: Build Channels macOS
     needs: macos
-    env:
-      OS: macos
     strategy:
       fail-fast: true
       max-parallel: 4
@@ -60,31 +59,35 @@ jobs:
           - { toolchain: nightly, os: macos-14 }
           - { toolchain: 1.63.0, os: macos-14 }
     runs-on: ${{ matrix.target.os }}
+    env:
+      OS: macos
+      TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TOOLCHAIN=${{ matrix.target.toolchain }} ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Execute build.sh
-        run: TOOLCHAIN=${{ matrix.target.toolchain }} ./ci/build.sh
+        run: ./ci/build.sh
 
   build_channels_windows:
     name: Build Channels Windows
     runs-on: windows-2022
-    env:
-      OS: windows
     strategy:
       fail-fast: true
       matrix:
         toolchain:
           - 1.63.0
           - stable
+    env:
+      OS: windows
+      TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@v4
       - name: Self-update rustup
         run: rustup self update
         shell: bash
       - name: Execute build.sh
-        run: TOOLCHAIN=${{ matrix.toolchain }} ./ci/build.sh
+        run: ./ci/build.sh
         shell: bash
 
   macos:
@@ -95,18 +98,18 @@ jobs:
       matrix:
         target:
           - aarch64-apple-darwin
+    env:
+      TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Execute run.sh
         run: ./ci/run.sh ${{ matrix.target }}
 
   windows:
     name: Windows
     runs-on: windows-2022
-    env:
-      OS: windows
     strategy:
       fail-fast: true
       matrix:
@@ -122,13 +125,16 @@ jobs:
           #    ARCH_BITS: 32
           #    ARCH: i686
           - target: i686-pc-windows-msvc
+    env:
+      OS: windows
+      TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
       - name: Self-update rustup
         run: rustup self update
         shell: bash
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
         shell: bash
       - name: Execute run.sh
         run: ./ci/run.sh ${{ matrix.target }}
@@ -144,10 +150,12 @@ jobs:
         target:
           - i686-unknown-linux-gnu
           - x86_64-unknown-linux-gnu
+    env:
+      TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
@@ -186,10 +194,12 @@ jobs:
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
           # - x86_64-unknown-redox
+    env:
+      TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TARGET=${{ matrix.target }} ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
@@ -223,10 +233,12 @@ jobs:
   check_cfg:
     name: "Check #[cfg]s"
     runs-on: ubuntu-22.04
+    env:
+      TOOLCHAIN: nightly
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: TOOLCHAIN=nightly ./ci/install-rust.sh
+        run: ./ci/install-rust.sh
       - name: Build with check-cfg
         run: LIBC_CHECK_CFG=1 cargo build -Z unstable-options -Z check-cfg
 
