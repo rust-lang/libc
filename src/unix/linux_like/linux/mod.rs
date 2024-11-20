@@ -1194,6 +1194,16 @@ s! {
         pub chan: ::c_uint,
         pub rsv: [::c_uint; 5],
     }
+
+    // linux/if_xdp.h
+    pub struct xsk_tx_metadata_completion {
+        pub tx_timestamp: ::__u64,
+    }
+
+    pub struct xsk_tx_metadata_request {
+        pub csum_start: ::__u16,
+        pub csum_offset: ::__u16,
+    }
 }
 
 cfg_if! {
@@ -1653,6 +1663,19 @@ s_no_extra_traits! {
         pub index: ::c_uint,
         pub flags: ::c_uint,
         pub anonymous_2: __c_anonymous_ptp_perout_request_2,
+    }
+
+    // linux/if_xdp.h
+    #[allow(missing_debug_implementations)]
+    pub struct xsk_tx_metadata {
+        pub flags: ::__u64,
+        pub xsk_tx_metadata_union: __c_anonymous_xsk_tx_metadata_union,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_xsk_tx_metadata_union {
+        pub request: xsk_tx_metadata_request,
+        pub completion: xsk_tx_metadata_completion,
     }
 }
 
@@ -5631,6 +5654,15 @@ pub const SCHED_FLAG_KEEP_POLICY: ::c_int = 0x08;
 pub const SCHED_FLAG_KEEP_PARAMS: ::c_int = 0x10;
 pub const SCHED_FLAG_UTIL_CLAMP_MIN: ::c_int = 0x20;
 pub const SCHED_FLAG_UTIL_CLAMP_MAX: ::c_int = 0x40;
+
+// linux/if_xdp.h
+pub const XDP_UMEM_TX_SW_CSUM: ::__u32 = 1 << 1;
+pub const XDP_UMEM_TX_METADATA_LEN: ::__u32 = 1 << 2;
+
+pub const XDP_TXMD_FLAGS_TIMESTAMP: ::__u32 = 1 << 0;
+pub const XDP_TXMD_FLAGS_CHECKSUM: ::__u32 = 1 << 1;
+
+pub const XDP_TX_METADATA: ::__u32 = 1 << 1;
 
 // elf.h
 pub const NT_PRSTATUS: ::c_int = 1;
