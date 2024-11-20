@@ -16,7 +16,7 @@ defaults:
 jobs:
   style_check:
     name: Style check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -30,10 +30,10 @@ jobs:
     strategy:
       matrix:
         toolchain: [stable, nightly, 1.63.0]
-        os: [ubuntu-22.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-14, windows-2022]
         include:
           - toolchain: beta
-            os: ubuntu-22.04
+            os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
     env:
       TOOLCHAIN: ${{ matrix.toolchain }}
@@ -51,10 +51,10 @@ jobs:
         include:
           - target: i686-unknown-linux-gnu
             docker: true
-            os: ubuntu-22.04
+            os: ubuntu-24.04
           - target: x86_64-unknown-linux-gnu
             docker: true
-            os: ubuntu-22.04
+            os: ubuntu-24.04
           - target: aarch64-apple-darwin
             os: macos-14
           - target: x86_64-pc-windows-gnu
@@ -88,7 +88,7 @@ jobs:
   test_tier2:
     name: Test tier2
     needs: [test_tier1, style_check]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -160,7 +160,7 @@ jobs:
 
   check_cfg:
     name: "Check #[cfg]s"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       TOOLCHAIN: nightly
     steps:
@@ -174,7 +174,7 @@ jobs:
   # protection, rather than having to add each job separately.
   success:
     name: success
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - style_check
       - test_tier1
