@@ -132,8 +132,9 @@ jobs:
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
-  solaris:
-    name: Solaris
+  test_tier2_vm:
+    name: Test tier2 VM
+    needs: [test_tier1, style_check]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
@@ -150,10 +151,9 @@ jobs:
           mem: 4096
           copyback: false
           prepare: |
+            set -x
             source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
-            echo "~~~~ rustc --version ~~~~"
             rustc --version
-            echo "~~~~ Solaris-version ~~~~"
             uname -a
           run: |
             export PATH=$HOME/.rust_solaris/bin:$PATH
@@ -177,10 +177,10 @@ jobs:
     name: success
     runs-on: ubuntu-22.04
     needs:
+      - style_check
       - test_tier1
       - test_tier2
-      - solaris
-      - style_check
+      - test_tier2_vm
       - verify_build
     # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
