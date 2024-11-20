@@ -14,6 +14,9 @@ rustc ci/style.rs && ./style src
 command -v rustfmt
 rustfmt -V
 
+# Run once to cover everything that isn't in `src/`
+cargo fmt
+
 # Save a list of all source files
 tmpfile="file-list~" # trailing tilde for gitignore
 find src -name '*.rs' > "$tmpfile"
