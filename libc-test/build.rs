@@ -3817,11 +3817,24 @@ fn test_linux(target: &str) {
 
             // FIXME: Requires >= 5.4 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_umem_reg" | "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
+            "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
+
+            // FIXME: Requires >= 6.8 kernel headers.
+            // A field was added in 6.8.
+            // https://github.com/torvalds/linux/commit/341ac980eab90ac1f6c22ee9f9da83ed9604d899
+            // The previous version of the struct was removed in 6.11 due to a bug.
+            // https://github.com/torvalds/linux/commit/32654bbd6313b4cfc82297e6634fa9725c3c900f
+            "xdp_umem_reg" => true,
 
             // FIXME: Requires >= 5.9 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "xdp_statistics" if musl => true,
+
+            // FIXME: Requires >= 6.8 kernel headers.
+            "xsk_tx_metadata"
+            | "__c_anonymous_xsk_tx_metadata_union"
+            | "xsk_tx_metadata_request"
+            | "xsk_tx_metadata_completion" => true,
 
             // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
             // https://github.com/torvalds/linux/commit/77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10
@@ -4267,6 +4280,23 @@ fn test_linux(target: &str) {
                 true
             }
 
+            // FIXME: Requires >= 6.8 kernel headers.
+            "XDP_UMEM_TX_SW_CSUM"
+            | "XDP_TXMD_FLAGS_TIMESTAMP"
+            | "XDP_TXMD_FLAGS_CHECKSUM"
+            | "XDP_TX_METADATA"
+                =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 6.11 kernel headers.
+            "XDP_UMEM_TX_METADATA_LEN"
+                =>
+            {
+                true
+            }
+
             // FIXME: Requires >= 6.6 kernel headers.
             "SYS_fchmodat2" => true,
 
@@ -4524,7 +4554,9 @@ fn test_linux(target: &str) {
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
         // FIXME(#4121): a new field was added from `f_spare`
         (struct_ == "statvfs" && field == "__f_spare") ||
-        (struct_ == "statvfs64" && field == "__f_spare")
+        (struct_ == "statvfs64" && field == "__f_spare") ||
+        // the `xsk_tx_metadata_union` field is an anonymous union
+        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union")
     });
 
     cfg.skip_roundtrip(move |s| match s {
