@@ -20,8 +20,8 @@ COPY android* /android/
 ENV ANDROID_ARCH=arm
 ENV PATH=$PATH:/android/linux-x86_64/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
 
-RUN sh /android/android-install-ndk.sh
-RUN sh /android/android-install-sdk.sh $ANDROID_ARCH
+RUN /android/android-install-ndk.sh
+RUN /android/android-install-sdk.sh $ANDROID_ARCH
 RUN mv /root/.android /tmp
 RUN chmod 777 -R /tmp/.android
 RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*

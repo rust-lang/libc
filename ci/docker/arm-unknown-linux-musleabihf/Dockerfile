@@ -8,7 +8,7 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         gcc-arm-linux-gnueabihf qemu-user
 
 COPY install-musl.sh /
-RUN sh /install-musl.sh arm
+RUN /install-musl.sh arm
 
 ENV PATH=$PATH:/musl-arm/bin:/rust/bin \
     CC_arm_unknown_linux_musleabihf=musl-gcc \
