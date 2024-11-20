@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:24.10
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates curl gcc git libc6-dev make qemu-user xz-utils

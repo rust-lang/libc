@@ -197,13 +197,14 @@ macro_rules! e {
 
 // FIXME(ctest): ctest can't handle `const extern` functions, we should be able to remove this
 // cfg completely.
+// FIXME(ctest): ctest can't handle `$(,)?` so we use `$(,)*` which isn't quite correct.
 cfg_if! {
     if #[cfg(feature = "const-extern-fn")] {
         /// Define an `unsafe` function that is const as long as `const-extern-fn` is enabled.
         macro_rules! f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
                     $body:block
             )*) => ($(
                 #[inline]
@@ -217,7 +218,7 @@ cfg_if! {
         macro_rules! safe_f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
                     $body:block
             )*) => ($(
                 #[inline]
@@ -231,7 +232,7 @@ cfg_if! {
         macro_rules! const_fn {
             ($(
                 $(#[$attr:meta])*
-                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
                     $body:block
             )*) => ($(
                 #[inline]
@@ -245,7 +246,7 @@ cfg_if! {
         macro_rules! f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
                     $body:block
             )*) => ($(
                 #[inline]
@@ -259,7 +260,7 @@ cfg_if! {
         macro_rules! safe_f {
             ($(
                 $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
                     $body:block
             )*) => ($(
                 #[inline]
@@ -273,7 +274,7 @@ cfg_if! {
         macro_rules! const_fn {
             ($(
                 $(#[$attr:meta])*
-                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
                     $body:block
             )*) => ($(
                 #[inline]
