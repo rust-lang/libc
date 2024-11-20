@@ -95,6 +95,9 @@ jobs:
       max-parallel: 12
       matrix:
         target:
+          # FIXME(sparc): this takes much longer to run than any other job, put
+          # it first to make sure it gets a head start.
+          - sparc64-unknown-linux-gnu
           - aarch64-linux-android
           - aarch64-unknown-linux-gnu
           - aarch64-unknown-linux-musl
@@ -108,12 +111,11 @@ jobs:
           - powerpc-unknown-linux-gnu
           - powerpc64-unknown-linux-gnu
           - powerpc64le-unknown-linux-gnu
-          - s390x-unknown-linux-gnu
           - riscv64gc-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - wasm32-unknown-emscripten
           - wasm32-wasip1
           - wasm32-wasip2
-          - sparc64-unknown-linux-gnu
-          - wasm32-unknown-emscripten
           - x86_64-linux-android
           # FIXME: Exec format error (os error 8)
           # - x86_64-unknown-linux-gnux32
