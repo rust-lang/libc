@@ -3552,6 +3552,8 @@ fn test_linux(target: &str) {
         "linux/netlink.h",
         // FIXME: requires Linux >= 5.6:
         [!musl]: "linux/openat2.h",
+        // FIXME: some items require Linux >= 5.6:
+        "linux/ptp_clock.h",
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
@@ -3698,6 +3700,11 @@ fn test_linux(target: &str) {
             return true;
         }
         if musl && ty == "seccomp_notif_sizes" {
+            return true;
+        }
+
+        // FIXME: CI has old headers
+        if ty == "ptp_sys_offset_extended" {
             return true;
         }
 
@@ -4422,7 +4429,11 @@ fn test_linux(target: &str) {
         // `__exit_status` type is a patch which is absent in musl
         (struct_ == "utmpx" && field == "ut_exit" && musl) ||
         // `can_addr` is an anonymous union
-        (struct_ == "sockaddr_can" && field == "can_addr")
+        (struct_ == "sockaddr_can" && field == "can_addr") ||
+        // `anonymous_1` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        // `anonymous_2` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_2")
     });
 
     cfg.volatile_item(|i| {
@@ -4495,6 +4506,10 @@ fn test_linux(target: &str) {
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
+        // `anonymous_1` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        // `anonymous_2` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
         // FIXME(#4121): a new field was added from `f_spare`

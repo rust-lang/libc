@@ -19,6 +19,7 @@ pub type pthread_key_t = ::c_uint;
 pub type pthread_once_t = ::c_int;
 pub type pthread_spinlock_t = ::c_int;
 pub type __kernel_fsid_t = __c_anonymous__kernel_fsid_t;
+pub type __kernel_clockid_t = ::c_int;
 
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
@@ -829,6 +830,40 @@ s! {
         pub resolve: ::__u64,
     }
 
+    // linux/ptp_clock.h
+    pub struct ptp_clock_time {
+        pub sec: ::__s64,
+        pub nsec: ::__u32,
+        pub reserved: ::__u32,
+    }
+
+    pub struct ptp_extts_request {
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub rsv: [::c_uint; 2],
+    }
+
+    pub struct ptp_sys_offset_extended {
+        pub n_samples: ::c_uint,
+        pub clockid: __kernel_clockid_t,
+        pub rsv: [::c_uint; 2],
+        pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
+    }
+
+    pub struct ptp_sys_offset_precise {
+        pub device: ptp_clock_time,
+        pub sys_realtime: ptp_clock_time,
+        pub sys_monoraw: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    pub struct ptp_extts_event {
+        pub t: ptp_clock_time,
+        index: ::c_uint,
+        flags: ::c_uint,
+        rsv: [::c_uint; 2],
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -1141,6 +1176,23 @@ s! {
         pub mask: __u64,
         pub fd: ::c_int,
         pub pid: ::c_int,
+    }
+
+    // linux/ptp_clock.h
+
+    pub struct ptp_sys_offset {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        // FIXME(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported
+        pub ts: [ptp_clock_time; 51],
+    }
+
+    pub struct ptp_pin_desc {
+        pub name: [::c_char; 64],
+        pub index: ::c_uint,
+        pub func: ::c_uint,
+        pub chan: ::c_uint,
+        pub rsv: [::c_uint; 5],
     }
 }
 
@@ -1573,6 +1625,28 @@ s_no_extra_traits! {
     pub struct iwreq {
         pub ifr_ifrn: __c_anonymous_iwreq,
         pub u: iwreq_data,
+    }
+
+    // linux/ptp_clock.h
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_1 {
+        pub start: ptp_clock_time,
+        pub phase: ptp_clock_time,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_2 {
+        pub on: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct ptp_perout_request {
+        pub anonymous_1: __c_anonymous_ptp_perout_request_1,
+        pub period: ptp_clock_time,
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub anonymous_2: __c_anonymous_ptp_perout_request_2,
     }
 }
 
@@ -4463,6 +4537,9 @@ pub const HWTSTAMP_FILTER_PTP_V2_EVENT: ::c_uint = 12;
 pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
+
+// linux/ptp_clock.h
+pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement samples.
 
 // linux/tls.h
 pub const TLS_TX: ::c_int = 1;
