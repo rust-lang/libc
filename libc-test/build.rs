@@ -4496,7 +4496,10 @@ fn test_linux(target: &str) {
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
-        (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
+        (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
+        // FIXME(#4121): a new field was added from `f_spare`
+        (struct_ == "statvfs" && field == "__f_spare") ||
+        (struct_ == "statvfs64" && field == "__f_spare")
     });
 
     cfg.skip_roundtrip(move |s| match s {
