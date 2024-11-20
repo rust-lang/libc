@@ -4302,6 +4302,16 @@ fn test_linux(target: &str) {
             "EPIOCSPARAMS"
             | "EPIOCGPARAMS" => true,
 
+            // FIXME(time): these change value when using 64-bit time on 32-bit
+            "F_GETLK"
+            |"SO_RCVTIMEO"
+            |"SO_SNDTIMEO"
+            |"SO_TIMESTAMP"
+            |"SO_TIMESTAMPNS"
+            |"SO_TIMESTAMPING"
+            |"SCM_TIMESTAMPNS"
+            |"SCM_TIMESTAMPING" if bit32  => true,
+
             _ => false,
         }
     });
