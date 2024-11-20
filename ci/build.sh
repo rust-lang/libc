@@ -22,7 +22,7 @@ fi
 test_target() {
     build_cmd="${1}"
     target="${2}"
-    no_std="${3}"
+    no_std="${3:-}"
 
     # If there is a std component, fetch it:
     if [ "${no_std}" != "1" ]; then
