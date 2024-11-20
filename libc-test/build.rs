@@ -4506,7 +4506,7 @@ fn test_linux(target: &str) {
         // means `ut_session` is now a `long` rather than `int32_t`.
         (bit32 && (
             (struct_ == "utmpx" && field == "ut_session") ||
-            (struct_ == "input_envent" && field == "time" ) ||
+            (struct_ == "input_event" && field == "time" ) ||
             // Almost the entire `timex` struct but not everything
             (struct_ == "timex" && field == "offset") ||
             (struct_ == "timex" && field == "freq") ||
