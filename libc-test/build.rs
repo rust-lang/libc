@@ -3617,6 +3617,7 @@ fn test_linux(target: &str) {
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
@@ -4495,6 +4496,9 @@ fn test_linux(target: &str) {
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
+        // FIXME(time): Ubuntu24.10 seems to define `__WORDSIZE_TIME64_COMPAT32` which makes
+        // `ut_session` a `long` rather than `int32_t`.
+        (struct_ == "utmpx" && field == "ut_session" && x86_32) ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
     });
