@@ -1580,10 +1580,11 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     pub struct can_frame {
         pub can_id: canid_t,
+        // FIXME(1.0): this field was renamed to `len` in Linux 5.11
         pub can_dlc: u8,
         __pad: u8,
         __res0: u8,
-        __res1: u8,
+        pub len8_dlc: u8,
         pub data: [u8; CAN_MAX_DLEN],
     }
 
