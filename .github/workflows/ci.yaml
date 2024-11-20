@@ -44,78 +44,50 @@ jobs:
       - name: Execute build.sh
         run: ./ci/verify-build.sh
 
-  macos:
-    name: macOS
-    runs-on: macos-14
+  test_tier1:
+    name: Test tier1
     strategy:
-      fail-fast: true
-      matrix:
-        target:
-          - aarch64-apple-darwin
-    env:
-      TARGET: ${{ matrix.target }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
-      - name: Execute run.sh
-        run: ./ci/run.sh ${{ matrix.target }}
-
-  windows:
-    name: Windows
-    runs-on: windows-2022
-    strategy:
-      fail-fast: true
       matrix:
         include:
+          - target: i686-unknown-linux-gnu
+            docker: true
+            os: ubuntu-22.04
+          - target: x86_64-unknown-linux-gnu
+            docker: true
+            os: ubuntu-22.04
+          - target: aarch64-apple-darwin
+            os: macos-14
           - target: x86_64-pc-windows-gnu
+            os: windows-2022
             env:
               ARCH_BITS: 64
               ARCH: x86_64
           - target: x86_64-pc-windows-msvc
+            os: windows-2022
           # FIXME: It currently causes segfaults.
           #- target: i686-pc-windows-gnu
           #  env:
           #    ARCH_BITS: 32
           #    ARCH: i686
           - target: i686-pc-windows-msvc
+            os: windows-2022
+    runs-on: ${{ matrix.os }}
     env:
-      OS: windows
       TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
-      - name: Self-update rustup
-        run: rustup self update
-        shell: bash
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-        shell: bash
-      - name: Execute run.sh
+      - name: Run natively
+        if: "!matrix.docker"
         run: ./ci/run.sh ${{ matrix.target }}
-        shell: bash
-
-  
-  docker_linux_tier1:
-    name: Docker Linux Tier1
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: true
-      matrix:
-        target:
-          - i686-unknown-linux-gnu
-          - x86_64-unknown-linux-gnu
-    env:
-      TARGET: ${{ matrix.target }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
-      - name: Execute run-docker.sh
+      - name: Run in Docker
+        if: "matrix.docker"
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
-  docker_linux_tier2:
-    name: Docker Linux Tier2
-    needs: [docker_linux_tier1, style_check]
+  test_tier2:
+    name: Test tier2
+    needs: [test_tier1, style_check]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: true
@@ -202,10 +174,8 @@ jobs:
     name: success
     runs-on: ubuntu-22.04
     needs:
-      - docker_linux_tier1
-      - docker_linux_tier2
-      - macos
-      - windows
+      - test_tier1
+      - test_tier2
       - solaris
       - style_check
       - verify_build
