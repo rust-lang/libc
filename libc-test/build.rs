@@ -3835,6 +3835,9 @@ fn test_linux(target: &str) {
             // https://github.com/torvalds/linux/commit/c05cd3645814724bdeb32a2b4d953b12bdea5f8c
             "xdp_umem_reg_v1" => true,
 
+            // FIXME(#3956): our CI now has the more recent version with the extra field.
+            "xdp_umem_reg" => true,
+
             // Is defined in `<linux/sched/types.h>` but if this file is included at the same time
             // as `<sched.h>`, the `struct sched_param` is defined twice, causing the compilation to
             // fail. The problem doesn't seem to be present in more recent versions of the linux
@@ -4496,8 +4499,8 @@ fn test_linux(target: &str) {
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
-        // FIXME(time): Ubuntu24.10 seems to define `__WORDSIZE_TIME64_COMPAT32` which makes
-        // `ut_session` a `long` rather than `int32_t`.
+        // FIXME(time): Ubuntu24.10 seems to no longer define `__WORDSIZE_TIME64_COMPAT32=1`, which
+        // means `ut_session` is now a `long` rather than `int32_t`.
         (struct_ == "utmpx" && field == "ut_session" && x86_32) ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64)
