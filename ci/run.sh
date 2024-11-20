@@ -21,25 +21,21 @@ if [ -n "${QEMU:-}" ]; then
 
     if [ -z "${QEMU#*.gz}" ]; then
         # image is .gz : download and uncompress it
-        qemufile="$(echo "${QEMU%.gz}" | sed 's/\//__/g')"
-        if [ ! -f "${tmpdir}/${qemufile}" ]; then
-            curl --retry 5 "${mirrors_url}/${QEMU}" |
-                gunzip -d > "${tmpdir}/${qemufile}"
-        fi
+        base_file="${QEMU%.gz}"
+        pipe_cmd="gunzip -d"
     elif [ -z "${QEMU#*.xz}" ]; then
         # image is .xz : download and uncompress it
-        qemufile="$(echo "${QEMU%.xz}" | sed 's/\//__/g')"
-        if [ ! -f "${tmpdir}/${qemufile}" ]; then
-            curl --retry 5 "${mirrors_url}/${QEMU}" |
-                unxz > "${tmpdir}/${qemufile}"
-        fi
+        base_file="${QEMU%.xz}"
+        pipe_cmd="unxz"
     else
         # plain qcow2 image: just download it
-        qemufile="$(echo "${QEMU}" | sed 's/\//__/g')"
-        if [ ! -f "${tmpdir}/${qemufile}" ]; then
-            curl --retry 5 "${mirrors_url}/${QEMU}" \
-                > "${tmpdir}/${qemufile}"
-        fi
+        base_file="$QEMU"
+        pipe_cmd="cat" # nop to forward the result
+    fi
+
+    qemufile="$(echo "$base_file" | sed 's/\//__/g')"
+    if [ ! -f "${tmpdir}/${qemufile}" ]; then
+        curl --retry 5 "${mirrors_url}/${QEMU}" | $pipe_cmd > "${tmpdir}/${qemufile}"
     fi
 
     # Create a mount a fresh new filesystem image that we'll later pass to QEMU.
