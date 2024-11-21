@@ -1177,12 +1177,14 @@ extern "C" {
         compar: Option<unsafe extern "C" fn(*const c_void, *const c_void, *mut c_void) -> c_int>,
         arg: *mut c_void,
     );
+    #[cfg_attr(gnu_time_bits64, link_name = "__sendmmsg64")]
     pub fn sendmmsg(
         sockfd: c_int,
         msgvec: *mut crate::mmsghdr,
         vlen: c_uint,
         flags: c_int,
     ) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__recvmmsg64")]
     pub fn recvmmsg(
         sockfd: c_int,
         msgvec: *mut crate::mmsghdr,
@@ -1221,15 +1223,20 @@ extern "C" {
     pub fn endutxent();
     pub fn getpt() -> c_int;
     pub fn mallopt(param: c_int, value: c_int) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__gettimeofday64")]
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut crate::timezone) -> c_int;
     pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
     pub fn getauxval(type_: c_ulong) -> c_ulong;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "___adjtimex64")]
     pub fn adjtimex(buf: *mut timex) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "___adjtimex64")]
     pub fn ntp_adjtime(buf: *mut timex) -> c_int;
-    #[link_name = "ntp_gettimex"]
+    #[cfg_attr(not(gnu_time_bits64), link_name = "ntp_gettimex")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__ntp_gettime64")]
     pub fn ntp_gettime(buf: *mut ntptimeval) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__clock_adjtime64")]
     pub fn clock_adjtime(clk_id: crate::clockid_t, buf: *mut crate::timex) -> c_int;
 
     pub fn fanotify_mark(
@@ -1284,12 +1291,14 @@ extern "C" {
 
     pub fn ctermid(s: *mut c_char) -> *mut c_char;
     pub fn backtrace(buf: *mut *mut c_void, sz: c_int) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__glob64_time64")]
     pub fn glob64(
         pattern: *const c_char,
         flags: c_int,
         errfunc: Option<extern "C" fn(epath: *const c_char, errno: c_int) -> c_int>,
         pglob: *mut glob64_t,
     ) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__globfree64_time64")]
     pub fn globfree64(pglob: *mut glob64_t);
     pub fn ptrace(request: c_uint, ...) -> c_long;
     pub fn pthread_attr_getaffinity_np(
@@ -1357,6 +1366,7 @@ extern "C" {
     pub fn eaccess(pathname: *const c_char, mode: c_int) -> c_int;
 
     pub fn asctime_r(tm: *const crate::tm, buf: *mut c_char) -> *mut c_char;
+    #[cfg_attr(gnu_time_bits64, link_name = "__ctime64_r")]
     pub fn ctime_r(timep: *const time_t, buf: *mut c_char) -> *mut c_char;
 
     pub fn dirname(path: *mut c_char) -> *mut c_char;
@@ -1421,6 +1431,7 @@ extern "C" {
 
     pub fn mq_notify(mqdes: crate::mqd_t, sevp: *const crate::sigevent) -> c_int;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__epoll_pwait2_time64")]
     pub fn epoll_pwait2(
         epfd: c_int,
         events: *mut crate::epoll_event,
