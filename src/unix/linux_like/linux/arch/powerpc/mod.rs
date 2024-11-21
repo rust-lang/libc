@@ -84,8 +84,8 @@ pub const SO_BINDTOIFINDEX: c_int = 62;
 // pub const SO_RCVTIMEO_NEW: c_int = 66;
 // pub const SO_SNDTIMEO_NEW: c_int = 67;
 // pub const SO_DETACH_REUSEPORT_BPF: c_int = 68;
-// pub const SO_PREFER_BUSY_POLL: c_int = 69;
-// pub const SO_BUSY_POLL_BUDGET: c_int = 70;
+pub const SO_PREFER_BUSY_POLL: c_int = 69;
+pub const SO_BUSY_POLL_BUDGET: c_int = 70;
 
 pub const FICLONE: c_ulong = 0x80049409;
 pub const FICLONERANGE: c_ulong = 0x8020940D;
