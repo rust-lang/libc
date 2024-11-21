@@ -1200,8 +1200,11 @@ extern "C" {
     pub fn getrlimit64(resource: crate::__rlimit_resource_t, rlim: *mut crate::rlimit64) -> c_int;
     pub fn setrlimit64(resource: crate::__rlimit_resource_t, rlim: *const crate::rlimit64)
         -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "getrlimit64")]
     pub fn getrlimit(resource: crate::__rlimit_resource_t, rlim: *mut crate::rlimit) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "setrlimit64")]
     pub fn setrlimit(resource: crate::__rlimit_resource_t, rlim: *const crate::rlimit) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "prlimit64")]
     pub fn prlimit(
         pid: crate::pid_t,
         resource: crate::__rlimit_resource_t,
@@ -1242,6 +1245,7 @@ extern "C" {
         dirfd: c_int,
         path: *const c_char,
     ) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "preadv64v2")]
     pub fn preadv2(
         fd: c_int,
         iov: *const crate::iovec,
@@ -1249,6 +1253,7 @@ extern "C" {
         offset: off_t,
         flags: c_int,
     ) -> ssize_t;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "pwritev64v2")]
     pub fn pwritev2(
         fd: c_int,
         iov: *const crate::iovec,
