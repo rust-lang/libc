@@ -407,6 +407,24 @@ s! {
         #[cfg(target_pointer_width = "64")]
         __size: [c_char; 32],
     }
+
+    pub struct mbstate_t {
+        __count: c_int,
+        __wchb: [c_char; 4],
+    }
+
+    pub struct fpos64_t {
+        __pos: off64_t,
+        __state: crate::mbstate_t,
+    }
+
+    pub struct fpos_t {
+        #[cfg(not(gnu_file_offset_bits64))]
+        __pos: off_t,
+        #[cfg(gnu_file_offset_bits64)]
+        __pos: off64_t,
+        __state: crate::mbstate_t,
+    }
 }
 
 impl siginfo_t {
