@@ -21,10 +21,10 @@ s_no_extra_traits! {
     }
 
     pub struct fpregs {
-        pub fp_x: [[::register_t; 2]; 32],
-        pub fp_fcsr: ::register_t,
+        pub fp_x: [[u64; 2]; 32],
+        pub fp_fcsr: u64,
         pub fp_flags: ::c_int,
-        pub fp_pad: ::c_int,
+        pub pad: ::c_int,
     }
 
     pub struct mcontext_t {
@@ -85,7 +85,7 @@ cfg_if! {
                 self.fp_x == other.fp_x
                     && self.fp_fcsr == other.fp_fcsr
                     && self.fp_flags == other.fp_flags
-                    && self.fp_pad == other.fp_pad
+                    && self.pad == other.pad
             }
         }
         impl Eq for fpregs {}
@@ -95,7 +95,7 @@ cfg_if! {
                     .field("fp_x", &self.fp_x)
                     .field("fp_fcsr", &self.fp_fcsr)
                     .field("fp_flags", &self.fp_flags)
-                    .field("fp_pad", &self.fp_pad)
+                    .field("pad", &self.pad)
                     .finish()
             }
         }
@@ -104,7 +104,7 @@ cfg_if! {
                 self.fp_x.hash(state);
                 self.fp_fcsr.hash(state);
                 self.fp_flags.hash(state);
-                self.fp_pad.hash(state);
+                self.pad.hash(state);
             }
         }
         impl PartialEq for mcontext_t {

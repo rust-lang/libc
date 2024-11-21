@@ -23,10 +23,10 @@ pub const ECOMM: ::c_int = 70;
 pub const EPROTO: ::c_int = 71;
 pub const EDOTDOT: ::c_int = 73;
 
-pub const SA_NODEFER: ::c_int = 0x40000000;
-pub const SA_RESETHAND: ::c_int = 0x80000000;
-pub const SA_RESTART: ::c_int = 0x10000000;
-pub const SA_NOCLDSTOP: ::c_int = 0x00000001;
+pub const SA_NODEFER: ::c_uint = 0x40000000;
+pub const SA_RESETHAND: ::c_uint = 0x80000000;
+pub const SA_RESTART: ::c_uint = 0x10000000;
+pub const SA_NOCLDSTOP: ::c_uint = 0x00000001;
 
 pub const EPOLL_CLOEXEC: ::c_int = 0x80000;
 
