@@ -148,6 +148,8 @@ s! {
 
     // `mips*` targets swap the `s_errno` and `s_code` fields otherwise this struct is
     // target-agnostic (see https://www.openwall.com/lists/musl/2016/01/27/1/2)
+    //
+    // FIXME(union): C implementation uses unions
     pub struct siginfo_t {
         pub si_signo: ::c_int,
         #[cfg(not(target_arch = "mips"))]
@@ -177,12 +179,12 @@ s! {
         #[cfg(target_endian = "little")]
         pub f_fsid: ::c_ulong,
         #[cfg(target_pointer_width = "32")]
-        __f_unused: ::c_int,
+        __pad: ::c_int,
         #[cfg(target_endian = "big")]
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
+        __f_reserved: [::c_int; 6],
     }
 
     pub struct statvfs64 {
@@ -197,12 +199,12 @@ s! {
         #[cfg(target_endian = "little")]
         pub f_fsid: ::c_ulong,
         #[cfg(target_pointer_width = "32")]
-        __f_unused: ::c_int,
+        __pad: ::c_int,
         #[cfg(target_endian = "big")]
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
+        __f_reserved: [::c_int; 6],
     }
 
     pub struct termios {
