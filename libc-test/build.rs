@@ -4061,6 +4061,12 @@ fn test_linux(target: &str) {
             if loongarch64 && (name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC") {
                 return true;
             }
+            // FIXME(musl): Requires musl >= 1.2
+            if name == "SO_PREFER_BUSY_POLL"
+                || name == "SO_BUSY_POLL_BUDGET"
+            {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
