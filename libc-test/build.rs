@@ -3885,7 +3885,8 @@ fn test_linux(target: &str) {
                 return true;
             }
             // FIXME: Requires >= 5.4 kernel headers
-            if name == "PTP_ENABLE_PPS2" 
+            if name == "PTP_CLOCK_GETCAPS2"
+                || name == "PTP_ENABLE_PPS2" 
                 || name == "PTP_EXTTS_REQUEST2"
                 || name == "PTP_PEROUT_REQUEST2"
                 || name == "PTP_PIN_GETFUNC2"
@@ -4333,7 +4334,11 @@ fn test_linux(target: &str) {
         // `anonymous_1` is an anonymous union
         (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
         // `anonymous_2` is an anonymous union
-        (struct_ == "ptp_perout_request" && field == "anonymous_2")
+        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
+        // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
+        // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
+        // the rsv field shrunk when those fields got added, so is omitted too
+        (struct_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field)))
     });
 
     cfg.volatile_item(|i| {
@@ -4410,6 +4415,10 @@ fn test_linux(target: &str) {
         (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
         // `anonymous_2` is an anonymous union
         (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
+        // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
+        // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
+        // the rsv field shrunk when those fields got added, so is omitted too
+        (struct_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field))) ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
         // FIXME(#4121): a new field was added from `f_spare`
