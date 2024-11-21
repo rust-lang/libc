@@ -43,16 +43,16 @@ fn main() {
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
-    // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
+    // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
     let which_freebsd = if libc_ci {
-        which_freebsd().unwrap_or(11)
+        which_freebsd().unwrap_or(12)
     } else if rustc_dep_of_std {
         12
     } else {
-        11
+        12
     };
     match which_freebsd {
         x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
