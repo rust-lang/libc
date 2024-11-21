@@ -74,9 +74,14 @@ pub type iconv_t = *mut c_void;
 pub type sctp_assoc_t = __s32;
 
 pub type eventfd_t = u64;
-missing! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
-    pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
+
+cfg_if! {
+    if #[cfg(not(target_env = "gnu"))] {
+        missing! {
+            #[cfg_attr(feature = "extra_traits", derive(Debug))]
+            pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
+        }
+    }
 }
 
 e! {
