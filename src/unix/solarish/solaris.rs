@@ -1,10 +1,7 @@
-use exit_status;
-use NET_MAC_AWARE;
-use NET_MAC_AWARE_INHERIT;
-use PRIV_AWARE_RESET;
-use PRIV_DEBUG;
-use PRIV_PFEXEC;
-use PRIV_XPOLICY;
+use {
+    exit_status, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG, PRIV_PFEXEC,
+    PRIV_XPOLICY,
+};
 
 pub type door_attr_t = ::c_uint;
 pub type door_id_t = ::c_ulonglong;
