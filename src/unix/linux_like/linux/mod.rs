@@ -821,6 +821,14 @@ s! {
         pub val: ::c_int,
     }
 
+    // linux/openat2.h
+    #[non_exhaustive]
+    pub struct open_how {
+        pub flags: ::__u64,
+        pub mode: ::__u64,
+        pub resolve: ::__u64,
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -998,14 +1006,6 @@ s! {
         pub mask: __u64,
         pub fd: ::c_int,
         pub pid: ::c_int,
-    }
-
-    // linux/openat2.h
-    #[non_exhaustive]
-    pub struct open_how {
-        pub flags: ::__u64,
-        pub mode: ::__u64,
-        pub resolve: ::__u64,
     }
 
     // linux/wireless.h
