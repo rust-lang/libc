@@ -1,10 +1,7 @@
-use exit_status;
-use NET_MAC_AWARE;
-use NET_MAC_AWARE_INHERIT;
-use PRIV_AWARE_RESET;
-use PRIV_DEBUG;
-use PRIV_PFEXEC;
-use PRIV_XPOLICY;
+use {
+    exit_status, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG, PRIV_PFEXEC,
+    PRIV_XPOLICY,
+};
 
 pub type lgrp_rsrc_t = ::c_int;
 pub type lgrp_affinity_t = ::c_int;

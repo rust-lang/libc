@@ -3,9 +3,11 @@
 //! `wasi-libc` project provides multiple libraries including emulated features, but we list only
 //! basic features with `libc.a` here.
 
-use super::{Send, Sync};
-use c_void;
 use core::iter::Iterator;
+
+use c_void;
+
+use super::{Send, Sync};
 
 pub type c_char = i8;
 pub type c_uchar = u8;

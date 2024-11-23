@@ -1,8 +1,4 @@
-use c_void;
-use in6_addr;
-use in_addr_t;
-use timespec;
-use DIR;
+use {c_void, in6_addr, in_addr_t, timespec, DIR};
 
 pub type nlink_t = u16;
 pub type ino_t = u16;
