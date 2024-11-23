@@ -6807,6 +6807,7 @@ cfg_if! {
 // These require a dependency on `libiconv`, and including this when built as
 // part of `std` means every Rust program gets it. Ideally we would have a link
 // modifier to only include these if they are used, but we do not.
+#[deprecated(note = "Will be removed in 1.0 to avoid the `iconv` dependency")]
 #[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
 extern "C" {
     pub fn iconv_open(tocode: *const ::c_char, fromcode: *const ::c_char) -> iconv_t;
