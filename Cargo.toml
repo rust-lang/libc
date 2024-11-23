@@ -135,7 +135,7 @@ cargo-args = ["-Zbuild-std=core"]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
 
 [features]
-default = ["std"]
+default = ["const-extern-fn", "std"]
 std = []
 rustc-dep-of-std = ["rustc-std-workspace-core"]
 extra_traits = []
