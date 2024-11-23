@@ -9,6 +9,8 @@ mirrors_url="https://ci-mirrors.rust-lang.org/libc"
 
 target="$1"
 
+export RUST_BACKTRACE="${RUST_BACKTRACE:-1}"
+
 # If we're going to run tests inside of a qemu image, then we don't need any of
 # the scripts below. Instead, download the image, prepare a filesystem which has
 # the current state of this repository, and then run the image.
@@ -78,6 +80,14 @@ if [ -n "${QEMU:-}" ]; then
     exec grep -E "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
+cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+
+# Run tests in the `libc` crate
+$cmd
+
+# Everything else is in `libc-test`
+cmd="$cmd --manifest-path libc-test/Cargo.toml"
+
 if [ "$target" = "s390x-unknown-linux-gnu" ]; then
     # FIXME: s390x-unknown-linux-gnu often fails to test due to timeout,
     # so we retry this N times.
@@ -86,31 +96,17 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
     passed=0
     until [ $n -ge $N ]; do
         if [ "$passed" = "0" ]; then
-            if cargo test \
-                --no-default-features \
-                --manifest-path libc-test/Cargo.toml \
-                --target "$target" \
-                ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
-             then
+            if $cmd --no-default-features; then
                 passed=$((passed+1))
                 continue
             fi
         elif [ "$passed" = "1" ]; then
-            if cargo test \
-                --manifest-path libc-test/Cargo.toml \
-                --target "$target" \
-                ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
-            then
+            if $cmd; then
                 passed=$((passed+1))
                 continue
             fi
         elif [ "$passed" = "2" ]; then
-            if cargo test \
-                --features extra_traits \
-                --manifest-path libc-test/Cargo.toml \
-                --target "$target" \
-                ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
-            then
+            if $cmd --features extra_traits; then
                 break
             fi
         fi
@@ -118,20 +114,7 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
         sleep 1
     done
 else
-    cargo test \
-        --no-default-features \
-        --manifest-path libc-test/Cargo.toml \
-        --target "$target" \
-        ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
-
-    cargo test \
-        --manifest-path libc-test/Cargo.toml \
-        --target "$target" \
-        ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
-
-    RUST_BACKTRACE=1 cargo test \
-        --features extra_traits \
-        --manifest-path libc-test/Cargo.toml \
-        --target "$target" \
-        ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
+    $cmd --no-default-features
+    $cmd
+    $cmd --features extra_traits
 fi
