@@ -179,9 +179,7 @@ fn rustc_minor_nightly() -> (u32, bool) {
 }
 
 fn which_freebsd() -> Option<i32> {
-    let output = std::process::Command::new("freebsd-version")
-        .output()
-        .ok()?;
+    let output = Command::new("freebsd-version").output().ok()?;
     if !output.status.success() {
         return None;
     }
@@ -200,10 +198,7 @@ fn which_freebsd() -> Option<i32> {
 }
 
 fn emcc_version_code() -> Option<u64> {
-    let output = std::process::Command::new("emcc")
-        .arg("-dumpversion")
-        .output()
-        .ok()?;
+    let output = Command::new("emcc").arg("-dumpversion").output().ok()?;
     if !output.status.success() {
         return None;
     }

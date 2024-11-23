@@ -1,3 +1,5 @@
+use core::mem::size_of;
+
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -710,9 +712,9 @@ cfg_if! {
             fn data_field_count(&self) -> usize {
                 match self.si_signo {
                     ::SIGSEGV | ::SIGBUS | ::SIGILL | ::SIGTRAP | ::SIGFPE => {
-                        ::mem::size_of::<siginfo_fault>() / ::mem::size_of::<::c_int>()
+                        size_of::<siginfo_fault>() / size_of::<::c_int>()
                     }
-                    ::SIGCLD => ::mem::size_of::<siginfo_sigcld>() / ::mem::size_of::<::c_int>(),
+                    ::SIGCLD => size_of::<siginfo_sigcld>() / size_of::<::c_int>(),
                     ::SIGHUP
                     | ::SIGINT
                     | ::SIGQUIT
@@ -725,7 +727,7 @@ cfg_if! {
                     | ::SIGUSR2
                     | ::SIGPWR
                     | ::SIGWINCH
-                    | ::SIGURG => ::mem::size_of::<siginfo_kill>() / ::mem::size_of::<::c_int>(),
+                    | ::SIGURG => size_of::<siginfo_kill>() / size_of::<::c_int>(),
                     _ => SIGINFO_DATA_SIZE,
                 }
             }
@@ -2456,7 +2458,7 @@ const _CMSG_HDR_ALIGNMENT: usize = 8;
 #[cfg(not(target_arch = "sparc64"))]
 const _CMSG_HDR_ALIGNMENT: usize = 4;
 
-const _CMSG_DATA_ALIGNMENT: usize = ::mem::size_of::<::c_int>();
+const _CMSG_DATA_ALIGNMENT: usize = size_of::<::c_int>();
 
 const NEWDEV: ::c_int = 1;
 
@@ -2483,7 +2485,7 @@ f! {
     }
 
     pub fn CMSG_FIRSTHDR(mhdr: *const ::msghdr) -> *mut ::cmsghdr {
-        if ((*mhdr).msg_controllen as usize) < ::mem::size_of::<::cmsghdr>() {
+        if ((*mhdr).msg_controllen as usize) < size_of::<::cmsghdr>() {
             0 as *mut ::cmsghdr
         } else {
             (*mhdr).msg_control as *mut ::cmsghdr
@@ -2495,7 +2497,7 @@ f! {
             return ::CMSG_FIRSTHDR(mhdr);
         };
         let next = _CMSG_HDR_ALIGN(
-            cmsg as usize + (*cmsg).cmsg_len as usize + ::mem::size_of::<::cmsghdr>(),
+            cmsg as usize + (*cmsg).cmsg_len as usize + size_of::<::cmsghdr>(),
         );
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
@@ -2506,7 +2508,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: ::c_uint) -> ::c_uint {
-        _CMSG_HDR_ALIGN(::mem::size_of::<::cmsghdr>() as usize + length as usize) as ::c_uint
+        _CMSG_HDR_ALIGN(size_of::<::cmsghdr>() as usize + length as usize) as ::c_uint
     }
 
     pub fn FD_CLR(fd: ::c_int, set: *mut fd_set) -> () {

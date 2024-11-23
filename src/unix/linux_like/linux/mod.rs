@@ -1,6 +1,6 @@
 //! Linux-specific definitions for linux-like values
 
-use core::mem;
+use core::mem::size_of;
 
 pub type useconds_t = u32;
 pub type dev_t = u64;
@@ -3726,15 +3726,15 @@ pub const TP_FT_REQ_FILL_RXHASH: ::__u32 = 1;
 
 pub const TPACKET_ALIGNMENT: usize = 16;
 
-pub const TPACKET_HDRLEN: usize = ((mem::size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
+pub const TPACKET_HDRLEN: usize = ((size_of::<::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + mem::size_of::<::sockaddr_ll>();
-pub const TPACKET2_HDRLEN: usize = ((mem::size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
+    + size_of::<::sockaddr_ll>();
+pub const TPACKET2_HDRLEN: usize = ((size_of::<::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + mem::size_of::<::sockaddr_ll>();
-pub const TPACKET3_HDRLEN: usize = ((mem::size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
+    + size_of::<::sockaddr_ll>();
+pub const TPACKET3_HDRLEN: usize = ((size_of::<::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
     & !(TPACKET_ALIGNMENT - 1))
-    + mem::size_of::<::sockaddr_ll>();
+    + size_of::<::sockaddr_ll>();
 
 // linux/netfilter.h
 pub const NF_DROP: ::c_int = 0;
@@ -4198,11 +4198,11 @@ pub const IW_PMKID_CAND_PREAUTH: ::c_ulong = 0x00000001;
 pub const IW_EV_LCP_PK_LEN: usize = 4;
 
 pub const IW_EV_CHAR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + ::IFNAMSIZ;
-pub const IW_EV_UINT_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + ::mem::size_of::<u32>();
-pub const IW_EV_FREQ_PK_LEN: usize = 12; // IW_EV_LCP_PK_LEN + ::mem::size_of::<iw_freq>();
-pub const IW_EV_PARAM_PK_LEN: usize = 12; // IW_EV_LCP_PK_LEN + ::mem::size_of::<iw_param>();
-pub const IW_EV_ADDR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + ::mem::size_of::<::sockaddr>();
-pub const IW_EV_QUAL_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + ::mem::size_of::<iw_quality>();
+pub const IW_EV_UINT_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + size_of::<u32>();
+pub const IW_EV_FREQ_PK_LEN: usize = 12; // IW_EV_LCP_PK_LEN + size_of::<iw_freq>();
+pub const IW_EV_PARAM_PK_LEN: usize = 12; // IW_EV_LCP_PK_LEN + size_of::<iw_param>();
+pub const IW_EV_ADDR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + size_of::<::sockaddr>();
+pub const IW_EV_QUAL_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + size_of::<iw_quality>();
 pub const IW_EV_POINT_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + 4;
 
 pub const IPTOS_TOS_MASK: u8 = 0x1E;
@@ -5282,9 +5282,9 @@ pub const CANXL_MAX_DLEN: usize = 2048;
 pub const CANXL_XLF: ::c_int = 0x80;
 pub const CANXL_SEC: ::c_int = 0x01;
 
-pub const CAN_MTU: usize = ::mem::size_of::<can_frame>();
-pub const CANFD_MTU: usize = ::mem::size_of::<canfd_frame>();
-pub const CANXL_MTU: usize = ::mem::size_of::<canxl_frame>();
+pub const CAN_MTU: usize = size_of::<can_frame>();
+pub const CANFD_MTU: usize = size_of::<canfd_frame>();
+pub const CANXL_MTU: usize = size_of::<canxl_frame>();
 // FIXME(offset_of): use `core::mem::offset_of!` once that is available
 // https://github.com/rust-lang/rfcs/pull/3308
 // pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
@@ -5760,17 +5760,17 @@ pub(crate) const fn _IO(ty: u32, nr: u32) -> u32 {
 
 /// Build an ioctl number for an read-only ioctl.
 pub(crate) const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
-    _IOC(_IOC_READ, ty, nr, core::mem::size_of::<T>())
+    _IOC(_IOC_READ, ty, nr, size_of::<T>())
 }
 
 /// Build an ioctl number for an write-only ioctl.
 pub(crate) const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
-    _IOC(_IOC_WRITE, ty, nr, core::mem::size_of::<T>())
+    _IOC(_IOC_WRITE, ty, nr, size_of::<T>())
 }
 
 /// Build an ioctl number for a read-write ioctl.
 pub(crate) const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
-    _IOC(_IOC_READ | _IOC_WRITE, ty, nr, core::mem::size_of::<T>())
+    _IOC(_IOC_READ | _IOC_WRITE, ty, nr, size_of::<T>())
 }
 
 f! {
@@ -5779,7 +5779,7 @@ f! {
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < ::mem::size_of::<cmsghdr>() {
+        if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
         let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
@@ -5835,7 +5835,7 @@ f! {
     }
 
     pub fn CPU_COUNT(cpuset: &cpu_set_t) -> ::c_int {
-        CPU_COUNT_S(::mem::size_of::<cpu_set_t>(), cpuset)
+        CPU_COUNT_S(size_of::<cpu_set_t>(), cpuset)
     }
 
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
