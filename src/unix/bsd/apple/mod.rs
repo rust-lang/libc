@@ -1293,12 +1293,6 @@ s! {
         pub dot3Compliance: u32,
     }
 
-    pub struct if_family_id {
-        pub iffmid_len: u32,
-        pub iffmid_id: u32,
-        pub iffmid_str: [::c_char; 1],
-    }
-
     // kern_control.h
     pub struct ctl_info {
         pub ctl_id: u32,
