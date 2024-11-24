@@ -515,39 +515,6 @@ s! {
         pub ifr6_prefixlen: u32,
         pub ifr6_ifindex: ::c_int,
     }
-
-    pub struct statx {
-        pub stx_mask: ::__u32,
-        pub stx_blksize: ::__u32,
-        pub stx_attributes: ::__u64,
-        pub stx_nlink: ::__u32,
-        pub stx_uid: ::__u32,
-        pub stx_gid: ::__u32,
-        pub stx_mode: ::__u16,
-        __statx_pad1: [::__u16; 1],
-        pub stx_ino: ::__u64,
-        pub stx_size: ::__u64,
-        pub stx_blocks: ::__u64,
-        pub stx_attributes_mask: ::__u64,
-        pub stx_atime: ::statx_timestamp,
-        pub stx_btime: ::statx_timestamp,
-        pub stx_ctime: ::statx_timestamp,
-        pub stx_mtime: ::statx_timestamp,
-        pub stx_rdev_major: ::__u32,
-        pub stx_rdev_minor: ::__u32,
-        pub stx_dev_major: ::__u32,
-        pub stx_dev_minor: ::__u32,
-        pub stx_mnt_id: ::__u64,
-        pub stx_dio_mem_align: ::__u32,
-        pub stx_dio_offset_align: ::__u32,
-        __statx_pad3: [::__u64; 12],
-    }
-
-    pub struct statx_timestamp {
-        pub tv_sec: ::__s64,
-        pub tv_nsec: ::__u32,
-        pub __reserved: ::__s32,
-    }
 }
 
 s_no_extra_traits! {
@@ -4162,13 +4129,6 @@ extern "C" {
         newdirfd: ::c_int,
         newpath: *const ::c_char,
         flags: ::c_uint,
-    ) -> ::c_int;
-    pub fn statx(
-        dirfd: ::c_int,
-        pathname: *const c_char,
-        flags: ::c_int,
-        mask: ::c_uint,
-        statxbuf: *mut statx,
     ) -> ::c_int;
 }
 
