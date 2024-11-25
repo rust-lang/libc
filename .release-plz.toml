@@ -35,6 +35,7 @@ commit_parsers = [
   { message = '(?i)^(\w+: )?feat', group = "added" },
   { message = '(?i)^(\w+: )?add', group = "added" },
   { message = '(?i)^(\w+: )?change', group = "changed" },
+  { message = '(?i)^(\w+: )?cleanup', group = "cleanup" },
   { message = '(?i)^(\w+: )?deprecate', group = "deprecated" },
   { message = '(?i)^(\w+: )?remove', group = "removed" },
   { message = '(?i)^(\w+: )?fix', group = "fixed" },
