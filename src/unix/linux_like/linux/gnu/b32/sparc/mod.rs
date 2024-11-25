@@ -58,27 +58,6 @@ s! {
         pub ss_size: ::size_t,
     }
 
-    pub struct stat {
-        pub st_dev: ::dev_t,
-        pub st_ino: ::ino64_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
-        __pad2: ::c_ushort,
-        pub st_size: ::off64_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
-        pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
-        pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
-        __unused: [::c_long; 2],
-    }
-
     pub struct stat64 {
         pub st_dev: ::dev_t,
         pub st_ino: ::ino64_t,
@@ -113,21 +92,6 @@ s! {
         pub f_frsize: ::__fsword_t,
         pub f_flags: ::__fsword_t,
         pub f_spare: [::__fsword_t; 4],
-    }
-
-    pub struct statvfs {
-        pub f_bsize: ::c_ulong,
-        pub f_frsize: ::c_ulong,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_favail: ::fsfilcnt_t,
-        pub f_fsid: ::c_ulong,
-        pub f_flag: ::c_ulong,
-        pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
     }
 
     pub struct statvfs64 {
