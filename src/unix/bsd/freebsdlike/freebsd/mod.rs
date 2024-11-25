@@ -236,20 +236,10 @@ impl ::Clone for devstat_select_mode {
 }
 
 s! {
-    pub struct aiocb {
-        pub aio_fildes: ::c_int,
-        pub aio_offset: ::off_t,
-        pub aio_buf: *mut ::c_void,
-        pub aio_nbytes: ::size_t,
-        __unused1: [::c_int; 2],
-        __unused2: *mut ::c_void,
-        pub aio_lio_opcode: ::c_int,
-        pub aio_reqprio: ::c_int,
-        // unused 3 through 5 are the __aiocb_private structure
-        __unused3: ::c_long,
-        __unused4: ::c_long,
-        __unused5: *mut ::c_void,
-        pub aio_sigevent: sigevent,
+    pub struct __c_anonymous_sigev_thread {
+        pub _function: Option<extern "C" fn(::sigval) -> *mut ::c_void>,
+        //pub _function: *mut ::c_void, // Actually a function pointer
+        pub _attribute: *mut ::pthread_attr_t,
     }
 
     pub struct jail {
@@ -1351,6 +1341,36 @@ s! {
 }
 
 s_no_extra_traits! {
+    #[cfg_attr(feature = "extra_traits", derive(Debug))]
+    pub struct __aiocb_private {
+        status: ::c_long,
+        error: ::c_long,
+        spare: *mut ::c_void,
+    }
+
+    #[cfg_attr(feature = "extra_traits", derive(Debug))]
+    pub struct aiocb {
+        pub aio_fildes: ::c_int,
+        pub aio_offset: ::off_t,
+        pub aio_buf: *mut ::c_void,
+        pub aio_nbytes: ::size_t,
+        __spare__: [::c_int; 2],
+        __spare2__: *mut ::c_void,
+        pub aio_lio_opcode: ::c_int,
+        pub aio_reqprio: ::c_int,
+        _aiocb_private: __aiocb_private,
+        pub aio_sigevent: sigevent,
+    }
+
+    // Can't correctly impl Debug for unions
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_sigev_un {
+        pub _threadid: ::__lwpid_t,
+        pub _sigev_thread: __c_anonymous_sigev_thread,
+        pub _kevent_flags: ::c_ushort,
+        __spare__: [::c_long; 8],
+    }
+
     pub struct utmpx {
         pub ut_type: ::c_short,
         pub ut_tv: ::timeval,
@@ -1398,12 +1418,7 @@ s_no_extra_traits! {
         pub sigev_notify: ::c_int,
         pub sigev_signo: ::c_int,
         pub sigev_value: ::sigval,
-        //The rest of the structure is actually a union.  We expose only
-        //sigev_notify_thread_id because it's the most useful union member.
-        pub sigev_notify_thread_id: ::lwpid_t,
-        #[cfg(target_pointer_width = "64")]
-        __unused1: ::c_int,
-        __unused2: [::c_long; 7],
+        pub _sigev_un: __c_anonymous_sigev_un,
     }
 
     pub struct ptsstat {
@@ -1819,31 +1834,15 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_notify == other.sigev_notify
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_value == other.sigev_value
-                    && self.sigev_notify_thread_id == other.sigev_notify_thread_id
-            }
-        }
-        impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sigevent")
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_value", &self.sigev_value)
-                    .field("sigev_notify_thread_id", &self.sigev_notify_thread_id)
+                    // Skip _sigev_un, since we can't guarantee that it will be
+                    // properly initialized.
                     .finish()
-            }
-        }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_notify.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_value.hash(state);
-                self.sigev_notify_thread_id.hash(state);
             }
         }
 
