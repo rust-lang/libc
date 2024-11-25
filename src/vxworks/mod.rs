@@ -1,8 +1,9 @@
 //! Interface to VxWorks C library
 
-use c_void;
 use core::mem::size_of;
 use core::ptr::null_mut;
+
+use c_void;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}

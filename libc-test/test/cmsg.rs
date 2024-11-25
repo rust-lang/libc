@@ -4,8 +4,9 @@
 #[cfg(unix)]
 mod t {
 
-    use libc::{self, c_uchar, c_uint, c_void, cmsghdr, msghdr};
     use std::mem;
+
+    use libc::{self, c_uchar, c_uint, c_void, cmsghdr, msghdr};
 
     extern "C" {
         pub fn cmsg_firsthdr(msgh: *const msghdr) -> *mut cmsghdr;
