@@ -922,92 +922,6 @@ s! {
         pub rec_seq: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
     }
 
-    // #include <linux/eventpoll.h>
-
-    pub struct epoll_params {
-        pub busy_poll_usecs: u32,
-        pub busy_poll_budget: u16,
-        pub prefer_busy_poll: u8,
-        pub __pad: u8, // Must be zero
-    }
-
-    #[cfg_attr(
-        any(
-            target_pointer_width = "32",
-            target_arch = "x86_64",
-            target_arch = "powerpc64",
-            target_arch = "mips64",
-            target_arch = "mips64r6",
-            target_arch = "s390x",
-            target_arch = "sparc64",
-            target_arch = "aarch64",
-            target_arch = "riscv64",
-            target_arch = "riscv32",
-            target_arch = "loongarch64"
-        ),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        not(any(
-            target_pointer_width = "32",
-            target_arch = "x86_64",
-            target_arch = "powerpc64",
-            target_arch = "mips64",
-            target_arch = "mips64r6",
-            target_arch = "s390x",
-            target_arch = "sparc64",
-            target_arch = "aarch64",
-            target_arch = "riscv64",
-            target_arch = "riscv32",
-            target_arch = "loongarch64"
-        )),
-        repr(align(8))
-    )]
-    pub struct pthread_mutexattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[cfg_attr(
-        any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        all(
-            not(target_env = "musl"),
-            not(target_env = "ohos"),
-            target_pointer_width = "64"
-        ),
-        repr(align(8))
-    )]
-    pub struct pthread_rwlockattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_condattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_barrierattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
-    }
-
-    #[repr(align(8))]
-    pub struct fanotify_event_metadata {
-        pub event_len: __u32,
-        pub vers: __u8,
-        pub reserved: __u8,
-        pub metadata_len: __u16,
-        pub mask: __u64,
-        pub fd: ::c_int,
-        pub pid: ::c_int,
-    }
-
     // linux/wireless.h
 
     pub struct iw_param {
@@ -1141,6 +1055,92 @@ s! {
         pub set_args: __u16,
         pub get_args: __u16,
         pub name: [c_char; ::IFNAMSIZ],
+    }
+
+    // #include <linux/eventpoll.h>
+
+    pub struct epoll_params {
+        pub busy_poll_usecs: u32,
+        pub busy_poll_budget: u16,
+        pub prefer_busy_poll: u8,
+        pub __pad: u8, // Must be zero
+    }
+
+    #[cfg_attr(
+        any(
+            target_pointer_width = "32",
+            target_arch = "x86_64",
+            target_arch = "powerpc64",
+            target_arch = "mips64",
+            target_arch = "mips64r6",
+            target_arch = "s390x",
+            target_arch = "sparc64",
+            target_arch = "aarch64",
+            target_arch = "riscv64",
+            target_arch = "riscv32",
+            target_arch = "loongarch64"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        not(any(
+            target_pointer_width = "32",
+            target_arch = "x86_64",
+            target_arch = "powerpc64",
+            target_arch = "mips64",
+            target_arch = "mips64r6",
+            target_arch = "s390x",
+            target_arch = "sparc64",
+            target_arch = "aarch64",
+            target_arch = "riscv64",
+            target_arch = "riscv32",
+            target_arch = "loongarch64"
+        )),
+        repr(align(8))
+    )]
+    pub struct pthread_mutexattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    #[cfg_attr(
+        any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            not(target_env = "musl"),
+            not(target_env = "ohos"),
+            target_pointer_width = "64"
+        ),
+        repr(align(8))
+    )]
+    pub struct pthread_rwlockattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_condattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_barrierattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
+    }
+
+    #[repr(align(8))]
+    pub struct fanotify_event_metadata {
+        pub event_len: __u32,
+        pub vers: __u8,
+        pub reserved: __u8,
+        pub metadata_len: __u16,
+        pub mask: __u64,
+        pub fd: ::c_int,
+        pub pid: ::c_int,
     }
 }
 
