@@ -19,6 +19,7 @@ pub type pthread_key_t = ::c_uint;
 pub type pthread_once_t = ::c_int;
 pub type pthread_spinlock_t = ::c_int;
 pub type __kernel_fsid_t = __c_anonymous__kernel_fsid_t;
+pub type __kernel_clockid_t = ::c_int;
 
 pub type __u8 = ::c_uchar;
 pub type __u16 = ::c_ushort;
@@ -829,6 +830,40 @@ s! {
         pub resolve: ::__u64,
     }
 
+    // linux/ptp_clock.h
+    pub struct ptp_clock_time {
+        pub sec: ::__s64,
+        pub nsec: ::__u32,
+        pub reserved: ::__u32,
+    }
+
+    pub struct ptp_extts_request {
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub rsv: [::c_uint; 2],
+    }
+
+    pub struct ptp_sys_offset_extended {
+        pub n_samples: ::c_uint,
+        pub clockid: __kernel_clockid_t,
+        pub rsv: [::c_uint; 2],
+        pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
+    }
+
+    pub struct ptp_sys_offset_precise {
+        pub device: ptp_clock_time,
+        pub sys_realtime: ptp_clock_time,
+        pub sys_monoraw: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    pub struct ptp_extts_event {
+        pub t: ptp_clock_time,
+        index: ::c_uint,
+        flags: ::c_uint,
+        rsv: [::c_uint; 2],
+    }
+
     // linux/sctp.h
 
     pub struct sctp_initmsg {
@@ -920,92 +955,6 @@ s! {
         pub key: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE],
         pub salt: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE],
         pub rec_seq: [::c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
-    }
-
-    // #include <linux/eventpoll.h>
-
-    pub struct epoll_params {
-        pub busy_poll_usecs: u32,
-        pub busy_poll_budget: u16,
-        pub prefer_busy_poll: u8,
-        pub __pad: u8, // Must be zero
-    }
-
-    #[cfg_attr(
-        any(
-            target_pointer_width = "32",
-            target_arch = "x86_64",
-            target_arch = "powerpc64",
-            target_arch = "mips64",
-            target_arch = "mips64r6",
-            target_arch = "s390x",
-            target_arch = "sparc64",
-            target_arch = "aarch64",
-            target_arch = "riscv64",
-            target_arch = "riscv32",
-            target_arch = "loongarch64"
-        ),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        not(any(
-            target_pointer_width = "32",
-            target_arch = "x86_64",
-            target_arch = "powerpc64",
-            target_arch = "mips64",
-            target_arch = "mips64r6",
-            target_arch = "s390x",
-            target_arch = "sparc64",
-            target_arch = "aarch64",
-            target_arch = "riscv64",
-            target_arch = "riscv32",
-            target_arch = "loongarch64"
-        )),
-        repr(align(8))
-    )]
-    pub struct pthread_mutexattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[cfg_attr(
-        any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        all(
-            not(target_env = "musl"),
-            not(target_env = "ohos"),
-            target_pointer_width = "64"
-        ),
-        repr(align(8))
-    )]
-    pub struct pthread_rwlockattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_condattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_barrierattr_t {
-        #[doc(hidden)]
-        size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
-    }
-
-    #[repr(align(8))]
-    pub struct fanotify_event_metadata {
-        pub event_len: __u32,
-        pub vers: __u8,
-        pub reserved: __u8,
-        pub metadata_len: __u16,
-        pub mask: __u64,
-        pub fd: ::c_int,
-        pub pid: ::c_int,
     }
 
     // linux/wireless.h
@@ -1141,6 +1090,119 @@ s! {
         pub set_args: __u16,
         pub get_args: __u16,
         pub name: [c_char; ::IFNAMSIZ],
+    }
+
+    // #include <linux/eventpoll.h>
+
+    pub struct epoll_params {
+        pub busy_poll_usecs: u32,
+        pub busy_poll_budget: u16,
+        pub prefer_busy_poll: u8,
+        pub __pad: u8, // Must be zero
+    }
+
+    #[cfg_attr(
+        any(
+            target_pointer_width = "32",
+            target_arch = "x86_64",
+            target_arch = "powerpc64",
+            target_arch = "mips64",
+            target_arch = "mips64r6",
+            target_arch = "s390x",
+            target_arch = "sparc64",
+            target_arch = "aarch64",
+            target_arch = "riscv64",
+            target_arch = "riscv32",
+            target_arch = "loongarch64"
+        ),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        not(any(
+            target_pointer_width = "32",
+            target_arch = "x86_64",
+            target_arch = "powerpc64",
+            target_arch = "mips64",
+            target_arch = "mips64r6",
+            target_arch = "s390x",
+            target_arch = "sparc64",
+            target_arch = "aarch64",
+            target_arch = "riscv64",
+            target_arch = "riscv32",
+            target_arch = "loongarch64"
+        )),
+        repr(align(8))
+    )]
+    pub struct pthread_mutexattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_MUTEXATTR_T],
+    }
+
+    #[cfg_attr(
+        any(target_env = "musl", target_env = "ohos", target_pointer_width = "32"),
+        repr(align(4))
+    )]
+    #[cfg_attr(
+        all(
+            not(target_env = "musl"),
+            not(target_env = "ohos"),
+            target_pointer_width = "64"
+        ),
+        repr(align(8))
+    )]
+    pub struct pthread_rwlockattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_RWLOCKATTR_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_condattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_CONDATTR_T],
+    }
+
+    #[repr(align(4))]
+    pub struct pthread_barrierattr_t {
+        #[doc(hidden)]
+        size: [u8; ::__SIZEOF_PTHREAD_BARRIERATTR_T],
+    }
+
+    #[repr(align(8))]
+    pub struct fanotify_event_metadata {
+        pub event_len: __u32,
+        pub vers: __u8,
+        pub reserved: __u8,
+        pub metadata_len: __u16,
+        pub mask: __u64,
+        pub fd: ::c_int,
+        pub pid: ::c_int,
+    }
+
+    // linux/ptp_clock.h
+
+    pub struct ptp_sys_offset {
+        pub n_samples: ::c_uint,
+        pub rsv: [::c_uint; 3],
+        // FIXME(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported
+        pub ts: [ptp_clock_time; 51],
+    }
+
+    pub struct ptp_pin_desc {
+        pub name: [::c_char; 64],
+        pub index: ::c_uint,
+        pub func: ::c_uint,
+        pub chan: ::c_uint,
+        pub rsv: [::c_uint; 5],
+    }
+
+    // linux/if_xdp.h
+    pub struct xsk_tx_metadata_completion {
+        pub tx_timestamp: ::__u64,
+    }
+
+    pub struct xsk_tx_metadata_request {
+        pub csum_start: ::__u16,
+        pub csum_offset: ::__u16,
     }
 }
 
@@ -1579,6 +1641,41 @@ s_no_extra_traits! {
     pub struct iwreq {
         pub ifr_ifrn: __c_anonymous_iwreq,
         pub u: iwreq_data,
+    }
+
+    // linux/ptp_clock.h
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_1 {
+        pub start: ptp_clock_time,
+        pub phase: ptp_clock_time,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_ptp_perout_request_2 {
+        pub on: ptp_clock_time,
+        pub rsv: [::c_uint; 4],
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub struct ptp_perout_request {
+        pub anonymous_1: __c_anonymous_ptp_perout_request_1,
+        pub period: ptp_clock_time,
+        pub index: ::c_uint,
+        pub flags: ::c_uint,
+        pub anonymous_2: __c_anonymous_ptp_perout_request_2,
+    }
+
+    // linux/if_xdp.h
+    #[allow(missing_debug_implementations)]
+    pub struct xsk_tx_metadata {
+        pub flags: ::__u64,
+        pub xsk_tx_metadata_union: __c_anonymous_xsk_tx_metadata_union,
+    }
+
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_xsk_tx_metadata_union {
+        pub request: xsk_tx_metadata_request,
+        pub completion: xsk_tx_metadata_completion,
     }
 }
 
@@ -4504,6 +4601,39 @@ pub const HWTSTAMP_FILTER_PTP_V2_SYNC: ::c_uint = 13;
 pub const HWTSTAMP_FILTER_PTP_V2_DELAY_REQ: ::c_uint = 14;
 pub const HWTSTAMP_FILTER_NTP_ALL: ::c_uint = 15;
 
+// linux/ptp_clock.h
+pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement samples.
+
+const PTP_CLK_MAGIC: u32 = b'=' as u32;
+
+// FIXME: needs the ptp_clock_caps struct
+// pub const PTP_CLOCK_GETCAPS: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
+pub const PTP_EXTTS_REQUEST: ::c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
+pub const PTP_PEROUT_REQUEST: ::c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
+pub const PTP_ENABLE_PPS: ::c_uint = _IOW::<::c_int>(PTP_CLK_MAGIC, 4);
+pub const PTP_SYS_OFFSET: ::c_uint = _IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 5);
+pub const PTP_PIN_GETFUNC: ::c_uint = _IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 6);
+pub const PTP_PIN_SETFUNC: ::c_uint = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
+pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
+pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
+
+// FIXME: needs the ptp_clock_caps struct
+// pub const PTP_CLOCK_GETCAPS2: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
+pub const PTP_EXTTS_REQUEST2: ::c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
+pub const PTP_PEROUT_REQUEST2: ::c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
+pub const PTP_ENABLE_PPS2: ::c_uint = _IOW::<::c_int>(PTP_CLK_MAGIC, 13);
+pub const PTP_SYS_OFFSET2: ::c_uint = _IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 14);
+pub const PTP_PIN_GETFUNC2: ::c_uint = _IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 15);
+pub const PTP_PIN_SETFUNC2: ::c_uint = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 16);
+pub const PTP_SYS_OFFSET_PRECISE2: ::c_uint = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 17);
+pub const PTP_SYS_OFFSET_EXTENDED2: ::c_uint = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
+
+// enum ptp_pin_function
+pub const PTP_PF_NONE: ::c_uint = 0;
+pub const PTP_PF_EXTTS: ::c_uint = 1;
+pub const PTP_PF_PEROUT: ::c_uint = 2;
+pub const PTP_PF_PHYSYNC: ::c_uint = 3;
+
 // linux/tls.h
 pub const TLS_TX: ::c_int = 1;
 pub const TLS_RX: ::c_int = 2;
@@ -5525,6 +5655,15 @@ pub const SCHED_FLAG_KEEP_PARAMS: ::c_int = 0x10;
 pub const SCHED_FLAG_UTIL_CLAMP_MIN: ::c_int = 0x20;
 pub const SCHED_FLAG_UTIL_CLAMP_MAX: ::c_int = 0x40;
 
+// linux/if_xdp.h
+pub const XDP_UMEM_TX_SW_CSUM: ::__u32 = 1 << 1;
+pub const XDP_UMEM_TX_METADATA_LEN: ::__u32 = 1 << 2;
+
+pub const XDP_TXMD_FLAGS_TIMESTAMP: ::__u32 = 1 << 0;
+pub const XDP_TXMD_FLAGS_CHECKSUM: ::__u32 = 1 << 1;
+
+pub const XDP_TX_METADATA: ::__u32 = 1 << 1;
+
 // elf.h
 pub const NT_PRSTATUS: ::c_int = 1;
 pub const NT_PRFPREG: ::c_int = 2;
@@ -5557,6 +5696,86 @@ pub const SCHED_FLAG_ALL: ::c_int = SCHED_FLAG_RESET_ON_FORK
 // ioctl_eventpoll: added in Linux 6.9
 pub const EPIOCSPARAMS: ::Ioctl = 0x40088a01;
 pub const EPIOCGPARAMS: ::Ioctl = 0x80088a02;
+
+const _IOC_NRBITS: u32 = 8;
+const _IOC_TYPEBITS: u32 = 8;
+
+// https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
+cfg_if! {
+    if #[cfg(any(
+        any(target_arch = "powerpc", target_arch = "powerpc64"),
+        any(target_arch = "sparc", target_arch = "sparc64"),
+        any(target_arch = "mips", target_arch = "mips64"),
+    ))] {
+        // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/powerpc/include/uapi/asm/ioctl.h
+        // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/sparc/include/uapi/asm/ioctl.h
+        // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/mips/include/uapi/asm/ioctl.h
+
+        const _IOC_SIZEBITS: u32 = 13;
+        const _IOC_DIRBITS: u32 = 3;
+
+        const _IOC_NONE: u32 = 1;
+        const _IOC_READ: u32 = 2;
+        const _IOC_WRITE: u32 = 4;
+    } else {
+        // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/include/uapi/asm-generic/ioctl.h
+
+        const _IOC_SIZEBITS: u32 = 14;
+        const _IOC_DIRBITS: u32 = 2;
+
+        const _IOC_NONE: u32 = 0;
+        const _IOC_WRITE: u32 = 1;
+        const _IOC_READ: u32 = 2;
+    }
+}
+
+const _IOC_NRMASK: u32 = (1 << _IOC_NRBITS) - 1;
+const _IOC_TYPEMASK: u32 = (1 << _IOC_TYPEBITS) - 1;
+const _IOC_SIZEMASK: u32 = (1 << _IOC_SIZEBITS) - 1;
+const _IOC_DIRMASK: u32 = (1 << _IOC_DIRBITS) - 1;
+
+const _IOC_NRSHIFT: u32 = 0;
+const _IOC_TYPESHIFT: u32 = _IOC_NRSHIFT + _IOC_NRBITS;
+const _IOC_SIZESHIFT: u32 = _IOC_TYPESHIFT + _IOC_TYPEBITS;
+const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT + _IOC_SIZEBITS;
+
+// adapted from https://github.com/torvalds/linux/blob/8a696a29c6905594e4abf78eaafcb62165ac61f1/rust/kernel/ioctl.rs
+
+/// Build an ioctl number, analogous to the C macro of the same name.
+const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
+    // FIXME(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)
+    // cannot currently parse these `debug_assert!`s
+    //
+    // debug_assert!(dir <= _IOC_DIRMASK);
+    // debug_assert!(ty <= _IOC_TYPEMASK);
+    // debug_assert!(nr <= _IOC_NRMASK);
+    // debug_assert!(size <= (_IOC_SIZEMASK as usize));
+
+    (dir << _IOC_DIRSHIFT)
+        | (ty << _IOC_TYPESHIFT)
+        | (nr << _IOC_NRSHIFT)
+        | ((size as u32) << _IOC_SIZESHIFT)
+}
+
+/// Build an ioctl number for an argumentless ioctl.
+pub(crate) const fn _IO(ty: u32, nr: u32) -> u32 {
+    _IOC(_IOC_NONE, ty, nr, 0)
+}
+
+/// Build an ioctl number for an read-only ioctl.
+pub(crate) const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
+    _IOC(_IOC_READ, ty, nr, core::mem::size_of::<T>())
+}
+
+/// Build an ioctl number for an write-only ioctl.
+pub(crate) const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
+    _IOC(_IOC_WRITE, ty, nr, core::mem::size_of::<T>())
+}
+
+/// Build an ioctl number for a read-write ioctl.
+pub(crate) const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
+    _IOC(_IOC_READ | _IOC_WRITE, ty, nr, core::mem::size_of::<T>())
+}
 
 f! {
     pub fn NLA_ALIGN(len: ::c_int) -> ::c_int {

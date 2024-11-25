@@ -3617,6 +3617,8 @@ fn test_linux(target: &str) {
         "linux/netlink.h",
         // FIXME: requires Linux >= 5.6:
         [!musl]: "linux/openat2.h",
+        // FIXME: some items require Linux >= 5.6:
+        "linux/ptp_clock.h",
         [!musl]: "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
@@ -3766,6 +3768,11 @@ fn test_linux(target: &str) {
             return true;
         }
 
+        // FIXME: CI has old headers
+        if ty == "ptp_sys_offset_extended" {
+            return true;
+        }
+
         // LFS64 types have been removed in musl 1.2.4+
         if musl && (ty.ends_with("64") || ty.ends_with("64_t")) {
             return true;
@@ -3881,11 +3888,24 @@ fn test_linux(target: &str) {
 
             // FIXME: Requires >= 5.4 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_umem_reg" | "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
+            "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
+
+            // FIXME: Requires >= 6.8 kernel headers.
+            // A field was added in 6.8.
+            // https://github.com/torvalds/linux/commit/341ac980eab90ac1f6c22ee9f9da83ed9604d899
+            // The previous version of the struct was removed in 6.11 due to a bug.
+            // https://github.com/torvalds/linux/commit/32654bbd6313b4cfc82297e6634fa9725c3c900f
+            "xdp_umem_reg" => true,
 
             // FIXME: Requires >= 5.9 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "xdp_statistics" if musl => true,
+
+            // FIXME: Requires >= 6.8 kernel headers.
+            "xsk_tx_metadata"
+            | "__c_anonymous_xsk_tx_metadata_union"
+            | "xsk_tx_metadata_request"
+            | "xsk_tx_metadata_completion" => true,
 
             // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
             // https://github.com/torvalds/linux/commit/77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10
@@ -3958,6 +3978,22 @@ fn test_linux(target: &str) {
                || name == "SECCOMP_ADDFD_FLAG_SETFD"  // requires >= 5.9
                || name == "SECCOMP_ADDFD_FLAG_SEND"   // requires >= 5.9
                || name == "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"  // requires >= 5.19
+            {
+                return true;
+            }
+            // FIXME: Requires >= 4.20 kernel headers
+            if name == "PTP_SYS_OFFSET_EXTENDED" {
+                return true;
+            }
+            // FIXME: Requires >= 5.4 kernel headers
+            if name == "PTP_ENABLE_PPS2" 
+                || name == "PTP_EXTTS_REQUEST2"
+                || name == "PTP_PEROUT_REQUEST2"
+                || name == "PTP_PIN_GETFUNC2"
+                || name == "PTP_PIN_SETFUNC2"
+                || name == "PTP_SYS_OFFSET2"
+                || name == "PTP_SYS_OFFSET_PRECISE2"
+                || name == "PTP_SYS_OFFSET_EXTENDED2"
             {
                 return true;
             }
@@ -4315,6 +4351,23 @@ fn test_linux(target: &str) {
                 true
             }
 
+            // FIXME: Requires >= 6.8 kernel headers.
+            "XDP_UMEM_TX_SW_CSUM"
+            | "XDP_TXMD_FLAGS_TIMESTAMP"
+            | "XDP_TXMD_FLAGS_CHECKSUM"
+            | "XDP_TX_METADATA"
+                =>
+            {
+                true
+            }
+
+            // FIXME: Requires >= 6.11 kernel headers.
+            "XDP_UMEM_TX_METADATA_LEN"
+                =>
+            {
+                true
+            }
+
             // FIXME: Requires >= 6.6 kernel headers.
             "SYS_fchmodat2" => true,
 
@@ -4490,7 +4543,11 @@ fn test_linux(target: &str) {
         // `__exit_status` type is a patch which is absent in musl
         (struct_ == "utmpx" && field == "ut_exit" && musl) ||
         // `can_addr` is an anonymous union
-        (struct_ == "sockaddr_can" && field == "can_addr")
+        (struct_ == "sockaddr_can" && field == "can_addr") ||
+        // `anonymous_1` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        // `anonymous_2` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_2")
     });
 
     cfg.volatile_item(|i| {
@@ -4561,11 +4618,17 @@ fn test_linux(target: &str) {
         (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
         // `handle` is a VLA
         (struct_ == "fanotify_event_info_fid" && field == "handle") ||
+        // `anonymous_1` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        // `anonymous_2` is an anonymous union
+        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
         // FIXME(#4121): a new field was added from `f_spare`
         (struct_ == "statvfs" && field == "__f_spare") ||
-        (struct_ == "statvfs64" && field == "__f_spare")
+        (struct_ == "statvfs64" && field == "__f_spare") ||
+        // the `xsk_tx_metadata_union` field is an anonymous union
+        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union")
     });
 
     cfg.skip_roundtrip(move |s| match s {
