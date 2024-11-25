@@ -3057,12 +3057,14 @@ extern "C" {
         name: *const ::c_char,
         value: *const ::c_void,
         size: ::size_t,
+        flags: ::c_int,
     ) -> ::c_int;
     pub fn lsetxattr(
         path: *const ::c_char,
         name: *const ::c_char,
         value: *const ::c_void,
         size: ::size_t,
+        flags: ::c_int,
     ) -> ::c_int;
     pub fn fsetxattr(
         filedes: ::c_int,
@@ -3076,7 +3078,7 @@ extern "C" {
     pub fn flistxattr(filedes: ::c_int, list: *mut ::c_char, size: ::size_t) -> ::ssize_t;
     pub fn removexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
     pub fn lremovexattr(path: *const ::c_char, name: *const ::c_char) -> ::c_int;
-    pub fn fremovexattr(fd: ::c_int, path: *const ::c_char, name: *const ::c_char) -> ::c_int;
+    pub fn fremovexattr(fd: ::c_int, name: *const ::c_char) -> ::c_int;
 
     pub fn string_to_flags(
         string_p: *mut *mut ::c_char,
