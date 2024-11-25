@@ -759,15 +759,6 @@ s_no_extra_traits! {
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         // sigevent
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_notify == other.sigev_notify
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_value == other.sigev_value
-                    && self.__sigev_un2 == other.__sigev_un2
-            }
-        }
-        impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sigevent")
@@ -776,14 +767,6 @@ cfg_if! {
                     .field("sigev_value", &self.sigev_value)
                     .field("__sigev_un2", &self.__sigev_un2)
                     .finish()
-            }
-        }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_notify.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_value.hash(state);
-                self.__sigev_un2.hash(state);
             }
         }
 

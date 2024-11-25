@@ -1819,15 +1819,6 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_notify == other.sigev_notify
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_value == other.sigev_value
-                    && self.sigev_notify_thread_id == other.sigev_notify_thread_id
-            }
-        }
-        impl Eq for sigevent {}
         impl ::fmt::Debug for sigevent {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
                 f.debug_struct("sigevent")
@@ -1836,14 +1827,6 @@ cfg_if! {
                     .field("sigev_value", &self.sigev_value)
                     .field("sigev_notify_thread_id", &self.sigev_notify_thread_id)
                     .finish()
-            }
-        }
-        impl ::hash::Hash for sigevent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                self.sigev_notify.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_value.hash(state);
-                self.sigev_notify_thread_id.hash(state);
             }
         }
 
