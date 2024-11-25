@@ -158,9 +158,8 @@ s! {
         #[doc(hidden)]
         #[deprecated(
             since = "0.2.54",
-            note = "Please leave a comment on \
-                  https://github.com/rust-lang/libc/pull/1316 if you're using \
-                  this field"
+            note = "Please leave a comment on https://github.com/rust-lang/libc/pull/1316 \
+                  if you're using this field"
         )]
         pub _pad: [::c_int; 29],
         _align: [usize; 0],
@@ -457,6 +456,40 @@ s! {
         pub tcpi_rcv_ooopack: u32,
         #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_wnd: u32,
+    }
+
+    // MIPS implementation is special (see mips arch folders)
+    #[cfg(not(target_arch = "mips"))]
+    pub struct statfs {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
+    // MIPS implementation is special (see mips arch folders)
+    #[cfg(not(target_arch = "mips"))]
+    pub struct statfs64 {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
     }
 }
 
