@@ -45,5 +45,5 @@ commit_parsers = [
 
 link_parsers = [
     # Extract backport patterns
-    { pattern = '\(backport <.*/(\d+)>\)', text = "#$1", href = "https://github.com/rust-lang/libc/pulls/$1"}
+    { pattern = '\(backport <.*/(\d+)>\)', text = "#$1", href = "https://github.com/rust-lang/libc/pull/$1"}
 ]
