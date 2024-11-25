@@ -46,6 +46,10 @@ s! {
         pub st_ino: ::ino_t,
     }
 
+    pub struct mcontext_t {
+        __private: [u32; 22],
+    }
+
     pub struct stack_t {
         pub ss_sp: *mut ::c_void,
         pub ss_flags: ::c_int,
@@ -110,10 +114,6 @@ s! {
         pub f_frsize: ::c_ulong,
         pub f_flags: ::c_ulong,
         pub f_spare: [::c_ulong; 4],
-    }
-
-    pub struct mcontext_t {
-        __private: [u32; 22],
     }
 
     pub struct siginfo_t {
