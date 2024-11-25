@@ -4158,6 +4158,9 @@ fn test_linux(target: &str) {
             // FIXME: requires Linux >= v5.8
             "IF_LINK_MODE_TESTING" if sparc64 => true,
 
+            // DIFF(main): fixed in 1.0 with e9abac9ac2
+            "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
+
             // kernel 6.1 minimum
             "MADV_COLLAPSE" => true,
 
