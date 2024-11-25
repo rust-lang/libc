@@ -2,6 +2,7 @@
 // Solaris, but often needed by other crates.
 
 use core::cmp::min;
+
 use unix::solarish::*;
 
 const PTEM: &[u8] = b"ptem\0";

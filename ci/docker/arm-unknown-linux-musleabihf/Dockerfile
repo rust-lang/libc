@@ -5,7 +5,7 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         /etc/apt/sources.list && \
     apt-get update && apt-get install -y --no-install-recommends \
         gcc make libc6-dev git curl ca-certificates \
-        gcc-arm-linux-gnueabihf qemu-user
+        gcc-arm-linux-gnueabihf qemu-user xz-utils patch rsync
 
 COPY install-musl.sh /
 RUN /install-musl.sh arm

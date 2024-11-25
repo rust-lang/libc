@@ -19,7 +19,9 @@ pub type shmatt_t = ::c_ulong;
 pub type msgqnum_t = ::c_ulong;
 pub type msglen_t = ::c_ulong;
 pub type fsblkcnt_t = ::c_ulonglong;
+pub type fsblkcnt64_t = ::c_ulonglong;
 pub type fsfilcnt_t = ::c_ulonglong;
+pub type fsfilcnt64_t = ::c_ulonglong;
 pub type rlim_t = ::c_ulonglong;
 
 cfg_if! {
@@ -144,6 +146,27 @@ s! {
         pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
+    // `mips*` targets swap the `s_errno` and `s_code` fields otherwise this struct is
+    // target-agnostic (see https://www.openwall.com/lists/musl/2016/01/27/1/2)
+    //
+    // FIXME(union): C implementation uses unions
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        #[cfg(not(target_arch = "mips"))]
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        #[cfg(target_arch = "mips")]
+        pub si_errno: ::c_int,
+        #[doc(hidden)]
+        #[deprecated(
+            since = "0.2.54",
+            note = "Please leave a comment on https://github.com/rust-lang/libc/pull/1316 \
+                  if you're using this field"
+        )]
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
+
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
@@ -156,12 +179,32 @@ s! {
         #[cfg(target_endian = "little")]
         pub f_fsid: ::c_ulong,
         #[cfg(target_pointer_width = "32")]
-        __f_unused: ::c_int,
+        __pad: ::c_int,
         #[cfg(target_endian = "big")]
         pub f_fsid: ::c_ulong,
         pub f_flag: ::c_ulong,
         pub f_namemax: ::c_ulong,
-        __f_spare: [::c_int; 6],
+        __f_reserved: [::c_int; 6],
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
+        pub f_favail: ::fsfilcnt64_t,
+        #[cfg(target_endian = "little")]
+        pub f_fsid: ::c_ulong,
+        #[cfg(target_pointer_width = "32")]
+        __pad: ::c_int,
+        #[cfg(target_endian = "big")]
+        pub f_fsid: ::c_ulong,
+        pub f_flag: ::c_ulong,
+        pub f_namemax: ::c_ulong,
+        __f_reserved: [::c_int; 6],
     }
 
     pub struct termios {
@@ -415,6 +458,40 @@ s! {
         pub tcpi_rcv_ooopack: u32,
         #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_wnd: u32,
+    }
+
+    // MIPS implementation is special (see mips arch folders)
+    #[cfg(not(target_arch = "mips"))]
+    pub struct statfs {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt_t,
+        pub f_bfree: ::fsblkcnt_t,
+        pub f_bavail: ::fsblkcnt_t,
+        pub f_files: ::fsfilcnt_t,
+        pub f_ffree: ::fsfilcnt_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
+    }
+
+    // MIPS implementation is special (see mips arch folders)
+    #[cfg(not(target_arch = "mips"))]
+    pub struct statfs64 {
+        pub f_type: ::c_ulong,
+        pub f_bsize: ::c_ulong,
+        pub f_blocks: ::fsblkcnt64_t,
+        pub f_bfree: ::fsblkcnt64_t,
+        pub f_bavail: ::fsblkcnt64_t,
+        pub f_files: ::fsfilcnt64_t,
+        pub f_ffree: ::fsfilcnt64_t,
+        pub f_fsid: ::fsid_t,
+        pub f_namelen: ::c_ulong,
+        pub f_frsize: ::c_ulong,
+        pub f_flags: ::c_ulong,
+        pub f_spare: [::c_ulong; 4],
     }
 }
 

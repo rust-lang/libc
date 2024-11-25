@@ -3576,8 +3576,7 @@ fn test_linux(target: &str) {
         [gnu]: "linux/aio_abi.h",
         "linux/can.h",
         "linux/can/raw.h",
-        // FIXME: requires kernel headers >= 5.4.1.
-        [!musl]: "linux/can/j1939.h",
+        "linux/can/j1939.h",
         "linux/dccp.h",
         "linux/errqueue.h",
         "linux/falloc.h",
@@ -3602,8 +3601,7 @@ fn test_linux(target: &str) {
         "linux/mempolicy.h",
         "linux/mman.h",
         "linux/module.h",
-        // FIXME: requires kernel headers >= 5.1.
-        [!musl]: "linux/mount.h",
+        "linux/mount.h",
         "linux/net_tstamp.h",
         "linux/netfilter/nfnetlink.h",
         "linux/netfilter/nfnetlink_log.h",
@@ -3615,11 +3613,10 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6.h",
         "linux/netfilter_ipv6/ip6_tables.h",
         "linux/netlink.h",
-        // FIXME: requires Linux >= 5.6:
-        [!musl]: "linux/openat2.h",
+        "linux/openat2.h",
         // FIXME: some items require Linux >= 5.6:
         "linux/ptp_clock.h",
-        [!musl]: "linux/ptrace.h",
+        "linux/ptrace.h",
         "linux/quota.h",
         "linux/random.h",
         "linux/reboot.h",
@@ -3637,7 +3634,7 @@ fn test_linux(target: &str) {
         "sys/fanotify.h",
         // <sys/auxv.h> is not present on uclibc
         [!uclibc]: "sys/auxv.h",
-        [gnu]: "linux/close_range.h",
+        [gnu || musl]: "linux/close_range.h",
     }
 
     // note: aio.h must be included before sys/mount.h
@@ -3728,11 +3725,6 @@ fn test_linux(target: &str) {
             // specific type.
             "Ioctl" => true,
 
-            // FIXME: requires >= 5.4.1 kernel headers
-            "pgn_t" if musl => true,
-            "priority_t" if musl => true,
-            "name_t" if musl => true,
-
             // FIXME: "'__uint128' undeclared" in C
             "__uint128" => true,
 
@@ -3749,22 +3741,6 @@ fn test_linux(target: &str) {
 
     cfg.skip_struct(move |ty| {
         if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        // FIXME: musl CI has old headers
-        if musl && ty.starts_with("uinput_") {
-            return true;
-        }
-        if musl && ty == "seccomp_notif" {
-            return true;
-        }
-        if musl && ty == "seccomp_notif_addfd" {
-            return true;
-        }
-        if musl && ty == "seccomp_notif_resp" {
-            return true;
-        }
-        if musl && ty == "seccomp_notif_sizes" {
             return true;
         }
 
@@ -3849,12 +3825,6 @@ fn test_linux(target: &str) {
 
             // Might differ between kernel versions
             "open_how" => true,
-
-            // FIXME: requires >= 5.4.1 kernel headers
-            "j1939_filter" if musl => true,
-
-            // FIXME: requires >= 5.4 kernel headers
-            "sockaddr_can" if musl => true,
 
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
@@ -3986,7 +3956,8 @@ fn test_linux(target: &str) {
                 return true;
             }
             // FIXME: Requires >= 5.4 kernel headers
-            if name == "PTP_ENABLE_PPS2" 
+            if name == "PTP_CLOCK_GETCAPS2"
+                || name == "PTP_ENABLE_PPS2" 
                 || name == "PTP_EXTTS_REQUEST2"
                 || name == "PTP_PEROUT_REQUEST2"
                 || name == "PTP_PIN_GETFUNC2"
@@ -4020,7 +3991,7 @@ fn test_linux(target: &str) {
                 return true;
             }
             // FIXME: Requires >= 6.3 kernel headers
-            if name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC" {
+            if loongarch64 && (name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC") {
                 return true;
             }
         }
@@ -4110,7 +4081,7 @@ fn test_linux(target: &str) {
                 if sparc64 => true,
 
             // FIXME: Not currently available in headers on ARM and musl.
-            "NETLINK_GET_STRICT_CHK" if arm || musl => true,
+            "NETLINK_GET_STRICT_CHK" if arm => true,
 
             // kernel constants not available in uclibc 1.0.34
             | "EXTPROC"
@@ -4179,61 +4150,16 @@ fn test_linux(target: &str) {
             | "MINSIGSTKSZ"
                 if gnu => true,
 
-            // FIXME: Linux >= 5.10:
-            // https://github.com/torvalds/linux/commit/d25e2e9388eda61b6e298585024ee3355f50c493
-            "NF_INET_INGRESS" if musl => true,
-
             // FIXME: Linux >= 5.16:
             // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
-            "NF_NETDEV_EGRESS" if musl || sparc64 => true,
+            "NF_NETDEV_EGRESS" if sparc64 => true,
             // value changed
-            "NF_NETDEV_NUMHOOKS" if musl || sparc64 => true,
-
-            // FIXME: requires Linux >= 5.6:
-            | "RESOLVE_BENEATH"
-            | "RESOLVE_CACHED"
-            | "RESOLVE_IN_ROOT"
-            | "RESOLVE_NO_MAGICLINKS"
-            | "RESOLVE_NO_SYMLINKS"
-            | "RESOLVE_NO_XDEV" if musl => true,
-
-            // FIXME: requires Linux >= 5.4:
-            | "CAN_J1939"
-            | "CAN_NPROTO" if musl => true,
-
-            // FIXME: requires Linux >= 5.6
-            "GRND_INSECURE" if musl => true,
-
-            // FIXME: requires Linux >= 5.7:
-            "MREMAP_DONTUNMAP" if musl => true,
+            "NF_NETDEV_NUMHOOKS" if sparc64 => true,
 
             // FIXME: requires Linux >= v5.8
-            "IF_LINK_MODE_TESTING" if musl || sparc64 => true,
+            "IF_LINK_MODE_TESTING" if sparc64 => true,
 
-            // FIXME: Requires more recent kernel headers (5.9 / 5.11):
-            | "CLOSE_RANGE_UNSHARE"
-            | "CLOSE_RANGE_CLOEXEC" if musl => true,
-
-            // FIXME: requires Linux >= 5.12:
-            "MPOL_F_NUMA_BALANCING" if musl => true,
-
-            // FIXME: Requires more recent kernel headers
-            | "NFNL_SUBSYS_COUNT" // bumped in v5.14
-            | "NFNL_SUBSYS_HOOK" // v5.14+
-            | "NFULA_VLAN" // v5.4+
-            | "NFULA_L2HDR" // v5.4+
-            | "NFULA_VLAN_PROTO" // v5.4+
-            | "NFULA_VLAN_TCI" // v5.4+
-            | "NFULA_VLAN_UNSPEC" // v5.4+
-            | "RTNLGRP_NEXTHOP" // linux v5.3+
-            | "RTNLGRP_BRVLAN" // linux v5.6+
-            if musl => true,
-
-            | "MADV_COLD"
-            | "MADV_PAGEOUT"
-            | "MADV_POPULATE_READ"
-            | "MADV_POPULATE_WRITE"
-            if musl => true,
+            // DIFF(main): fixed in 1.0 with e9abac9ac2
             "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
 
             // kernel 6.1 minimum
@@ -4252,9 +4178,6 @@ fn test_linux(target: &str) {
             | "MADV_DONTNEED_LOCKED"     // linux v5.18+
                 => true,
             "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
-
-            // FIXME: Requires more recent kernel headers
-            "HWTSTAMP_TX_ONESTEP_P2P" if musl => true, // linux v5.6+
 
             // kernel 6.5 minimum
             "MOVE_MOUNT_BENEATH" => true,
@@ -4277,10 +4200,8 @@ fn test_linux(target: &str) {
             | "FAN_INFO"                          // linux v5.16+
                 => true,
 
-            // FIXME: Requires linux 5.15+
-            "FAN_REPORT_PIDFD" if musl => true,
-
-            // FIXME: Requires linux 5.9+
+            // musl doesn't use <linux/fanotify.h> in <sys/fanotify.h>
+            "FAN_REPORT_PIDFD"
             | "FAN_REPORT_DIR_FID"
             | "FAN_REPORT_NAME"
             | "FAN_REPORT_DFID_NAME"
@@ -4293,55 +4214,6 @@ fn test_linux(target: &str) {
 
             // FIXME: Requires linux 6.5
             "NFT_MSG_MAX" => true,
-
-            // FIXME: Requires >= 5.1 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "TLS_1_3_VERSION"
-            | "TLS_1_3_VERSION_MAJOR"
-            | "TLS_1_3_VERSION_MINOR"
-            | "TLS_CIPHER_AES_GCM_256"
-            | "TLS_CIPHER_AES_GCM_256_IV_SIZE"
-            | "TLS_CIPHER_AES_GCM_256_KEY_SIZE"
-            | "TLS_CIPHER_AES_GCM_256_SALT_SIZE"
-            | "TLS_CIPHER_AES_GCM_256_TAG_SIZE"
-            | "TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE"
-                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
-            {
-                true
-            }
-
-            // FIXME: Requires >= 5.11 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "TLS_CIPHER_CHACHA20_POLY1305"
-            | "TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE"
-            | "TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE"
-            | "TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE"
-            | "TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE"
-            | "TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE"
-                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
-            {
-                true
-            }
-
-            // FIXME: Requires >= 5.3 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "XDP_OPTIONS_ZEROCOPY" | "XDP_OPTIONS"
-                if musl =>
-            {
-                true
-            }
-
-            // FIXME: Requires >= 5.4 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "XSK_UNALIGNED_BUF_OFFSET_SHIFT"
-            | "XSK_UNALIGNED_BUF_ADDR_MASK"
-            | "XDP_UMEM_UNALIGNED_CHUNK_FLAG"
-            | "XDP_RING_NEED_WAKEUP"
-            | "XDP_USE_NEED_WAKEUP"
-                if musl =>
-            {
-                true
-            }
 
             // FIXME: Requires >= 6.6 kernel headers.
             "XDP_USE_SG"
@@ -4400,14 +4272,6 @@ fn test_linux(target: &str) {
             | "PF_NO_SETAFFINITY"
             | "PF_MCE_EARLY"
             | "PF_MEMALLOC_PIN" => true,
-
-            "SCHED_FLAG_KEEP_POLICY"
-            | "SCHED_FLAG_KEEP_PARAMS"
-            | "SCHED_FLAG_UTIL_CLAMP_MIN"
-            | "SCHED_FLAG_UTIL_CLAMP_MAX"
-            | "SCHED_FLAG_KEEP_ALL"
-            | "SCHED_FLAG_UTIL_CLAMP"
-            | "SCHED_FLAG_ALL" if musl => true, // Needs more recent linux headers.
 
             // FIXME: Requires >= 6.9 kernel headers.
             "EPIOCSPARAMS"
@@ -4547,7 +4411,11 @@ fn test_linux(target: &str) {
         // `anonymous_1` is an anonymous union
         (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
         // `anonymous_2` is an anonymous union
-        (struct_ == "ptp_perout_request" && field == "anonymous_2")
+        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
+        // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
+        // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
+        // the rsv field shrunk when those fields got added, so is omitted too
+        (struct_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field)))
     });
 
     cfg.volatile_item(|i| {
@@ -4622,6 +4490,10 @@ fn test_linux(target: &str) {
         (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
         // `anonymous_2` is an anonymous union
         (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
+        // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
+        // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
+        // the rsv field shrunk when those fields got added, so is omitted too
+        (struct_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field))) ||
         // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
         (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
         // FIXME(#4121): a new field was added from `f_spare`

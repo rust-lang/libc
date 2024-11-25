@@ -1195,6 +1195,19 @@ s! {
         pub rsv: [::c_uint; 5],
     }
 
+    pub struct ptp_clock_caps {
+        pub max_adj: ::c_int,
+        pub n_alarm: ::c_int,
+        pub n_ext_ts: ::c_int,
+        pub n_per_out: ::c_int,
+        pub pps: ::c_int,
+        pub n_pins: ::c_int,
+        pub cross_timestamping: ::c_int,
+        pub adjust_phase: ::c_int,
+        pub max_phase_adj: ::c_int,
+        pub rsv: [::c_int; 11],
+    }
+
     // linux/if_xdp.h
     pub struct xsk_tx_metadata_completion {
         pub tx_timestamp: ::__u64,
@@ -1203,6 +1216,15 @@ s! {
     pub struct xsk_tx_metadata_request {
         pub csum_start: ::__u16,
         pub csum_offset: ::__u16,
+    }
+
+    // linux/mount.h
+
+    pub struct mount_attr {
+        pub attr_set: ::__u64,
+        pub attr_clr: ::__u64,
+        pub propagation: ::__u64,
+        pub userns_fd: ::__u64,
     }
 }
 
@@ -4606,8 +4628,7 @@ pub const PTP_MAX_SAMPLES: ::c_uint = 25; // Maximum allowed offset measurement 
 
 const PTP_CLK_MAGIC: u32 = b'=' as u32;
 
-// FIXME: needs the ptp_clock_caps struct
-// pub const PTP_CLOCK_GETCAPS: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
+pub const PTP_CLOCK_GETCAPS: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
 pub const PTP_EXTTS_REQUEST: ::c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
 pub const PTP_PEROUT_REQUEST: ::c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
 pub const PTP_ENABLE_PPS: ::c_uint = _IOW::<::c_int>(PTP_CLK_MAGIC, 4);
@@ -4617,8 +4638,7 @@ pub const PTP_PIN_SETFUNC: ::c_uint = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
 pub const PTP_SYS_OFFSET_PRECISE: ::c_uint = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
 pub const PTP_SYS_OFFSET_EXTENDED: ::c_uint = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
 
-// FIXME: needs the ptp_clock_caps struct
-// pub const PTP_CLOCK_GETCAPS2: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
+pub const PTP_CLOCK_GETCAPS2: ::c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
 pub const PTP_EXTTS_REQUEST2: ::c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
 pub const PTP_PEROUT_REQUEST2: ::c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
 pub const PTP_ENABLE_PPS2: ::c_uint = _IOW::<::c_int>(PTP_CLK_MAGIC, 13);
@@ -5663,6 +5683,21 @@ pub const XDP_TXMD_FLAGS_TIMESTAMP: ::__u32 = 1 << 0;
 pub const XDP_TXMD_FLAGS_CHECKSUM: ::__u32 = 1 << 1;
 
 pub const XDP_TX_METADATA: ::__u32 = 1 << 1;
+
+// linux/mount.h
+pub const MOUNT_ATTR_RDONLY: ::__u64 = 0x00000001;
+pub const MOUNT_ATTR_NOSUID: ::__u64 = 0x00000002;
+pub const MOUNT_ATTR_NODEV: ::__u64 = 0x00000004;
+pub const MOUNT_ATTR_NOEXEC: ::__u64 = 0x00000008;
+pub const MOUNT_ATTR__ATIME: ::__u64 = 0x00000070;
+pub const MOUNT_ATTR_RELATIME: ::__u64 = 0x00000000;
+pub const MOUNT_ATTR_NOATIME: ::__u64 = 0x00000010;
+pub const MOUNT_ATTR_STRICTATIME: ::__u64 = 0x00000020;
+pub const MOUNT_ATTR_NODIRATIME: ::__u64 = 0x00000080;
+pub const MOUNT_ATTR_IDMAP: ::__u64 = 0x00100000;
+pub const MOUNT_ATTR_NOSYMFOLLOW: ::__u64 = 0x00200000;
+
+pub const MOUNT_ATTR_SIZE_VER0: ::c_int = 32;
 
 // elf.h
 pub const NT_PRSTATUS: ::c_int = 1;

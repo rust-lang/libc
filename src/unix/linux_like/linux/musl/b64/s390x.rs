@@ -58,36 +58,6 @@ s! {
         pub st_blocks: ::blkcnt64_t,
         __unused: [::c_long; 3],
     }
-
-    pub struct statfs {
-        pub f_type: ::c_uint,
-        pub f_bsize: ::c_uint,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_uint,
-        pub f_frsize: ::c_uint,
-        pub f_flags: ::c_uint,
-        pub f_spare: [::c_uint; 4],
-    }
-
-    pub struct statfs64 {
-        pub f_type: ::c_uint,
-        pub f_bsize: ::c_uint,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::c_uint,
-        pub f_frsize: ::c_uint,
-        pub f_flags: ::c_uint,
-        pub f_spare: [::c_uint; 4],
-    }
 }
 
 s_no_extra_traits! {
