@@ -144,6 +144,26 @@ s! {
         pub sa_restorer: ::Option<extern "C" fn()>,
     }
 
+    // `mips*` targets swap the `s_errno` and `s_code` fields otherwise this struct is
+    // target-agnostic (see https://www.openwall.com/lists/musl/2016/01/27/1/2)
+    pub struct siginfo_t {
+        pub si_signo: ::c_int,
+        #[cfg(not(target_arch = "mips"))]
+        pub si_errno: ::c_int,
+        pub si_code: ::c_int,
+        #[cfg(target_arch = "mips")]
+        pub si_errno: ::c_int,
+        #[doc(hidden)]
+        #[deprecated(
+            since = "0.2.54",
+            note = "Please leave a comment on \
+                  https://github.com/rust-lang/libc/pull/1316 if you're using \
+                  this field"
+        )]
+        pub _pad: [::c_int; 29],
+        _align: [usize; 0],
+    }
+
     pub struct statvfs {
         pub f_bsize: ::c_ulong,
         pub f_frsize: ::c_ulong,
