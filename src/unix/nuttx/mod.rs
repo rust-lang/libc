@@ -1,4 +1,4 @@
-use {c_void, in6_addr, in_addr_t, timespec, DIR};
+use crate::{c_void, in6_addr, in_addr_t, timespec, DIR};
 
 pub type nlink_t = u16;
 pub type ino_t = u16;
@@ -200,16 +200,16 @@ s! {
 
     pub struct sockaddr_in {
         pub sin_family: sa_family_t,
-        pub sin_port: ::in_port_t,
-        pub sin_addr: ::in_addr,
+        pub sin_port: crate::in_port_t,
+        pub sin_addr: crate::in_addr,
         pub sin_zero: [u8; 8],
     }
 
     pub struct sockaddr_in6 {
         pub sin6_family: sa_family_t,
-        pub sin6_port: ::in_port_t,
+        pub sin6_port: crate::in_port_t,
         pub sin6_flowinfo: u32,
-        pub sin6_addr: ::in6_addr,
+        pub sin6_addr: crate::in6_addr,
         pub sin6_scope_id: u32,
     }
 

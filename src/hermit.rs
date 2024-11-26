@@ -1,6 +1,6 @@
 //! Hermit C type definitions
 
-use c_void;
+use crate::c_void;
 
 cfg_if! {
     if #[cfg(any(target_arch = "aarch64", target_arch = "riscv64"))] {

@@ -1,16 +1,18 @@
-pub type boolean_t = ::c_int;
+use crate::c_int;
+
+pub type boolean_t = c_int;
 pub type mcontext_t = *mut __darwin_mcontext64;
 
 s! {
     pub struct malloc_zone_t {
-        __private: [::uintptr_t; 18], // FIXME: needs arm64 auth pointers support
+        __private: [crate::uintptr_t; 18], // FIXME: needs arm64 auth pointers support
     }
 
     pub struct ucontext_t {
-        pub uc_onstack: ::c_int,
-        pub uc_sigmask: ::sigset_t,
-        pub uc_stack: ::stack_t,
-        pub uc_link: *mut ::ucontext_t,
+        pub uc_onstack: c_int,
+        pub uc_sigmask: crate::sigset_t,
+        pub uc_stack: crate::stack_t,
+        pub uc_link: *mut crate::ucontext_t,
         pub uc_mcsize: usize,
         pub uc_mcontext: mcontext_t,
     }
@@ -38,7 +40,7 @@ s! {
     }
 
     pub struct __darwin_arm_neon_state64 {
-        pub __v: [::__uint128_t; 32],
+        pub __v: [crate::__uint128_t; 32],
         pub __fpsr: u32,
         pub __fpcr: u32,
     }
