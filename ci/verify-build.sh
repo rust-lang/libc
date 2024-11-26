@@ -62,7 +62,6 @@ test_target() {
 
     # Test with expected combinations of features
     $cmd
-    $cmd --features const-extern-fn
     $cmd --features extra_traits
 
     # Test again without default features, i.e. without "std"

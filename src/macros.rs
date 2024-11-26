@@ -167,40 +167,31 @@ macro_rules! e {
     )*);
 }
 
-// This is a pretty horrible hack to allow us to conditionally mark
-// some functions as 'const', without requiring users of this macro
-// to care about the "const-extern-fn" feature.
+// This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
+// without requiring users of this macro to care "libc_const_extern_fn".
 //
-// When 'const-extern-fn' is enabled, we emit the captured 'const' keyword
-// in the expanded function.
+// When 'libc_const_extern_fn' is enabled, we emit the captured 'const' keyword in the expanded
+// function.
 //
-// When 'const-extern-fn' is disabled, we always emit a plain 'pub unsafe extern fn'.
+// When 'libc_const_extern_fn' is disabled, we always emit a plain 'pub unsafe extern fn'.
 // Note that the expression matched by the macro is exactly the same - this allows
-// users of this macro to work whether or not 'const-extern-fn' is enabled
+// users of this macro to work whether or not 'libc_const_extern_fn' is enabled
 //
 // Unfortunately, we need to duplicate most of this macro between the 'cfg_if' blocks.
 // This is because 'const unsafe extern fn' won't even parse on older compilers,
-// so we need to avoid emitting it at all of 'const-extern-fn'.
+// so we need to avoid emitting it at all of 'libc_const_extern_fn'.
 //
-// Specifically, moving the 'cfg_if' into the macro body will *not* work.
-// Doing so would cause the '#[cfg(feature = "const-extern-fn")]' to be emitted
-// into user code. The 'cfg' gate will not stop Rust from trying to parse the
-// 'pub const unsafe extern fn', so users would get a compiler error even when
-// the 'const-extern-fn' feature is disabled
-//
-// Note that users of this macro need to place 'const' in a weird position
-// (after the closing ')' for the arguments, but before the return type).
-// This was the only way I could satisfy the following two requirements:
-// 1. Avoid ambiguity errors from 'macro_rules!' (which happen when writing '$foo:ident fn'
-// 2. Allow users of this macro to mix 'pub fn foo' and 'pub const fn bar' within the same
-// 'f!' block
+// Specifically, moving the 'cfg_if' into the macro body will *not* work. Doing so would cause the
+// '#[cfg(libc_const_extern_fn)]' to be emitted into user code. The 'cfg' gate will not stop Rust
+// from trying to parse the 'pub const unsafe extern fn', so users would get a compiler error even
+// when the 'libc_const_extern_fn' feature is disabled.
 
 // FIXME(ctest): ctest can't handle `const extern` functions, we should be able to remove this
 // cfg completely.
 // FIXME(ctest): ctest can't handle `$(,)?` so we use `$(,)*` which isn't quite correct.
 cfg_if! {
-    if #[cfg(feature = "const-extern-fn")] {
-        /// Define an `unsafe` function that is const as long as `const-extern-fn` is enabled.
+    if #[cfg(libc_const_extern_fn)] {
+        /// Define an `unsafe` function that is const as long as `libc_const_extern_fn` is enabled.
         macro_rules! f {
             ($(
                 $(#[$attr:meta])*
@@ -214,7 +205,7 @@ cfg_if! {
             )*)
         }
 
-        /// Define a safe function that is const as long as `const-extern-fn` is enabled.
+        /// Define a safe function that is const as long as `libc_const_extern_fn` is enabled.
         macro_rules! safe_f {
             ($(
                 $(#[$attr:meta])*
@@ -228,7 +219,7 @@ cfg_if! {
             )*)
         }
 
-        /// A nonpublic function that is const as long as `const-extern-fn` is enabled.
+        /// A nonpublic function that is const as long as `libc_const_extern_fn` is enabled.
         macro_rules! const_fn {
             ($(
                 $(#[$attr:meta])*
@@ -242,7 +233,7 @@ cfg_if! {
             )*)
         }
     } else {
-        /// Define an `unsafe` function that is const as long as `const-extern-fn` is enabled.
+        /// Define an `unsafe` function that is const as long as `libc_const_extern_fn` is enabled.
         macro_rules! f {
             ($(
                 $(#[$attr:meta])*
@@ -256,7 +247,7 @@ cfg_if! {
             )*)
         }
 
-        /// Define a safe function that is const as long as `const-extern-fn` is enabled.
+        /// Define a safe function that is const as long as `libc_const_extern_fn` is enabled.
         macro_rules! safe_f {
             ($(
                 $(#[$attr:meta])*
@@ -270,7 +261,7 @@ cfg_if! {
             )*)
         }
 
-        /// A nonpublic function that is const as long as `const-extern-fn` is enabled.
+        /// A nonpublic function that is const as long as `libc_const_extern_fn` is enabled.
         macro_rules! const_fn {
             ($(
                 $(#[$attr:meta])*

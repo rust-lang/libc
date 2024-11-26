@@ -135,14 +135,10 @@ cargo-args = ["-Zbuild-std=core"]
 rustc-std-workspace-core = { version = "1.0.0", optional = true }
 
 [features]
-default = ["const-extern-fn", "std"]
+default = ["std"]
 std = []
 rustc-dep-of-std = ["rustc-std-workspace-core"]
 extra_traits = []
-
-# `const-extern-function` is deprecated and no longer does anything
-# FIXME(1.0): remove this completely
-const-extern-fn = []
 
 [workspace]
 members = ["libc-test"]

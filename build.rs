@@ -13,6 +13,8 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
+    // FIXME(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
+    "libc_const_extern_fn",
     "libc_deny_warnings",
     "libc_ctest",
 ];
@@ -73,6 +75,9 @@ fn main() {
     if libc_ci {
         set_cfg("libc_deny_warnings");
     }
+
+    // Set unconditionally when ctest is not being invoked.
+    set_cfg("libc_const_extern_fn");
 
     // check-cfg is a nightly cargo/rustc feature to warn when unknown cfgs are used across the
     // codebase. libc can configure it if the appropriate environment variable is passed. Since
