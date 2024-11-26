@@ -520,7 +520,7 @@ s! {
 
     pub struct accept_filter_arg {
         pub af_name: [::c_char; 16],
-        pub af_arg: [::c_char; 256 - 16],
+        af_arg: [::c_char; 256 - 16],
     }
 
     pub struct ki_sigset_t {
@@ -671,7 +671,7 @@ s! {
         pub kve_vn_rdev: u64,
         pub kve_vn_type: u32,
         pub kve_vn_mode: u32,
-        pub kve_path: [::c_char; ::PATH_MAX as usize],
+        pub kve_path: [[::c_char; 32]; 32],
     }
 
     pub struct __c_anonymous_posix_spawn_fae_open {

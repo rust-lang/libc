@@ -517,7 +517,7 @@ s_no_extra_traits! {
         pub mc_ownedfp: ::c_uint,
         __reserved: ::c_uint,
         __unused: [::c_uint; 8],
-        pub mc_fpregs: [::c_uint; 256],
+        pub mc_fpregs: [[::c_uint; 8]; 32],
     }
 
     pub struct ucontext_t {
