@@ -66,6 +66,7 @@ s! {
         pub modtime: time_t,
     }
 
+    // FIXME(time): Needs updates at least for glibc _TIME_BITS=64
     pub struct timeval {
         pub tv_sec: time_t,
         pub tv_usec: suseconds_t,
