@@ -84,15 +84,14 @@ cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
 
 # Run tests in the `libc` crate
 case "$target" in
+    # Only run `libc-test` 
     # FIXME(android): unit tests fail to start on Android
     # FIXME(s390x): unit tests fail to locate glibc
-    *android*) ;;
-    *s390x*) ;;
-    *) $cmd
+    *android*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
+    *s390x*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
+    # For all other platforms, test everything in the workspace
+    *) cmd="$cmd --workspace"
 esac
-
-# Everything else is in `libc-test`
-cmd="$cmd --manifest-path libc-test/Cargo.toml"
 
 if [ "$target" = "s390x-unknown-linux-gnu" ]; then
     # FIXME: s390x-unknown-linux-gnu often fails to test due to timeout,
