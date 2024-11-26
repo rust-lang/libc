@@ -284,7 +284,7 @@ s! {
 
     pub struct accept_filter_arg {
         pub af_name: [::c_char; 16],
-        af_arg: [[::c_char; 10]; 24],
+        af_arg: [::c_char; 256 - 16],
     }
 
     pub struct ptrace_io_desc {
