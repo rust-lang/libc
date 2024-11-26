@@ -1,6 +1,15 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.166](https://github.com/rust-lang/libc/compare/0.2.165...0.2.166) - 2024-11-26
+
+### Fixed
+
+This release resolves two cases of unintentional breakage from the previous release:
+
+- Revert removal of array size hacks [#4150](https://github.com/rust-lang/libc/pull/4150)
+- Ensure `const extern` functions are always enabled [#4151](https://github.com/rust-lang/libc/pull/4151)
+
 ## [0.2.165](https://github.com/rust-lang/libc/compare/0.2.164...0.2.165) - 2024-11-25
 
 ### Added
