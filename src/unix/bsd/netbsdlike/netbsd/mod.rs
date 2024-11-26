@@ -520,7 +520,7 @@ s! {
 
     pub struct accept_filter_arg {
         pub af_name: [::c_char; 16],
-        pub af_arg: [::c_char; 256 - 16],
+        af_arg: [[::c_char; 10]; 24],
     }
 
     pub struct ki_sigset_t {

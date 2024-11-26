@@ -1144,7 +1144,7 @@ s! {
         pub sinfo_assoc_id: ::sctp_assoc_t,
         pub sinfo_keynumber: u16,
         pub sinfo_keynumber_valid: u16,
-        pub __reserve_pad: [u8; SCTP_ALIGN_RESV_PAD],
+        pub __reserve_pad: [[u8; 23]; 4],
     }
 
     pub struct sctp_extrcvinfo {
@@ -1164,7 +1164,7 @@ s! {
         pub serinfo_next_ppid: u32,
         pub sinfo_keynumber: u16,
         pub sinfo_keynumber_valid: u16,
-        pub __reserve_pad: [u8; SCTP_ALIGN_RESV_PAD_SHORT],
+        pub __reserve_pad: [[u8; 19]; 4],
     }
 
     pub struct sctp_sndinfo {
@@ -4864,11 +4864,6 @@ pub const SCTP_ASSOC_RESET_FAILED: ::c_int = 0x0008;
 
 pub const SCTP_STREAM_CHANGE_DENIED: ::c_int = 0x0004;
 pub const SCTP_STREAM_CHANGE_FAILED: ::c_int = 0x0008;
-
-// sctp_uio.h
-
-pub const SCTP_ALIGN_RESV_PAD: usize = 92;
-pub const SCTP_ALIGN_RESV_PAD_SHORT: usize = 76;
 
 pub const KENV_DUMP_LOADER: ::c_int = 4;
 pub const KENV_DUMP_STATIC: ::c_int = 5;
