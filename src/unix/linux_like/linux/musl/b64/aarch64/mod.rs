@@ -84,7 +84,7 @@ s! {
         pub sp: ::c_ulong,
         pub pc: ::c_ulong,
         pub pstate: ::c_ulong,
-        __reserved: [u64; 512],
+        __reserved: [[u64; 32]; 16],
     }
 
     #[repr(align(8))]

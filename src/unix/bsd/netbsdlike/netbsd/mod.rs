@@ -671,7 +671,7 @@ s! {
         pub kve_vn_rdev: u64,
         pub kve_vn_type: u32,
         pub kve_vn_mode: u32,
-        pub kve_path: [::c_char; ::PATH_MAX as usize],
+        pub kve_path: [[::c_char; 32]; 32],
     }
 
     pub struct __c_anonymous_posix_spawn_fae_open {

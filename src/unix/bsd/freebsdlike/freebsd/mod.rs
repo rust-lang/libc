@@ -457,7 +457,7 @@ s! {
         _kve_is_spare: [::c_int; 8],
         #[cfg(freebsd11)]
         _kve_is_spare: [::c_int; 12],
-        pub kve_path: [::c_char; ::PATH_MAX as usize],
+        pub kve_path: [[::c_char; 32]; 32],
     }
 
     pub struct __c_anonymous_filestat {

@@ -173,7 +173,7 @@ s! {
         /// More thread name.
         pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
         /// Spare string space.
-        pub ki_sparestrings: [::c_char; 46],
+        pub ki_sparestrings: [[::c_char; 23]; 2], // little hack to allow PartialEq
         /// Spare room for growth.
         pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
         /// Controlling tty dev.
