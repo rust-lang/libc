@@ -1,3 +1,7 @@
+use crate::{
+    c_char, c_int, c_long, c_short, c_uchar, c_uint, c_ushort, c_void, intptr_t, size_t, ssize_t,
+};
+
 // APIs that were changed after FreeBSD 11
 
 // The type of `nlink_t` changed from `u16` to `u64` in FreeBSD 12:
@@ -10,21 +14,21 @@ pub type ino_t = u32;
 s! {
     pub struct kevent {
         pub ident: ::uintptr_t,
-        pub filter: ::c_short,
-        pub flags: ::c_ushort,
-        pub fflags: ::c_uint,
-        pub data: ::intptr_t,
-        pub udata: *mut ::c_void,
+        pub filter: c_short,
+        pub flags: c_ushort,
+        pub fflags: c_uint,
+        pub data: intptr_t,
+        pub udata: *mut c_void,
     }
 
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
+        pub shm_segsz: size_t,
         pub shm_lpid: ::pid_t,
         pub shm_cpid: ::pid_t,
         // Type of shm_nattc changed from `int` to `shmatt_t` (aka `unsigned
         // int`) in FreeBSD 12:
-        pub shm_nattch: ::c_int,
+        pub shm_nattch: c_int,
         pub shm_atime: ::time_t,
         pub shm_dtime: ::time_t,
         pub shm_ctime: ::time_t,
@@ -32,31 +36,31 @@ s! {
 
     pub struct kinfo_proc {
         /// Size of this structure.
-        pub ki_structsize: ::c_int,
+        pub ki_structsize: c_int,
         /// Reserved: layout identifier.
-        pub ki_layout: ::c_int,
+        pub ki_layout: c_int,
         /// Address of command arguments.
         pub ki_args: *mut ::pargs,
         // This is normally "struct proc".
         /// Address of proc.
-        pub ki_paddr: *mut ::c_void,
+        pub ki_paddr: *mut c_void,
         // This is normally "struct user".
         /// Kernel virtual address of u-area.
-        pub ki_addr: *mut ::c_void,
+        pub ki_addr: *mut c_void,
         // This is normally "struct vnode".
         /// Pointer to trace file.
-        pub ki_tracep: *mut ::c_void,
+        pub ki_tracep: *mut c_void,
         // This is normally "struct vnode".
         /// Pointer to executable file.
-        pub ki_textvp: *mut ::c_void,
+        pub ki_textvp: *mut c_void,
         // This is normally "struct filedesc".
         /// Pointer to open file info.
-        pub ki_fd: *mut ::c_void,
+        pub ki_fd: *mut c_void,
         // This is normally "struct vmspace".
         /// Pointer to kernel vmspace struct.
-        pub ki_vmspace: *mut ::c_void,
+        pub ki_vmspace: *mut c_void,
         /// Sleep address.
-        pub ki_wchan: *mut ::c_void,
+        pub ki_wchan: *mut c_void,
         /// Process identifier.
         pub ki_pid: ::pid_t,
         /// Parent process ID.
@@ -70,9 +74,9 @@ s! {
         /// Terminal session ID.
         pub ki_tsid: ::pid_t,
         /// Job control counter.
-        pub ki_jobc: ::c_short,
+        pub ki_jobc: c_short,
         /// Unused (just here for alignment).
-        pub ki_spare_short1: ::c_short,
+        pub ki_spare_short1: c_short,
         /// Controlling tty dev.
         pub ki_tdev: ::dev_t,
         /// Signals arrived but not delivered.
@@ -94,9 +98,9 @@ s! {
         /// Saved effective group ID.
         pub ki_svgid: ::gid_t,
         /// Number of groups.
-        pub ki_ngroups: ::c_short,
+        pub ki_ngroups: c_short,
         /// Unused (just here for alignment).
-        pub ki_spare_short2: ::c_short,
+        pub ki_spare_short2: c_short,
         /// Groups.
         pub ki_groups: [::gid_t; ::KI_NGROUPS],
         /// Virtual size.
@@ -132,59 +136,59 @@ s! {
         /// Time used by process children.
         pub ki_childtime: ::timeval,
         /// P_* flags.
-        pub ki_flag: ::c_long,
+        pub ki_flag: c_long,
         /// KI_* flags (below).
-        pub ki_kiflag: ::c_long,
+        pub ki_kiflag: c_long,
         /// Kernel trace points.
-        pub ki_traceflag: ::c_int,
+        pub ki_traceflag: c_int,
         /// S* process status.
-        pub ki_stat: ::c_char,
+        pub ki_stat: c_char,
         /// Process "nice" value.
         pub ki_nice: i8, // signed char
         /// Process lock (prevent swap) count.
-        pub ki_lock: ::c_char,
+        pub ki_lock: c_char,
         /// Run queue index.
-        pub ki_rqindex: ::c_char,
+        pub ki_rqindex: c_char,
         /// Which cpu we are on.
-        pub ki_oncpu_old: ::c_uchar,
+        pub ki_oncpu_old: c_uchar,
         /// Last cpu we were on.
-        pub ki_lastcpu_old: ::c_uchar,
+        pub ki_lastcpu_old: c_uchar,
         /// Thread name.
-        pub ki_tdname: [::c_char; ::TDNAMLEN + 1],
+        pub ki_tdname: [c_char; ::TDNAMLEN + 1],
         /// Wchan message.
-        pub ki_wmesg: [::c_char; ::WMESGLEN + 1],
+        pub ki_wmesg: [c_char; ::WMESGLEN + 1],
         /// Setlogin name.
-        pub ki_login: [::c_char; ::LOGNAMELEN + 1],
+        pub ki_login: [c_char; ::LOGNAMELEN + 1],
         /// Lock name.
-        pub ki_lockname: [::c_char; ::LOCKNAMELEN + 1],
+        pub ki_lockname: [c_char; ::LOCKNAMELEN + 1],
         /// Command name.
-        pub ki_comm: [::c_char; ::COMMLEN + 1],
+        pub ki_comm: [c_char; ::COMMLEN + 1],
         /// Emulation name.
-        pub ki_emul: [::c_char; ::KI_EMULNAMELEN + 1],
+        pub ki_emul: [c_char; ::KI_EMULNAMELEN + 1],
         /// Login class.
-        pub ki_loginclass: [::c_char; ::LOGINCLASSLEN + 1],
+        pub ki_loginclass: [c_char; ::LOGINCLASSLEN + 1],
         /// More thread name.
-        pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
+        pub ki_moretdname: [c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
         /// Spare string space.
-        pub ki_sparestrings: [::c_char; 46],
+        pub ki_sparestrings: [c_char; 46],
         /// Spare room for growth.
-        pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
+        pub ki_spareints: [c_int; ::KI_NSPARE_INT],
         /// Which cpu we are on.
-        pub ki_oncpu: ::c_int,
+        pub ki_oncpu: c_int,
         /// Last cpu we were on.
-        pub ki_lastcpu: ::c_int,
+        pub ki_lastcpu: c_int,
         /// PID of tracing process.
-        pub ki_tracer: ::c_int,
+        pub ki_tracer: c_int,
         /// P2_* flags.
-        pub ki_flag2: ::c_int,
+        pub ki_flag2: c_int,
         /// Default FIB number.
-        pub ki_fibnum: ::c_int,
+        pub ki_fibnum: c_int,
         /// Credential flags.
         pub ki_cr_flags: ::u_int,
         /// Process jail ID.
-        pub ki_jid: ::c_int,
+        pub ki_jid: c_int,
         /// Number of threads in total.
-        pub ki_numthreads: ::c_int,
+        pub ki_numthreads: c_int,
         /// Thread ID.
         pub ki_tid: ::lwpid_t,
         /// Process priority.
@@ -195,19 +199,19 @@ s! {
         pub ki_rusage_ch: ::rusage,
         // This is normally "struct pcb".
         /// Kernel virtual addr of pcb.
-        pub ki_pcb: *mut ::c_void,
+        pub ki_pcb: *mut c_void,
         /// Kernel virtual addr of stack.
-        pub ki_kstack: *mut ::c_void,
+        pub ki_kstack: *mut c_void,
         /// User convenience pointer.
-        pub ki_udata: *mut ::c_void,
+        pub ki_udata: *mut c_void,
         // This is normally "struct thread".
-        pub ki_tdaddr: *mut ::c_void,
-        pub ki_spareptrs: [*mut ::c_void; ::KI_NSPARE_PTR],
-        pub ki_sparelongs: [::c_long; ::KI_NSPARE_LONG],
+        pub ki_tdaddr: *mut c_void,
+        pub ki_spareptrs: [*mut c_void; ::KI_NSPARE_PTR],
+        pub ki_sparelongs: [c_long; ::KI_NSPARE_LONG],
         /// PS_* flags.
-        pub ki_sflag: ::c_long,
+        pub ki_sflag: c_long,
         /// kthread flag.
-        pub ki_tdflags: ::c_long,
+        pub ki_tdflags: c_long,
     }
 }
 
@@ -218,7 +222,7 @@ s_no_extra_traits! {
         pub d_type: u8,
         // Type of `d_namlen` changed from `char` to `u16` in FreeBSD 12:
         pub d_namlen: u8,
-        pub d_name: [::c_char; 256],
+        pub d_name: [c_char; 256],
     }
 
     pub struct statfs {
@@ -240,23 +244,23 @@ s_no_extra_traits! {
         pub f_namemax: u32,
         pub f_owner: ::uid_t,
         pub f_fsid: ::fsid_t,
-        f_charspare: [::c_char; 80],
-        pub f_fstypename: [::c_char; 16],
+        f_charspare: [c_char; 80],
+        pub f_fstypename: [c_char; 16],
         // Array length changed from 88 to 1024 in FreeBSD 12:
-        pub f_mntfromname: [::c_char; 88],
+        pub f_mntfromname: [c_char; 88],
         // Array length changed from 88 to 1024 in FreeBSD 12:
-        pub f_mntonname: [::c_char; 88],
+        pub f_mntonname: [c_char; 88],
     }
 
     pub struct vnstat {
         pub vn_fileid: u64,
         pub vn_size: u64,
-        pub vn_mntdir: *mut ::c_char,
+        pub vn_mntdir: *mut c_char,
         pub vn_dev: u32,
         pub vn_fsid: u32,
-        pub vn_type: ::c_int,
+        pub vn_type: c_int,
         pub vn_mode: u16,
-        pub vn_devname: [::c_char; ::SPECNAMELEN as usize + 1],
+        pub vn_devname: [c_char; ::SPECNAMELEN as usize + 1],
     }
 }
 
@@ -379,8 +383,8 @@ cfg_if! {
 
         impl PartialEq for vnstat {
             fn eq(&self, other: &vnstat) -> bool {
-                let self_vn_devname: &[::c_char] = &self.vn_devname;
-                let other_vn_devname: &[::c_char] = &other.vn_devname;
+                let self_vn_devname: &[c_char] = &self.vn_devname;
+                let other_vn_devname: &[c_char] = &other.vn_devname;
 
                 self.vn_fileid == other.vn_fileid
                     && self.vn_size == other.vn_size
@@ -395,7 +399,7 @@ cfg_if! {
         impl Eq for vnstat {}
         impl ::fmt::Debug for vnstat {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let self_vn_devname: &[::c_char] = &self.vn_devname;
+                let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 f.debug_struct("vnstat")
                     .field("vn_fileid", &self.vn_fileid)
@@ -411,7 +415,7 @@ cfg_if! {
         }
         impl ::hash::Hash for vnstat {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                let self_vn_devname: &[::c_char] = &self.vn_devname;
+                let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 self.vn_fileid.hash(state);
                 self.vn_size.hash(state);
@@ -426,15 +430,15 @@ cfg_if! {
     }
 }
 
-pub const ELAST: ::c_int = 96;
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
+pub const ELAST: c_int = 96;
+pub const RAND_MAX: c_int = 0x7fff_fffd;
 pub const KI_NSPARE_PTR: usize = 6;
-pub const MINCORE_SUPER: ::c_int = 0x20;
+pub const MINCORE_SUPER: c_int = 0x20;
 /// max length of devicename
-pub const SPECNAMELEN: ::c_int = 63;
+pub const SPECNAMELEN: c_int = 63;
 
 safe_f! {
-    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+    pub {const} fn makedev(major: c_uint, minor: c_uint) -> ::dev_t {
         let major = major as ::dev_t;
         let minor = minor as ::dev_t;
         (major << 8) | minor
@@ -442,39 +446,39 @@ safe_f! {
 }
 
 f! {
-    pub fn major(dev: ::dev_t) -> ::c_int {
-        ((dev >> 8) & 0xff) as ::c_int
+    pub fn major(dev: ::dev_t) -> c_int {
+        ((dev >> 8) & 0xff) as c_int
     }
 
-    pub fn minor(dev: ::dev_t) -> ::c_int {
-        (dev & 0xffff00ff) as ::c_int
+    pub fn minor(dev: ::dev_t) -> c_int {
+        (dev & 0xffff00ff) as c_int
     }
 }
 
 extern "C" {
-    // Return type ::c_int was removed in FreeBSD 12
-    pub fn setgrent() -> ::c_int;
+    // Return type c_int was removed in FreeBSD 12
+    pub fn setgrent() -> c_int;
 
     // Type of `addr` argument changed from `const void*` to `void*`
     // in FreeBSD 12
-    pub fn mprotect(addr: *const ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+    pub fn mprotect(addr: *const c_void, len: size_t, prot: c_int) -> c_int;
 
-    // Return type ::c_int was removed in FreeBSD 12
-    pub fn freelocale(loc: ::locale_t) -> ::c_int;
+    // Return type c_int was removed in FreeBSD 12
+    pub fn freelocale(loc: ::locale_t) -> c_int;
 
-    // Return type ::c_int changed to ::ssize_t in FreeBSD 12:
+    // Return type c_int changed to ssize_t in FreeBSD 12:
     pub fn msgrcv(
-        msqid: ::c_int,
-        msgp: *mut ::c_void,
-        msgsz: ::size_t,
-        msgtyp: ::c_long,
-        msgflg: ::c_int,
-    ) -> ::c_int;
+        msqid: c_int,
+        msgp: *mut c_void,
+        msgsz: size_t,
+        msgtyp: c_long,
+        msgflg: c_int,
+    ) -> c_int;
 
     // Type of `path` argument changed from `const void*` to `void*`
     // in FreeBSD 12
-    pub fn dirname(path: *const ::c_char) -> *mut ::c_char;
-    pub fn basename(path: *const ::c_char) -> *mut ::c_char;
+    pub fn dirname(path: *const c_char) -> *mut c_char;
+    pub fn basename(path: *const c_char) -> *mut c_char;
 }
 
 cfg_if! {

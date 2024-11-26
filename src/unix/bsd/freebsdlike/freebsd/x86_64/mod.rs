@@ -1,3 +1,5 @@
+use crate::{c_int, c_void, size_t};
+
 pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -83,13 +85,13 @@ s_no_extra_traits! {
     }
 
     pub union __c_anonymous_elf64_auxv_union {
-        pub a_val: ::c_long,
-        pub a_ptr: *mut ::c_void,
+        pub a_val: c_long,
+        pub a_ptr: *mut c_void,
         pub a_fcn: extern "C" fn(),
     }
 
     pub struct Elf64_Auxinfo {
-        pub a_type: ::c_long,
+        pub a_type: c_long,
         pub a_un: __c_anonymous_elf64_auxv_union,
     }
 
@@ -157,8 +159,8 @@ cfg_if! {
             }
         }
         impl Eq for fpreg32 {}
-        impl ::fmt::Debug for fpreg32 {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for fpreg32 {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("fpreg32")
                     .field("fpr_env", &&self.fpr_env[..])
                     .field("fpr_acc", &self.fpr_acc)
@@ -167,8 +169,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for fpreg32 {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for fpreg32 {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.fpr_env.hash(state);
                 self.fpr_acc.hash(state);
                 self.fpr_ex_sw.hash(state);
@@ -185,8 +187,8 @@ cfg_if! {
             }
         }
         impl Eq for fpreg {}
-        impl ::fmt::Debug for fpreg {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for fpreg {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("fpreg")
                     .field("fpr_env", &self.fpr_env)
                     .field("fpr_acc", &self.fpr_acc)
@@ -195,8 +197,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for fpreg {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for fpreg {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.fpr_env.hash(state);
                 self.fpr_acc.hash(state);
                 self.fpr_xacc.hash(state);
@@ -217,8 +219,8 @@ cfg_if! {
             }
         }
         impl Eq for xmmreg {}
-        impl ::fmt::Debug for xmmreg {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for xmmreg {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("xmmreg")
                     .field("xmm_env", &self.xmm_env)
                     .field("xmm_acc", &self.xmm_acc)
@@ -227,8 +229,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for xmmreg {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for xmmreg {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.xmm_env.hash(state);
                 self.xmm_acc.hash(state);
                 self.xmm_reg.hash(state);
@@ -246,8 +248,8 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_elf64_auxv_union {}
-        impl ::fmt::Debug for __c_anonymous_elf64_auxv_union {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for __c_anonymous_elf64_auxv_union {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("a_val")
                     .field("a_val", unsafe { &self.a_val })
                     .finish()
@@ -259,8 +261,8 @@ cfg_if! {
             }
         }
         impl Eq for Elf64_Auxinfo {}
-        impl ::fmt::Debug for Elf64_Auxinfo {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for Elf64_Auxinfo {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("Elf64_Auxinfo")
                     .field("a_type", &self.a_type)
                     .field("a_un", &self.a_un)
@@ -315,8 +317,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl ::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("mc_onstack", &self.mc_onstack)
                     .field("mc_rdi", &self.mc_rdi)
@@ -359,8 +361,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for mcontext_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for mcontext_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.mc_onstack.hash(state);
                 self.mc_rdi.hash(state);
                 self.mc_rsi.hash(state);
@@ -404,13 +406,13 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
+pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_long>() - 1;
 
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
+pub const BIOCSRTIMEOUT: c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT: c_ulong = 0x4010426e;
 
-pub const MAP_32BIT: ::c_int = 0x00080000;
-pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
+pub const MAP_32BIT: c_int = 0x00080000;
+pub const MINSIGSTKSZ: size_t = 2048; // 512 * 4
 
 pub const _MC_HASSEGS: u32 = 0x1;
 pub const _MC_HASBASES: u32 = 0x2;
@@ -423,6 +425,6 @@ pub const _MC_FPOWNED_NONE: c_long = 0x20000;
 pub const _MC_FPOWNED_FPU: c_long = 0x20001;
 pub const _MC_FPOWNED_PCB: c_long = 0x20002;
 
-pub const KINFO_FILE_SIZE: ::c_int = 1392;
+pub const KINFO_FILE_SIZE: c_int = 1392;
 
-pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
+pub const TIOCTIMESTAMP: c_ulong = 0x40107459;

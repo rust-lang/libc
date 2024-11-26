@@ -1,3 +1,5 @@
+use crate::{c_int, c_void, size_t};
+
 pub type c_char = u8;
 pub type wchar_t = u32;
 pub type c_long = i64;
@@ -11,7 +13,7 @@ s! {
     }
 
     pub struct aarch64_fpu_registers {
-        pub reg: [::aarch64_qreg_t; 32],
+        pub reg: [crate::aarch64_qreg_t; 32],
         pub fpsr: u32,
         pub fpcr: u32,
     }
@@ -24,13 +26,13 @@ s! {
 
     #[repr(align(16))]
     pub struct mcontext_t {
-        pub cpu: ::aarch64_cpu_registers,
-        pub fpu: ::aarch64_fpu_registers,
+        pub cpu: crate::aarch64_cpu_registers,
+        pub fpu: crate::aarch64_fpu_registers,
     }
 
     pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
+        pub ss_sp: *mut c_void,
+        pub ss_size: size_t,
+        pub ss_flags: c_int,
     }
 }

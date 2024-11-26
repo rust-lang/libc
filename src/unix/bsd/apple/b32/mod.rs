@@ -1,19 +1,21 @@
 //! 32-bit specific Apple (ios/darwin) definitions
 
+use crate::{c_char, c_int, c_uchar, c_ushort};
+
 pub type c_long = i32;
 pub type c_ulong = u32;
-pub type boolean_t = ::c_int;
+pub type boolean_t = c_int;
 
 s! {
     pub struct if_data {
-        pub ifi_type: ::c_uchar,
-        pub ifi_typelen: ::c_uchar,
-        pub ifi_physical: ::c_uchar,
-        pub ifi_addrlen: ::c_uchar,
-        pub ifi_hdrlen: ::c_uchar,
-        pub ifi_recvquota: ::c_uchar,
-        pub ifi_xmitquota: ::c_uchar,
-        pub ifi_unused1: ::c_uchar,
+        pub ifi_type: c_uchar,
+        pub ifi_typelen: c_uchar,
+        pub ifi_physical: c_uchar,
+        pub ifi_addrlen: c_uchar,
+        pub ifi_hdrlen: c_uchar,
+        pub ifi_recvquota: c_uchar,
+        pub ifi_xmitquota: c_uchar,
+        pub ifi_unused1: c_uchar,
         pub ifi_mtu: u32,
         pub ifi_metric: u32,
         pub ifi_baudrate: u32,
@@ -30,7 +32,7 @@ s! {
         pub ifi_noproto: u32,
         pub ifi_recvtiming: u32,
         pub ifi_xmittiming: u32,
-        pub ifi_lastchange: ::timeval,
+        pub ifi_lastchange: crate::timeval,
         pub ifi_unused2: u32,
         pub ifi_hwassist: u32,
         pub ifi_reserved1: u32,
@@ -38,26 +40,26 @@ s! {
     }
 
     pub struct bpf_hdr {
-        pub bh_tstamp: ::timeval,
+        pub bh_tstamp: crate::timeval,
         pub bh_caplen: u32,
         pub bh_datalen: u32,
-        pub bh_hdrlen: ::c_ushort,
+        pub bh_hdrlen: c_ushort,
     }
 
     pub struct malloc_zone_t {
-        __private: [::uintptr_t; 18], // FIXME: keeping private for now
+        __private: [crate::uintptr_t; 18], // FIXME: keeping private for now
     }
 }
 
 s_no_extra_traits! {
     pub struct pthread_attr_t {
         __sig: c_long,
-        __opaque: [::c_char; 36],
+        __opaque: [c_char; 36],
     }
 
     pub struct pthread_once_t {
         __sig: c_long,
-        __opaque: [::c_char; ::__PTHREAD_ONCE_SIZE__],
+        __opaque: [c_char; crate::__PTHREAD_ONCE_SIZE__],
     }
 
     #[allow(missing_debug_implementations)]
@@ -80,16 +82,16 @@ cfg_if! {
             }
         }
         impl Eq for pthread_attr_t {}
-        impl ::fmt::Debug for pthread_attr_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for pthread_attr_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("pthread_attr_t")
                     .field("__sig", &self.__sig)
                     // FIXME: .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
-        impl ::hash::Hash for pthread_attr_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for pthread_attr_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
@@ -105,15 +107,15 @@ cfg_if! {
             }
         }
         impl Eq for pthread_once_t {}
-        impl ::fmt::Debug for pthread_once_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for pthread_once_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("pthread_once_t")
                     .field("__sig", &self.__sig)
                     .finish()
             }
         }
-        impl ::hash::Hash for pthread_once_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for pthread_once_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
@@ -123,7 +125,7 @@ cfg_if! {
 
 #[doc(hidden)]
 #[deprecated(since = "0.2.55")]
-pub const NET_RT_MAXID: ::c_int = 10;
+pub const NET_RT_MAXID: c_int = 10;
 
 pub const __PTHREAD_MUTEX_SIZE__: usize = 40;
 pub const __PTHREAD_COND_SIZE__: usize = 24;
@@ -132,24 +134,20 @@ pub const __PTHREAD_ONCE_SIZE__: usize = 4;
 pub const __PTHREAD_RWLOCK_SIZE__: usize = 124;
 pub const __PTHREAD_RWLOCKATTR_SIZE__: usize = 12;
 
-pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;
-pub const TIOCDCDTIMESTAMP: ::c_ulong = 0x40087458;
+pub const TIOCTIMESTAMP: c_ulong = 0x40087459;
+pub const TIOCDCDTIMESTAMP: c_ulong = 0x40087458;
 
-pub const BIOCSETF: ::c_ulong = 0x80084267;
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
-pub const BIOCSETFNR: ::c_ulong = 0x8008427e;
+pub const BIOCSETF: c_ulong = 0x80084267;
+pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
+pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
+pub const BIOCSETFNR: c_ulong = 0x8008427e;
 
 const _PTHREAD_ONCE_SIG_INIT: c_long = 0x30B1BCBA;
-pub const PTHREAD_ONCE_INIT: ::pthread_once_t = ::pthread_once_t {
+pub const PTHREAD_ONCE_INIT: crate::pthread_once_t = crate::pthread_once_t {
     __sig: _PTHREAD_ONCE_SIG_INIT,
     __opaque: [0; 4],
 };
 
 extern "C" {
-    pub fn exchangedata(
-        path1: *const ::c_char,
-        path2: *const ::c_char,
-        options: ::c_ulong,
-    ) -> ::c_int;
+    pub fn exchangedata(path1: *const c_char, path2: *const c_char, options: c_ulong) -> c_int;
 }
