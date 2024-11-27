@@ -96,6 +96,8 @@ sparc64-unknown-linux-gnu \
 sparcv9-sun-solaris \
 wasm32-unknown-emscripten \
 wasm32-unknown-unknown \
+wasm32-wasip1 \
+wasm32-wasip2 \
 x86_64-linux-android \
 x86_64-unknown-freebsd \
 x86_64-unknown-linux-gnu \
@@ -231,12 +233,29 @@ else
     no_dist_targets=""
 fi
 
+case "$rust" in
+    "stable") supports_wasi_pn=1 ;;
+    "beta") supports_wasi_pn=1 ;;
+    "nightly") supports_wasi_pn=1 ;;
+    *) supports_wasi_pn=0 ;;
+esac
+
 for target in $targets; do
     if echo "$target" | grep -q "$filter"; then
         if [ "$os" = "windows" ]; then
             TARGET="$target" ./ci/install-rust.sh
             test_target "$target"
         else
+            # `wasm32-wasip1` was renamed from `wasm32-wasi`
+            if [ "$target" = "wasm32-wasip1" ] && [ "$supports_wasi_pn" = "0" ]; then
+                target="wasm32-wasi"
+            fi
+
+            # `wasm32-wasip2` only exists in recent versions of Rust
+            if [ "$target" = "wasm32-wasip2" ] && [ "$supports_wasi_pn" = "0" ]; then
+                continue
+            fi
+            
             test_target "$target"
         fi
 
