@@ -43,6 +43,9 @@ pub type c_int16_t = i16;
 pub type c_int32_t = i32;
 pub type c_int64_t = i64;
 
+pub type intptr_t = isize;
+pub type uintptr_t = usize;
+
 pub type c_float = f32;
 pub type c_double = f64;
 
