@@ -4734,9 +4734,16 @@ fn test_linux_like_apis(target: &str) {
 }
 
 fn which_freebsd() -> Option<i32> {
+    if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+        let vers = version.parse().unwrap();
+        println!("cargo:warning=setting FreeBSD version to {vers}");
+        return Some(vers);
+    }
+
     let output = std::process::Command::new("freebsd-version")
         .output()
         .ok()?;
+
     if !output.status.success() {
         return None;
     }
