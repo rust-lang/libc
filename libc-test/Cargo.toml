@@ -19,6 +19,7 @@ libc = { path = "..", version = "1.0.0-alpha.1", default-features = false }
 cc = "1.0.83"
 # FIXME: Use fork ctest until the maintainer gets back.
 ctest2 = "0.4.3"
+regex = "1.11.1"
 
 [features]
 default = ["std"]

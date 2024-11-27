@@ -65,16 +65,16 @@ use core::option::Option;
 cfg_if! {
     if #[cfg(windows)] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod windows;
-        pub use windows::*;
+        pub use crate::windows::*;
     } else if #[cfg(target_os = "fuchsia")] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod fuchsia;
-        pub use fuchsia::*;
+        pub use crate::fuchsia::*;
     } else if #[cfg(target_os = "switch")] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
@@ -83,28 +83,28 @@ cfg_if! {
         pub use switch::*;
     } else if #[cfg(target_os = "vxworks")] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod vxworks;
-        pub use vxworks::*;
+        pub use crate::vxworks::*;
     } else if #[cfg(target_os = "solid_asp3")] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod solid;
-        pub use solid::*;
+        pub use crate::solid::*;
     } else if #[cfg(unix)] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod unix;
-        pub use unix::*;
+        pub use crate::unix::*;
     } else if #[cfg(target_os = "hermit")] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod hermit;
-        pub use hermit::*;
+        pub use crate::hermit::*;
     } else if #[cfg(target_os = "teeos")] {
         mod fixed_width_ints;
         pub use fixed_width_ints::*;
@@ -113,28 +113,28 @@ cfg_if! {
         pub use teeos::*;
     } else if #[cfg(target_os = "trusty")] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod trusty;
-        pub use trusty::*;
+        pub use crate::trusty::*;
     } else if #[cfg(all(target_env = "sgx", target_vendor = "fortanix"))] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod sgx;
-        pub use sgx::*;
+        pub use crate::sgx::*;
     } else if #[cfg(any(target_env = "wasi", target_os = "wasi"))] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod wasi;
-        pub use wasi::*;
+        pub use crate::wasi::*;
     } else if #[cfg(target_os = "xous")] {
         mod fixed_width_ints;
-        pub use fixed_width_ints::*;
+        pub use crate::fixed_width_ints::*;
 
         mod xous;
-        pub use xous::*;
+        pub use crate::xous::*;
     } else {
         // non-supported targets: empty...
     }

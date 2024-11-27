@@ -1,6 +1,8 @@
-pub type clock_t = ::c_ulong;
+use crate::c_int;
+
+pub type clock_t = c_ulong;
 pub type c_char = u8;
-pub type wchar_t = ::c_int;
+pub type wchar_t = c_int;
 
 pub type c_long = i32;
 pub type c_ulong = u32;
