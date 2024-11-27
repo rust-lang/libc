@@ -1,56 +1,58 @@
+use crate::{c_uchar, c_uint, c_ulong, c_ushort};
+
 s_no_extra_traits! {
     pub struct fpu_state {
-        pub control: ::c_ushort,
-        pub status: ::c_ushort,
-        pub tag: ::c_ushort,
-        pub opcode: ::c_ushort,
-        pub rip: ::c_ulong,
-        pub rdp: ::c_ulong,
-        pub mxcsr: ::c_uint,
-        pub mscsr_mask: ::c_uint,
-        pub _fpreg: [[::c_uchar; 8]; 16],
-        pub _xmm: [[::c_uchar; 16]; 16],
-        pub _reserved_416_511: [::c_uchar; 96],
+        pub control: c_ushort,
+        pub status: c_ushort,
+        pub tag: c_ushort,
+        pub opcode: c_ushort,
+        pub rip: c_ulong,
+        pub rdp: c_ulong,
+        pub mxcsr: c_uint,
+        pub mscsr_mask: c_uint,
+        pub _fpreg: [[c_uchar; 8]; 16],
+        pub _xmm: [[c_uchar; 16]; 16],
+        pub _reserved_416_511: [c_uchar; 96],
     }
 
     pub struct xstate_hdr {
-        pub bv: ::c_ulong,
-        pub xcomp_bv: ::c_ulong,
-        pub _reserved: [::c_uchar; 48],
+        pub bv: c_ulong,
+        pub xcomp_bv: c_ulong,
+        pub _reserved: [c_uchar; 48],
     }
 
     pub struct savefpu {
         pub fp_fxsave: fpu_state,
         pub fp_xstate: xstate_hdr,
-        pub _fp_ymm: [[::c_uchar; 16]; 16],
+        pub _fp_ymm: [[c_uchar; 16]; 16],
     }
 
     pub struct mcontext_t {
-        pub rax: ::c_ulong,
-        pub rbx: ::c_ulong,
-        pub rcx: ::c_ulong,
-        pub rdx: ::c_ulong,
-        pub rdi: ::c_ulong,
-        pub rsi: ::c_ulong,
-        pub rbp: ::c_ulong,
-        pub r8: ::c_ulong,
-        pub r9: ::c_ulong,
-        pub r10: ::c_ulong,
-        pub r11: ::c_ulong,
-        pub r12: ::c_ulong,
-        pub r13: ::c_ulong,
-        pub r14: ::c_ulong,
-        pub r15: ::c_ulong,
-        pub rsp: ::c_ulong,
-        pub rip: ::c_ulong,
-        pub rflags: ::c_ulong,
+        pub rax: c_ulong,
+        pub rbx: c_ulong,
+        pub rcx: c_ulong,
+        pub rdx: c_ulong,
+        pub rdi: c_ulong,
+        pub rsi: c_ulong,
+        pub rbp: c_ulong,
+        pub r8: c_ulong,
+        pub r9: c_ulong,
+        pub r10: c_ulong,
+        pub r11: c_ulong,
+        pub r12: c_ulong,
+        pub r13: c_ulong,
+        pub r14: c_ulong,
+        pub r15: c_ulong,
+        pub rsp: c_ulong,
+        pub rip: c_ulong,
+        pub rflags: c_ulong,
         pub fpu: savefpu,
     }
 
     pub struct ucontext_t {
         pub uc_link: *mut ucontext_t,
-        pub uc_sigmask: ::sigset_t,
-        pub uc_stack: ::stack_t,
+        pub uc_sigmask: crate::sigset_t,
+        pub uc_stack: crate::stack_t,
         pub uc_mcontext: mcontext_t,
     }
 }
@@ -81,8 +83,8 @@ cfg_if! {
             }
         }
         impl Eq for fpu_state {}
-        impl ::fmt::Debug for fpu_state {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for fpu_state {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("fpu_state")
                     .field("control", &self.control)
                     .field("status", &self.status)
@@ -98,8 +100,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for fpu_state {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for fpu_state {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.control.hash(state);
                 self.status.hash(state);
                 self.tag.hash(state);
@@ -126,8 +128,8 @@ cfg_if! {
             }
         }
         impl Eq for xstate_hdr {}
-        impl ::fmt::Debug for xstate_hdr {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for xstate_hdr {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("xstate_hdr")
                     .field("bv", &self.bv)
                     .field("xcomp_bv", &self.xcomp_bv)
@@ -135,8 +137,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for xstate_hdr {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for xstate_hdr {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.bv.hash(state);
                 self.xcomp_bv.hash(state);
                 self._reserved.hash(state);
@@ -155,8 +157,8 @@ cfg_if! {
             }
         }
         impl Eq for savefpu {}
-        impl ::fmt::Debug for savefpu {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for savefpu {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("savefpu")
                     .field("fp_fxsave", &self.fp_fxsave)
                     .field("fp_xstate", &self.fp_xstate)
@@ -164,8 +166,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for savefpu {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for savefpu {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.fp_fxsave.hash(state);
                 self.fp_xstate.hash(state);
                 self._fp_ymm.hash(state);
@@ -196,8 +198,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl ::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("rax", &self.rax)
                     .field("rbx", &self.rbx)
@@ -221,8 +223,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for mcontext_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for mcontext_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.rax.hash(state);
                 self.rbx.hash(state);
                 self.rcx.hash(state);
@@ -254,8 +256,8 @@ cfg_if! {
             }
         }
         impl Eq for ucontext_t {}
-        impl ::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_link", &self.uc_link)
                     .field("uc_sigmask", &self.uc_sigmask)
@@ -264,8 +266,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for ucontext_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for ucontext_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.uc_link.hash(state);
                 self.uc_sigmask.hash(state);
                 self.uc_stack.hash(state);

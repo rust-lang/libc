@@ -1,7 +1,9 @@
+use crate::{c_int, size_t};
+
 pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
-pub type clock_t = ::c_ulong;
+pub type clock_t = c_ulong;
 pub type wchar_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
@@ -30,16 +32,16 @@ s_no_extra_traits! {
         pub mc_eflags: register_t,
         pub mc_esp: register_t,
         pub mc_ss: register_t,
-        pub mc_len: ::c_int,
-        pub mc_fpformat: ::c_int,
-        pub mc_ownedfp: ::c_int,
+        pub mc_len: c_int,
+        pub mc_fpformat: c_int,
+        pub mc_ownedfp: c_int,
         pub mc_flags: register_t,
-        pub mc_fpstate: [::c_int; 128],
+        pub mc_fpstate: [c_int; 128],
         pub mc_fsbase: register_t,
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
         pub mc_xfpustate_len: register_t,
-        pub mc_spare2: [::c_int; 4],
+        pub mc_spare2: [c_int; 4],
     }
 }
 
@@ -88,8 +90,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl ::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("mc_onstack", &self.mc_onstack)
                     .field("mc_gs", &self.mc_gs)
@@ -124,8 +126,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for mcontext_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for mcontext_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.mc_onstack.hash(state);
                 self.mc_gs.hash(state);
                 self.mc_fs.hash(state);
@@ -161,11 +163,11 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_long>() - 1;
+pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_long>() - 1;
 
-pub const MINSIGSTKSZ: ::size_t = 2048; // 512 * 4
+pub const MINSIGSTKSZ: size_t = 2048; // 512 * 4
 
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8008426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4008426e;
-pub const KINFO_FILE_SIZE: ::c_int = 1392;
-pub const TIOCTIMESTAMP: ::c_ulong = 0x40087459;
+pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
+pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
+pub const KINFO_FILE_SIZE: c_int = 1392;
+pub const TIOCTIMESTAMP: c_ulong = 0x40087459;

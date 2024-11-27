@@ -1,3 +1,5 @@
+use crate::{c_int, c_longlong, size_t};
+
 pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -9,32 +11,32 @@ pub type register_t = i64;
 
 s_no_extra_traits! {
     pub struct gpregs {
-        pub gp_x: [::register_t; 30],
-        pub gp_lr: ::register_t,
-        pub gp_sp: ::register_t,
-        pub gp_elr: ::register_t,
+        pub gp_x: [crate::register_t; 30],
+        pub gp_lr: crate::register_t,
+        pub gp_sp: crate::register_t,
+        pub gp_elr: crate::register_t,
         pub gp_spsr: u32,
-        pub gp_pad: ::c_int,
+        pub gp_pad: c_int,
     }
 
     pub struct fpregs {
         pub fp_q: u128,
         pub fp_sr: u32,
         pub fp_cr: u32,
-        pub fp_flags: ::c_int,
-        pub fp_pad: ::c_int,
+        pub fp_flags: c_int,
+        pub fp_pad: c_int,
     }
 
     pub struct mcontext_t {
         pub mc_gpregs: gpregs,
         pub mc_fpregs: fpregs,
-        pub mc_flags: ::c_int,
-        pub mc_pad: ::c_int,
+        pub mc_flags: c_int,
+        pub mc_pad: c_int,
         pub mc_spare: [u64; 8],
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = ::mem::size_of::<::c_longlong>() - 1;
+pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_longlong>() - 1;
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
@@ -49,8 +51,8 @@ cfg_if! {
             }
         }
         impl Eq for gpregs {}
-        impl ::fmt::Debug for gpregs {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for gpregs {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("gpregs")
                     .field("gp_x", &self.gp_x)
                     .field("gp_lr", &self.gp_lr)
@@ -61,8 +63,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for gpregs {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for gpregs {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.gp_x.hash(state);
                 self.gp_lr.hash(state);
                 self.gp_sp.hash(state);
@@ -81,8 +83,8 @@ cfg_if! {
             }
         }
         impl Eq for fpregs {}
-        impl ::fmt::Debug for fpregs {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for fpregs {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("fpregs")
                     .field("fp_q", &self.fp_q)
                     .field("fp_sr", &self.fp_sr)
@@ -92,8 +94,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for fpregs {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for fpregs {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.fp_q.hash(state);
                 self.fp_sr.hash(state);
                 self.fp_cr.hash(state);
@@ -115,8 +117,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl ::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("mc_gpregs", &self.mc_gpregs)
                     .field("mc_fpregs", &self.mc_fpregs)
@@ -126,8 +128,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for mcontext_t {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for mcontext_t {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.mc_gpregs.hash(state);
                 self.mc_fpregs.hash(state);
                 self.mc_flags.hash(state);
@@ -138,8 +140,8 @@ cfg_if! {
     }
 }
 
-pub const BIOCSRTIMEOUT: ::c_ulong = 0x8010426d;
-pub const BIOCGRTIMEOUT: ::c_ulong = 0x4010426e;
-pub const MAP_32BIT: ::c_int = 0x00080000;
-pub const MINSIGSTKSZ: ::size_t = 4096; // 1024 * 4
-pub const TIOCTIMESTAMP: ::c_ulong = 0x40107459;
+pub const BIOCSRTIMEOUT: c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT: c_ulong = 0x4010426e;
+pub const MAP_32BIT: c_int = 0x00080000;
+pub const MINSIGSTKSZ: size_t = 4096; // 1024 * 4
+pub const TIOCTIMESTAMP: c_ulong = 0x40107459;

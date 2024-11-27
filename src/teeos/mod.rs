@@ -1110,7 +1110,7 @@ extern "C" {
         cond: *mut pthread_cond_t,
         lock: *mut pthread_mutex_t,
         abstime: *const ::timespec,
-    ) -> ::c_int;
+    ) -> c_int;
 
     pub fn pthread_mutexattr_setrobust(attr: *mut pthread_mutexattr_t, robustness: c_int) -> c_int;
 

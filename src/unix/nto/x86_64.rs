@@ -1,3 +1,5 @@
+use crate::{c_int, c_void, size_t};
+
 pub type c_char = i8;
 pub type wchar_t = u32;
 pub type c_long = i64;
@@ -38,9 +40,9 @@ s! {
     }
 
     pub struct stack_t {
-        pub ss_sp: *mut ::c_void,
-        pub ss_size: ::size_t,
-        pub ss_flags: ::c_int,
+        pub ss_sp: *mut c_void,
+        pub ss_size: size_t,
+        pub ss_flags: c_int,
     }
 
     pub struct fsave_area_64 {
@@ -99,8 +101,8 @@ cfg_if! {
             }
         }
 
-        impl ::fmt::Debug for x86_64_fpu_registers {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for x86_64_fpu_registers {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 unsafe {
                     f.debug_struct("x86_64_fpu_registers")
                         .field("fsave_area", &self.fsave_area)
@@ -111,8 +113,8 @@ cfg_if! {
             }
         }
 
-        impl ::hash::Hash for x86_64_fpu_registers {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for x86_64_fpu_registers {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.fsave_area.hash(state);
                     self.fxsave_area.hash(state);

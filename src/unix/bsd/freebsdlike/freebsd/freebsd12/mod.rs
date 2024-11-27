@@ -1,14 +1,19 @@
+use crate::{
+    c_char, c_int, c_long, c_short, c_uchar, c_uint, c_ulong, c_ushort, c_void, off_t, size_t,
+    ssize_t,
+};
+
 // APIs in FreeBSD 12 that have changed since 11.
 
 pub type nlink_t = u64;
 pub type dev_t = u64;
 pub type ino_t = u64;
-pub type shmatt_t = ::c_uint;
+pub type shmatt_t = c_uint;
 
 s! {
     pub struct shmid_ds {
         pub shm_perm: ::ipc_perm,
-        pub shm_segsz: ::size_t,
+        pub shm_segsz: size_t,
         pub shm_lpid: ::pid_t,
         pub shm_cpid: ::pid_t,
         pub shm_nattch: ::shmatt_t,
@@ -19,51 +24,51 @@ s! {
 
     pub struct kevent {
         pub ident: ::uintptr_t,
-        pub filter: ::c_short,
-        pub flags: ::c_ushort,
-        pub fflags: ::c_uint,
+        pub filter: c_short,
+        pub flags: c_ushort,
+        pub fflags: c_uint,
         pub data: i64,
-        pub udata: *mut ::c_void,
+        pub udata: *mut c_void,
         pub ext: [u64; 4],
     }
 
     pub struct kvm_page {
-        pub version: ::c_uint,
-        pub paddr: ::c_ulong,
-        pub kmap_vaddr: ::c_ulong,
-        pub dmap_vaddr: ::c_ulong,
+        pub version: c_uint,
+        pub paddr: c_ulong,
+        pub kmap_vaddr: c_ulong,
+        pub dmap_vaddr: c_ulong,
         pub prot: ::vm_prot_t,
         pub offset: ::u_long,
-        pub len: ::size_t,
+        pub len: size_t,
     }
 
     pub struct kinfo_proc {
         /// Size of this structure.
-        pub ki_structsize: ::c_int,
+        pub ki_structsize: c_int,
         /// Reserved: layout identifier.
-        pub ki_layout: ::c_int,
+        pub ki_layout: c_int,
         /// Address of command arguments.
         pub ki_args: *mut ::pargs,
         // This is normally "struct proc".
         /// Address of proc.
-        pub ki_paddr: *mut ::c_void,
+        pub ki_paddr: *mut c_void,
         // This is normally "struct user".
         /// Kernel virtual address of u-area.
-        pub ki_addr: *mut ::c_void,
+        pub ki_addr: *mut c_void,
         // This is normally "struct vnode".
         /// Pointer to trace file.
-        pub ki_tracep: *mut ::c_void,
+        pub ki_tracep: *mut c_void,
         // This is normally "struct vnode".
         /// Pointer to executable file.
-        pub ki_textvp: *mut ::c_void,
+        pub ki_textvp: *mut c_void,
         // This is normally "struct filedesc".
         /// Pointer to open file info.
-        pub ki_fd: *mut ::c_void,
+        pub ki_fd: *mut c_void,
         // This is normally "struct vmspace".
         /// Pointer to kernel vmspace struct.
-        pub ki_vmspace: *mut ::c_void,
+        pub ki_vmspace: *mut c_void,
         /// Sleep address.
-        pub ki_wchan: *mut ::c_void,
+        pub ki_wchan: *mut c_void,
         /// Process identifier.
         pub ki_pid: ::pid_t,
         /// Parent process ID.
@@ -77,9 +82,9 @@ s! {
         /// Terminal session ID.
         pub ki_tsid: ::pid_t,
         /// Job control counter.
-        pub ki_jobc: ::c_short,
+        pub ki_jobc: c_short,
         /// Unused (just here for alignment).
-        pub ki_spare_short1: ::c_short,
+        pub ki_spare_short1: c_short,
         /// Controlling tty dev.
         pub ki_tdev_freebsd11: u32,
         /// Signals arrived but not delivered.
@@ -101,9 +106,9 @@ s! {
         /// Saved effective group ID.
         pub ki_svgid: ::gid_t,
         /// Number of groups.
-        pub ki_ngroups: ::c_short,
+        pub ki_ngroups: c_short,
         /// Unused (just here for alignment).
-        pub ki_spare_short2: ::c_short,
+        pub ki_spare_short2: c_short,
         /// Groups.
         pub ki_groups: [::gid_t; ::KI_NGROUPS],
         /// Virtual size.
@@ -139,61 +144,61 @@ s! {
         /// Time used by process children.
         pub ki_childtime: ::timeval,
         /// P_* flags.
-        pub ki_flag: ::c_long,
+        pub ki_flag: c_long,
         /// KI_* flags (below).
-        pub ki_kiflag: ::c_long,
+        pub ki_kiflag: c_long,
         /// Kernel trace points.
-        pub ki_traceflag: ::c_int,
+        pub ki_traceflag: c_int,
         /// S* process status.
-        pub ki_stat: ::c_char,
+        pub ki_stat: c_char,
         /// Process "nice" value.
         pub ki_nice: i8, // signed char
         /// Process lock (prevent swap) count.
-        pub ki_lock: ::c_char,
+        pub ki_lock: c_char,
         /// Run queue index.
-        pub ki_rqindex: ::c_char,
+        pub ki_rqindex: c_char,
         /// Which cpu we are on.
-        pub ki_oncpu_old: ::c_uchar,
+        pub ki_oncpu_old: c_uchar,
         /// Last cpu we were on.
-        pub ki_lastcpu_old: ::c_uchar,
+        pub ki_lastcpu_old: c_uchar,
         /// Thread name.
-        pub ki_tdname: [::c_char; ::TDNAMLEN + 1],
+        pub ki_tdname: [c_char; ::TDNAMLEN + 1],
         /// Wchan message.
-        pub ki_wmesg: [::c_char; ::WMESGLEN + 1],
+        pub ki_wmesg: [c_char; ::WMESGLEN + 1],
         /// Setlogin name.
-        pub ki_login: [::c_char; ::LOGNAMELEN + 1],
+        pub ki_login: [c_char; ::LOGNAMELEN + 1],
         /// Lock name.
-        pub ki_lockname: [::c_char; ::LOCKNAMELEN + 1],
+        pub ki_lockname: [c_char; ::LOCKNAMELEN + 1],
         /// Command name.
-        pub ki_comm: [::c_char; ::COMMLEN + 1],
+        pub ki_comm: [c_char; ::COMMLEN + 1],
         /// Emulation name.
-        pub ki_emul: [::c_char; ::KI_EMULNAMELEN + 1],
+        pub ki_emul: [c_char; ::KI_EMULNAMELEN + 1],
         /// Login class.
-        pub ki_loginclass: [::c_char; ::LOGINCLASSLEN + 1],
+        pub ki_loginclass: [c_char; ::LOGINCLASSLEN + 1],
         /// More thread name.
-        pub ki_moretdname: [::c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
+        pub ki_moretdname: [c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
         /// Spare string space.
-        pub ki_sparestrings: [[::c_char; 23]; 2], // little hack to allow PartialEq
+        pub ki_sparestrings: [[c_char; 23]; 2], // little hack to allow PartialEq
         /// Spare room for growth.
-        pub ki_spareints: [::c_int; ::KI_NSPARE_INT],
+        pub ki_spareints: [c_int; ::KI_NSPARE_INT],
         /// Controlling tty dev.
         pub ki_tdev: ::dev_t,
         /// Which cpu we are on.
-        pub ki_oncpu: ::c_int,
+        pub ki_oncpu: c_int,
         /// Last cpu we were on.
-        pub ki_lastcpu: ::c_int,
+        pub ki_lastcpu: c_int,
         /// PID of tracing process.
-        pub ki_tracer: ::c_int,
+        pub ki_tracer: c_int,
         /// P2_* flags.
-        pub ki_flag2: ::c_int,
+        pub ki_flag2: c_int,
         /// Default FIB number.
-        pub ki_fibnum: ::c_int,
+        pub ki_fibnum: c_int,
         /// Credential flags.
         pub ki_cr_flags: ::u_int,
         /// Process jail ID.
-        pub ki_jid: ::c_int,
+        pub ki_jid: c_int,
         /// Number of threads in total.
-        pub ki_numthreads: ::c_int,
+        pub ki_numthreads: c_int,
         /// Thread ID.
         pub ki_tid: ::lwpid_t,
         /// Process priority.
@@ -204,19 +209,19 @@ s! {
         pub ki_rusage_ch: ::rusage,
         // This is normally "struct pcb".
         /// Kernel virtual addr of pcb.
-        pub ki_pcb: *mut ::c_void,
+        pub ki_pcb: *mut c_void,
         /// Kernel virtual addr of stack.
-        pub ki_kstack: *mut ::c_void,
+        pub ki_kstack: *mut c_void,
         /// User convenience pointer.
-        pub ki_udata: *mut ::c_void,
+        pub ki_udata: *mut c_void,
         // This is normally "struct thread".
-        pub ki_tdaddr: *mut ::c_void,
-        pub ki_spareptrs: [*mut ::c_void; ::KI_NSPARE_PTR],
-        pub ki_sparelongs: [::c_long; ::KI_NSPARE_LONG],
+        pub ki_tdaddr: *mut c_void,
+        pub ki_spareptrs: [*mut c_void; ::KI_NSPARE_PTR],
+        pub ki_sparelongs: [c_long; ::KI_NSPARE_LONG],
         /// PS_* flags.
-        pub ki_sflag: ::c_long,
+        pub ki_sflag: c_long,
         /// kthread flag.
-        pub ki_tdflags: ::c_long,
+        pub ki_tdflags: c_long,
     }
 
     pub struct stat {
@@ -232,20 +237,20 @@ s! {
         #[cfg(target_arch = "x86")]
         st_atim_ext: i32,
         pub st_atime: ::time_t,
-        pub st_atime_nsec: ::c_long,
+        pub st_atime_nsec: c_long,
         #[cfg(target_arch = "x86")]
         st_mtim_ext: i32,
         pub st_mtime: ::time_t,
-        pub st_mtime_nsec: ::c_long,
+        pub st_mtime_nsec: c_long,
         #[cfg(target_arch = "x86")]
         st_ctim_ext: i32,
         pub st_ctime: ::time_t,
-        pub st_ctime_nsec: ::c_long,
+        pub st_ctime_nsec: c_long,
         #[cfg(target_arch = "x86")]
         st_btim_ext: i32,
         pub st_birthtime: ::time_t,
-        pub st_birthtime_nsec: ::c_long,
-        pub st_size: ::off_t,
+        pub st_birthtime_nsec: c_long,
+        pub st_size: off_t,
         pub st_blocks: ::blkcnt_t,
         pub st_blksize: ::blksize_t,
         pub st_flags: ::fflags_t,
@@ -257,13 +262,13 @@ s! {
 s_no_extra_traits! {
     pub struct dirent {
         pub d_fileno: ::ino_t,
-        pub d_off: ::off_t,
+        pub d_off: off_t,
         pub d_reclen: u16,
         pub d_type: u8,
         d_pad0: u8,
         pub d_namlen: u16,
         d_pad1: u16,
-        pub d_name: [::c_char; 256],
+        pub d_name: [c_char; 256],
     }
 
     pub struct statfs {
@@ -285,10 +290,10 @@ s_no_extra_traits! {
         pub f_namemax: u32,
         pub f_owner: ::uid_t,
         pub f_fsid: ::fsid_t,
-        f_charspare: [::c_char; 80],
-        pub f_fstypename: [::c_char; 16],
-        pub f_mntfromname: [::c_char; 1024],
-        pub f_mntonname: [::c_char; 1024],
+        f_charspare: [c_char; 80],
+        pub f_fstypename: [c_char; 16],
+        pub f_mntfromname: [c_char; 1024],
+        pub f_mntonname: [c_char; 1024],
     }
 
     pub struct vnstat {
@@ -296,10 +301,10 @@ s_no_extra_traits! {
         pub vn_size: u64,
         pub vn_dev: u64,
         pub vn_fsid: u64,
-        pub vn_mntdir: *mut ::c_char,
-        pub vn_type: ::c_int,
+        pub vn_mntdir: *mut c_char,
+        pub vn_type: c_int,
         pub vn_mode: u16,
-        pub vn_devname: [::c_char; ::SPECNAMELEN as usize + 1],
+        pub vn_devname: [c_char; ::SPECNAMELEN as usize + 1],
     }
 }
 
@@ -426,8 +431,8 @@ cfg_if! {
 
         impl PartialEq for vnstat {
             fn eq(&self, other: &vnstat) -> bool {
-                let self_vn_devname: &[::c_char] = &self.vn_devname;
-                let other_vn_devname: &[::c_char] = &other.vn_devname;
+                let self_vn_devname: &[c_char] = &self.vn_devname;
+                let other_vn_devname: &[c_char] = &other.vn_devname;
 
                 self.vn_fileid == other.vn_fileid
                     && self.vn_size == other.vn_size
@@ -442,7 +447,7 @@ cfg_if! {
         impl Eq for vnstat {}
         impl ::fmt::Debug for vnstat {
             fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
-                let self_vn_devname: &[::c_char] = &self.vn_devname;
+                let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 f.debug_struct("vnstat")
                     .field("vn_fileid", &self.vn_fileid)
@@ -458,7 +463,7 @@ cfg_if! {
         }
         impl ::hash::Hash for vnstat {
             fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
-                let self_vn_devname: &[::c_char] = &self.vn_devname;
+                let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 self.vn_fileid.hash(state);
                 self.vn_size.hash(state);
@@ -473,17 +478,17 @@ cfg_if! {
     }
 }
 
-pub const RAND_MAX: ::c_int = 0x7fff_fffd;
-pub const ELAST: ::c_int = 97;
+pub const RAND_MAX: c_int = 0x7fff_fffd;
+pub const ELAST: c_int = 97;
 
 /// max length of devicename
-pub const SPECNAMELEN: ::c_int = 63;
+pub const SPECNAMELEN: c_int = 63;
 pub const KI_NSPARE_PTR: usize = 6;
 
-pub const MINCORE_SUPER: ::c_int = 0x20;
+pub const MINCORE_SUPER: c_int = 0x20;
 
 safe_f! {
-    pub {const} fn makedev(major: ::c_uint, minor: ::c_uint) -> ::dev_t {
+    pub {const} fn makedev(major: c_uint, minor: c_uint) -> ::dev_t {
         let major = major as ::dev_t;
         let minor = minor as ::dev_t;
         let mut dev = 0;
@@ -496,29 +501,29 @@ safe_f! {
 }
 
 f! {
-    pub fn major(dev: ::dev_t) -> ::c_int {
-        (((dev >> 32) & 0xffffff00) | ((dev >> 8) & 0xff)) as ::c_int
+    pub fn major(dev: ::dev_t) -> c_int {
+        (((dev >> 32) & 0xffffff00) | ((dev >> 8) & 0xff)) as c_int
     }
 
-    pub fn minor(dev: ::dev_t) -> ::c_int {
-        (((dev >> 24) & 0xff00) | (dev & 0xffff00ff)) as ::c_int
+    pub fn minor(dev: ::dev_t) -> c_int {
+        (((dev >> 24) & 0xff00) | (dev & 0xffff00ff)) as c_int
     }
 }
 
 extern "C" {
     pub fn setgrent();
-    pub fn mprotect(addr: *mut ::c_void, len: ::size_t, prot: ::c_int) -> ::c_int;
+    pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn freelocale(loc: ::locale_t);
     pub fn msgrcv(
-        msqid: ::c_int,
-        msgp: *mut ::c_void,
-        msgsz: ::size_t,
-        msgtyp: ::c_long,
-        msgflg: ::c_int,
-    ) -> ::ssize_t;
+        msqid: c_int,
+        msgp: *mut c_void,
+        msgsz: size_t,
+        msgtyp: c_long,
+        msgflg: c_int,
+    ) -> ssize_t;
 
-    pub fn dirname(path: *mut ::c_char) -> *mut ::c_char;
-    pub fn basename(path: *mut ::c_char) -> *mut ::c_char;
+    pub fn dirname(path: *mut c_char) -> *mut c_char;
+    pub fn basename(path: *mut c_char) -> *mut c_char;
 }
 
 cfg_if! {
