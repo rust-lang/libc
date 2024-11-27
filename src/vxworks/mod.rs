@@ -3,7 +3,7 @@
 use core::mem::size_of;
 use core::ptr::null_mut;
 
-use crate::c_void;
+use crate::prelude::*;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum DIR {}
@@ -463,8 +463,8 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl crate::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for dirent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_name", &&self.d_name[..])
@@ -472,8 +472,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_len", &self.sun_len)
                     .field("sun_family", &self.sun_family)
@@ -482,8 +482,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for RTP_DESC {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for RTP_DESC {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("RTP_DESC")
                     .field("status", &self.status)
                     .field("options", &self.options)
@@ -497,8 +497,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_len", &self.ss_len)
                     .field("ss_family", &self.ss_family)
@@ -525,8 +525,8 @@ cfg_if! {
             }
         }
         impl Eq for sa_u_t {}
-        impl crate::fmt::Debug for sa_u_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sa_u_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     let h = match self.sa_handler {
                         Some(handler) => handler as usize,
@@ -537,8 +537,8 @@ cfg_if! {
                 }
             }
         }
-        impl crate::hash::Hash for sa_u_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sa_u_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     let h = match self.sa_handler {
                         Some(handler) => handler as usize,
@@ -555,15 +555,15 @@ cfg_if! {
             }
         }
         impl Eq for sigval {}
-        impl crate::fmt::Debug for sigval {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sigval {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sigval")
                     .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sigval {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sigval {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { (self.sival_ptr as usize).hash(state) };
             }
         }
@@ -1095,13 +1095,13 @@ impl Clone for fpos_t {
 
 f! {
     pub {const} fn CMSG_ALIGN(len: usize) -> usize {
-        len + crate::mem::size_of::<usize>() - 1 & !(crate::mem::size_of::<usize>() - 1)
+        len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         let next = cmsg as usize
             + CMSG_ALIGN((*cmsg).cmsg_len as usize)
-            + CMSG_ALIGN(crate::mem::size_of::<cmsghdr>());
+            + CMSG_ALIGN(mem::size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next <= max {
             (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
@@ -1119,15 +1119,15 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(crate::mem::size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(mem::size_of::<cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(crate::mem::size_of::<cmsghdr>())) as c_uint
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(mem::size_of::<cmsghdr>())) as c_uint
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(crate::mem::size_of::<cmsghdr>()) as c_uint + length
+        CMSG_ALIGN(mem::size_of::<cmsghdr>()) as c_uint + length
     }
 }
 

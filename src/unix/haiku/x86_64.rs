@@ -1,4 +1,4 @@
-use crate::{c_uchar, c_uint, c_ulong, c_ushort};
+use crate::prelude::*;
 
 s_no_extra_traits! {
     pub struct fpu_state {
@@ -83,8 +83,8 @@ cfg_if! {
             }
         }
         impl Eq for fpu_state {}
-        impl crate::fmt::Debug for fpu_state {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for fpu_state {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("fpu_state")
                     .field("control", &self.control)
                     .field("status", &self.status)
@@ -100,8 +100,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for fpu_state {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for fpu_state {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.control.hash(state);
                 self.status.hash(state);
                 self.tag.hash(state);
@@ -128,8 +128,8 @@ cfg_if! {
             }
         }
         impl Eq for xstate_hdr {}
-        impl crate::fmt::Debug for xstate_hdr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for xstate_hdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("xstate_hdr")
                     .field("bv", &self.bv)
                     .field("xcomp_bv", &self.xcomp_bv)
@@ -137,8 +137,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for xstate_hdr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for xstate_hdr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.bv.hash(state);
                 self.xcomp_bv.hash(state);
                 self._reserved.hash(state);
@@ -157,8 +157,8 @@ cfg_if! {
             }
         }
         impl Eq for savefpu {}
-        impl crate::fmt::Debug for savefpu {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for savefpu {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("savefpu")
                     .field("fp_fxsave", &self.fp_fxsave)
                     .field("fp_xstate", &self.fp_xstate)
@@ -166,8 +166,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for savefpu {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for savefpu {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.fp_fxsave.hash(state);
                 self.fp_xstate.hash(state);
                 self._fp_ymm.hash(state);
@@ -198,8 +198,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl crate::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("rax", &self.rax)
                     .field("rbx", &self.rbx)
@@ -223,8 +223,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for mcontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for mcontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.rax.hash(state);
                 self.rbx.hash(state);
                 self.rcx.hash(state);
@@ -256,8 +256,8 @@ cfg_if! {
             }
         }
         impl Eq for ucontext_t {}
-        impl crate::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_link", &self.uc_link)
                     .field("uc_sigmask", &self.uc_sigmask)
@@ -266,8 +266,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for ucontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ucontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uc_link.hash(state);
                 self.uc_sigmask.hash(state);
                 self.uc_stack.hash(state);

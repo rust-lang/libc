@@ -1,7 +1,5 @@
-use crate::{
-    c_char, c_int, c_longlong, c_short, c_uint, c_ulonglong, c_ushort, c_void, off_t, size_t,
-    ssize_t,
-};
+use crate::off_t;
+use crate::prelude::*;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -321,8 +319,8 @@ cfg_if! {
             }
         }
         impl Eq for siginfo_t {}
-        impl crate::fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for siginfo_t {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("siginfo_t")
                     .field("si_signo", &self.si_signo)
                     .field("si_errno", &self.si_errno)
@@ -337,8 +335,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for siginfo_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for siginfo_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.si_signo.hash(state);
                 self.si_errno.hash(state);
                 self.si_code.hash(state);
@@ -358,16 +356,16 @@ cfg_if! {
             }
         }
         impl Eq for _kernel_simple_lock {}
-        impl crate::fmt::Debug for _kernel_simple_lock {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for _kernel_simple_lock {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("_kernel_simple_lock")
                     .field("_slock", unsafe { &self._slock })
                     .field("_slockp", unsafe { &self._slockp })
                     .finish()
             }
         }
-        impl crate::hash::Hash for _kernel_simple_lock {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for _kernel_simple_lock {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self._slock.hash(state);
                     self._slockp.hash(state);
@@ -385,8 +383,8 @@ cfg_if! {
             }
         }
         impl Eq for fileops_t {}
-        impl crate::fmt::Debug for fileops_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for fileops_t {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("fileops_t")
                     .field("fo_rw", &self.fo_rw)
                     .field("fo_ioctl", &self.fo_ioctl)
@@ -396,8 +394,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for fileops_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for fileops_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.fo_rw.hash(state);
                 self.fo_ioctl.hash(state);
                 self.fo_select.hash(state);
@@ -426,8 +424,8 @@ cfg_if! {
             }
         }
         impl Eq for file {}
-        impl crate::fmt::Debug for file {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for file {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("file")
                     .field("f_flag", &self.f_flag)
                     .field("f_count", &self.f_count)
@@ -447,8 +445,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for file {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for file {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.f_flag.hash(state);
                 self.f_count.hash(state);
                 self.f_options.hash(state);
@@ -477,8 +475,8 @@ cfg_if! {
             }
         }
         impl Eq for __ld_info_file {}
-        impl crate::fmt::Debug for __ld_info_file {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for __ld_info_file {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("__ld_info_file")
                     .field("_ldinfo_fd", unsafe { &self._ldinfo_fd })
                     .field("_ldinfo_fp", unsafe { &self._ldinfo_fp })
@@ -486,8 +484,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for __ld_info_file {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __ld_info_file {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self._ldinfo_fd.hash(state);
                     self._ldinfo_fp.hash(state);
@@ -509,8 +507,8 @@ cfg_if! {
             }
         }
         impl Eq for ld_info {}
-        impl crate::fmt::Debug for ld_info {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for ld_info {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("ld_info")
                     .field("ldinfo_next", &self.ldinfo_next)
                     .field("ldinfo_flags", &self.ldinfo_flags)
@@ -523,8 +521,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for ld_info {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ld_info {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ldinfo_next.hash(state);
                 self.ldinfo_flags.hash(state);
                 self.ldinfo_textorg.hash(state);
@@ -546,8 +544,8 @@ cfg_if! {
             }
         }
         impl Eq for __pollfd_ext_u {}
-        impl crate::fmt::Debug for __pollfd_ext_u {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for __pollfd_ext_u {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("__pollfd_ext_u")
                     .field("addr", unsafe { &self.addr })
                     .field("data32", unsafe { &self.data32 })
@@ -555,8 +553,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for __pollfd_ext_u {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __pollfd_ext_u {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.addr.hash(state);
                     self.data.hash(state);
@@ -574,8 +572,8 @@ cfg_if! {
             }
         }
         impl Eq for pollfd_ext {}
-        impl crate::fmt::Debug for pollfd_ext {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for pollfd_ext {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("pollfd_ext")
                     .field("fd", &self.fd)
                     .field("events", &self.events)
@@ -584,8 +582,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for pollfd_ext {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for pollfd_ext {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.fd.hash(state);
                 self.events.hash(state);
                 self.revents.hash(state);

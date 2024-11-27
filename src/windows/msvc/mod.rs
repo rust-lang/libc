@@ -1,4 +1,4 @@
-use crate::{c_char, c_int, c_uint, c_void, size_t};
+use crate::prelude::*;
 
 pub const L_tmpnam: c_uint = 260;
 pub const TMP_MAX: c_uint = 0x7fff_ffff;

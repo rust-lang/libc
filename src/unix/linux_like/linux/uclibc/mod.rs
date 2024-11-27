@@ -1,4 +1,5 @@
-use crate::{c_int, c_short, c_uchar, c_uint, c_ushort, c_void, off64_t, size_t, ssize_t};
+use crate::off64_t;
+use crate::prelude::*;
 
 pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;

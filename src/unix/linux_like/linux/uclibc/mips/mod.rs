@@ -1,4 +1,4 @@
-use crate::{c_int, c_short, c_uint, size_t};
+use crate::prelude::*;
 
 pub type pthread_t = c_ulong;
 

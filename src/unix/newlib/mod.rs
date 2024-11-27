@@ -1,4 +1,4 @@
-use crate::{c_int, c_longlong, c_uint, c_ushort, c_void, size_t};
+use crate::prelude::*;
 
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
@@ -7,11 +7,11 @@ pub type clockid_t = c_ulong;
 
 cfg_if! {
     if #[cfg(any(target_os = "espidf"))] {
-        pub type dev_t = crate::c_short;
+        pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_long;
     } else if #[cfg(any(target_os = "vita"))] {
-        pub type dev_t = crate::c_short;
+        pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_int;
     } else {
@@ -253,7 +253,7 @@ s! {
         #[cfg(target_os = "espidf")]
         pub is_initialized: i32,
         #[cfg(target_os = "espidf")]
-        pub stackaddr: *mut crate::c_void,
+        pub stackaddr: *mut c_void,
         #[cfg(target_os = "espidf")]
         pub stacksize: i32,
         #[cfg(target_os = "espidf")]
@@ -837,20 +837,20 @@ pub const PRIO_USER: c_int = 2;
 
 f! {
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
-        let bits = crate::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return;
     }
 
     pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
-        let bits = crate::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
     }
 
     pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
-        let bits = crate::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return;

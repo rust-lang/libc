@@ -1,4 +1,4 @@
-use crate::{c_int, c_longlong, size_t};
+use crate::prelude::*;
 
 pub type c_char = u8;
 pub type c_long = i64;
@@ -54,8 +54,8 @@ cfg_if! {
             }
         }
         impl Eq for gpregs {}
-        impl crate::fmt::Debug for gpregs {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for gpregs {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("gpregs")
                     .field("gp_ra", &self.gp_ra)
                     .field("gp_sp", &self.gp_sp)
@@ -69,8 +69,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for gpregs {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for gpregs {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.gp_ra.hash(state);
                 self.gp_sp.hash(state);
                 self.gp_gp.hash(state);
@@ -91,8 +91,8 @@ cfg_if! {
             }
         }
         impl Eq for fpregs {}
-        impl crate::fmt::Debug for fpregs {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for fpregs {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("fpregs")
                     .field("fp_x", &self.fp_x)
                     .field("fp_fcsr", &self.fp_fcsr)
@@ -101,8 +101,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for fpregs {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for fpregs {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.fp_x.hash(state);
                 self.fp_fcsr.hash(state);
                 self.fp_flags.hash(state);
@@ -123,8 +123,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl crate::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("mc_gpregs", &self.mc_gpregs)
                     .field("mc_fpregs", &self.mc_fpregs)
@@ -134,8 +134,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for mcontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for mcontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mc_gpregs.hash(state);
                 self.mc_fpregs.hash(state);
                 self.mc_flags.hash(state);
@@ -146,7 +146,7 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_longlong>() - 1;
+pub(crate) const _ALIGNBYTES: usize = mem::size_of::<c_longlong>() - 1;
 
 pub const BIOCSRTIMEOUT: c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: c_ulong = 0x4010426e;

@@ -1,6 +1,5 @@
-use crate::{
-    c_int, c_short, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, off64_t, size_t, ssize_t,
-};
+use crate::off64_t;
+use crate::prelude::*;
 
 pub type pthread_t = *mut c_void;
 pub type clock_t = c_long;
@@ -593,8 +592,8 @@ cfg_if! {
 
         impl Eq for sysinfo {}
 
-        impl crate::fmt::Debug for sysinfo {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sysinfo {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sysinfo")
                     .field("uptime", &self.uptime)
                     .field("loads", &self.loads)
@@ -614,8 +613,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for sysinfo {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sysinfo {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uptime.hash(state);
                 self.loads.hash(state);
                 self.totalram.hash(state);
@@ -657,8 +656,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl crate::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
                     //.field("__ut_pad1", &self.__ut_pad1)
@@ -677,8 +676,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for utmpx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utmpx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
                 //self.__ut_pad1.hash(state);
                 self.ut_pid.hash(state);

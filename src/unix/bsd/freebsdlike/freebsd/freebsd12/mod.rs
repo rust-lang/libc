@@ -1,7 +1,5 @@
-use crate::{
-    c_char, c_int, c_long, c_short, c_uchar, c_uint, c_ulong, c_ushort, c_void, off_t, size_t,
-    ssize_t,
-};
+use crate::off_t;
+use crate::prelude::*;
 
 // APIs in FreeBSD 12 that have changed since 11.
 
@@ -343,8 +341,8 @@ cfg_if! {
             }
         }
         impl Eq for statfs {}
-        impl crate::fmt::Debug for statfs {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for statfs {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("statfs")
                     .field("f_bsize", &self.f_bsize)
                     .field("f_iosize", &self.f_iosize)
@@ -366,8 +364,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for statfs {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for statfs {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.f_version.hash(state);
                 self.f_type.hash(state);
                 self.f_flags.hash(state);
@@ -406,8 +404,8 @@ cfg_if! {
             }
         }
         impl Eq for dirent {}
-        impl crate::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for dirent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_fileno", &self.d_fileno)
                     .field("d_off", &self.d_off)
@@ -418,8 +416,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for dirent {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for dirent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_fileno.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -445,8 +443,8 @@ cfg_if! {
             }
         }
         impl Eq for vnstat {}
-        impl crate::fmt::Debug for vnstat {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for vnstat {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 f.debug_struct("vnstat")
@@ -461,8 +459,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for vnstat {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for vnstat {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 self.vn_fileid.hash(state);

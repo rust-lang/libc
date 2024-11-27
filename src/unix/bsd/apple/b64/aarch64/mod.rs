@@ -1,4 +1,4 @@
-use crate::c_int;
+use crate::prelude::*;
 
 pub type boolean_t = c_int;
 pub type mcontext_t = *mut __darwin_mcontext64;

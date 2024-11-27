@@ -1,4 +1,5 @@
-use crate::{c_char, c_double, c_int, c_uint, c_ulong, c_void, off_t, size_t, ssize_t};
+use crate::off_t;
+use crate::prelude::*;
 
 // This module contains bindings to the native Haiku API. The Haiku API
 // originates from BeOS, and it was the original way to perform low level
@@ -500,8 +501,8 @@ cfg_if! {
             }
         }
         impl Eq for cpuid_info {}
-        impl crate::fmt::Debug for cpuid_info {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for cpuid_info {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     f.debug_struct("cpuid_info")
                         .field("eax_0", &self.eax_0)
@@ -525,8 +526,8 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_cpu_topology_info_data {}
-        impl crate::fmt::Debug for __c_anonymous_cpu_topology_info_data {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_cpu_topology_info_data {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     f.debug_struct("__c_anonymous_cpu_topology_info_data")
                         .field("root", &self.root)
@@ -544,8 +545,8 @@ cfg_if! {
         }
 
         impl Eq for cpu_topology_node_info {}
-        impl crate::fmt::Debug for cpu_topology_node_info {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for cpu_topology_node_info {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("cpu_topology_node_info")
                     .field("id", &self.id)
                     .field("type", &self.type_)

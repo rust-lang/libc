@@ -1,4 +1,4 @@
-use crate::c_int;
+use crate::prelude::*;
 
 pub const PROC_KPTI_CTL: c_int = crate::PROC_PROCCTL_MD_MIN;
 pub const PROC_KPTI_CTL_ENABLE_ON_EXEC: c_int = 1;

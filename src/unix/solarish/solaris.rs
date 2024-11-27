@@ -1,7 +1,7 @@
+use crate::prelude::*;
 use crate::{
-    c_char, c_int, c_short, c_uint, c_ulong, c_ulonglong, c_ushort, c_void, exit_status, off_t,
-    size_t, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG, PRIV_PFEXEC,
-    PRIV_XPOLICY,
+    exit_status, off_t, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG,
+    PRIV_PFEXEC, PRIV_XPOLICY,
 };
 
 pub type door_attr_t = c_uint;
@@ -126,8 +126,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl crate::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_user", &self.ut_user)
                     .field("ut_id", &self.ut_id)
@@ -144,8 +144,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for utmpx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utmpx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_user.hash(state);
                 self.ut_type.hash(state);
                 self.ut_pid.hash(state);
