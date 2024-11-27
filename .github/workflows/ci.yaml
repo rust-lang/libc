@@ -17,6 +17,7 @@ jobs:
   style_check:
     name: Style check
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
@@ -35,6 +36,7 @@ jobs:
           - toolchain: beta
             os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     env:
       TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
@@ -72,6 +74,7 @@ jobs:
           - target: i686-pc-windows-msvc
             os: windows-2022
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
     steps:
@@ -122,6 +125,7 @@ jobs:
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
           # - x86_64-unknown-redox
+    timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
     steps:
@@ -140,6 +144,7 @@ jobs:
       matrix:
         target:
           - x86_64-pc-solaris
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - name: test on Solaris
@@ -163,6 +168,7 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       TOOLCHAIN: nightly
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
