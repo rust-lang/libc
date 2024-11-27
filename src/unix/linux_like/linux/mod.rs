@@ -4201,11 +4201,11 @@ pub const IW_PMKID_CAND_PREAUTH: c_ulong = 0x00000001;
 
 pub const IW_EV_LCP_PK_LEN: usize = 4;
 
-pub const IW_EV_CHAR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + ::IFNAMSIZ;
+pub const IW_EV_CHAR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + crate::IFNAMSIZ;
 pub const IW_EV_UINT_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + size_of::<u32>();
 pub const IW_EV_FREQ_PK_LEN: usize = 12; // IW_EV_LCP_PK_LEN + size_of::<iw_freq>();
 pub const IW_EV_PARAM_PK_LEN: usize = 12; // IW_EV_LCP_PK_LEN + size_of::<iw_param>();
-pub const IW_EV_ADDR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + size_of::<::sockaddr>();
+pub const IW_EV_ADDR_PK_LEN: usize = 20; // IW_EV_LCP_PK_LEN + size_of::<crate::sockaddr>();
 pub const IW_EV_QUAL_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + size_of::<iw_quality>();
 pub const IW_EV_POINT_PK_LEN: usize = 8; // IW_EV_LCP_PK_LEN + 4;
 

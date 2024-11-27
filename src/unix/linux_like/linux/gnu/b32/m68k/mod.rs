@@ -5,27 +5,27 @@ pub type wchar_t = i32;
 
 s! {
     pub struct sigaction {
-        pub sa_sigaction: ::sighandler_t,
-        pub sa_mask: ::sigset_t,
+        pub sa_sigaction: crate::sighandler_t,
+        pub sa_mask: crate::sigset_t,
         pub sa_flags: c_int,
         pub sa_restorer: Option<extern "C" fn()>,
     }
 
     pub struct statfs {
-        pub f_type: ::__fsword_t,
-        pub f_bsize: ::__fsword_t,
-        pub f_blocks: ::fsblkcnt_t,
-        pub f_bfree: ::fsblkcnt_t,
-        pub f_bavail: ::fsblkcnt_t,
+        pub f_type: crate::__fsword_t,
+        pub f_bsize: crate::__fsword_t,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
 
-        pub f_files: ::fsfilcnt_t,
-        pub f_ffree: ::fsfilcnt_t,
-        pub f_fsid: ::fsid_t,
+        pub f_files: crate::fsfilcnt_t,
+        pub f_ffree: crate::fsfilcnt_t,
+        pub f_fsid: crate::fsid_t,
 
-        pub f_namelen: ::__fsword_t,
-        pub f_frsize: ::__fsword_t,
-        pub f_flags: ::__fsword_t,
-        f_spare: [::__fsword_t; 4],
+        pub f_namelen: crate::__fsword_t,
+        pub f_frsize: crate::__fsword_t,
+        pub f_flags: crate::__fsword_t,
+        f_spare: [crate::__fsword_t; 4],
     }
 
     pub struct flock {
@@ -33,7 +33,7 @@ s! {
         pub l_whence: c_short,
         pub l_start: off_t,
         pub l_len: off_t,
-        pub l_pid: ::pid_t,
+        pub l_pid: crate::pid_t,
     }
 
     pub struct flock64 {
@@ -41,16 +41,16 @@ s! {
         pub l_whence: c_short,
         pub l_start: off64_t,
         pub l_len: off64_t,
-        pub l_pid: ::pid_t,
+        pub l_pid: crate::pid_t,
     }
 
     pub struct ipc_perm {
-        __key: ::key_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-        pub cuid: ::uid_t,
-        pub cgid: ::gid_t,
-        pub mode: ::mode_t,
+        __key: crate::key_t,
+        pub uid: crate::uid_t,
+        pub gid: crate::gid_t,
+        pub cuid: crate::uid_t,
+        pub cgid: crate::gid_t,
+        pub mode: crate::mode_t,
         __seq: c_ushort,
         __pad1: c_ushort,
         __glibc_reserved1: c_ulong,
@@ -58,51 +58,51 @@ s! {
     }
 
     pub struct stat64 {
-        pub st_dev: ::dev_t,
+        pub st_dev: crate::dev_t,
         __pad1: c_ushort,
-        pub __st_ino: ::ino_t,
-        pub st_mode: ::mode_t,
-        pub st_nlink: ::nlink_t,
-        pub st_uid: ::uid_t,
-        pub st_gid: ::gid_t,
-        pub st_rdev: ::dev_t,
+        pub __st_ino: crate::ino_t,
+        pub st_mode: crate::mode_t,
+        pub st_nlink: crate::nlink_t,
+        pub st_uid: crate::uid_t,
+        pub st_gid: crate::gid_t,
+        pub st_rdev: crate::dev_t,
         __pad2: c_ushort,
         pub st_size: off64_t,
-        pub st_blksize: ::blksize_t,
-        pub st_blocks: ::blkcnt64_t,
-        pub st_atime: ::time_t,
+        pub st_blksize: crate::blksize_t,
+        pub st_blocks: crate::blkcnt64_t,
+        pub st_atime: crate::time_t,
         pub st_atime_nsec: c_ulong,
-        pub st_mtime: ::time_t,
+        pub st_mtime: crate::time_t,
         pub st_mtime_nsec: c_ulong,
-        pub st_ctime: ::time_t,
+        pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_ulong,
-        pub st_ino: ::ino64_t,
+        pub st_ino: crate::ino64_t,
     }
 
     pub struct statfs64 {
-        pub f_type: ::__fsword_t,
-        pub f_bsize: ::__fsword_t,
-        pub f_blocks: ::fsblkcnt64_t,
-        pub f_bfree: ::fsblkcnt64_t,
-        pub f_bavail: ::fsblkcnt64_t,
-        pub f_files: ::fsblkcnt64_t,
-        pub f_ffree: ::fsblkcnt64_t,
-        pub f_fsid: ::fsid_t,
-        pub f_namelen: ::__fsword_t,
-        pub f_frsize: ::__fsword_t,
-        pub f_flags: ::__fsword_t,
-        pub f_spare: [::__fsword_t; 4],
+        pub f_type: crate::__fsword_t,
+        pub f_bsize: crate::__fsword_t,
+        pub f_blocks: crate::fsblkcnt64_t,
+        pub f_bfree: crate::fsblkcnt64_t,
+        pub f_bavail: crate::fsblkcnt64_t,
+        pub f_files: crate::fsblkcnt64_t,
+        pub f_ffree: crate::fsblkcnt64_t,
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: crate::__fsword_t,
+        pub f_frsize: crate::__fsword_t,
+        pub f_flags: crate::__fsword_t,
+        pub f_spare: [crate::__fsword_t; 4],
     }
 
     pub struct statvfs64 {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
-        pub f_blocks: ::fsblkcnt64_t,
-        pub f_bfree: ::fsblkcnt64_t,
-        pub f_bavail: ::fsblkcnt64_t,
-        pub f_files: ::fsblkcnt64_t,
-        pub f_ffree: ::fsblkcnt64_t,
-        pub f_favail: ::fsblkcnt64_t,
+        pub f_blocks: crate::fsblkcnt64_t,
+        pub f_bfree: crate::fsblkcnt64_t,
+        pub f_bavail: crate::fsblkcnt64_t,
+        pub f_files: crate::fsblkcnt64_t,
+        pub f_ffree: crate::fsblkcnt64_t,
+        pub f_favail: crate::fsblkcnt64_t,
         pub f_fsid: c_ulong,
         __f_unused: c_int,
         pub f_flag: c_ulong,
@@ -111,34 +111,34 @@ s! {
     }
 
     pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
+        pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,
-        pub shm_atime: ::time_t,
+        pub shm_atime: crate::time_t,
         __glibc_reserved1: c_long,
-        pub shm_dtime: ::time_t,
+        pub shm_dtime: crate::time_t,
         __glibc_reserved2: c_long,
-        pub shm_ctime: ::time_t,
+        pub shm_ctime: crate::time_t,
         __glibc_reserved3: c_long,
-        pub shm_cpid: ::pid_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_nattch: ::shmatt_t,
+        pub shm_cpid: crate::pid_t,
+        pub shm_lpid: crate::pid_t,
+        pub shm_nattch: crate::shmatt_t,
         __glibc_reserved5: c_ulong,
         __glibc_reserved6: c_ulong,
     }
 
     pub struct msqid_ds {
-        pub msg_perm: ::ipc_perm,
-        pub msg_stime: ::time_t,
+        pub msg_perm: crate::ipc_perm,
+        pub msg_stime: crate::time_t,
         __glibc_reserved1: c_uint,
-        pub msg_rtime: ::time_t,
+        pub msg_rtime: crate::time_t,
         __glibc_reserved2: c_uint,
-        pub msg_ctime: ::time_t,
+        pub msg_ctime: crate::time_t,
         __glibc_reserved3: c_uint,
         __msg_cbytes: c_ulong,
-        pub msg_qnum: ::msgqnum_t,
-        pub msg_qbytes: ::msglen_t,
-        pub msg_lspid: ::pid_t,
-        pub msg_lrpid: ::pid_t,
+        pub msg_qnum: crate::msgqnum_t,
+        pub msg_qbytes: crate::msglen_t,
+        pub msg_lspid: crate::pid_t,
+        pub msg_lrpid: crate::pid_t,
         __glibc_reserved4: c_ulong,
         __glibc_reserved5: c_ulong,
     }
@@ -338,16 +338,16 @@ pub const SIGPROF: c_int = 27;
 pub const SIGWINCH: c_int = 28;
 pub const SIGSTKSZ: size_t = 8192;
 pub const MINSIGSTKSZ: size_t = 2048;
-pub const CBAUD: ::tcflag_t = 0o0010017;
-pub const TAB1: ::tcflag_t = 0x00000800;
-pub const TAB2: ::tcflag_t = 0x00001000;
-pub const TAB3: ::tcflag_t = 0x00001800;
-pub const CR1: ::tcflag_t = 0x00000200;
-pub const CR2: ::tcflag_t = 0x00000400;
-pub const CR3: ::tcflag_t = 0x00000600;
-pub const FF1: ::tcflag_t = 0x00008000;
-pub const BS1: ::tcflag_t = 0x00002000;
-pub const VT1: ::tcflag_t = 0x00004000;
+pub const CBAUD: crate::tcflag_t = 0o0010017;
+pub const TAB1: crate::tcflag_t = 0x00000800;
+pub const TAB2: crate::tcflag_t = 0x00001000;
+pub const TAB3: crate::tcflag_t = 0x00001800;
+pub const CR1: crate::tcflag_t = 0x00000200;
+pub const CR2: crate::tcflag_t = 0x00000400;
+pub const CR3: crate::tcflag_t = 0x00000600;
+pub const FF1: crate::tcflag_t = 0x00008000;
+pub const BS1: crate::tcflag_t = 0x00002000;
+pub const VT1: crate::tcflag_t = 0x00004000;
 pub const VWERASE: usize = 14;
 pub const VREPRINT: usize = 12;
 pub const VSUSP: usize = 10;
@@ -355,82 +355,82 @@ pub const VSTART: usize = 8;
 pub const VSTOP: usize = 9;
 pub const VDISCARD: usize = 13;
 pub const VTIME: usize = 5;
-pub const IXON: ::tcflag_t = 0x00000400;
-pub const IXOFF: ::tcflag_t = 0x00001000;
-pub const ONLCR: ::tcflag_t = 0x4;
-pub const CSIZE: ::tcflag_t = 0x00000030;
-pub const CS6: ::tcflag_t = 0x00000010;
-pub const CS7: ::tcflag_t = 0x00000020;
-pub const CS8: ::tcflag_t = 0x00000030;
-pub const CSTOPB: ::tcflag_t = 0x00000040;
-pub const CREAD: ::tcflag_t = 0x00000080;
-pub const PARENB: ::tcflag_t = 0x00000100;
-pub const PARODD: ::tcflag_t = 0x00000200;
-pub const HUPCL: ::tcflag_t = 0x00000400;
-pub const CLOCAL: ::tcflag_t = 0x00000800;
-pub const ECHOKE: ::tcflag_t = 0x00000800;
-pub const ECHOE: ::tcflag_t = 0x00000010;
-pub const ECHOK: ::tcflag_t = 0x00000020;
-pub const ECHONL: ::tcflag_t = 0x00000040;
-pub const ECHOPRT: ::tcflag_t = 0x00000400;
-pub const ECHOCTL: ::tcflag_t = 0x00000200;
-pub const ISIG: ::tcflag_t = 0x00000001;
-pub const ICANON: ::tcflag_t = 0x00000002;
-pub const PENDIN: ::tcflag_t = 0x00004000;
-pub const NOFLSH: ::tcflag_t = 0x00000080;
-pub const CIBAUD: ::tcflag_t = 0o02003600000;
-pub const CBAUDEX: ::tcflag_t = 0o010000;
+pub const IXON: crate::tcflag_t = 0x00000400;
+pub const IXOFF: crate::tcflag_t = 0x00001000;
+pub const ONLCR: crate::tcflag_t = 0x4;
+pub const CSIZE: crate::tcflag_t = 0x00000030;
+pub const CS6: crate::tcflag_t = 0x00000010;
+pub const CS7: crate::tcflag_t = 0x00000020;
+pub const CS8: crate::tcflag_t = 0x00000030;
+pub const CSTOPB: crate::tcflag_t = 0x00000040;
+pub const CREAD: crate::tcflag_t = 0x00000080;
+pub const PARENB: crate::tcflag_t = 0x00000100;
+pub const PARODD: crate::tcflag_t = 0x00000200;
+pub const HUPCL: crate::tcflag_t = 0x00000400;
+pub const CLOCAL: crate::tcflag_t = 0x00000800;
+pub const ECHOKE: crate::tcflag_t = 0x00000800;
+pub const ECHOE: crate::tcflag_t = 0x00000010;
+pub const ECHOK: crate::tcflag_t = 0x00000020;
+pub const ECHONL: crate::tcflag_t = 0x00000040;
+pub const ECHOPRT: crate::tcflag_t = 0x00000400;
+pub const ECHOCTL: crate::tcflag_t = 0x00000200;
+pub const ISIG: crate::tcflag_t = 0x00000001;
+pub const ICANON: crate::tcflag_t = 0x00000002;
+pub const PENDIN: crate::tcflag_t = 0x00004000;
+pub const NOFLSH: crate::tcflag_t = 0x00000080;
+pub const CIBAUD: crate::tcflag_t = 0o02003600000;
+pub const CBAUDEX: crate::tcflag_t = 0o010000;
 pub const VSWTC: usize = 7;
-pub const OLCUC: ::tcflag_t = 0o000002;
-pub const NLDLY: ::tcflag_t = 0o000400;
-pub const CRDLY: ::tcflag_t = 0o003000;
-pub const TABDLY: ::tcflag_t = 0o014000;
-pub const BSDLY: ::tcflag_t = 0o020000;
-pub const FFDLY: ::tcflag_t = 0o100000;
-pub const VTDLY: ::tcflag_t = 0o040000;
-pub const XTABS: ::tcflag_t = 0o014000;
+pub const OLCUC: crate::tcflag_t = 0o000002;
+pub const NLDLY: crate::tcflag_t = 0o000400;
+pub const CRDLY: crate::tcflag_t = 0o003000;
+pub const TABDLY: crate::tcflag_t = 0o014000;
+pub const BSDLY: crate::tcflag_t = 0o020000;
+pub const FFDLY: crate::tcflag_t = 0o100000;
+pub const VTDLY: crate::tcflag_t = 0o040000;
+pub const XTABS: crate::tcflag_t = 0o014000;
 
-pub const B0: ::speed_t = 0o000000;
-pub const B50: ::speed_t = 0o000001;
-pub const B75: ::speed_t = 0o000002;
-pub const B110: ::speed_t = 0o000003;
-pub const B134: ::speed_t = 0o000004;
-pub const B150: ::speed_t = 0o000005;
-pub const B200: ::speed_t = 0o000006;
-pub const B300: ::speed_t = 0o000007;
-pub const B600: ::speed_t = 0o000010;
-pub const B1200: ::speed_t = 0o000011;
-pub const B1800: ::speed_t = 0o000012;
-pub const B2400: ::speed_t = 0o000013;
-pub const B4800: ::speed_t = 0o000014;
-pub const B9600: ::speed_t = 0o000015;
-pub const B19200: ::speed_t = 0o000016;
-pub const B38400: ::speed_t = 0o000017;
-pub const EXTA: ::speed_t = B19200;
-pub const EXTB: ::speed_t = B38400;
-pub const B57600: ::speed_t = 0o010001;
-pub const B115200: ::speed_t = 0o010002;
-pub const B230400: ::speed_t = 0o010003;
-pub const B460800: ::speed_t = 0o010004;
-pub const B500000: ::speed_t = 0o010005;
-pub const B576000: ::speed_t = 0o010006;
-pub const B921600: ::speed_t = 0o010007;
-pub const B1000000: ::speed_t = 0o010010;
-pub const B1152000: ::speed_t = 0o010011;
-pub const B1500000: ::speed_t = 0o010012;
-pub const B2000000: ::speed_t = 0o010013;
-pub const B2500000: ::speed_t = 0o010014;
-pub const B3000000: ::speed_t = 0o010015;
-pub const B3500000: ::speed_t = 0o010016;
-pub const B4000000: ::speed_t = 0o010017;
+pub const B0: crate::speed_t = 0o000000;
+pub const B50: crate::speed_t = 0o000001;
+pub const B75: crate::speed_t = 0o000002;
+pub const B110: crate::speed_t = 0o000003;
+pub const B134: crate::speed_t = 0o000004;
+pub const B150: crate::speed_t = 0o000005;
+pub const B200: crate::speed_t = 0o000006;
+pub const B300: crate::speed_t = 0o000007;
+pub const B600: crate::speed_t = 0o000010;
+pub const B1200: crate::speed_t = 0o000011;
+pub const B1800: crate::speed_t = 0o000012;
+pub const B2400: crate::speed_t = 0o000013;
+pub const B4800: crate::speed_t = 0o000014;
+pub const B9600: crate::speed_t = 0o000015;
+pub const B19200: crate::speed_t = 0o000016;
+pub const B38400: crate::speed_t = 0o000017;
+pub const EXTA: crate::speed_t = B19200;
+pub const EXTB: crate::speed_t = B38400;
+pub const B57600: crate::speed_t = 0o010001;
+pub const B115200: crate::speed_t = 0o010002;
+pub const B230400: crate::speed_t = 0o010003;
+pub const B460800: crate::speed_t = 0o010004;
+pub const B500000: crate::speed_t = 0o010005;
+pub const B576000: crate::speed_t = 0o010006;
+pub const B921600: crate::speed_t = 0o010007;
+pub const B1000000: crate::speed_t = 0o010010;
+pub const B1152000: crate::speed_t = 0o010011;
+pub const B1500000: crate::speed_t = 0o010012;
+pub const B2000000: crate::speed_t = 0o010013;
+pub const B2500000: crate::speed_t = 0o010014;
+pub const B3000000: crate::speed_t = 0o010015;
+pub const B3500000: crate::speed_t = 0o010016;
+pub const B4000000: crate::speed_t = 0o010017;
 
 pub const VEOL: usize = 11;
 pub const VEOL2: usize = 16;
 pub const VMIN: usize = 6;
-pub const IEXTEN: ::tcflag_t = 0x00008000;
-pub const TOSTOP: ::tcflag_t = 0x00000100;
-pub const FLUSHO: ::tcflag_t = 0x00001000;
-pub const EXTPROC: ::tcflag_t = 0x00010000;
+pub const IEXTEN: crate::tcflag_t = 0x00008000;
+pub const TOSTOP: crate::tcflag_t = 0x00000100;
+pub const FLUSHO: crate::tcflag_t = 0x00001000;
+pub const EXTPROC: crate::tcflag_t = 0x00010000;
 
 pub const TCSANOW: c_int = 0;
 pub const TCSADRAIN: c_int = 1;

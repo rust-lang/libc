@@ -85,7 +85,7 @@ s_no_extra_traits! {
     pub struct sockaddr_storage {
         pub ss_family: crate::sa_family_t,
         __ss_padding:
-            [u8; 128 - ::core::mem::size_of::<sa_family_t>() - ::core::mem::size_of::<c_ulong>()],
+            [u8; 128 - crate::mem::size_of::<sa_family_t>() - crate::mem::size_of::<c_ulong>()],
         __ss_align: c_ulong,
     }
 }
