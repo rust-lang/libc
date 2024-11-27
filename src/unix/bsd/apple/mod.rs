@@ -359,7 +359,7 @@ s! {
         pub si_status: c_int,
         pub si_addr: *mut c_void,
         //Requires it to be union for tests
-        //pub si_value: ::sigval,
+        //pub si_value: crate::sigval,
         _pad: [usize; 9],
     }
 

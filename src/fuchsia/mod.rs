@@ -2062,7 +2062,7 @@ pub const WEXITED: c_int = 0x00000004;
 pub const WCONTINUED: c_int = 0x00000008;
 pub const WNOWAIT: c_int = 0x01000000;
 
-// ::Options set using PTRACE_SETOPTIONS.
+// Options set using PTRACE_SETOPTIONS.
 pub const PTRACE_O_TRACESYSGOOD: c_int = 0x00000001;
 pub const PTRACE_O_TRACEFORK: c_int = 0x00000002;
 pub const PTRACE_O_TRACEVFORK: c_int = 0x00000004;
