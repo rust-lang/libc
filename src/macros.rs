@@ -61,6 +61,33 @@ macro_rules! cfg_if {
     };
 }
 
+/// Create an internal crate prelude with `core` reexports and common types.
+macro_rules! prelude {
+    () => {
+        /// Frequently-used types that are available on all platforms
+        ///
+        /// We need to reexport the core types so this works with `rust-dep-of-std`.
+        mod prelude {
+            // Exports from `core`
+            #[allow(unused_imports)]
+            pub(crate) use core::clone::Clone;
+            #[allow(unused_imports)]
+            pub(crate) use core::marker::{Copy, Send, Sync};
+            #[allow(unused_imports)]
+            pub(crate) use core::option::Option;
+            #[allow(unused_imports)]
+            pub(crate) use core::{fmt, hash, iter, mem};
+
+            // Commonly used types defined in this crate
+            #[allow(unused_imports)]
+            pub(crate) use crate::{
+                c_char, c_double, c_float, c_int, c_long, c_longlong, c_short, c_uchar, c_uint,
+                c_ulong, c_ulonglong, c_ushort, c_void, intptr_t, size_t, ssize_t, uintptr_t,
+            };
+        }
+    };
+}
+
 /// Implement `Clone` and `Copy` for a struct, as well as `Debug`, `Eq`, `Hash`, and
 /// `PartialEq` if the `extra_traits` feature is enabled.
 ///
