@@ -1,6 +1,4 @@
-use crate::{
-    c_char, c_int, c_long, c_short, c_uchar, c_uint, c_ushort, c_void, intptr_t, size_t, ssize_t,
-};
+use crate::{c_char, c_int, c_long, c_short, c_uchar, c_uint, c_ushort, c_void, intptr_t, size_t};
 
 // APIs that were changed after FreeBSD 11
 
