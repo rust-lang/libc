@@ -17,6 +17,7 @@ LIO_WRITE
 PIPE_BUF
 SIGEV_PORT
 _POSIX_VDISABLE
+_ST_FSTYPSZ
 aio_cancel
 aio_error
 aio_fsync

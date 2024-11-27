@@ -344,7 +344,7 @@ s! {
         pub st_ctime_nsec: c_long,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
-        __unused: [c_char; 16],
+        pub st_fstype: [c_char; _ST_FSTYPSZ as usize],
     }
 
     pub struct termios {
@@ -2028,6 +2028,8 @@ pub const _SC_V6_LPBIG_OFFBIG: c_int = 760;
 pub const _SC_XOPEN_STREAMS: c_int = 761;
 pub const _SC_IPV6: c_int = 762;
 pub const _SC_RAW_SOCKETS: c_int = 763;
+
+pub const _ST_FSTYPSZ: c_int = 16;
 
 pub const _MUTEX_MAGIC: u16 = 0x4d58; // MX
 pub const _COND_MAGIC: u16 = 0x4356; // CV
