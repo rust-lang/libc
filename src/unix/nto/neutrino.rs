@@ -1,4 +1,4 @@
-use crate::{c_int, c_long, c_uint, c_void, size_t};
+use crate::prelude::*;
 
 pub type nto_job_t = crate::sync_t;
 

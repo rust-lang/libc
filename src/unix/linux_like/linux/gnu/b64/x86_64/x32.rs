@@ -1,4 +1,5 @@
-use crate::{c_int, pthread_mutex_t};
+use crate::prelude::*;
+use crate::pthread_mutex_t;
 
 pub type c_long = i32;
 pub type c_ulong = u32;

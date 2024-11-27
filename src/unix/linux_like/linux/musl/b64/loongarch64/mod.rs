@@ -1,9 +1,7 @@
 //! LoongArch-specific definitions for 64-bit linux-like values
 
-use crate::{
-    c_int, c_long, c_longlong, c_short, c_uint, c_ulong, c_ulonglong, c_ushort, off64_t, off_t,
-    size_t,
-};
+use crate::prelude::*;
+use crate::{off64_t, off_t};
 
 pub type c_char = i8;
 pub type wchar_t = c_int;

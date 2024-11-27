@@ -1,4 +1,4 @@
-use crate::{c_double, c_int, c_short, c_uchar, c_uint, c_ushort, c_void, size_t, ssize_t};
+use crate::prelude::*;
 
 pub type c_char = i8;
 pub type wchar_t = i32;
@@ -406,8 +406,8 @@ cfg_if! {
             }
         }
         impl Eq for dirent {}
-        impl crate::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for dirent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -417,8 +417,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for dirent {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for dirent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -450,8 +450,8 @@ cfg_if! {
             }
         }
         impl Eq for sysinfo {}
-        impl crate::fmt::Debug for sysinfo {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sysinfo {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sysinfo")
                     .field("uptime", &self.uptime)
                     .field("loads", &self.loads)
@@ -470,8 +470,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sysinfo {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sysinfo {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uptime.hash(state);
                 self.loads.hash(state);
                 self.totalram.hash(state);
@@ -498,8 +498,8 @@ cfg_if! {
             }
         }
         impl Eq for mq_attr {}
-        impl crate::fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mq_attr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mq_attr")
                     .field("mq_flags", &self.mq_flags)
                     .field("mq_maxmsg", &self.mq_maxmsg)
@@ -508,8 +508,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for mq_attr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for mq_attr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mq_flags.hash(state);
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
@@ -523,15 +523,15 @@ cfg_if! {
             }
         }
         impl Eq for pthread_cond_t {}
-        impl crate::fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for pthread_cond_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_cond_t")
                     // FIXME: .field("size", &self.size)
                     .finish()
             }
         }
-        impl crate::hash::Hash for pthread_cond_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for pthread_cond_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
             }
         }
@@ -1414,7 +1414,7 @@ pub const SOMAXCONN: c_int = 128;
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < crate::mem::size_of::<cmsghdr>() {
+        if ((*cmsg).cmsg_len as usize) < mem::size_of::<cmsghdr>() {
             return 0 as *mut cmsghdr;
         };
         let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
@@ -1433,21 +1433,21 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * crate::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * crate::mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * crate::mem::size_of_val(&cpuset.bits[0]);
+        let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }

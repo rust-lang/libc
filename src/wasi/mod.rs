@@ -5,8 +5,7 @@
 
 use core::iter::Iterator;
 
-use super::{Send, Sync};
-use crate::c_void;
+use crate::prelude::*;
 
 pub type c_char = i8;
 pub type c_uchar = u8;

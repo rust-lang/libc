@@ -1,4 +1,5 @@
-use crate::{c_int, c_long, c_short, c_uint, c_ulong, c_ushort, c_void, off_t, size_t, ssize_t};
+use crate::off_t;
+use crate::prelude::*;
 
 pub type c_char = i8;
 pub type wchar_t = i32;
@@ -159,8 +160,8 @@ cfg_if! {
 
         impl Eq for user_fpxregs_struct {}
 
-        impl crate::fmt::Debug for user_fpxregs_struct {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for user_fpxregs_struct {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("user_fpxregs_struct")
                     .field("cwd", &self.cwd)
                     .field("swd", &self.swd)
@@ -179,8 +180,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for user_fpxregs_struct {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for user_fpxregs_struct {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.cwd.hash(state);
                 self.swd.hash(state);
                 self.twd.hash(state);
@@ -214,8 +215,8 @@ cfg_if! {
 
         impl Eq for ucontext_t {}
 
-        impl crate::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_flags", &self.uc_flags)
                     .field("uc_link", &self.uc_link)
@@ -227,8 +228,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for ucontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ucontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uc_flags.hash(state);
                 self.uc_link.hash(state);
                 self.uc_stack.hash(state);

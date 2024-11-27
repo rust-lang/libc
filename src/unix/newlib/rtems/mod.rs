@@ -1,5 +1,6 @@
 // defined in architecture specific module
-use crate::{c_char, c_int, c_long, c_ulong, c_void, size_t, ssize_t};
+
+use crate::prelude::*;
 
 s! {
     pub struct sockaddr_un {

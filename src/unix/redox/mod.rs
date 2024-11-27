@@ -1,6 +1,4 @@
-use crate::{
-    c_int, c_longlong, c_short, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, size_t, ssize_t,
-};
+use crate::prelude::*;
 
 pub type c_char = i8;
 pub type wchar_t = i32;
@@ -84,8 +82,7 @@ s_no_extra_traits! {
 
     pub struct sockaddr_storage {
         pub ss_family: crate::sa_family_t,
-        __ss_padding:
-            [u8; 128 - crate::mem::size_of::<sa_family_t>() - crate::mem::size_of::<c_ulong>()],
+        __ss_padding: [u8; 128 - mem::size_of::<sa_family_t>() - mem::size_of::<c_ulong>()],
         __ss_align: c_ulong,
     }
 }
@@ -1020,20 +1017,20 @@ pub const PRIO_USER: c_int = 2;
 f! {
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = crate::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
         return;
     }
 
     pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
-        let size = crate::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
     }
 
     pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
-        let size = crate::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let size = mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
         return;
     }
@@ -1280,8 +1277,8 @@ cfg_if! {
 
         impl Eq for dirent {}
 
-        impl crate::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for dirent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_off", &self.d_off)
@@ -1292,8 +1289,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for dirent {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for dirent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
                 self.d_off.hash(state);
                 self.d_reclen.hash(state);
@@ -1315,8 +1312,8 @@ cfg_if! {
 
         impl Eq for sockaddr_un {}
 
-        impl crate::fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
                     // FIXME: .field("sun_path", &self.sun_path)
@@ -1324,8 +1321,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for sockaddr_un {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sockaddr_un {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
                 self.sun_path.hash(state);
             }
@@ -1345,8 +1342,8 @@ cfg_if! {
 
         impl Eq for sockaddr_storage {}
 
-        impl crate::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
@@ -1355,8 +1352,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for sockaddr_storage {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sockaddr_storage {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ss_family.hash(state);
                 self.__ss_padding.hash(state);
                 self.__ss_align.hash(state);
@@ -1399,8 +1396,8 @@ cfg_if! {
 
         impl Eq for utsname {}
 
-        impl crate::fmt::Debug for utsname {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utsname {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
                     // FIXME: .field("sysname", &self.sysname)
                     // FIXME: .field("nodename", &self.nodename)
@@ -1412,8 +1409,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for utsname {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utsname {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sysname.hash(state);
                 self.nodename.hash(state);
                 self.release.hash(state);

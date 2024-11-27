@@ -2,7 +2,7 @@
 //!
 //! [SOLID]: https://solid.kmckk.com/
 
-use crate::c_void;
+use crate::prelude::*;
 
 pub type c_schar = i8;
 pub type c_uchar = u8;

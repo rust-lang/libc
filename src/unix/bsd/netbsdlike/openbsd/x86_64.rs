@@ -1,4 +1,5 @@
-use crate::{c_int, PT_FIRSTMACH};
+use crate::prelude::*;
+use crate::PT_FIRSTMACH;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -83,8 +84,8 @@ cfg_if! {
             }
         }
         impl Eq for fxsave64 {}
-        impl crate::fmt::Debug for fxsave64 {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for fxsave64 {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("fxsave64")
                     .field("fx_fcw", &{ self.fx_fcw })
                     .field("fx_fsw", &{ self.fx_fsw })
@@ -99,8 +100,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for fxsave64 {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for fxsave64 {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.fx_fcw }.hash(state);
                 { self.fx_fsw }.hash(state);
                 { self.fx_ftw }.hash(state);
@@ -116,7 +117,7 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_long>() - 1;
+pub(crate) const _ALIGNBYTES: usize = mem::size_of::<c_long>() - 1;
 
 pub const _MAX_PAGE_SHIFT: u32 = 12;
 

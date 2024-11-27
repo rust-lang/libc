@@ -1,4 +1,4 @@
-use crate::{c_char, c_long, c_ulong, c_ulonglong, c_ushort};
+use crate::prelude::*;
 
 pub type Elf32_Addr = c_ulong;
 pub type Elf32_Half = c_ushort;

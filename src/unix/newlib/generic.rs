@@ -1,11 +1,12 @@
 //! Common types used by most newlib platforms
 
-use crate::{c_char, c_long, c_uchar, off_t};
+use crate::off_t;
+use crate::prelude::*;
 
 s! {
     pub struct sigset_t {
         #[cfg(target_os = "horizon")]
-        __val: [crate::c_ulong; 16],
+        __val: [c_ulong; 16],
         #[cfg(not(target_os = "horizon"))]
         __val: u32,
     }

@@ -1,4 +1,4 @@
-use crate::{c_int, c_uint, c_void, size_t};
+use crate::prelude::*;
 
 pub type c_char = u8;
 pub type c_long = i32;
@@ -35,8 +35,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl crate::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("__gregs", &self.__gregs)
                     .field("mc_vfp_size", &self.mc_vfp_size)
@@ -45,8 +45,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for mcontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for mcontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.__gregs.hash(state);
                 self.mc_vfp_size.hash(state);
                 self.mc_vfp_ptr.hash(state);
@@ -56,7 +56,7 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_int>() - 1;
+pub(crate) const _ALIGNBYTES: usize = mem::size_of::<c_int>() - 1;
 
 pub const BIOCSRTIMEOUT: c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: c_ulong = 0x4010426e;

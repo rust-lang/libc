@@ -1,6 +1,5 @@
-use crate::{
-    c_int, c_short, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, off64_t, size_t, ssize_t,
-};
+use crate::off64_t;
+use crate::prelude::*;
 
 pub type pthread_t = c_ulong;
 pub type __priority_which_t = c_uint;
@@ -658,8 +657,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl crate::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)
@@ -676,8 +675,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for utmpx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utmpx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
                 self.ut_pid.hash(state);
                 self.ut_line.hash(state);
@@ -704,8 +703,8 @@ cfg_if! {
 
         impl Eq for __c_anonymous_ptrace_syscall_info_data {}
 
-        impl crate::fmt::Debug for __c_anonymous_ptrace_syscall_info_data {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_ptrace_syscall_info_data {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     f.debug_struct("__c_anonymous_ptrace_syscall_info_data")
                         .field("entry", &self.entry)
@@ -716,8 +715,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for __c_anonymous_ptrace_syscall_info_data {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_ptrace_syscall_info_data {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.entry.hash(state);
                     self.exit.hash(state);

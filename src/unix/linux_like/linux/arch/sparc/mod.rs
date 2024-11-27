@@ -1,4 +1,5 @@
-use crate::{c_int, Ioctl};
+use crate::prelude::*;
+use crate::Ioctl;
 
 s! {
     pub struct termios2 {

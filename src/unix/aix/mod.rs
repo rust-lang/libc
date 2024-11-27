@@ -1,7 +1,4 @@
-use crate::{
-    c_double, c_int, c_longlong, c_short, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, intptr_t,
-    size_t, ssize_t,
-};
+use crate::prelude::*;
 
 pub type c_char = u8;
 pub type caddr_t = *mut c_char;
@@ -578,16 +575,16 @@ cfg_if! {
             }
         }
         impl Eq for __sigaction_sa_union {}
-        impl crate::fmt::Debug for __sigaction_sa_union {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for __sigaction_sa_union {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("__sigaction_sa_union")
                     .field("__su_handler", unsafe { &self.__su_handler })
                     .field("__su_sigaction", unsafe { &self.__su_sigaction })
                     .finish()
             }
         }
-        impl crate::hash::Hash for __sigaction_sa_union {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __sigaction_sa_union {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.__su_handler.hash(state);
                     self.__su_sigaction.hash(state);
@@ -603,8 +600,8 @@ cfg_if! {
             }
         }
         impl Eq for sigaction {}
-        impl crate::fmt::Debug for sigaction {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for sigaction {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("sigaction")
                     .field("sa_union", &self.sa_union)
                     .field("sa_mask", &self.sa_mask)
@@ -612,8 +609,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sigaction {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sigaction {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sa_union.hash(state);
                 self.sa_mask.hash(state);
                 self.sa_flags.hash(state);
@@ -630,8 +627,8 @@ cfg_if! {
             }
         }
         impl Eq for __poll_ctl_ext_u {}
-        impl crate::fmt::Debug for __poll_ctl_ext_u {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for __poll_ctl_ext_u {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("__poll_ctl_ext_u")
                     .field("addr", unsafe { &self.addr })
                     .field("data32", unsafe { &self.data32 })
@@ -639,8 +636,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for __poll_ctl_ext_u {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __poll_ctl_ext_u {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.addr.hash(state);
                     self.data32.hash(state);
@@ -660,8 +657,8 @@ cfg_if! {
             }
         }
         impl Eq for poll_ctl_ext {}
-        impl crate::fmt::Debug for poll_ctl_ext {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for poll_ctl_ext {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("poll_ctl_ext")
                     .field("version", &self.version)
                     .field("command", &self.command)
@@ -672,8 +669,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for poll_ctl_ext {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for poll_ctl_ext {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.version.hash(state);
                 self.command.hash(state);
                 self.events.hash(state);
@@ -2507,7 +2504,7 @@ pub const ACCOUNTING: c_short = 9;
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= crate::mem::size_of::<cmsghdr>() {
+        if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
             0 as *mut cmsghdr
@@ -2518,7 +2515,7 @@ f! {
         if cmsg.is_null() {
             CMSG_FIRSTHDR(mhdr)
         } else {
-            if (cmsg as usize + (*cmsg).cmsg_len as usize + crate::mem::size_of::<cmsghdr>())
+            if (cmsg as usize + (*cmsg).cmsg_len as usize + mem::size_of::<cmsghdr>())
                 > ((*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize)
             {
                 0 as *mut cmsghdr
@@ -2530,15 +2527,15 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(crate::mem::size_of::<cmsghdr>() as isize)
+        (cmsg as *mut c_uchar).offset(mem::size_of::<cmsghdr>() as isize)
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        crate::mem::size_of::<cmsghdr>() as c_uint + length
+        mem::size_of::<cmsghdr>() as c_uint + length
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        crate::mem::size_of::<cmsghdr>() as c_uint + length
+        mem::size_of::<cmsghdr>() as c_uint + length
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
@@ -2548,21 +2545,21 @@ f! {
     }
 
     pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
-        let bits = crate::mem::size_of::<c_long>() * 8;
+        let bits = mem::size_of::<c_long>() * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return;
     }
 
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
-        let bits = crate::mem::size_of::<c_long>() * 8;
+        let bits = mem::size_of::<c_long>() * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return;
     }
 
     pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
-        let bits = crate::mem::size_of::<c_long>() * 8;
+        let bits = mem::size_of::<c_long>() * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
     }

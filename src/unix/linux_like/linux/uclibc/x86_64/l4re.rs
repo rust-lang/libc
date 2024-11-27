@@ -1,4 +1,4 @@
-use crate::{c_int, c_uint, c_ulong, c_void, size_t};
+use crate::prelude::*;
 
 /// L4Re specifics
 /// This module contains definitions required by various L4Re libc backends.
