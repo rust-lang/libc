@@ -70,13 +70,13 @@ macro_rules! prelude {
         mod prelude {
             // Exports from `core`
             #[allow(unused_imports)]
-            pub(crate) use core::clone::Clone;
+            pub(crate) use ::core::clone::Clone;
             #[allow(unused_imports)]
-            pub(crate) use core::marker::{Copy, Send, Sync};
+            pub(crate) use ::core::marker::{Copy, Send, Sync};
             #[allow(unused_imports)]
-            pub(crate) use core::option::Option;
+            pub(crate) use ::core::option::Option;
             #[allow(unused_imports)]
-            pub(crate) use core::{fmt, hash, iter, mem};
+            pub(crate) use ::core::{fmt, hash, iter, mem};
 
             // Commonly used types defined in this crate
             #[allow(unused_imports)]
@@ -108,8 +108,11 @@ macro_rules! s {
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            #[derive(Copy, Clone)]
+            #[cfg_attr(
+                feature = "extra_traits",
+                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+            )]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             #[allow(deprecated)]
             $(#[$attr])*
             pub struct $i { $($field)* }
@@ -127,8 +130,11 @@ macro_rules! s_paren {
         pub struct $i:ident ( $($field:tt)* );
     )*) => ($(
         __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            #[derive(Copy, Clone)]
+            #[cfg_attr(
+                feature = "extra_traits",
+                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+            )]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             $(#[$attr])*
             pub struct $i ( $($field)* );
         }
@@ -149,7 +155,7 @@ macro_rules! s_no_extra_traits {
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[derive(Copy, Clone)]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             $(#[$attr])*
             pub union $i { $($field)* }
         }
@@ -158,7 +164,7 @@ macro_rules! s_no_extra_traits {
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[derive(Copy, Clone)]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             $(#[$attr])*
             pub struct $i { $($field)* }
         }
@@ -186,8 +192,11 @@ macro_rules! e {
         pub enum $i:ident { $($field:tt)* }
     )*) => ($(
         __item! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
-            #[derive(Copy, Clone)]
+            #[cfg_attr(
+                feature = "extra_traits",
+                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+            )]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             $(#[$attr])*
             pub enum $i { $($field)* }
         }
