@@ -294,84 +294,6 @@ s! {
         pub esterror: c_long,
     }
 
-    // linux/if_xdp.h
-
-    pub struct sockaddr_xdp {
-        pub sxdp_family: crate::__u16,
-        pub sxdp_flags: crate::__u16,
-        pub sxdp_ifindex: crate::__u32,
-        pub sxdp_queue_id: crate::__u32,
-        pub sxdp_shared_umem_fd: crate::__u32,
-    }
-
-    pub struct xdp_ring_offset {
-        pub producer: crate::__u64,
-        pub consumer: crate::__u64,
-        pub desc: crate::__u64,
-        pub flags: crate::__u64,
-    }
-
-    pub struct xdp_mmap_offsets {
-        pub rx: xdp_ring_offset,
-        pub tx: xdp_ring_offset,
-        pub fr: xdp_ring_offset,
-        pub cr: xdp_ring_offset,
-    }
-
-    pub struct xdp_ring_offset_v1 {
-        pub producer: crate::__u64,
-        pub consumer: crate::__u64,
-        pub desc: crate::__u64,
-    }
-
-    pub struct xdp_mmap_offsets_v1 {
-        pub rx: xdp_ring_offset_v1,
-        pub tx: xdp_ring_offset_v1,
-        pub fr: xdp_ring_offset_v1,
-        pub cr: xdp_ring_offset_v1,
-    }
-
-    pub struct xdp_umem_reg {
-        pub addr: crate::__u64,
-        pub len: crate::__u64,
-        pub chunk_size: crate::__u32,
-        pub headroom: crate::__u32,
-        pub flags: crate::__u32,
-        pub tx_metadata_len: crate::__u32,
-    }
-
-    pub struct xdp_umem_reg_v1 {
-        pub addr: crate::__u64,
-        pub len: crate::__u64,
-        pub chunk_size: crate::__u32,
-        pub headroom: crate::__u32,
-    }
-
-    pub struct xdp_statistics {
-        pub rx_dropped: crate::__u64,
-        pub rx_invalid_descs: crate::__u64,
-        pub tx_invalid_descs: crate::__u64,
-        pub rx_ring_full: crate::__u64,
-        pub rx_fill_ring_empty_descs: crate::__u64,
-        pub tx_ring_empty_descs: crate::__u64,
-    }
-
-    pub struct xdp_statistics_v1 {
-        pub rx_dropped: crate::__u64,
-        pub rx_invalid_descs: crate::__u64,
-        pub tx_invalid_descs: crate::__u64,
-    }
-
-    pub struct xdp_options {
-        pub flags: crate::__u32,
-    }
-
-    pub struct xdp_desc {
-        pub addr: crate::__u64,
-        pub len: crate::__u32,
-        pub options: crate::__u32,
-    }
-
     // netinet/tcp.h
 
     pub struct tcp_info {
@@ -959,40 +881,6 @@ pub const TIME_WAIT: c_int = 4;
 pub const TIME_ERROR: c_int = 5;
 pub const TIME_BAD: c_int = TIME_ERROR;
 pub const MAXTC: c_long = 6;
-
-pub const SOL_XDP: c_int = 283;
-
-// linux/if_xdp.h
-pub const XDP_SHARED_UMEM: crate::__u16 = 1 << 0;
-pub const XDP_COPY: crate::__u16 = 1 << 1;
-pub const XDP_ZEROCOPY: crate::__u16 = 1 << 2;
-pub const XDP_USE_NEED_WAKEUP: crate::__u16 = 1 << 3;
-pub const XDP_USE_SG: crate::__u16 = 1 << 4;
-
-pub const XDP_UMEM_UNALIGNED_CHUNK_FLAG: crate::__u32 = 1 << 0;
-
-pub const XDP_RING_NEED_WAKEUP: crate::__u32 = 1 << 0;
-
-pub const XDP_MMAP_OFFSETS: c_int = 1;
-pub const XDP_RX_RING: c_int = 2;
-pub const XDP_TX_RING: c_int = 3;
-pub const XDP_UMEM_REG: c_int = 4;
-pub const XDP_UMEM_FILL_RING: c_int = 5;
-pub const XDP_UMEM_COMPLETION_RING: c_int = 6;
-pub const XDP_STATISTICS: c_int = 7;
-pub const XDP_OPTIONS: c_int = 8;
-
-pub const XDP_OPTIONS_ZEROCOPY: crate::__u32 = 1 << 0;
-
-pub const XDP_PGOFF_RX_RING: off_t = 0;
-pub const XDP_PGOFF_TX_RING: off_t = 0x80000000;
-pub const XDP_UMEM_PGOFF_FILL_RING: c_ulonglong = 0x100000000;
-pub const XDP_UMEM_PGOFF_COMPLETION_RING: c_ulonglong = 0x180000000;
-
-pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: c_int = 48;
-pub const XSK_UNALIGNED_BUF_ADDR_MASK: c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
-
-pub const XDP_PKT_CONTD: crate::__u32 = 1 << 0;
 
 pub const _CS_V6_ENV: c_int = 1148;
 pub const _CS_V7_ENV: c_int = 1149;
