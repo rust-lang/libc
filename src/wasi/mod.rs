@@ -384,15 +384,17 @@ cfg_if! {
     } else {
         // unsafe code here is required in the stable, but not in nightly
         #[allow(unused_unsafe)]
-        pub static CLOCK_MONOTONIC: clockid_t = clockid_t(core::ptr::addr_of!(_CLOCK_MONOTONIC));
+        pub static CLOCK_MONOTONIC: clockid_t =
+            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_MONOTONIC)) };
         #[allow(unused_unsafe)]
         pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
-            clockid_t(core::ptr::addr_of!(_CLOCK_PROCESS_CPUTIME_ID));
+            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
         #[allow(unused_unsafe)]
-        pub static CLOCK_REALTIME: clockid_t = clockid_t(core::ptr::addr_of!(_CLOCK_REALTIME));
+        pub static CLOCK_REALTIME: clockid_t =
+            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_REALTIME)) };
         #[allow(unused_unsafe)]
         pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
-            clockid_t(core::ptr::addr_of!(_CLOCK_THREAD_CPUTIME_ID));
+            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
     }
 }
 
