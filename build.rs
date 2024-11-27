@@ -48,13 +48,20 @@ fn main() {
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    let which_freebsd = if libc_ci {
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
+    // Allow overriding the default version for testing
+    let which_freebsd = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+        let vers = version.parse().unwrap();
+        println!("cargo:warning=setting FreeBSD version to {vers}");
+        vers
+    } else if libc_ci {
         which_freebsd().unwrap_or(12)
     } else if rustc_dep_of_std {
         12
     } else {
         12
     };
+
     match which_freebsd {
         x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
         10 => set_cfg("freebsd10"),
