@@ -13,7 +13,7 @@ pub type ino_t = u32;
 
 s! {
     pub struct kevent {
-        pub ident: ::uintptr_t,
+        pub ident: crate::uintptr_t,
         pub filter: c_short,
         pub flags: c_ushort,
         pub fflags: c_uint,
@@ -22,16 +22,16 @@ s! {
     }
 
     pub struct shmid_ds {
-        pub shm_perm: ::ipc_perm,
+        pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,
-        pub shm_lpid: ::pid_t,
-        pub shm_cpid: ::pid_t,
+        pub shm_lpid: crate::pid_t,
+        pub shm_cpid: crate::pid_t,
         // Type of shm_nattc changed from `int` to `shmatt_t` (aka `unsigned
         // int`) in FreeBSD 12:
         pub shm_nattch: c_int,
-        pub shm_atime: ::time_t,
-        pub shm_dtime: ::time_t,
-        pub shm_ctime: ::time_t,
+        pub shm_atime: crate::time_t,
+        pub shm_dtime: crate::time_t,
+        pub shm_ctime: crate::time_t,
     }
 
     pub struct kinfo_proc {
@@ -40,7 +40,7 @@ s! {
         /// Reserved: layout identifier.
         pub ki_layout: c_int,
         /// Address of command arguments.
-        pub ki_args: *mut ::pargs,
+        pub ki_args: *mut crate::pargs,
         // This is normally "struct proc".
         /// Address of proc.
         pub ki_paddr: *mut c_void,
@@ -62,79 +62,79 @@ s! {
         /// Sleep address.
         pub ki_wchan: *mut c_void,
         /// Process identifier.
-        pub ki_pid: ::pid_t,
+        pub ki_pid: crate::pid_t,
         /// Parent process ID.
-        pub ki_ppid: ::pid_t,
+        pub ki_ppid: crate::pid_t,
         /// Process group ID.
-        pub ki_pgid: ::pid_t,
+        pub ki_pgid: crate::pid_t,
         /// tty process group ID.
-        pub ki_tpgid: ::pid_t,
+        pub ki_tpgid: crate::pid_t,
         /// Process session ID.
-        pub ki_sid: ::pid_t,
+        pub ki_sid: crate::pid_t,
         /// Terminal session ID.
-        pub ki_tsid: ::pid_t,
+        pub ki_tsid: crate::pid_t,
         /// Job control counter.
         pub ki_jobc: c_short,
         /// Unused (just here for alignment).
         pub ki_spare_short1: c_short,
         /// Controlling tty dev.
-        pub ki_tdev: ::dev_t,
+        pub ki_tdev: crate::dev_t,
         /// Signals arrived but not delivered.
-        pub ki_siglist: ::sigset_t,
+        pub ki_siglist: crate::sigset_t,
         /// Current signal mask.
-        pub ki_sigmask: ::sigset_t,
+        pub ki_sigmask: crate::sigset_t,
         /// Signals being ignored.
-        pub ki_sigignore: ::sigset_t,
+        pub ki_sigignore: crate::sigset_t,
         /// Signals being caught by user.
-        pub ki_sigcatch: ::sigset_t,
+        pub ki_sigcatch: crate::sigset_t,
         /// Effective user ID.
-        pub ki_uid: ::uid_t,
+        pub ki_uid: crate::uid_t,
         /// Real user ID.
-        pub ki_ruid: ::uid_t,
+        pub ki_ruid: crate::uid_t,
         /// Saved effective user ID.
-        pub ki_svuid: ::uid_t,
+        pub ki_svuid: crate::uid_t,
         /// Real group ID.
-        pub ki_rgid: ::gid_t,
+        pub ki_rgid: crate::gid_t,
         /// Saved effective group ID.
-        pub ki_svgid: ::gid_t,
+        pub ki_svgid: crate::gid_t,
         /// Number of groups.
         pub ki_ngroups: c_short,
         /// Unused (just here for alignment).
         pub ki_spare_short2: c_short,
         /// Groups.
-        pub ki_groups: [::gid_t; ::KI_NGROUPS],
+        pub ki_groups: [crate::gid_t; crate::KI_NGROUPS],
         /// Virtual size.
-        pub ki_size: ::vm_size_t,
+        pub ki_size: crate::vm_size_t,
         /// Current resident set size in pages.
-        pub ki_rssize: ::segsz_t,
+        pub ki_rssize: crate::segsz_t,
         /// Resident set size before last swap.
-        pub ki_swrss: ::segsz_t,
+        pub ki_swrss: crate::segsz_t,
         /// Text size (pages) XXX.
-        pub ki_tsize: ::segsz_t,
+        pub ki_tsize: crate::segsz_t,
         /// Data size (pages) XXX.
-        pub ki_dsize: ::segsz_t,
+        pub ki_dsize: crate::segsz_t,
         /// Stack size (pages).
-        pub ki_ssize: ::segsz_t,
+        pub ki_ssize: crate::segsz_t,
         /// Exit status for wait & stop signal.
-        pub ki_xstat: ::u_short,
+        pub ki_xstat: crate::u_short,
         /// Accounting flags.
-        pub ki_acflag: ::u_short,
+        pub ki_acflag: crate::u_short,
         /// %cpu for process during `ki_swtime`.
-        pub ki_pctcpu: ::fixpt_t,
+        pub ki_pctcpu: crate::fixpt_t,
         /// Time averaged value of `ki_cpticks`.
-        pub ki_estcpu: ::u_int,
+        pub ki_estcpu: crate::u_int,
         /// Time since last blocked.
-        pub ki_slptime: ::u_int,
+        pub ki_slptime: crate::u_int,
         /// Time swapped in or out.
-        pub ki_swtime: ::u_int,
+        pub ki_swtime: crate::u_int,
         /// Number of copy-on-write faults.
-        pub ki_cow: ::u_int,
+        pub ki_cow: crate::u_int,
         /// Real time in microsec.
         pub ki_runtime: u64,
         /// Starting time.
-        pub ki_start: ::timeval,
+        pub ki_start: crate::timeval,
         /// Time used by process children.
-        pub ki_childtime: ::timeval,
+        pub ki_childtime: crate::timeval,
         /// P_* flags.
         pub ki_flag: c_long,
         /// KI_* flags (below).
@@ -154,25 +154,25 @@ s! {
         /// Last cpu we were on.
         pub ki_lastcpu_old: c_uchar,
         /// Thread name.
-        pub ki_tdname: [c_char; ::TDNAMLEN + 1],
+        pub ki_tdname: [c_char; crate::TDNAMLEN + 1],
         /// Wchan message.
-        pub ki_wmesg: [c_char; ::WMESGLEN + 1],
+        pub ki_wmesg: [c_char; crate::WMESGLEN + 1],
         /// Setlogin name.
-        pub ki_login: [c_char; ::LOGNAMELEN + 1],
+        pub ki_login: [c_char; crate::LOGNAMELEN + 1],
         /// Lock name.
-        pub ki_lockname: [c_char; ::LOCKNAMELEN + 1],
+        pub ki_lockname: [c_char; crate::LOCKNAMELEN + 1],
         /// Command name.
-        pub ki_comm: [c_char; ::COMMLEN + 1],
+        pub ki_comm: [c_char; crate::COMMLEN + 1],
         /// Emulation name.
-        pub ki_emul: [c_char; ::KI_EMULNAMELEN + 1],
+        pub ki_emul: [c_char; crate::KI_EMULNAMELEN + 1],
         /// Login class.
-        pub ki_loginclass: [c_char; ::LOGINCLASSLEN + 1],
+        pub ki_loginclass: [c_char; crate::LOGINCLASSLEN + 1],
         /// More thread name.
-        pub ki_moretdname: [c_char; ::MAXCOMLEN - ::TDNAMLEN + 1],
+        pub ki_moretdname: [c_char; crate::MAXCOMLEN - crate::TDNAMLEN + 1],
         /// Spare string space.
         pub ki_sparestrings: [c_char; 46],
         /// Spare room for growth.
-        pub ki_spareints: [c_int; ::KI_NSPARE_INT],
+        pub ki_spareints: [c_int; crate::KI_NSPARE_INT],
         /// Which cpu we are on.
         pub ki_oncpu: c_int,
         /// Last cpu we were on.
@@ -184,19 +184,19 @@ s! {
         /// Default FIB number.
         pub ki_fibnum: c_int,
         /// Credential flags.
-        pub ki_cr_flags: ::u_int,
+        pub ki_cr_flags: crate::u_int,
         /// Process jail ID.
         pub ki_jid: c_int,
         /// Number of threads in total.
         pub ki_numthreads: c_int,
         /// Thread ID.
-        pub ki_tid: ::lwpid_t,
+        pub ki_tid: crate::lwpid_t,
         /// Process priority.
-        pub ki_pri: ::priority,
+        pub ki_pri: crate::priority,
         /// Process rusage statistics.
-        pub ki_rusage: ::rusage,
+        pub ki_rusage: crate::rusage,
         /// rusage of children processes.
-        pub ki_rusage_ch: ::rusage,
+        pub ki_rusage_ch: crate::rusage,
         // This is normally "struct pcb".
         /// Kernel virtual addr of pcb.
         pub ki_pcb: *mut c_void,
@@ -206,8 +206,8 @@ s! {
         pub ki_udata: *mut c_void,
         // This is normally "struct thread".
         pub ki_tdaddr: *mut c_void,
-        pub ki_spareptrs: [*mut c_void; ::KI_NSPARE_PTR],
-        pub ki_sparelongs: [c_long; ::KI_NSPARE_LONG],
+        pub ki_spareptrs: [*mut c_void; crate::KI_NSPARE_PTR],
+        pub ki_sparelongs: [c_long; crate::KI_NSPARE_LONG],
         /// PS_* flags.
         pub ki_sflag: c_long,
         /// kthread flag.
@@ -217,7 +217,7 @@ s! {
 
 s_no_extra_traits! {
     pub struct dirent {
-        pub d_fileno: ::ino_t,
+        pub d_fileno: crate::ino_t,
         pub d_reclen: u16,
         pub d_type: u8,
         // Type of `d_namlen` changed from `char` to `u16` in FreeBSD 12:
@@ -242,8 +242,8 @@ s_no_extra_traits! {
         pub f_asyncreads: u64,
         f_spare: [u64; 10],
         pub f_namemax: u32,
-        pub f_owner: ::uid_t,
-        pub f_fsid: ::fsid_t,
+        pub f_owner: crate::uid_t,
+        pub f_fsid: crate::fsid_t,
         f_charspare: [c_char; 80],
         pub f_fstypename: [c_char; 16],
         // Array length changed from 88 to 1024 in FreeBSD 12:
@@ -260,7 +260,7 @@ s_no_extra_traits! {
         pub vn_fsid: u32,
         pub vn_type: c_int,
         pub vn_mode: u16,
-        pub vn_devname: [c_char; ::SPECNAMELEN as usize + 1],
+        pub vn_devname: [c_char; crate::SPECNAMELEN as usize + 1],
     }
 }
 
@@ -299,8 +299,8 @@ cfg_if! {
             }
         }
         impl Eq for statfs {}
-        impl ::fmt::Debug for statfs {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for statfs {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("statfs")
                     .field("f_bsize", &self.f_bsize)
                     .field("f_iosize", &self.f_iosize)
@@ -322,8 +322,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for statfs {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for statfs {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.f_version.hash(state);
                 self.f_type.hash(state);
                 self.f_flags.hash(state);
@@ -360,8 +360,8 @@ cfg_if! {
             }
         }
         impl Eq for dirent {}
-        impl ::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for dirent {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_fileno", &self.d_fileno)
                     .field("d_reclen", &self.d_reclen)
@@ -371,8 +371,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for dirent {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for dirent {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 self.d_fileno.hash(state);
                 self.d_reclen.hash(state);
                 self.d_type.hash(state);
@@ -397,8 +397,8 @@ cfg_if! {
             }
         }
         impl Eq for vnstat {}
-        impl ::fmt::Debug for vnstat {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result {
+        impl crate::fmt::Debug for vnstat {
+            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
                 let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 f.debug_struct("vnstat")
@@ -413,8 +413,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl ::hash::Hash for vnstat {
-            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
+        impl crate::hash::Hash for vnstat {
+            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
                 let self_vn_devname: &[c_char] = &self.vn_devname;
 
                 self.vn_fileid.hash(state);
@@ -438,19 +438,19 @@ pub const MINCORE_SUPER: c_int = 0x20;
 pub const SPECNAMELEN: c_int = 63;
 
 safe_f! {
-    pub {const} fn makedev(major: c_uint, minor: c_uint) -> ::dev_t {
-        let major = major as ::dev_t;
-        let minor = minor as ::dev_t;
+    pub {const} fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+        let major = major as crate::dev_t;
+        let minor = minor as crate::dev_t;
         (major << 8) | minor
     }
 }
 
 f! {
-    pub fn major(dev: ::dev_t) -> c_int {
+    pub fn major(dev: crate::dev_t) -> c_int {
         ((dev >> 8) & 0xff) as c_int
     }
 
-    pub fn minor(dev: ::dev_t) -> c_int {
+    pub fn minor(dev: crate::dev_t) -> c_int {
         (dev & 0xffff00ff) as c_int
     }
 }
@@ -464,7 +464,7 @@ extern "C" {
     pub fn mprotect(addr: *const c_void, len: size_t, prot: c_int) -> c_int;
 
     // Return type c_int was removed in FreeBSD 12
-    pub fn freelocale(loc: ::locale_t) -> c_int;
+    pub fn freelocale(loc: crate::locale_t) -> c_int;
 
     // Return type c_int changed to ssize_t in FreeBSD 12:
     pub fn msgrcv(
