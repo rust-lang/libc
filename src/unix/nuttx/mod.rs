@@ -1,4 +1,5 @@
-use crate::{c_void, in6_addr, in_addr_t, timespec, DIR};
+use crate::prelude::*;
+use crate::{in6_addr, in_addr_t, timespec, DIR};
 
 pub type nlink_t = u16;
 pub type ino_t = u16;

@@ -1,6 +1,6 @@
 //! 64-bit specific definitions for linux-like values
 
-use crate::{c_int, c_uint, c_ushort};
+use crate::prelude::*;
 
 pub type ino_t = u64;
 pub type off_t = i64;
@@ -12,7 +12,7 @@ pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type rlim_t = u64;
 #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-pub type __syscall_ulong_t = crate::c_ulonglong;
+pub type __syscall_ulong_t = c_ulonglong;
 #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
 pub type __syscall_ulong_t = c_ulong;
 

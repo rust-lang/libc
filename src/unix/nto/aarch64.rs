@@ -1,4 +1,4 @@
-use crate::{c_int, c_void, size_t};
+use crate::prelude::*;
 
 pub type c_char = u8;
 pub type wchar_t = u32;

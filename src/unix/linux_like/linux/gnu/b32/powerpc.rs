@@ -1,4 +1,5 @@
-use crate::{c_int, c_long, c_short, c_uint, c_ulong, c_ushort, c_void, off64_t, off_t, size_t};
+use crate::prelude::*;
+use crate::{off64_t, off_t};
 
 pub type c_char = u8;
 pub type wchar_t = i32;

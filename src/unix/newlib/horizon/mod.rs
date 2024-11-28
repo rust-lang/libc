@@ -1,8 +1,7 @@
 //! ARMv6K Nintendo 3DS C Newlib definitions
 
-use crate::{
-    c_int, c_longlong, c_short, c_uchar, c_uint, c_ushort, c_void, off_t, size_t, ssize_t,
-};
+use crate::off_t;
+use crate::prelude::*;
 
 pub type c_char = u8;
 pub type c_long = i32;

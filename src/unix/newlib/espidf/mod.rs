@@ -1,4 +1,4 @@
-use crate::{c_int, c_short, c_uint, c_void, size_t, ssize_t};
+use crate::prelude::*;
 
 pub type clock_t = c_ulong;
 pub type c_char = i8;

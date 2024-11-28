@@ -1,7 +1,5 @@
-use crate::{
-    c_double, c_int, c_short, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, off_t, size_t,
-    ssize_t,
-};
+use crate::off_t;
+use crate::prelude::*;
 
 pub type mode_t = u16;
 pub type pthread_attr_t = *mut c_void;
@@ -413,8 +411,8 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_storage {}
-        impl crate::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_len", &self.ss_len)
                     .field("ss_family", &self.ss_family)
@@ -424,8 +422,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sockaddr_storage {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sockaddr_storage {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ss_len.hash(state);
                 self.ss_family.hash(state);
                 self.__ss_pad1.hash(state);
@@ -437,7 +435,7 @@ cfg_if! {
 }
 
 // Non-public helper constant
-const SIZEOF_LONG: usize = crate::mem::size_of::<c_long>();
+const SIZEOF_LONG: usize = mem::size_of::<c_long>();
 
 #[deprecated(
     since = "0.2.64",

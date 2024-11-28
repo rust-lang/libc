@@ -1,4 +1,4 @@
-use crate::{c_int, c_uchar, c_uint};
+use crate::prelude::*;
 
 pub type c_long = i64;
 pub type c_ulong = u64;

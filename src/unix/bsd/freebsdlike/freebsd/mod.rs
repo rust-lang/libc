@@ -1,6 +1,5 @@
-use crate::{
-    c_int, c_longlong, c_short, c_uchar, c_uint, c_ushort, c_void, cmsghdr, off_t, size_t, ssize_t,
-};
+use crate::prelude::*;
+use crate::{cmsghdr, off_t};
 
 pub type fflags_t = u32;
 
@@ -1689,8 +1688,8 @@ cfg_if! {
             }
         }
         impl Eq for utmpx {}
-        impl crate::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
                     .field("ut_tv", &self.ut_tv)
@@ -1703,8 +1702,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for utmpx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utmpx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
                 self.ut_tv.hash(state);
                 self.ut_id.hash(state);
@@ -1722,15 +1721,15 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_cr_pid {}
-        impl crate::fmt::Debug for __c_anonymous_cr_pid {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_cr_pid {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("cr_pid")
                     .field("cr_pid", unsafe { &self.cr_pid })
                     .finish()
             }
         }
-        impl crate::hash::Hash for __c_anonymous_cr_pid {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_cr_pid {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.cr_pid.hash(state) };
             }
         }
@@ -1745,8 +1744,8 @@ cfg_if! {
             }
         }
         impl Eq for xucred {}
-        impl crate::fmt::Debug for xucred {
-            fn fmt(&self, f: &mut crate::fmt::Formatter<'_>) -> crate::fmt::Result {
+        impl fmt::Debug for xucred {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 f.debug_struct("xucred")
                     .field("cr_version", &self.cr_version)
                     .field("cr_uid", &self.cr_uid)
@@ -1756,8 +1755,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for xucred {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for xucred {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.cr_version.hash(state);
                 self.cr_uid.hash(state);
                 self.cr_ngroups.hash(state);
@@ -1783,8 +1782,8 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_dl {}
-        impl crate::fmt::Debug for sockaddr_dl {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_dl {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_dl")
                     .field("sdl_len", &self.sdl_len)
                     .field("sdl_family", &self.sdl_family)
@@ -1797,8 +1796,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sockaddr_dl {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sockaddr_dl {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sdl_len.hash(state);
                 self.sdl_family.hash(state);
                 self.sdl_index.hash(state);
@@ -1819,8 +1818,8 @@ cfg_if! {
             }
         }
         impl Eq for mq_attr {}
-        impl crate::fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mq_attr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mq_attr")
                     .field("mq_flags", &self.mq_flags)
                     .field("mq_maxmsg", &self.mq_maxmsg)
@@ -1829,8 +1828,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for mq_attr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for mq_attr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mq_flags.hash(state);
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
@@ -1838,8 +1837,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sigevent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sigevent")
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_signo", &self.sigev_signo)
@@ -1859,8 +1858,8 @@ cfg_if! {
             }
         }
         impl Eq for ptsstat {}
-        impl crate::fmt::Debug for ptsstat {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ptsstat {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let self_devname: &[c_char] = &self.devname;
 
                 f.debug_struct("ptsstat")
@@ -1869,8 +1868,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for ptsstat {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ptsstat {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let self_devname: &[c_char] = &self.devname;
 
                 self.dev.hash(state);
@@ -1884,8 +1883,8 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_elf32_auxv_union {}
-        impl crate::fmt::Debug for __c_anonymous_elf32_auxv_union {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_elf32_auxv_union {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("a_val")
                     .field("a_val", unsafe { &self.a_val })
                     .finish()
@@ -1897,8 +1896,8 @@ cfg_if! {
             }
         }
         impl Eq for Elf32_Auxinfo {}
-        impl crate::fmt::Debug for Elf32_Auxinfo {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for Elf32_Auxinfo {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("Elf32_Auxinfo")
                     .field("a_type", &self.a_type)
                     .field("a_un", &self.a_un)
@@ -1928,8 +1927,8 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_ifr_ifru {}
-        impl crate::fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_ifr_ifru {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifr_ifru")
                     .field("ifru_addr", unsafe { &self.ifru_addr })
                     .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
@@ -1949,8 +1948,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for __c_anonymous_ifr_ifru {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_ifr_ifru {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifru_addr.hash(state) };
                 unsafe { self.ifru_dstaddr.hash(state) };
                 unsafe { self.ifru_broadaddr.hash(state) };
@@ -1975,16 +1974,16 @@ cfg_if! {
             }
         }
         impl Eq for ifreq {}
-        impl crate::fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ifreq {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifreq")
                     .field("ifr_name", &self.ifr_name)
                     .field("ifr_ifru", &self.ifr_ifru)
                     .finish()
             }
         }
-        impl crate::hash::Hash for ifreq {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ifreq {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifr_name.hash(state);
                 self.ifr_ifru.hash(state);
             }
@@ -1998,8 +1997,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_ifc_ifcu {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifc_ifcu")
                     .field("ifcu_buf", unsafe { &self.ifcu_buf })
                     .field("ifcu_req", unsafe { &self.ifcu_req })
@@ -2007,8 +2006,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for __c_anonymous_ifc_ifcu {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_ifc_ifcu {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifcu_buf.hash(state) };
                 unsafe { self.ifcu_req.hash(state) };
             }
@@ -2023,8 +2022,8 @@ cfg_if! {
             }
         }
         impl Eq for ifstat {}
-        impl crate::fmt::Debug for ifstat {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ifstat {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let ascii: &[c_char] = &self.ascii;
 
                 f.debug_struct("ifstat")
@@ -2033,8 +2032,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for ifstat {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ifstat {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifs_name.hash(state);
                 self.ascii.hash(state);
             }
@@ -2053,8 +2052,8 @@ cfg_if! {
             }
         }
         impl Eq for ifrsskey {}
-        impl crate::fmt::Debug for ifrsskey {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ifrsskey {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let ifrk_key: &[u8] = &self.ifrk_key;
 
                 f.debug_struct("ifrsskey")
@@ -2066,8 +2065,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for ifrsskey {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ifrsskey {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifrk_name.hash(state);
                 self.ifrk_func.hash(state);
                 self.ifrk_spare0.hash(state);
@@ -2088,8 +2087,8 @@ cfg_if! {
             }
         }
         impl Eq for ifdownreason {}
-        impl crate::fmt::Debug for ifdownreason {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ifdownreason {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let ifdr_msg: &[c_char] = &self.ifdr_msg;
 
                 f.debug_struct("ifdownreason")
@@ -2100,8 +2099,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for ifdownreason {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ifdownreason {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifdr_name.hash(state);
                 self.ifdr_reason.hash(state);
                 self.ifdr_vendor.hash(state);
@@ -2115,16 +2114,16 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_ifi_epoch {}
-        impl crate::fmt::Debug for __c_anonymous_ifi_epoch {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_ifi_epoch {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("__c_anonymous_ifi_epoch")
                     .field("tt", unsafe { &self.tt })
                     .field("ph", unsafe { &self.ph })
                     .finish()
             }
         }
-        impl crate::hash::Hash for __c_anonymous_ifi_epoch {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_ifi_epoch {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.tt.hash(state);
                     self.ph.hash(state);
@@ -2138,16 +2137,16 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_ifi_lastchange {}
-        impl crate::fmt::Debug for __c_anonymous_ifi_lastchange {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_ifi_lastchange {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("__c_anonymous_ifi_lastchange")
                     .field("tv", unsafe { &self.tv })
                     .field("ph", unsafe { &self.ph })
                     .finish()
             }
         }
-        impl crate::hash::Hash for __c_anonymous_ifi_lastchange {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_ifi_lastchange {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.tv.hash(state);
                     self.ph.hash(state);
@@ -2185,8 +2184,8 @@ cfg_if! {
             }
         }
         impl Eq for if_data {}
-        impl crate::fmt::Debug for if_data {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for if_data {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("if_data")
                     .field("ifi_type", &self.ifi_type)
                     .field("ifi_physical", &self.ifi_physical)
@@ -2216,8 +2215,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for if_data {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for if_data {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifi_type.hash(state);
                 self.ifi_physical.hash(state);
                 self.ifi_addrlen.hash(state);
@@ -2255,8 +2254,8 @@ cfg_if! {
             }
         }
         impl Eq for sctphdr {}
-        impl crate::fmt::Debug for sctphdr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctphdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctphdr")
                     .field("src_port", &{ self.src_port })
                     .field("dest_port", &{ self.dest_port })
@@ -2265,8 +2264,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctphdr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctphdr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.src_port }.hash(state);
                 { self.dest_port }.hash(state);
                 { self.v_tag }.hash(state);
@@ -2282,8 +2281,8 @@ cfg_if! {
             }
         }
         impl Eq for sctp_chunkhdr {}
-        impl crate::fmt::Debug for sctp_chunkhdr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_chunkhdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_chunkhdr")
                     .field("chunk_type", &{ self.chunk_type })
                     .field("chunk_flags", &{ self.chunk_flags })
@@ -2291,8 +2290,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_chunkhdr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_chunkhdr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.chunk_type }.hash(state);
                 { self.chunk_flags }.hash(state);
                 { self.chunk_length }.hash(state);
@@ -2307,16 +2306,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_paramhdr {}
-        impl crate::fmt::Debug for sctp_paramhdr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_paramhdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_paramhdr")
                     .field("param_type", &{ self.param_type })
                     .field("param_length", &{ self.param_length })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_paramhdr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_paramhdr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.param_type }.hash(state);
                 { self.param_length }.hash(state);
             }
@@ -2333,8 +2332,8 @@ cfg_if! {
             }
         }
         impl Eq for sctp_gen_error_cause {}
-        impl crate::fmt::Debug for sctp_gen_error_cause {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_gen_error_cause {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_gen_error_cause")
                     .field("code", &{ self.code })
                     .field("length", &{ self.length })
@@ -2342,8 +2341,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_gen_error_cause {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_gen_error_cause {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.code }.hash(state);
                 { self.length }.hash(state);
                 { self.info }.hash(state);
@@ -2356,16 +2355,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_cause {}
-        impl crate::fmt::Debug for sctp_error_cause {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_cause {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_cause")
                     .field("code", &{ self.code })
                     .field("length", &{ self.length })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_cause {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_cause {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.code }.hash(state);
                 { self.length }.hash(state);
             }
@@ -2379,16 +2378,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_invalid_stream {}
-        impl crate::fmt::Debug for sctp_error_invalid_stream {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_invalid_stream {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_invalid_stream")
                     .field("cause", &{ self.cause })
                     .field("stream_id", &{ self.stream_id })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_invalid_stream {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_invalid_stream {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
                 { self.stream_id }.hash(state);
             }
@@ -2405,8 +2404,8 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_missing_param {}
-        impl crate::fmt::Debug for sctp_error_missing_param {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_missing_param {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_missing_param")
                     .field("cause", &{ self.cause })
                     .field("num_missing_params", &{ self.num_missing_params })
@@ -2414,8 +2413,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_missing_param {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_missing_param {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
                 { self.num_missing_params }.hash(state);
                 { self.tpe }.hash(state);
@@ -2430,16 +2429,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_stale_cookie {}
-        impl crate::fmt::Debug for sctp_error_stale_cookie {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_stale_cookie {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_stale_cookie")
                     .field("cause", &{ self.cause })
                     .field("stale_time", &{ self.stale_time })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_stale_cookie {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_stale_cookie {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
                 { self.stale_time }.hash(state);
             }
@@ -2451,15 +2450,15 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_out_of_resource {}
-        impl crate::fmt::Debug for sctp_error_out_of_resource {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_out_of_resource {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_out_of_resource")
                     .field("cause", &{ self.cause })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_out_of_resource {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_out_of_resource {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
             }
         }
@@ -2470,15 +2469,15 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_unresolv_addr {}
-        impl crate::fmt::Debug for sctp_error_unresolv_addr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_unresolv_addr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_unresolv_addr")
                     .field("cause", &{ self.cause })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_unresolv_addr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_unresolv_addr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
             }
         }
@@ -2489,16 +2488,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_unrecognized_chunk {}
-        impl crate::fmt::Debug for sctp_error_unrecognized_chunk {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_unrecognized_chunk {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_unrecognized_chunk")
                     .field("cause", &{ self.cause })
                     .field("ch", &{ self.ch })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_unrecognized_chunk {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_unrecognized_chunk {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
                 { self.ch }.hash(state);
             }
@@ -2510,16 +2509,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_no_user_data {}
-        impl crate::fmt::Debug for sctp_error_no_user_data {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_no_user_data {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_no_user_data")
                     .field("cause", &{ self.cause })
                     .field("tsn", &{ self.tsn })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_no_user_data {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_no_user_data {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
                 { self.tsn }.hash(state);
             }
@@ -2531,16 +2530,16 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_auth_invalid_hmac {}
-        impl crate::fmt::Debug for sctp_error_auth_invalid_hmac {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sctp_error_auth_invalid_hmac {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sctp_error_invalid_hmac")
                     .field("cause", &{ self.cause })
                     .field("hmac_id", &{ self.hmac_id })
                     .finish()
             }
         }
-        impl crate::hash::Hash for sctp_error_auth_invalid_hmac {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sctp_error_auth_invalid_hmac {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
                 { self.hmac_id }.hash(state);
             }
@@ -2564,8 +2563,8 @@ cfg_if! {
             }
         }
         impl Eq for kinfo_file {}
-        impl crate::fmt::Debug for kinfo_file {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for kinfo_file {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("kinfo_file")
                     .field("kf_structsize", &self.kf_structsize)
                     .field("kf_type", &self.kf_type)
@@ -2579,8 +2578,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for kinfo_file {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for kinfo_file {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.kf_structsize.hash(state);
                 self.kf_type.hash(state);
                 self.kf_fd.hash(state);
@@ -2593,8 +2592,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_sigmask", &self.uc_sigmask)
                     .field("uc_mcontext", &self.uc_mcontext)
@@ -4901,20 +4900,19 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_ALIGN(crate::mem::size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).offset(_ALIGN(mem::size_of::<cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        _ALIGN(crate::mem::size_of::<cmsghdr>()) as c_uint + length
+        _ALIGN(mem::size_of::<cmsghdr>()) as c_uint + length
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         };
-        let next = cmsg as usize
-            + _ALIGN((*cmsg).cmsg_len as usize)
-            + _ALIGN(crate::mem::size_of::<cmsghdr>());
+        let next =
+            cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(mem::size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
             0 as *mut cmsghdr
@@ -4924,7 +4922,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_ALIGN(crate::mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
+        (_ALIGN(mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 
     pub fn MALLOCX_ALIGN(lg: c_uint) -> c_int {
@@ -4941,7 +4939,7 @@ f! {
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
-        crate::mem::size_of::<sockcred>() + crate::mem::size_of::<crate::gid_t>() * ngrps
+        mem::size_of::<sockcred>() + mem::size_of::<crate::gid_t>() * ngrps
     }
 
     pub fn uname(buf: *mut crate::utsname) -> c_int {
@@ -4961,29 +4959,29 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpuset_t) -> () {
-        let bitset_bits = 8 * crate::mem::size_of::<c_long>();
+        let bitset_bits = 8 * mem::size_of::<c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         cpuset.__bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpuset_t) -> () {
-        let bitset_bits = 8 * crate::mem::size_of::<c_long>();
+        let bitset_bits = 8 * mem::size_of::<c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         cpuset.__bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpuset_t) -> bool {
-        let bitset_bits = 8 * crate::mem::size_of::<c_long>();
+        let bitset_bits = 8 * mem::size_of::<c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         0 != cpuset.__bits[idx] & (1 << offset)
     }
 
     pub fn CPU_COUNT(cpuset: &cpuset_t) -> c_int {
         let mut s: u32 = 0;
-        let cpuset_size = crate::mem::size_of::<cpuset_t>();
-        let bitset_size = crate::mem::size_of::<c_long>();
+        let cpuset_size = mem::size_of::<cpuset_t>();
+        let bitset_size = mem::size_of::<c_long>();
 
         for i in cpuset.__bits[..(cpuset_size / bitset_size)].iter() {
             s += i.count_ones();
@@ -4993,7 +4991,7 @@ f! {
 
     pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
-        crate::mem::size_of::<sockcred2>() + crate::mem::size_of::<crate::gid_t>() * ngrps
+        mem::size_of::<sockcred2>() + mem::size_of::<crate::gid_t>() * ngrps
     }
 
     pub fn PROT_MAX(x: c_int) -> c_int {

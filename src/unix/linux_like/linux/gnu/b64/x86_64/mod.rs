@@ -1,8 +1,7 @@
 //! x86_64-specific definitions for 64-bit linux-like values
 
-use crate::{
-    c_int, c_longlong, c_short, c_uint, c_ulonglong, c_ushort, c_void, off64_t, off_t, size_t,
-};
+use crate::prelude::*;
+use crate::{off64_t, off_t};
 
 pub type c_char = i8;
 pub type wchar_t = i32;
@@ -348,8 +347,8 @@ cfg_if! {
 
         impl Eq for user_fpregs_struct {}
 
-        impl crate::fmt::Debug for user_fpregs_struct {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for user_fpregs_struct {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("user_fpregs_struct")
                     .field("cwd", &self.cwd)
                     .field("ftw", &self.ftw)
@@ -365,8 +364,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for user_fpregs_struct {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for user_fpregs_struct {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.cwd.hash(state);
                 self.ftw.hash(state);
                 self.fop.hash(state);
@@ -393,8 +392,8 @@ cfg_if! {
 
         impl Eq for ucontext_t {}
 
-        impl crate::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_flags", &self.uc_flags)
                     .field("uc_link", &self.uc_link)
@@ -406,8 +405,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for ucontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ucontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uc_flags.hash(state);
                 self.uc_link.hash(state);
                 self.uc_stack.hash(state);

@@ -1,4 +1,5 @@
-use crate::{c_int, c_void, pthread_mutex_t, size_t};
+use crate::prelude::*;
+use crate::pthread_mutex_t;
 
 pub type c_long = i64;
 pub type c_ulong = u64;

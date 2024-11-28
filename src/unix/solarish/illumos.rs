@@ -1,6 +1,6 @@
+use crate::prelude::*;
 use crate::{
-    c_char, c_double, c_int, c_short, c_uint, c_ulong, c_ushort, c_void, exit_status, off_t,
-    size_t, ssize_t, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG,
+    exit_status, off_t, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG,
     PRIV_PFEXEC, PRIV_XPOLICY,
 };
 
@@ -89,8 +89,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl crate::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_user", &self.ut_user)
                     .field("ut_id", &self.ut_id)
@@ -107,8 +107,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for utmpx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utmpx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_user.hash(state);
                 self.ut_type.hash(state);
                 self.ut_pid.hash(state);
@@ -129,8 +129,8 @@ cfg_if! {
             }
         }
         impl Eq for epoll_event {}
-        impl crate::fmt::Debug for epoll_event {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for epoll_event {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let events = self.events;
                 let u64 = self.u64;
                 f.debug_struct("epoll_event")
@@ -139,8 +139,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for epoll_event {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for epoll_event {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let events = self.events;
                 let u64 = self.u64;
                 events.hash(state);
