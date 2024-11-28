@@ -70,6 +70,11 @@ test_target() {
     $cmd --no-default-features
     $cmd --no-default-features --features extra_traits
 
+    # Ensure the crate will build when used with `std`
+    if [ "$rust" = "nightly" ]; then
+        $cmd --no-default-features --features rustc-dep-of-std
+    fi
+
     # For tier 2 freebsd targets, check with the different versions we support
     # if on nightly or stable
     case "$rust-$target" in
