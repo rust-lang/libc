@@ -4,7 +4,7 @@
 //! by the linker. Crates that use these definitions must, somewhere in the
 //! crate graph, include a stub provider crate such as the `psp` crate.
 
-use crate::c_void;
+use crate::prelude::*;
 
 pub type c_schar = i8;
 pub type c_uchar = u8;

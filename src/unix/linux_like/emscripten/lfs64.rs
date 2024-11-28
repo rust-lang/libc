@@ -1,4 +1,5 @@
-use crate::{c_char, c_int, c_void, off64_t, size_t, ssize_t};
+use crate::off64_t;
+use crate::prelude::*;
 
 // In-sync with ../linux/musl/lfs64.rs except for fallocate64, prlimit64 and sendfile64
 

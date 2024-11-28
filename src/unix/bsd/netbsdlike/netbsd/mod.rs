@@ -1,7 +1,5 @@
-use crate::{
-    c_int, c_short, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, cmsghdr, intptr_t, off_t,
-    size_t, ssize_t,
-};
+use crate::prelude::*;
+use crate::{cmsghdr, off_t};
 
 pub type clock_t = c_uint;
 pub type suseconds_t = c_int;
@@ -941,8 +939,8 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl crate::fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for utmpx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_name", &self.ut_name)
                     .field("ut_id", &self.ut_id)
@@ -959,8 +957,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for utmpx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for utmpx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_name.hash(state);
                 self.ut_type.hash(state);
                 self.ut_pid.hash(state);
@@ -990,8 +988,8 @@ cfg_if! {
 
         impl Eq for lastlogx {}
 
-        impl crate::fmt::Debug for lastlogx {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for lastlogx {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("lastlogx")
                     .field("ll_tv", &self.ll_tv)
                     .field("ll_line", &self.ll_line)
@@ -1001,8 +999,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for lastlogx {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for lastlogx {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ll_tv.hash(state);
                 self.ll_line.hash(state);
                 self.ll_host.hash(state);
@@ -1016,16 +1014,16 @@ cfg_if! {
             }
         }
         impl Eq for in_pktinfo {}
-        impl crate::fmt::Debug for in_pktinfo {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for in_pktinfo {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("in_pktinfo")
                     .field("ipi_addr", &self.ipi_addr)
                     .field("ipi_ifindex", &self.ipi_ifindex)
                     .finish()
             }
         }
-        impl crate::hash::Hash for in_pktinfo {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for in_pktinfo {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ipi_addr.hash(state);
                 self.ipi_ifindex.hash(state);
             }
@@ -1041,8 +1039,8 @@ cfg_if! {
             }
         }
         impl Eq for arphdr {}
-        impl crate::fmt::Debug for arphdr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for arphdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let ar_hrd = self.ar_hrd;
                 let ar_pro = self.ar_pro;
                 let ar_op = self.ar_op;
@@ -1055,8 +1053,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for arphdr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for arphdr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let ar_hrd = self.ar_hrd;
                 let ar_pro = self.ar_pro;
                 let ar_op = self.ar_op;
@@ -1074,14 +1072,14 @@ cfg_if! {
             }
         }
         impl Eq for in_addr {}
-        impl crate::fmt::Debug for in_addr {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for in_addr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let s_addr = self.s_addr;
                 f.debug_struct("in_addr").field("s_addr", &s_addr).finish()
             }
         }
-        impl crate::hash::Hash for in_addr {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for in_addr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let s_addr = self.s_addr;
                 s_addr.hash(state);
             }
@@ -1094,16 +1092,16 @@ cfg_if! {
             }
         }
         impl Eq for ip_mreq {}
-        impl crate::fmt::Debug for ip_mreq {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ip_mreq {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ip_mreq")
                     .field("imr_multiaddr", &self.imr_multiaddr)
                     .field("imr_interface", &self.imr_interface)
                     .finish()
             }
         }
-        impl crate::hash::Hash for ip_mreq {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for ip_mreq {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.imr_multiaddr.hash(state);
                 self.imr_interface.hash(state);
             }
@@ -1119,8 +1117,8 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_in {}
-        impl crate::fmt::Debug for sockaddr_in {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_in {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_in")
                     .field("sin_len", &self.sin_len)
                     .field("sin_family", &self.sin_family)
@@ -1130,8 +1128,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sockaddr_in {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sockaddr_in {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sin_len.hash(state);
                 self.sin_family.hash(state);
                 self.sin_port.hash(state);
@@ -1154,8 +1152,8 @@ cfg_if! {
             }
         }
         impl Eq for dirent {}
-        impl crate::fmt::Debug for dirent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for dirent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("dirent")
                     .field("d_fileno", &self.d_fileno)
                     .field("d_reclen", &self.d_reclen)
@@ -1165,8 +1163,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for dirent {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for dirent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_fileno.hash(state);
                 self.d_reclen.hash(state);
                 self.d_namlen.hash(state);
@@ -1212,8 +1210,8 @@ cfg_if! {
             }
         }
         impl Eq for statvfs {}
-        impl crate::fmt::Debug for statvfs {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for statvfs {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("statvfs")
                     .field("f_flag", &self.f_flag)
                     .field("f_bsize", &self.f_bsize)
@@ -1242,8 +1240,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for statvfs {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for statvfs {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.f_flag.hash(state);
                 self.f_bsize.hash(state);
                 self.f_frsize.hash(state);
@@ -1285,8 +1283,8 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_storage {}
-        impl crate::fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_len", &self.ss_len)
                     .field("ss_family", &self.ss_family)
@@ -1296,8 +1294,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sockaddr_storage {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sockaddr_storage {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ss_len.hash(state);
                 self.ss_family.hash(state);
                 self.__ss_pad1.hash(state);
@@ -1315,8 +1313,8 @@ cfg_if! {
             }
         }
         impl Eq for sigevent {}
-        impl crate::fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sigevent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sigevent")
                     .field("sigev_notify", &self.sigev_notify)
                     .field("sigev_signo", &self.sigev_signo)
@@ -1325,8 +1323,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for sigevent {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for sigevent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sigev_notify.hash(state);
                 self.sigev_signo.hash(state);
                 self.sigev_value.hash(state);
@@ -1342,8 +1340,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for __c_anonymous_posix_spawn_fae {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_posix_spawn_fae {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     f.debug_struct("__c_anonymous_posix_fae")
                         .field("open", &self.open)
@@ -1353,8 +1351,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for __c_anonymous_posix_spawn_fae {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_posix_spawn_fae {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.open.hash(state);
                     self.dup2.hash(state);
@@ -1370,8 +1368,8 @@ cfg_if! {
             }
         }
 
-        impl crate::fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_ifc_ifcu {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     f.debug_struct("__c_anonymous_ifc_ifcu")
                         .field("ifcu_buf", &self.ifcu_buf)
@@ -1381,8 +1379,8 @@ cfg_if! {
             }
         }
 
-        impl crate::hash::Hash for __c_anonymous_ifc_ifcu {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for __c_anonymous_ifc_ifcu {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.ifcu_buf.hash(state);
                     self.ifcu_req.hash(state);
@@ -2440,20 +2438,19 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_ALIGN(crate::mem::size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).offset(_ALIGN(mem::size_of::<cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        _ALIGN(crate::mem::size_of::<cmsghdr>()) as c_uint + length
+        _ALIGN(mem::size_of::<cmsghdr>()) as c_uint + length
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         };
-        let next = cmsg as usize
-            + _ALIGN((*cmsg).cmsg_len as usize)
-            + _ALIGN(crate::mem::size_of::<cmsghdr>());
+        let next =
+            cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(mem::size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
             0 as *mut cmsghdr
@@ -2463,7 +2460,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_ALIGN(crate::mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
+        (_ALIGN(mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 
     // dirfd() is a macro on netbsd to access
@@ -2475,7 +2472,7 @@ f! {
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
-        crate::mem::size_of::<sockcred>() + crate::mem::size_of::<crate::gid_t>() * ngrps
+        mem::size_of::<sockcred>() + mem::size_of::<crate::gid_t>() * ngrps
     }
 
     pub fn PROT_MPROTECT(x: c_int) -> c_int {

@@ -115,7 +115,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
             }
         }
         if line.contains("#[derive(") && (line.contains("Copy") || line.contains("Clone")) {
-            err.error(path, i, "impl ::Copy and ::Clone manually");
+            err.error(path, i, "impl Copy and Clone manually");
         }
         if line.contains("impl") {
             in_impl = true;

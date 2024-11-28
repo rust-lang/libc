@@ -1,4 +1,5 @@
-use crate::{c_int, Ioctl};
+use crate::prelude::*;
+use crate::Ioctl;
 
 s! {
     pub struct termios2 {
@@ -126,8 +127,8 @@ cfg_if! {
         target_arch = "csky",
         target_arch = "loongarch64"
     ))] {
-        pub const FICLONE: crate::c_ulong = 0x40049409;
-        pub const FICLONERANGE: crate::c_ulong = 0x4020940D;
+        pub const FICLONE: c_ulong = 0x40049409;
+        pub const FICLONERANGE: c_ulong = 0x4020940D;
     }
 }
 

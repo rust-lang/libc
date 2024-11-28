@@ -1,4 +1,4 @@
-use crate::c_int;
+use crate::prelude::*;
 
 /* DIFF(main): module removed in de76fee6 */
 

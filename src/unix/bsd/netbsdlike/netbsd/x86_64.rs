@@ -1,4 +1,5 @@
-use crate::{c_int, c_uchar, c_uint, PT_FIRSTMACH};
+use crate::prelude::*;
+use crate::PT_FIRSTMACH;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
@@ -22,7 +23,7 @@ s! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_long>() - 1;
+pub(crate) const _ALIGNBYTES: usize = mem::size_of::<c_long>() - 1;
 
 pub const PT_STEP: c_int = PT_FIRSTMACH + 0;
 pub const PT_GETREGS: c_int = PT_FIRSTMACH + 1;

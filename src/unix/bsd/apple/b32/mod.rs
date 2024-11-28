@@ -1,6 +1,6 @@
 //! 32-bit specific Apple (ios/darwin) definitions
 
-use crate::{c_char, c_int, c_uchar, c_ushort};
+use crate::prelude::*;
 
 pub type c_long = i32;
 pub type c_ulong = u32;
@@ -82,16 +82,16 @@ cfg_if! {
             }
         }
         impl Eq for pthread_attr_t {}
-        impl crate::fmt::Debug for pthread_attr_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for pthread_attr_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_attr_t")
                     .field("__sig", &self.__sig)
                     // FIXME: .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
-        impl crate::hash::Hash for pthread_attr_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for pthread_attr_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }
@@ -107,15 +107,15 @@ cfg_if! {
             }
         }
         impl Eq for pthread_once_t {}
-        impl crate::fmt::Debug for pthread_once_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for pthread_once_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_once_t")
                     .field("__sig", &self.__sig)
                     .finish()
             }
         }
-        impl crate::hash::Hash for pthread_once_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for pthread_once_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.__sig.hash(state);
                 self.__opaque.hash(state);
             }

@@ -1,4 +1,4 @@
-use crate::c_ulong;
+use crate::prelude::*;
 
 // Thestyle checker discourages the use of #[cfg], so this has to go into a
 // separate module

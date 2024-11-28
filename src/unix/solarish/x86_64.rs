@@ -1,4 +1,4 @@
-use crate::{c_char, c_int, c_long, c_uint, c_ulong, c_ulonglong, c_ushort, c_void};
+use crate::prelude::*;
 
 cfg_if! {
     if #[cfg(target_os = "solaris")] {
@@ -110,8 +110,8 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_fp_reg_set {}
-        impl crate::fmt::Debug for __c_anonymous_fp_reg_set {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for __c_anonymous_fp_reg_set {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 unsafe {
                     f.debug_struct("__c_anonymous_fp_reg_set")
                         .field("fpchip_state", &{ self.fpchip_state })
@@ -126,8 +126,8 @@ cfg_if! {
             }
         }
         impl Eq for fpregset_t {}
-        impl crate::fmt::Debug for fpregset_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for fpregset_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("fpregset_t")
                     .field("fp_reg_set", &self.fp_reg_set)
                     .finish()
@@ -139,8 +139,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl crate::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("gregs", &self.gregs)
                     .field("fpregs", &self.fpregs)
@@ -158,8 +158,8 @@ cfg_if! {
             }
         }
         impl Eq for ucontext_t {}
-        impl crate::fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ucontext_t")
                     .field("uc_flags", &self.uc_flags)
                     .field("uc_link", &self.uc_link)

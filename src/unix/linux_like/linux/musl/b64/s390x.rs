@@ -1,4 +1,5 @@
-use crate::{c_double, c_int, c_long, c_short, off_t, size_t};
+use crate::off_t;
+use crate::prelude::*;
 
 pub type blksize_t = i64;
 pub type c_char = u8;
@@ -80,15 +81,15 @@ cfg_if! {
 
         impl Eq for fpreg_t {}
 
-        impl crate::fmt::Debug for fpreg_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for fpreg_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("fpreg_t").field("d", &self.d).finish()
             }
         }
 
-        impl crate::hash::Hash for fpreg_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
-                let d: u64 = unsafe { crate::mem::transmute(self.d) };
+        impl hash::Hash for fpreg_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                let d: u64 = unsafe { mem::transmute(self.d) };
                 d.hash(state);
             }
         }

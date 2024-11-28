@@ -8,7 +8,7 @@
 // only supported on Rust > 1.59, so we can directly reexport c_void from core.
 pub use core::ffi::c_void;
 
-use Option;
+use crate::prelude::*;
 
 pub type c_schar = i8;
 
@@ -1109,7 +1109,7 @@ extern "C" {
     pub fn pthread_cond_timedwait(
         cond: *mut pthread_cond_t,
         lock: *mut pthread_mutex_t,
-        abstime: *const ::timespec,
+        abstime: *const timespec,
     ) -> c_int;
 
     pub fn pthread_mutexattr_setrobust(attr: *mut pthread_mutexattr_t, robustness: c_int) -> c_int;

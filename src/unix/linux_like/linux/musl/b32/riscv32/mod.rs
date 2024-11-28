@@ -1,6 +1,7 @@
 //! RISC-V-specific definitions for 32-bit linux-like values
 
-use crate::{c_int, c_long, c_short, c_ulong, c_ushort, c_void, off64_t, off_t, size_t};
+use crate::prelude::*;
+use crate::{off64_t, off_t};
 
 pub type c_char = u8;
 pub type wchar_t = c_int;
@@ -109,14 +110,14 @@ s_no_extra_traits! {
     }
 }
 
-//pub const RLIM_INFINITY: ::rlim_t = !0;
+//pub const RLIM_INFINITY: crate::rlim_t = !0;
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: c_int = 0x8;
-//pub const RLIMIT_RSS: ::__rlimit_resource_t = 5;
-//pub const RLIMIT_AS: ::__rlimit_resource_t = 9;
-//pub const RLIMIT_MEMLOCK: ::__rlimit_resource_t = 8;
-//pub const RLIMIT_NOFILE: ::__rlimit_resource_t = 7;
-//pub const RLIMIT_NPROC: ::__rlimit_resource_t = 6;
+//pub const RLIMIT_RSS: crate::__rlimit_resource_t = 5;
+//pub const RLIMIT_AS: crate::__rlimit_resource_t = 9;
+//pub const RLIMIT_MEMLOCK: crate::__rlimit_resource_t = 8;
+//pub const RLIMIT_NOFILE: crate::__rlimit_resource_t = 7;
+//pub const RLIMIT_NPROC: crate::__rlimit_resource_t = 6;
 pub const O_APPEND: c_int = 1024;
 pub const O_CREAT: c_int = 64;
 pub const O_EXCL: c_int = 128;

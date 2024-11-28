@@ -1,4 +1,4 @@
-use crate::{c_int, c_longlong, c_uchar, c_uint, c_ulonglong, c_ushort, c_void, size_t};
+use crate::prelude::*;
 
 // The following definitions are correct for arm and i686,
 // but may be wrong for mips
@@ -185,8 +185,8 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl crate::fmt::Debug for sigset64_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for sigset64_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sigset64_t")
                     .field("__bits", &self.__bits)
                     .finish()

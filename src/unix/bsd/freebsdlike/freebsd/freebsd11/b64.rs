@@ -1,4 +1,5 @@
-use crate::{c_long, off_t};
+use crate::off_t;
+use crate::prelude::*;
 
 #[repr(C)]
 #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]

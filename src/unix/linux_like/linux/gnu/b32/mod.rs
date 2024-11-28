@@ -1,6 +1,7 @@
 //! 32-bit specific definitions for linux-like values
 
-use crate::{c_int, c_longlong, c_uint, c_ulonglong, c_ushort, c_void, pthread_mutex_t, size_t};
+use crate::prelude::*;
+use crate::pthread_mutex_t;
 
 pub type c_long = i32;
 pub type c_ulong = u32;
@@ -49,7 +50,7 @@ s! {
         pub st_dev: c_ulong,
 
         #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        __pad1: crate::c_short,
+        __pad1: c_short,
         #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
         st_pad1: [c_long; 3],
         pub st_ino: crate::ino_t,
@@ -62,7 +63,7 @@ s! {
         #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
         pub st_rdev: c_ulong,
         #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))]
-        __pad2: crate::c_short,
+        __pad2: c_short,
         #[cfg(any(target_arch = "mips", target_arch = "mips32r6"))]
         st_pad2: [c_long; 2],
         pub st_size: off_t,

@@ -1,4 +1,4 @@
-use crate::{c_int, size_t};
+use crate::prelude::*;
 
 pub type c_char = i8;
 pub type c_long = i32;
@@ -90,8 +90,8 @@ cfg_if! {
             }
         }
         impl Eq for mcontext_t {}
-        impl crate::fmt::Debug for mcontext_t {
-            fn fmt(&self, f: &mut crate::fmt::Formatter) -> crate::fmt::Result {
+        impl fmt::Debug for mcontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("mcontext_t")
                     .field("mc_onstack", &self.mc_onstack)
                     .field("mc_gs", &self.mc_gs)
@@ -126,8 +126,8 @@ cfg_if! {
                     .finish()
             }
         }
-        impl crate::hash::Hash for mcontext_t {
-            fn hash<H: crate::hash::Hasher>(&self, state: &mut H) {
+        impl hash::Hash for mcontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mc_onstack.hash(state);
                 self.mc_gs.hash(state);
                 self.mc_fs.hash(state);
@@ -163,7 +163,7 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = crate::mem::size_of::<c_long>() - 1;
+pub(crate) const _ALIGNBYTES: usize = mem::size_of::<c_long>() - 1;
 
 pub const MINSIGSTKSZ: size_t = 2048; // 512 * 4
 

@@ -1,4 +1,4 @@
-use crate::{c_int, c_long, c_uint, c_void, size_t};
+use crate::prelude::*;
 
 pub type nto_job_t = crate::sync_t;
 
@@ -83,7 +83,7 @@ s! {
     //       of Neutrino 7.1 SDP.  Commented out for now.
     //pub struct _asyncmsg_put_header {
     //    pub err: c_int,
-    //    pub iov: *mut ::iov_t,
+    //    pub iov: *mut crate::iov_t,
     //    pub parts: c_int,
     //    pub handle: c_uint,
     //    pub cb: Option<
@@ -105,7 +105,7 @@ s! {
     //    pub buffer_size: size_t,
     //    pub max_num_buffer: c_uint,
     //    pub trigger_num_msg: c_uint,
-    //    pub trigger_time: ::_itimer,
+    //    pub trigger_time: crate::_itimer,
     //    reserve: c_uint,
     //}
 
@@ -116,15 +116,15 @@ s! {
     //    pub sendq_tail: c_uint,
     //    pub sendq_free: c_uint,
     //    pub err: c_int,
-    //    pub ev: ::sigevent,
+    //    pub ev: crate::sigevent,
     //    pub num_curmsg: c_uint,
-    //    pub ttimer: ::timer_t,
-    //    pub block_con: ::pthread_cond_t,
-    //    pub mu: ::pthread_mutex_t,
+    //    pub ttimer: crate::timer_t,
+    //    pub block_con: crate::pthread_cond_t,
+    //    pub mu: crate::pthread_mutex_t,
     //    reserved: c_uint,
-    //    pub attr: ::_asyncmsg_connection_attr,
+    //    pub attr: crate::_asyncmsg_connection_attr,
     //    pub reserves: [c_uint; 3],
-    //    pub sendq: [::_asyncmsg_put_header; 1], // flexarray
+    //    pub sendq: [crate::_asyncmsg_put_header; 1], // flexarray
     //}
 
     pub struct __c_anonymous_struct_ev {
@@ -543,7 +543,7 @@ extern "C" {
     //       standard installation of Neutrino 7.1 SDP.  Commented out for now.
     //pub fn ConnectAttachExt(
     //    __nd: u32,
-    //    __pid: ::pid_t,
+    //    __pid: crate::pid_t,
     //    __chid: c_int,
     //    __index: c_uint,
     //    __flags: c_int,
@@ -1262,7 +1262,7 @@ extern "C" {
     //pub fn InterruptDisable();
     pub fn InterruptMask(__intr: c_int, __id: c_int) -> c_int;
     pub fn InterruptUnmask(__intr: c_int, __id: c_int) -> c_int;
-    //pub fn InterruptLock(__spin: *mut ::intrspin);
-    //pub fn InterruptUnlock(__spin: *mut ::intrspin);
+    //pub fn InterruptLock(__spin: *mut intrspin);
+    //pub fn InterruptUnlock(__spin: *mut intrspin);
     //pub fn InterruptStatus() -> c_uint;
 }
