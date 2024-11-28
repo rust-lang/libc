@@ -1135,7 +1135,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         let env = match version {
             "700" => "nto70",
             "710" => "nto71",
-            _ => panic!("Unknown version"),
+            "710_iosock" => "nto71_iosock",
+            _ => panic!("Unknown version: {version}"),
         };
         ("nto", "unix", env)
     } else if target.contains("linux-ohos") {
