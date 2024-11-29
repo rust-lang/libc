@@ -1,6 +1,34 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.167](https://github.com/rust-lang/libc/compare/0.2.166...0.2.167) - 2024-11-28
+
+### Added
+
+- Solarish: add `st_fstype` to `stat` <https://github.com/rust-lang/libc/pull/4145>
+- Trusty: Add `intptr_t` and `uintptr_t` ([#4161](https://github.com/rust-lang/libc/pull/4161))
+
+### Fixed
+
+- Fix the build with `rustc-dep-of-std` <https://github.com/rust-lang/libc/pull/4158>
+- Wasi: Add back unsafe block for `clockid_t` static variables ([#4157](https://github.com/rust-lang/libc/pull/4157))
+
+### Cleanup
+
+- Create an internal prelude <https://github.com/rust-lang/libc/pull/4161>
+- Fix `unused_qualifications`<https://github.com/rust-lang/libc/pull/4132>
+
+### Other
+
+- CI: Check various FreeBSD versions ([#4159](https://github.com/rust-lang/libc/pull/4159))
+- CI: add a timeout for all jobs <https://github.com/rust-lang/libc/pull/4164>
+- CI: verify MSRV for `wasm32-wasi` <https://github.com/rust-lang/libc/pull/4157>
+- Migrate to the 2021 edition <https://github.com/rust-lang/libc/pull/4132>
+
+### Removed
+
+- Remove one unused import after the edition 2021 bump
+
 ## [0.2.166](https://github.com/rust-lang/libc/compare/0.2.165...0.2.166) - 2024-11-26
 
 ### Fixed
