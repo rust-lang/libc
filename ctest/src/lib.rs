@@ -1142,6 +1142,8 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("linux", "unix", "ohos")
     } else if target.contains("aix") {
         ("aix", "unix", "")
+    } else if target.contains("hurd") {
+        ("hurd", "unix", "gnu")
     } else {
         panic!("unknown os/family: {}", target)
     };
