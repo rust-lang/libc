@@ -32,7 +32,7 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install MinGW (i686)
         if: matrix.arch == 'i686'
