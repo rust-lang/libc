@@ -1,6 +1,6 @@
 //! libc - Raw FFI bindings to platforms' system libraries
-#![crate_name = "libc"]
-#![crate_type = "rlib"]
+#![cfg_attr(feature = "rustc-dep-of-std", crate_name = "libc")]
+#![cfg_attr(feature = "rustc-dep-of-std", crate_type = "rlib")]
 #![allow(
     renamed_and_removed_lints, // Keep this order.
     unknown_lints, // Keep this order.
