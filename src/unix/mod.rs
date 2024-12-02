@@ -334,7 +334,13 @@ pub const ATF_PERM: c_int = 0x04;
 pub const ATF_PUBL: c_int = 0x08;
 pub const ATF_USETRAILERS: c_int = 0x10;
 
-pub const FNM_PERIOD: c_int = 1 << 2;
+cfg_if! {
+    if #[cfg(target_os = "nto")] {
+        pub const FNM_PERIOD: c_int = 1 << 1;
+    } else {
+        pub const FNM_PERIOD: c_int = 1 << 2;
+    }
+}
 pub const FNM_NOMATCH: c_int = 1;
 
 cfg_if! {
@@ -354,9 +360,22 @@ cfg_if! {
         target_os = "cygwin",
     ))] {
         pub const FNM_PATHNAME: c_int = 1 << 1;
-        pub const FNM_NOESCAPE: c_int = 1 << 0;
     } else {
         pub const FNM_PATHNAME: c_int = 1 << 0;
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(
+        target_os = "macos",
+        target_os = "freebsd",
+        target_os = "android",
+        target_os = "openbsd",
+    ))] {
+        pub const FNM_NOESCAPE: c_int = 1 << 0;
+    } else if #[cfg(target_os = "nto")] {
+        pub const FNM_NOESCAPE: c_int = 1 << 2;
+    } else {
         pub const FNM_NOESCAPE: c_int = 1 << 1;
     }
 }
