@@ -42,6 +42,8 @@ fn do_cc() {
         || target.contains("l4re")
         || target.contains("android")
         || target.contains("emscripten")
+        || target.contains("solaris")
+        || target.contains("illumos")
     {
         cc::Build::new().file("src/sigrt.c").compile("sigrt");
     }
