@@ -2542,6 +2542,14 @@ f! {
 }
 
 safe_f! {
+    pub fn SIGRTMAX() -> c_int {
+        unsafe { crate::sysconf(_SC_SIGRT_MAX) as c_int }
+    }
+
+    pub fn SIGRTMIN() -> c_int {
+        unsafe { crate::sysconf(_SC_SIGRT_MIN) as c_int }
+    }
+
     pub {const} fn WIFEXITED(status: c_int) -> bool {
         (status & 0xFF) == 0
     }
