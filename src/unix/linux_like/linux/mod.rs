@@ -4767,6 +4767,7 @@ pub const UDP_NO_CHECK6_RX: c_int = 102;
 
 // include/uapi/linux/mman.h
 pub const MAP_SHARED_VALIDATE: c_int = 0x3;
+pub const MAP_DROPPABLE: c_int = 0x8;
 
 // include/uapi/asm-generic/mman-common.h
 pub const MAP_FIXED_NOREPLACE: c_int = 0x100000;
