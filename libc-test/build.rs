@@ -2062,9 +2062,9 @@ fn test_android(target: &str) {
             | "PF_IO_WORKER"
             | "PF_WQ_WORKER"
             | "PF_FORKNOEXEC"
+            | "PF_MCE_PROCESS"
             | "PF_SUPERPRIV"
             | "PF_DUMPCORE"
-            | "PF_MCE_PROCESS"
             | "PF_SIGNALED"
             | "PF_MEMALLOC"
             | "PF_NPROC_EXCEEDED"
@@ -2080,6 +2080,7 @@ fn test_android(target: &str) {
             | "PF_NO_SETAFFINITY"
             | "PF_MCE_EARLY"
             | "PF_MEMALLOC_PIN"
+            | "PF_BLOCK_TS"
             | "PF_SUSPEND_TASK" => true,
 
             _ => false,
@@ -4315,7 +4316,9 @@ fn test_linux(target: &str) {
             | "PF_RANDOMIZE"
             | "PF_NO_SETAFFINITY"
             | "PF_MCE_EARLY"
-            | "PF_MEMALLOC_PIN" => true,
+            | "PF_MEMALLOC_PIN"
+            | "PF_BLOCK_TS"
+            | "PF_SUSPEND_TASK" => true,
 
             // FIXME: Requires >= 6.9 kernel headers.
             "EPIOCSPARAMS"
