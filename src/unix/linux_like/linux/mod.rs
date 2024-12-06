@@ -5693,6 +5693,14 @@ pub const PF_RANDOMIZE: c_int = 0x00400000;
 pub const PF_NO_SETAFFINITY: c_int = 0x04000000;
 pub const PF_MCE_EARLY: c_int = 0x08000000;
 pub const PF_MEMALLOC_PIN: c_int = 0x10000000;
+pub const PF_BLOCK_TS: c_int = 0x20000000;
+pub const PF_SUSPEND_TASK: c_int = PF_SUSPEND_TASK_UINT as _;
+// The used value is the highest possible bit fitting on 32 bits, so directly
+// defining it as a signed integer causes the compiler to report an overflow.
+// Use instead a private intermediary that assuringly has the correct type and
+// cast it where necessary to the wanted final type, which preserves the
+// desired information as-is in terms of integer representation.
+const PF_SUSPEND_TASK_UINT: c_uint = 0x80000000;
 
 pub const CSIGNAL: c_int = 0x000000ff;
 
