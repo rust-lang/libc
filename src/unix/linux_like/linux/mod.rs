@@ -5668,32 +5668,68 @@ pub const NET_DCCP: c_int = 20;
 pub const NET_IRDA: c_int = 412;
 
 // include/linux/sched.h
+/// I'm a virtual CPU.
 pub const PF_VCPU: c_int = 0x00000001;
+/// I am an IDLE thread.
 pub const PF_IDLE: c_int = 0x00000002;
+/// Getting shut down.
 pub const PF_EXITING: c_int = 0x00000004;
+/// Coredumps should ignore this task.
 pub const PF_POSTCOREDUMP: c_int = 0x00000008;
+/// Task is an IO worker.
 pub const PF_IO_WORKER: c_int = 0x00000010;
+/// I'm a workqueue worker.
 pub const PF_WQ_WORKER: c_int = 0x00000020;
+/// Forked but didn't exec.
 pub const PF_FORKNOEXEC: c_int = 0x00000040;
+/// Process policy on mce errors.
 pub const PF_MCE_PROCESS: c_int = 0x00000080;
+/// Used super-user privileges.
 pub const PF_SUPERPRIV: c_int = 0x00000100;
+/// Dumped core.
 pub const PF_DUMPCORE: c_int = 0x00000200;
+/// Killed by a signal.
 pub const PF_SIGNALED: c_int = 0x00000400;
+/// Allocating memory to free memory.
+///
+/// See `memalloc_noreclaim_save()`.
 pub const PF_MEMALLOC: c_int = 0x00000800;
+/// `set_user()` noticed that `RLIMIT_NPROC` was exceeded.
 pub const PF_NPROC_EXCEEDED: c_int = 0x00001000;
+/// If unset the fpu must be initialized before use.
 pub const PF_USED_MATH: c_int = 0x00002000;
+/// Kernel thread cloned from userspace thread.
 pub const PF_USER_WORKER: c_int = 0x00004000;
+/// This thread should not be frozen.
 pub const PF_NOFREEZE: c_int = 0x00008000;
+/// I am `kswapd`.
 pub const PF_KSWAPD: c_int = 0x00020000;
+/// All allocations inherit `GFP_NOFS`.
+///
+/// See `memalloc_nfs_save()`.
 pub const PF_MEMALLOC_NOFS: c_int = 0x00040000;
+/// All allocations inherit `GFP_NOIO`.
+///
+/// See `memalloc_noio_save()`.
 pub const PF_MEMALLOC_NOIO: c_int = 0x00080000;
+/// Throttle writes only against the bdi I write to, I am cleaning
+/// dirty pages from some other bdi.
 pub const PF_LOCAL_THROTTLE: c_int = 0x00100000;
+/// I am a kernel thread.
 pub const PF_KTHREAD: c_int = 0x00200000;
+/// Randomize virtual address space.
 pub const PF_RANDOMIZE: c_int = 0x00400000;
+/// Userland is not allowed to meddle with `cpus_mask`.
 pub const PF_NO_SETAFFINITY: c_int = 0x04000000;
+/// Early kill for mce process policy.
 pub const PF_MCE_EARLY: c_int = 0x08000000;
+/// Allocations constrained to zones which allow long term pinning.
+///
+/// See `memalloc_pin_save()`.
 pub const PF_MEMALLOC_PIN: c_int = 0x10000000;
+/// Plug has ts that needs updating.
 pub const PF_BLOCK_TS: c_int = 0x20000000;
+/// This thread called `freeze_processes()` and should not be frozen.
 pub const PF_SUSPEND_TASK: c_int = PF_SUSPEND_TASK_UINT as _;
 // The used value is the highest possible bit fitting on 32 bits, so directly
 // defining it as a signed integer causes the compiler to report an overflow.
