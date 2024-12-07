@@ -1340,6 +1340,8 @@ cfg_if! {
             }
         }
 
+        // FIXME(msrv): suggested method was added in 1.85
+        #[allow(unpredictable_function_pointer_comparisons)]
         impl PartialEq for sigevent {
             fn eq(&self, other: &sigevent) -> bool {
                 self.sigev_value == other.sigev_value

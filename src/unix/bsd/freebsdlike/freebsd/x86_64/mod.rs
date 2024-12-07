@@ -238,6 +238,8 @@ cfg_if! {
             }
         }
 
+        // FIXME(msrv): suggested method was added in 1.85
+        #[allow(unpredictable_function_pointer_comparisons)]
         impl PartialEq for __c_anonymous_elf64_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf64_auxv_union) -> bool {
                 unsafe {
