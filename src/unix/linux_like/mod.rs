@@ -268,8 +268,6 @@ s_no_extra_traits! {
         pub u64: u64,
     }
 
-    // Can't correctly impl Debug for unions
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_sigev_un {
         _pad: [c_int; SIGEV_PAD_SIZE],
         pub _tid: c_int,

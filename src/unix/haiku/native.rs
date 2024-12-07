@@ -501,20 +501,6 @@ cfg_if! {
             }
         }
         impl Eq for cpuid_info {}
-        impl fmt::Debug for cpuid_info {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("cpuid_info")
-                        .field("eax_0", &self.eax_0)
-                        .field("eax_1", &self.eax_1)
-                        .field("eax_2", &self.eax_2)
-                        .field("eax_3", &self.eax_3)
-                        .field("as_chars", &self.as_chars)
-                        .field("regs", &self.regs)
-                        .finish()
-                }
-            }
-        }
 
         impl PartialEq for __c_anonymous_cpu_topology_info_data {
             fn eq(&self, other: &__c_anonymous_cpu_topology_info_data) -> bool {
@@ -526,17 +512,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_cpu_topology_info_data {}
-        impl fmt::Debug for __c_anonymous_cpu_topology_info_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__c_anonymous_cpu_topology_info_data")
-                        .field("root", &self.root)
-                        .field("package", &self.package)
-                        .field("core", &self.core)
-                        .finish()
-                }
-            }
-        }
 
         impl PartialEq for cpu_topology_node_info {
             fn eq(&self, other: &cpu_topology_node_info) -> bool {

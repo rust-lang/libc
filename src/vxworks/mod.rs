@@ -533,18 +533,6 @@ cfg_if! {
             }
         }
         impl Eq for sa_u_t {}
-        impl fmt::Debug for sa_u_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    let h = match self.sa_handler {
-                        Some(handler) => handler as usize,
-                        None => 0 as usize,
-                    };
-
-                    f.debug_struct("sa_u_t").field("sa_handler", &h).finish()
-                }
-            }
-        }
         impl hash::Hash for sa_u_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -563,13 +551,6 @@ cfg_if! {
             }
         }
         impl Eq for sigval {}
-        impl fmt::Debug for sigval {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigval")
-                    .field("sival_ptr", unsafe { &(self.sival_ptr as usize) })
-                    .finish()
-            }
-        }
         impl hash::Hash for sigval {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { (self.sival_ptr as usize).hash(state) };

@@ -159,6 +159,13 @@ macro_rules! s_no_extra_traits {
             $(#[$attr])*
             pub union $i { $($field)* }
         }
+
+        #[cfg(feature = "extra_traits")]
+        impl ::core::fmt::Debug for $i {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
+            }
+        }
     );
 
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
