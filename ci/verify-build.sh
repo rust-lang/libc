@@ -28,6 +28,12 @@ if [ "$TOOLCHAIN" = "nightly" ] ; then
     rustup component add rust-src
 fi
 
+# Print GHA workflow commands
+echo_if_ci() {
+    # Discard stderr so the "set -x" trace doesn't show up
+    { [ -n "${CI:-}" ] && echo "$1"; } 2> /dev/null
+}
+
 # Run the tests for a specific target
 test_target() {
     target="$1"
@@ -293,11 +299,15 @@ filter_and_run() {
 }
 
 for target in $targets; do
+    echo_if_ci "::group::Target: $target"
     filter_and_run "$target"
+    echo_if_ci "::endgroup::"
 done
 
 for target in ${no_dist_targets:-}; do
+    echo_if_ci "::group::Target: $target"
     filter_and_run "$target" 1
+    echo_if_ci "::endgroup::"
 done
 
 # Make sure we didn't accidentally filter everything
