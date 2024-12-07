@@ -30,8 +30,8 @@ fi
 
 # Run the tests for a specific target
 test_target() {
-    target="${1}"
-    no_dist="${2:-0}"
+    target="$1"
+    no_dist="$2"
 
     RUSTFLAGS="${RUSTFLAGS:-}"
 
@@ -265,7 +265,13 @@ case "$rust" in
     *) supports_wasi_pn=0 ;;
 esac
 
-for target in $targets; do
+some_tests_run=0
+
+# Apply the `FILTER` variable, do OS-specific tasks, and run a target
+filter_and_run() {
+    target="$1"
+    no_dist="${2:-0}"
+
     if echo "$target" | grep -q "$filter"; then
         if [ "$os" = "windows" ]; then
             TARGET="$target" ./ci/install-rust.sh
@@ -278,27 +284,24 @@ for target in $targets; do
 
         # `wasm32-wasip2` only exists in recent versions of Rust
         if [ "$target" = "wasm32-wasip2" ] && [ "$supports_wasi_pn" = "0" ]; then
-            continue
+            return
         fi
             
-        test_target "$target"
-        test_run=1
+        test_target "$target" "$no_dist"
+        some_tests_run=1
     fi
+}
+
+for target in $targets; do
+    filter_and_run "$target"
 done
 
 for target in ${no_dist_targets:-}; do
-    if echo "$target" | grep -q "$filter"; then
-        if [ "$os" = "windows" ]; then
-            TARGET="$target" ./ci/install-rust.sh
-        fi
-
-        test_target "$target" 1
-        test_run=1
-    fi
+    filter_and_run "$target" 1
 done
 
 # Make sure we didn't accidentally filter everything
-if [ "${test_run:-}" != 1 ]; then
+if [ "$some_tests_run" != 1 ]; then
     echo "No tests were run"
     exit 1
 fi
