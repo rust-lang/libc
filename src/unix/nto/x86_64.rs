@@ -101,18 +101,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for x86_64_fpu_registers {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("x86_64_fpu_registers")
-                        .field("fsave_area", &self.fsave_area)
-                        .field("fxsave_area", &self.fxsave_area)
-                        .field("xsave_area", &self.xsave_area)
-                        .finish()
-                }
-            }
-        }
-
         impl hash::Hash for x86_64_fpu_registers {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {

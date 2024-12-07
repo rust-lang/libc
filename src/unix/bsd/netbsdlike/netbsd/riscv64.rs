@@ -19,7 +19,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub union __fpreg {
         pub u_u64: u64,
         pub u_d: c_double,
