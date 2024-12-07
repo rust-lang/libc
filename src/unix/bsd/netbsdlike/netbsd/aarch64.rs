@@ -54,19 +54,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous__freg {}
-        impl fmt::Debug for __c_anonymous__freg {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__c_anonymous__freg")
-                        .field("__b8", &self.__b8)
-                        .field("__h16", &self.__h16)
-                        .field("__s32", &self.__s32)
-                        .field("__d64", &self.__d64)
-                        .field("__q128", &self.__q128)
-                        .finish()
-                }
-            }
-        }
         impl hash::Hash for __c_anonymous__freg {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {

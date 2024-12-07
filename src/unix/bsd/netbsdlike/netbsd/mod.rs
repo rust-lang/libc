@@ -1340,17 +1340,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for __c_anonymous_posix_spawn_fae {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__c_anonymous_posix_fae")
-                        .field("open", &self.open)
-                        .field("dup2", &self.dup2)
-                        .finish()
-                }
-            }
-        }
-
         impl hash::Hash for __c_anonymous_posix_spawn_fae {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1365,17 +1354,6 @@ cfg_if! {
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe { self.ifcu_buf == other.ifcu_buf || self.ifcu_req == other.ifcu_req }
-            }
-        }
-
-        impl fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__c_anonymous_ifc_ifcu")
-                        .field("ifcu_buf", &self.ifcu_buf)
-                        .field("ifcu_req", &self.ifcu_req)
-                        .finish()
-                }
             }
         }
 

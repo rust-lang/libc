@@ -110,16 +110,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_fp_reg_set {}
-        impl fmt::Debug for __c_anonymous_fp_reg_set {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__c_anonymous_fp_reg_set")
-                        .field("fpchip_state", &{ self.fpchip_state })
-                        .field("f_fpregs", &{ self.f_fpregs })
-                        .finish()
-                }
-            }
-        }
         impl PartialEq for fpregset_t {
             fn eq(&self, other: &fpregset_t) -> bool {
                 self.fp_reg_set == other.fp_reg_set

@@ -264,7 +264,6 @@ s_no_extra_traits! {
         pub __fpregs: __riscv_mc_fp_state,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union __riscv_mc_fp_state {
         pub __f: __riscv_mc_f_ext_state,
         pub __d: __riscv_mc_d_ext_state,

@@ -65,7 +65,6 @@ s_no_extra_traits! {
         pub d_id: crate::door_id_t,
     }
 
-    #[cfg_attr(feature = "extra_traits", allow(missing_debug_implementations))]
     pub union door_desc_t__d_data {
         pub d_desc: door_desc_t__d_data__d_desc,
         d_resv: [c_int; 5], /* Check out /usr/include/sys/door.h */

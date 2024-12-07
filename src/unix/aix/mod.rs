@@ -575,14 +575,6 @@ cfg_if! {
             }
         }
         impl Eq for __sigaction_sa_union {}
-        impl fmt::Debug for __sigaction_sa_union {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("__sigaction_sa_union")
-                    .field("__su_handler", unsafe { &self.__su_handler })
-                    .field("__su_sigaction", unsafe { &self.__su_sigaction })
-                    .finish()
-            }
-        }
         impl hash::Hash for __sigaction_sa_union {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -627,15 +619,6 @@ cfg_if! {
             }
         }
         impl Eq for __poll_ctl_ext_u {}
-        impl fmt::Debug for __poll_ctl_ext_u {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("__poll_ctl_ext_u")
-                    .field("addr", unsafe { &self.addr })
-                    .field("data32", unsafe { &self.data32 })
-                    .field("data", unsafe { &self.data })
-                    .finish()
-            }
-        }
         impl hash::Hash for __poll_ctl_ext_u {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {

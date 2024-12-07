@@ -1740,13 +1740,11 @@ s_no_extra_traits! {
     }
 
     // linux/ptp_clock.h
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_ptp_perout_request_1 {
         pub start: ptp_clock_time,
         pub phase: ptp_clock_time,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_ptp_perout_request_2 {
         pub on: ptp_clock_time,
         pub rsv: [c_uint; 4],
@@ -1768,7 +1766,6 @@ s_no_extra_traits! {
         pub xsk_tx_metadata_union: __c_anonymous_xsk_tx_metadata_union,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_xsk_tx_metadata_union {
         pub request: xsk_tx_metadata_request,
         pub completion: xsk_tx_metadata_completion,
@@ -2101,39 +2098,11 @@ cfg_if! {
                 self.mq_curmsgs.hash(state);
             }
         }
-        impl fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_netmask", unsafe { &self.ifru_netmask })
-                    .field("ifru_hwaddr", unsafe { &self.ifru_hwaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_ifindex", unsafe { &self.ifru_ifindex })
-                    .field("ifru_metric", unsafe { &self.ifru_metric })
-                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
-                    .field("ifru_map", unsafe { &self.ifru_map })
-                    .field("ifru_slave", unsafe { &self.ifru_slave })
-                    .field("ifru_newname", unsafe { &self.ifru_newname })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .finish()
-            }
-        }
         impl fmt::Debug for ifreq {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifreq")
                     .field("ifr_name", &self.ifr_name)
                     .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
                     .finish()
             }
         }
@@ -2210,45 +2179,12 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for iwreq_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("iwreq_data")
-                    .field("name", unsafe { &self.name })
-                    .field("essid", unsafe { &self.essid })
-                    .field("nwid", unsafe { &self.nwid })
-                    .field("freq", unsafe { &self.freq })
-                    .field("sens", unsafe { &self.sens })
-                    .field("bitrate", unsafe { &self.bitrate })
-                    .field("txpower", unsafe { &self.txpower })
-                    .field("rts", unsafe { &self.rts })
-                    .field("frag", unsafe { &self.frag })
-                    .field("mode", unsafe { &self.mode })
-                    .field("retry", unsafe { &self.retry })
-                    .field("encoding", unsafe { &self.encoding })
-                    .field("power", unsafe { &self.power })
-                    .field("qual", unsafe { &self.qual })
-                    .field("ap_addr", unsafe { &self.ap_addr })
-                    .field("addr", unsafe { &self.addr })
-                    .field("param", unsafe { &self.param })
-                    .field("data", unsafe { &self.data })
-                    .finish()
-            }
-        }
-
         impl fmt::Debug for iw_event {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("iw_event")
                     .field("len", &self.len)
                     .field("cmd", &self.cmd)
                     .field("u", &self.u)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for __c_anonymous_iwreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_iwreq")
-                    .field("ifrn_name", unsafe { &self.ifrn_name })
                     .finish()
             }
         }
@@ -5788,7 +5724,8 @@ pub const XDP_UMEM_PGOFF_FILL_RING: crate::c_ulonglong = 0x100000000;
 pub const XDP_UMEM_PGOFF_COMPLETION_RING: crate::c_ulonglong = 0x180000000;
 
 pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: crate::c_int = 48;
-pub const XSK_UNALIGNED_BUF_ADDR_MASK: crate::c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
+pub const XSK_UNALIGNED_BUF_ADDR_MASK: crate::c_ulonglong =
+    (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
 
 pub const XDP_PKT_CONTD: crate::__u32 = 1 << 0;
 
