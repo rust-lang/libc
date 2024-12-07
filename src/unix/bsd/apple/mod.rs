@@ -1718,13 +1718,6 @@ cfg_if! {
             }
         }
         impl Eq for semun {}
-        impl fmt::Debug for semun {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("semun")
-                    .field("val", unsafe { &self.val })
-                    .finish()
-            }
-        }
         impl hash::Hash for semun {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.val.hash(state) };
@@ -3073,15 +3066,6 @@ cfg_if! {
         }
 
         impl Eq for __c_anonymous_ifk_data {}
-
-        impl fmt::Debug for __c_anonymous_ifk_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_ifk_data")
-                    .field("ifk_ptr", unsafe { &self.ifk_ptr })
-                    .field("ifk_value", unsafe { &self.ifk_value })
-                    .finish()
-            }
-        }
         impl hash::Hash for __c_anonymous_ifk_data {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -3144,31 +3128,6 @@ cfg_if! {
 
         impl Eq for __c_anonymous_ifr_ifru {}
 
-        impl fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_metrics", unsafe { &self.ifru_metrics })
-                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
-                    .field("ifru_phys", unsafe { &self.ifru_phys })
-                    .field("ifru_media", unsafe { &self.ifru_media })
-                    .field("ifru_intval", unsafe { &self.ifru_intval })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .field("ifru_devmtu", unsafe { &self.ifru_devmtu })
-                    .field("ifru_kpi", unsafe { &self.ifru_kpi })
-                    .field("ifru_wake_flags", unsafe { &self.ifru_wake_flags })
-                    .field("ifru_route_refcnt", unsafe { &self.ifru_route_refcnt })
-                    .field("ifru_cap", unsafe { &self.ifru_cap })
-                    .field("ifru_functional_type", unsafe {
-                        &self.ifru_functional_type
-                    })
-                    .finish()
-            }
-        }
-
         impl hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -3224,15 +3183,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifc_ifcu")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
-                    .finish()
-            }
-        }
-
         impl hash::Hash for __c_anonymous_ifc_ifcu {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifcu_buf.hash(state) };
@@ -3260,21 +3210,6 @@ cfg_if! {
         }
 
         impl Eq for __c_anonymous_ifr_ifru6 {}
-
-        impl fmt::Debug for __c_anonymous_ifr_ifru6 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_ifr_ifru6")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_flags6", unsafe { &self.ifru_flags6 })
-                    .field("ifru_metrics", unsafe { &self.ifru_metrics })
-                    .field("ifru_intval", unsafe { &self.ifru_intval })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .field("ifru_scope_id", unsafe { &self.ifru_scope_id })
-                    .finish()
-            }
-        }
 
         impl hash::Hash for __c_anonymous_ifr_ifru6 {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {

@@ -1698,13 +1698,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_cr_pid {}
-        impl fmt::Debug for __c_anonymous_cr_pid {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("cr_pid")
-                    .field("cr_pid", unsafe { &self.cr_pid })
-                    .finish()
-            }
-        }
         impl hash::Hash for __c_anonymous_cr_pid {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.cr_pid.hash(state) };
@@ -1876,13 +1869,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_elf32_auxv_union {}
-        impl fmt::Debug for __c_anonymous_elf32_auxv_union {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("a_val")
-                    .field("a_val", unsafe { &self.a_val })
-                    .finish()
-            }
-        }
         impl PartialEq for Elf32_Auxinfo {
             fn eq(&self, other: &Elf32_Auxinfo) -> bool {
                 self.a_type == other.a_type && self.a_un == other.a_un
@@ -1920,27 +1906,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_ifr_ifru {}
-        impl fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_buffer", unsafe { &self.ifru_buffer })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_index", unsafe { &self.ifru_index })
-                    .field("ifru_jid", unsafe { &self.ifru_jid })
-                    .field("ifru_metric", unsafe { &self.ifru_metric })
-                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
-                    .field("ifru_phys", unsafe { &self.ifru_phys })
-                    .field("ifru_media", unsafe { &self.ifru_media })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .field("ifru_cap", unsafe { &self.ifru_cap })
-                    .field("ifru_fib", unsafe { &self.ifru_fib })
-                    .field("ifru_vlan_pcp", unsafe { &self.ifru_vlan_pcp })
-                    .finish()
-            }
-        }
         impl hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.ifru_addr.hash(state) };
@@ -1987,15 +1952,6 @@ cfg_if! {
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
                 unsafe { self.ifcu_buf == other.ifcu_buf && self.ifcu_req == other.ifcu_req }
-            }
-        }
-
-        impl fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifc_ifcu")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
-                    .finish()
             }
         }
 
@@ -2107,14 +2063,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_ifi_epoch {}
-        impl fmt::Debug for __c_anonymous_ifi_epoch {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_ifi_epoch")
-                    .field("tt", unsafe { &self.tt })
-                    .field("ph", unsafe { &self.ph })
-                    .finish()
-            }
-        }
         impl hash::Hash for __c_anonymous_ifi_epoch {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2130,14 +2078,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_ifi_lastchange {}
-        impl fmt::Debug for __c_anonymous_ifi_lastchange {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_ifi_lastchange")
-                    .field("tv", unsafe { &self.tv })
-                    .field("ph", unsafe { &self.ph })
-                    .finish()
-            }
-        }
         impl hash::Hash for __c_anonymous_ifi_lastchange {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
