@@ -5301,10 +5301,7 @@ pub const CANXL_SEC: c_int = 0x01;
 pub const CAN_MTU: usize = size_of::<can_frame>();
 pub const CANFD_MTU: usize = size_of::<canfd_frame>();
 pub const CANXL_MTU: usize = size_of::<canxl_frame>();
-// FIXME(offset_of): use `core::mem::offset_of!` once that is available
-// https://github.com/rust-lang/rfcs/pull/3308
-// pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
-pub const CANXL_HDR_SIZE: usize = 12;
+pub const CANXL_HDR_SIZE: usize = core::mem::offset_of!(canxl_frame, data);
 pub const CANXL_MIN_MTU: usize = CANXL_HDR_SIZE + 64;
 pub const CANXL_MAX_MTU: usize = CANXL_MTU;
 
