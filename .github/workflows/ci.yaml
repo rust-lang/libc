@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         toolchain: [stable, nightly, 1.63.0]
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-14, windows-2025]
         include:
           - toolchain: beta
             os: ubuntu-24.04
