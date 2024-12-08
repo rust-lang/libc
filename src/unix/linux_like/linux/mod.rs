@@ -2768,6 +2768,7 @@ pub const IFA_BROADCAST: c_ushort = 4;
 pub const IFA_ANYCAST: c_ushort = 5;
 pub const IFA_CACHEINFO: c_ushort = 6;
 pub const IFA_MULTICAST: c_ushort = 7;
+pub const IFA_FLAGS: c_ushort = 8;
 
 pub const IFA_F_SECONDARY: u32 = 0x01;
 pub const IFA_F_TEMPORARY: u32 = 0x01;
@@ -2778,6 +2779,10 @@ pub const IFA_F_HOMEADDRESS: u32 = 0x10;
 pub const IFA_F_DEPRECATED: u32 = 0x20;
 pub const IFA_F_TENTATIVE: u32 = 0x40;
 pub const IFA_F_PERMANENT: u32 = 0x80;
+pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
+pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
+pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
+pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
 
 // linux/if_link.h
 pub const IFLA_UNSPEC: c_ushort = 0;
