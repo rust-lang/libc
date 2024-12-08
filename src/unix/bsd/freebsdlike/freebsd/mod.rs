@@ -2711,8 +2711,11 @@ pub const CAP_SOCK_SERVER: u64 = CAP_ACCEPT
     | CAP_SEND
     | CAP_SETSOCKOPT
     | CAP_SHUTDOWN;
+#[deprecated(since = "0.2.165", note = "Not stable across OS versions")]
 pub const CAP_ALL0: u64 = cap_right!(0, 0x000007FFFFFFFFFFu64);
+#[deprecated(since = "0.2.165", note = "Not stable across OS versions")]
 pub const CAP_UNUSED0_44: u64 = cap_right!(0, 0x0000080000000000u64);
+#[deprecated(since = "0.2.165", note = "Not stable across OS versions")]
 pub const CAP_UNUSED0_57: u64 = cap_right!(0, 0x0100000000000000u64);
 pub const CAP_MAC_GET: u64 = cap_right!(1, 0x0000000000000001u64);
 pub const CAP_MAC_SET: u64 = cap_right!(1, 0x0000000000000002u64);
@@ -2736,8 +2739,11 @@ pub const CAP_ACL_GET: u64 = cap_right!(1, 0x0000000000040000u64);
 pub const CAP_ACL_SET: u64 = cap_right!(1, 0x0000000000080000u64);
 pub const CAP_KQUEUE_CHANGE: u64 = cap_right!(1, 0x0000000000100000u64);
 pub const CAP_KQUEUE: u64 = CAP_KQUEUE_EVENT | CAP_KQUEUE_CHANGE;
+#[deprecated(since = "0.2.165", note = "Not stable across OS versions")]
 pub const CAP_ALL1: u64 = cap_right!(1, 0x00000000001FFFFFu64);
+#[deprecated(since = "0.2.165", note = "Not stable across OS versions")]
 pub const CAP_UNUSED1_22: u64 = cap_right!(1, 0x0000000000200000u64);
+#[deprecated(since = "0.2.165", note = "Not stable across OS versions")]
 pub const CAP_UNUSED1_57: u64 = cap_right!(1, 0x0100000000000000u64);
 pub const CAP_FCNTL_GETFL: u32 = 1 << 3;
 pub const CAP_FCNTL_SETFL: u32 = 1 << 4;
