@@ -2618,6 +2618,11 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14.0
             "TCP_FUNCTION_ALIAS" if Some(14) > freebsd_ver => true,
 
+            // These constants may change or disappear in future OS releases, and they probably
+            // have no legitimate use in applications anyway.
+            "CAP_UNUSED0_44" | "CAP_UNUSED0_57" | "CAP_UNUSED1_22" | "CAP_UNUSED1_57" |
+                "CAP_ALL0" | "CAP_ALL1" => true,
+
             _ => false,
         }
     });
