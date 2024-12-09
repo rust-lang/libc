@@ -96,12 +96,22 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.target }}
+
       - name: Run natively
         if: "!matrix.docker"
         run: ./ci/run.sh ${{ matrix.target }}
       - name: Run in Docker
         if: "matrix.docker"
         run: ./ci/run-docker.sh ${{ matrix.target }}
+
+      - name: Create CI artifacts
+        if: always()
+        run: ./ci/create-artifacts.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}
+          path: ${{ env.ARCHIVE_PATH }}
+          retention-days: 5
 
   test_tier2:
     name: Test tier2
@@ -150,8 +160,18 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.target }}
+
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
+
+      - name: Create CI artifacts
+        if: always()
+        run: ./ci/create-artifacts.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}
+          path: ${{ env.ARCHIVE_PATH }}
+          retention-days: 5
 
   test_tier2_vm:
     name: Test tier2 VM
