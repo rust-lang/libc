@@ -944,14 +944,6 @@ cfg_if! {
 
         impl Eq for mount_info {}
 
-        impl fmt::Debug for mount_info {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("mount_info")
-                    // FIXME: .field("align", &self.align)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for mount_info {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe { self.align.hash(state) };
@@ -975,22 +967,6 @@ cfg_if! {
         }
 
         impl Eq for __c_anonymous_ifr_ifru {}
-
-        impl fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_metric", unsafe { &self.ifru_metric })
-                    .field("ifru_vnetid", unsafe { &self.ifru_vnetid })
-                    .field("ifru_media", unsafe { &self.ifru_media })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .field("ifru_index", unsafe { &self.ifru_index })
-                    .finish()
-            }
-        }
 
         impl hash::Hash for __c_anonymous_ifr_ifru {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {

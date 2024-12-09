@@ -994,25 +994,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_netmask", unsafe { &self.ifru_netmask })
-                    .field("ifru_hwaddr", unsafe { &self.ifru_hwaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_ifindex", unsafe { &self.ifru_ifindex })
-                    .field("ifru_metric", unsafe { &self.ifru_metric })
-                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
-                    .field("ifru_map", unsafe { &self.ifru_map })
-                    .field("ifru_slave", unsafe { &self.ifru_slave })
-                    .field("ifru_newname", unsafe { &self.ifru_newname })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .finish()
-            }
-        }
         impl fmt::Debug for ifreq {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifreq")
@@ -1022,14 +1003,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
-                    .finish()
-            }
-        }
         impl fmt::Debug for ifconf {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifconf")

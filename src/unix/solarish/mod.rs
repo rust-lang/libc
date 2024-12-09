@@ -859,16 +859,6 @@ cfg_if! {
             }
         }
         impl Eq for pad128_t {}
-        impl fmt::Debug for pad128_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("pad128_t")
-                        // FIXME: .field("_q", &{self._q})
-                        .field("_l", &{ self._l })
-                        .finish()
-                }
-            }
-        }
         impl hash::Hash for pad128_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -886,16 +876,6 @@ cfg_if! {
             }
         }
         impl Eq for upad128_t {}
-        impl fmt::Debug for upad128_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("upad128_t")
-                        // FIXME: .field("_q", &{self._q})
-                        .field("_l", &{ self._l })
-                        .finish()
-                }
-            }
-        }
         impl hash::Hash for upad128_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -2542,6 +2522,14 @@ f! {
 }
 
 safe_f! {
+    pub fn SIGRTMAX() -> c_int {
+        unsafe { crate::sysconf(_SC_SIGRT_MAX) as c_int }
+    }
+
+    pub fn SIGRTMIN() -> c_int {
+        unsafe { crate::sysconf(_SC_SIGRT_MIN) as c_int }
+    }
+
     pub {const} fn WIFEXITED(status: c_int) -> bool {
         (status & 0xFF) == 0
     }

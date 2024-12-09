@@ -238,6 +238,8 @@ cfg_if! {
             }
         }
 
+        // FIXME(msrv): suggested method was added in 1.85
+        #[allow(unpredictable_function_pointer_comparisons)]
         impl PartialEq for __c_anonymous_elf64_auxv_union {
             fn eq(&self, other: &__c_anonymous_elf64_auxv_union) -> bool {
                 unsafe {
@@ -248,13 +250,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_elf64_auxv_union {}
-        impl fmt::Debug for __c_anonymous_elf64_auxv_union {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("a_val")
-                    .field("a_val", unsafe { &self.a_val })
-                    .finish()
-            }
-        }
         impl PartialEq for Elf64_Auxinfo {
             fn eq(&self, other: &Elf64_Auxinfo) -> bool {
                 self.a_type == other.a_type && self.a_un == other.a_un

@@ -1669,13 +1669,11 @@ s_no_extra_traits! {
     }
 
     // linux/ptp_clock.h
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_ptp_perout_request_1 {
         pub start: ptp_clock_time,
         pub phase: ptp_clock_time,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_ptp_perout_request_2 {
         pub on: ptp_clock_time,
         pub rsv: [c_uint; 4],
@@ -1697,7 +1695,6 @@ s_no_extra_traits! {
         pub xsk_tx_metadata_union: __c_anonymous_xsk_tx_metadata_union,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_xsk_tx_metadata_union {
         pub request: xsk_tx_metadata_request,
         pub completion: xsk_tx_metadata_completion,
@@ -2063,39 +2060,11 @@ cfg_if! {
                 self.mq_curmsgs.hash(state);
             }
         }
-        impl fmt::Debug for __c_anonymous_ifr_ifru {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifru_addr", unsafe { &self.ifru_addr })
-                    .field("ifru_dstaddr", unsafe { &self.ifru_dstaddr })
-                    .field("ifru_broadaddr", unsafe { &self.ifru_broadaddr })
-                    .field("ifru_netmask", unsafe { &self.ifru_netmask })
-                    .field("ifru_hwaddr", unsafe { &self.ifru_hwaddr })
-                    .field("ifru_flags", unsafe { &self.ifru_flags })
-                    .field("ifru_ifindex", unsafe { &self.ifru_ifindex })
-                    .field("ifru_metric", unsafe { &self.ifru_metric })
-                    .field("ifru_mtu", unsafe { &self.ifru_mtu })
-                    .field("ifru_map", unsafe { &self.ifru_map })
-                    .field("ifru_slave", unsafe { &self.ifru_slave })
-                    .field("ifru_newname", unsafe { &self.ifru_newname })
-                    .field("ifru_data", unsafe { &self.ifru_data })
-                    .finish()
-            }
-        }
         impl fmt::Debug for ifreq {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifreq")
                     .field("ifr_name", &self.ifr_name)
                     .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for __c_anonymous_ifc_ifcu {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifr_ifru")
-                    .field("ifcu_buf", unsafe { &self.ifcu_buf })
-                    .field("ifcu_req", unsafe { &self.ifcu_req })
                     .finish()
             }
         }
@@ -2172,45 +2141,12 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for iwreq_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("iwreq_data")
-                    .field("name", unsafe { &self.name })
-                    .field("essid", unsafe { &self.essid })
-                    .field("nwid", unsafe { &self.nwid })
-                    .field("freq", unsafe { &self.freq })
-                    .field("sens", unsafe { &self.sens })
-                    .field("bitrate", unsafe { &self.bitrate })
-                    .field("txpower", unsafe { &self.txpower })
-                    .field("rts", unsafe { &self.rts })
-                    .field("frag", unsafe { &self.frag })
-                    .field("mode", unsafe { &self.mode })
-                    .field("retry", unsafe { &self.retry })
-                    .field("encoding", unsafe { &self.encoding })
-                    .field("power", unsafe { &self.power })
-                    .field("qual", unsafe { &self.qual })
-                    .field("ap_addr", unsafe { &self.ap_addr })
-                    .field("addr", unsafe { &self.addr })
-                    .field("param", unsafe { &self.param })
-                    .field("data", unsafe { &self.data })
-                    .finish()
-            }
-        }
-
         impl fmt::Debug for iw_event {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("iw_event")
                     .field("len", &self.len)
                     .field("cmd", &self.cmd)
                     .field("u", &self.u)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for __c_anonymous_iwreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("__c_anonymous_iwreq")
-                    .field("ifrn_name", unsafe { &self.ifrn_name })
                     .finish()
             }
         }
@@ -2768,6 +2704,7 @@ pub const IFA_BROADCAST: c_ushort = 4;
 pub const IFA_ANYCAST: c_ushort = 5;
 pub const IFA_CACHEINFO: c_ushort = 6;
 pub const IFA_MULTICAST: c_ushort = 7;
+pub const IFA_FLAGS: c_ushort = 8;
 
 pub const IFA_F_SECONDARY: u32 = 0x01;
 pub const IFA_F_TEMPORARY: u32 = 0x01;
@@ -2778,6 +2715,10 @@ pub const IFA_F_HOMEADDRESS: u32 = 0x10;
 pub const IFA_F_DEPRECATED: u32 = 0x20;
 pub const IFA_F_TENTATIVE: u32 = 0x40;
 pub const IFA_F_PERMANENT: u32 = 0x80;
+pub const IFA_F_MANAGETEMPADDR: u32 = 0x100;
+pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
+pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
+pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
 
 // linux/if_link.h
 pub const IFLA_UNSPEC: c_ushort = 0;
@@ -4730,6 +4671,7 @@ pub const UDP_NO_CHECK6_RX: c_int = 102;
 
 // include/uapi/linux/mman.h
 pub const MAP_SHARED_VALIDATE: c_int = 0x3;
+pub const MAP_DROPPABLE: c_int = 0x8;
 
 // include/uapi/asm-generic/mman-common.h
 pub const MAP_FIXED_NOREPLACE: c_int = 0x100000;
@@ -5630,31 +5572,75 @@ pub const NET_DCCP: c_int = 20;
 pub const NET_IRDA: c_int = 412;
 
 // include/linux/sched.h
+/// I'm a virtual CPU.
 pub const PF_VCPU: c_int = 0x00000001;
+/// I am an IDLE thread.
 pub const PF_IDLE: c_int = 0x00000002;
+/// Getting shut down.
 pub const PF_EXITING: c_int = 0x00000004;
+/// Coredumps should ignore this task.
 pub const PF_POSTCOREDUMP: c_int = 0x00000008;
+/// Task is an IO worker.
 pub const PF_IO_WORKER: c_int = 0x00000010;
+/// I'm a workqueue worker.
 pub const PF_WQ_WORKER: c_int = 0x00000020;
+/// Forked but didn't exec.
 pub const PF_FORKNOEXEC: c_int = 0x00000040;
+/// Process policy on mce errors.
 pub const PF_MCE_PROCESS: c_int = 0x00000080;
+/// Used super-user privileges.
 pub const PF_SUPERPRIV: c_int = 0x00000100;
+/// Dumped core.
 pub const PF_DUMPCORE: c_int = 0x00000200;
+/// Killed by a signal.
 pub const PF_SIGNALED: c_int = 0x00000400;
+/// Allocating memory to free memory.
+///
+/// See `memalloc_noreclaim_save()`.
 pub const PF_MEMALLOC: c_int = 0x00000800;
+/// `set_user()` noticed that `RLIMIT_NPROC` was exceeded.
 pub const PF_NPROC_EXCEEDED: c_int = 0x00001000;
+/// If unset the fpu must be initialized before use.
 pub const PF_USED_MATH: c_int = 0x00002000;
+/// Kernel thread cloned from userspace thread.
 pub const PF_USER_WORKER: c_int = 0x00004000;
+/// This thread should not be frozen.
 pub const PF_NOFREEZE: c_int = 0x00008000;
+/// I am `kswapd`.
 pub const PF_KSWAPD: c_int = 0x00020000;
+/// All allocations inherit `GFP_NOFS`.
+///
+/// See `memalloc_nfs_save()`.
 pub const PF_MEMALLOC_NOFS: c_int = 0x00040000;
+/// All allocations inherit `GFP_NOIO`.
+///
+/// See `memalloc_noio_save()`.
 pub const PF_MEMALLOC_NOIO: c_int = 0x00080000;
+/// Throttle writes only against the bdi I write to, I am cleaning
+/// dirty pages from some other bdi.
 pub const PF_LOCAL_THROTTLE: c_int = 0x00100000;
+/// I am a kernel thread.
 pub const PF_KTHREAD: c_int = 0x00200000;
+/// Randomize virtual address space.
 pub const PF_RANDOMIZE: c_int = 0x00400000;
+/// Userland is not allowed to meddle with `cpus_mask`.
 pub const PF_NO_SETAFFINITY: c_int = 0x04000000;
+/// Early kill for mce process policy.
 pub const PF_MCE_EARLY: c_int = 0x08000000;
+/// Allocations constrained to zones which allow long term pinning.
+///
+/// See `memalloc_pin_save()`.
 pub const PF_MEMALLOC_PIN: c_int = 0x10000000;
+/// Plug has ts that needs updating.
+pub const PF_BLOCK_TS: c_int = 0x20000000;
+/// This thread called `freeze_processes()` and should not be frozen.
+pub const PF_SUSPEND_TASK: c_int = PF_SUSPEND_TASK_UINT as _;
+// The used value is the highest possible bit fitting on 32 bits, so directly
+// defining it as a signed integer causes the compiler to report an overflow.
+// Use instead a private intermediary that assuringly has the correct type and
+// cast it where necessary to the wanted final type, which preserves the
+// desired information as-is in terms of integer representation.
+const PF_SUSPEND_TASK_UINT: c_uint = 0x80000000;
 
 pub const CSIGNAL: c_int = 0x000000ff;
 

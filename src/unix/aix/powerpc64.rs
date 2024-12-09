@@ -356,14 +356,6 @@ cfg_if! {
             }
         }
         impl Eq for _kernel_simple_lock {}
-        impl fmt::Debug for _kernel_simple_lock {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("_kernel_simple_lock")
-                    .field("_slock", unsafe { &self._slock })
-                    .field("_slockp", unsafe { &self._slockp })
-                    .finish()
-            }
-        }
         impl hash::Hash for _kernel_simple_lock {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -475,15 +467,6 @@ cfg_if! {
             }
         }
         impl Eq for __ld_info_file {}
-        impl fmt::Debug for __ld_info_file {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("__ld_info_file")
-                    .field("_ldinfo_fd", unsafe { &self._ldinfo_fd })
-                    .field("_ldinfo_fp", unsafe { &self._ldinfo_fp })
-                    .field("_core_offset", unsafe { &self._core_offset })
-                    .finish()
-            }
-        }
         impl hash::Hash for __ld_info_file {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -544,15 +527,6 @@ cfg_if! {
             }
         }
         impl Eq for __pollfd_ext_u {}
-        impl fmt::Debug for __pollfd_ext_u {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("__pollfd_ext_u")
-                    .field("addr", unsafe { &self.addr })
-                    .field("data32", unsafe { &self.data32 })
-                    .field("data", unsafe { &self.data })
-                    .finish()
-            }
-        }
         impl hash::Hash for __pollfd_ext_u {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
