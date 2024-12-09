@@ -11,7 +11,6 @@ contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
 
 [assign.owners]
 "*" = [
-    "@JohnTitor",
     "@tgross35",
 ]
 
