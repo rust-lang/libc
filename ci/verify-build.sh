@@ -71,6 +71,11 @@ test_target() {
     $cmd
     $cmd --features extra_traits
 
+    if [ "$os" = "linux" ]; then
+        # Test with the equivalent of __USE_TIME_BITS64
+        RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64=1 $cmd
+    fi
+
     # Test again without default features, i.e. without "std"
     $cmd --no-default-features
     $cmd --no-default-features --features extra_traits
