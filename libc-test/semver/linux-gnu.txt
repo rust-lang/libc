@@ -626,6 +626,7 @@ malloc_stats
 malloc_trim
 malloc_usable_size
 mallopt
+mempcpy
 mq_notify
 nl_mmap_hdr
 nl_mmap_req

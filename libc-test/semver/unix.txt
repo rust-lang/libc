@@ -638,6 +638,7 @@ localtime_r
 lseek
 lstat
 malloc
+memccpy
 memchr
 memcmp
 memcpy

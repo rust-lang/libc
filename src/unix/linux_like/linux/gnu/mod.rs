@@ -1431,6 +1431,8 @@ extern "C" {
         timeout: *const crate::timespec,
         sigmask: *const crate::sigset_t,
     ) -> c_int;
+
+    pub fn mempcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
 }
 
 cfg_if! {
