@@ -1136,6 +1136,7 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
             "700" => "nto70",
             "710" => "nto71",
             "710_iosock" => "nto71_iosock",
+            "800" => "nto80",
             _ => panic!("Unknown version: {version}"),
         };
         ("nto", "unix", env)
