@@ -47,8 +47,8 @@ run() {
         --env CARGO_TARGET_DIR=/checkout/target \
         --volume "$CARGO_HOME":/cargo \
         --volume "$(rustc --print sysroot)":/rust:ro \
-        --volume "$(pwd)":/checkout:ro \
-        --volume "$(pwd)"/target:/checkout/target \
+        --volume "$PWD":/checkout:ro \
+        --volume "$PWD"/target:/checkout/target \
         $kvm \
         --init \
         --workdir /checkout \
