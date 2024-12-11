@@ -1446,6 +1446,7 @@ sigwait
 sigwaitinfo
 sockaddr_ll
 sockaddr_nl
+sockaddr_vm
 splice
 spwd
 srand
