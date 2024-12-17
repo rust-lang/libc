@@ -5,9 +5,6 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-// only supported on Rust > 1.59, so we can directly reexport c_void from core.
-pub use core::ffi::c_void;
-
 use crate::prelude::*;
 
 pub type c_schar = i8;
