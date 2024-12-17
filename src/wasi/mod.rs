@@ -5,9 +5,9 @@
 
 use core::iter::Iterator;
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
-pub type c_char = i8;
 pub type c_uchar = u8;
 pub type c_schar = i8;
 pub type c_int = i32;

@@ -1,7 +1,7 @@
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 use crate::{off64_t, off_t};
 
-pub type c_char = u8;
 pub type wchar_t = u32;
 
 s! {

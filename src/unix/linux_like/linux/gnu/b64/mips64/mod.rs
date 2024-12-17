@@ -1,8 +1,8 @@
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 use crate::{off64_t, off_t, pthread_mutex_t};
 
 pub type blksize_t = i64;
-pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type nlink_t = u64;

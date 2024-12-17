@@ -1,9 +1,9 @@
 //! RISC-V-specific definitions for 64-bit linux-like values
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 use crate::{off64_t, off_t};
 
-pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type wchar_t = c_int;

@@ -1,5 +1,6 @@
 //! Windows CRT definitions
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
 pub type c_schar = i8;
@@ -22,7 +23,6 @@ pub type uintptr_t = usize;
 pub type ssize_t = isize;
 pub type sighandler_t = usize;
 
-pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type wchar_t = u16;

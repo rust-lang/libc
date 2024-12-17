@@ -1,8 +1,8 @@
 use core::mem::size_of;
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
-pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type caddr_t = *mut c_char;

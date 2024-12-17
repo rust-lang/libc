@@ -1,10 +1,10 @@
 use PT_FIRSTMACH;
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
 pub type c_long = i64;
 pub type c_ulong = u64;
-pub type c_char = u8;
 pub type __greg_t = u64;
 pub type __cpu_simple_lock_nv_t = c_int;
 pub type __gregset = [__greg_t; _NGREG];

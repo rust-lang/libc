@@ -5,6 +5,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
 pub type c_schar = i8;
@@ -44,9 +45,6 @@ pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
 pub type pid_t = c_int;
-
-// aarch64 specific
-pub type c_char = u8;
 
 pub type wchar_t = u32;
 

@@ -1,8 +1,8 @@
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 use crate::{cmsghdr, off_t};
 
 pub type dev_t = u32;
-pub type c_char = i8;
 pub type wchar_t = i32;
 pub type clock_t = u64;
 pub type ino_t = u64;

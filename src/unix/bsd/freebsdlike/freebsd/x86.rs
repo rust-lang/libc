@@ -1,6 +1,6 @@
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
-pub type c_char = i8;
 pub type c_long = i32;
 pub type c_ulong = u32;
 pub type clock_t = c_ulong;

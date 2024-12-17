@@ -1,6 +1,6 @@
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
-pub type c_char = i8;
 pub type wchar_t = i32;
 pub type greg_t = i32;
 

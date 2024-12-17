@@ -1,5 +1,7 @@
 //! SGX C types definition
 
+pub use crate::arch::c_char_def as c_char;
+
 pub type c_schar = i8;
 pub type c_uchar = u8;
 pub type c_short = i16;
@@ -19,7 +21,6 @@ pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
-pub type c_char = i8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 

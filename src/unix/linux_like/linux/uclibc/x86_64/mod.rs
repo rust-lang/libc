@@ -1,12 +1,12 @@
 //! Definitions for uclibc on 64bit systems
 
+pub use crate::arch::c_char_def as c_char;
 use crate::off64_t;
 use crate::prelude::*;
 
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type clock_t = i64;
-pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type fsblkcnt_t = c_ulong;
