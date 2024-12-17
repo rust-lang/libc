@@ -1,14 +1,7 @@
 //! Hermit C type definitions
 
+pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
-
-cfg_if! {
-    if #[cfg(any(target_arch = "aarch64", target_arch = "riscv64"))] {
-        pub type c_char = u8;
-    } else {
-        pub type c_char = i8;
-    }
-}
 
 pub type c_schar = i8;
 pub type c_uchar = u8;
