@@ -1,4 +1,4 @@
-pub use core::ffi::c_void;
+use crate::prelude::*;
 
 pub type size_t = usize;
 pub type ssize_t = isize;
