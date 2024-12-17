@@ -3,7 +3,7 @@ use crate::prelude::*;
 
 pub type clock_t = c_long;
 
-pub type c_char = i8;
+pub type c_char = u8;
 pub type wchar_t = u32;
 
 pub type c_long = i32;
