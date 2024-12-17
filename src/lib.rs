@@ -38,6 +38,44 @@ cfg_if! {
 
 pub use core::ffi::c_void;
 
+/// Type definitions that are coupled tighter to architecture than OS.
+mod arch {
+    cfg_if! {
+        // This configuration comes from `rust-lang/rust` in `library/core/src/ffi/mod.rs`.
+        if #[cfg(all(
+            not(windows),
+            // FIXME(ctest): just use `target_vendor` = "apple"` once `ctest` supports it
+            not(any(
+                target_os = "macos",
+                target_os = "ios",
+                target_os = "tvos",
+                target_os = "watchos",
+                target_os = "visionos",
+            )),
+            any(
+                target_arch = "aarch64",
+                target_arch = "arm",
+                target_arch = "csky",
+                target_arch = "hexagon",
+                target_arch = "msp430",
+                target_arch = "powerpc",
+                target_arch = "powerpc64",
+                target_arch = "riscv64",
+                target_arch = "riscv32",
+                target_arch = "s390x",
+                target_arch = "xtensa",
+            )
+        ))] {
+            // To be reexported as `c_char`
+            // FIXME(ctest): just name these `c_char` once `ctest` learns that these don't get
+            // exported.
+            pub type c_char_def = u8;
+        } else {
+            pub type c_char_def = i8;
+        }
+    }
+}
+
 cfg_if! {
     if #[cfg(windows)] {
         mod fixed_width_ints;
