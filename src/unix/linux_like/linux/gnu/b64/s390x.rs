@@ -4,7 +4,6 @@ use crate::prelude::*;
 use crate::{off64_t, off_t, pthread_mutex_t};
 
 pub type blksize_t = i64;
-pub type c_char = u8;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type nlink_t = u64;

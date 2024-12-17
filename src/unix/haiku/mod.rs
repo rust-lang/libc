@@ -6,7 +6,6 @@ pub type pthread_key_t = c_int;
 pub type nfds_t = c_ulong;
 pub type tcflag_t = c_uint;
 pub type speed_t = c_uchar;
-pub type c_char = i8;
 pub type clock_t = i32;
 pub type clockid_t = i32;
 pub type suseconds_t = i32;

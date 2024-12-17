@@ -5,7 +5,6 @@ pub type nlink_t = u16;
 pub type ino_t = u16;
 pub type blkcnt_t = u64;
 pub type blksize_t = i16;
-pub type c_char = i8;
 pub type c_long = isize;
 pub type c_ulong = usize;
 pub type cc_t = u8;

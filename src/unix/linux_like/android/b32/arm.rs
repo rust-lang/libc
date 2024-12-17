@@ -1,6 +1,5 @@
 use crate::prelude::*;
 
-pub type c_char = u8;
 pub type wchar_t = u32;
 pub type greg_t = i32;
 pub type mcontext_t = sigcontext;

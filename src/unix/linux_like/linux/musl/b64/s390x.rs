@@ -2,7 +2,6 @@ use crate::off_t;
 use crate::prelude::*;
 
 pub type blksize_t = i64;
-pub type c_char = u8;
 pub type nlink_t = u64;
 pub type wchar_t = i32;
 pub type greg_t = u64;
