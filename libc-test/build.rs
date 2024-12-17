@@ -353,6 +353,9 @@ fn test_apple(target: &str) {
             // FIXME: "'__uint128' undeclared" in C
             "__uint128" => true,
 
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
+
             _ => false,
         }
     });
@@ -714,6 +717,8 @@ fn test_windows(target: &str) {
         "ssize_t" if !gnu => true,
         // FIXME: The size and alignment of this type are incorrect
         "time_t" if gnu && i686 => true,
+        // `c_char_def` is always public but not always reexported.
+        "c_char_def" => true,
         _ => false,
     });
 
@@ -924,6 +929,8 @@ fn test_solarish(target: &str) {
 
     cfg.skip_type(move |ty| match ty {
         "sighandler_t" => true,
+        // `c_char_def` is always public but not always reexported.
+        "c_char_def" => true,
         _ => false,
     });
 
@@ -1224,6 +1231,8 @@ fn test_netbsd(target: &str) {
         match ty {
             // FIXME: sighandler_t is crazy across platforms
             "sighandler_t" => true,
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
             _ => false,
         }
     });
@@ -1441,7 +1450,8 @@ fn test_dragonflybsd(target: &str) {
         match ty {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
-
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
             _ => false,
         }
     });
@@ -1599,6 +1609,8 @@ fn test_wasi(target: &str) {
             s => s.to_string(),
         }
     });
+
+    cfg.skip_type(|ty| ty == "c_char_def");
 
     // These have a different and internal type in header files and are only
     // used here to generate a pointer to them in bindings so skip these tests.
@@ -1847,6 +1859,9 @@ fn test_android(target: &str) {
 
             // FIXME: "'__uint128' undeclared" in C
             "__uint128" => true,
+
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
 
             _ => false,
         }
@@ -2599,6 +2614,9 @@ fn test_freebsd(target: &str) {
             // `eventfd(2)` and things come with it are added in FreeBSD 13
             "eventfd_t" if Some(13) > freebsd_ver => true,
 
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
+
             _ => false,
         }
     });
@@ -2915,6 +2933,9 @@ fn test_emscripten(target: &str) {
             // https://github.com/emscripten-core/emscripten/issues/5033
             ty if ty.starts_with("epoll") => true,
 
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
+
             // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
             t => t.ends_with("64") || t.ends_with("64_t"),
@@ -3191,6 +3212,9 @@ fn test_neutrino(target: &str) {
             // Does not exist in Neutrino
             "locale_t" => true,
 
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
+
             _ => false,
         }
     });
@@ -3354,6 +3378,8 @@ fn test_vxworks(target: &str) {
     // FIXME
     cfg.skip_type(move |ty| match ty {
         "stat64" | "sighandler_t" | "off64_t" => true,
+        // `c_char_def` is always public but not always reexported.
+        "c_char_def" => true,
         _ => false,
     });
 
@@ -3700,6 +3726,9 @@ fn test_linux(target: &str) {
 
             // FIXME: "'__uint128' undeclared" in C
             "__uint128" => true,
+
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
 
             t => {
                 if musl {
@@ -4649,6 +4678,8 @@ fn test_linux_like_apis(target: &str) {
             })
             .skip_type(move |ty| match ty {
                 "Elf64_Phdr" | "Elf32_Phdr" => false,
+                // `c_char_def` is always public but not always reexported.
+                "c_char_def" => true,
                 _ => true,
             });
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_elf.rs");
@@ -4884,6 +4915,8 @@ fn test_haiku(target: &str) {
             "pthread_condattr_t" => true,
             "pthread_mutexattr_t" => true,
             "pthread_rwlockattr_t" => true,
+            // `c_char_def` is always public but not always reexported.
+            "c_char_def" => true,
             _ => false,
         }
     });
