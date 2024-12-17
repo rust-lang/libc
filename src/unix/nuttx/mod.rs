@@ -5,7 +5,17 @@ pub type nlink_t = u16;
 pub type ino_t = u16;
 pub type blkcnt_t = u64;
 pub type blksize_t = i16;
-pub type c_char = i8;
+cfg_if! {
+    if #[cfg(any(
+        target_arch = "arm",
+        target_arch = "riscv32",
+        target_arch = "riscv64",
+    ))] {
+        pub type c_char = u8;
+    } else {
+        pub type c_char = i8;
+    }
+}
 pub type c_long = isize;
 pub type c_ulong = usize;
 pub type cc_t = u8;
