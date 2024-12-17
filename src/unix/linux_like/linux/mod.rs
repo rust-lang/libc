@@ -6049,6 +6049,7 @@ pub const SCTP_ADDR_REMOVED: c_int = 2;
 pub const SCTP_ADDR_ADDED: c_int = 3;
 pub const SCTP_ADDR_MADE_PRIM: c_int = 4;
 pub const SCTP_ADDR_CONFIRMED: c_int = 5;
+pub const SCTP_ADDR_POTENTIALLY_FAILED: c_int = 6;
 
 pub const SCTP_DATA_UNSENT: c_int = 0;
 pub const SCTP_DATA_SENT: c_int = 1;
