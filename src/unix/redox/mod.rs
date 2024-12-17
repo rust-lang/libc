@@ -1,6 +1,12 @@
 use crate::prelude::*;
 
-pub type c_char = i8;
+cfg_if! {
+    if #[cfg(target_arch = "aarch64")] {
+        pub type c_char = u8;
+    } else {
+        pub type c_char = i8;
+    }
+}
 pub type wchar_t = i32;
 
 cfg_if! {
