@@ -3324,6 +3324,7 @@ getaddrinfo
 getchar
 getchar_unlocked
 getcwd
+getdomainname
 getegid
 getenv
 geteuid
@@ -3720,6 +3721,7 @@ sendmsg
 sendto
 servent
 setbuf
+setdomainname
 setegid
 setenv
 seteuid
