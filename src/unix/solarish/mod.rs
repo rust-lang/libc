@@ -1,6 +1,5 @@
 use core::mem::size_of;
 
-pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
 pub type c_long = i64;
