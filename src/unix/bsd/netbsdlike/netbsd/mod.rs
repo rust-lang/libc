@@ -2461,17 +2461,6 @@ f! {
     pub fn PROT_MPROTECT_EXTRACT(x: c_int) -> c_int {
         (x >> 3) & 0x7
     }
-
-    pub fn major(dev: crate::dev_t) -> c_int {
-        (((dev as u32) & 0x000fff00) >> 8) as c_int
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_int {
-        let mut res = 0;
-        res |= ((dev as u32) & 0xfff00000) >> 12;
-        res |= (dev as u32) & 0x000000ff;
-        res as c_int
-    }
 }
 
 safe_f! {
@@ -2499,6 +2488,17 @@ safe_f! {
         dev |= (minor << 12) & 0xfff00000;
         dev |= minor & 0xff;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_int {
+        (((dev as u32) & 0x000fff00) >> 8) as c_int
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_int {
+        let mut res = 0;
+        res |= ((dev as u32) & 0xfff00000) >> 12;
+        res |= (dev as u32) & 0x000000ff;
+        res as c_int
     }
 }
 
