@@ -647,6 +647,11 @@ fn test_openbsd(target: &str) {
         }
     });
 
+    cfg.skip_type(move |ty| {
+        // `c_char_def` is always public but not always reexported.
+        ty == "c_char_def"
+    });
+
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
