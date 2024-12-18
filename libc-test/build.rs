@@ -2081,6 +2081,9 @@ fn test_android(target: &str) {
             // Added in API level 26, but some tests use level 24.
             "endgrent" => true,
 
+            // Added in API level 26, but some tests use level 24.
+            "getdomainname" | "setdomainname" => true,
+
             // FIXME: bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
             | "ispunct" | "isspace" | "isupper" | "isxdigit" | "isblank" | "tolower"
