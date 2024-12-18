@@ -2,7 +2,6 @@ use crate::off_t;
 use crate::prelude::*;
 
 // From psABI Calling Convention for RV64
-pub type c_char = u8;
 pub type __u64 = c_ulonglong;
 pub type wchar_t = i32;
 
