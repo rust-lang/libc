@@ -3423,20 +3423,6 @@ f! {
         set1.bits == set2.bits
     }
 
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        let mut major = 0;
-        major |= (dev & 0x00000000000fff00) >> 8;
-        major |= (dev & 0xfffff00000000000) >> 32;
-        major as c_uint
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        let mut minor = 0;
-        minor |= (dev & 0x00000000000000ff) >> 0;
-        minor |= (dev & 0x00000ffffff00000) >> 12;
-        minor as c_uint
-    }
-
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         cmsg.offset(1) as *mut c_uchar
     }
@@ -3518,6 +3504,20 @@ safe_f! {
         dev |= (minor & 0x000000ff) << 0;
         dev |= (minor & 0xffffff00) << 12;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        let mut major = 0;
+        major |= (dev & 0x00000000000fff00) >> 8;
+        major |= (dev & 0xfffff00000000000) >> 32;
+        major as c_uint
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        let mut minor = 0;
+        minor |= (dev & 0x00000000000000ff) >> 0;
+        minor |= (dev & 0x00000ffffff00000) >> 12;
+        minor as c_uint
     }
 }
 

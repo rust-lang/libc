@@ -2546,25 +2546,6 @@ f! {
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
     }
-
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        let x = dev >> 16;
-        x as c_uint
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        let y = dev & 0xFFFF;
-        y as c_uint
-    }
-
-    pub fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
-        let major = major as crate::dev_t;
-        let minor = minor as crate::dev_t;
-        let mut dev = 0;
-        dev |= major << 16;
-        dev |= minor;
-        dev
-    }
 }
 
 safe_f! {
@@ -2611,6 +2592,25 @@ safe_f! {
     // AIX doesn't have native WCOREDUMP.
     pub {const} fn WCOREDUMP(_status: c_int) -> bool {
         false
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        let x = dev >> 16;
+        x as c_uint
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        let y = dev & 0xFFFF;
+        y as c_uint
+    }
+
+    pub {const} fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+        let major = major as crate::dev_t;
+        let minor = minor as crate::dev_t;
+        let mut dev = 0;
+        dev |= major << 16;
+        dev |= minor;
+        dev
     }
 }
 

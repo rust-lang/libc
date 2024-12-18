@@ -1966,19 +1966,6 @@ f! {
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_ALIGN(mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
-
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        ((dev as c_uint) >> 8) & 0xff
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        let dev = dev as c_uint;
-        let mut res = 0;
-        res |= (dev) & 0xff;
-        res |= ((dev) & 0xffff0000) >> 8;
-
-        res
-    }
 }
 
 safe_f! {
@@ -2006,6 +1993,18 @@ safe_f! {
         dev |= minor & 0xff;
         dev |= (minor & 0xffff00) << 8;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        ((dev as c_uint) >> 8) & 0xff
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        let dev = dev as c_uint;
+        let mut res = 0;
+        res |= (dev) & 0xff;
+        res |= ((dev) & 0xffff0000) >> 8;
+        res
     }
 }
 
