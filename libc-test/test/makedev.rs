@@ -1,4 +1,4 @@
-//! Compare libc's makdev function against the actual C macros, for various
+//! Compare libc's makedev, major, minor functions against the actual C macros, for various
 //! inputs.
 
 #[cfg(any(
@@ -16,11 +16,17 @@ mod t {
 
     extern "C" {
         pub fn makedev_ffi(major: c_uint, minor: c_uint) -> dev_t;
+        pub fn major_ffi(dev: dev_t) -> c_uint;
+        pub fn minor_ffi(dev: dev_t) -> c_uint;
     }
 
     fn compare(major: c_uint, minor: c_uint) {
-        let expected = unsafe { makedev_ffi(major, minor) };
-        assert_eq!(libc::makedev(major, minor), expected);
+        let dev = unsafe { makedev_ffi(major, minor) };
+        assert_eq!(libc::makedev(major, minor), dev);
+        let major = unsafe { major_ffi(dev) };
+        assert_eq!(libc::major(dev), major as _);
+        let minor = unsafe { minor_ffi(dev) };
+        assert_eq!(libc::minor(dev), minor as _);
     }
 
     // Every OS should be able to handle 8 bit major and minor numbers
