@@ -1,6 +1,24 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.169](https://github.com/rust-lang/libc/compare/0.2.168...0.2.169) - 2024-12-18
+
+### Added
+
+- FreeBSD: add more socket TCP stack constants <https://github.com/rust-lang/libc/pull/4193>
+- Fuchsia: add a `sockaddr_vm` definition <https://github.com/rust-lang/libc/pull/4194>
+
+### Fixed
+
+**Breaking**: [rust-lang/rust#132975](https://github.com/rust-lang/rust/pull/132975) corrected the signedness of `core::ffi::c_char` on various Tier 2 and Tier 3 platforms (mostly Arm and RISC-V) to match Clang. This release contains the corresponding changes to `libc`, including the following specific pull requests:
+
+- ESP-IDF: Replace arch-conditional `c_char` with a reexport <https://github.com/rust-lang/libc/pull/4195>
+- Fix `c_char` on various targets <https://github.com/rust-lang/libc/pull/4199>
+- Mirror `c_char` configuration from `rust-lang/rust` <https://github.com/rust-lang/libc/pull/4198>
+
+### Cleanup
+
+- Do not re-export `c_void` in target-specific code <https://github.com/rust-lang/libc/pull/4200>
 
 ## [0.2.168](https://github.com/rust-lang/libc/compare/0.2.167...0.2.168) - 2024-12-09
 
