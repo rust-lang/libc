@@ -639,7 +639,7 @@ safe_f! {
     }
 
     pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
-        status >> 8
+        (status >> 8) & 0x00ff
     }
 
     pub {const} fn WCOREDUMP(status: c_int) -> bool {
