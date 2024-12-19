@@ -1,4 +1,3 @@
-pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 use crate::{in6_addr, in_addr_t, timespec, DIR};
 

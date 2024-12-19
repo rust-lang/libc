@@ -1,6 +1,5 @@
 use crate::prelude::*;
 
-pub type c_char = u8;
 pub type caddr_t = *mut c_char;
 pub type clockid_t = c_longlong;
 pub type blkcnt_t = c_long;

@@ -1,7 +1,6 @@
 use crate::prelude::*;
 use crate::{off64_t, off_t};
 
-pub type c_char = u8;
 pub type wchar_t = i32;
 
 s! {

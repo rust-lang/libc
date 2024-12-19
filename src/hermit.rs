@@ -1,6 +1,5 @@
 //! Hermit C type definitions
 
-pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 
 pub type c_schar = i8;
