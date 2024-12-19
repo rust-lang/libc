@@ -4,8 +4,6 @@ use crate::c_schar;
 use crate::prelude::*;
 
 // types
-pub type c_char = i8;
-
 pub type __s16_type = c_short;
 pub type __u16_type = c_ushort;
 pub type __s32_type = c_int;
