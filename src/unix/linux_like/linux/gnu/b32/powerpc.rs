@@ -59,6 +59,8 @@ s! {
 
     pub struct stat {
         pub st_dev: crate::dev_t,
+        #[cfg(not(gnu_file_offset_bits64))]
+        __pad1: c_ushort,
         pub st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,

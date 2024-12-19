@@ -20,7 +20,9 @@ cfg_if! {
     if #[cfg(target_arch = "riscv32")] {
         pub type time_t = i64;
         pub type suseconds_t = i64;
-        pub type ino_t = u64;
+        type __ino_t = c_ulong;
+        type __ino64_t = u64;
+        pub type ino_t = __ino64_t;
         pub type off_t = i64;
         pub type blkcnt_t = i64;
         pub type fsblkcnt_t = u64;
@@ -30,7 +32,9 @@ cfg_if! {
     } else if #[cfg(gnu_file_offset_bits64)] {
         pub type time_t = i32;
         pub type suseconds_t = i32;
-        pub type ino_t = u64;
+        type __ino_t = c_ulong;
+        type __ino64_t = u64;
+        pub type ino_t = __ino64_t;
         pub type off_t = i64;
         pub type blkcnt_t = i64;
         pub type fsblkcnt_t = u64;
@@ -40,7 +44,9 @@ cfg_if! {
     } else {
         pub type time_t = i32;
         pub type suseconds_t = i32;
-        pub type ino_t = u32;
+        type __ino_t = c_ulong;
+        type __ino64_t = u64;
+        pub type ino_t = __ino_t;
         pub type off_t = i32;
         pub type blkcnt_t = i32;
         pub type fsblkcnt_t = c_ulong;
@@ -61,25 +67,40 @@ cfg_if! {
             pub struct stat {
                 pub st_dev: crate::dev_t,
 
-                __pad1: c_short,
+                __pad1: c_uint,
+
+                #[cfg(not(gnu_file_offset_bits64))]
                 pub st_ino: crate::ino_t,
+                #[cfg(all(gnu_file_offset_bits64))]
+                __st_ino: __ino_t,
+
                 pub st_mode: crate::mode_t,
                 pub st_nlink: crate::nlink_t,
                 pub st_uid: crate::uid_t,
                 pub st_gid: crate::gid_t,
+
                 pub st_rdev: crate::dev_t,
-                __pad2: c_short,
+
+                __pad2: c_uint,
+
                 pub st_size: off_t,
+
                 pub st_blksize: crate::blksize_t,
                 pub st_blocks: crate::blkcnt_t,
+
                 pub st_atime: crate::time_t,
                 pub st_atime_nsec: c_long,
                 pub st_mtime: crate::time_t,
                 pub st_mtime_nsec: c_long,
                 pub st_ctime: crate::time_t,
                 pub st_ctime_nsec: c_long,
-                __unused4: c_long,
-                __unused5: c_long,
+
+                #[cfg(not(gnu_file_offset_bits64))]
+                __glibc_reserved4: c_long,
+                #[cfg(not(gnu_file_offset_bits64))]
+                __glibc_reserved5: c_long,
+                #[cfg(gnu_file_offset_bits64)]
+                pub st_ino: crate::ino_t,
             }
         }
     }
