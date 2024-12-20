@@ -528,16 +528,16 @@ s_no_extra_traits! {
     }
 
     pub struct dirent {
-        pub d_ino: u64,
-        pub d_off: i64,
+        pub d_ino: crate::ino_t,
+        pub d_off: crate::off_t,
         pub d_reclen: c_ushort,
         pub d_type: c_uchar,
         pub d_name: [c_char; 256],
     }
 
     pub struct dirent64 {
-        pub d_ino: u64,
-        pub d_off: i64,
+        pub d_ino: crate::ino64_t,
+        pub d_off: crate::off_t,
         pub d_reclen: c_ushort,
         pub d_type: c_uchar,
         pub d_name: [c_char; 256],
