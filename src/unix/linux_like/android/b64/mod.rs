@@ -6,6 +6,8 @@ use crate::prelude::*;
 pub type c_long = i64;
 pub type c_ulong = u64;
 pub type mode_t = u32;
+pub type ino_t = c_ulong;
+pub type off_t = i64;
 pub type off64_t = i64;
 pub type socklen_t = u32;
 
