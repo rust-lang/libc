@@ -864,6 +864,8 @@ cfg_if! {
                 self.mc_fpregs.hash(state);
             }
         }
+        // FIXME(msrv): suggested method was added in 1.85
+        #[allow(unpredictable_function_pointer_comparisons)]
         impl PartialEq for ucontext_t {
             fn eq(&self, other: &ucontext_t) -> bool {
                 self.uc_sigmask == other.uc_sigmask
