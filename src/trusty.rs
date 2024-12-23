@@ -1,4 +1,3 @@
-pub use crate::arch::c_char_def as c_char;
 use crate::prelude::*;
 pub type size_t = usize;
 pub type ssize_t = isize;

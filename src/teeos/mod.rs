@@ -45,9 +45,6 @@ pub type ssize_t = isize;
 
 pub type pid_t = c_int;
 
-// aarch64 specific
-pub type c_char = u8;
-
 pub type wchar_t = u32;
 
 pub type c_long = i64;
