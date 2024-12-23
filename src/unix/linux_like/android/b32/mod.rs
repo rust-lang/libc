@@ -5,7 +5,9 @@ use crate::prelude::*;
 
 pub type c_long = i32;
 pub type c_ulong = u32;
-pub type mode_t = u16;
+pub type mode_t = c_ushort;
+pub type ino_t = u64;
+pub type off_t = i32;
 pub type off64_t = c_longlong;
 pub type sigset_t = c_ulong;
 pub type socklen_t = i32;
@@ -30,7 +32,7 @@ s! {
         pub st_dev: c_ulonglong,
         __pad0: [c_uchar; 4],
         __st_ino: crate::ino_t,
-        pub st_mode: c_uint,
+        pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
@@ -52,7 +54,7 @@ s! {
         pub st_dev: c_ulonglong,
         __pad0: [c_uchar; 4],
         __st_ino: crate::ino_t,
-        pub st_mode: c_uint,
+        pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
