@@ -32,6 +32,7 @@ use std::path::Path;
 use std::{env, fs};
 
 use syn::spanned::Spanned;
+use syn::visit::{self, Visit};
 
 macro_rules! t {
     ($e:expr) => {
@@ -77,12 +78,22 @@ fn walk(path: &Path, err: &mut Errors) {
         t!(t!(fs::File::open(&path)).read_to_string(&mut contents));
 
         let file = t!(syn::parse_file(&contents));
-        check_style(file, &path, err);
+        StyleChecker::new(|line, msg| err.error(&path, line, msg)).visit_file(&file);
     }
 }
 
 struct Errors {
     errs: bool,
+}
+
+struct StyleChecker<F>
+where
+    F: FnMut(usize, &str),
+{
+    state: State,
+    s_macros: usize,
+    f_macros: usize,
+    on_err: F,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -97,83 +108,34 @@ enum State {
     Modules,
 }
 
-fn check_style(file: syn::File, path: &Path, err: &mut Errors) {
-    let mut state = State::Start;
-
-    // FIXME: see below
-    // let mut s_macros = 0;
-    let mut f_macros = 0;
-
-    for item in file.items {
-        let line = item.span().start().line;
-
-        for attr in attrs_of(&item) {
-            if let syn::Meta::List(meta_list) = &attr.meta {
-                let meta_str = meta_list.tokens.to_string();
-                if meta_list.path.is_ident("cfg")
-                    && !(meta_str.contains("target_endian") || meta_str.contains("target_arch"))
-                    && state != State::Structs
-                {
-                    // TODO: not quite the right line number
-                    err.error(path, line, "use cfg_if! and submodules instead of #[cfg]");
-                } else if meta_list.path.is_ident("derive")
-                    && (meta_str.contains("Copy") || meta_str.contains("Clone"))
-                {
-                    err.error(path, line, "impl Copy and Clone manually");
-                }
-            }
+impl<F> StyleChecker<F>
+where
+    F: FnMut(usize, &str),
+{
+    fn new(on_err: F) -> Self {
+        Self {
+            state: State::Start,
+            s_macros: 0,
+            f_macros: 0,
+            on_err,
         }
+    }
 
-        let item_state = if let syn::Item::Use(item_use) = item {
-            if matches!(item_use.vis, syn::Visibility::Public(_)) {
-                State::Modules
-            } else {
-                State::Imports
-            }
-        } else if let syn::Item::Const(_) = item {
-            State::Constants
-        } else if let syn::Item::Type(_) = item {
-            State::Typedefs
-        } else if let syn::Item::Macro(item_macro) = item {
-            if item_macro.mac.path.is_ident("s") {
-                // FIXME: see below
-                // s_macros += 1;
-                State::Structs
-            } else if item_macro.mac.path.is_ident("s_no_extra_traits") {
-                // multiple macros of this type are allowed
-                State::Structs
-            } else if item_macro.mac.path.is_ident("s_paren") {
-                // multiple macros of this type are allowed
-                State::Structs
-            } else if item_macro.mac.path.is_ident("f") {
-                f_macros += 1;
-                State::FunctionDefinitions
-            } else {
-                continue;
-            }
-        } else if let syn::Item::ForeignMod(_) = item {
-            State::Functions
-        } else if let syn::Item::Mod(_) = item {
-            State::Modules
-        } else {
-            continue;
-        };
-
-        if state as usize > item_state as usize {
-            err.error(
-                path,
+    fn set_state(&mut self, new_state: State, line: usize) {
+        if self.state as usize > new_state as usize {
+            (self.on_err)(
                 line,
                 &format!(
                     "{} found after {} when it belongs before",
-                    item_state.desc(),
-                    state.desc()
+                    new_state.desc(),
+                    self.state.desc()
                 ),
             );
         }
 
-        if f_macros == 2 {
-            f_macros += 1;
-            err.error(path, line, "multiple f! macros in one module");
+        if self.f_macros == 2 {
+            self.f_macros += 1;
+            (self.on_err)(line, "multiple f! macros in one module");
         }
 
         // FIXME(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
@@ -182,29 +144,92 @@ fn check_style(file: syn::File, path: &Path, err: &mut Errors) {
         //     s_macros += 1;
         //     err.error(path, i, "multiple s! macros in one module");
         // }
-
-        state = item_state;
     }
 }
 
-fn attrs_of(item: &syn::Item) -> Vec<syn::Attribute> {
-    match item {
-        syn::Item::Const(item_const) => item_const.attrs.clone(),
-        syn::Item::Enum(item_enum) => item_enum.attrs.clone(),
-        syn::Item::ExternCrate(item_extern_crate) => item_extern_crate.attrs.clone(),
-        syn::Item::Fn(item_fn) => item_fn.attrs.clone(),
-        syn::Item::ForeignMod(item_foreign_mod) => item_foreign_mod.attrs.clone(),
-        syn::Item::Impl(item_impl) => item_impl.attrs.clone(),
-        syn::Item::Macro(item_macro) => item_macro.attrs.clone(),
-        syn::Item::Mod(item_mod) => item_mod.attrs.clone(),
-        syn::Item::Static(item_static) => item_static.attrs.clone(),
-        syn::Item::Struct(item_struct) => item_struct.attrs.clone(),
-        syn::Item::Trait(item_trait) => item_trait.attrs.clone(),
-        syn::Item::TraitAlias(item_trait_alias) => item_trait_alias.attrs.clone(),
-        syn::Item::Type(item_type) => item_type.attrs.clone(),
-        syn::Item::Union(item_union) => item_union.attrs.clone(),
-        syn::Item::Use(item_use) => item_use.attrs.clone(),
-        _ => vec![],
+impl<'ast, F> Visit<'ast> for StyleChecker<F>
+where
+    F: FnMut(usize, &str),
+{
+    fn visit_meta_list(&mut self, meta_list: &'ast syn::MetaList) {
+        let line = meta_list.span().start().line;
+        let meta_str = meta_list.tokens.to_string();
+        if meta_list.path.is_ident("cfg")
+            && !(meta_str.contains("target_endian") || meta_str.contains("target_arch"))
+            && self.state != State::Structs
+        {
+            (self.on_err)(line, "use cfg_if! and submodules instead of #[cfg]");
+        } else if meta_list.path.is_ident("derive")
+            && (meta_str.contains("Copy") || meta_str.contains("Clone"))
+        {
+            (self.on_err)(line, "impl Copy and Clone manually");
+        }
+
+        visit::visit_meta_list(self, meta_list);
+    }
+
+    fn visit_item_use(&mut self, item_use: &'ast syn::ItemUse) {
+        let line = item_use.span().start().line;
+        let new_state = if matches!(item_use.vis, syn::Visibility::Public(_)) {
+            State::Modules
+        } else {
+            State::Imports
+        };
+        self.set_state(new_state, line);
+
+        visit::visit_item_use(self, item_use);
+    }
+
+    fn visit_item_const(&mut self, item_const: &'ast syn::ItemConst) {
+        let line = item_const.span().start().line;
+        self.set_state(State::Constants, line);
+
+        visit::visit_item_const(self, item_const);
+    }
+
+    fn visit_item_type(&mut self, item_type: &'ast syn::ItemType) {
+        let line = item_type.span().start().line;
+        self.set_state(State::Typedefs, line);
+
+        visit::visit_item_type(self, item_type);
+    }
+
+    fn visit_macro(&mut self, mac: &'ast syn::Macro) {
+        let line = mac.span().start().line;
+        let new_state = if mac.path.is_ident("s") {
+            // FIXME: see StyleChecker::set_state
+            // s_macros += 1;
+            State::Structs
+        } else if mac.path.is_ident("s_no_extra_traits") {
+            // multiple macros of this type are allowed
+            State::Structs
+        } else if mac.path.is_ident("s_paren") {
+            // multiple macros of this type are allowed
+            State::Structs
+        } else if mac.path.is_ident("f") {
+            self.f_macros += 1;
+            State::FunctionDefinitions
+        } else {
+            visit::visit_macro(self, mac);
+            return;
+        };
+        self.set_state(new_state, line);
+
+        visit::visit_macro(self, mac);
+    }
+
+    fn visit_item_foreign_mod(&mut self, item_foreign_mod: &'ast syn::ItemForeignMod) {
+        let line = item_foreign_mod.span().start().line;
+        self.set_state(State::Functions, line);
+
+        visit::visit_item_foreign_mod(self, item_foreign_mod);
+    }
+
+    fn visit_item_mod(&mut self, item_mod: &'ast syn::ItemMod) {
+        let line = item_mod.span().start().line;
+        self.set_state(State::Modules, line);
+
+        visit::visit_item_mod(self, item_mod);
     }
 }
 
@@ -226,6 +251,6 @@ impl State {
 impl Errors {
     fn error(&mut self, path: &Path, line: usize, msg: &str) {
         self.errs = true;
-        println!("{}:{}: {}", path.display(), line + 1, msg);
+        println!("{}:{}: {}", path.display(), line, msg);
     }
 }
