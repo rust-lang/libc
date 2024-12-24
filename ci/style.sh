@@ -9,8 +9,6 @@ if [ -n "${CI:-}" ]; then
     check="--check"
 fi
 
-rustc ci/style.rs && ./style src
-
 command -v rustfmt
 rustfmt -V
 

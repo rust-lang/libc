@@ -6,8 +6,7 @@
 //! this script should be as simple as:
 //!
 //! ```notrust
-//! rustc ci/style.rs
-//! ./style src
+//! cargo test --test style -- ../src
 //! ```
 //!
 //! ## Guidelines
@@ -41,8 +40,9 @@ macro_rules! t {
     };
 }
 
+#[test]
 fn main() {
-    let arg = env::args().skip(1).next().unwrap_or(".".to_string());
+    let arg = env::args().skip(1).next().unwrap_or("../src".to_string());
 
     let mut errors = Errors { errs: false };
     walk(Path::new(&arg), &mut errors);
