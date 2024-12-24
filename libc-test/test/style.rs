@@ -140,10 +140,12 @@ where
 
         // FIXME(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
         // For now just disable this and check by hand.
-        // if s_macros == 2 {
-        //     s_macros += 1;
-        //     err.error(path, i, "multiple s! macros in one module");
+        // if self.s_macros == 2 {
+        //     self.s_macros += 1;
+        //     (self.on_err)(line, "multiple s! macros in one module");
         // }
+
+        self.state = new_state;
     }
 }
 
