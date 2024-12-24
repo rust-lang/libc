@@ -28,11 +28,14 @@
 //! * leading colons on paths
 
 use std::io::prelude::*;
+use std::ops::Deref;
 use std::path::Path;
 use std::{env, fs};
 
+use syn::parse::{Parse, ParseStream};
 use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
+use syn::Token;
 
 macro_rules! t {
     ($e:expr) => {
@@ -91,12 +94,13 @@ where
     F: FnMut(usize, &str),
 {
     state: State,
-    s_macros: usize,
+    // FIXME: see StyleChecker::set_state
+    _s_macros: usize,
     f_macros: usize,
     on_err: F,
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum State {
     Start,
     Imports,
@@ -108,6 +112,19 @@ enum State {
     Modules,
 }
 
+/// Similar to [syn::ExprIf] except with [syn::Attribute]
+/// as the condition instead of [syn::Expr].
+struct CfgExprIf {
+    _attr: syn::Attribute,
+    then_branch: Vec<syn::Item>,
+    else_branch: Option<Box<CfgExprElse>>,
+}
+
+enum CfgExprElse {
+    Block(Vec<syn::Item>),
+    If(CfgExprIf),
+}
+
 impl<F> StyleChecker<F>
 where
     F: FnMut(usize, &str),
@@ -115,14 +132,14 @@ where
     fn new(on_err: F) -> Self {
         Self {
             state: State::Start,
-            s_macros: 0,
+            _s_macros: 0,
             f_macros: 0,
             on_err,
         }
     }
 
     fn set_state(&mut self, new_state: State, line: usize) {
-        if self.state as usize > new_state as usize {
+        if self.state > new_state {
             (self.on_err)(
                 line,
                 &format!(
@@ -146,6 +163,32 @@ where
         // }
 
         self.state = new_state;
+    }
+
+    /// Visit the items inside the [CfgExprIf] and return the final
+    /// state after, which is conservatively the minimum of all branches
+    /// since the branches could have diverged in state.
+    fn visit_cfg_expr_if(&mut self, cfg_expr_if: &CfgExprIf) -> State {
+        let initial_state = self.state;
+
+        for item in &cfg_expr_if.then_branch {
+            self.visit_item(item);
+        }
+        let then_end_state = self.state;
+        self.state = initial_state;
+
+        match &cfg_expr_if.else_branch {
+            Some(else_branch) => match else_branch.deref() {
+                CfgExprElse::Block(items) => {
+                    for item in items {
+                        self.visit_item(item);
+                    }
+                    then_end_state.min(self.state)
+                }
+                CfgExprElse::If(cfg_expr_if) => self.visit_cfg_expr_if(&cfg_expr_if),
+            },
+            None => then_end_state,
+        }
     }
 }
 
@@ -198,24 +241,32 @@ where
 
     fn visit_macro(&mut self, mac: &'ast syn::Macro) {
         let line = mac.span().start().line;
-        let new_state = if mac.path.is_ident("s") {
-            // FIXME: see StyleChecker::set_state
-            // s_macros += 1;
-            State::Structs
-        } else if mac.path.is_ident("s_no_extra_traits") {
-            // multiple macros of this type are allowed
-            State::Structs
-        } else if mac.path.is_ident("s_paren") {
-            // multiple macros of this type are allowed
-            State::Structs
-        } else if mac.path.is_ident("f") {
-            self.f_macros += 1;
-            State::FunctionDefinitions
+        if mac.path.is_ident("cfg_if") {
+            let cfg_expr_if: CfgExprIf = mac
+                .parse_body()
+                .expect("cfg_if! should be parsed since it compiled");
+
+            let end_state = self.visit_cfg_expr_if(&cfg_expr_if);
+            self.state = end_state;
         } else {
-            visit::visit_macro(self, mac);
-            return;
-        };
-        self.set_state(new_state, line);
+            let new_state = if mac.path.is_ident("s") {
+                // FIXME: see StyleChecker::set_state
+                // self.s_macros += 1;
+                State::Structs
+            } else if mac.path.is_ident("s_no_extra_traits") {
+                // multiple macros of this type are allowed
+                State::Structs
+            } else if mac.path.is_ident("s_paren") {
+                // multiple macros of this type are allowed
+                State::Structs
+            } else if mac.path.is_ident("f") {
+                self.f_macros += 1;
+                State::FunctionDefinitions
+            } else {
+                self.state
+            };
+            self.set_state(new_state, line);
+        }
 
         visit::visit_macro(self, mac);
     }
@@ -232,6 +283,49 @@ where
         self.set_state(State::Modules, line);
 
         visit::visit_item_mod(self, item_mod);
+    }
+}
+
+impl Parse for CfgExprIf {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        input.parse::<Token![if]>()?;
+        let attr = input
+            .call(syn::Attribute::parse_outer)?
+            .into_iter()
+            .next()
+            .expect("an attribute should be present since it compiled");
+
+        let content;
+        syn::braced!(content in input);
+        let then_branch: Vec<syn::Item> = {
+            let mut items = Vec::new();
+            while !content.is_empty() {
+                items.push(content.parse()?);
+            }
+            items
+        };
+
+        let mut else_branch = None;
+        if input.peek(Token![else]) {
+            input.parse::<Token![else]>()?;
+
+            if input.peek(Token![if]) {
+                else_branch = Some(Box::new(CfgExprElse::If(input.parse()?)));
+            } else {
+                let content;
+                syn::braced!(content in input);
+                let mut items = Vec::new();
+                while !content.is_empty() {
+                    items.push(content.parse()?);
+                }
+                else_branch = Some(Box::new(CfgExprElse::Block(items)));
+            }
+        }
+        Ok(Self {
+            _attr: attr,
+            then_branch,
+            else_branch,
+        })
     }
 }
 
