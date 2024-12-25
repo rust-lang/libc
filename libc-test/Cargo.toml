@@ -14,6 +14,10 @@ A test crate for the libc crate.
 
 [dependencies]
 libc = { path = "..", version = "1.0.0-alpha.1", default-features = false }
+proc-macro2 = { version = "1.0.92", features = ["span-locations"] }
+
+[dev-dependencies]
+syn = { version = "2.0.91", features = ["full", "visit"] }
 
 [build-dependencies]
 cc = "1.0.83"
@@ -89,4 +93,9 @@ harness = false
 [[test]]
 name = "primitive_types"
 path = "test/primitive_types.rs"
+harness = true
+
+[[test]]
+name = "style"
+path = "test/style.rs"
 harness = true
