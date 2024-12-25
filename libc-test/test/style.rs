@@ -47,7 +47,7 @@ macro_rules! t {
 }
 
 #[test]
-fn main() {
+fn check_style() {
     let arg = env::args().skip(1).next().unwrap_or("../src".to_string());
 
     let mut errors = Errors { errs: false };
