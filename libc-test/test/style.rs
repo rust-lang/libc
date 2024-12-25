@@ -47,7 +47,12 @@ macro_rules! t {
 }
 
 #[test]
-fn main() {
+fn check_style() {
+    if env::var("LIBC_CI").is_ok() {
+        // we already run this in the style.sh script
+        return;
+    }
+
     let arg = env::args().skip(1).next().unwrap_or("../src".to_string());
 
     let mut errors = Errors { errs: false };

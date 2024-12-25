@@ -9,6 +9,8 @@ if [ -n "${CI:-}" ]; then
     check="--check"
 fi
 
+cargo test --manifest-path libc-test/Cargo.toml --test style
+
 command -v rustfmt
 rustfmt -V
 

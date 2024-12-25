@@ -80,7 +80,7 @@ if [ -n "${QEMU:-}" ]; then
     exec grep -E "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
-cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+cmd="env LIBC_CI=1 cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
 
 # Run tests in the `libc` crate
 case "$target" in
