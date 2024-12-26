@@ -52,6 +52,7 @@ s! {
 
     pub struct passwd {
         pub pw_name: *const c_char,
+        pub pw_passwd: *const c_char,
         pub pw_uid: u32,
         pub pw_gid: u32,
         pub pw_gecos: *const c_char,
@@ -245,6 +246,7 @@ s! {
 // for example, struct passwd, https://pubs.opengroup.org/onlinepubs/009695399/basedefs/pwd.h.html,
 // POSIX only defines following fields in struct passwd:
 // char    *pw_name   User's login name.
+// char    *pw_passwd Encrypted password.
 // uid_t    pw_uid    Numerical user ID.
 // gid_t    pw_gid    Numerical group ID.
 // char    *pw_dir    Initial working directory.
