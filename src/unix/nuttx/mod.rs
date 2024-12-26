@@ -129,7 +129,7 @@ s! {
         pub tm_yday: i32,
         pub tm_isdst: i32,
         pub tm_gmtoff: isize,
-        pub tm_zone: *const i8,
+        pub tm_zone: *const c_char,
         __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
     }
 
@@ -166,7 +166,7 @@ s! {
 
     pub struct dirent {
         pub d_type: u8,
-        pub d_name: [i8; __NAME_MAX__ + 1],
+        pub d_name: [c_char; __NAME_MAX__ + 1],
     }
 
     pub struct fd_set {
