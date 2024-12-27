@@ -5256,6 +5256,7 @@ pub const CANFD_MAX_DLEN: usize = 64;
 
 pub const CANFD_BRS: c_int = 0x01;
 pub const CANFD_ESI: c_int = 0x02;
+pub const CANFD_FDF: c_int = 0x04;
 
 pub const CANXL_MIN_DLC: c_int = 0;
 pub const CANXL_MAX_DLC: c_int = 2047;
