@@ -69,7 +69,7 @@ s! {
         reserved2: [u8; 224],
     }
 
-    pub struct fpu_extention_savearea_64 {
+    pub struct fpu_extension_savearea_64 {
         pub other: [u8; 512],
         pub xstate_bv: u64,
         pub xstate_undef: [u64; 7],
@@ -81,7 +81,7 @@ s_no_extra_traits! {
     pub union x86_64_fpu_registers {
         pub fsave_area: fsave_area_64,
         pub fxsave_area: fxsave_area_64,
-        pub xsave_area: fpu_extention_savearea_64,
+        pub xsave_area: fpu_extension_savearea_64,
         pub data: [u8; 1024],
     }
 }
