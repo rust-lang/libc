@@ -3524,14 +3524,6 @@ f! {
         set1.bits == set2.bits
     }
 
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        ((dev >> 8) & 0xff) as c_uint
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        (dev & 0xffff00ff) as c_uint
-    }
-
     pub fn IPTOS_TOS(tos: u8) -> u8 {
         tos & IPTOS_TOS_MASK
     }
@@ -4562,6 +4554,14 @@ safe_f! {
         dev |= major << 8;
         dev |= minor;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        ((dev >> 8) & 0xff) as c_uint
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        (dev & 0xffff00ff) as c_uint
     }
 
     pub fn SIGRTMAX() -> c_int {
