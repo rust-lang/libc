@@ -54,6 +54,7 @@ s! {
 
     pub struct passwd {
         pub pw_name: *const c_char,
+        pub pw_passwd: *const c_char,
         pub pw_uid: u32,
         pub pw_gid: u32,
         pub pw_gecos: *const c_char,
@@ -128,7 +129,7 @@ s! {
         pub tm_yday: i32,
         pub tm_isdst: i32,
         pub tm_gmtoff: isize,
-        pub tm_zone: *const i8,
+        pub tm_zone: *const c_char,
         __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
     }
 
@@ -165,7 +166,7 @@ s! {
 
     pub struct dirent {
         pub d_type: u8,
-        pub d_name: [i8; __NAME_MAX__ + 1],
+        pub d_name: [c_char; __NAME_MAX__ + 1],
     }
 
     pub struct fd_set {
@@ -247,6 +248,7 @@ s! {
 // for example, struct passwd, https://pubs.opengroup.org/onlinepubs/009695399/basedefs/pwd.h.html,
 // POSIX only defines following fields in struct passwd:
 // char    *pw_name   User's login name.
+// char    *pw_passwd Encrypted password.
 // uid_t    pw_uid    Numerical user ID.
 // gid_t    pw_gid    Numerical group ID.
 // char    *pw_dir    Initial working directory.
