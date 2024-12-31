@@ -80,7 +80,8 @@ if [ -n "${QEMU:-}" ]; then
     exec grep -E "^(PASSED)|(test result: ok)" "${CARGO_TARGET_DIR}/out.log"
 fi
 
-cmd="env LIBC_CI=1 cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+test_flags="--skip check_style"
 
 # Run tests in the `libc` crate
 case "$target" in
@@ -101,17 +102,17 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
     passed=0
     until [ $n -ge $N ]; do
         if [ "$passed" = "0" ]; then
-            if $cmd --no-default-features; then
+            if eval "$cmd --no-default-features -- $test_flags"; then
                 passed=$((passed+1))
                 continue
             fi
         elif [ "$passed" = "1" ]; then
-            if $cmd; then
+            if eval "$cmd -- $test_flags"; then
                 passed=$((passed+1))
                 continue
             fi
         elif [ "$passed" = "2" ]; then
-            if $cmd --features extra_traits; then
+            if eval "$cmd --features extra_traits -- $test_flags"; then
                 break
             fi
         fi
@@ -119,7 +120,7 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
         sleep 1
     done
 else
-    $cmd --no-default-features
-    $cmd
-    $cmd --features extra_traits
+    eval "$cmd --no-default-features -- $test_flags"
+    eval "$cmd -- $test_flags"
+    eval "$cmd --features extra_traits -- $test_flags"
 fi

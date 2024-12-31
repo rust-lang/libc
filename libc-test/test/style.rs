@@ -37,11 +37,6 @@ type Result<T> = std::result::Result<T, Error>;
 
 #[test]
 fn check_style() {
-    if env::var("LIBC_CI").is_ok() {
-        // we already run this in the style.sh script
-        return;
-    }
-
     let root_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
     let mut errors = Errors { errs: false };
     walk(&root_dir, &mut errors).expect("root dir should be walked successfully");
