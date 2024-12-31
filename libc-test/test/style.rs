@@ -32,14 +32,8 @@ use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
 use syn::Token;
 
-macro_rules! t {
-    ($e:expr) => {
-        match $e {
-            Ok(e) => e,
-            Err(e) => panic!("{} failed with {}", stringify!($e), e),
-        }
-    };
-}
+type Error = Box<dyn std::error::Error>;
+type Result<T> = std::result::Result<T, Error>;
 
 #[test]
 fn check_style() {
@@ -50,7 +44,7 @@ fn check_style() {
 
     let root_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
     let mut errors = Errors { errs: false };
-    walk(&root_dir, &mut errors);
+    walk(&root_dir, &mut errors).expect("root dir should be walked successfully");
 
     if errors.errs {
         panic!("found some lint errors");
@@ -59,29 +53,31 @@ fn check_style() {
     }
 }
 
-fn walk(path: &Path, err: &mut Errors) {
-    for entry in t!(path.read_dir()).map(|e| t!(e)) {
-        let path = entry.path();
-        if t!(entry.file_type()).is_dir() {
-            walk(&path, err);
+fn walk(root_dir: &Path, err: &mut Errors) -> Result<()> {
+    for entry in glob::glob(&format!(
+        "{}/**/*.rs",
+        root_dir.to_str().expect("dir should be valid UTF-8")
+    ))? {
+        let entry = entry?;
+
+        let name = entry
+            .file_name()
+            .expect("file name should not end in ..")
+            .to_str()
+            .expect("file name should be valid UTF-8");
+        if let "lib.rs" | "macros.rs" = &name[..] {
             continue;
         }
 
-        let name = entry.file_name().into_string().unwrap();
-        match &name[..] {
-            n if !n.ends_with(".rs") => continue,
-
-            "lib.rs" | "macros.rs" => continue,
-
-            _ => {}
-        }
-
         let mut contents = String::new();
-        t!(t!(fs::File::open(&path)).read_to_string(&mut contents));
+        let path = entry.as_path();
+        fs::File::open(path)?.read_to_string(&mut contents)?;
 
-        let file = t!(syn::parse_file(&contents));
+        let file = syn::parse_file(&contents)?;
         StyleChecker::new(|line, msg| err.error(&path, line, msg)).visit_file(&file);
     }
+
+    Ok(())
 }
 
 struct Errors {
