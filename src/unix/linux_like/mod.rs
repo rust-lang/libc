@@ -1297,7 +1297,6 @@ pub const SI_MESGQ: c_int = -3;
 pub const SI_ASYNCIO: c_int = -4;
 pub const SI_SIGIO: c_int = -5;
 pub const SI_TKILL: c_int = -6;
-pub const SI_DETHREAD: c_int = -7;
 
 // si_code values for SIGBUS signal
 pub const BUS_ADRALN: c_int = 1;
