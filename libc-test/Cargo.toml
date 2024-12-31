@@ -14,10 +14,10 @@ A test crate for the libc crate.
 
 [dependencies]
 libc = { path = "..", version = "1.0.0-alpha.1", default-features = false }
-proc-macro2 = { version = "1.0.92", features = ["span-locations"] }
 
 [dev-dependencies]
 syn = { version = "2.0.91", features = ["full", "visit"] }
+proc-macro2 = { version = "1.0.92", features = ["span-locations"] }
 
 [build-dependencies]
 cc = "1.0.83"

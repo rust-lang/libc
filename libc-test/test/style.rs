@@ -6,7 +6,7 @@
 //! this script should be as simple as:
 //!
 //! ```notrust
-//! cargo test --test style -- ../src
+//! cargo test --test style
 //! ```
 //!
 //! ## Guidelines
@@ -21,11 +21,6 @@
 //!     5. f! { ... } functions
 //!     6. extern functions
 //!     7. modules + pub use
-//!
-//! Things not verified:
-//!
-//! * alignment
-//! * leading colons on paths
 
 use std::io::prelude::*;
 use std::ops::Deref;
@@ -53,15 +48,14 @@ fn check_style() {
         return;
     }
 
-    let arg = env::args().skip(1).next().unwrap_or("../src".to_string());
-
+    let root_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
     let mut errors = Errors { errs: false };
-    walk(Path::new(&arg), &mut errors);
+    walk(&root_dir, &mut errors);
 
     if errors.errs {
         panic!("found some lint errors");
     } else {
-        println!("good style!");
+        eprintln!("good style!");
     }
 }
 
@@ -119,15 +113,15 @@ enum State {
 
 /// Similar to [syn::ExprIf] except with [syn::Attribute]
 /// as the condition instead of [syn::Expr].
-struct CfgExprIf {
+struct ExprCfgIf {
     _attr: syn::Attribute,
     then_branch: Vec<syn::Item>,
-    else_branch: Option<Box<CfgExprElse>>,
+    else_branch: Option<Box<ExprCfgElse>>,
 }
 
-enum CfgExprElse {
+enum ExprCfgElse {
     Block(Vec<syn::Item>),
-    If(CfgExprIf),
+    If(ExprCfgIf),
 }
 
 impl<F> StyleChecker<F>
@@ -170,10 +164,10 @@ where
         self.state = new_state;
     }
 
-    /// Visit the items inside the [CfgExprIf] and return the final
+    /// Visit the items inside the [ExprCfgIf] and return the final
     /// state after, which is conservatively the minimum of all branches
     /// since the branches could have diverged in state.
-    fn visit_cfg_expr_if(&mut self, cfg_expr_if: &CfgExprIf) -> State {
+    fn visit_cfg_expr_if(&mut self, cfg_expr_if: &ExprCfgIf) -> State {
         let initial_state = self.state;
 
         for item in &cfg_expr_if.then_branch {
@@ -184,13 +178,13 @@ where
 
         match &cfg_expr_if.else_branch {
             Some(else_branch) => match else_branch.deref() {
-                CfgExprElse::Block(items) => {
+                ExprCfgElse::Block(items) => {
                     for item in items {
                         self.visit_item(item);
                     }
                     then_end_state.min(self.state)
                 }
-                CfgExprElse::If(cfg_expr_if) => self.visit_cfg_expr_if(&cfg_expr_if),
+                ExprCfgElse::If(cfg_expr_if) => self.visit_cfg_expr_if(&cfg_expr_if),
             },
             None => then_end_state,
         }
@@ -247,7 +241,7 @@ where
     fn visit_macro(&mut self, mac: &'ast syn::Macro) {
         let line = mac.span().start().line;
         if mac.path.is_ident("cfg_if") {
-            let cfg_expr_if: CfgExprIf = mac
+            let cfg_expr_if: ExprCfgIf = mac
                 .parse_body()
                 .expect("cfg_if! should be parsed since it compiled");
 
@@ -291,7 +285,7 @@ where
     }
 }
 
-impl Parse for CfgExprIf {
+impl Parse for ExprCfgIf {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         input.parse::<Token![if]>()?;
         let attr = input
@@ -315,7 +309,7 @@ impl Parse for CfgExprIf {
             input.parse::<Token![else]>()?;
 
             if input.peek(Token![if]) {
-                else_branch = Some(Box::new(CfgExprElse::If(input.parse()?)));
+                else_branch = Some(Box::new(ExprCfgElse::If(input.parse()?)));
             } else {
                 let content;
                 syn::braced!(content in input);
@@ -323,7 +317,7 @@ impl Parse for CfgExprIf {
                 while !content.is_empty() {
                     items.push(content.parse()?);
                 }
-                else_branch = Some(Box::new(CfgExprElse::Block(items)));
+                else_branch = Some(Box::new(ExprCfgElse::Block(items)));
             }
         }
         Ok(Self {
@@ -352,6 +346,6 @@ impl State {
 impl Errors {
     fn error(&mut self, path: &Path, line: usize, msg: &str) {
         self.errs = true;
-        println!("{}:{}: {}", path.display(), line, msg);
+        eprintln!("{}:{}: {}", path.display(), line, msg);
     }
 }
