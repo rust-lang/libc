@@ -155,30 +155,27 @@ where
         self.state = new_state;
     }
 
-    /// Visit the items inside the [ExprCfgIf] and return the final
-    /// state after, which is conservatively the minimum of all branches
-    /// since the branches could have diverged in state.
-    fn visit_cfg_expr_if(&mut self, cfg_expr_if: &ExprCfgIf) -> State {
+    /// Visit the items inside the [ExprCfgIf], restoring the state after
+    /// each branch.
+    fn visit_cfg_expr_if(&mut self, cfg_expr_if: &ExprCfgIf) {
         let initial_state = self.state;
 
         for item in &cfg_expr_if.then_branch {
             self.visit_item(item);
         }
-        let then_end_state = self.state;
         self.state = initial_state;
 
-        match &cfg_expr_if.else_branch {
-            Some(else_branch) => match else_branch.deref() {
+        if let Some(else_branch) = &cfg_expr_if.else_branch {
+            match else_branch.deref() {
                 ExprCfgElse::Block(items) => {
                     for item in items {
                         self.visit_item(item);
                     }
-                    then_end_state.min(self.state)
                 }
                 ExprCfgElse::If(cfg_expr_if) => self.visit_cfg_expr_if(&cfg_expr_if),
-            },
-            None => then_end_state,
+            }
         }
+        self.state = initial_state;
     }
 }
 
@@ -236,8 +233,7 @@ where
                 .parse_body()
                 .expect("cfg_if! should be parsed since it compiled");
 
-            let end_state = self.visit_cfg_expr_if(&cfg_expr_if);
-            self.state = end_state;
+            self.visit_cfg_expr_if(&cfg_expr_if);
         } else {
             let new_state = if mac.path.is_ident("s") {
                 // FIXME: see StyleChecker::set_state
