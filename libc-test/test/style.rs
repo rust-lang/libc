@@ -22,9 +22,9 @@
 //!     6. extern functions
 //!     7. modules + pub use
 
-use std::io::prelude::*;
+use std::fmt::Display;
 use std::ops::Deref;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 use syn::parse::{Parse, ParseStream};
@@ -38,17 +38,13 @@ type Result<T> = std::result::Result<T, Error>;
 #[test]
 fn check_style() {
     let root_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
-    let mut errors = Errors { errs: false };
-    walk(&root_dir, &mut errors).expect("root dir should be walked successfully");
-
-    if errors.errs {
-        panic!("found some lint errors");
-    } else {
-        eprintln!("good style!");
-    }
+    walk(&root_dir).unwrap();
+    eprintln!("good style!");
 }
 
-fn walk(root_dir: &Path, err: &mut Errors) -> Result<()> {
+fn walk(root_dir: &Path) -> Result<()> {
+    let mut style_checker = StyleChecker::new();
+
     for entry in glob::glob(&format!(
         "{}/**/*.rs",
         root_dir.to_str().expect("dir should be valid UTF-8")
@@ -64,34 +60,28 @@ fn walk(root_dir: &Path, err: &mut Errors) -> Result<()> {
             continue;
         }
 
-        let mut contents = String::new();
         let path = entry.as_path();
-        fs::File::open(path)?.read_to_string(&mut contents)?;
-
-        let file = syn::parse_file(&contents)?;
-        StyleChecker::new(|line, msg| err.error(&path, line, msg)).visit_file(&file);
+        style_checker.check_file(path)?;
+        style_checker.reset_state();
     }
 
-    Ok(())
+    style_checker.finalize()
 }
 
-struct Errors {
-    errs: bool,
-}
-
-struct StyleChecker<F>
-where
-    F: FnMut(usize, &str),
-{
+#[derive(Default)]
+struct StyleChecker {
     state: State,
     // FIXME: see StyleChecker::set_state
     _s_macros: usize,
     f_macros: usize,
-    on_err: F,
+    errors: Vec<FileError>,
+    /// Path of the currently active file
+    path: PathBuf,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum State {
+    #[default]
     Start,
     Imports,
     Typedefs,
@@ -115,24 +105,49 @@ enum ExprCfgElse {
     If(ExprCfgIf),
 }
 
-impl<F> StyleChecker<F>
-where
-    F: FnMut(usize, &str),
-{
-    fn new(on_err: F) -> Self {
-        Self {
-            state: State::Start,
-            _s_macros: 0,
-            f_macros: 0,
-            on_err,
+impl StyleChecker {
+    fn new() -> Self {
+        Self::default()
+    }
+
+    /// Reads and parses the file at the given path and checks
+    /// for any style violations.
+    fn check_file(&mut self, path: &Path) -> Result<()> {
+        let contents = fs::read_to_string(path)?;
+        let file = syn::parse_file(&contents)?;
+
+        self.path = PathBuf::from(path);
+        self.visit_file(&file);
+
+        Ok(())
+    }
+
+    /// Resets the state of the [StyleChecker].
+    fn reset_state(&mut self) {
+        *self = Self {
+            errors: std::mem::take(&mut self.errors),
+            ..Self::default()
+        };
+    }
+
+    /// Collect all errors into a single error, reporting them if any.
+    fn finalize(self) -> Result<()> {
+        if self.errors.is_empty() {
+            return Ok(());
         }
+
+        for error in self.errors {
+            eprintln!("{error}");
+        }
+
+        Err("some tests failed".into())
     }
 
     fn set_state(&mut self, new_state: State, line: usize) {
         if self.state > new_state {
-            (self.on_err)(
+            self.error(
                 line,
-                &format!(
+                format!(
                     "{} found after {} when it belongs before",
                     new_state.desc(),
                     self.state.desc()
@@ -142,7 +157,7 @@ where
 
         if self.f_macros == 2 {
             self.f_macros += 1;
-            (self.on_err)(line, "multiple f! macros in one module");
+            self.error(line, "multiple f! macros in one module".to_string());
         }
 
         // FIXME(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
@@ -177,12 +192,17 @@ where
         }
         self.state = initial_state;
     }
+
+    fn error(&mut self, line: usize, msg: String) {
+        self.errors.push(FileError {
+            path: self.path.clone(),
+            line,
+            msg,
+        });
+    }
 }
 
-impl<'ast, F> Visit<'ast> for StyleChecker<F>
-where
-    F: FnMut(usize, &str),
-{
+impl<'ast> Visit<'ast> for StyleChecker {
     fn visit_meta_list(&mut self, meta_list: &'ast syn::MetaList) {
         let line = meta_list.span().start().line;
         let meta_str = meta_list.tokens.to_string();
@@ -190,11 +210,14 @@ where
             && !(meta_str.contains("target_endian") || meta_str.contains("target_arch"))
             && self.state != State::Structs
         {
-            (self.on_err)(line, "use cfg_if! and submodules instead of #[cfg]");
+            self.error(
+                line,
+                "use cfg_if! and submodules instead of #[cfg]".to_string(),
+            );
         } else if meta_list.path.is_ident("derive")
             && (meta_str.contains("Copy") || meta_str.contains("Clone"))
         {
-            (self.on_err)(line, "impl Copy and Clone manually");
+            self.error(line, "impl Copy and Clone manually".to_string());
         }
 
         visit::visit_meta_list(self, meta_list);
@@ -330,9 +353,17 @@ impl State {
     }
 }
 
-impl Errors {
-    fn error(&mut self, path: &Path, line: usize, msg: &str) {
-        self.errs = true;
-        eprintln!("{}:{}: {}", path.display(), line, msg);
+#[derive(Debug)]
+struct FileError {
+    path: PathBuf,
+    line: usize,
+    msg: String,
+}
+
+impl Display for FileError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}:{}: {}", self.path.display(), self.line, self.msg)
     }
 }
+
+impl std::error::Error for FileError {}
