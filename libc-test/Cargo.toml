@@ -98,5 +98,10 @@ harness = true
 
 [[test]]
 name = "style"
-path = "test/style.rs"
+path = "test/check_style.rs"
+harness = true
+
+[[test]]
+name = "style_tests"
+path = "test/style_tests.rs"
 harness = true

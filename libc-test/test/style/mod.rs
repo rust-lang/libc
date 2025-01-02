@@ -1,75 +1,24 @@
-//! Simple script to verify the coding style of this library
+//! Provides the [StyleChecker] visitor to verify the coding style of
+//! this library.
 //!
-//! ## How to run
-//!
-//! The first argument to this script is the directory to run on, so running
-//! this script should be as simple as:
-//!
-//! ```notrust
-//! cargo test --test style
-//! ```
-//!
-//! ## Guidelines
-//!
-//! The current style is:
-//!
-//! * Specific module layout:
-//!     1. use directives
-//!     2. typedefs
-//!     3. structs
-//!     4. constants
-//!     5. f! { ... } functions
-//!     6. extern functions
-//!     7. modules + pub use
+//! This is split out so that the implementation itself can be tested
+//! separately, see test/check_style.rs for how it's used.
 
 use std::fmt::Display;
+use std::fs;
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
-use std::{env, fs};
 
 use syn::parse::{Parse, ParseStream};
 use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
 use syn::Token;
 
-type Error = Box<dyn std::error::Error>;
-type Result<T> = std::result::Result<T, Error>;
-
-#[test]
-fn check_style() {
-    let root_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
-    walk(&root_dir).unwrap();
-    eprintln!("good style!");
-}
-
-fn walk(root_dir: &Path) -> Result<()> {
-    let mut style_checker = StyleChecker::new();
-
-    for entry in glob::glob(&format!(
-        "{}/**/*.rs",
-        root_dir.to_str().expect("dir should be valid UTF-8")
-    ))? {
-        let entry = entry?;
-
-        let name = entry
-            .file_name()
-            .expect("file name should not end in ..")
-            .to_str()
-            .expect("file name should be valid UTF-8");
-        if let "lib.rs" | "macros.rs" = &name[..] {
-            continue;
-        }
-
-        let path = entry.as_path();
-        style_checker.check_file(path)?;
-        style_checker.reset_state();
-    }
-
-    style_checker.finalize()
-}
+pub type Error = Box<dyn std::error::Error>;
+pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Default)]
-struct StyleChecker {
+pub struct StyleChecker {
     state: State,
     // FIXME: see StyleChecker::set_state
     _s_macros: usize,
@@ -106,24 +55,27 @@ enum ExprCfgElse {
 }
 
 impl StyleChecker {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self::default()
     }
 
     /// Reads and parses the file at the given path and checks
     /// for any style violations.
-    fn check_file(&mut self, path: &Path) -> Result<()> {
+    pub fn check_file(&mut self, path: &Path) -> Result<()> {
         let contents = fs::read_to_string(path)?;
-        let file = syn::parse_file(&contents)?;
 
         self.path = PathBuf::from(path);
-        self.visit_file(&file);
+        self.check_string(contents)
+    }
 
+    pub fn check_string(&mut self, contents: String) -> Result<()> {
+        let file = syn::parse_file(&contents)?;
+        self.visit_file(&file);
         Ok(())
     }
 
     /// Resets the state of the [StyleChecker].
-    fn reset_state(&mut self) {
+    pub fn reset_state(&mut self) {
         *self = Self {
             errors: std::mem::take(&mut self.errors),
             ..Self::default()
@@ -131,7 +83,7 @@ impl StyleChecker {
     }
 
     /// Collect all errors into a single error, reporting them if any.
-    fn finalize(self) -> Result<()> {
+    pub fn finalize(self) -> Result<()> {
         if self.errors.is_empty() {
             return Ok(());
         }
