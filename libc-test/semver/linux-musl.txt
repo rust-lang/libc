@@ -81,3 +81,4 @@ reallocarray
 setutxent
 tcp_info
 timex
+CLONE_NEWTIME
