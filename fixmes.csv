@@ -1,4 +1,4 @@
-"File Path","Line Number","Comment","Category"
+"File Path","Line Number","Comment","Category", "Questions", "DONE? (T/F)"
 "./src/windows/mod.rs","267",": fill this out with a struct","struct"
 "./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs","260","(1.0): this is actually a union", "1.0"
 "./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs","191","(1.0): this is actually a union", "1.0"
@@ -23,13 +23,13 @@
 "./src/unix/linux_like/linux/mod.rs","1877",": .field('d_name', &self.d_name)",
 "./src/unix/linux_like/linux/mod.rs","1903",": .field('size', &self.size)",
 "./src/unix/linux_like/linux/mod.rs","1925",": .field('size', &self.size)",
-"./src/unix/linux_like/linux/mod.rs","1947",": .field('size', &self.size)",
-"./src/unix/linux_like/linux/mod.rs","5324","(offset_of): use `core::mem::offset_of!` once that is available",
-"./src/unix/linux_like/linux/mod.rs","5856","(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)",
-"./src/unix/linux_like/linux/gnu/b64/s390x.rs","215",": This is actually a union.",
-"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","311",": the shadow stack field requires glibc >= 2.28.",
-"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","360",": .field('xmm_space', &self.xmm_space)",
-"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","666",": perharps for later",
+"./src/unix/linux_like/linux/mod.rs","1947",": .field('size', &self.size)", "field category?"
+"./src/unix/linux_like/linux/mod.rs","5324","(offset_of): use `core::mem::offset_of!` once that is available", "offset_of",""
+"./src/unix/linux_like/linux/mod.rs","5856","(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)","(ctest)",""
+"./src/unix/linux_like/linux/gnu/b64/s390x.rs","215",": This is actually a union.", "union", "", FALSE
+"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","311",": the shadow stack field requires glibc >= 2.28.", "glibc", "", FALSE
+"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","360",": .field('xmm_space', &self.xmm_space)","xmm_space", "", FALSE
+"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","666",": perharps for later", "linux", "", FALSE
 "./src/unix/linux_like/linux/gnu/b64/aarch64/mod.rs","604",": enable these again once linux-api-headers are up to date enough on CI.",
 "./src/unix/linux_like/linux/gnu/mod.rs","383","(1.0) this is actually a union",
 "./src/unix/linux_like/linux/gnu/mod.rs","434","(off64): visible fields depend on __USE_FILE_OFFSET64",
