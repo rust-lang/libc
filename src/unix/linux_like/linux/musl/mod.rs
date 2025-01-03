@@ -995,6 +995,8 @@ pub const XDP_PKT_CONTD: crate::__u32 = 1 << 0;
 pub const _CS_V6_ENV: c_int = 1148;
 pub const _CS_V7_ENV: c_int = 1149;
 
+pub const CLONE_NEWTIME: c_int = 0x80;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: c_int = 6;
