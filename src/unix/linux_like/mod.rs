@@ -1875,6 +1875,9 @@ extern "C" {
 
     pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
     pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
+
+    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
+    pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
 }
 
 // LFS64 extensions

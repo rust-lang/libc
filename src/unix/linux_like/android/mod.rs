@@ -4126,9 +4126,6 @@ extern "C" {
         newpath: *const c_char,
         flags: c_uint,
     ) -> c_int;
-
-    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
-    pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
 }
 
 cfg_if! {
