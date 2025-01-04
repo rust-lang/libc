@@ -71,9 +71,9 @@ FALSE, ,./src/unix/linux_like/android/mod.rs,854,": .field('ut_host', &self.ut_h
 FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,284,: SYS__llseek is in the NDK sources but for some reason is
 FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,288,: SYS__newselect is in the NDK sources but for some reason is
 FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,297,: SYS__llseek is in the NDK sources but for some reason is
-FALSE,hurd",./src/unix/hurd/mod.rs,229,: fill this out with a struct
+FALSE,hurd,./src/unix/hurd/mod.rs,229,: fill this out with a struct
 FALSE,union,./src/unix/hurd/mod.rs,817, This should be a union
-FALSE,hurd",./src/unix/hurd/mod.rs,1095,": .field('ut_host', &self.ut_host)"
+FALSE,hurd,./src/unix/hurd/mod.rs,1095,": .field('ut_host', &self.ut_host)"
 TRUE,time,./src/unix/mod.rs,69,(time): Needs updates at least for glibc _TIME_BITS=64
 FALSE, ,./src/unix/mod.rs,541,: fill this out with a struct
 FALSE,time,./src/unix/mod.rs,1328,: for `time_t`
