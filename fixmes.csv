@@ -1,125 +1,123 @@
-"File Path","Line Number","Comment","Category", "Questions", "DONE? (T/F)"
-"./src/windows/mod.rs","267",": fill this out with a struct","struct",,FALSE
-"./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs","260","(1.0): this is actually a union", "1.0",,FALSE
+"DONE", "Category", "File Path","Line Number","Comment"
+FALSE, "struct", "./src/windows/mod.rs","267",": fill this out with a struct"
+FALSE, "1.0", "./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs","260","(1.0): this is actually a union"
 "./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs","191","(1.0): this is actually a union", "1.0",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","145","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","152","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","198","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","209","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","219","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","224","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","242","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","255","","",,FALSE
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","263","","",,FALSE
-
-
-
-"./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","267","(1.0): this is actually a union",
-"./src/unix/linux_like/linux/uclibc/arm/mod.rs","246","(1.0) this is actually a union",
-"./src/unix/linux_like/linux/uclibc/arm/mod.rs","898",": should be a `c_long` too, but a bug slipped in.",
-"./src/unix/linux_like/linux/mod.rs","79",": fill this out with a struct",
-"./src/unix/linux_like/linux/mod.rs","329","(1.0): Change to the commented variant, see https://github.com/rust-lang/libc/pull/4148#discussion_r1857511742",
-"./src/unix/linux_like/linux/mod.rs","442","(1.0): this is actually a union",
-"./src/unix/linux_like/linux/mod.rs","1202","(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported",
-"./src/unix/linux_like/linux/mod.rs","1676","(1.0): this field was renamed to `len` in Linux 5.11",
-"./src/unix/linux_like/linux/mod.rs","139",": .field('d_name', &self.d_name)",
-"./src/unix/linux_like/linux/mod.rs","1877",": .field('d_name', &self.d_name)",
-"./src/unix/linux_like/linux/mod.rs","1903",": .field('size', &self.size)",
-"./src/unix/linux_like/linux/mod.rs","1925",": .field('size', &self.size)",
-"./src/unix/linux_like/linux/mod.rs","1947",": .field('size', &self.size)", "field category?"
-"./src/unix/linux_like/linux/mod.rs","5324","(offset_of): use `core::mem::offset_of!` once that is available", "offset_of",""
-"./src/unix/linux_like/linux/mod.rs","5856","(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)","(ctest)",""
-"./src/unix/linux_like/linux/gnu/b64/s390x.rs","215",": This is actually a union.", "union", "", FALSE
-"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","311",": the shadow stack field requires glibc >= 2.28.", "glibc", "", FALSE
-"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","360",": .field('xmm_space', &self.xmm_space)","xmm_space", "", FALSE
-"./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","666",": perharps for later", "linux", "", FALSE
-"./src/unix/linux_like/linux/gnu/b64/aarch64/mod.rs","604",": enable these again once linux-api-headers are up to date enough on CI.",
-"./src/unix/linux_like/linux/gnu/mod.rs","383","(1.0) this is actually a union",
-"./src/unix/linux_like/linux/gnu/mod.rs","434","(off64): visible fields depend on __USE_FILE_OFFSET64",
-"./src/unix/linux_like/linux/gnu/mod.rs","590",": .field('ut_host', &self.ut_host)",
-"./src/unix/linux_like/linux/musl/b64/s390x.rs","66",": This is actually a union.",
-"./src/unix/linux_like/linux/musl/b64/x86_64/mod.rs","208",": .field('xmm_space', &self.xmm_space)",
-"./src/unix/linux_like/linux/musl/mod.rs","135","(union): C implementation uses unions",
-"./src/unix/linux_like/linux/musl/mod.rs","361","(musl): enable on all targets once CI musl is updated",
-"./src/unix/linux_like/linux/musl/mod.rs","419","(ctest): length should be `32 - 2 * core::mem::size_of::<*const ()>()`",
-"./src/unix/linux_like/linux/musl/mod.rs","443",": musl added paddings and adjusted",
-"./src/unix/linux_like/linux/musl/mod.rs","535",": .field('__reserved', &self.__reserved)",
-"./src/unix/linux_like/linux/musl/b32/hexagon.rs","236"," check these",
-"./src/unix/linux_like/linux/musl/b32/hexagon.rs","289",,
-"./src/unix/linux_like/mod.rs","169"," This should be a union",
-"./src/unix/linux_like/mod.rs","350",": .field('sun_path', &self.sun_path)",
-"./src/unix/linux_like/mod.rs","379",": .field('__ss_pad2', &self.__ss_pad2)",
-"./src/unix/linux_like/mod.rs","430",": .field('sysname', &self.sysname)",
-"./src/unix/linux_like/mod.rs","431",": .field('nodename', &self.nodename)",
-"./src/unix/linux_like/mod.rs","432",": .field('release', &self.release)",
-"./src/unix/linux_like/mod.rs","433",": .field('version', &self.version)",
-"./src/unix/linux_like/mod.rs","434",": .field('machine', &self.machine)",
-"./src/unix/linux_like/mod.rs","435",": .field('domainname', &self.domainname)",
-"./src/unix/linux_like/mod.rs","509","(#235): Include file sealing fcntls once we have a way to verify them.",
-"./src/unix/linux_like/emscripten/mod.rs","47",": fill this out with a struct",
-"./src/unix/linux_like/emscripten/mod.rs","415",": .field('d_name', &self.d_name)",
-"./src/unix/linux_like/emscripten/mod.rs","468",": .field('__reserved', &self.__reserved)",
-"./src/unix/linux_like/emscripten/mod.rs","528",": .field('size', &self.size)",
-"./src/unix/linux_like/android/b64/mod.rs","164",": .field('__reserved', &self.__reserved)",
-"./src/unix/linux_like/android/b64/mod.rs","193",": .field('__reserved', &self.__reserved)",
-"./src/unix/linux_like/android/b64/mod.rs","230",": .field('__reserved', &self.__reserved)",
-"./src/unix/linux_like/android/b64/x86_64/mod.rs","356",": .field('xmm_space', &self.xmm_space)",
-"./src/unix/linux_like/android/b64/x86_64/mod.rs","548",": SYS__sysctl is in the NDK sources but for some reason is",
-"./src/unix/linux_like/android/mod.rs","473","(1.0): this is actually a union",
-"./src/unix/linux_like/android/mod.rs","693",": .field('d_name', &self.d_name)",
-"./src/unix/linux_like/android/mod.rs","731",": .field('d_name', &self.d_name)",
-"./src/unix/linux_like/android/mod.rs","803",": .field('ll_host', &self.ll_host)",
-"./src/unix/linux_like/android/mod.rs","854",": .field('ut_host', &self.ut_host)",
-"./src/unix/linux_like/android/b32/x86/mod.rs","284",": SYS__llseek is in the NDK sources but for some reason is",
-"./src/unix/linux_like/android/b32/x86/mod.rs","288",": SYS__newselect is in the NDK sources but for some reason is",
-"./src/unix/linux_like/android/b32/x86/mod.rs","297",": SYS__llseek is in the NDK sources but for some reason is",
-"./src/unix/hurd/mod.rs","229",": fill this out with a struct",
-"./src/unix/hurd/mod.rs","817"," This should be a union",
-"./src/unix/hurd/mod.rs","1095",": .field('ut_host', &self.ut_host)",
-"./src/unix/mod.rs","69","(time): Needs updates at least for glibc _TIME_BITS=64",
-"./src/unix/mod.rs","541",": fill this out with a struct",
-"./src/unix/mod.rs","1328",": for `time_t`",
-"./src/unix/mod.rs","1332",": for `time_t`",
-"./src/unix/mod.rs","1340",": for `time_t`",
-"./src/unix/mod.rs","1344",": for `time_t`",
-"./src/unix/mod.rs","1348",": for `time_t`",
-"./src/unix/mod.rs","1352",": for `time_t`",
-"./src/unix/mod.rs","1356",": for `time_t`",
-"./src/unix/mod.rs","1360",": for `time_t`",
-"./src/unix/mod.rs","1618",": `<>` breaks line length limit.",
-"./src/unix/redox/mod.rs","351",": relibc {",
-"./src/unix/redox/mod.rs","507",": relibc {",
-"./src/unix/redox/mod.rs","529",": Fix negative values missing from includes",
-"./src/unix/redox/mod.rs","570",": relibc {",
-"./src/unix/redox/mod.rs","595",": relibc {",
-"./src/unix/redox/mod.rs","726",": relibc {",
-"./src/unix/redox/mod.rs","1286",": .field('d_name', &self.d_name)",
-"./src/unix/redox/mod.rs","1318",": .field('sun_path', &self.sun_path)",
-"./src/unix/redox/mod.rs","1349",": .field('__ss_padding', &self.__ss_padding)",
-"./src/unix/redox/mod.rs","1401",": .field('sysname', &self.sysname)",
-"./src/unix/redox/mod.rs","1402",": .field('nodename', &self.nodename)",
-"./src/unix/redox/mod.rs","1403",": .field('release', &self.release)",
-"./src/unix/redox/mod.rs","1404",": .field('version', &self.version)",
-"./src/unix/redox/mod.rs","1405",": .field('machine', &self.machine)",
-"./src/unix/redox/mod.rs","1406",": .field('domainname', &self.domainname)",
-"./src/unix/haiku/x86_64.rs","97",": .field'_fpreg', &self._fpreg)",
-"./src/unix/haiku/x86_64.rs","98",": .field('_xmm', &self._xmm)",
-"./src/unix/haiku/x86_64.rs","99",": .field('_reserved_416_511', &self._reserved_416_511)",
-"./src/unix/haiku/x86_64.rs","136",": .field('_reserved', &field._reserved)",
-"./src/unix/haiku/x86_64.rs","165",": .field('_fp_ymm', &field._fp_ymm)",
-"./src/unix/haiku/mod.rs","565",": .field('sun_path', &self.sun_path)",
-"./src/unix/haiku/mod.rs","602",": .field'__ss_pad3', &self.__ss_pad3)",
-"./src/unix/haiku/mod.rs","639",": .field('d_name', &self.d_name)",
-"./src/unix/haiku/mod.rs","871",": Haiku does not have MAP_FILE, but library/std/os.rs requires it",
-"./src/unix/haiku/mod.rs","1304",": does not exist on Haiku!",
-"./src/unix/nto/mod.rs","809",": .field('sun_path', &self.sun_path)",
-"./src/unix/nto/mod.rs","1018",": .field('sysname', &self.sysname)",
-"./src/unix/nto/mod.rs","1019",": .field('nodename', &self.nodename)",
-"./src/unix/nto/mod.rs","1020",": .field('release', &self.release)",
-"./src/unix/nto/mod.rs","1021",": .field('version', &self.version)",
-"./src/unix/nto/mod.rs","1022",": .field('machine', &self.machine)",
-"./src/unix/nto/mod.rs","1098",": .field'__ss_pad2', &self.__ss_pad2)",
-"./src/unix/solarish/mod.rs","591",": .field('sun_path', &self.sun_path)",
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","145",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","152",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","198",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","209",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","219",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","224",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","242",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","255",""
+FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","263",""
+FALSE, "union", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","267","(1.0): this is actually a union"
+FALSE, "union", "./src/unix/linux_like/linux/uclibc/arm/mod.rs","246","(1.0) this is actually a union"
+FALSE, "c_long", "./src/unix/linux_like/linux/uclibc/arm/mod.rs","898",": should be a `c_long` too, but a bug slipped in."
+FALSE, "linux", "./src/unix/linux_like/linux/mod.rs","79",": fill this out with a struct"
+TRUE, "1.0", "./src/unix/linux_like/linux/mod.rs","329","(1.0): Change to the commented variant, see https://github.com/rust-lang/libc/pull/4148#discussion_r1857511742"
+TRUE, "1.0", "./src/unix/linux_like/linux/mod.rs","442","(1.0): this is actually a union"
+TRUE, "garando", "./src/unix/linux_like/linux/mod.rs","1202","(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported"
+TRUE, "1.0", "./src/unix/linux_like/linux/mod.rs","1676","(1.0): this field was renamed to `len` in Linux 5.11"
+FALSE, "", "./src/unix/linux_like/linux/mod.rs","1839",": .field('d_name', &self.d_name)"
+FALSE, "", "./src/unix/linux_like/linux/mod.rs","1877",": .field('d_name', &self.d_name)"
+FALSE, "", "./src/unix/linux_like/linux/mod.rs","1903",": .field('size', &self.size)"
+FALSE, "", "./src/unix/linux_like/linux/mod.rs","1925",": .field('size', &self.size)"
+FALSE, "", "./src/unix/linux_like/linux/mod.rs","1947",": .field('size', &self.size)"
+TRUE, "offset_of", "./src/unix/linux_like/linux/mod.rs","5324","(offset_of): use `core::mem::offset_of!` once that is available"
+TRUE, "ctest", "./src/unix/linux_like/linux/mod.rs","5856","(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)"
+FALSE, "union", "./src/unix/linux_like/linux/gnu/b64/s390x.rs","215",": This is actually a union."
+FALSE, "glibc", "./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","311",": the shadow stack field requires glibc >= 2.28."
+FALSE, "xmm_space", "./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","360",": .field('xmm_space', &self.xmm_space)","xmm_space"
+FALSE, "linux", "./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs","666",": perharps for later"
+FALSE, "linux", "./src/unix/linux_like/linux/gnu/b64/aarch64/mod.rs","604",": enable these again once linux-api-headers are up to date enough on CI."
+TRUE, "1.0", "./src/unix/linux_like/linux/gnu/mod.rs","383","(1.0) this is actually a union"
+TRUE, "off64", "./src/unix/linux_like/linux/gnu/mod.rs","434","(off64): visible fields depend on __USE_FILE_OFFSET64"
+FALSE, "", "./src/unix/linux_like/linux/gnu/mod.rs","590",": .field('ut_host', &self.ut_host)"
+FALSE, "union", "./src/unix/linux_like/linux/musl/b64/s390x.rs","66",": This is actually a union."
+FALSE, "", "./src/unix/linux_like/linux/musl/b64/x86_64/mod.rs","208",": .field('xmm_space', &self.xmm_space)"
+TRUE, "union", "./src/unix/linux_like/linux/musl/mod.rs","135","(union): C implementation uses unions"
+TRUE, "musl", "./src/unix/linux_like/linux/musl/mod.rs","361","(musl): enable on all targets once CI musl is updated"
+TRUE, "ctest", "./src/unix/linux_like/linux/musl/mod.rs","419","(ctest): length should be `32 - 2 * core::mem::size_of::<*const ()>()`"
+FALSE, "musl", "./src/unix/linux_like/linux/musl/mod.rs","443",": musl added paddings and adjusted"
+FALSE, "", "./src/unix/linux_like/linux/musl/mod.rs","535",": .field('__reserved', &self.__reserved)"
+FALSE, "ut_host", "./src/unix/linux_like/linux/musl/mod.rs","592",""
+FALSE, "musl", "./src/unix/linux_like/linux/musl/b32/hexagon.rs","236"," check these"
+FALSE, "musl", "./src/unix/linux_like/linux/musl/b32/hexagon.rs","289"
+FALSE, "union", "./src/unix/linux_like/mod.rs","169"," This should be a union"
+FALSE, "", "./src/unix/linux_like/mod.rs","350",": .field('sun_path', &self.sun_path)"
+FALSE, "", "./src/unix/linux_like/mod.rs","379",": .field('__ss_pad2', &self.__ss_pad2)"
+FALSE, "", "./src/unix/linux_like/mod.rs","430",": .field('sysname', &self.sysname)"
+FALSE, "", "./src/unix/linux_like/mod.rs","431",": .field('nodename', &self.nodename)"
+FALSE, "", "./src/unix/linux_like/mod.rs","432",": .field('release', &self.release)"
+FALSE, "", "./src/unix/linux_like/mod.rs","433",": .field('version', &self.version)"
+FALSE, "", "./src/unix/linux_like/mod.rs","434",": .field('machine', &self.machine)"
+FALSE, "", "./src/unix/linux_like/mod.rs","435",": .field('domainname', &self.domainname)"
+TRUE, "#235", "./src/unix/linux_like/mod.rs","509","(#235): Include file sealing fcntls once we have a way to verify them."
+FALSE, "", "./src/unix/linux_like/emscripten/mod.rs","47",": fill this out with a struct"
+FALSE, "", "./src/unix/linux_like/emscripten/mod.rs","415",": .field('d_name', &self.d_name)"
+FALSE, "", "./src/unix/linux_like/emscripten/mod.rs","468",": .field('__reserved', &self.__reserved)"
+FALSE, "", "./src/unix/linux_like/emscripten/mod.rs","528",": .field('size', &self.size)"
+FALSE, "", "./src/unix/linux_like/android/b64/mod.rs","164",": .field('__reserved', &self.__reserved)"
+FALSE, "", "./src/unix/linux_like/android/b64/mod.rs","193",": .field('__reserved', &self.__reserved)"
+FALSE, "", "./src/unix/linux_like/android/b64/mod.rs","230",": .field('__reserved', &self.__reserved)"
+FALSE, "xmm_space", "./src/unix/linux_like/android/b64/x86_64/mod.rs","356",": .field('xmm_space', &self.xmm_space)"
+FALSE, "android", "./src/unix/linux_like/android/b64/x86_64/mod.rs","548",": SYS__sysctl is in the NDK sources but for some reason is"
+TRUE, "1.0", "./src/unix/linux_like/android/mod.rs","473","(1.0): this is actually a union"
+FALSE, "", "./src/unix/linux_like/android/mod.rs","693",": .field('d_name', &self.d_name)"
+FALSE, "", "./src/unix/linux_like/android/mod.rs","731",": .field('d_name', &self.d_name)"
+FALSE, "", "./src/unix/linux_like/android/mod.rs","803",": .field('ll_host', &self.ll_host)"
+FALSE, "", "./src/unix/linux_like/android/mod.rs","854",": .field('ut_host', &self.ut_host)"
+FALSE, "x86", "./src/unix/linux_like/android/b32/x86/mod.rs","284",": SYS__llseek is in the NDK sources but for some reason is"
+FALSE, "x86", "./src/unix/linux_like/android/b32/x86/mod.rs","288",": SYS__newselect is in the NDK sources but for some reason is"
+FALSE, "x86", "./src/unix/linux_like/android/b32/x86/mod.rs","297",": SYS__llseek is in the NDK sources but for some reason is"
+FALSE, "hurd" "./src/unix/hurd/mod.rs","229",": fill this out with a struct"
+FALSE, "union", "./src/unix/hurd/mod.rs","817"," This should be a union"
+FALSE, "hurd", "./src/unix/hurd/mod.rs","1095",": .field('ut_host', &self.ut_host)"
+TRUE, "time", "./src/unix/mod.rs","69","(time): Needs updates at least for glibc _TIME_BITS=64"
+FALSE, "", "./src/unix/mod.rs","541",": fill this out with a struct"
+FALSE, "time", "./src/unix/mod.rs","1328",": for `time_t`"
+FALSE, "time", "./src/unix/mod.rs","1332",": for `time_t`"
+FALSE, "time", "./src/unix/mod.rs","1340",": for `time_t`"
+FALSE, "time", "./src/unix/mod.rs","1344",": for `time_t`
+FALSE, "time", "./src/unix/mod.rs","1348",": for `time_t`"
+FALSE, "time", "./src/unix/mod.rs","1352",": for `time_t`"
+FALSE, "time", "./src/unix/mod.rs","1356",": for `time_t`"
+FALSE, "time", "./src/unix/mod.rs","1360",": for `time_t`"
+FALSE, "Solaris", "./src/unix/mod.rs","1618",": `<>` breaks line length limit."
+FALSE, "redox", "./src/unix/redox/mod.rs","351",": relibc {"
+FALSE, "redox", "./src/unix/redox/mod.rs","507",": relibc {"
+FALSE, "redox", "./src/unix/redox/mod.rs","529",": Fix negative values missing from includes"
+FALSE, "redox", "./src/unix/redox/mod.rs","570",": relibc {"
+FALSE, "redox", "./src/unix/redox/mod.rs","595",": relibc {"
+FALSE, "redox", "./src/unix/redox/mod.rs","726",": relibc {"
+FALSE, "redox", "./src/unix/redox/mod.rs","1286",": .field('d_name', &self.d_name)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1318",": .field('sun_path', &self.sun_path)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1349",": .field('__ss_padding', &self.__ss_padding)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1401",": .field('sysname', &self.sysname)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1402",": .field('nodename', &self.nodename)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1403",": .field('release', &self.release)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1404",": .field('version', &self.version)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1405",": .field('machine', &self.machine)"
+FALSE, "redox", "./src/unix/redox/mod.rs","1406",": .field('domainname', &self.domainname)"
+FALSE, "haiku", "./src/unix/haiku/x86_64.rs","97",": .field'_fpreg', &self._fpreg)"
+FALSE, "haiku", "./src/unix/haiku/x86_64.rs","98",": .field('_xmm', &self._xmm)"
+FALSE, "haiku", "./src/unix/haiku/x86_64.rs","99",": .field('_reserved_416_511', &self._reserved_416_511)"
+FALSE, "haiku", "./src/unix/haiku/x86_64.rs","136",": .field('_reserved', &field._reserved)"
+FALSE, "haiku", "./src/unix/haiku/x86_64.rs","165",": .field('_fp_ymm', &field._fp_ymm)"
+FALSE, "haiku", "./src/unix/haiku/mod.rs","565",": .field('sun_path', &self.sun_path)"
+FALSE, "haiku", "./src/unix/haiku/mod.rs","602",": .field'__ss_pad3', &self.__ss_pad3)"
+FALSE, "haiku", "./src/unix/haiku/mod.rs","639",": .field('d_name', &self.d_name)"
+FALSE, "haiku", "./src/unix/haiku/mod.rs","871",": Haiku does not have MAP_FILE, but library/std/os.rs requires it"
+FALSE, "haiku", "./src/unix/haiku/mod.rs","1304",": does not exist on Haiku!"
+FALSE, "", "./src/unix/nto/mod.rs","809",": .field('sun_path', &self.sun_path)"
+FALSE,"", "./src/unix/nto/mod.rs","1018",": .field('sysname', &self.sysname)"
+FALSE, "", "./src/unix/nto/mod.rs","1019",": .field('nodename', &self.nodename)"
+FALSE, "", "./src/unix/nto/mod.rs","1020",": .field('release', &self.release)"
+FALSE, "", "./src/unix/nto/mod.rs","1021",": .field('version', &self.version)"
+FALSE, "", "./src/unix/nto/mod.rs","1022",": .field('machine', &self.machine)"
+FALSE, "", "./src/unix/nto/mod.rs","1098",": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE, "", "./src/unix/solarish/mod.rs","591",": .field('sun_path', &self.sun_path)"
 "./src/unix/solarish/mod.rs","634",": .field('sysname', &self.sysname)",
 "./src/unix/solarish/mod.rs","635",": .field('nodename', &self.nodename)",
 "./src/unix/solarish/mod.rs","636",": .field('release', &self.release)",
