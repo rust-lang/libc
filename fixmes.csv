@@ -1,7 +1,7 @@
 "DONE", "Category", "File Path","Line Number","Comment"
 FALSE, "struct", "./src/windows/mod.rs","267",": fill this out with a struct"
 FALSE, "1.0", "./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs","260","(1.0): this is actually a union"
-"./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs","191","(1.0): this is actually a union", "1.0",,FALSE
+TRUE, "1.0", "./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs","191","(1.0): this is actually a union", "1.0"
 FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","145",""
 FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","152",""
 FALSE, "", "./src/unix/linux_like/linux/uclibc/x86_64/mod.rs","198",""
@@ -271,45 +271,45 @@ FALSE, "android", "./libc-test/build.rs","1906",": still necessary?"
 FALSE, "deprecated", "./libc-test/build.rs","1908",": deprecated - removed in glibc 2.26"
 FALSE, "android", "./libc-test/build.rs","1917",": conflicts with standard C headers and is tested in"
 FALSE, "android", "./libc-test/build.rs","1947",": NDK r22 minimum required"
-"./libc-test/build.rs","1960",": NDK r23 minimum required",
-"./libc-test/build.rs","1964",": NDK r25 minimum required",
-"./libc-test/build.rs","1969",": NDK above r25 required",
-"./libc-test/build.rs","1983",": Something has been changed on r26b:",
-"./libc-test/build.rs","1991",": aarch64 env cannot find it:",
-"./libc-test/build.rs","1994",": The value has been changed on r26b:",
-"./libc-test/build.rs","2033",": for unknown reasons linker unable to find 'fexecve'",
-"./libc-test/build.rs","2084",": bad function pointers:",
-"./libc-test/build.rs","2100",": `sa_sigaction` has type `sighandler_t` but that type is",
-"./libc-test/build.rs","2105",": Seems the type has been changed on NDK r26b",
-"./libc-test/build.rs","2299",": https://github.com/rust-lang/libc/issues/1273",
-"./libc-test/build.rs","2361",": These are deprecated - remove in a couple of releases.",
-"./libc-test/build.rs","2366",": This is deprecated - remove in a couple of releases.",
-"./libc-test/build.rs","2383",": These are deprecated - remove in a couple of releases.",
-"./libc-test/build.rs","2497",": depends how frequent freebsd 14 is updated on CI, this addition went this week only.",
-"./libc-test/build.rs","2553",": Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822",
-"./libc-test/build.rs","2557",": Removed in https://reviews.freebsd.org/D39127.",
-"./libc-test/build.rs","2580",": Removed in FreeBSD 15:",
-"./libc-test/build.rs","2583",": The values has been changed in FreeBSD 15:",
-"./libc-test/build.rs","2637",": Changed in FreeBSD 15",
-"./libc-test/build.rs","2655",": Our API is unsound. The Rust API allows aliasing",
-"./libc-test/build.rs","2718",": `sa_sigaction` has type `sighandler_t` but that type is",
-"./libc-test/build.rs","2750",": structs too complicated to bind for now...",
-"./libc-test/build.rs","2794",": ??",
-"./libc-test/build.rs","2910",": is this necessary?",
-"./libc-test/build.rs","2931",": Investigate why the test fails.",
-"./libc-test/build.rs","2959",": deprecated - SIGNUNUSED was removed in glibc 2.26",
-"./libc-test/build.rs","2963",": emscripten uses different constants to constructs these",
-"./libc-test/build.rs","3019",": After musl 1.1.24, it have only one field `sched_priority`,",
-"./libc-test/build.rs","3186",": `sighandler_t` type is incorrect, see:",
-"./libc-test/build.rs","3204",": This is actually a union, not a struct",
-"./libc-test/build.rs","3235",": Our API is unsound. The Rust API allows aliasing",
-"./libc-test/build.rs","3345",,
-"./libc-test/build.rs","3353",,
-"./libc-test/build.rs","3376",,
-"./libc-test/build.rs","3589",": some items require Linux >= 5.6:",
-"./libc-test/build.rs","3652",": epoll_event.data is actually a union in C, but in Rust",
-"./libc-test/build.rs","3672",": very recent additions to musl, not yet released.",
-"./libc-test/build.rs","3681",": `sighandler_t` type is incorrect, see:",
+FALSE, "android", "./libc-test/build.rs","1960",": NDK r23 minimum required"
+FALSE, "android", "./libc-test/build.rs","1964",": NDK r25 minimum required"
+FALSE, "android", "./libc-test/build.rs","1969",": NDK above r25 required"
+FALSE, "android", "./libc-test/build.rs","1983",": Something has been changed on r26b:"
+FALSE, "android", "./libc-test/build.rs","1991",": aarch64 env cannot find it:"
+FALSE, "android", "./libc-test/build.rs","1994",": The value has been changed on r26b:"
+FALSE, "android", "./libc-test/build.rs","2033",": for unknown reasons linker unable to find 'fexecve'"
+FALSE, "android", "./libc-test/build.rs","2084",": bad function pointers:"
+FALSE, "android", "./libc-test/build.rs","2100",": `sa_sigaction` has type `sighandler_t` but that type is"
+FALSE, "android", "./libc-test/build.rs","2105",": Seems the type has been changed on NDK r26b"
+FALSE, "freebsd", "./libc-test/build.rs","2299",": https://github.com/rust-lang/libc/issues/1273"
+FALSE, "deprecated", "./libc-test/build.rs","2361",": These are deprecated - remove in a couple of releases."
+FALSE, "deprecated", "./libc-test/build.rs","2366",": This is deprecated - remove in a couple of releases."
+FALSE, "deprecated", "./libc-test/build.rs","2383",": These are deprecated - remove in a couple of releases."
+FALSE, "freebsd", "./libc-test/build.rs","2497",": depends how frequent freebsd 14 is updated on CI, this addition went this week only."
+FALSE, "freebsd", "./libc-test/build.rs","2553",": Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822"
+FALSE, "freebsd", "./libc-test/build.rs","2557",": Removed in https://reviews.freebsd.org/D39127."
+FALSE, "freebsd", "./libc-test/build.rs","2580",": Removed in FreeBSD 15:"
+FALSE, "freebsd", "./libc-test/build.rs","2583",": The values has been changed in FreeBSD 15:"
+FALSE, "freebsd", "./libc-test/build.rs","2637",": Changed in FreeBSD 15"
+FALSE, "ctest", "./libc-test/build.rs","2655",": Our API is unsound. The Rust API allows aliasing"
+FALSE, "freebsd", "./libc-test/build.rs","2718",": `sa_sigaction` has type `sighandler_t` but that type is"
+FALSE, "ctest", "./libc-test/build.rs","2750",": structs too complicated to bind for now..."
+FALSE, "emscripten", "./libc-test/build.rs","2794",": ??"
+FALSE, "emscripten", "./libc-test/build.rs","2910",": is this necessary?"
+FALSE, "ctest", "./libc-test/build.rs","2931",": Investigate why the test fails."
+FALSE, "deprecated", "./libc-test/build.rs","2959",": deprecated - SIGNUNUSED was removed in glibc 2.26"
+FALSE, "emscripten", "./libc-test/build.rs","2963",": emscripten uses different constants to constructs these"
+FALSE, "emscripten", "./libc-test/build.rs","3019",": After musl 1.1.24, it have only one field `sched_priority`,"
+FALSE, "neutrino", "./libc-test/build.rs","3186",": `sighandler_t` type is incorrect, see:"
+FALSE, "union", "./libc-test/build.rs","3204",": This is actually a union, not a struct"
+FALSE, "ctest", "./libc-test/build.rs","3235",": Our API is unsound. The Rust API allows aliasing"
+FALSE, "vxworks", "./libc-test/build.rs","3345",
+FALSE, "vxworks", "./libc-test/build.rs","3353",
+FALSE, "vxworks", "./libc-test/build.rs","3376",
+FALSE, "linux", "./libc-test/build.rs","3589",": some items require Linux >= 5.6:"
+FALSE, "linux", "./libc-test/build.rs","3652",": epoll_event.data is actually a union in C, but in Rust"
+FALSE, "musl", "./libc-test/build.rs","3672",": very recent additions to musl, not yet released."
+FALSE, "linux", "./libc-test/build.rs","3681",": `sighandler_t` type is incorrect, see:"
 "./libc-test/build.rs","3700",": ''__uint128' undeclared' in C",
 "./libc-test/build.rs","3719",": CI has old headers",
 "./libc-test/build.rs","3729",": sparc64 CI has old headers",
