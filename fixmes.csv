@@ -226,7 +226,7 @@ FALSE,vxworks,./src/vxworks/mod.rs,736,: could also be useful for TASK_DESC type
 FALSE,vxworks,./src/vxworks/mod.rs,1080,: fill this out with a struct
 FALSE,ci,./ci/style.rs,100,: see below
 FALSE,ci,./ci/style.rs,145,: see below
-TRUE,#4109",./ci/style.rs,182,(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
+TRUE,#4109,./ci/style.rs,182,(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
 TRUE,ctest,./build.rs,16,(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
 TRUE,ctest,./libc-test/build.rs,159,"(ctest): ctest2 cannot parse `crate::` in paths, so replace them with `::`"
 FALSE,macos,./libc-test/build.rs,258,: Requires the macOS 14.4 SDK.
@@ -300,7 +300,7 @@ FALSE,ctest,./libc-test/build.rs,2931,: Investigate why the test fails.
 FALSE,deprecated,./libc-test/build.rs,2959,: deprecated - SIGNUNUSED was removed in glibc 2.26
 FALSE,emscripten,./libc-test/build.rs,2963,: emscripten uses different constants to constructs these
 FALSE,emscripten,./libc-test/build.rs,3019,": After musl 1.1.24, it have only one field `sched_priority`"
-FALSE,neutrino",./libc-test/build.rs,3186,": `sighandler_t` type is incorrect, see:"
+FALSE,neutrino,./libc-test/build.rs,3186,": `sighandler_t` type is incorrect, see:"
 FALSE,union,./libc-test/build.rs,3204,": This is actually a union, not a struct"
 FALSE,ctest,./libc-test/build.rs,3235,: Our API is unsound. The Rust API allows aliasing
 FALSE,vxworks,./libc-test/build.rs,3345,
