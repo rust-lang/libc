@@ -1,5 +1,5 @@
 "DONE"," ""Category"""," ""File Path""","Line Number","Comment",
-FALSE,struct, ./src/windows/mod.rs, 267,: fill this out with a struct,
+FALSE, struct, ./src/windows/mod.rs, 267, 'fill this out with a struct'
 "FALSE"," ""1.0"""," ""./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs""","260","(1.0): this is actually a union",
 "TRUE"," ""1.0"""," ""./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs""","191","(1.0): this is actually a union",
 "FALSE"," """""," ""./src/unix/linux_like/linux/uclibc/x86_64/mod.rs""","145",
