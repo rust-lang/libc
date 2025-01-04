@@ -1576,8 +1576,6 @@ extern "C" {
     pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
     pub fn nl_langinfo(item: crate::nl_item) -> *mut c_char;
 
-    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
-    pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
     pub fn sendmmsg(
         sockfd: c_int,
         msgvec: *mut crate::mmsghdr,
