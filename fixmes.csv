@@ -1,16 +1,16 @@
 Labeled Added,Category,File Path,Line Number,Comment
-FALSE,struct, ./src/windows/mod.rs,267,"fill this out with a struct"
+FALSE,windows, ./src/windows/mod.rs,267,"fill this out with a struct"
 FALSE,1.0,./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs,260,"(1.0) this is actually a union"
 TRUE,1.0,./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs,191,"(1.0): this is actually a union"
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,145,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,152,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,198,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,209,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,219,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,224,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,242,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,255,
-FALSE, ,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,263,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,145,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,152,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,198,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,209,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,219,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,224,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,242,
+FALSE, linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,255,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,263,
 FALSE,union,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,267,(1.0): this is actually a union
 FALSE,union,./src/unix/linux_like/linux/uclibc/arm/mod.rs,246,(1.0) this is actually a union
 FALSE,c_long,./src/unix/linux_like/linux/uclibc/arm/mod.rs,898,": should be a `c_long` too, but a bug slipped in."
@@ -19,55 +19,55 @@ TRUE,1.0,./src/unix/linux_like/linux/mod.rs,329,"(1.0): Change to the commented 
 TRUE,1.0,./src/unix/linux_like/linux/mod.rs,442,(1.0): this is actually a union
 TRUE,garando,./src/unix/linux_like/linux/mod.rs,1202,"(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported"
 TRUE,1.0,./src/unix/linux_like/linux/mod.rs,1676,(1.0): this field was renamed to `len` in Linux 5.11
-FALSE, ,./src/unix/linux_like/linux/mod.rs,1839,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/linux_like/linux/mod.rs,1877,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/linux_like/linux/mod.rs,1903,": .field('size', &self.size)"
-FALSE, ,./src/unix/linux_like/linux/mod.rs,1925,": .field('size', &self.size)"
-FALSE, ,./src/unix/linux_like/linux/mod.rs,1947,": .field('size', &self.size)"
-TRUE,offset_of,./src/unix/linux_like/linux/mod.rs,5324,(offset_of): use `core::mem::offset_of!` once that is available
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1839,": .field('d_name', &self.d_name)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1877,": .field('d_name', &self.d_name)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1903,": .field('size', &self.size)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1925,": .field('size', &self.size)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1947,": .field('size', &self.size)"
+TRUE,linux,./src/unix/linux_like/linux/mod.rs,5324,(offset_of): use `core::mem::offset_of!` once that is available
 TRUE,ctest,./src/unix/linux_like/linux/mod.rs,5856,(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)
 FALSE,union,./src/unix/linux_like/linux/gnu/b64/s390x.rs,215,: This is actually a union.
-FALSE,glibc,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,311,: the shadow stack field requires glibc >= 2.28.
-FALSE,xmm_space,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,360,": .field('xmm_space', &self.xmm_space)"
+FALSE,linux,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,311,: the shadow stack field requires glibc >= 2.28.
+FALSE,linux,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,360,": .field('xmm_space', &self.xmm_space)"
 FALSE,linux,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,666,: perharps for later
 FALSE,linux,./src/unix/linux_like/linux/gnu/b64/aarch64/mod.rs,604,: enable these again once linux-api-headers are up to date enough on CI.
 TRUE,1.0,./src/unix/linux_like/linux/gnu/mod.rs,383,(1.0) this is actually a union
 TRUE,off64,./src/unix/linux_like/linux/gnu/mod.rs,434,(off64): visible fields depend on __USE_FILE_OFFSET64
-FALSE, ,./src/unix/linux_like/linux/gnu/mod.rs,590,": .field('ut_host', &self.ut_host)"
+FALSE,linux,./src/unix/linux_like/linux/gnu/mod.rs,590,": .field('ut_host', &self.ut_host)"
 FALSE,union,./src/unix/linux_like/linux/musl/b64/s390x.rs,66,: This is actually a union.
-FALSE, ,./src/unix/linux_like/linux/musl/b64/x86_64/mod.rs,208,": .field('xmm_space', &self.xmm_space)"
+FALSE,musl,./src/unix/linux_like/linux/musl/b64/x86_64/mod.rs,208,": .field('xmm_space', &self.xmm_space)"
 TRUE,union,./src/unix/linux_like/linux/musl/mod.rs,135,(union): C implementation uses unions
 TRUE,musl,./src/unix/linux_like/linux/musl/mod.rs,361,(musl): enable on all targets once CI musl is updated
 TRUE,ctest,./src/unix/linux_like/linux/musl/mod.rs,419,(ctest): length should be `32 - 2 * core::mem::size_of::<*const ()>()`
 FALSE,musl,./src/unix/linux_like/linux/musl/mod.rs,443,: musl added paddings and adjusted
-FALSE, ,./src/unix/linux_like/linux/musl/mod.rs,535,": .field('__reserved', &self.__reserved)"
+FALSE,musl,./src/unix/linux_like/linux/musl/mod.rs,535,": .field('__reserved', &self.__reserved)"
 FALSE,ut_host,./src/unix/linux_like/linux/musl/mod.rs,592,
 FALSE,musl,./src/unix/linux_like/linux/musl/b32/hexagon.rs,236, check these
 FALSE,musl,./src/unix/linux_like/linux/musl/b32/hexagon.rs,289,
 FALSE,union,./src/unix/linux_like/mod.rs,169, This should be a union
-FALSE, ,./src/unix/linux_like/mod.rs,350,": .field('sun_path', &self.sun_path)"
-FALSE, ,./src/unix/linux_like/mod.rs,379,": .field('__ss_pad2', &self.__ss_pad2)"
-FALSE, ,./src/unix/linux_like/mod.rs,430,": .field('sysname', &self.sysname)"
-FALSE, ,./src/unix/linux_like/mod.rs,431,": .field('nodename', &self.nodename)"
-FALSE, ,./src/unix/linux_like/mod.rs,432,": .field('release', &self.release)"
-FALSE, ,./src/unix/linux_like/mod.rs,433,": .field('version', &self.version)"
-FALSE, ,./src/unix/linux_like/mod.rs,434,": .field('machine', &self.machine)"
-FALSE, ,./src/unix/linux_like/mod.rs,435,": .field('domainname', &self.domainname)"
+FALSE,linux,./src/unix/linux_like/mod.rs,350,": .field('sun_path', &self.sun_path)"
+FALSE,linux,./src/unix/linux_like/mod.rs,379,": .field('__ss_pad2', &self.__ss_pad2)"
+FALSE,linux,./src/unix/linux_like/mod.rs,430,": .field('sysname', &self.sysname)"
+FALSE,linux,./src/unix/linux_like/mod.rs,431,": .field('nodename', &self.nodename)"
+FALSE,linux,./src/unix/linux_like/mod.rs,432,": .field('release', &self.release)"
+FALSE,linux,./src/unix/linux_like/mod.rs,433,": .field('version', &self.version)"
+FALSE,linux,./src/unix/linux_like/mod.rs,434,": .field('machine', &self.machine)"
+FALSE,linux,./src/unix/linux_like/mod.rs,435,": .field('domainname', &self.domainname)"
 TRUE,#235,./src/unix/linux_like/mod.rs,509,(#235): Include file sealing fcntls once we have a way to verify them.
-FALSE, ,./src/unix/linux_like/emscripten/mod.rs,47,: fill this out with a struct
-FALSE, ,./src/unix/linux_like/emscripten/mod.rs,415,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/linux_like/emscripten/mod.rs,468,": .field('__reserved', &self.__reserved)"
-FALSE, ,./src/unix/linux_like/emscripten/mod.rs,528,": .field('size', &self.size)"
-FALSE, ,./src/unix/linux_like/android/b64/mod.rs,164,": .field('__reserved', &self.__reserved)"
-FALSE, ,./src/unix/linux_like/android/b64/mod.rs,193,": .field('__reserved', &self.__reserved)"
-FALSE, ,./src/unix/linux_like/android/b64/mod.rs,230,": .field('__reserved', &self.__reserved)"
-FALSE,xmm_space,./src/unix/linux_like/android/b64/x86_64/mod.rs,356,": .field('xmm_space', &self.xmm_space)"
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,47,: fill this out with a struct
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,415,": .field('d_name', &self.d_name)"
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,468,": .field('__reserved', &self.__reserved)"
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,528,": .field('size', &self.size)"
+FALSE,emscripten,./src/unix/linux_like/android/b64/mod.rs,164,": .field('__reserved', &self.__reserved)"
+FALSE,emscripten,./src/unix/linux_like/android/b64/mod.rs,193,": .field('__reserved', &self.__reserved)"
+FALSE,emscripten,./src/unix/linux_like/android/b64/mod.rs,230,": .field('__reserved', &self.__reserved)"
+FALSE,android,./src/unix/linux_like/android/b64/x86_64/mod.rs,356,": .field('xmm_space', &self.xmm_space)"
 FALSE,android,./src/unix/linux_like/android/b64/x86_64/mod.rs,548,: SYS__sysctl is in the NDK sources but for some reason is
 TRUE,1.0,./src/unix/linux_like/android/mod.rs,473,(1.0): this is actually a union
-FALSE, ,./src/unix/linux_like/android/mod.rs,693,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/linux_like/android/mod.rs,731,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/linux_like/android/mod.rs,803,": .field('ll_host', &self.ll_host)"
-FALSE, ,./src/unix/linux_like/android/mod.rs,854,": .field('ut_host', &self.ut_host)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,693,": .field('d_name', &self.d_name)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,731,": .field('d_name', &self.d_name)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,803,": .field('ll_host', &self.ll_host)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,854,": .field('ut_host', &self.ut_host)"
 FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,284,: SYS__llseek is in the NDK sources but for some reason is
 FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,288,: SYS__newselect is in the NDK sources but for some reason is
 FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,297,: SYS__llseek is in the NDK sources but for some reason is
@@ -75,7 +75,7 @@ FALSE,hurd,./src/unix/hurd/mod.rs,229,: fill this out with a struct
 FALSE,union,./src/unix/hurd/mod.rs,817, This should be a union
 FALSE,hurd,./src/unix/hurd/mod.rs,1095,": .field('ut_host', &self.ut_host)"
 TRUE,time,./src/unix/mod.rs,69,(time): Needs updates at least for glibc _TIME_BITS=64
-FALSE, ,./src/unix/mod.rs,541,: fill this out with a struct
+FALSE,unix,./src/unix/mod.rs,541,: fill this out with a struct
 FALSE,time,./src/unix/mod.rs,1328,: for `time_t`
 FALSE,time,./src/unix/mod.rs,1332,: for `time_t`
 FALSE,time,./src/unix/mod.rs,1340,: for `time_t`
@@ -110,58 +110,58 @@ FALSE,haiku,./src/unix/haiku/mod.rs,602,": .field'__ss_pad3', &self.__ss_pad3)"
 FALSE,haiku,./src/unix/haiku/mod.rs,639,": .field('d_name', &self.d_name)"
 FALSE,haiku,./src/unix/haiku/mod.rs,871,": Haiku does not have MAP_FILE, but library/std/os.rs requires it"
 FALSE,haiku,./src/unix/haiku/mod.rs,1304,: does not exist on Haiku!
-FALSE, ,./src/unix/nto/mod.rs,809,": .field('sun_path', &self.sun_path)"
-FALSE,,./src/unix/nto/mod.rs,1018,": .field('sysname', &self.sysname)"
-FALSE, ,./src/unix/nto/mod.rs,1019,": .field('nodename', &self.nodename)"
-FALSE, ,./src/unix/nto/mod.rs,1020,": .field('release', &self.release)"
-FALSE, ,./src/unix/nto/mod.rs,1021,": .field('version', &self.version)"
-FALSE, ,./src/unix/nto/mod.rs,1022,": .field('machine', &self.machine)"
-FALSE, ,./src/unix/nto/mod.rs,1098,": .field'__ss_pad2', &self.__ss_pad2)"
-FALSE, ,./src/unix/solarish/mod.rs,591,": .field('sun_path', &self.sun_path)"
-FALSE, ,./src/unix/solarish/mod.rs,634,": .field('sysname', &self.sysname)"
-FALSE, ,./src/unix/solarish/mod.rs,635,": .field('nodename', &self.nodename)"
-FALSE, ,./src/unix/solarish/mod.rs,636,": .field('release', &self.release)"
-FALSE, ,./src/unix/solarish/mod.rs,637,": .field('version', &self.version)"
-FALSE, ,./src/unix/solarish/mod.rs,638,": .field('machine', &self.machine)"
-FALSE, ,./src/unix/solarish/mod.rs,664,": .field('fds_bits', &self.fds_bits)"
-FALSE,,./src/unix/solarish/mod.rs,693,": .field'__ss_pad2', &self.__ss_pad2)"
-FALSE, ,./src/unix/solarish/mod.rs,742,: The `si_pad` field in the 64-bit version of the struct is ignored
-FALSE, ,./src/unix/solarish/mod.rs,762,": .field('__pad', &self.__pad)"
-FALSE, ,./src/unix/solarish/mod.rs,772,: The `si_pad` field in the 64-bit version of the struct is ignored
-FALSE, ,./src/unix/solarish/mod.rs,805,": .field('sdl_data', &self.sdl_data)"
-FALSE, ,./src/unix/solarish/mod.rs,855,: self._q == other._q ||
-FALSE, ,./src/unix/solarish/mod.rs,864,: state.write_i64(self._q as i64);
-FALSE, ,./src/unix/solarish/mod.rs,872,: self._q == other._q ||
-FALSE, ,./src/unix/solarish/mod.rs,881,: state.write_i64(self._q as i64);
-FALSE, ,./src/unix/bsd/mod.rs,188,": .field('sun_path', &self.sun_path)"
-FALSE, ,./src/unix/bsd/mod.rs,235,": .field('sysname', &self.sysname)"
-FALSE, ,./src/unix/bsd/mod.rs,236,": .field('nodename', &self.nodename)"
-FALSE, ,./src/unix/bsd/mod.rs,237,": .field('release', &self.release)"
-FALSE, ,./src/unix/bsd/mod.rs,238,": .field('version', &self.version)"
-FALSE, ,./src/unix/bsd/mod.rs,239,": .field('machine', &self.machine)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/x86_64.rs,97,": .field('fx_st', &{self.fx_st})"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/x86_64.rs,98,": .field('fx_xmm', &{self.fx_xmm})"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,783,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,876,": .field'll_line', &self.ll_line)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,877,": .field('ll_host', &self.ll_host)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,916,": .field('ut_line', &self.ut_line)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,917,": .field('ut_name', &self.ut_name)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,918,": .field('ut_host', &self.ut_host)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1051,": .field('f_fstypename', &self.f_fstypename)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1052,": .field('f_mntonname', &self.f_mntonname)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1053,": .field('fmntfromname', &self.f_mntfromname)"
-FALSE, ,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1054,": .field('f_mntfromspec', &self.f_mntfromspec)"
+FALSE,nto,./src/unix/nto/mod.rs,809,": .field('sun_path', &self.sun_path)"
+FALSE,nto,./src/unix/nto/mod.rs,1018,": .field('sysname', &self.sysname)"
+FALSE,nto,./src/unix/nto/mod.rs,1019,": .field('nodename', &self.nodename)"
+FALSE,nto,./src/unix/nto/mod.rs,1020,": .field('release', &self.release)"
+FALSE,nto,./src/unix/nto/mod.rs,1021,": .field('version', &self.version)"
+FALSE,nto,./src/unix/nto/mod.rs,1022,": .field('machine', &self.machine)"
+FALSE,nto,./src/unix/nto/mod.rs,1098,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,solarish,./src/unix/solarish/mod.rs,591,": .field('sun_path', &self.sun_path)"
+FALSE,solarish,./src/unix/solarish/mod.rs,634,": .field('sysname', &self.sysname)"
+FALSE,solarish,./src/unix/solarish/mod.rs,635,": .field('nodename', &self.nodename)"
+FALSE,solarish,./src/unix/solarish/mod.rs,636,": .field('release', &self.release)"
+FALSE,solarish,./src/unix/solarish/mod.rs,637,": .field('version', &self.version)"
+FALSE,solarish,./src/unix/solarish/mod.rs,638,": .field('machine', &self.machine)"
+FALSE,solarish,./src/unix/solarish/mod.rs,664,": .field('fds_bits', &self.fds_bits)"
+FALSE,solarish,./src/unix/solarish/mod.rs,693,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,solarish,./src/unix/solarish/mod.rs,742,: The `si_pad` field in the 64-bit version of the struct is ignored
+FALSE,solarish,./src/unix/solarish/mod.rs,762,": .field('__pad', &self.__pad)"
+FALSE,solarish,./src/unix/solarish/mod.rs,772,: The `si_pad` field in the 64-bit version of the struct is ignored
+FALSE,solarish,./src/unix/solarish/mod.rs,805,": .field('sdl_data', &self.sdl_data)"
+FALSE,solarish,./src/unix/solarish/mod.rs,855,: self._q == other._q ||
+FALSE,solarish,./src/unix/solarish/mod.rs,864,: state.write_i64(self._q as i64);
+FALSE,solarish,./src/unix/solarish/mod.rs,872,: self._q == other._q ||
+FALSE,solarish,./src/unix/solarish/mod.rs,881,: state.write_i64(self._q as i64);
+FALSE,bsd,./src/unix/bsd/mod.rs,188,": .field('sun_path', &self.sun_path)"
+FALSE,bsd,./src/unix/bsd/mod.rs,235,": .field('sysname', &self.sysname)"
+FALSE,bsd,./src/unix/bsd/mod.rs,236,": .field('nodename', &self.nodename)"
+FALSE,bsd,./src/unix/bsd/mod.rs,237,": .field('release', &self.release)"
+FALSE,bsd,./src/unix/bsd/mod.rs,238,": .field('version', &self.version)"
+FALSE,bsd,./src/unix/bsd/mod.rs,239,": .field('machine', &self.machine)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/x86_64.rs,97,": .field('fx_st', &{self.fx_st})"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/x86_64.rs,98,": .field('fx_xmm', &{self.fx_xmm})"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,783,": .field('d_name', &self.d_name)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,876,": .field'll_line', &self.ll_line)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,877,": .field('ll_host', &self.ll_host)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,916,": .field('ut_line', &self.ut_line)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,917,": .field('ut_name', &self.ut_name)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,918,": .field('ut_host', &self.ut_host)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1051,": .field('f_fstypename', &self.f_fstypename)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1052,": .field('f_mntonname', &self.f_mntonname)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1053,": .field('fmntfromname', &self.f_mntfromname)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1054,": .field('f_mntfromspec', &self.f_mntfromspec)"
 FALSE,deprecated,./src/unix/bsd/netbsdlike/netbsd/mod.rs,13,: deprecated since long time
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,802,: when anonymous struct are supported
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,948," .field('ut_host', &self.ut_host)"
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,955," .field('ut_pad', &self.ut_pad)"
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,996,".field('ll_host', &self.ll_host)"
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1162,": .field('d_name', &self.d_name)"
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1238,": .field('f_mntonname', &self.f_mntonname)"
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1239,": .field('fmntfromname', &self.f_mntfromname)"
-FALSE, ,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1293,": .field'__ss_pad3', &self.__ss_pad3)"
-FALSE, ,./src/unix/bsd/apple/b64/mod.rs,83,": .field('__opaque', &self.__opaque)"
-FALSE, ,./src/unix/bsd/apple/b64/x86_64/mod.rs,109,: keeping private for now
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,802,: when anonymous struct are supported
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,948," .field('ut_host', &self.ut_host)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,955," .field('ut_pad', &self.ut_pad)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,996,".field('ll_host', &self.ll_host)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1162,": .field('d_name', &self.d_name)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1238,": .field('f_mntonname', &self.f_mntonname)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1239,": .field('fmntfromname', &self.f_mntfromname)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1293,": .field'__ss_pad3', &self.__ss_pad3)"
+FALSE,macos,./src/unix/bsd/apple/b64/mod.rs,83,": .field('__opaque', &self.__opaque)"
+FALSE,macos,./src/unix/bsd/apple/b64/x86_64/mod.rs,109,: keeping private for now
 FALSE,macos,./src/unix/bsd/apple/b64/aarch64/mod.rs,8,: needs arm64 auth pointers support
 FALSE,union,./src/unix/bsd/apple/mod.rs,364,: this field is actually a union
 FALSE,macos,./src/unix/bsd/apple/mod.rs,1307,: 64-bit wrong align => wrong offset
@@ -219,7 +219,7 @@ FALSE,fuchsia,./src/fuchsia/mod.rs,1412,": .field('size', &self.size)"
 FALSE,fuchsia,./src/fuchsia/mod.rs,1431,": .field('size', &self.size)"
 FALSE,fuchsia,./src/fuchsia/mod.rs,1563,(#235): Include file sealing fcntls once we have a way to verify them.
 FALSE,fuchsia,./src/fuchsia/mod.rs,3565,: fill this out with a struct
-FALSE, ,./src/lib.rs,15,: temporarily allow dead_code to fix CI:
+FALSE,1.0,./src/lib.rs,15,: temporarily allow dead_code to fix CI:
 TRUE,ctest,./src/lib.rs,45,(ctest): just use `target_vendor` = 'apple'` once `ctest` supports it
 FALSE,vxworks,./src/vxworks/mod.rs,573,": This is not defined in vxWorks, but we have to define it here"
 FALSE,vxworks,./src/vxworks/mod.rs,736,: could also be useful for TASK_DESC type
