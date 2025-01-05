@@ -895,7 +895,7 @@ pub const SYS_pwritev2: c_long = 393;
 pub const SYS_pkey_mprotect: c_long = 394;
 pub const SYS_pkey_alloc: c_long = 395;
 pub const SYS_pkey_free: c_long = 396;
-// FIXME: should be a `c_long` too, but a bug slipped in.
+// FIXME(linux): should be a `c_long` too, but a bug slipped in.
 pub const SYS_statx: c_int = 397;
 pub const SYS_pidfd_send_signal: c_long = 424;
 pub const SYS_io_uring_setup: c_long = 425;

@@ -601,7 +601,7 @@ pub const HWCAP_SSBS: c_ulong = 1 << 28;
 pub const HWCAP_SB: c_ulong = 1 << 29;
 pub const HWCAP_PACA: c_ulong = 1 << 30;
 pub const HWCAP_PACG: c_ulong = 1 << 31;
-// FIXME: enable these again once linux-api-headers are up to date enough on CI.
+// FIXME(linux): enable these again once linux-api-headers are up to date enough on CI.
 // See discussion in https://github.com/rust-lang/libc/pull/1638
 //pub const HWCAP2_DCPODP: c_ulong = 1 << 0;
 //pub const HWCAP2_SVE2: c_ulong = 1 << 1;

@@ -142,14 +142,14 @@ s! {
     }
 
     pub struct stack_t {
-        // FIXME
+        // FIXME(ulibc)
         pub ss_sp: *mut c_void,
         pub ss_flags: c_int,
         pub ss_size: size_t,
     }
 
     pub struct statfs {
-        // FIXME
+        // FIXME(ulibc)
         pub f_type: fsword_t,
         pub f_bsize: fsword_t,
         pub f_blocks: crate::fsblkcnt_t,
@@ -195,7 +195,7 @@ s! {
     }
 
     pub struct msghdr {
-        // FIXME
+        // FIXME(ulibc)
         pub msg_name: *mut c_void,
         pub msg_namelen: crate::socklen_t,
         pub msg_iov: *mut crate::iovec,
@@ -206,7 +206,7 @@ s! {
     }
 
     pub struct termios {
-        // FIXME
+        // FIXME(ulibc)
         pub c_iflag: crate::tcflag_t,
         pub c_oflag: crate::tcflag_t,
         pub c_cflag: crate::tcflag_t,
@@ -216,12 +216,12 @@ s! {
     }
 
     pub struct sigset_t {
-        // FIXME
+        // FIXME(ulibc)
         __val: [c_ulong; 16],
     }
 
     pub struct sysinfo {
-        // FIXME
+        // FIXME(ulibc)
         pub uptime: c_long,
         pub loads: [c_ulong; 3],
         pub totalram: c_ulong,
@@ -239,7 +239,7 @@ s! {
     }
 
     pub struct glob_t {
-        // FIXME
+        // FIXME(ulibc)
         pub gl_pathc: size_t,
         pub gl_pathv: *mut *mut c_char,
         pub gl_offs: size_t,
@@ -252,7 +252,7 @@ s! {
     }
 
     pub struct cpu_set_t {
-        // FIXME
+        // FIXME(ulibc)
         #[cfg(target_pointer_width = "32")]
         bits: [u32; 32],
         #[cfg(target_pointer_width = "64")]
@@ -260,7 +260,7 @@ s! {
     }
 
     pub struct fsid_t {
-        // FIXME
+        // FIXME(ulibc)
         __val: [c_int; 2],
     }
 
