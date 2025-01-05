@@ -348,7 +348,7 @@ pub const F_LOCK: c_int = 1;
 pub const F_TLOCK: c_int = 2;
 pub const F_TEST: c_int = 3;
 
-// FIXME: relibc {
+// FIXME(redox): relibc {
 pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
 // }
 
@@ -504,7 +504,7 @@ pub const F_GETFD: c_int = 1;
 pub const F_SETFD: c_int = 2;
 pub const F_GETFL: c_int = 3;
 pub const F_SETFL: c_int = 4;
-// FIXME: relibc {
+// FIXME(redox): relibc {
 pub const F_DUPFD_CLOEXEC: c_int = crate::F_DUPFD;
 // }
 pub const FD_CLOEXEC: c_int = 0x0100_0000;
@@ -526,7 +526,7 @@ pub const O_DIRECTORY: c_int = 0x1000_0000;
 pub const O_PATH: c_int = 0x2000_0000;
 pub const O_SYMLINK: c_int = 0x4000_0000;
 // Negative to allow it to be used as int
-// FIXME: Fix negative values missing from includes
+// FIXME(redox): Fix negative values missing from includes
 pub const O_NOFOLLOW: c_int = -0x8000_0000;
 
 // locale.h
@@ -567,7 +567,7 @@ pub const NI_NAMEREQD: c_int = 0x0008;
 pub const NI_DGRAM: c_int = 0x0010;
 
 // netinet/in.h
-// FIXME: relibc {
+// FIXME(redox): relibc {
 pub const IP_TTL: c_int = 2;
 pub const IPV6_UNICAST_HOPS: c_int = 16;
 pub const IPV6_MULTICAST_IF: c_int = 17;
@@ -592,7 +592,7 @@ pub const IPPROTO_MAX: c_int = 255;
 
 // netinet/tcp.h
 pub const TCP_NODELAY: c_int = 1;
-// FIXME: relibc {
+// FIXME(redox): relibc {
 pub const TCP_KEEPIDLE: c_int = 1;
 // }
 
@@ -723,7 +723,7 @@ pub const EXIT_SUCCESS: c_int = 0;
 pub const EXIT_FAILURE: c_int = 1;
 
 // sys/ioctl.h
-// FIXME: relibc {
+// FIXME(redox): relibc {
 pub const FIONREAD: c_ulong = 0x541B;
 pub const FIONBIO: c_ulong = 0x5421;
 pub const FIOCLEX: c_ulong = 0x5451;
@@ -1283,7 +1283,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1315,7 +1315,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME(debug): .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -1346,7 +1346,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
-                    // FIXME: .field("__ss_padding", &self.__ss_padding)
+                    // FIXME(debug): .field("__ss_padding", &self.__ss_padding)
                     .finish()
             }
         }
@@ -1398,12 +1398,12 @@ cfg_if! {
         impl fmt::Debug for utsname {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
-                    // FIXME: .field("sysname", &self.sysname)
-                    // FIXME: .field("nodename", &self.nodename)
-                    // FIXME: .field("release", &self.release)
-                    // FIXME: .field("version", &self.version)
-                    // FIXME: .field("machine", &self.machine)
-                    // FIXME: .field("domainname", &self.domainname)
+                    // FIXME(debug): .field("sysname", &self.sysname)
+                    // FIXME(debug): .field("nodename", &self.nodename)
+                    // FIXME(debug): .field("release", &self.release)
+                    // FIXME(debug): .field("version", &self.version)
+                    // FIXME(debug): .field("machine", &self.machine)
+                    // FIXME(debug): .field("domainname", &self.domainname)
                     .finish()
             }
         }
