@@ -177,3 +177,7 @@ cc = ["@semarie"]
 [mentions."src/unix/solarish"]
 message = "Some changes occurred in solarish module"
 cc = ["@jclulow", "@pfmooney"]
+
+[mentions."src/unix/linux_like/android"]
+message = "Some changes occurred in the Android module"
+cc = ["@maurer"]
