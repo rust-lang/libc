@@ -255,7 +255,7 @@ fn test_apple(target: &str) {
         "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
-        // FIXME: Requires the macOS 14.4 SDK.
+        // FIXME(macos): Requires the macOS 14.4 SDK.
         //"os/os_sync_wait_on_address.h",
         "poll.h",
         "pthread.h",
@@ -325,15 +325,15 @@ fn test_apple(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: actually a union
+            // FIXME(union): actually a union
             "sigval" => true,
 
-            // FIXME: The size is changed in recent macOSes.
+            // FIXME(macos): The size is changed in recent macOSes.
             "malloc_zone_t" => true,
             // it is a moving target, changing through versions
             // also contains bitfields members
             "tcp_connection_info" => true,
-            // FIXME: The size is changed in recent macOSes.
+            // FIXME(macos): The size is changed in recent macOSes.
             "malloc_introspection_t" => true,
             // sonoma changes the padding `rmx_filler` field.
             "rt_metrics" => true,
@@ -347,10 +347,10 @@ fn test_apple(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: Requires the macOS 14.4 SDK.
+            // FIXME(macos): Requires the macOS 14.4 SDK.
             "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
 
-            // FIXME: "'__uint128' undeclared" in C
+            // FIXME(ctest): "'__uint128' undeclared" in C
             "__uint128" => true,
 
             _ => false,
@@ -362,13 +362,13 @@ fn test_apple(target: &str) {
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
-            // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
+            // FIXME(macos): the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
             "SF_SETTABLE" => true,
 
-            // FIXME: XCode 13.1 doesn't have it.
+            // FIXME(macos): XCode 13.1 doesn't have it.
             "TIOCREMOTE" => true,
 
-            // FIXME: Requires the macOS 14.4 SDK.
+            // FIXME(macos): Requires the macOS 14.4 SDK.
             "OS_SYNC_WAKE_BY_ADDRESS_NONE"
             | "OS_SYNC_WAKE_BY_ADDRESS_SHARED"
             | "OS_SYNC_WAIT_ON_ADDRESS_NONE"
@@ -384,19 +384,19 @@ fn test_apple(target: &str) {
             // close calls the close_nocancel system call
             "close" => true,
 
-            // FIXME: std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
+            // FIXME(ctest): std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
             "res_init" => true,
 
-            // FIXME: remove once the target in CI is updated
+            // FIXME(macos): remove once the target in CI is updated
             "pthread_jit_write_freeze_callbacks_np" => true,
 
-            // FIXME: ABI has been changed on recent macOSes.
+            // FIXME(macos): ABI has been changed on recent macOSes.
             "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
 
-            // FIXME: Once the SDK get updated to Ventura's level
+            // FIXME(macos): Once the SDK get updated to Ventura's level
             "freadlink" | "mknodat" | "mkfifoat" => true,
 
-            // FIXME: Requires the macOS 14.4 SDK.
+            // FIXME(macos): Requires the macOS 14.4 SDK.
             "os_sync_wake_by_address_any"
             | "os_sync_wake_by_address_all"
             | "os_sync_wake_by_address_flags_t"
@@ -411,7 +411,7 @@ fn test_apple(target: &str) {
 
     cfg.skip_field(move |struct_, field| {
         match (struct_, field) {
-            // FIXME: the array size has been changed since macOS 10.15 ([8] -> [7]).
+            // FIXME(macos): the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
             ("__darwin_arm_neon_state64", "__v") => true,
 
@@ -425,7 +425,7 @@ fn test_apple(target: &str) {
 
     cfg.skip_field_type(move |struct_, field| {
         match (struct_, field) {
-            // FIXME: actually a union
+            // FIXME(union): actually a union
             ("sigevent", "sigev_value") => true,
             _ => false,
         }
@@ -459,7 +459,7 @@ fn test_apple(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", "espec.tv_nsec")
             }
-            // FIXME: sigaction actually contains a union with two variants:
+            // FIXME(ctest): sigaction actually contains a union with two variants:
             // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
             // a sa_handler with type sig_t
             "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
@@ -468,7 +468,7 @@ fn test_apple(target: &str) {
     });
 
     cfg.skip_roundtrip(move |s| match s {
-        // FIXME: this type has the wrong ABI
+        // FIXME(ctest): this type has the wrong ABI
         "max_align_t" if i686 => true,
         // Can't return an array from a C function.
         "uuid_t" | "vol_capabilities_set_t" => true,
@@ -575,7 +575,7 @@ fn test_openbsd(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: actually a union
+            // FIXME(union): actually a union
             "sigval" => true,
 
             _ => false,
