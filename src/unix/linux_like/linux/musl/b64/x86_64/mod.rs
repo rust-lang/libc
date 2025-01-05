@@ -205,7 +205,7 @@ cfg_if! {
                     .field("mxcsr", &self.mxcsr)
                     .field("mxcr_mask", &self.mxcr_mask)
                     .field("st_space", &self.st_space)
-                    // FIXME: .field("xmm_space", &self.xmm_space)
+                    // FIXME(debug): .field("xmm_space", &self.xmm_space)
                     // Ignore padding field
                     .finish()
             }

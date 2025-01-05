@@ -661,7 +661,7 @@ cfg_if! {
                     .field("ut_line", &self.ut_line)
                     .field("ut_id", &self.ut_id)
                     .field("ut_user", &self.ut_user)
-                    // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME(debug): .field("ut_host", &self.ut_host)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_session", &self.ut_session)
                     .field("ut_tv", &self.ut_tv)
