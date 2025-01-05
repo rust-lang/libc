@@ -226,7 +226,7 @@ pub type nl_item = c_int;
 pub type iconv_t = *mut c_void;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos64_t {} // FIXME: fill this out with a struct
+pub enum fpos64_t {} // FIXME(hurd): fill this out with a struct
 impl Copy for fpos64_t {}
 impl Clone for fpos64_t {
     fn clone(&self) -> fpos64_t {
@@ -814,7 +814,7 @@ s! {
         pub ifa_flags: c_uint,
         pub ifa_addr: *mut crate::sockaddr,
         pub ifa_netmask: *mut crate::sockaddr,
-        pub ifa_ifu: *mut crate::sockaddr, // FIXME This should be a union
+        pub ifa_ifu: *mut crate::sockaddr, // FIXME(union) This should be a union
         pub ifa_data: *mut c_void,
     }
 
@@ -1092,7 +1092,7 @@ cfg_if! {
                     .field("ut_line", &self.ut_line)
                     .field("ut_id", &self.ut_id)
                     .field("ut_user", &self.ut_user)
-                    // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME(debug): .field("ut_host", &self.ut_host)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_session", &self.ut_session)
                     .field("ut_tv", &self.ut_tv)
