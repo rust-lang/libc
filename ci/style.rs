@@ -97,7 +97,7 @@ enum State {
 fn check_style(file: &str, path: &Path, err: &mut Errors) {
     let mut state = State::Start;
 
-    // FIXME: see below
+    // FIXME(ci): see below
     // let mut s_macros = 0;
 
     let mut f_macros = 0;
@@ -142,7 +142,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         } else if line.starts_with("type ") && !in_impl {
             State::Typedefs
         } else if line.starts_with("s! {") {
-            // FIXME: see below
+            // FIXME(ci): see below
             // s_macros += 1;
             State::Structs
         } else if line.starts_with("s_no_extra_traits! {") {
