@@ -1,0 +1,392 @@
+Labeled Added,Category,File Path,Line Number,Comment
+FALSE,windows, ./src/windows/mod.rs,267,"fill this out with a struct"
+FALSE,1.0,./src/unix/linux_like/linux/uclibc/mips/mips32/mod.rs,260,"(1.0) this is actually a union"
+TRUE,1.0,./src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs,191,"(1.0): this is actually a union"
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,145,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,152,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,198,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,209,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,219,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,224,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,242,
+FALSE, linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,255,
+FALSE,linux,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,263,
+FALSE,union,./src/unix/linux_like/linux/uclibc/x86_64/mod.rs,267,(1.0): this is actually a union
+FALSE,union,./src/unix/linux_like/linux/uclibc/arm/mod.rs,246,(1.0) this is actually a union
+FALSE,c_long,./src/unix/linux_like/linux/uclibc/arm/mod.rs,898,": should be a `c_long` too, but a bug slipped in."
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,79,: fill this out with a struct
+TRUE,1.0,./src/unix/linux_like/linux/mod.rs,329,"(1.0): Change to the commented variant, see https://github.com/rust-lang/libc/pull/4148#discussion_r1857511742"
+TRUE,1.0,./src/unix/linux_like/linux/mod.rs,442,(1.0): this is actually a union
+TRUE,garando,./src/unix/linux_like/linux/mod.rs,1202,"(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported"
+TRUE,1.0,./src/unix/linux_like/linux/mod.rs,1676,(1.0): this field was renamed to `len` in Linux 5.11
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1839,": .field('d_name', &self.d_name)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1877,": .field('d_name', &self.d_name)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1903,": .field('size', &self.size)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1925,": .field('size', &self.size)"
+FALSE,linux,./src/unix/linux_like/linux/mod.rs,1947,": .field('size', &self.size)"
+TRUE,linux,./src/unix/linux_like/linux/mod.rs,5324,(offset_of): use `core::mem::offset_of!` once that is available
+TRUE,ctest,./src/unix/linux_like/linux/mod.rs,5856,(ctest) the `garando_syntax` crate (used by ctest2 in the CI test suite)
+FALSE,union,./src/unix/linux_like/linux/gnu/b64/s390x.rs,215,: This is actually a union.
+FALSE,linux,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,311,: the shadow stack field requires glibc >= 2.28.
+FALSE,linux,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,360,": .field('xmm_space', &self.xmm_space)"
+FALSE,linux,./src/unix/linux_like/linux/gnu/b64/x86_64/mod.rs,666,: perharps for later
+FALSE,linux,./src/unix/linux_like/linux/gnu/b64/aarch64/mod.rs,604,: enable these again once linux-api-headers are up to date enough on CI.
+TRUE,1.0,./src/unix/linux_like/linux/gnu/mod.rs,383,(1.0) this is actually a union
+TRUE,off64,./src/unix/linux_like/linux/gnu/mod.rs,434,(off64): visible fields depend on __USE_FILE_OFFSET64
+FALSE,linux,./src/unix/linux_like/linux/gnu/mod.rs,590,": .field('ut_host', &self.ut_host)"
+FALSE,union,./src/unix/linux_like/linux/musl/b64/s390x.rs,66,: This is actually a union.
+FALSE,musl,./src/unix/linux_like/linux/musl/b64/x86_64/mod.rs,208,": .field('xmm_space', &self.xmm_space)"
+TRUE,union,./src/unix/linux_like/linux/musl/mod.rs,135,(union): C implementation uses unions
+TRUE,musl,./src/unix/linux_like/linux/musl/mod.rs,361,(musl): enable on all targets once CI musl is updated
+TRUE,ctest,./src/unix/linux_like/linux/musl/mod.rs,419,(ctest): length should be `32 - 2 * core::mem::size_of::<*const ()>()`
+FALSE,musl,./src/unix/linux_like/linux/musl/mod.rs,443,: musl added paddings and adjusted
+FALSE,musl,./src/unix/linux_like/linux/musl/mod.rs,535,": .field('__reserved', &self.__reserved)"
+FALSE,ut_host,./src/unix/linux_like/linux/musl/mod.rs,592,
+FALSE,musl,./src/unix/linux_like/linux/musl/b32/hexagon.rs,236, check these
+FALSE,musl,./src/unix/linux_like/linux/musl/b32/hexagon.rs,289,
+FALSE,union,./src/unix/linux_like/mod.rs,169, This should be a union
+FALSE,linux,./src/unix/linux_like/mod.rs,350,": .field('sun_path', &self.sun_path)"
+FALSE,linux,./src/unix/linux_like/mod.rs,379,": .field('__ss_pad2', &self.__ss_pad2)"
+FALSE,linux,./src/unix/linux_like/mod.rs,430,": .field('sysname', &self.sysname)"
+FALSE,linux,./src/unix/linux_like/mod.rs,431,": .field('nodename', &self.nodename)"
+FALSE,linux,./src/unix/linux_like/mod.rs,432,": .field('release', &self.release)"
+FALSE,linux,./src/unix/linux_like/mod.rs,433,": .field('version', &self.version)"
+FALSE,linux,./src/unix/linux_like/mod.rs,434,": .field('machine', &self.machine)"
+FALSE,linux,./src/unix/linux_like/mod.rs,435,": .field('domainname', &self.domainname)"
+TRUE,#235,./src/unix/linux_like/mod.rs,509,(#235): Include file sealing fcntls once we have a way to verify them.
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,47,: fill this out with a struct
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,415,": .field('d_name', &self.d_name)"
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,468,": .field('__reserved', &self.__reserved)"
+FALSE,emscripten,./src/unix/linux_like/emscripten/mod.rs,528,": .field('size', &self.size)"
+FALSE,emscripten,./src/unix/linux_like/android/b64/mod.rs,164,": .field('__reserved', &self.__reserved)"
+FALSE,emscripten,./src/unix/linux_like/android/b64/mod.rs,193,": .field('__reserved', &self.__reserved)"
+FALSE,emscripten,./src/unix/linux_like/android/b64/mod.rs,230,": .field('__reserved', &self.__reserved)"
+FALSE,android,./src/unix/linux_like/android/b64/x86_64/mod.rs,356,": .field('xmm_space', &self.xmm_space)"
+FALSE,android,./src/unix/linux_like/android/b64/x86_64/mod.rs,548,: SYS__sysctl is in the NDK sources but for some reason is
+TRUE,1.0,./src/unix/linux_like/android/mod.rs,473,(1.0): this is actually a union
+FALSE,android,./src/unix/linux_like/android/mod.rs,693,": .field('d_name', &self.d_name)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,731,": .field('d_name', &self.d_name)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,803,": .field('ll_host', &self.ll_host)"
+FALSE,android,./src/unix/linux_like/android/mod.rs,854,": .field('ut_host', &self.ut_host)"
+FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,284,: SYS__llseek is in the NDK sources but for some reason is
+FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,288,: SYS__newselect is in the NDK sources but for some reason is
+FALSE,linux,./src/unix/linux_like/android/b32/x86/mod.rs,297,: SYS__llseek is in the NDK sources but for some reason is
+FALSE,hurd,./src/unix/hurd/mod.rs,229,: fill this out with a struct
+FALSE,union,./src/unix/hurd/mod.rs,817, This should be a union
+FALSE,hurd,./src/unix/hurd/mod.rs,1095,": .field('ut_host', &self.ut_host)"
+TRUE,time,./src/unix/mod.rs,69,(time): Needs updates at least for glibc _TIME_BITS=64
+FALSE,unix,./src/unix/mod.rs,541,: fill this out with a struct
+FALSE,time,./src/unix/mod.rs,1328,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1332,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1340,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1344,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1348,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1352,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1356,: for `time_t`
+FALSE,time,./src/unix/mod.rs,1360,: for `time_t`
+FALSE,solaris,./src/unix/mod.rs,1618,: `<>` breaks line length limit.
+FALSE,redox,./src/unix/redox/mod.rs,351,: relibc {
+FALSE,redox,./src/unix/redox/mod.rs,507,: relibc {
+FALSE,redox,./src/unix/redox/mod.rs,529,: Fix negative values missing from includes
+FALSE,redox,./src/unix/redox/mod.rs,570,: relibc {
+FALSE,redox,./src/unix/redox/mod.rs,595,: relibc {
+FALSE,redox,./src/unix/redox/mod.rs,726,: relibc {
+FALSE,redox,./src/unix/redox/mod.rs,1286,": .field('d_name', &self.d_name)"
+FALSE,redox,./src/unix/redox/mod.rs,1318,": .field('sun_path', &self.sun_path)"
+FALSE,redox,./src/unix/redox/mod.rs,1349,": .field('__ss_padding', &self.__ss_padding)"
+FALSE,redox,./src/unix/redox/mod.rs,1401,": .field('sysname', &self.sysname)"
+FALSE,redox,./src/unix/redox/mod.rs,1402,": .field('nodename', &self.nodename)"
+FALSE,redox,./src/unix/redox/mod.rs,1403,": .field('release', &self.release)"
+FALSE,redox,./src/unix/redox/mod.rs,1404,": .field('version', &self.version)"
+FALSE,redox,./src/unix/redox/mod.rs,1405,": .field('machine', &self.machine)"
+FALSE,redox,./src/unix/redox/mod.rs,1406,": .field('domainname', &self.domainname)"
+FALSE,haiku,./src/unix/haiku/x86_64.rs,97,": .field'_fpreg', &self._fpreg)"
+FALSE,haiku,./src/unix/haiku/x86_64.rs,98,": .field('_xmm', &self._xmm)"
+FALSE,haiku,./src/unix/haiku/x86_64.rs,99,": .field('_reserved_416_511', &self._reserved_416_511)"
+FALSE,haiku,./src/unix/haiku/x86_64.rs,136,": .field('_reserved', &field._reserved)"
+FALSE,haiku,./src/unix/haiku/x86_64.rs,165,": .field('_fp_ymm', &field._fp_ymm)"
+FALSE,haiku,./src/unix/haiku/mod.rs,565,": .field('sun_path', &self.sun_path)"
+FALSE,haiku,./src/unix/haiku/mod.rs,602,": .field'__ss_pad3', &self.__ss_pad3)"
+FALSE,haiku,./src/unix/haiku/mod.rs,639,": .field('d_name', &self.d_name)"
+FALSE,haiku,./src/unix/haiku/mod.rs,871,": Haiku does not have MAP_FILE, but library/std/os.rs requires it"
+FALSE,haiku,./src/unix/haiku/mod.rs,1304,: does not exist on Haiku!
+FALSE,nto,./src/unix/nto/mod.rs,809,": .field('sun_path', &self.sun_path)"
+FALSE,nto,./src/unix/nto/mod.rs,1018,": .field('sysname', &self.sysname)"
+FALSE,nto,./src/unix/nto/mod.rs,1019,": .field('nodename', &self.nodename)"
+FALSE,nto,./src/unix/nto/mod.rs,1020,": .field('release', &self.release)"
+FALSE,nto,./src/unix/nto/mod.rs,1021,": .field('version', &self.version)"
+FALSE,nto,./src/unix/nto/mod.rs,1022,": .field('machine', &self.machine)"
+FALSE,nto,./src/unix/nto/mod.rs,1098,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,solarish,./src/unix/solarish/mod.rs,591,": .field('sun_path', &self.sun_path)"
+FALSE,solarish,./src/unix/solarish/mod.rs,634,": .field('sysname', &self.sysname)"
+FALSE,solarish,./src/unix/solarish/mod.rs,635,": .field('nodename', &self.nodename)"
+FALSE,solarish,./src/unix/solarish/mod.rs,636,": .field('release', &self.release)"
+FALSE,solarish,./src/unix/solarish/mod.rs,637,": .field('version', &self.version)"
+FALSE,solarish,./src/unix/solarish/mod.rs,638,": .field('machine', &self.machine)"
+FALSE,solarish,./src/unix/solarish/mod.rs,664,": .field('fds_bits', &self.fds_bits)"
+FALSE,solarish,./src/unix/solarish/mod.rs,693,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,solarish,./src/unix/solarish/mod.rs,742,: The `si_pad` field in the 64-bit version of the struct is ignored
+FALSE,solarish,./src/unix/solarish/mod.rs,762,": .field('__pad', &self.__pad)"
+FALSE,solarish,./src/unix/solarish/mod.rs,772,: The `si_pad` field in the 64-bit version of the struct is ignored
+FALSE,solarish,./src/unix/solarish/mod.rs,805,": .field('sdl_data', &self.sdl_data)"
+FALSE,solarish,./src/unix/solarish/mod.rs,855,: self._q == other._q ||
+FALSE,solarish,./src/unix/solarish/mod.rs,864,: state.write_i64(self._q as i64);
+FALSE,solarish,./src/unix/solarish/mod.rs,872,: self._q == other._q ||
+FALSE,solarish,./src/unix/solarish/mod.rs,881,: state.write_i64(self._q as i64);
+FALSE,bsd,./src/unix/bsd/mod.rs,188,": .field('sun_path', &self.sun_path)"
+FALSE,bsd,./src/unix/bsd/mod.rs,235,": .field('sysname', &self.sysname)"
+FALSE,bsd,./src/unix/bsd/mod.rs,236,": .field('nodename', &self.nodename)"
+FALSE,bsd,./src/unix/bsd/mod.rs,237,": .field('release', &self.release)"
+FALSE,bsd,./src/unix/bsd/mod.rs,238,": .field('version', &self.version)"
+FALSE,bsd,./src/unix/bsd/mod.rs,239,": .field('machine', &self.machine)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/x86_64.rs,97,": .field('fx_st', &{self.fx_st})"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/x86_64.rs,98,": .field('fx_xmm', &{self.fx_xmm})"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,783,": .field('d_name', &self.d_name)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,876,": .field'll_line', &self.ll_line)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,877,": .field('ll_host', &self.ll_host)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,916,": .field('ut_line', &self.ut_line)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,917,": .field('ut_name', &self.ut_name)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,918,": .field('ut_host', &self.ut_host)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1051,": .field('f_fstypename', &self.f_fstypename)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1052,": .field('f_mntonname', &self.f_mntonname)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1053,": .field('fmntfromname', &self.f_mntfromname)"
+FALSE,openbsd,./src/unix/bsd/netbsdlike/openbsd/mod.rs,1054,": .field('f_mntfromspec', &self.f_mntfromspec)"
+FALSE,deprecated,./src/unix/bsd/netbsdlike/netbsd/mod.rs,13,: deprecated since long time
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,802,: when anonymous struct are supported
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,948," .field('ut_host', &self.ut_host)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,955," .field('ut_pad', &self.ut_pad)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,996,".field('ll_host', &self.ll_host)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1162,": .field('d_name', &self.d_name)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1238,": .field('f_mntonname', &self.f_mntonname)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1239,": .field('fmntfromname', &self.f_mntfromname)"
+FALSE,netbsd,./src/unix/bsd/netbsdlike/netbsd/mod.rs,1293,": .field'__ss_pad3', &self.__ss_pad3)"
+FALSE,macos,./src/unix/bsd/apple/b64/mod.rs,83,": .field('__opaque', &self.__opaque)"
+FALSE,macos,./src/unix/bsd/apple/b64/x86_64/mod.rs,109,: keeping private for now
+FALSE,macos,./src/unix/bsd/apple/b64/aarch64/mod.rs,8,: needs arm64 auth pointers support
+FALSE,union,./src/unix/bsd/apple/mod.rs,364,: this field is actually a union
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1307,: 64-bit wrong align => wrong offset
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1308,: 64-bit wrong align => wrong offset
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1309,: 64-bit wrong align => wrong offset
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1310,: 64-bit wrong align => wrong offset:
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1894,": .field('pth_name', &self.pth_name)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1960,": .field('f_mntonname', &self.f_mntonname)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,1961,": .field('fmntfromname', &self.f_mntfromname)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2011,": .field('d_name', &self.d_name)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2040,": .field('__opaque', &self.__opaque)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2068,": .field('__opaque', &self.__opaque)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2097,": .field('__opaque', &self.__opaque)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2136,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2176,": .field('ut_user', &self.ut_user)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2182,": .field('ut_host', &self.ut_host)"
+FALSE,macos,./src/unix/bsd/apple/mod.rs,2424,": .field('pth_name', &self.pth_name)"
+FALSE,macos,./src/unix/bsd/apple/b32/mod.rs,50,: keeping private for now
+FALSE,macos,./src/unix/bsd/apple/b32/mod.rs,89,": .field('__opaque', &self.__opaque)"
+FALSE,dragonfly,./src/unix/bsd/freebsdlike/dragonfly/mod.rs,565,": .field('ut_host', &self.ut_host)"
+FALSE,dragonfly,./src/unix/bsd/freebsdlike/dragonfly/mod.rs,644,": .field('d_name', &self.d_name)"
+FALSE,dragonfly,./src/unix/bsd/freebsdlike/dragonfly/mod.rs,706,": .field('f_mntonname', &self.f_mntonname)"
+FALSE,dragonfly,./src/unix/bsd/freebsdlike/dragonfly/mod.rs,709,": .field('fmntfromname', &self.f_mntfromname)"
+FALSE,dragonfly,./src/unix/bsd/freebsdlike/dragonfly/mod.rs,867,(msrv): suggested method was added in 1.85
+FALSE,freebsd,./src/unix/bsd/freebsdlike/mod.rs,421,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,1647,: this is really a giant union
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,1698,": .field('ut_host', &self.ut_host)"
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,1699,": .field('__ut_spare', &self.__ut_spare)"
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,1786,": .field('sdl_data', &self.sdl_data)"
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,2278,": .field('info', &{self.info})"
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,2350,": .field('tpe', &{self.tpe})"
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/mod.rs,5651,: pidfile_signal in due time (both manpage present and updated image snapshot)
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/x86_64/mod.rs,240,(msrv): suggested method was added in 1.85
+FALSE,freebsd,./src/unix/bsd/freebsdlike/freebsd/x86_64/mod.rs,349,": .field('mc_fpstate', &self.mc_fpstate)"
+TRUE,ctest,./src/fixed_width_ints.rs,77,(ctest): ctest doesn't handle `_` as an identifier so these tests are temporarily
+FALSE,fuchsia,./src/fuchsia/x86_64.rs,105,": .field('__private', &self.__private)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,94,: why are these uninhabited types? that seems... wrong?
+FALSE,fuchsia,./src/fuchsia/mod.rs,114,: fill this out with a struct
+FALSE,fuchsia,./src/fuchsia/mod.rs,147,: the rlimit and rusage related functions and types don't exist
+FALSE,union,./src/fuchsia/mod.rs,481, This should be a union
+FALSE,union,./src/fuchsia/mod.rs,708,(1.0): this is actually a union
+FALSE,fuchsia,./src/fuchsia/mod.rs,1100,": .field('__reserved', &self.__reserved)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1138,": .field('sun_path', &self.sun_path)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1166,": .field'__ss_pad2', &self.__ss_pad2)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1210,": .field('sysname', &self.sysname)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1211,": .field('nodename', &self.nodename)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1212,": .field('release', &self.release)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1213,": .field('version', &self.version)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1214,": .field('machine', &self.machine)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1249,": .field('d_name', &self.d_name)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1284,": .field('d_name', &self.d_name)"
+TRUE,msrv,./src/fuchsia/mod.rs,1351,(msrv): suggested method was added in 1.85
+FALSE,fuchsia,./src/fuchsia/mod.rs,1393,": .field('size', &self.size)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1412,": .field('size', &self.size)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1431,": .field('size', &self.size)"
+FALSE,fuchsia,./src/fuchsia/mod.rs,1563,(#235): Include file sealing fcntls once we have a way to verify them.
+FALSE,fuchsia,./src/fuchsia/mod.rs,3565,: fill this out with a struct
+FALSE,1.0,./src/lib.rs,15,: temporarily allow dead_code to fix CI:
+TRUE,ctest,./src/lib.rs,45,(ctest): just use `target_vendor` = 'apple'` once `ctest` supports it
+FALSE,vxworks,./src/vxworks/mod.rs,573,": This is not defined in vxWorks, but we have to define it here"
+FALSE,vxworks,./src/vxworks/mod.rs,736,: could also be useful for TASK_DESC type
+FALSE,vxworks,./src/vxworks/mod.rs,1080,: fill this out with a struct
+FALSE,ci,./ci/style.rs,100,: see below
+FALSE,ci,./ci/style.rs,145,: see below
+TRUE,#4109,./ci/style.rs,182,(#4109): multiple should be allowed if at least one is `cfg(not) within `cfg_if`.
+TRUE,ctest,./build.rs,16,(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
+TRUE,ctest,./libc-test/build.rs,159,"(ctest): ctest2 cannot parse `crate::` in paths, so replace them with `::`"
+FALSE,macos,./libc-test/build.rs,258,: Requires the macOS 14.4 SDK.
+FALSE,union,./libc-test/build.rs,328,: actually a union
+FALSE,macos,./libc-test/build.rs,331,: The size is changed in recent macOSes.
+FALSE,macos,./libc-test/build.rs,336,: The size is changed in recent macOSes.
+FALSE,macos,./libc-test/build.rs,350,: Requires the macOS 14.4 SDK.
+FALSE,ctest,./libc-test/build.rs,353,: '__uint128' undeclared in C
+FALSE,macos,./libc-test/build.rs,365,: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
+FALSE,macos,./libc-test/build.rs,368,: XCode 13.1 doesn't have it.
+FALSE,macos,./libc-test/build.rs,371,: Requires the macOS 14.4 SDK.
+FALSE,ctest,./libc-test/build.rs,387,: std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
+FALSE,ctest,./libc-test/build.rs,390,: remove once the target in CI is updated
+FALSE,macos,./libc-test/build.rs,393,: ABI has been changed on recent macOSes.
+FALSE,macos,./libc-test/build.rs,396,: Once the SDK get updated to Ventura's level
+FALSE,macos,./libc-test/build.rs,399,: Requires the macOS 14.4 SDK.
+FALSE,macos,./libc-test/build.rs,414,: the array size has been changed since macOS 10.15 ([8] -> [7]).
+FALSE,union,./libc-test/build.rs,428,: actually a union
+FALSE,ctest,./libc-test/build.rs,462,: sigaction actually contains a union with two variants:
+FALSE,ctest,./libc-test/build.rs,471,: this type has the wrong ABI
+FALSE,union,./libc-test/build.rs,578,: actually a union
+FALSE,ctest,./libc-test/build.rs,683,: these don't exist:
+FALSE,ctest,./libc-test/build.rs,715,: The size and alignment of this type are incorrect
+FALSE,ctest,./libc-test/build.rs,725,: The size and alignment of this struct are incorrect
+FALSE,ctest,./libc-test/build.rs,733,: API error:
+FALSE,windows,./libc-test/build.rs,738,: newer windows-gnu environment on CI?
+FALSE,ctest,./libc-test/build.rs,748,: All functions point to the wrong addresses?
+FALSE,ctest,./libc-test/build.rs,1044,: unskip these for next major release
+FALSE,ctest,./libc-test/build.rs,1079,: Our API is unsound. The Rust API allows aliasing
+FALSE,ctest,./libc-test/build.rs,1225,: sighandler_t is crazy across platforms
+FALSE,netbsd,./libc-test/build.rs,1269,: netbsd 10 minimum
+FALSE,dragonflybsd,./libc-test/build.rs,1408,: OSX calls this something else
+FALSE,dragonflybsd,./libc-test/build.rs,1453,: These are tested as part of the linux_fcntl tests since
+FALSE,union,./libc-test/build.rs,1817,: appears that `epoll_event.data` is an union
+FALSE,android,./libc-test/build.rs,1836,": `sighandler_t` type is incorrect, see:"
+FALSE,android,./libc-test/build.rs,1847,: ''__uint128' undeclared' in C
+FALSE,android,./libc-test/build.rs,1870,: The type of `iv` has been changed.
+FALSE,android,./libc-test/build.rs,1873,: The size of struct has been changed:
+FALSE,android,./libc-test/build.rs,1875,: The field has been changed:
+FALSE,deprecated,./libc-test/build.rs,1902,: deprecated: not available in any header
+FALSE,android,./libc-test/build.rs,1906,: still necessary?
+FALSE,deprecated,./libc-test/build.rs,1908,: deprecated - removed in glibc 2.26
+FALSE,android,./libc-test/build.rs,1917,: conflicts with standard C headers and is tested in
+FALSE,android,./libc-test/build.rs,1947,: NDK r22 minimum required
+FALSE,android,./libc-test/build.rs,1960,: NDK r23 minimum required
+FALSE,android,./libc-test/build.rs,1964,: NDK r25 minimum required
+FALSE,android,./libc-test/build.rs,1969,: NDK above r25 required
+FALSE,android,./libc-test/build.rs,1983,: Something has been changed on r26b:
+FALSE,android,./libc-test/build.rs,1991,: aarch64 env cannot find it:
+FALSE,android,./libc-test/build.rs,1994,: The value has been changed on r26b:
+FALSE,android,./libc-test/build.rs,2033,: for unknown reasons linker unable to find 'fexecve'
+FALSE,android,./libc-test/build.rs,2084,: bad function pointers:
+FALSE,android,./libc-test/build.rs,2100,: `sa_sigaction` has type `sighandler_t` but that type is
+FALSE,android,./libc-test/build.rs,2105,: Seems the type has been changed on NDK r26b
+FALSE,freebsd,./libc-test/build.rs,2299,: https://github.com/rust-lang/libc/issues/1273
+FALSE,deprecated,./libc-test/build.rs,2361,: These are deprecated - remove in a couple of releases.
+FALSE,deprecated,./libc-test/build.rs,2366,: This is deprecated - remove in a couple of releases.
+FALSE,deprecated,./libc-test/build.rs,2383,: These are deprecated - remove in a couple of releases.
+FALSE,freebsd,./libc-test/build.rs,2497,": depends how frequent freebsd 14 is updated on CI, this addition went this week only."
+FALSE,freebsd,./libc-test/build.rs,2553,: Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822
+FALSE,freebsd,./libc-test/build.rs,2557,: Removed in https://reviews.freebsd.org/D39127.
+FALSE,freebsd,./libc-test/build.rs,2580,: Removed in FreeBSD 15:
+FALSE,freebsd,./libc-test/build.rs,2583,: The values has been changed in FreeBSD 15:
+FALSE,freebsd,./libc-test/build.rs,2637,: Changed in FreeBSD 15
+FALSE,ctest,./libc-test/build.rs,2655,: Our API is unsound. The Rust API allows aliasing
+FALSE,freebsd,./libc-test/build.rs,2718,: `sa_sigaction` has type `sighandler_t` but that type is
+FALSE,ctest,./libc-test/build.rs,2750,: structs too complicated to bind for now...
+FALSE,emscripten,./libc-test/build.rs,2794,: ??
+FALSE,emscripten,./libc-test/build.rs,2910,: is this necessary?
+FALSE,ctest,./libc-test/build.rs,2931,: Investigate why the test fails.
+FALSE,deprecated,./libc-test/build.rs,2959,: deprecated - SIGNUNUSED was removed in glibc 2.26
+FALSE,emscripten,./libc-test/build.rs,2963,: emscripten uses different constants to constructs these
+FALSE,emscripten,./libc-test/build.rs,3019,": After musl 1.1.24, it have only one field `sched_priority`"
+FALSE,neutrino,./libc-test/build.rs,3186,": `sighandler_t` type is incorrect, see:"
+FALSE,union,./libc-test/build.rs,3204,": This is actually a union, not a struct"
+FALSE,ctest,./libc-test/build.rs,3235,: Our API is unsound. The Rust API allows aliasing
+FALSE,vxworks,./libc-test/build.rs,3345,
+FALSE,vxworks,./libc-test/build.rs,3353,
+FALSE,vxworks,./libc-test/build.rs,3376,
+FALSE,linux,./libc-test/build.rs,3589,: some items require Linux >= 5.6:
+FALSE,linux,./libc-test/build.rs,3652,": epoll_event.data is actually a union in C, but in Rust"
+FALSE,musl,./libc-test/build.rs,3672,": very recent additions to musl, not yet released."
+FALSE,linux,./libc-test/build.rs,3681,": `sighandler_t` type is incorrect, see:"
+FALSE,linux,./libc-test/build.rs,3700,: ''__uint128' undeclared' in C
+FALSE,linux,./libc-test/build.rs,3719,: CI has old headers
+FALSE,linux,./libc-test/build.rs,3729,: sparc64 CI has old headers
+TRUE,#1558,./libc-test/build.rs,3734,(#1558): passing by value corrupts the value for reasons not understood.
+TRUE,(rust-lang/rust#43894),./libc-test/build.rs,3739,(rust-lang/rust#43894): pass by value for structs that are not an even 32/64 bits
+FALSE,musl,./libc-test/build.rs,3752,: musl doesn't compile with `struct fanout_args` for unknown reasons.
+FALSE,union,./libc-test/build.rs,3770,": This is actually a union, not a struct"
+FALSE,linux,./libc-test/build.rs,3778,: remove once we set minimum supported glibc version.
+FALSE,linux,./libc-test/build.rs,3784,: Somehow we cannot include headers correctly in glibc 2.30.
+FALSE,linux,./libc-test/build.rs,3804,: requires >= 6.1 kernel headers
+FALSE,linux,./libc-test/build.rs,3807,: The size of `iv` has been changed since Linux v6.0
+FALSE,linux,./libc-test/build.rs,3811,: Requires >= 5.1 kernel headers.
+FALSE,linux,./libc-test/build.rs,3819,: Requires >= 5.11 kernel headers.
+FALSE,linux,./libc-test/build.rs,3827,: Requires >= 5.3 kernel headers.
+FALSE,linux,./libc-test/build.rs,3831,: Requires >= 5.4 kernel headers.
+FALSE,linux,./libc-test/build.rs,3835,: Requires >= 6.8 kernel headers.
+FALSE,linux,./libc-test/build.rs,3842,: Requires >= 5.9 kernel headers.
+FALSE,linux,./libc-test/build.rs,3846,: Requires >= 6.8 kernel headers.
+FALSE,linux,./libc-test/build.rs,3870,: Requires >= 6.9 kernel headers.
+FALSE,linux,./libc-test/build.rs,3915,: Requires >= 5.0 kernel headers
+FALSE,linux,./libc-test/build.rs,3926,: Requires >= 4.20 kernel headers
+FALSE,linux,./libc-test/build.rs,3930,: Requires >= 5.4 kernel headers
+FALSE,linux,./libc-test/build.rs,3943,: Requires >= 5.4.1 kernel headers
+FALSE,linux,./libc-test/build.rs,3951,: Requires >= 5.10 kernel headers
+FALSE,linux,./libc-test/build.rs,3965,: Requires >= 6.3 kernel headers
+FALSE,deprecated,./libc-test/build.rs,3992,: deprecated: not available in any header
+FALSE,linux,./libc-test/build.rs,3996,: SIGUNUSED was removed in glibc 2.26
+FALSE,linux,./libc-test/build.rs,4000,: conflicts with glibc headers and is tested in
+FALSE,musl,./libc-test/build.rs,4009,: on musl the pthread types are defined a little differently
+FALSE,linux,./libc-test/build.rs,4013,: It was extended to 4096 since glibc 2.31 (Linux 5.4).
+FALSE,linux,./libc-test/build.rs,4025,: Not yet implemented on sparc64
+FALSE,linux,./libc-test/build.rs,4028,": Not defined on ARM, gnueabihf, musl, PowerPC, riscv64, s390x, and sparc64."
+FALSE,linux,./libc-test/build.rs,4031,: Added in Linux 5.16
+FALSE,linux,./libc-test/build.rs,4035,: Added in Linux 5.17
+FALSE,linux,./libc-test/build.rs,4039,: Added in Linux 5.18
+FALSE,linux,./libc-test/build.rs,4043,: requires more recent kernel headers on CI
+FALSE,linux,./libc-test/build.rs,4049,: requires more recent kernel headers on CI
+FALSE,musl,./libc-test/build.rs,4052,: Not currently available in headers on ARM and musl.
+FALSE,linux,./libc-test/build.rs,4109,: Parts of netfilter/nfnetlink*.h require more recent kernel headers:
+FALSE,linux,./libc-test/build.rs,4115,: The below is no longer const in glibc 2.34:
+FALSE,linux,./libc-test/build.rs,4122,: Linux >= 5.16:
+FALSE,linux,./libc-test/build.rs,4128,: requires Linux >= v5.8
+FALSE,linux,./libc-test/build.rs,4131,: Requires >= 6.3 kernel headers
+FALSE,linux,./libc-test/build.rs,4140,: Requires more recent kernel headers
+FALSE,linux,./libc-test/build.rs,4153,: Requires linux 6.1
+FALSE,linux,./libc-test/build.rs,4156,: Requires more recent kernel headers
+FALSE,linux,./libc-test/build.rs,4184,: Requires linux 6.5
+FALSE,linux,./libc-test/build.rs,4187,: Requires >= 6.6 kernel headers.
+FALSE,linux,./libc-test/build.rs,4195,: Requires >= 6.8 kernel headers.
+FALSE,linux,./libc-test/build.rs,4205,: Requires >= 6.11 kernel headers.
+FALSE,linux,./libc-test/build.rs,4212,: Requires >= 6.6 kernel headers.
+FALSE,linux,./libc-test/build.rs,4215,: Requires >= 6.10 kernel headers.
+FALSE,linux,./libc-test/build.rs,4218,: seems to not be available all the time (from <include/linux/sched.h>:
+FALSE,linux,./libc-test/build.rs,4247,: Requires >= 6.9 kernel headers.
+FALSE,linux,./libc-test/build.rs,4251,: Requires >= 6.11 kernel headers.
+FALSE,linux,./libc-test/build.rs,4279,: Our API is unsound. The Rust API allows aliasing
+FALSE,linux,./libc-test/build.rs,4290,: Deprecated since glibc 2.30. Remove fn once upstream does.
+FALSE,linux,./libc-test/build.rs,4293,: It now takes c_void instead of timezone since glibc 2.31.
+FALSE,musl,./libc-test/build.rs,4321,: This needs musl 1.2.2 or later.
+FALSE,linux,./libc-test/build.rs,4357,: function pointers changed since Ubuntu 23.10
+TRUE,linux,./libc-test/build.rs,4386,(linux): `adjust_phase` requires >= 5.7 kernel headers
+TRUE,linux,./libc-test/build.rs,4387,(linux): `max_phase_adj` requires >= 5.19 kernel headers
+FALSE,musl,./libc-test/build.rs,4419,": After musl 1.1.24, it have only one field `sched_priority`,"
+FALSE,musl,./libc-test/build.rs,4427,": After musl 1.1.24, the type becomes `int` instead of `unsigned short`."
+FALSE,linux,./libc-test/build.rs,4431,: It now takes mode_t since glibc 2.31 on some targets.
+TRUE,linux,./libc-test/build.rs,4466,(linux): `adjust_phase` requires >= 5.7 kernel headers
+TRUE,linux,./libc-test/build.rs,4467,(linux): `max_phase_adj` requires >= 5.19 kernel headers
+TRUE,#4121,./libc-test/build.rs,4472,(#4121): a new field was added from `f_spare`
+FALSE,ctest,./libc-test/build.rs,4480,:
+FALSE,union,./libc-test/build.rs,4482,: This is actually a union.
+FALSE,linux,./libc-test/build.rs,4516,: the call ABI of max_align_t is incorrect on these platforms:
+FALSE,union,./libc-test/build.rs,4847,: actually a union
+FALSE,haiku,./libc-test/build.rs,4849,: locale_t does not exist on Haiku
+FALSE,haiku,./libc-test/build.rs,4851,: rusage has a different layout on Haiku
+FALSE,haiku,./libc-test/build.rs,4853,"?: complains that rust aligns on 4 byte boundary, but"
+FALSE,haiku,./libc-test/build.rs,4878,: locale_t does not exist on Haiku
+FALSE,haiku,./libc-test/build.rs,4893,: does not exist on haiku
+FALSE,haiku,./libc-test/build.rs,4917,: these constants do not exist on Haiku
+FALSE,time,./libc-test/build.rs,4943,": the stat struct actually has timespec members, whereas"
+FALSE,ctest,./libc-test/build.rs,4973,: for some reason the roundtrip check fails for cpu_info
