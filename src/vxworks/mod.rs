@@ -562,7 +562,7 @@ pub const EAI_SERVICE: c_int = 9;
 pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 
-// FIXME: This is not defined in vxWorks, but we have to define it here
+// FIXME(vxworks): This is not defined in vxWorks, but we have to define it here
 // to make the building pass for getrandom and std
 pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
 
@@ -725,7 +725,7 @@ pub const S_taskLib_TASK_HOOK_TABLE_FULL: c_int = taskErrorBase + 0x0066;
 pub const S_taskLib_TASK_HOOK_NOT_FOUND: c_int = taskErrorBase + 0x0067;
 pub const S_taskLib_ILLEGAL_PRIORITY: c_int = taskErrorBase + 0x0068;
 
-// FIXME: could also be useful for TASK_DESC type
+// FIXME(vxworks): could also be useful for TASK_DESC type
 pub const VX_TASK_NAME_LENGTH: c_int = 31;
 
 // semLibCommon.h
@@ -1066,7 +1066,7 @@ impl Clone for FILE {
     }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos_t {} // FIXME: fill this out with a struct
+pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
 impl Copy for fpos_t {}
 impl Clone for fpos_t {
     fn clone(&self) -> fpos_t {
