@@ -440,7 +440,7 @@ s_no_extra_traits! {
         pub __reserved: [c_char; 256],
     }
 
-    // FIXME: musl added paddings and adjusted
+    // FIXME(musl): musl added paddings and adjusted
     // layout in 1.2.0 but our CI is still 1.1.24.
     // So, I'm leaving some fields as cfg for now.
     // ref. https://github.com/bminor/musl/commit/
@@ -532,7 +532,7 @@ cfg_if! {
                     .field("totalhigh", &self.totalhigh)
                     .field("freehigh", &self.freehigh)
                     .field("mem_unit", &self.mem_unit)
-                    // FIXME: .field("__reserved", &self.__reserved)
+                    // FIXME(debug): .field("__reserved", &self.__reserved)
                     .finish()
             }
         }
@@ -589,7 +589,7 @@ cfg_if! {
                     .field("ut_line", &self.ut_line)
                     .field("ut_id", &self.ut_id)
                     .field("ut_user", &self.ut_user)
-                    //FIXME: .field("ut_host", &self.ut_host)
+                    //FIXME(debug): .field("ut_host", &self.ut_host)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_session", &self.ut_session)
                     //.field("__ut_pad2", &self.__ut_pad2)

@@ -212,7 +212,7 @@ s! {
 }
 
 s_no_extra_traits! {
-    // FIXME: This is actually a union.
+    // FIXME(union): This is actually a union.
     pub struct fpreg_t {
         pub d: c_double,
         // f: c_float,
