@@ -371,7 +371,7 @@ s! {
     }
 
     pub struct sigaction {
-        // FIXME: this field is actually a union
+        // FIXME(union): this field is actually a union
         pub sa_sigaction: crate::sighandler_t,
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
@@ -1342,9 +1342,9 @@ s_no_extra_traits! {
         pub shm_lpid: crate::pid_t,
         pub shm_cpid: crate::pid_t,
         pub shm_nattch: crate::shmatt_t,
-        pub shm_atime: crate::time_t, // FIXME: 64-bit wrong align => wrong offset
-        pub shm_dtime: crate::time_t, // FIXME: 64-bit wrong align => wrong offset
-        pub shm_ctime: crate::time_t, // FIXME: 64-bit wrong align => wrong offset
+        pub shm_atime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
+        pub shm_dtime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
+        pub shm_ctime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
         // FIXME: 64-bit wrong align => wrong offset:
         pub shm_internal: *mut c_void,
     }
@@ -1955,7 +1955,7 @@ cfg_if! {
                     .field("pth_curpri", &self.pth_curpri)
                     .field("pth_priority", &self.pth_priority)
                     .field("pth_maxpriority", &self.pth_maxpriority)
-                    // FIXME: .field("pth_name", &self.pth_name)
+                    // FIXME(debug): .field("pth_name", &self.pth_name)
                     .finish()
             }
         }
@@ -2021,8 +2021,8 @@ cfg_if! {
                     .field("f_fssubtype", &self.f_fssubtype)
                     .field("f_fstypename", &self.f_fstypename)
                     .field("f_type", &self.f_type)
-                    // FIXME: .field("f_mntonname", &self.f_mntonname)
-                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME(debug): .field("f_mntonname", &self.f_mntonname)
+                    // FIXME(debug): .field("f_mntfromname", &self.f_mntfromname)
                     .field("f_reserved", &self.f_reserved)
                     .finish()
             }
@@ -2072,7 +2072,7 @@ cfg_if! {
                     .field("d_reclen", &self.d_reclen)
                     .field("d_namlen", &self.d_namlen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -2101,7 +2101,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
                     .field("__sig", &self.__sig)
-                    // FIXME: .field("__opaque", &self.__opaque)
+                    // FIXME(debug): .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
@@ -2129,7 +2129,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_mutex_t")
                     .field("__sig", &self.__sig)
-                    // FIXME: .field("__opaque", &self.__opaque)
+                    // FIXME(debug): .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
@@ -2158,7 +2158,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_cond_t")
                     .field("__sig", &self.__sig)
-                    // FIXME: .field("__opaque", &self.__opaque)
+                    // FIXME(debug): .field("__opaque", &self.__opaque)
                     .finish()
             }
         }
@@ -2197,7 +2197,7 @@ cfg_if! {
                     .field("ss_family", &self.ss_family)
                     .field("__ss_pad1", &self.__ss_pad1)
                     .field("__ss_align", &self.__ss_align)
-                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
                     .finish()
             }
         }
@@ -2237,13 +2237,13 @@ cfg_if! {
         impl fmt::Debug for utmpx {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
-                    // FIXME: .field("ut_user", &self.ut_user)
+                    // FIXME(debug): .field("ut_user", &self.ut_user)
                     .field("ut_id", &self.ut_id)
                     .field("ut_line", &self.ut_line)
                     .field("ut_pid", &self.ut_pid)
                     .field("ut_type", &self.ut_type)
                     .field("ut_tv", &self.ut_tv)
-                    // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME(debug): .field("ut_host", &self.ut_host)
                     .field("ut_pad", &self.ut_pad)
                     .finish()
             }
@@ -2485,7 +2485,7 @@ cfg_if! {
                     .field("pth_curpri", &self.pth_curpri)
                     .field("pth_priority", &self.pth_priority)
                     .field("pth_maxpriority", &self.pth_maxpriority)
-                    // FIXME: .field("pth_name", &self.pth_name)
+                    // FIXME(debug): .field("pth_name", &self.pth_name)
                     .finish()
             }
         }

@@ -10,7 +10,7 @@ pub type fsfilcnt_t = u64;
 pub type idtype_t = c_int;
 pub type mqd_t = c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
-pub type vm_size_t = crate::uintptr_t; // FIXME: deprecated since long time
+pub type vm_size_t = crate::uintptr_t; // FIXME(deprecated): deprecated since long time
 pub type lwpid_t = c_uint;
 pub type shmatt_t = c_uint;
 pub type cpuid_t = c_ulong;
@@ -297,7 +297,8 @@ s! {
         pub flags: u32,
         pub fflags: u32,
         pub data: i64,
-        pub udata: intptr_t, /* FIXME: NetBSD 10.0 will finally have same layout as other BSD */
+        // FIXME(netbsd): NetBSD 10.0 will finally have same layout as other BSD
+        pub udata: intptr_t,
     }
 
     pub struct dqblk {
@@ -799,7 +800,7 @@ s_no_extra_traits! {
         pub ut_session: u16,
         pub ut_type: u16,
         pub ut_pid: crate::pid_t,
-        pub ut_exit: __exit_status, // FIXME: when anonymous struct are supported
+        pub ut_exit: __exit_status, // FIXME(netbsd): when anonymous struct are supported
         pub ut_ss: sockaddr_storage,
         pub ut_tv: crate::timeval,
         pub ut_pad: [u8; _UTX_PADSIZE],
@@ -945,14 +946,14 @@ cfg_if! {
                     .field("ut_name", &self.ut_name)
                     .field("ut_id", &self.ut_id)
                     .field("ut_line", &self.ut_line)
-                    // FIXME .field("ut_host", &self.ut_host)
+                    // FIXME(debug) .field("ut_host", &self.ut_host)
                     .field("ut_session", &self.ut_session)
                     .field("ut_type", &self.ut_type)
                     .field("ut_pid", &self.ut_pid)
                     .field("ut_exit", &self.ut_exit)
                     .field("ut_ss", &self.ut_ss)
                     .field("ut_tv", &self.ut_tv)
-                    // FIXME .field("ut_pad", &self.ut_pad)
+                    // FIXME(debug) .field("ut_pad", &self.ut_pad)
                     .finish()
             }
         }
@@ -993,7 +994,7 @@ cfg_if! {
                 f.debug_struct("lastlogx")
                     .field("ll_tv", &self.ll_tv)
                     .field("ll_line", &self.ll_line)
-                    // FIXME.field("ll_host", &self.ll_host)
+                    // FIXME(debug).field("ll_host", &self.ll_host)
                     .field("ll_ss", &self.ll_ss)
                     .finish()
             }
@@ -1159,7 +1160,7 @@ cfg_if! {
                     .field("d_reclen", &self.d_reclen)
                     .field("d_namlen", &self.d_namlen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1235,8 +1236,8 @@ cfg_if! {
                     .field("f_owner", &self.f_owner)
                     .field("f_spare", &self.f_spare)
                     .field("f_fstypename", &self.f_fstypename)
-                    // FIXME: .field("f_mntonname", &self.f_mntonname)
-                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME(debug): .field("f_mntonname", &self.f_mntonname)
+                    // FIXME(debug): .field("f_mntfromname", &self.f_mntfromname)
                     .finish()
             }
         }
@@ -1290,7 +1291,7 @@ cfg_if! {
                     .field("ss_family", &self.ss_family)
                     .field("__ss_pad1", &self.__ss_pad1)
                     .field("__ss_pad2", &self.__ss_pad2)
-                    // FIXME: .field("__ss_pad3", &self.__ss_pad3)
+                    // FIXME(debug): .field("__ss_pad3", &self.__ss_pad3)
                     .finish()
             }
         }
