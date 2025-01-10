@@ -353,7 +353,7 @@ cfg_if! {
                     .field("mxcsr", &self.mxcsr)
                     .field("mxcr_mask", &self.mxcr_mask)
                     .field("st_space", &self.st_space)
-                    // FIXME: .field("xmm_space", &self.xmm_space)
+                    // FIXME(debug): .field("xmm_space", &self.xmm_space)
                     // Ignore padding field
                     .finish()
             }
@@ -545,7 +545,7 @@ pub const SYS_munlockall: c_long = 152;
 pub const SYS_vhangup: c_long = 153;
 pub const SYS_modify_ldt: c_long = 154;
 pub const SYS_pivot_root: c_long = 155;
-// FIXME: SYS__sysctl is in the NDK sources but for some reason is
+// FIXME(android): SYS__sysctl is in the NDK sources but for some reason is
 //        not available in the tests
 // pub const SYS__sysctl: c_long = 156;
 pub const SYS_prctl: c_long = 157;
