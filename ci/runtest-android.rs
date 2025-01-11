@@ -1,11 +1,11 @@
 use std::env;
-use std::process::Command;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 fn main() {
     let args = env::args_os()
         .skip(1)
-        .filter(|arg| arg != "--quiet")
+        .filter(|arg| arg != "--quiet" && arg != "--skip" && arg != "check_style")
         .collect::<Vec<_>>();
     assert_eq!(args.len(), 1);
     let test = PathBuf::from(&args[0]);
@@ -36,14 +36,16 @@ fn main() {
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
 
-    println!("status: {}\nstdout ---\n{}\nstderr ---\n{}",
-             output.status,
-             stdout,
-             stderr);
+    println!(
+        "status: {}\nstdout ---\n{}\nstderr ---\n{}",
+        output.status, stdout, stderr
+    );
 
-    if !stderr.lines().any(|l| (l.starts_with("PASSED ") && l.contains(" tests")) || l.starts_with("test result: ok"))
-        && !stdout.lines().any(|l| (l.starts_with("PASSED ") && l.contains(" tests")) || l.starts_with("test result: ok"))
-    {
+    if !stderr.lines().any(|l| {
+        (l.starts_with("PASSED ") && l.contains(" tests")) || l.starts_with("test result: ok")
+    }) && !stdout.lines().any(|l| {
+        (l.starts_with("PASSED ") && l.contains(" tests")) || l.starts_with("test result: ok")
+    }) {
         panic!("failed to find successful test run");
     };
 }

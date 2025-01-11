@@ -9,7 +9,7 @@ if [ -n "${CI:-}" ]; then
     check="--check"
 fi
 
-rustc ci/style.rs && ./style src
+cargo test --manifest-path libc-test/Cargo.toml --test style -- --nocapture
 
 command -v rustfmt
 rustfmt -V
