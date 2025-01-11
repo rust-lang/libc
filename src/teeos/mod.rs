@@ -51,9 +51,6 @@ pub type c_long = i64;
 
 pub type c_ulong = u64;
 
-#[repr(align(16))]
-pub struct _CLongDouble(pub u128);
-
 // long double in C means A float point value, which has 128bit length.
 // but some bit maybe not used, so the real length of long double could be 80(x86) or 128(power pc/IEEE)
 // this is different from f128(not stable and not included default) in Rust, so we use u128 for FFI(Rust to C).
@@ -87,6 +84,9 @@ pub type wint_t = c_uint;
 pub type wctype_t = c_ulong;
 
 pub type cmpfunc = extern "C" fn(x: *const c_void, y: *const c_void) -> c_int;
+
+#[repr(align(16))]
+pub struct _CLongDouble(pub u128);
 
 #[repr(align(8))]
 #[repr(C)]
