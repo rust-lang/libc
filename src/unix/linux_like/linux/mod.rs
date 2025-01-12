@@ -28,6 +28,7 @@ pub type __u16 = c_ushort;
 pub type __s16 = c_short;
 pub type __u32 = c_uint;
 pub type __s32 = c_int;
+pub type __be16 = __u16;
 
 pub type Elf32_Half = u16;
 pub type Elf32_Word = u32;
@@ -1319,11 +1320,6 @@ s! {
         pub propagation: crate::__u64,
         pub userns_fd: crate::__u64,
     }
-
-    // is __be16 __bitwise __u16
-    pub struct __c_anonymous___be16 {
-        __priv: [crate::__u8; 2],
-    }
 }
 
 cfg_if! {
@@ -1792,12 +1788,11 @@ s_no_extra_traits! {
 
     // linux/if_ether.h
 
-    #[cfg(not(target_arch = "loongarch64"))]
-    #[repr(C, align(1))]
+    #[repr(packed)]
     pub struct ethhdr {
         pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
         pub h_source: [c_uchar; crate::ETH_ALEN as usize],
-        pub h_proto: __c_anonymous___be16,
+        pub h_proto: crate::__be16,
     }
 }
 
@@ -2227,10 +2222,8 @@ cfg_if! {
             }
         }
 
-        #[cfg(not(target_arch = "loongarch64"))]
         impl Eq for ethhdr {}
 
-        #[cfg(not(target_arch = "loongarch64"))]
         impl PartialEq for ethhdr {
             fn eq(&self, other: &ethhdr) -> bool {
                 self.h_dest
@@ -2242,15 +2235,16 @@ cfg_if! {
                         .iter()
                         .zip(other.h_source.iter())
                         .all(|(a, b)| a == b)
+                    && self.h_proto == other.h_proto
             }
         }
 
-        #[cfg(not(target_arch = "loongarch64"))]
         impl fmt::Debug for ethhdr {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ethhdr")
                     .field("h_dest", &self.h_dest)
                     .field("h_source", &self.h_source)
+                    .field("h_proto", &{ self.h_proto })
                     .finish()
             }
         }
