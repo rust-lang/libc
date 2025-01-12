@@ -1514,6 +1514,14 @@ safe_f! {
     pub {const} fn ntohs(netshort: u16) -> u16 {
         u16::from_be(netshort)
     }
+
+    pub {const} fn LOG_MASK(priority: c_int) -> c_int {
+        1 << priority
+    }
+
+    pub {const} fn LOG_UPTO(priority: c_int) -> c_int {
+        (1 << ((priority) + 1)) - 1
+    }
 }
 
 cfg_if! {
