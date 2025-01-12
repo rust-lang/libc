@@ -1319,6 +1319,11 @@ s! {
         pub propagation: crate::__u64,
         pub userns_fd: crate::__u64,
     }
+
+    // is __be16 __bitwise __u16
+    pub struct __c_anonymous___be16 {
+        __priv: [crate::__u8; 2],
+    }
 }
 
 cfg_if! {
@@ -1784,6 +1789,16 @@ s_no_extra_traits! {
         pub request: xsk_tx_metadata_request,
         pub completion: xsk_tx_metadata_completion,
     }
+
+    // linux/if_ether.h
+
+    #[cfg(not(target_arch = "loongarch64"))]
+    #[repr(C, align(1))]
+    pub struct ethhdr {
+        pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_source: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_proto: __c_anonymous___be16,
+    }
 }
 
 cfg_if! {
@@ -2208,6 +2223,34 @@ cfg_if! {
                 f.debug_struct("iwreq")
                     .field("ifr_ifrn", &self.ifr_ifrn)
                     .field("u", &self.u)
+                    .finish()
+            }
+        }
+
+        #[cfg(not(target_arch = "loongarch64"))]
+        impl Eq for ethhdr {}
+
+        #[cfg(not(target_arch = "loongarch64"))]
+        impl PartialEq for ethhdr {
+            fn eq(&self, other: &ethhdr) -> bool {
+                self.h_dest
+                    .iter()
+                    .zip(other.h_dest.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                        .h_source
+                        .iter()
+                        .zip(other.h_source.iter())
+                        .all(|(a, b)| a == b)
+            }
+        }
+
+        #[cfg(not(target_arch = "loongarch64"))]
+        impl fmt::Debug for ethhdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ethhdr")
+                    .field("h_dest", &self.h_dest)
+                    .field("h_source", &self.h_source)
                     .finish()
             }
         }
