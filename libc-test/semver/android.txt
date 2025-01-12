@@ -3423,6 +3423,7 @@ epoll_create1
 epoll_ctl
 epoll_event
 epoll_wait
+ethhdr
 eventfd
 eventfd_read
 eventfd_write

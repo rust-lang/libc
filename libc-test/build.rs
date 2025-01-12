@@ -2147,6 +2147,8 @@ fn test_android(target: &str) {
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
         (struct_ == "signalfd_siginfo" && field == "ssi_call_addr") ||
+        // FIXME: `h_proto` is of type __be16 big endian version of __u16
+        (struct_ ==  "ethhdr" && field == "h_proto") ||
         // FIXME(android): Seems the type has been changed on NDK r26b
         (struct_ == "flock64" && (field == "l_start" || field == "l_len"))
     });
