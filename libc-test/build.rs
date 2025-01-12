@@ -2959,11 +2959,11 @@ fn test_emscripten(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
-            // FIXME: deprecated - SIGNUNUSED was removed in glibc 2.26
+            // FIXME(deprecated): deprecated - SIGNUNUSED was removed in glibc 2.26
             // users should use SIGSYS instead
             "SIGUNUSED" => true,
 
-            // FIXME: emscripten uses different constants to constructs these
+            // FIXME(emscripten): emscripten uses different constants to constructs these
             n if n.contains("__SIZEOF_PTHREAD") => true,
 
             // No epoll support
@@ -3019,7 +3019,7 @@ fn test_emscripten(target: &str) {
         (struct_ == "siginfo_t" && field == "_pad") ||
         // musl names this __dummy1 but it's still there
         (struct_ == "glob_t" && field == "gl_flags") ||
-        // FIXME: After musl 1.1.24, it have only one field `sched_priority`,
+        // FIXME(emscripten): After musl 1.1.24, it have only one field `sched_priority`,
         // while other fields become reserved.
         (struct_ == "sched_param" && [
             "sched_ss_low_priority",
@@ -3186,7 +3186,7 @@ fn test_neutrino(target: &str) {
 
     cfg.skip_type(move |ty| {
         match ty {
-            // FIXME: `sighandler_t` type is incorrect, see:
+            // FIXME(sighandler): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
 
@@ -3204,7 +3204,7 @@ fn test_neutrino(target: &str) {
         match ty {
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
-            // FIXME: This is actually a union, not a struct
+            // FIXME(union): This is actually a union, not a struct
             "sigval" => true,
 
             // union
@@ -3235,7 +3235,7 @@ fn test_neutrino(target: &str) {
             // wrong signature of callback ptr
             "__cxa_atexit" => true,
 
-            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // FIXME(ctest): Our API is unsound. The Rust API allows aliasing
             // pointers, but the C API requires pointers not to alias.
             // We should probably be at least using `&`/`&mut` here, see:
             // https://github.com/gnzlbg/ctest/issues/68
@@ -3345,7 +3345,7 @@ fn test_vxworks(target: &str) {
                "pathLib.h",
                "mqueue.h",
     }
-    // FIXME
+    // FIXME(vxworks)
     cfg.skip_const(move |name| match name {
         // sighandler_t weirdness
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN"
@@ -3353,7 +3353,7 @@ fn test_vxworks(target: &str) {
         | "RTLD_DEFAULT"   => true,
         _ => false,
     });
-    // FIXME
+    // FIXME(vxworks)
     cfg.skip_type(move |ty| match ty {
         "stat64" | "sighandler_t" | "off64_t" => true,
         _ => false,
@@ -3376,7 +3376,7 @@ fn test_vxworks(target: &str) {
         t => t.to_string(),
     });
 
-    // FIXME
+    // FIXME(vxworks)
     cfg.skip_fn(move |name| match name {
         // sigval
         "sigqueue" | "_sigqueue"
@@ -3589,7 +3589,7 @@ fn test_linux(target: &str) {
         "linux/netfilter_ipv6/ip6_tables.h",
         "linux/netlink.h",
         "linux/openat2.h",
-        // FIXME: some items require Linux >= 5.6:
+        // FIXME(linux): some items require Linux >= 5.6:
         "linux/ptp_clock.h",
         "linux/ptrace.h",
         "linux/quota.h",
@@ -3652,7 +3652,7 @@ fn test_linux(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: epoll_event.data is actually a union in C, but in Rust
+            // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
@@ -3672,7 +3672,7 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_type(move |ty| {
-        // FIXME: very recent additions to musl, not yet released.
+        // FIXME(musl): very recent additions to musl, not yet released.
         // also apparently some glibc versions
         if ty == "Elf32_Relr" || ty == "Elf64_Relr" {
             return true;
@@ -3681,7 +3681,7 @@ fn test_linux(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: `sighandler_t` type is incorrect, see:
+            // FIXME(sighandler): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
 
@@ -3719,7 +3719,7 @@ fn test_linux(target: &str) {
             return true;
         }
 
-        // FIXME: CI has old headers
+        // FIXME(linux): CI has old headers
         if ty == "ptp_sys_offset_extended" {
             return true;
         }
@@ -3729,7 +3729,7 @@ fn test_linux(target: &str) {
             return true;
         }
 
-        // FIXME: sparc64 CI has old headers
+        // FIXME(linux): sparc64 CI has old headers
         if sparc64 && (ty == "uinput_ff_erase" || ty == "uinput_abs_setup") {
             return true;
         }
@@ -3752,7 +3752,7 @@ fn test_linux(target: &str) {
             return true;
         }
 
-        // FIXME: musl doesn't compile with `struct fanout_args` for unknown reasons.
+        // FIXME(musl): musl doesn't compile with `struct fanout_args` for unknown reasons.
         if musl && ty == "fanout_args" {
             return true;
         }
@@ -3770,7 +3770,7 @@ fn test_linux(target: &str) {
             // which is absent in glibc, has to be defined.
             "__timeval" => true,
 
-            // FIXME: This is actually a union, not a struct
+            // FIXME(union): This is actually a union, not a struct
             "sigval" => true,
 
             // This type is tested in the `linux_termios.rs` file since there
@@ -3778,13 +3778,13 @@ fn test_linux(target: &str) {
             // structs.
             "termios2" => true,
 
-            // FIXME: remove once we set minimum supported glibc version.
+            // FIXME(linux): remove once we set minimum supported glibc version.
             // ucontext_t added a new field as of glibc 2.28; our struct definition is
             // conservative and omits the field, but that means the size doesn't match for newer
             // glibcs (see https://github.com/rust-lang/libc/issues/1410)
             "ucontext_t" if gnu => true,
 
-            // FIXME: Somehow we cannot include headers correctly in glibc 2.30.
+            // FIXME(linux): Somehow we cannot include headers correctly in glibc 2.30.
             // So let's ignore for now and re-visit later.
             // Probably related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91085
             "statx" => true,
@@ -3804,14 +3804,14 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
-            // FIXME: requires >= 6.1 kernel headers
+            // FIXME(linux): requires >= 6.1 kernel headers
             "canxl_frame" => true,
 
-            // FIXME: The size of `iv` has been changed since Linux v6.0
+            // FIXME(linux): The size of `iv` has been changed since Linux v6.0
             // https://github.com/torvalds/linux/commit/94dfc73e7cf4a31da66b8843f0b9283ddd6b8381
             "af_alg_iv" => true,
 
-            // FIXME: Requires >= 5.1 kernel headers.
+            // FIXME(linux): Requires >= 5.1 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "tls12_crypto_info_aes_gcm_256"
                 if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
@@ -3819,7 +3819,7 @@ fn test_linux(target: &str) {
                 true
             }
 
-            // FIXME: Requires >= 5.11 kernel headers.
+            // FIXME(linux): Requires >= 5.11 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "tls12_crypto_info_chacha20_poly1305"
                 if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
@@ -3827,26 +3827,26 @@ fn test_linux(target: &str) {
                 true
             }
 
-            // FIXME: Requires >= 5.3 kernel headers.
+            // FIXME(linux): Requires >= 5.3 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "xdp_options" if musl => true,
 
-            // FIXME: Requires >= 5.4 kernel headers.
+            // FIXME(linux): Requires >= 5.4 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
 
-            // FIXME: Requires >= 6.8 kernel headers.
+            // FIXME(linux): Requires >= 6.8 kernel headers.
             // A field was added in 6.8.
             // https://github.com/torvalds/linux/commit/341ac980eab90ac1f6c22ee9f9da83ed9604d899
             // The previous version of the struct was removed in 6.11 due to a bug.
             // https://github.com/torvalds/linux/commit/32654bbd6313b4cfc82297e6634fa9725c3c900f
             "xdp_umem_reg" => true,
 
-            // FIXME: Requires >= 5.9 kernel headers.
+            // FIXME(linux): Requires >= 5.9 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "xdp_statistics" if musl => true,
 
-            // FIXME: Requires >= 6.8 kernel headers.
+            // FIXME(linux): Requires >= 6.8 kernel headers.
             "xsk_tx_metadata"
             | "__c_anonymous_xsk_tx_metadata_union"
             | "xsk_tx_metadata_request"
@@ -3870,7 +3870,7 @@ fn test_linux(target: &str) {
             // kernel so we can drop this and test the type once this new version is used in CI.
             "sched_attr" => true,
 
-            // FIXME: Requires >= 6.9 kernel headers.
+            // FIXME(linux): Requires >= 6.9 kernel headers.
             "epoll_params" => true,
 
             _ => false,
@@ -3915,7 +3915,7 @@ fn test_linux(target: &str) {
             }
         }
         if musl {
-            // FIXME: Requires >= 5.0 kernel headers
+            // FIXME(linux): Requires >= 5.0 kernel headers
             if name == "SECCOMP_GET_NOTIF_SIZES"
                || name == "SECCOMP_FILTER_FLAG_NEW_LISTENER"
                || name == "SECCOMP_FILTER_FLAG_TSYNC_ESRCH"
@@ -3926,11 +3926,11 @@ fn test_linux(target: &str) {
             {
                 return true;
             }
-            // FIXME: Requires >= 4.20 kernel headers
+            // FIXME(linux): Requires >= 4.20 kernel headers
             if name == "PTP_SYS_OFFSET_EXTENDED" {
                 return true;
             }
-            // FIXME: Requires >= 5.4 kernel headers
+            // FIXME(linux): Requires >= 5.4 kernel headers
             if name == "PTP_CLOCK_GETCAPS2"
                 || name == "PTP_ENABLE_PPS2"
                 || name == "PTP_EXTTS_REQUEST2"
@@ -3943,7 +3943,7 @@ fn test_linux(target: &str) {
             {
                 return true;
             }
-            // FIXME: Requires >= 5.4.1 kernel headers
+            // FIXME(linux): Requires >= 5.4.1 kernel headers
             if name.starts_with("J1939")
                 || name.starts_with("RTEXT_FILTER_")
                 || name.starts_with("SO_J1939")
@@ -3951,7 +3951,7 @@ fn test_linux(target: &str) {
             {
                 return true;
             }
-            // FIXME: Requires >= 5.10 kernel headers
+            // FIXME(linux): Requires >= 5.10 kernel headers
             if name.starts_with("MEMBARRIER_CMD_REGISTER")
                 || name.starts_with("MEMBARRIER_CMD_PRIVATE")
             {
@@ -3992,15 +3992,15 @@ fn test_linux(target: &str) {
             // because including `linux/if_arp.h` causes some conflicts:
             "ARPHRD_CAN" => true,
 
-            // FIXME: deprecated: not available in any header
+            // FIXME(deprecated): deprecated: not available in any header
             // See: https://github.com/rust-lang/libc/issues/1356
             "ENOATTR" => true,
 
-            // FIXME: SIGUNUSED was removed in glibc 2.26
+            // FIXME(deprecated): SIGUNUSED was removed in glibc 2.26
             // Users should use SIGSYS instead.
             "SIGUNUSED" => true,
 
-            // FIXME: conflicts with glibc headers and is tested in
+            // FIXME(linux): conflicts with glibc headers and is tested in
             // `linux_termios.rs` below:
             | "BOTHER"
             | "IBSHIFT"
@@ -4009,11 +4009,11 @@ fn test_linux(target: &str) {
             | "TCSETSW2"
             | "TCSETSF2" => true,
 
-            // FIXME: on musl the pthread types are defined a little differently
+            // FIXME(musl): on musl the pthread types are defined a little differently
             // - these constants are used by the glibc implementation.
             n if musl && n.contains("__SIZEOF_PTHREAD") => true,
 
-            // FIXME: It was extended to 4096 since glibc 2.31 (Linux 5.4).
+            // FIXME(linux): It was extended to 4096 since glibc 2.31 (Linux 5.4).
             // We should do so after a while.
             "SOMAXCONN" if gnu => true,
 
@@ -4025,34 +4025,34 @@ fn test_linux(target: &str) {
             | "IPPROTO_ETHERNET"
             | "IPPROTO_MPTCP" => true,
 
-            // FIXME: Not yet implemented on sparc64
+            // FIXME(linux): Not yet implemented on sparc64
             "SYS_clone3" if sparc64 => true,
 
-            // FIXME: Not defined on ARM, gnueabihf, musl, PowerPC, riscv64, s390x, and sparc64.
+            // FIXME(linux): Not defined on ARM, gnueabihf, musl, PowerPC, riscv64, s390x, and sparc64.
             "SYS_memfd_secret" if arm | gnueabihf | musl | ppc | riscv64 | s390x | sparc64 => true,
 
-            // FIXME: Added in Linux 5.16
+            // FIXME(linux): Added in Linux 5.16
             // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
             "SYS_futex_waitv" => true,
 
-            // FIXME: Added in Linux 5.17
+            // FIXME(linux): Added in Linux 5.17
             // https://github.com/torvalds/linux/commit/c6018b4b254971863bd0ad36bb5e7d0fa0f0ddb0
             "SYS_set_mempolicy_home_node" => true,
 
-            // FIXME: Added in Linux 5.18
+            // FIXME(linux): Added in Linux 5.18
             // https://github.com/torvalds/linux/commit/8b5413647262dda8d8d0e07e14ea1de9ac7cf0b2
             "NFQA_PRIORITY" => true,
 
-            // FIXME: requires more recent kernel headers on CI
+            // FIXME(linux): requires more recent kernel headers on CI
             | "UINPUT_VERSION"
             | "SW_MAX"
             | "SW_CNT"
                 if ppc64 || riscv64 => true,
 
-            // FIXME: requires more recent kernel headers on CI
+            // FIXME(linux): requires more recent kernel headers on CI
             "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" if sparc64 => true,
 
-            // FIXME: Not currently available in headers on ARM and musl.
+            // FIXME(linux): Not currently available in headers on ARM and musl.
             "NETLINK_GET_STRICT_CHK" if arm => true,
 
             // kernel constants not available in uclibc 1.0.34
