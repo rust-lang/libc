@@ -3449,7 +3449,7 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1) as *mut c_uchar
+        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(mem::size_of::<cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
