@@ -90,3 +90,8 @@ harness = false
 name = "primitive_types"
 path = "test/primitive_types.rs"
 harness = true
+
+[[test]]
+name = "syslog"
+path = "test/syslog.rs"
+harness = true

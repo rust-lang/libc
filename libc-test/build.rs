@@ -34,6 +34,8 @@ fn do_cc() {
         {
             cc::Build::new().file("src/makedev.c").compile("makedev");
         }
+
+        cc::Build::new().file("src/syslog.c").compile("syslog");
     }
     if target.contains("android") || target.contains("linux") {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");
