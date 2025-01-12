@@ -44,6 +44,7 @@ pub type nfds_t = c_ulong;
 pub type wchar_t = i32;
 pub type nl_item = c_int;
 pub type __wasi_rights_t = u64;
+pub type locale_t = *mut __locale_struct;
 
 s_no_extra_traits! {
     #[repr(align(16))]
@@ -62,8 +63,6 @@ pub enum DIR {}
 #[allow(missing_copy_implementations)]
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum __locale_struct {}
-
-pub type locale_t = *mut __locale_struct;
 
 s_paren! {
     // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),
