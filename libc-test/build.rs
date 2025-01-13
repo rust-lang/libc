@@ -957,9 +957,6 @@ fn test_solarish(target: &str) {
         // skip sighandler_t assignments
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
-        // Skip 
-        "SI_DETHREAD" | "TRAP_PERF" => true,
-
         "DT_UNKNOWN" => true,
 
         "_UTX_LINESIZE" | "_UTX_USERSIZE" | "_UTX_PADSIZE" | "_UTX_IDSIZE" | "_UTX_HOSTSIZE" => {
@@ -4054,6 +4051,9 @@ fn test_linux(target: &str) {
 
             // FIXME: Not currently available in headers on ARM and musl.
             "NETLINK_GET_STRICT_CHK" if arm => true,
+
+            // Skip as this signal codes and trap reasons need newer headers
+            "SI_DETHREAD" | "TRAP_PERF" => true,
 
             // kernel constants not available in uclibc 1.0.34
             | "EXTPROC"
