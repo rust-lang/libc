@@ -418,7 +418,7 @@ cfg_if! {
                     .field("ss_family", &self.ss_family)
                     .field("__ss_pad1", &self.__ss_pad1)
                     .field("__ss_align", &self.__ss_align)
-                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
                     .finish()
             }
         }

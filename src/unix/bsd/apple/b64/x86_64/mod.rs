@@ -106,7 +106,7 @@ s! {
     }
 
     pub struct malloc_introspection_t {
-        _private: [crate::uintptr_t; 16], // FIXME: keeping private for now
+        _private: [crate::uintptr_t; 16], // FIXME(macos): keeping private for now
     }
 
     pub struct malloc_zone_t {
