@@ -2994,6 +2994,9 @@ fn test_emscripten(target: &str) {
             // https://github.com/emscripten-core/emscripten/pull/14883
             "SIG_IGN" => true,
 
+            // Constants present in other linuxes but not emscripten
+            "SI_DETHREAD" | "TRAP_PERF" => true,
+
             // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
             n if n.starts_with("RLIM64") => true,
@@ -4054,6 +4057,9 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Not currently available in headers on ARM and musl.
             "NETLINK_GET_STRICT_CHK" if arm => true,
+
+            // Skip as this signal codes and trap reasons need newer headers
+            "SI_DETHREAD" | "TRAP_PERF" => true,
 
             // kernel constants not available in uclibc 1.0.34
             | "EXTPROC"
