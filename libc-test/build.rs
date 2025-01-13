@@ -957,6 +957,9 @@ fn test_solarish(target: &str) {
         // skip sighandler_t assignments
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
+        // Skip 
+        "SI_DETHREAD" | "TRAP_PERF" => true,
+
         "DT_UNKNOWN" => true,
 
         "_UTX_LINESIZE" | "_UTX_USERSIZE" | "_UTX_PADSIZE" | "_UTX_IDSIZE" | "_UTX_HOSTSIZE" => {
