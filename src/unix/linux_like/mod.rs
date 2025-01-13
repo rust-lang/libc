@@ -1297,6 +1297,8 @@ pub const SI_MESGQ: c_int = -3;
 pub const SI_ASYNCIO: c_int = -4;
 pub const SI_SIGIO: c_int = -5;
 pub const SI_TKILL: c_int = -6;
+pub const SI_DETHREAD: c_int = -7;
+pub const SI_ASYNCNL: c_int = -60;
 
 // si_code values for SIGBUS signal
 pub const BUS_ADRALN: c_int = 1;
@@ -1312,6 +1314,7 @@ pub const TRAP_TRACE: c_int = 2;
 pub const TRAP_BRANCH: c_int = 3;
 pub const TRAP_HWBKPT: c_int = 4;
 pub const TRAP_UNK: c_int = 5;
+pub const TRAP_PERF: c_int = 6;
 
 // si_code values for SIGCHLD signal
 pub const CLD_EXITED: c_int = 1;
