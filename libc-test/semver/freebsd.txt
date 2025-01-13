@@ -2019,6 +2019,8 @@ ifconf
 ifreq
 in6_pktinfo
 initgroups
+input_absinfo
+input_event
 ip_mreqn
 ipc_perm
 jail
