@@ -5,7 +5,7 @@ use std::{env, str};
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &'static [&'static str] = &[
-    "emscripten_new_stat_abi",
+    "emscripten_old_stat_abi",
     "espidf_time32",
     "freebsd10",
     "freebsd11",
@@ -76,9 +76,9 @@ fn main() {
     }
 
     match emcc_version_code() {
-        Some(v) if (v >= 30142) => set_cfg("emscripten_new_stat_abi"),
-        // Non-Emscripten or version < 3.1.42.
-        Some(_) | None => (),
+        Some(v) if (v < 30142) => set_cfg("emscripten_old_stat_abi"),
+        // Non-Emscripten or version >= 3.1.42.
+        _ => (),
     }
 
     if linux_time_bits64 {
