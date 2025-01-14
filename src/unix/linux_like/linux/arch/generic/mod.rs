@@ -57,13 +57,24 @@ const SO_TIMESTAMPING_OLD: c_int = 37;
 cfg_if! {
     if #[cfg(all(
         linux_time_bits64,
-        any(target_arch = "arm", target_arch = "x86")
+        any(target_arch = "arm", target_arch = "x86"),
+        not(any(target_env = "musl", target_env = "ohos"))
     ))] {
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_NEW;
         pub const SO_TIMESTAMPNS: c_int = SO_TIMESTAMPNS_NEW;
         pub const SO_TIMESTAMPING: c_int = SO_TIMESTAMPING_NEW;
         pub const SO_RCVTIMEO: c_int = SO_RCVTIMEO_NEW;
         pub const SO_SNDTIMEO: c_int = SO_SNDTIMEO_NEW;
+    } else if #[cfg(all(
+        linux_time_bits64,
+        any(target_arch = "arm", target_arch = "x86"),
+        any(target_env = "musl", target_env = "ohos")
+    ))] {
+        pub const SO_TIMESTAMP: c_int = 63;
+        pub const SO_TIMESTAMPNS: c_int = 64;
+        pub const SO_TIMESTAMPING: c_int = 65;
+        pub const SO_RCVTIMEO: c_int = 66;
+        pub const SO_SNDTIMEO: c_int = 67;
     } else {
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_OLD;
         pub const SO_TIMESTAMPNS: c_int = SO_TIMESTAMPNS_OLD;
@@ -114,6 +125,7 @@ cfg_if! {
         any(
             target_arch = "x86",
             target_arch = "x86_64",
+            target_arch = "arm",
             target_arch = "aarch64",
             target_arch = "csky",
             target_arch = "loongarch64"

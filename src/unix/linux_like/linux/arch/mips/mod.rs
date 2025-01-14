@@ -99,8 +99,13 @@ pub const SO_BINDTOIFINDEX: c_int = 62;
 // but CI haven't support them yet.
 // Some related consts could be found in b32.rs and b64.rs
 const SO_TIMESTAMP_OLD: c_int = 29;
+const SO_RCVTIMEO_NEW: c_int = 66;
+const SO_SNDTIMEO_NEW: c_int = 67;
 const SO_TIMESTAMPNS_OLD: c_int = 35;
 const SO_TIMESTAMPING_OLD: c_int = 37;
+const SO_TIMESTAMP_NEW: c_int = 63;
+const SO_TIMESTAMPNS_NEW: c_int = 64;
+const SO_TIMESTAMPING_NEW: c_int = 65;
 cfg_if! {
     if #[cfg(linux_time_bits64)] {
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_NEW;
