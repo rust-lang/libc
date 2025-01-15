@@ -2803,14 +2803,6 @@ f! {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         mem::size_of::<sockcred>() + mem::size_of::<crate::gid_t>() * ngrps
     }
-
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        ((dev as c_uint) >> 10) & 0x3f
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        (dev as c_uint) & 0x3ff
-    }
 }
 
 safe_f! {
@@ -2852,6 +2844,14 @@ safe_f! {
 
     pub {const} fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         ((major << 10) | (minor)) as crate::dev_t
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        ((dev as c_uint) >> 10) & 0x3f
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        (dev as c_uint) & 0x3ff
     }
 }
 
