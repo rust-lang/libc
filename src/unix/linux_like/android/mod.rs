@@ -517,6 +517,11 @@ s! {
         pub ifr6_prefixlen: u32,
         pub ifr6_ifindex: c_int,
     }
+
+    pub struct if_nameindex {
+        pub if_index: c_uint,
+        pub if_name: *mut c_char,
+    }
 }
 
 s_no_extra_traits! {
@@ -4136,6 +4141,9 @@ extern "C" {
         newpath: *const c_char,
         flags: c_uint,
     ) -> c_int;
+
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
 }
 
 cfg_if! {

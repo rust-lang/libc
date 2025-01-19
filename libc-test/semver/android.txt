@@ -3382,7 +3382,9 @@ group
 hostent
 id_t
 idtype_t
+if_freenameindex
 if_indextoname
+if_nameindex
 if_nametoindex
 ifaddrs
 ifconf

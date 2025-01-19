@@ -1906,6 +1906,8 @@ fn test_android(target: &str) {
 
             // FIXME(android): "'__uint128' undeclared" in C
             "__uint128" => true,
+            // Added in API level 24
+            "if_nameindex" => true,
 
             _ => false,
         }
@@ -2151,6 +2153,9 @@ fn test_android(target: &str) {
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
             | "ispunct" | "isspace" | "isupper" | "isxdigit" | "isblank" | "tolower"
             | "toupper" => true,
+
+            // Added in API level 24
+            "if_nameindex" | "if_freenameindex" => true,
 
             _ => false,
         }
