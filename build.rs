@@ -241,7 +241,13 @@ fn which_freebsd() -> Option<i32> {
 }
 
 fn emcc_version_code() -> Option<u64> {
-    let output = Command::new("emcc").arg("-dumpversion").output().ok()?;
+    let emcc = if cfg!(target_os = "windows") {
+        "emcc.bat"
+    } else {
+        "emcc"
+    };
+
+    let output = Command::new(emcc).arg("-dumpversion").output().ok()?;
     if !output.status.success() {
         return None;
     }
