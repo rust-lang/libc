@@ -556,7 +556,6 @@ extern "C" {
     pub fn clock_gettime(clockid: clockid_t, tp: *mut timespec) -> i32;
     pub fn futimens(fd: i32, times: *const timespec) -> i32;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t, clock_id: clockid_t) -> i32;
-    pub fn pthread_set_name_np(thread: pthread_t, name: *const c_char) -> i32;
     pub fn pthread_setname_np(thread: pthread_t, name: *const c_char) -> i32;
     pub fn pthread_getname_np(thread: pthread_t, name: *mut c_char, len: usize) -> i32;
     pub fn getrandom(buf: *mut c_void, buflen: usize, flags: u32) -> isize;
