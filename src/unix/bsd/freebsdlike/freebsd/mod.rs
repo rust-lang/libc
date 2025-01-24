@@ -1739,6 +1739,18 @@ s_no_extra_traits! {
         pub rcv: crate::xktls_session_onedir,
         pub snd: crate::xktls_session_onedir,
     }
+
+    #[repr(packed)]
+    pub struct ether_header {
+        pub ether_dhost: [crate::u_char; ETHER_ADDR_LEN as usize],
+        pub ether_shost: [crate::u_char; ETHER_ADDR_LEN as usize],
+        pub ether_type: crate::u_short,
+    }
+
+    #[repr(packed)]
+    pub struct ether_addr {
+        pub octet: [crate::u_char; ETHER_ADDR_LEN as usize],
+    }
 }
 
 cfg_if! {
@@ -2330,6 +2342,77 @@ cfg_if! {
                 self.kf_status.hash(state);
                 self.kf_cap_rights.hash(state);
                 self.kf_path.hash(state);
+            }
+        }
+
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_flags", &self.uc_flags)
+                    .finish()
+            }
+        }
+
+        // FIXME(msrv): `derive` on packed structs cannot be used below 1.67
+
+        impl PartialEq for ether_header {
+            fn eq(&self, other: &ether_header) -> bool {
+                self.ether_dhost
+                    .iter()
+                    .zip(other.ether_dhost.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                        .ether_dhost
+                        .iter()
+                        .zip(other.ether_shost.iter())
+                        .all(|(a, b)| a == b)
+                    && self.ether_type == other.ether_type
+            }
+        }
+
+        impl Eq for ether_header {}
+        impl fmt::Debug for ether_header {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ether_header")
+                    .field("ether_dhost", &{ self.ether_dhost })
+                    .field("ether_shost", &{ self.ether_shost })
+                    .field("ether_type", &{ self.ether_type })
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for ether_header {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                { self.ether_dhost }.hash(state);
+                { self.ether_shost }.hash(state);
+                { self.ether_type }.hash(state);
+            }
+        }
+
+        impl PartialEq for ether_addr {
+            fn eq(&self, other: &ether_addr) -> bool {
+                self.octet
+                    .iter()
+                    .zip(other.octet.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for ether_addr {}
+        impl fmt::Debug for ether_addr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ether_addr")
+                    .field("octet", &{ self.octet })
+                    .finish()
+            }
+        }
+        impl hash::Hash for ether_addr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                { self.octet }.hash(state);
             }
         }
     }
@@ -4431,6 +4514,16 @@ pub const RTM_VERSION: c_int = 5;
 
 pub const RTAX_MAX: c_int = 8;
 
+// net/ethernet.h
+
+pub const ETHER_ADDR_LEN: c_int = 6;
+pub const ETHER_TYPE_LEN: c_int = 2;
+pub const ETHER_CRC_LEN: c_int = 4;
+pub const ETHER_HDR_LEN: c_int = ETHER_ADDR_LEN * 2 + ETHER_TYPE_LEN;
+pub const ETHER_MIN_LEN: c_int = 64;
+pub const ETHER_MAX_LEN: c_int = 1518;
+pub const ETHER_MAX_LEN_JUMBO: c_int = 9018;
+
 // sys/signal.h
 pub const SIGTHR: c_int = 32;
 pub const SIGLWP: c_int = SIGTHR;
@@ -4741,6 +4834,34 @@ f! {
 
     pub fn PROT_MAX_EXTRACT(x: c_int) -> c_int {
         (x >> 16) & (crate::PROT_READ | crate::PROT_WRITE | crate::PROT_EXEC)
+    }
+
+    pub {const} fn ETHER_IS_MULTICAST(addr: *mut u_char) -> bool {
+        (*addr.add(0)) & 0x01 != 0x00
+    }
+
+    pub {const} fn ETHER_IS_IPV6_MULTICAST(addr: *mut u_char) -> bool {
+        (*addr.add(0)) == 0x33 && (*addr.add(1)) == 0x33
+    }
+
+    pub {const} fn ETHER_IS_BROADCAST(addr: *mut u_char) -> bool {
+        (*addr.add(0))
+            & (*addr.add(1))
+            & (*addr.add(2))
+            & (*addr.add(3))
+            & (*addr.add(4))
+            & (*addr.add(5))
+            == 0xff
+    }
+
+    pub {const} fn ETHER_IS_ZERO(addr: *mut u_char) -> bool {
+        (*addr.add(0))
+            | (*addr.add(1))
+            | (*addr.add(2))
+            | (*addr.add(3))
+            | (*addr.add(4))
+            | (*addr.add(5))
+            == 0x00
     }
 }
 

@@ -2339,6 +2339,7 @@ fn test_freebsd(target: &str) {
                 "memstat.h",
                 "mqueue.h",
                 "net/bpf.h",
+                "net/ethernet.h",
                 "net/if.h",
                 "net/if_arp.h",
                 "net/if_dl.h",
