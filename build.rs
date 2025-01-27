@@ -45,7 +45,6 @@ fn main() {
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
-    let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
@@ -82,6 +81,8 @@ fn main() {
         _ => (),
     }
 
+    let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {
         set_cfg("linux_time_bits64");
     }
