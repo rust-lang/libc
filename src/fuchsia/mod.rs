@@ -7,16 +7,6 @@ use crate::prelude::*;
 
 // PUB_TYPE
 
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
@@ -87,9 +77,6 @@ pub type msglen_t = c_ulong;
 pub type fsblkcnt_t = c_ulonglong;
 pub type fsfilcnt_t = c_ulonglong;
 pub type rlim_t = c_ulonglong;
-
-pub type c_long = i64;
-pub type c_ulong = u64;
 
 // FIXME(fuchsia): why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).

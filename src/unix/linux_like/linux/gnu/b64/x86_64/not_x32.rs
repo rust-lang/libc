@@ -1,9 +1,6 @@
 use crate::prelude::*;
 use crate::pthread_mutex_t;
 
-pub type c_long = i64;
-pub type c_ulong = u64;
-
 s! {
     pub struct statvfs {
         pub f_bsize: c_ulong,

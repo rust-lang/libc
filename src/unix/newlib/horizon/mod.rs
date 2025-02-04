@@ -3,9 +3,6 @@
 use crate::off_t;
 use crate::prelude::*;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
-
 pub type wchar_t = c_uint;
 
 pub type u_register_t = c_uint;

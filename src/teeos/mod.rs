@@ -7,27 +7,7 @@
 
 use crate::prelude::*;
 
-pub type c_schar = i8;
-
-pub type c_uchar = u8;
-
-pub type c_short = i16;
-
-pub type c_ushort = u16;
-
-pub type c_int = i32;
-
-pub type c_uint = u32;
-
 pub type c_bool = i32;
-
-pub type c_float = f32;
-
-pub type c_double = f64;
-
-pub type c_longlong = i64;
-
-pub type c_ulonglong = u64;
 
 pub type intmax_t = i64;
 
@@ -46,10 +26,6 @@ pub type ssize_t = isize;
 pub type pid_t = c_int;
 
 pub type wchar_t = u32;
-
-pub type c_long = i64;
-
-pub type c_ulong = u64;
 
 // long double in C means A float point value, which has 128bit length.
 // but some bit maybe not used, so the real length of long double could be 80(x86) or 128(power pc/IEEE)

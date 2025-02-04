@@ -3,8 +3,6 @@ use crate::prelude::*;
 
 pub type blkcnt_t = i64;
 pub type blksize_t = i64;
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type fsblkcnt_t = c_ulong;
 pub type fsfilcnt_t = c_ulong;
 pub type ino_t = u64;

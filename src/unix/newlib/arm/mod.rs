@@ -3,9 +3,6 @@ use crate::prelude::*;
 pub type clock_t = c_long;
 pub type wchar_t = u32;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
-
 s! {
     pub struct sockaddr {
         pub sa_family: crate::sa_family_t,
