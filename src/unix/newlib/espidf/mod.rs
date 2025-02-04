@@ -3,9 +3,6 @@ use crate::prelude::*;
 pub type clock_t = c_ulong;
 pub type wchar_t = u32;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
-
 s! {
     pub struct cmsghdr {
         pub cmsg_len: crate::socklen_t,

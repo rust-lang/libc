@@ -3,8 +3,6 @@
 use crate::prelude::*;
 use crate::pthread_mutex_t;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type clock_t = i32;
 
 pub type shmatt_t = c_ulong;
