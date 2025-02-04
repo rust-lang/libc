@@ -27,8 +27,6 @@ pub type blksize_t = c_long;
 pub type fsblkcnt_t = u32;
 pub type fsfilcnt_t = u32;
 pub type rlim_t = u64;
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type nlink_t = u32;
 
 pub type ino64_t = crate::ino_t;
