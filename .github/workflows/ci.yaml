@@ -135,7 +135,9 @@ jobs:
           - i686-unknown-linux-musl
           - loongarch64-unknown-linux-gnu
           - loongarch64-unknown-linux-musl
-          - powerpc-unknown-linux-gnu
+          # FIXME(ppc): SIGILL running tests, see
+          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
+          # - powerpc-unknown-linux-gnu
           - powerpc64-unknown-linux-gnu
           - powerpc64le-unknown-linux-gnu
           - riscv64gc-unknown-linux-gnu
