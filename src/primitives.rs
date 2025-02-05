@@ -21,6 +21,7 @@ cfg_if! {
     if #[cfg(all(
         not(windows),
         not(target_vendor = "apple"),
+        not(target_os = "vita"),
         any(
             target_arch = "aarch64",
             target_arch = "arm",
