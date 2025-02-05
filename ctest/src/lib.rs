@@ -1294,7 +1294,7 @@ impl<'a> Generator<'a> {
             t!(writeln!(
                 self.rust,
                 r#"
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_offset_{ty}_{field}() -> u64;
                     #[allow(non_snake_case)]
@@ -1347,7 +1347,7 @@ impl<'a> Generator<'a> {
             t!(writeln!(
                 self.rust,
                 r#"
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_field_type_{ty}_{field}(a: *mut {ty})
                                                       -> *mut u8;
@@ -1402,7 +1402,7 @@ impl<'a> Generator<'a> {
             #[allow(non_snake_case)]
             #[inline(never)]
             fn size_align_{ty}() {{
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_size_{ty}() -> u64;
                     #[allow(non_snake_case)]
@@ -1467,7 +1467,7 @@ impl<'a> Generator<'a> {
             #[inline(never)]
             #[allow(non_snake_case)]
             fn sign_{ty}() {{
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_signed_{ty}() -> u32;
                 }}
@@ -1533,7 +1533,7 @@ impl<'a> Generator<'a> {
                 #[inline(never)]
                 #[allow(non_snake_case)]
                 fn const_{name}() {{
-                    extern {{
+                    extern "C" {{
                         #[allow(non_snake_case)]
                         fn __test_const_{name}() -> *const *const u8;
                     }}
@@ -1554,7 +1554,7 @@ impl<'a> Generator<'a> {
                 r#"
                 #[allow(non_snake_case)]
                 fn const_{name}() {{
-                    extern {{
+                    extern "C" {{
                         #[allow(non_snake_case)]
                         fn __test_const_{name}() -> *const {ty};
                     }}
@@ -1661,7 +1661,7 @@ impl<'a> Generator<'a> {
             #[allow(non_snake_case)]
             #[inline(never)]
             fn fn_{name}() {{
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_fn_{name}() -> *mut u32;
                 }}
@@ -1701,7 +1701,7 @@ impl<'a> Generator<'a> {
 
         let c_name = c_name.unwrap_or_else(|| name.to_string());
 
-        if rust_ty.contains("extern fn") {
+        if rust_ty.contains("extern fn") || rust_ty.contains("extern \"C\" fn") {
             let sig = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
             t!(writeln!(
                 self.c,
@@ -1719,7 +1719,7 @@ impl<'a> Generator<'a> {
             #[inline(never)]
             #[allow(non_snake_case)]
             fn static_{name}() {{
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_static_{name}() -> {ty};
                 }}
@@ -1764,7 +1764,7 @@ impl<'a> Generator<'a> {
             #[inline(never)]
             #[allow(non_snake_case)]
             fn static_{name}() {{
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_static_{name}() -> *{mutbl} {ty};
                 }}
@@ -1809,7 +1809,7 @@ impl<'a> Generator<'a> {
             #[allow(non_snake_case)]
             #[inline(never)]
             fn static_{name}() {{
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_static_{name}() -> *{mutbl} {ty};
                 }}
@@ -1991,7 +1991,7 @@ impl<'a> Generator<'a> {
                 use libc::c_int;
                 type U = {ty};
                 #[allow(improper_ctypes)]
-                extern {{
+                extern "C" {{
                     #[allow(non_snake_case)]
                     fn __test_roundtrip_{ty}(
                         size: i32, x: U, e: *mut c_int, pad: *const u8
@@ -2106,7 +2106,7 @@ impl<'a> Generator<'a> {
                         ast::FunctionRetTy::Default(..) => "()".to_string(),
                         ast::FunctionRetTy::Ty(ref t) => self.ty2name(t, rust),
                     };
-                    format!("extern fn({}) -> {}", args, ret)
+                    format!("extern \"C\" fn({}) -> {}", args, ret)
                 } else {
                     assert!(t.lifetimes.is_empty());
                     let (ret, mut args, variadic) = self.decl2rust(&t.decl);
