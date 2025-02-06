@@ -1289,6 +1289,17 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: c_uint = 16;
 
+// si_code values
+pub const SI_USER: c_int = 0;
+pub const SI_KERNEL: c_int = 0x80;
+pub const SI_QUEUE: c_int = -1;
+pub const SI_TIMER: c_int = -2;
+pub const SI_MESGQ: c_int = -3;
+pub const SI_ASYNCIO: c_int = -4;
+pub const SI_SIGIO: c_int = -5;
+pub const SI_TKILL: c_int = -6;
+pub const SI_ASYNCNL: c_int = -60;
+
 // si_code values for SIGBUS signal
 pub const BUS_ADRALN: c_int = 1;
 pub const BUS_ADRERR: c_int = 2;
@@ -1296,6 +1307,13 @@ pub const BUS_OBJERR: c_int = 3;
 // Linux-specific si_code values for SIGBUS signal
 pub const BUS_MCEERR_AR: c_int = 4;
 pub const BUS_MCEERR_AO: c_int = 5;
+
+// si_code values for SIGTRAP
+pub const TRAP_BRKPT: c_int = 1;
+pub const TRAP_TRACE: c_int = 2;
+pub const TRAP_BRANCH: c_int = 3;
+pub const TRAP_HWBKPT: c_int = 4;
+pub const TRAP_UNK: c_int = 5;
 
 // si_code values for SIGCHLD signal
 pub const CLD_EXITED: c_int = 1;
