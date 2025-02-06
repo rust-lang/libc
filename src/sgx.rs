@@ -1,5 +1,7 @@
 //! SGX C types definition
 
+use crate::prelude::*;
+
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
