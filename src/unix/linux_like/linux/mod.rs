@@ -5798,6 +5798,10 @@ pub const EPIOCGPARAMS: Ioctl = 0x80088a02;
 const _IOC_NRBITS: u32 = 8;
 const _IOC_TYPEBITS: u32 = 8;
 
+// siginfo.h
+pub const SI_DETHREAD: c_int = -7;
+pub const TRAP_PERF: c_int = 6;
+
 // https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
 cfg_if! {
     if #[cfg(any(
