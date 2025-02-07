@@ -1,8 +1,6 @@
 use crate::off64_t;
 use crate::prelude::*;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type clock_t = i32;
 pub type time_t = i32;
 pub type suseconds_t = i32;
