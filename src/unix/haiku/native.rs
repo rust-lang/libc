@@ -1,19 +1,7 @@
 use crate::off_t;
 use crate::prelude::*;
 
-// This module contains bindings to the native Haiku API. The Haiku API
-// originates from BeOS, and it was the original way to perform low level
-// system and IO operations. The POSIX API was in that era was like a
-// compatibility layer. In current Haiku development, both the POSIX API and
-// the Haiku API are considered to be co-equal status. However, they are not
-// integrated like they are on other UNIX platforms, which means that for many
-// low level concepts there are two versions, like processes (POSIX) and
-// teams (Haiku), or pthreads and native threads.
-//
-// Both the POSIX API and the Haiku API live in libroot.so, the library that is
-// linked to any binary by default.
-//
-// This file follows the Haiku API for Haiku R1 beta 2. It is organized by the
+// This file follows the Haiku API for Haiku R1 beta 5. It is organized by the
 // C/C++ header files in which the concepts can be found, while adhering to the
 // style guide for this crate.
 
