@@ -3,7 +3,7 @@
 set -eux
 
 # Note: keep in sync with:
-# https://github.com/rust-lang/rust/blob/master/src/ci/docker/scripts/emscripten.sh
+# https://github.com/rust-lang/rust/blob/master/src/doc/rustc/src/platform-support/wasm32-unknown-emscripten.md#requirements
 emsdk_version=3.1.68
 
 git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable

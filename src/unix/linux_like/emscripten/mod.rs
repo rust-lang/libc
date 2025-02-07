@@ -225,16 +225,16 @@ s! {
     }
     pub struct stat {
         pub st_dev: crate::dev_t,
-        #[cfg(not(emscripten_new_stat_abi))]
+        #[cfg(emscripten_old_stat_abi)]
         __st_dev_padding: c_int,
-        #[cfg(not(emscripten_new_stat_abi))]
+        #[cfg(emscripten_old_stat_abi)]
         __st_ino_truncated: c_long,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        #[cfg(not(emscripten_new_stat_abi))]
+        #[cfg(emscripten_old_stat_abi)]
         __st_rdev_padding: c_int,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
