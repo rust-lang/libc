@@ -94,9 +94,9 @@ cfg_if! {
                     .field("rdp", &self.rdp)
                     .field("mxcsr", &self.mxcsr)
                     .field("mscsr_mask", &self.mscsr_mask)
-                    // FIXME: .field("_fpreg", &self._fpreg)
-                    // FIXME: .field("_xmm", &self._xmm)
-                    // FIXME: .field("_reserved_416_511", &self._reserved_416_511)
+                    // FIXME(debug): .field("_fpreg", &self._fpreg)
+                    // FIXME(debug): .field("_xmm", &self._xmm)
+                    // FIXME(debug): .field("_reserved_416_511", &self._reserved_416_511)
                     .finish()
             }
         }
@@ -133,7 +133,7 @@ cfg_if! {
                 f.debug_struct("xstate_hdr")
                     .field("bv", &self.bv)
                     .field("xcomp_bv", &self.xcomp_bv)
-                    // FIXME: .field("_reserved", &field._reserved)
+                    // FIXME(debug): .field("_reserved", &field._reserved)
                     .finish()
             }
         }
@@ -162,7 +162,7 @@ cfg_if! {
                 f.debug_struct("savefpu")
                     .field("fp_fxsave", &self.fp_fxsave)
                     .field("fp_xstate", &self.fp_xstate)
-                    // FIXME: .field("_fp_ymm", &field._fp_ymm)
+                    // FIXME(debug): .field("_fp_ymm", &field._fp_ymm)
                     .finish()
             }
         }
