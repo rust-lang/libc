@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type clock_t = i32;
 pub type wchar_t = u32;
 pub type time_t = i64;

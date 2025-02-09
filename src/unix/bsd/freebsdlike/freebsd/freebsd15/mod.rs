@@ -266,7 +266,8 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: crate::fflags_t,
         pub st_gen: u64,
-        pub st_spare: [u64; 10],
+        pub st_filerev: u64,
+        pub st_spare: [u64; 9],
     }
 }
 

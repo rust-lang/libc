@@ -7,16 +7,6 @@ use crate::prelude::*;
 
 // PUB_TYPE
 
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_float = f32;
-pub type c_double = f64;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
@@ -88,10 +78,7 @@ pub type fsblkcnt_t = c_ulonglong;
 pub type fsfilcnt_t = c_ulonglong;
 pub type rlim_t = c_ulonglong;
 
-pub type c_long = i64;
-pub type c_ulong = u64;
-
-// FIXME: why are these uninhabited types? that seems... wrong?
+// FIXME(fuchsia): why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum timezone {}
@@ -111,7 +98,7 @@ impl Clone for DIR {
 }
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos64_t {} // FIXME: fill this out with a struct
+pub enum fpos64_t {} // FIXME(fuchsia): fill this out with a struct
 impl Copy for fpos64_t {}
 impl Clone for fpos64_t {
     fn clone(&self) -> fpos64_t {
@@ -144,7 +131,7 @@ s! {
         pub tv_nsec: c_long,
     }
 
-    // FIXME: the rlimit and rusage related functions and types don't exist
+    // FIXME(fuchsia): the rlimit and rusage related functions and types don't exist
     // within zircon. Are there reasons for keeping them around?
     pub struct rlimit {
         pub rlim_cur: rlim_t,
@@ -478,7 +465,7 @@ s! {
         pub ifa_flags: c_uint,
         pub ifa_addr: *mut crate::sockaddr,
         pub ifa_netmask: *mut crate::sockaddr,
-        pub ifa_ifu: *mut crate::sockaddr, // FIXME This should be a union
+        pub ifa_ifu: *mut crate::sockaddr, // FIXME(union) This should be a union
         pub ifa_data: *mut c_void,
     }
 
@@ -1097,7 +1084,7 @@ cfg_if! {
                     .field("totalhigh", &self.totalhigh)
                     .field("freehigh", &self.freehigh)
                     .field("mem_unit", &self.mem_unit)
-                    // FIXME: .field("__reserved", &self.__reserved)
+                    // FIXME(debug): .field("__reserved", &self.__reserved)
                     .finish()
             }
         }
@@ -1135,7 +1122,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME(debug): .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -1163,7 +1150,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
-                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
                     .finish()
             }
         }
@@ -1207,11 +1194,11 @@ cfg_if! {
         impl fmt::Debug for utsname {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
-                    // FIXME: .field("sysname", &self.sysname)
-                    // FIXME: .field("nodename", &self.nodename)
-                    // FIXME: .field("release", &self.release)
-                    // FIXME: .field("version", &self.version)
-                    // FIXME: .field("machine", &self.machine)
+                    // FIXME(debug): .field("sysname", &self.sysname)
+                    // FIXME(debug): .field("nodename", &self.nodename)
+                    // FIXME(debug): .field("release", &self.release)
+                    // FIXME(debug): .field("version", &self.version)
+                    // FIXME(debug): .field("machine", &self.machine)
                     .finish()
             }
         }
@@ -1246,7 +1233,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1281,7 +1268,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1390,7 +1377,7 @@ cfg_if! {
         impl fmt::Debug for pthread_cond_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_cond_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -1409,7 +1396,7 @@ cfg_if! {
         impl fmt::Debug for pthread_mutex_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_mutex_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -1428,7 +1415,7 @@ cfg_if! {
         impl fmt::Debug for pthread_rwlock_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -3562,7 +3549,7 @@ impl Clone for FILE {
     }
 }
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos_t {} // FIXME: fill this out with a struct
+pub enum fpos_t {} // FIXME(fuchsia): fill this out with a struct
 impl Copy for fpos_t {}
 impl Clone for fpos_t {
     fn clone(&self) -> fpos_t {

@@ -27,8 +27,6 @@ pub type blksize_t = c_long;
 pub type fsblkcnt_t = u32;
 pub type fsfilcnt_t = u32;
 pub type rlim_t = u64;
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type nlink_t = u32;
 
 pub type ino64_t = crate::ino_t;
@@ -227,16 +225,16 @@ s! {
     }
     pub struct stat {
         pub st_dev: crate::dev_t,
-        #[cfg(not(emscripten_new_stat_abi))]
+        #[cfg(emscripten_old_stat_abi)]
         __st_dev_padding: c_int,
-        #[cfg(not(emscripten_new_stat_abi))]
+        #[cfg(emscripten_old_stat_abi)]
         __st_ino_truncated: c_long,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        #[cfg(not(emscripten_new_stat_abi))]
+        #[cfg(emscripten_old_stat_abi)]
         __st_rdev_padding: c_int,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,

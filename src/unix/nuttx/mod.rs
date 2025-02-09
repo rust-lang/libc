@@ -5,8 +5,6 @@ pub type nlink_t = u16;
 pub type ino_t = u16;
 pub type blkcnt_t = u64;
 pub type blksize_t = i16;
-pub type c_long = isize;
-pub type c_ulong = usize;
 pub type cc_t = u8;
 pub type clock_t = i64;
 pub type dev_t = i32;
@@ -558,7 +556,6 @@ extern "C" {
     pub fn clock_gettime(clockid: clockid_t, tp: *mut timespec) -> i32;
     pub fn futimens(fd: i32, times: *const timespec) -> i32;
     pub fn pthread_condattr_setclock(attr: *mut pthread_condattr_t, clock_id: clockid_t) -> i32;
-    pub fn pthread_set_name_np(thread: pthread_t, name: *const c_char) -> i32;
     pub fn pthread_setname_np(thread: pthread_t, name: *const c_char) -> i32;
     pub fn pthread_getname_np(thread: pthread_t, name: *mut c_char, len: usize) -> i32;
     pub fn getrandom(buf: *mut c_void, buflen: usize, flags: u32) -> isize;
