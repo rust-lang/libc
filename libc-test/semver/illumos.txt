@@ -14,8 +14,10 @@ POSIX_FADV_NORMAL
 POSIX_FADV_RANDOM
 POSIX_FADV_SEQUENTIAL
 POSIX_FADV_WILLNEED
+POSIX_SPAWN_SETSID
 posix_fadvise
 posix_fallocate
+posix_spawn_file_actions_addfchdir_np
 pthread_attr_get_np
 pthread_attr_getstackaddr
 pthread_attr_setstack

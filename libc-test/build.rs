@@ -915,6 +915,7 @@ fn test_solarish(target: &str) {
         "sched.h",
         "semaphore.h",
         "signal.h",
+        "spawn.h",
         "stddef.h",
         "stdint.h",
         "stdio.h",
