@@ -189,6 +189,8 @@ pub const PRIV_TPD_UNSAFE: c_uint = 0x0800;
 pub const PRIV_PROC_TPD_RESET: c_uint = 0x1000;
 pub const PRIV_TPD_KILLABLE: c_uint = 0x2000;
 
+pub const POSIX_SPAWN_SETSID: c_short = 0x400;
+
 pub const PRIV_USER: c_uint = PRIV_DEBUG
     | PRIV_PROC_SENSITIVE
     | NET_MAC_AWARE
