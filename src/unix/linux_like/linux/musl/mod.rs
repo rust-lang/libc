@@ -718,6 +718,7 @@ pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOCK_DCCP: c_int = 6;
 pub const SOCK_NONBLOCK: c_int = O_NONBLOCK;
+#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
 pub const SOMAXCONN: c_int = 128;

@@ -382,6 +382,7 @@ pub const RUSAGE_THREAD: c_int = 1;
 pub const SHM_EXEC: c_int = 0o100000;
 pub const SIGPOLL: c_int = SIGIO;
 pub const SOCK_DCCP: c_int = 6;
+#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 pub const TCP_COOKIE_TRANSACTIONS: c_int = 15;
 pub const UDP_GRO: c_int = 104;
