@@ -308,7 +308,7 @@ s_no_extra_traits! {
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: crate::sigset_t,
         __private: [u8; 512],
-        // FIXME: the shadow stack field requires glibc >= 2.28.
+        // FIXME(linux): the shadow stack field requires glibc >= 2.28.
         // Re-add once we drop compatibility with glibc versions older than
         // 2.28.
         //
@@ -357,7 +357,7 @@ cfg_if! {
                     .field("mxcsr", &self.mxcsr)
                     .field("mxcr_mask", &self.mxcr_mask)
                     .field("st_space", &self.st_space)
-                    // FIXME: .field("xmm_space", &self.xmm_space)
+                    // FIXME(debug): .field("xmm_space", &self.xmm_space)
                     // Ignore padding field
                     .finish()
             }
@@ -663,7 +663,7 @@ pub const PR_SPEC_FORCE_DISABLE: c_uint = 1 << 3;
 pub const PR_SPEC_DISABLE_NOEXEC: c_uint = 1 << 4;
 pub const PR_SPEC_STORE_BYPASS: c_int = 0;
 pub const PR_SPEC_INDIRECT_BRANCH: c_int = 1;
-// FIXME: perharps for later
+// FIXME(linux): perharps for later
 //pub const PR_SPEC_L1D_FLUSH: c_int = 2;
 
 pub const MCL_CURRENT: c_int = 0x0001;

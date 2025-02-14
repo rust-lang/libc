@@ -44,7 +44,7 @@ pub type statvfs64 = crate::statvfs;
 pub type dirent64 = crate::dirent;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum fpos64_t {} // FIXME: fill this out with a struct
+pub enum fpos64_t {} // FIXME(emscripten): fill this out with a struct
 impl Copy for fpos64_t {}
 impl Clone for fpos64_t {
     fn clone(&self) -> fpos64_t {
@@ -412,7 +412,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -465,7 +465,7 @@ cfg_if! {
                     .field("totalhigh", &self.totalhigh)
                     .field("freehigh", &self.freehigh)
                     .field("mem_unit", &self.mem_unit)
-                    // FIXME: .field("__reserved", &self.__reserved)
+                    // FIXME(debug): .field("__reserved", &self.__reserved)
                     .finish()
             }
         }
@@ -525,7 +525,7 @@ cfg_if! {
         impl fmt::Debug for pthread_cond_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_cond_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -1574,8 +1574,6 @@ extern "C" {
     pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
     pub fn nl_langinfo(item: crate::nl_item) -> *mut c_char;
 
-    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
-    pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
     pub fn sendmmsg(
         sockfd: c_int,
         msgvec: *mut crate::mmsghdr,

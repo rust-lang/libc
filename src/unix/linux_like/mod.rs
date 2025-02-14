@@ -161,7 +161,7 @@ s! {
         pub ifa_flags: c_uint,
         pub ifa_addr: *mut crate::sockaddr,
         pub ifa_netmask: *mut crate::sockaddr,
-        pub ifa_ifu: *mut crate::sockaddr, // FIXME This should be a union
+        pub ifa_ifu: *mut crate::sockaddr, // FIXME(union) This should be a union
         pub ifa_data: *mut c_void,
     }
 
@@ -342,7 +342,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME(debug): .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -371,7 +371,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_storage")
                     .field("ss_family", &self.ss_family)
                     .field("__ss_align", &self.__ss_align)
-                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
                     .finish()
             }
         }
@@ -422,12 +422,12 @@ cfg_if! {
         impl fmt::Debug for utsname {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
-                    // FIXME: .field("sysname", &self.sysname)
-                    // FIXME: .field("nodename", &self.nodename)
-                    // FIXME: .field("release", &self.release)
-                    // FIXME: .field("version", &self.version)
-                    // FIXME: .field("machine", &self.machine)
-                    // FIXME: .field("domainname", &self.domainname)
+                    // FIXME(debug): .field("sysname", &self.sysname)
+                    // FIXME(debug): .field("nodename", &self.nodename)
+                    // FIXME(debug): .field("release", &self.release)
+                    // FIXME(debug): .field("version", &self.version)
+                    // FIXME(debug): .field("machine", &self.machine)
+                    // FIXME(debug): .field("domainname", &self.domainname)
                     .finish()
             }
         }
@@ -1875,6 +1875,9 @@ extern "C" {
 
     pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
     pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
+
+    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
+    pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
 }
 
 // LFS64 extensions

@@ -76,7 +76,7 @@ pub type sctp_assoc_t = __s32;
 pub type eventfd_t = u64;
 missing! {
     #[cfg_attr(feature = "extra_traits", derive(Debug))]
-    pub enum fpos64_t {} // FIXME: fill this out with a struct
+    pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
 }
 
 e! {
@@ -1751,7 +1751,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1789,7 +1789,7 @@ cfg_if! {
                     .field("d_off", &self.d_off)
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -1815,7 +1815,7 @@ cfg_if! {
         impl fmt::Debug for pthread_cond_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_cond_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -1837,7 +1837,7 @@ cfg_if! {
         impl fmt::Debug for pthread_mutex_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_mutex_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -1859,7 +1859,7 @@ cfg_if! {
         impl fmt::Debug for pthread_rwlock_t {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_rwlock_t")
-                    // FIXME: .field("size", &self.size)
+                    // FIXME(debug): .field("size", &self.size)
                     .finish()
             }
         }
@@ -5256,6 +5256,7 @@ pub const CANFD_MAX_DLEN: usize = 64;
 
 pub const CANFD_BRS: c_int = 0x01;
 pub const CANFD_ESI: c_int = 0x02;
+pub const CANFD_FDF: c_int = 0x04;
 
 pub const CANXL_MIN_DLC: c_int = 0;
 pub const CANXL_MAX_DLC: c_int = 2047;
@@ -6341,8 +6342,6 @@ extern "C" {
 
     pub fn nl_langinfo(item: crate::nl_item) -> *mut c_char;
 
-    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
-    pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
     pub fn vhangup() -> c_int;
     pub fn sync();
     pub fn syncfs(fd: c_int) -> c_int;

@@ -710,6 +710,7 @@ pub const SYS_flistxattr: c_long = 180;
 pub const SYS_removexattr: c_long = 181;
 pub const SYS_lremovexattr: c_long = 182;
 pub const SYS_sigpending: c_long = 183;
+#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
 pub const SYS_query_module: c_long = 184;
 pub const SYS_setpgid: c_long = 185;
 pub const SYS_fremovexattr: c_long = 186;
@@ -747,8 +748,10 @@ pub const SYS_clone: c_long = 217;
 pub const SYS_ioprio_get: c_long = 218;
 pub const SYS_adjtimex: c_long = 219;
 pub const SYS_sigprocmask: c_long = 220;
+#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
 pub const SYS_create_module: c_long = 221;
 pub const SYS_delete_module: c_long = 222;
+#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
 pub const SYS_get_kernel_syms: c_long = 223;
 pub const SYS_getpgid: c_long = 224;
 pub const SYS_bdflush: c_long = 225;

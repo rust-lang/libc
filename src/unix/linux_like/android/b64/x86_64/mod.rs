@@ -353,7 +353,7 @@ cfg_if! {
                     .field("mxcsr", &self.mxcsr)
                     .field("mxcr_mask", &self.mxcr_mask)
                     .field("st_space", &self.st_space)
-                    // FIXME: .field("xmm_space", &self.xmm_space)
+                    // FIXME(debug): .field("xmm_space", &self.xmm_space)
                     // Ignore padding field
                     .finish()
             }
@@ -545,7 +545,7 @@ pub const SYS_munlockall: c_long = 152;
 pub const SYS_vhangup: c_long = 153;
 pub const SYS_modify_ldt: c_long = 154;
 pub const SYS_pivot_root: c_long = 155;
-// FIXME: SYS__sysctl is in the NDK sources but for some reason is
+// FIXME(android): SYS__sysctl is in the NDK sources but for some reason is
 //        not available in the tests
 // pub const SYS__sysctl: c_long = 156;
 pub const SYS_prctl: c_long = 157;
@@ -565,10 +565,13 @@ pub const SYS_sethostname: c_long = 170;
 pub const SYS_setdomainname: c_long = 171;
 pub const SYS_iopl: c_long = 172;
 pub const SYS_ioperm: c_long = 173;
+#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
 pub const SYS_create_module: c_long = 174;
 pub const SYS_init_module: c_long = 175;
 pub const SYS_delete_module: c_long = 176;
+#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
 pub const SYS_get_kernel_syms: c_long = 177;
+#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
 pub const SYS_query_module: c_long = 178;
 pub const SYS_quotactl: c_long = 179;
 pub const SYS_nfsservctl: c_long = 180;
