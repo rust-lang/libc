@@ -1474,6 +1474,7 @@ pub const SOCK_STREAM: c_int = 1;
 pub const SOCK_DGRAM: c_int = 2;
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOCK_DCCP: c_int = 6;
+#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
 pub const IPPROTO_MAX: c_int = 256;

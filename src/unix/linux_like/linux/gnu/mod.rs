@@ -763,6 +763,7 @@ pub const ENOTSUP: c_int = EOPNOTSUPP;
 
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOCK_DCCP: c_int = 6;
+#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
 pub const AF_IB: c_int = 27;
