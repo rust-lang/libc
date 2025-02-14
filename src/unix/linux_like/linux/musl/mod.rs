@@ -1003,7 +1003,9 @@ cfg_if! {
         target_arch = "powerpc64",
         target_arch = "s390x",
         target_arch = "riscv64",
-        target_arch = "loongarch64"
+        target_arch = "loongarch64",
+        // Linux structs for wasm32 (WALI) uses the 64-bit struct layout
+        target_arch = "wasm32",
     ))] {
         mod b64;
         pub use self::b64::*;

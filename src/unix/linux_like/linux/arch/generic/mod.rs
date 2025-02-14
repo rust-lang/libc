@@ -303,7 +303,8 @@ cfg_if! {
         target_arch = "riscv64",
         target_arch = "aarch64",
         target_arch = "s390x",
-        target_arch = "loongarch64"
+        target_arch = "loongarch64",
+        target_arch = "wasm32"
     ))] {
         pub const FS_IOC_GETFLAGS: Ioctl = 0x80086601;
         pub const FS_IOC_SETFLAGS: Ioctl = 0x40086602;
