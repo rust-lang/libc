@@ -401,7 +401,7 @@ macro_rules! offset_of {
         // SAFETY: computed address is inbounds since we have a stack alloc for T
         let fptr = unsafe { core::ptr::addr_of!((*ptr).$field) };
         let off = (fptr as usize).checked_sub(ptr as usize).unwrap();
-        assert!(off <= core::mem::size_of::<$Ty>());
+        core::assert!(off <= core::mem::size_of::<$Ty>());
         off
     }};
 }
