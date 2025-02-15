@@ -5,7 +5,7 @@
 
 set -eux
 
-musl_version=1.1.24
+musl_version=1.2.5
 musl="musl-${musl_version}"
 
 # Download, configure, build, and install musl:

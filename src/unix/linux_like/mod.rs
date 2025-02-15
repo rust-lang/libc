@@ -213,7 +213,11 @@ s! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
+    if #[cfg(any(
+        target_env = "gnu",
+        target_os = "android",
+        target_env = "musl"
+    ))] {
         s! {
             pub struct statx {
                 pub stx_mask: crate::__u32,
@@ -239,7 +243,12 @@ cfg_if! {
                 pub stx_mnt_id: crate::__u64,
                 pub stx_dio_mem_align: crate::__u32,
                 pub stx_dio_offset_align: crate::__u32,
-                __statx_pad3: [crate::__u64; 12],
+                pub stx_subvol: crate::__u64,
+                pub stx_atomic_write_unit_min: crate::__u32,
+                pub stx_atomic_write_unit_max: crate::__u32,
+                pub stx_atomic_write_segments_max: crate::__u32,
+                __statx_pad2: [crate::__u32; 1],
+                __statx_pad3: [crate::__u64; 9],
             }
 
             pub struct statx_timestamp {
@@ -1588,7 +1597,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
+    if #[cfg(any(
+        target_env = "gnu",
+        target_os = "android",
+        target_env = "musl"
+    ))] {
         pub const AT_STATX_SYNC_TYPE: c_int = 0x6000;
         pub const AT_STATX_SYNC_AS_STAT: c_int = 0x0000;
         pub const AT_STATX_FORCE_SYNC: c_int = 0x2000;
@@ -1609,6 +1622,9 @@ cfg_if! {
         pub const STATX_ALL: c_uint = 0x0fff;
         pub const STATX_MNT_ID: c_uint = 0x1000;
         pub const STATX_DIOALIGN: c_uint = 0x2000;
+        pub const STATX_MNT_ID_UNIQUE: c_uint = 0x4000;
+        pub const STATX_SUBVOL: c_uint = 0x8000;
+        pub const STATX_WRITE_ATOMIC: c_uint = 0x10000;
         pub const STATX__RESERVED: c_int = 0x80000000;
         pub const STATX_ATTR_COMPRESSED: c_int = 0x0004;
         pub const STATX_ATTR_IMMUTABLE: c_int = 0x0010;
@@ -1619,6 +1635,7 @@ cfg_if! {
         pub const STATX_ATTR_MOUNT_ROOT: c_int = 0x2000;
         pub const STATX_ATTR_VERITY: c_int = 0x100000;
         pub const STATX_ATTR_DAX: c_int = 0x200000;
+        pub const STATX_ATTR_WRITE_ATOMIC: c_int = 0x400000;
     }
 }
 
@@ -1990,7 +2007,11 @@ cfg_if! {
 
 // The statx syscall, available on some libcs.
 cfg_if! {
-    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
+    if #[cfg(any(
+        target_env = "gnu",
+        target_os = "android",
+        target_env = "musl"
+    ))] {
         extern "C" {
             pub fn statx(
                 dirfd: c_int,
