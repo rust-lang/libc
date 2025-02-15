@@ -5618,6 +5618,16 @@ f! {
     pub fn ELF64_R_INFO(sym: Elf64_Xword, t: Elf64_Xword) -> Elf64_Xword {
         sym << (32 + t)
     }
+
+    #[cfg(target_env = "gnu")]
+    pub fn SUN_LEN(s: crate::sockaddr_un) -> usize {
+        offset_of!(crate::sockaddr_un, sun_path) + crate::strlen(s.sun_path.as_ptr())
+    }
+
+    #[cfg(target_env = "musl")]
+    pub fn SUN_LEN(s: crate::sockaddr_un) -> usize {
+        2 * crate::strlen(s.sun_path.as_ptr())
+    }
 }
 
 safe_f! {
