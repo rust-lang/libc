@@ -560,7 +560,7 @@ cfg_if! {
                     .field("ut_name", &self.ut_name)
                     .field("ut_id", &self.ut_id)
                     .field("ut_line", &self.ut_line)
-                    // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME(debug): .field("ut_host", &self.ut_host)
                     .field("ut_unused", &self.ut_unused)
                     .field("ut_session", &self.ut_session)
                     .field("ut_type", &self.ut_type)
@@ -639,7 +639,7 @@ cfg_if! {
                     .field("d_type", &self.d_type)
                     // Ignore __unused1
                     // Ignore __unused2
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -701,10 +701,10 @@ cfg_if! {
                     .field("f_flags", &self.f_flags)
                     .field("f_syncwrites", &self.f_syncwrites)
                     .field("f_asyncwrites", &self.f_asyncwrites)
-                    // FIXME: .field("f_mntonname", &self.f_mntonname)
+                    // FIXME(debug): .field("f_mntonname", &self.f_mntonname)
                     .field("f_syncreads", &self.f_syncreads)
                     .field("f_asyncreads", &self.f_asyncreads)
-                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME(debug): .field("f_mntfromname", &self.f_mntfromname)
                     .finish()
             }
         }

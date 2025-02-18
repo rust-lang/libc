@@ -77,7 +77,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("pthread_attr_t")
                     .field("__sig", &self.__sig)
-                    // FIXME: .field("__opaque", &self.__opaque)
+                    // FIXME(debug): .field("__opaque", &self.__opaque)
                     .finish()
             }
         }

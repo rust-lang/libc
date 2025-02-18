@@ -1660,7 +1660,7 @@ s_no_extra_traits! {
         pub kf_flags: c_int,
         _kf_pad0: c_int,
         pub kf_offset: i64,
-        _priv: [u8; 304], // FIXME: this is really a giant union
+        _priv: [u8; 304], // FIXME(freebsd): this is really a giant union
         pub kf_status: u16,
         _kf_pad1: u16,
         _kf_ispare0: c_int,
@@ -1711,8 +1711,8 @@ cfg_if! {
                     .field("ut_pid", &self.ut_pid)
                     .field("ut_user", &self.ut_user)
                     .field("ut_line", &self.ut_line)
-                    // FIXME: .field("ut_host", &self.ut_host)
-                    // FIXME: .field("__ut_spare", &self.__ut_spare)
+                    // FIXME(debug): .field("ut_host", &self.ut_host)
+                    // FIXME(debug): .field("__ut_spare", &self.__ut_spare)
                     .finish()
             }
         }
@@ -1799,7 +1799,7 @@ cfg_if! {
                     .field("sdl_nlen", &self.sdl_nlen)
                     .field("sdl_alen", &self.sdl_alen)
                     .field("sdl_slen", &self.sdl_slen)
-                    // FIXME: .field("sdl_data", &self.sdl_data)
+                    // FIXME(debug): .field("sdl_data", &self.sdl_data)
                     .finish()
             }
         }
@@ -2291,7 +2291,7 @@ cfg_if! {
                 f.debug_struct("sctp_gen_error_cause")
                     .field("code", &{ self.code })
                     .field("length", &{ self.length })
-                    // FIXME: .field("info", &{self.info})
+                    // FIXME(debug): .field("info", &{self.info})
                     .finish()
             }
         }
@@ -2363,7 +2363,7 @@ cfg_if! {
                 f.debug_struct("sctp_error_missing_param")
                     .field("cause", &{ self.cause })
                     .field("num_missing_params", &{ self.num_missing_params })
-                    // FIXME: .field("tpe", &{self.tpe})
+                    // FIXME(debug): .field("tpe", &{self.tpe})
                     .finish()
             }
         }
@@ -5664,7 +5664,7 @@ extern "C" {
     pub fn pidfile_close(path: *mut crate::pidfh) -> c_int;
     pub fn pidfile_remove(path: *mut crate::pidfh) -> c_int;
     pub fn pidfile_fileno(path: *const crate::pidfh) -> c_int;
-    // FIXME: pidfile_signal in due time (both manpage present and updated image snapshot)
+    // FIXME(freebsd): pidfile_signal in due time (both manpage present and updated image snapshot)
 }
 
 #[link(name = "procstat")]
