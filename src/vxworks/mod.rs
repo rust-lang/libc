@@ -34,7 +34,7 @@ pub type ino_t = c_ulong;
 
 pub type rlim_t = c_ulong;
 pub type suseconds_t = c_long;
-pub type time_t = c_long;
+pub type time_t = c_longlong;
 
 pub type errno_t = c_int;
 
