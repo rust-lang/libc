@@ -88,3 +88,8 @@ harness = true
 name = "semver"
 path = "test/semver.rs"
 harness = false
+
+[[test]]
+name = "primitive_types"
+path = "test/primitive_types.rs"
+harness = true
