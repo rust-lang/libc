@@ -3568,6 +3568,10 @@ pub const AT_RSEQ_ALIGN: c_ulong = 28;
 pub const AT_EXECFN: c_ulong = 31;
 pub const AT_MINSIGSTKSZ: c_ulong = 51;
 
+// siginfo.h
+pub const SI_DETHREAD: c_int = -7;
+pub const TRAP_PERF: c_int = 6;
+
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.

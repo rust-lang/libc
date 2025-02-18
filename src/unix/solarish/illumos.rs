@@ -205,6 +205,8 @@ pub const POSIX_FADV_WILLNEED: c_int = 3;
 pub const POSIX_FADV_DONTNEED: c_int = 4;
 pub const POSIX_FADV_NOREUSE: c_int = 5;
 
+pub const POSIX_SPAWN_SETSID: c_short = 0x40;
+
 pub const SIGINFO: c_int = 41;
 
 pub const O_DIRECT: c_int = 0x2000000;
@@ -334,6 +336,11 @@ extern "C" {
     pub fn preadv(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off_t) -> ssize_t;
     pub fn pwritev(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off_t) -> ssize_t;
     pub fn getpagesizes2(pagesize: *mut size_t, nelem: c_int) -> c_int;
+
+    pub fn posix_spawn_file_actions_addfchdir_np(
+        file_actions: *mut crate::posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
 
     pub fn ptsname_r(fildes: c_int, name: *mut c_char, namelen: size_t) -> c_int;
 

@@ -2849,7 +2849,7 @@ extern "C" {
         ntargets: size_t,
         hint: *const c_void,
     ) -> c_int;
-
+    #[link_name = "__getmntinfo13"]
     pub fn getmntinfo(mntbufp: *mut *mut crate::statvfs, flags: c_int) -> c_int;
     pub fn getvfsstat(buf: *mut statvfs, bufsize: size_t, flags: c_int) -> c_int;
 }
