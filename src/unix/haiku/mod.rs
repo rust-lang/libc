@@ -562,7 +562,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_un")
                     .field("sun_len", &self.sun_len)
                     .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME(debug): .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -599,7 +599,7 @@ cfg_if! {
                     .field("ss_family", &self.ss_family)
                     .field("__ss_pad1", &self.__ss_pad1)
                     .field("__ss_pad2", &self.__ss_pad2)
-                    // FIXME: .field("__ss_pad3", &self.__ss_pad3)
+                    // FIXME(debug): .field("__ss_pad3", &self.__ss_pad3)
                     .finish()
             }
         }
@@ -636,7 +636,7 @@ cfg_if! {
                     .field("d_ino", &self.d_ino)
                     .field("d_pino", &self.d_pino)
                     .field("d_reclen", &self.d_reclen)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -868,7 +868,7 @@ pub const LC_NUMERIC: c_int = 4;
 pub const LC_TIME: c_int = 5;
 pub const LC_MESSAGES: c_int = 6;
 
-// FIXME: Haiku does not have MAP_FILE, but library/std/os.rs requires it
+// FIXME(haiku): Haiku does not have MAP_FILE, but library/std/os.rs requires it
 pub const MAP_FILE: c_int = 0x00;
 pub const MAP_SHARED: c_int = 0x01;
 pub const MAP_PRIVATE: c_int = 0x02;
@@ -1301,7 +1301,7 @@ pub const PTHREAD_MUTEX_NORMAL: c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 3;
 
-pub const FIOCLEX: c_ulong = 0; // FIXME: does not exist on Haiku!
+pub const FIOCLEX: c_ulong = 0; // FIXME(haiku): does not exist on Haiku!
 
 pub const RUSAGE_CHILDREN: c_int = -1;
 

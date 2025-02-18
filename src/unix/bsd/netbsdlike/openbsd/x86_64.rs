@@ -92,8 +92,8 @@ cfg_if! {
                     .field("fx_rdp", &{ self.fx_rdp })
                     .field("fx_mxcsr", &{ self.fx_mxcsr })
                     .field("fx_mxcsr_mask", &{ self.fx_mxcsr_mask })
-                    // FIXME: .field("fx_st", &{self.fx_st})
-                    // FIXME: .field("fx_xmm", &{self.fx_xmm})
+                    // FIXME(debug): .field("fx_st", &{self.fx_st})
+                    // FIXME(debug): .field("fx_xmm", &{self.fx_xmm})
                     .finish()
             }
         }
