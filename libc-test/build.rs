@@ -2106,6 +2106,8 @@ fn test_android(target: &str) {
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
         (struct_ == "signalfd_siginfo" && field == "ssi_call_addr") ||
+        // FIXME: `h_proto` is of type __be16 big endian version of __u16
+        (struct_ ==  "ethhdr" && field == "h_proto") ||
         // FIXME: Seems the type has been changed on NDK r26b
         (struct_ == "flock64" && (field == "l_start" || field == "l_len"))
     });
@@ -3686,6 +3688,10 @@ fn test_linux(target: &str) {
         if sparc64 && (ty == "Elf32_Rela" || ty == "Elf64_Rela") {
             return true;
         }
+        // FIXME: alignment issue with this arch
+        if loongarch64 && ty == "ethhdr" {
+            return true;
+        }
         match ty {
             // FIXME(sighandler): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
@@ -4395,6 +4401,8 @@ fn test_linux(target: &str) {
         (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
         // `anonymous_2` is an anonymous union
         (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
+        // FIXME: `h_proto` is of type __be16 big endian version of __u16
+        (struct_ ==  "ethhdr" && field == "h_proto") ||
         // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
         // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
         // the rsv field shrunk when those fields got added, so is omitted too

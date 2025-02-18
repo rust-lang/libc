@@ -34,6 +34,7 @@ pub type __u16 = c_ushort;
 pub type __s16 = c_short;
 pub type __u32 = c_uint;
 pub type __s32 = c_int;
+pub type __be16 = __u16;
 
 // linux/elf.h
 
@@ -638,6 +639,15 @@ s_no_extra_traits! {
         pub ifc_len: c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
+
+    // linux/if_ether.h
+
+    #[repr(C, packed)]
+    pub struct ethhdr {
+        pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_source: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_proto: crate::__be16,
+    }
 }
 
 cfg_if! {
@@ -1017,6 +1027,33 @@ cfg_if! {
                     .field("__name", &self.__name)
                     .field("__serial", &self.__serial)
                     .field("__value", &self.__value)
+                    .finish()
+            }
+        }
+
+        impl Eq for ethhdr {}
+
+        impl PartialEq for ethhdr {
+            fn eq(&self, other: &ethhdr) -> bool {
+                self.h_dest
+                    .iter()
+                    .zip(other.h_dest.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                        .h_source
+                        .iter()
+                        .zip(other.h_source.iter())
+                        .all(|(a, b)| a == b)
+                    && self.h_proto == other.h_proto
+            }
+        }
+
+        impl fmt::Debug for ethhdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ethhdr")
+                    .field("h_dest", &self.h_dest)
+                    .field("h_source", &self.h_source)
+                    .field("h_proto", &{ self.h_proto })
                     .finish()
             }
         }
