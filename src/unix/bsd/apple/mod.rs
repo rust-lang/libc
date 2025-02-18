@@ -5543,18 +5543,6 @@ f! {
     pub {const} fn VM_MAKE_TAG(id: u8) -> u32 {
         (id as u32) << 24u32
     }
-
-    pub fn major(dev: dev_t) -> i32 {
-        (dev >> 24) & 0xff
-    }
-
-    pub fn minor(dev: dev_t) -> i32 {
-        dev & 0xffffff
-    }
-
-    pub fn makedev(major: i32, minor: i32) -> dev_t {
-        (major << 24) | minor
-    }
 }
 
 safe_f! {
@@ -5576,6 +5564,18 @@ safe_f! {
 
     pub {const} fn WIFSTOPPED(status: c_int) -> bool {
         _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
+    }
+
+    pub {const} fn makedev(major: i32, minor: i32) -> dev_t {
+        (major << 24) | minor
+    }
+
+    pub {const} fn major(dev: dev_t) -> i32 {
+        (dev >> 24) & 0xff
+    }
+
+    pub {const} fn minor(dev: dev_t) -> i32 {
+        dev & 0xffffff
     }
 }
 
