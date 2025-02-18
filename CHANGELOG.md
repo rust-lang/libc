@@ -1,6 +1,38 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.170](https://github.com/rust-lang/libc/compare/0.2.169...0.2.170) - 2025-02-18
+
+### Added
+
+- Adds in SI and TRAP signal codes
+- add labels for FIXMEs in repo ([#4237](https://github.com/rust-lang/libc/pull/4237))
+- Add the new `st_filerev` field to `stat32` for FreeBSD 15 ([#4254](https://github.com/rust-lang/libc/pull/4254))
+- add CLONE_NEWTIME to Linux/musl
+- add labels to FIXMEs ([#4230](https://github.com/rust-lang/libc/pull/4230))
+- add labels to each FIXME ([#4229](https://github.com/rust-lang/libc/pull/4229))
+- Added new CANFD_FDF flag for the flags field of canfd_frame.
+
+### Fixed
+
+- fix getmntinfo for NetBSD ([#4265](https://github.com/rust-lang/libc/pull/4265))
+- Fix reference to build file with guaranteed build platforms.
+- Fix CMSG_DATA on 64bit systems ([#4240](https://github.com/rust-lang/libc/pull/4240))
+- Fix the `missing_abi` lint
+
+### Other
+
+- [solarish/illumos] add the posix_spawn family of functions
+- Assume version is at least 3.1.42
+- linux/android proposal to deprecate kernel modules syscalls.
+- Move `setdomainname` and `getdomainname` into linux_like.
+- Declare `setdomainname` and `getdomainname` on Android.
+- Define c_char at top-level and remove per-target c_char definitions
+- Allow `unpredictable_function_pointer_comparisons` in another place
+
+### Removed
+
+- Remove `c_char` from the PSP module
 ## [0.2.169](https://github.com/rust-lang/libc/compare/0.2.168...0.2.169) - 2024-12-18
 
 ### Added
