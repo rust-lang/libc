@@ -1,9 +1,6 @@
 use crate::off_t;
 use crate::prelude::*;
 
-pub type c_long = i64;
-pub type c_ulong = u64;
-
 s! {
     pub struct sigset_t {
         pub ss_set: [c_ulong; 4],

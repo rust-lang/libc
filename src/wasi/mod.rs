@@ -7,16 +7,6 @@ use core::iter::Iterator;
 
 use crate::prelude::*;
 
-pub type c_uchar = u8;
-pub type c_schar = i8;
-pub type c_int = i32;
-pub type c_uint = u32;
-pub type c_short = i16;
-pub type c_ushort = u16;
-pub type c_long = i32;
-pub type c_ulong = u32;
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 pub type size_t = usize;
@@ -28,8 +18,6 @@ pub type off_t = i64;
 pub type pid_t = i32;
 pub type clock_t = c_longlong;
 pub type time_t = c_longlong;
-pub type c_double = f64;
-pub type c_float = f32;
 pub type ino_t = u64;
 pub type sigset_t = c_uchar;
 pub type suseconds_t = c_longlong;
@@ -44,6 +32,7 @@ pub type nfds_t = c_ulong;
 pub type wchar_t = i32;
 pub type nl_item = c_int;
 pub type __wasi_rights_t = u64;
+pub type locale_t = *mut __locale_struct;
 
 s_no_extra_traits! {
     #[repr(align(16))]
@@ -62,8 +51,6 @@ pub enum DIR {}
 #[allow(missing_copy_implementations)]
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum __locale_struct {}
-
-pub type locale_t = *mut __locale_struct;
 
 s_paren! {
     // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),

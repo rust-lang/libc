@@ -2,8 +2,6 @@ use core::mem::size_of;
 
 use crate::prelude::*;
 
-pub type c_long = i64;
-pub type c_ulong = u64;
 pub type caddr_t = *mut c_char;
 
 pub type clockid_t = c_int;

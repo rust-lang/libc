@@ -81,6 +81,7 @@ if [ -n "${QEMU:-}" ]; then
 fi
 
 cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+test_flags="--skip check_style"
 
 # Run tests in the `libc` crate
 case "$target" in
@@ -101,17 +102,20 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
     passed=0
     until [ $n -ge $N ]; do
         if [ "$passed" = "0" ]; then
-            if $cmd --no-default-features; then
+            # shellcheck disable=SC2086
+            if $cmd --no-default-features -- $test_flags; then
                 passed=$((passed+1))
                 continue
             fi
         elif [ "$passed" = "1" ]; then
-            if $cmd; then
+            # shellcheck disable=SC2086
+            if $cmd -- $test_flags; then
                 passed=$((passed+1))
                 continue
             fi
         elif [ "$passed" = "2" ]; then
-            if $cmd --features extra_traits; then
+            # shellcheck disable=SC2086
+            if $cmd --features extra_traits -- $test_flags; then
                 break
             fi
         fi
@@ -119,7 +123,10 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
         sleep 1
     done
 else
-    $cmd --no-default-features
-    $cmd
-    $cmd --features extra_traits
+    # shellcheck disable=SC2086
+    $cmd --no-default-features -- $test_flags
+    # shellcheck disable=SC2086
+    $cmd -- $test_flags
+    # shellcheck disable=SC2086
+    $cmd --features extra_traits -- $test_flags
 fi

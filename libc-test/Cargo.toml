@@ -17,6 +17,12 @@ path = ".."
 version = "0.2.169"
 default-features = false
 
+[dev-dependencies]
+syn = { version = "2.0.91", features = ["full", "visit"] }
+proc-macro2 = { version = "1.0.92", features = ["span-locations"] }
+glob = "0.3.2"
+annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
+
 [build-dependencies]
 cc = "1.0.83"
 # FIXME: Use fork ctest until the maintainer gets back.
@@ -92,4 +98,14 @@ harness = false
 [[test]]
 name = "primitive_types"
 path = "test/primitive_types.rs"
+harness = true
+
+[[test]]
+name = "style"
+path = "test/check_style.rs"
+harness = true
+
+[[test]]
+name = "style_tests"
+path = "test/style_tests.rs"
 harness = true

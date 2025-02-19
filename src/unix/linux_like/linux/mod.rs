@@ -2163,18 +2163,6 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(all(
-        any(target_env = "gnu", target_env = "musl", target_env = "ohos"),
-        any(target_arch = "x86_64", target_arch = "x86")
-    ))] {
-        extern "C" {
-            pub fn iopl(level: c_int) -> c_int;
-            pub fn ioperm(from: c_ulong, num: c_ulong, turn_on: c_int) -> c_int;
-        }
-    }
-}
-
-cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
         target_env = "musl",
@@ -6004,6 +5992,18 @@ safe_f! {
 
     pub {const} fn SCTP_PR_PRIO_ENABLED(policy: c_int) -> bool {
         policy == SCTP_PR_SCTP_PRIO
+    }
+}
+
+cfg_if! {
+    if #[cfg(all(
+        any(target_env = "gnu", target_env = "musl", target_env = "ohos"),
+        any(target_arch = "x86_64", target_arch = "x86")
+    ))] {
+        extern "C" {
+            pub fn iopl(level: c_int) -> c_int;
+            pub fn ioperm(from: c_ulong, num: c_ulong, turn_on: c_int) -> c_int;
+        }
     }
 }
 

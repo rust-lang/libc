@@ -2,20 +2,6 @@ use crate::prelude::*;
 
 pub type wchar_t = i32;
 
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        pub type c_long = i32;
-        pub type c_ulong = u32;
-    }
-}
-
-cfg_if! {
-    if #[cfg(target_pointer_width = "64")] {
-        pub type c_long = i64;
-        pub type c_ulong = u64;
-    }
-}
-
 pub type blkcnt_t = c_ulong;
 pub type blksize_t = c_long;
 pub type clock_t = c_long;
