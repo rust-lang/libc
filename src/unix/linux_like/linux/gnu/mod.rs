@@ -7,6 +7,7 @@ pub type __rlimit_resource_t = c_uint;
 pub type Lmid_t = c_long;
 pub type regoff_t = c_int;
 pub type __kernel_rwf_t = c_int;
+pub type __be16 = crate::__u16;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -437,6 +438,15 @@ s_no_extra_traits! {
         __pad: [c_char; 4],
         __glibc_reserved: [c_char; 32],
     }
+
+    // linux/if_ether.h
+
+    #[repr(C, packed)]
+    pub struct ethhdr {
+        pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_source: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_proto: crate::__be16,
+    }
 }
 
 // Internal, for casts to access union fields
@@ -644,6 +654,33 @@ cfg_if! {
                     self.exit.hash(state);
                     self.seccomp.hash(state);
                 }
+            }
+        }
+
+        impl Eq for ethhdr {}
+
+        impl PartialEq for ethhdr {
+            fn eq(&self, other: &ethhdr) -> bool {
+                self.h_dest
+                    .iter()
+                    .zip(other.h_dest.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                        .h_source
+                        .iter()
+                        .zip(other.h_source.iter())
+                        .all(|(a, b)| a == b)
+                    && self.h_proto == other.h_proto
+            }
+        }
+
+        impl fmt::Debug for ethhdr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ethhdr")
+                    .field("h_dest", &self.h_dest)
+                    .field("h_source", &self.h_source)
+                    .field("h_proto", &{ self.h_proto })
+                    .finish()
             }
         }
     }
