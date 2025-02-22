@@ -154,7 +154,7 @@ s! {
         pub pw_comment: *mut c_char,
         pub pw_gecos: *mut c_char,
         pub pw_dir: *mut c_char,
-        pub pw_shell: *mut c_char
+        pub pw_shell: *mut c_char,
     }
 
     pub struct if_nameindex {
@@ -258,7 +258,7 @@ s! {
         pub c_oflag: tcflag_t,
         pub c_cflag: tcflag_t,
         pub c_lflag: tcflag_t,
-        pub c_line:  c_char,
+        pub c_line: c_char,
         pub c_cc: [cc_t; NCCS],
         pub c_ispeed: speed_t,
         pub c_ospeed: speed_t,
@@ -281,7 +281,7 @@ s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     #[repr(align(16))]
     pub struct max_align_t {
-        priv_: [f64; 4]
+        priv_: [f64; 4],
     }
 
     pub struct fd_set {
@@ -369,7 +369,7 @@ s_no_extra_traits! {
         pub sigev_signo: c_int,
         pub sigev_notify: c_int,
         __unused1: *mut c_void, //actually a function pointer
-        pub sigev_notify_attributes: *mut pthread_attr_t
+        pub sigev_notify_attributes: *mut pthread_attr_t,
     }
 
     pub struct siginfo_t {
@@ -494,7 +494,7 @@ s_no_extra_traits! {
 
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 108]
+        pub sun_path: [c_char; 108],
     }
 
     pub struct utsname {
@@ -585,9 +585,9 @@ cfg_if! {
 
         impl PartialEq for _uc_fpxreg {
             fn eq(&self, other: &_uc_fpxreg) -> bool {
-                self.significand == other.significand &&
-                self.exponent == other.exponent &&
-                self.padding == other.padding
+                self.significand == other.significand
+                    && self.exponent == other.exponent
+                    && self.padding == other.padding
             }
         }
 
@@ -634,17 +634,17 @@ cfg_if! {
 
         impl PartialEq for _fpstate {
             fn eq(&self, other: &_fpstate) -> bool {
-                self.cwd == other.cwd &&
-                self.swd == other.swd &&
-                self.ftw == other.ftw &&
-                self.fop == other.fop &&
-                self.rip == other.rip &&
-                self.rdp == other.rdp &&
-                self.mxcsr == other.mxcsr &&
-                self.mxcr_mask == other.mxcr_mask &&
-                self.st == other.st &&
-                self.xmm == other.xmm &&
-                self.padding == other.padding
+                self.cwd == other.cwd
+                    && self.swd == other.swd
+                    && self.ftw == other.ftw
+                    && self.fop == other.fop
+                    && self.rip == other.rip
+                    && self.rdp == other.rdp
+                    && self.mxcsr == other.mxcsr
+                    && self.mxcr_mask == other.mxcr_mask
+                    && self.st == other.st
+                    && self.xmm == other.xmm
+                    && self.padding == other.padding
             }
         }
 
@@ -685,54 +685,57 @@ cfg_if! {
 
         impl PartialEq for mcontext_t {
             fn eq(&self, other: &mcontext_t) -> bool {
-                self.p1home == other.p1home &&
-                self.p2home == other.p2home &&
-                self.p3home == other.p3home &&
-                self.p4home == other.p4home &&
-                self.p5home == other.p5home &&
-                self.p6home == other.p6home &&
-                self.ctxflags == other.ctxflags &&
-                self.mxcsr == other.mxcsr &&
-                self.cs == other.cs &&
-                self.ds == other.ds &&
-                self.es == other.es &&
-                self.fs == other.fs &&
-                self.gs == other.gs &&
-                self.ss == other.ss &&
-                self.eflags == other.eflags &&
-                self.dr0 == other.dr0 &&
-                self.dr1 == other.dr1 &&
-                self.dr2 == other.dr2 &&
-                self.dr3 == other.dr3 &&
-                self.dr6 == other.dr6 &&
-                self.dr7 == other.dr7 &&
-                self.rax == other.rax &&
-                self.rcx == other.rcx &&
-                self.rdx == other.rdx &&
-                self.rbx == other.rbx &&
-                self.rsp == other.rsp &&
-                self.rbp == other.rbp &&
-                self.rsi == other.rsi &&
-                self.rdi == other.rdi &&
-                self.r8 == other.r8 &&
-                self.r9 == other.r9 &&
-                self.r10 == other.r10 &&
-                self.r11 == other.r11 &&
-                self.r12 == other.r12 &&
-                self.r13 == other.r13 &&
-                self.r14 == other.r14 &&
-                self.r15 == other.r15 &&
-                self.fpregs == other.fpregs &&
-                self.vregs.iter().zip(other.vregs.iter())
-                .all(|(a, b)| a == b) &&
-                self.vcx == other.vcx &&
-                self.dbc == other.dbc &&
-                self.btr == other.btr &&
-                self.bfr == other.bfr &&
-                self.etr == other.etr &&
-                self.efr == other.efr &&
-                self.oldmask == other.oldmask &&
-                self.cr2 == other.cr2
+                self.p1home == other.p1home
+                    && self.p2home == other.p2home
+                    && self.p3home == other.p3home
+                    && self.p4home == other.p4home
+                    && self.p5home == other.p5home
+                    && self.p6home == other.p6home
+                    && self.ctxflags == other.ctxflags
+                    && self.mxcsr == other.mxcsr
+                    && self.cs == other.cs
+                    && self.ds == other.ds
+                    && self.es == other.es
+                    && self.fs == other.fs
+                    && self.gs == other.gs
+                    && self.ss == other.ss
+                    && self.eflags == other.eflags
+                    && self.dr0 == other.dr0
+                    && self.dr1 == other.dr1
+                    && self.dr2 == other.dr2
+                    && self.dr3 == other.dr3
+                    && self.dr6 == other.dr6
+                    && self.dr7 == other.dr7
+                    && self.rax == other.rax
+                    && self.rcx == other.rcx
+                    && self.rdx == other.rdx
+                    && self.rbx == other.rbx
+                    && self.rsp == other.rsp
+                    && self.rbp == other.rbp
+                    && self.rsi == other.rsi
+                    && self.rdi == other.rdi
+                    && self.r8 == other.r8
+                    && self.r9 == other.r9
+                    && self.r10 == other.r10
+                    && self.r11 == other.r11
+                    && self.r12 == other.r12
+                    && self.r13 == other.r13
+                    && self.r14 == other.r14
+                    && self.r15 == other.r15
+                    && self.fpregs == other.fpregs
+                    && self
+                        .vregs
+                        .iter()
+                        .zip(other.vregs.iter())
+                        .all(|(a, b)| a == b)
+                    && self.vcx == other.vcx
+                    && self.dbc == other.dbc
+                    && self.btr == other.btr
+                    && self.bfr == other.bfr
+                    && self.etr == other.etr
+                    && self.efr == other.efr
+                    && self.oldmask == other.oldmask
+                    && self.cr2 == other.cr2
             }
         }
 
@@ -850,8 +853,7 @@ cfg_if! {
                 self.sigev_value == other.sigev_value
                     && self.sigev_signo == other.sigev_signo
                     && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_attributes
-                        == other.sigev_notify_attributes
+                    && self.sigev_notify_attributes == other.sigev_notify_attributes
             }
         }
 
@@ -863,8 +865,7 @@ cfg_if! {
                     .field("sigev_value", &self.sigev_value)
                     .field("sigev_signo", &self.sigev_signo)
                     .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_notify_attributes",
-                           &self.sigev_notify_attributes)
+                    .field("sigev_notify_attributes", &self.sigev_notify_attributes)
                     .finish()
             }
         }
@@ -885,7 +886,6 @@ cfg_if! {
                     && self.si_pid == other.si_pid
                     && self.si_uid == other.si_uid
                     && self.si_errno == other.si_errno
-                    // Ignore __pad
             }
         }
 
@@ -952,16 +952,16 @@ cfg_if! {
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
-                    self.ifru_addr == other.ifru_addr &&
-                    self.ifru_broadaddr == other.ifru_broadaddr &&
-                    self.ifru_dstaddr == other.ifru_dstaddr &&
-                    self.ifru_netmask == other.ifru_netmask &&
-                    self.ifru_hwaddr == other.ifru_hwaddr &&
-                    self.ifru_flags == other.ifru_flags &&
-                    self.ifru_metric == other.ifru_metric &&
-                    self.ifru_ifindex == other.ifru_ifindex &&
-                    self.ifru_mtu == other.ifru_mtu &&
-                    self.ifru_data == other.ifru_data
+                    self.ifru_addr == other.ifru_addr
+                        && self.ifru_broadaddr == other.ifru_broadaddr
+                        && self.ifru_dstaddr == other.ifru_dstaddr
+                        && self.ifru_netmask == other.ifru_netmask
+                        && self.ifru_hwaddr == other.ifru_hwaddr
+                        && self.ifru_flags == other.ifru_flags
+                        && self.ifru_metric == other.ifru_metric
+                        && self.ifru_ifindex == other.ifru_ifindex
+                        && self.ifru_mtu == other.ifru_mtu
+                        && self.ifru_data == other.ifru_data
                 }
             }
         }
@@ -1011,10 +1011,7 @@ cfg_if! {
 
         impl PartialEq for __c_anonymous_ifc_ifcu {
             fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
-                unsafe {
-                    self.ifcu_buf == other.ifcu_buf &&
-                    self.ifcu_req == other.ifcu_req
-                }
+                unsafe { self.ifcu_buf == other.ifcu_buf && self.ifcu_req == other.ifcu_req }
             }
         }
 
@@ -1029,10 +1026,10 @@ cfg_if! {
             fn eq(&self, other: &sockaddr) -> bool {
                 self.sa_family == other.sa_family
                     && self
-                    .sa_data
-                    .iter()
-                    .zip(other.sa_data.iter())
-                    .all(|(a,b)| a == b)
+                        .sa_data
+                        .iter()
+                        .zip(other.sa_data.iter())
+                        .all(|(a,b)| a == b)
             }
         }
 
@@ -1154,10 +1151,10 @@ cfg_if! {
                 self.d_ino == other.d_ino
                     && self.d_type == other.d_type
                     && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
+                        .d_name
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a,b)| a == b)
             }
         }
 
@@ -1192,9 +1189,7 @@ cfg_if! {
         impl fmt::Debug for in_addr {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 let s_addr = self.s_addr;
-                f.debug_struct("in_addr")
-                    .field("s_addr", &s_addr)
-                    .finish()
+                f.debug_struct("in_addr").field("s_addr", &s_addr).finish()
             }
         }
 
@@ -1232,8 +1227,7 @@ cfg_if! {
 
         impl PartialEq for in_pktinfo {
             fn eq(&self, other: &in_pktinfo) -> bool {
-                self.ipi_addr == other.ipi_addr
-                    && self.ipi_ifindex == other.ipi_ifindex
+                self.ipi_addr == other.ipi_addr && self.ipi_ifindex == other.ipi_ifindex
             }
         }
 
@@ -1342,10 +1336,10 @@ cfg_if! {
             fn eq(&self, other: &sockaddr_un) -> bool {
                 self.sun_family == other.sun_family
                     && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a, b)| a == b)
+                        .sun_path
+                        .iter()
+                        .zip(other.sun_path.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1355,7 +1349,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME: .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -1372,32 +1366,32 @@ cfg_if! {
                 self.sysname
                     .iter()
                     .zip(other.sysname.iter())
-                    .all(|(a,b)| a == b)
+                    .all(|(a, b)| a == b)
                     && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a,b)| a == b)
+                        .nodename
+                        .iter()
+                        .zip(other.nodename.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a,b)| a == b)
+                        .release
+                        .iter()
+                        .zip(other.release.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a,b)| a == b)
+                        .version
+                        .iter()
+                        .zip(other.version.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a,b)| a == b)
+                        .machine
+                        .iter()
+                        .zip(other.machine.iter())
+                        .all(|(a, b)| a == b)
                     && self
-                    .domainname
-                    .iter()
-                    .zip(other.domainname.iter())
-                    .all(|(a,b)| a == b)
+                        .domainname
+                        .iter()
+                        .zip(other.domainname.iter())
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1406,12 +1400,12 @@ cfg_if! {
         impl fmt::Debug for utsname {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
-                // FIXME: .field("domainname", &self.domainname)
+                    // FIXME: .field("sysname", &self.sysname)
+                    // FIXME: .field("nodename", &self.nodename)
+                    // FIXME: .field("release", &self.release)
+                    // FIXME: .field("version", &self.version)
+                    // FIXME: .field("machine", &self.machine)
+                    // FIXME: .field("domainname", &self.domainname)
                     .finish()
             }
         }
@@ -2492,27 +2486,25 @@ cfg_if! {
 }
 
 f! {
-    pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
+    pub fn FD_CLR(fd: c_int, set: *mut fd_set) {
         let fd = fd as usize;
         let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
     }
 
     pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+        ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
-    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
+    pub fn FD_SET(fd: c_int, set: *mut fd_set) {
         let fd = fd as usize;
         let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
     }
 
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
+    pub fn FD_ZERO(set: *mut fd_set) {
         for slot in (*set).fds_bits.iter_mut() {
             *slot = 0;
         }
@@ -2529,32 +2521,28 @@ f! {
         let size_of_mask = core::mem::size_of_val(&cpuset.bits[0]);
         for i in cpuset.bits[..(size / size_of_mask)].iter() {
             s += i.count_ones();
-        };
+        }
         s as c_int
     }
 
-    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) {
         for slot in cpuset.bits.iter_mut() {
             *slot = 0;
         }
     }
-    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * core::mem::size_of_val(&cpuset.bits[0]);
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) {
+        let size_in_bits = 8 * core::mem::size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
             cpuset.bits[idx] |= 1 << offset;
-            ()
         }
     }
 
-    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * core::mem::size_of_val(&cpuset.bits[0]);
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) {
+        let size_in_bits = 8 * core::mem::size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
             cpuset.bits[idx] &= !(1 << offset);
-            ()
         }
     }
 
@@ -2589,8 +2577,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()))
-            as c_uint
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>())) as c_uint
     }
 
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
@@ -2601,15 +2588,10 @@ f! {
         }
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
-                       cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = (cmsg as usize +
-                    CMSG_ALIGN((*cmsg).cmsg_len as usize))
-            as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
-        if next as usize + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as usize > max
-        {
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+        let next = (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
+        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+        if next as usize + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as usize > max {
             0 as *mut cmsghdr
         } else {
             next as *mut cmsghdr
