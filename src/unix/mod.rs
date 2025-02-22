@@ -135,6 +135,7 @@ s! {
         pub ipv6mr_interface: c_uint,
     }
 
+    #[cfg(not(target_os = "cygwin"))]
     pub struct hostent {
         pub h_name: *mut c_char,
         pub h_aliases: *mut *mut c_char,
@@ -161,6 +162,7 @@ s! {
         pub ws_ypixel: c_ushort,
     }
 
+    #[cfg(not(target_os = "cygwin"))]
     pub struct linger {
         pub l_onoff: c_int,
         pub l_linger: c_int,
@@ -188,6 +190,9 @@ s! {
     pub struct servent {
         pub s_name: *mut c_char,
         pub s_aliases: *mut *mut c_char,
+        #[cfg(target_os = "cygwin")]
+        pub s_port: c_short,
+        #[cfg(not(target_os = "cygwin"))]
         pub s_port: c_int,
         pub s_proto: *mut c_char,
     }
@@ -195,7 +200,10 @@ s! {
     pub struct protoent {
         pub p_name: *mut c_char,
         pub p_aliases: *mut *mut c_char,
+        #[cfg(not(target_os = "cygwin"))]
         pub p_proto: c_int,
+        #[cfg(target_os = "cygwin")]
+        pub p_proto: c_short,
     }
 
     #[repr(align(4))]
@@ -245,7 +253,8 @@ cfg_if! {
     if #[cfg(not(any(
         target_os = "haiku",
         target_os = "illumos",
-        target_os = "solaris"
+        target_os = "solaris",
+        target_os = "cygwin"
     )))] {
         pub const IF_NAMESIZE: size_t = 16;
         pub const IFNAMSIZ: size_t = IF_NAMESIZE;
@@ -370,8 +379,13 @@ cfg_if! {
         // cargo build, don't pull in anything extra as the std dep
         // already pulls in all libs.
     } else if #[cfg(all(
-        target_os = "linux",
-        any(target_env = "gnu", target_env = "uclibc"),
+        any(
+            all(
+                target_os = "linux",
+                any(target_env = "gnu", target_env = "uclibc")
+            ),
+            target_os = "cygwin"
+        ),
         feature = "rustc-dep-of-std"
     ))] {
         #[link(
@@ -1296,6 +1310,7 @@ extern "C" {
                 not(any(target_env = "musl", target_env = "ohos"))
             ),
             target_os = "freebsd",
+            target_os = "cygwin",
             target_os = "dragonfly",
             target_os = "haiku"
         ),
@@ -1365,10 +1380,13 @@ extern "C" {
     pub fn getprotobyname(name: *const c_char) -> *mut protoent;
     pub fn getprotobynumber(proto: c_int) -> *mut protoent;
     pub fn chroot(name: *const c_char) -> c_int;
+    #[cfg(target_os = "cygwin")]
+    pub fn usleep(secs: useconds_t) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "usleep$UNIX2003"
     )]
+    #[cfg(not(target_os = "cygwin"))]
     pub fn usleep(secs: c_uint) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -1512,7 +1530,8 @@ cfg_if! {
         target_os = "android",
         target_os = "haiku",
         target_os = "nto",
-        target_os = "solaris"
+        target_os = "solaris",
+        target_os = "cygwin"
     )))] {
         extern "C" {
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
@@ -1729,6 +1748,9 @@ cfg_if! {
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         pub use self::redox::*;
+    } else if #[cfg(target_os = "cygwin")] {
+        mod cygwin;
+        pub use self::cygwin::*;
     } else if #[cfg(target_os = "nto")] {
         mod nto;
         pub use self::nto::*;
