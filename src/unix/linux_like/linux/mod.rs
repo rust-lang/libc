@@ -4581,6 +4581,9 @@ pub const SOF_TIMESTAMPING_OPT_TSONLY: c_uint = 1 << 11;
 pub const SOF_TIMESTAMPING_OPT_STATS: c_uint = 1 << 12;
 pub const SOF_TIMESTAMPING_OPT_PKTINFO: c_uint = 1 << 13;
 pub const SOF_TIMESTAMPING_OPT_TX_SWHW: c_uint = 1 << 14;
+pub const SOF_TIMESTAMPING_BIND_PHC: c_uint = 1 << 15;
+pub const SOF_TIMESTAMPING_OPT_ID_TCP: c_uint = 1 << 16;
+pub const SOF_TIMESTAMPING_OPT_RX_FILTER: c_uint = 1 << 17;
 pub const SOF_TXTIME_DEADLINE_MODE: u32 = 1 << 0;
 pub const SOF_TXTIME_REPORT_ERRORS: u32 = 1 << 1;
 
