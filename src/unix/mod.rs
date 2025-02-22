@@ -391,10 +391,14 @@ cfg_if! {
     } else if #[cfg(feature = "std")] {
         // cargo build, don't pull in anything extra as the std dep
         // already pulls in all libs.
-    } else if #[cfg(all(any(all(
-        target_os = "linux",
-        any(target_env = "gnu", target_env = "uclibc")),
-        target_os = "cygwin"),
+    } else if #[cfg(all(
+        any(
+            all(
+                target_os = "linux",
+                any(target_env = "gnu", target_env = "uclibc")
+            ),
+            target_os = "cygwin"
+        ),
         feature = "rustc-dep-of-std"
     ))] {
         #[link(
