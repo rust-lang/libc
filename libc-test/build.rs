@@ -4358,10 +4358,7 @@ fn test_linux(target: &str) {
                 if ppc64 || riscv64 => true,
 
             // FIXME(linux): requires more recent kernel headers on CI
-            | "MFD_EXEC"
-            | "MFD_NOEXEC_SEAL"
-            | "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"
-                if sparc64 => true,
+            "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" if sparc64 => true,
 
             // FIXME(linux): Not currently available in headers on ARM and musl.
             "NETLINK_GET_STRICT_CHK" if arm => true,
