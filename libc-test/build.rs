@@ -2083,6 +2083,9 @@ fn test_android(target: &str) {
             | "PF_BLOCK_TS"
             | "PF_SUSPEND_TASK" => true,
 
+            // FIXME(android): Requires >= 6.12 kernel headers.
+            "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
+
             _ => false,
         }
     });
@@ -2312,6 +2315,7 @@ fn test_freebsd(target: &str) {
                 "sys/thr.h",
                 "sys/time.h",
                 [freebsd14 || freebsd15]:"sys/timerfd.h",
+                [freebsd13 || freebsd14 || freebsd15]:"dev/evdev/input.h",
                 "sys/times.h",
                 "sys/timex.h",
                 "sys/types.h",
@@ -2385,6 +2389,7 @@ fn test_freebsd(target: &str) {
             "type_" if struct_ == "rtprio" => "type".to_string(),
             "type_" if struct_ == "sockstat" => "type".to_string(),
             "type_" if struct_ == "devstat_match_table" => "type".to_string(),
+            "type_" if struct_ == "input_event" => "type".to_string(),
             s => s.to_string(),
         }
     });
@@ -4335,6 +4340,12 @@ fn test_linux(target: &str) {
 
             // FIXME: Requires >= 6.11 kernel headers.
             "MAP_DROPPABLE" => true,
+
+            // FIXME(linux): Requires >= 6.2 kernel headers.
+            "SOF_TIMESTAMPING_OPT_ID_TCP" => true,
+
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
 
             _ => false,
         }
