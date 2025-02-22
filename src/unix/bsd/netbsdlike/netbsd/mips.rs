@@ -1,8 +1,6 @@
 use crate::prelude::*;
 use crate::PT_FIRSTMACH;
 
-pub type c_long = i32;
-pub type c_ulong = u32;
 pub type __cpu_simple_lock_nv_t = c_int;
 
 pub(crate) const _ALIGNBYTES: usize = mem::size_of::<c_longlong>() - 1;
