@@ -31,6 +31,7 @@ fn do_cc() {
             || target.contains("emscripten")
             || target.contains("fuchsia")
             || target.contains("bsd")
+            || target.contains("cygwin")
         {
             cc::Build::new().file("src/makedev.c").compile("makedev");
         }
@@ -60,6 +61,7 @@ fn do_ctest() {
         t if t.contains("linux") => return test_linux(t),
         t if t.contains("netbsd") => return test_netbsd(t),
         t if t.contains("openbsd") => return test_openbsd(t),
+        t if t.contains("cygwin") => return test_cygwin(t),
         t if t.contains("redox") => return test_redox(t),
         t if t.contains("solaris") => return test_solarish(t),
         t if t.contains("illumos") => return test_solarish(t),
@@ -684,6 +686,174 @@ fn test_openbsd(target: &str) {
     });
 
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+}
+
+fn test_cygwin(target: &str) {
+    assert!(target.contains("cygwin"));
+
+    let mut cfg = ctest_cfg();
+    cfg.define("_GNU_SOURCE", None);
+
+    headers! { cfg:
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "fcntl.h",
+        "grp.h",
+        "iconv.h",
+        "langinfo.h",
+        "limits.h",
+        "locale.h",
+        "net/if.h",
+        "netdb.h",
+        "netinet/tcp.h",
+        "poll.h",
+        "pthread.h",
+        "pwd.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "stddef.h",
+        "stdlib.h",
+        "string.h",
+        "sys/cpuset.h",
+        "sys/ioctl.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/param.h",
+        "sys/quota.h",
+        "sys/random.h",
+        "sys/resource.h",
+        "sys/select.h",
+        "sys/socket.h",
+        "sys/statvfs.h",
+        "sys/times.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "syslog.h",
+        "termios.h",
+        "unistd.h",
+        "utime.h",
+        "wait.h",
+        "wchar.h",
+    }
+
+    cfg.type_name(move |ty, is_struct, is_union| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" | "fd_set" => ty.to_string(),
+
+            "Ioctl" => "int".to_string(),
+
+            t if is_union => format!("union {}", t),
+
+            t if t.ends_with("_t") => t.to_string(),
+
+            // sigval is a struct in Rust, but a union in C:
+            "sigval" => format!("union sigval"),
+
+            // put `struct` in front of all structs:.
+            t if is_struct => format!("struct {}", t),
+
+            t => t.to_string(),
+        }
+    });
+
+    cfg.skip_const(move |name| {
+        match name {
+            // FIXME(cygwin): these constants do not exist on Cygwin
+            "ARPOP_REQUEST" | "ARPOP_REPLY" | "ATF_COM" | "ATF_PERM" | "ATF_PUBL"
+            | "ATF_USETRAILERS" => true,
+
+            // not defined on Cygwin, but [get|set]priority is, so they are
+            // useful
+            "PRIO_MIN" | "PRIO_MAX" => true,
+
+            // The following does not exist on Cygwin but is required by
+            // several crates
+            "FIOCLEX" | "SA_NOCLDWAIT" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_signededness(move |c| match c {
+        n if n.starts_with("pthread") => true,
+
+        // For consistency with other platforms. Actually a function ptr.
+        "sighandler_t" => true,
+
+        _ => false,
+    });
+
+    cfg.skip_struct(move |ty| {
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
+
+        false
+    });
+
+    cfg.field_name(move |struct_, field| {
+        match field {
+            // Our stat *_nsec fields normally don't actually exist but are part
+            // of a timeval struct
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", ".tv_nsec")
+            }
+
+            // FIXME(cygwin): sigaction actually contains a union with two variants:
+            // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
+            // a sa_handler with type sig_t
+            "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
+
+            s => s.to_string(),
+        }
+    });
+
+    cfg.skip_field(|struct_, field| {
+        match (struct_, field) {
+            // this is actually a union on linux, so we can't represent it well and
+            // just insert some padding.
+            ("ifreq", "ifr_ifru") => true,
+            ("ifconf", "ifc_ifcu") => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        // skip those that are manually verified
+        match name {
+            // There are two versions of the sterror_r function, see
+            //
+            // https://linux.die.net/man/3/strerror_r
+            //
+            // An XSI-compliant version provided if:
+            //
+            // (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+            //
+            // and a GNU specific version provided if _GNU_SOURCE is defined.
+            //
+            // libc provides bindings for the XSI-compliant version, which is
+            // preferred for portable applications.
+            //
+            // We skip the test here since here _GNU_SOURCE is defined, and
+            // test the XSI version below.
+            "strerror_r" => true,
+
+            // FIXME(cygwin): does not exist on Cygwin
+            "mlockall" | "munlockall" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.generate("../src/lib.rs", "main.rs");
 }
 
 fn test_windows(target: &str) {
