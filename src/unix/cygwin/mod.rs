@@ -14,18 +14,8 @@ cfg_if! {
     }
 }
 
-// stddef.h
 pub type wchar_t = c_ushort;
 
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
-    #[repr(align(16))]
-    pub struct max_align_t {
-        priv_: [f64; 4]
-    }
-}
-
-// machine/_types.h
 pub type blkcnt_t = i64;
 pub type blksize_t = i32;
 pub type dev_t = u32;
@@ -36,7 +26,6 @@ pub type key_t = c_longlong;
 pub type sa_family_t = u16;
 pub type socklen_t = c_int;
 
-// sys/_types.h
 pub type off_t = c_long;
 pub type id_t = u32;
 pub type mode_t = u32;
@@ -52,165 +41,19 @@ pub type nlink_t = c_ushort;
 pub type suseconds_t = c_long;
 pub type useconds_t = c_ulong;
 
-// sys/_sigset.h
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum timezone {}
+impl Copy for timezone {}
+impl Clone for timezone {
+    fn clone(&self) -> timezone {
+        *self
+    }
+}
+
 pub type sigset_t = c_ulong;
 
-// sys/timespec.h
-s! {
-    pub struct itimerspec {
-        pub it_interval: timespec,
-        pub it_value: timespec,
-    }
-}
-
-// sys/select.h
-pub const FD_SETSIZE: usize = 1024;
 pub type fd_mask = c_ulong;
 
-// intentionally not public, only used for fd_set
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        const ULONG_SIZE: usize = 32;
-    } else if #[cfg(target_pointer_width = "64")] {
-        const ULONG_SIZE: usize = 64;
-    } else {
-        // Unknown target_pointer_width
-    }
-}
-
-s_no_extra_traits! {
-    pub struct fd_set {
-        fds_bits: [fd_mask; FD_SETSIZE / ULONG_SIZE],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for fd_set {
-            fn eq(&self, other: &fd_set) -> bool {
-                self.fds_bits
-                    .iter()
-                    .zip(other.fds_bits.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for fd_set {}
-
-        impl fmt::Debug for fd_set {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("fd_set")
-                    // FIXME: .field("fds_bits", &self.fds_bits)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for fd_set {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.fds_bits.hash(state);
-            }
-        }
-    }
-}
-
-f! {
-    pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return
-    }
-
-    pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
-        let fd = fd as usize;
-        let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
-    }
-
-    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
-        let fd = fd as usize;
-        let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return
-    }
-
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in (*set).fds_bits.iter_mut() {
-            *slot = 0;
-        }
-    }
-}
-
-// sys/cpuset.h
-pub const CPU_SETSIZE: c_int = 0x400;
-
-s! {
-    pub struct cpu_set_t {
-        bits: [u64; 16],
-    }
-}
-
-f! {
-    pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
-        let _dummy: cpu_set_t = core::mem::zeroed();
-        let size_in_bits = 8 * core::mem::size_of_val(&_dummy.bits[0]);
-        ((count as size_t + size_in_bits - 1) / 8) as size_t
-    }
-
-    pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
-        let mut s: u32 = 0;
-        let size_of_mask = core::mem::size_of_val(&cpuset.bits[0]);
-        for i in cpuset.bits[..(size / size_of_mask)].iter() {
-            s += i.count_ones();
-        };
-        s as c_int
-    }
-
-    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        for slot in cpuset.bits.iter_mut() {
-            *slot = 0;
-        }
-    }
-    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * core::mem::size_of_val(&cpuset.bits[0]);
-        if cpu < size_in_bits {
-            let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-            cpuset.bits[idx] |= 1 << offset;
-            ()
-        }
-    }
-
-    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits
-            = 8 * core::mem::size_of_val(&cpuset.bits[0]);
-        if cpu < size_in_bits {
-            let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-            cpuset.bits[idx] &= !(1 << offset);
-            ()
-        }
-    }
-
-    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * core::mem::size_of_val(&cpuset.bits[0]);
-        if cpu < size_in_bits {
-            let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-            0 != (cpuset.bits[idx] & (1 << offset))
-        } else {
-            false
-        }
-    }
-
-    pub fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
-        CPU_COUNT_S(::core::mem::size_of::<cpu_set_t>(), cpuset)
-    }
-
-    pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
-        set1.bits == set2.bits
-    }
-}
-
-// sys/_pthreadtypes.h
 pub type pthread_t = *mut c_void;
 pub type pthread_mutex_t = *mut c_void;
 
@@ -231,26 +74,6 @@ pub type pthread_spinlock_t = usize;
 pub type pthread_rwlock_t = *mut c_void;
 pub type pthread_rwlockattr_t = *mut c_void;
 
-// sys/sysmacros.h
-f! {
-    pub fn major(dev: dev_t) -> c_uint {
-        ((dev >> 16) & 0xffff) as c_uint
-    }
-
-    pub fn minor(dev: dev_t) -> c_uint {
-        (dev & 0xffff) as c_uint
-    }
-}
-
-safe_f! {
-    pub {const} fn makedev(ma: c_uint, mi: c_uint) -> dev_t {
-        let ma = ma as dev_t;
-        let mi = mi as dev_t;
-        (ma << 16) | (mi & 0xffff)
-    }
-}
-
-// sys/types.h
 pub type register_t = intptr_t;
 pub type u_char = c_uchar;
 pub type u_short = c_ushort;
@@ -259,8 +82,212 @@ pub type u_int = c_uint;
 pub type caddr_t = *mut c_char;
 pub type vm_size_t = c_ulong;
 
-// cygwin/signal.h
+pub type rlim_t = c_ulong;
+
+pub type nfds_t = c_uint;
+
+pub type sem_t = *mut sem;
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+pub enum sem {}
+impl Copy for sem {}
+impl Clone for sem {
+    fn clone(&self) -> sem {
+        *self
+    }
+}
+
+pub type tcflag_t = c_uint;
+pub type speed_t = c_uint;
+
+pub type vm_offset_t = c_ulong;
+
+pub type posix_spawn_file_actions_t = *mut c_void;
+pub type posix_spawnattr_t = *mut c_void;
+
+s! {
+    pub struct itimerspec {
+        pub it_interval: timespec,
+        pub it_value: timespec,
+    }
+
+    pub struct cpu_set_t {
+        bits: [u64; 16],
+    }
+
+    pub struct sigaction {
+        pub sa_sigaction: sighandler_t,
+        pub sa_mask: sigset_t,
+        pub sa_flags: c_int,
+    }
+
+    pub struct stack_t {
+        pub ss_sp: *mut c_void,
+        pub ss_flags: c_int,
+        pub ss_size: size_t,
+    }
+
+    pub struct tm {
+        pub tm_sec: c_int,
+        pub tm_min: c_int,
+        pub tm_hour: c_int,
+        pub tm_mday: c_int,
+        pub tm_mon: c_int,
+        pub tm_year: c_int,
+        pub tm_wday: c_int,
+        pub tm_yday: c_int,
+        pub tm_isdst: c_int,
+        pub tm_gmtoff: c_long,
+        pub tm_zone: *const c_char,
+    }
+
+    pub struct bintime {
+        pub sec: time_t,
+        pub frac: u64,
+    }
+
+    pub struct passwd {
+        pub pw_name: *mut c_char,
+        pub pw_passwd: *mut c_char,
+        pub pw_uid: uid_t,
+        pub pw_gid: gid_t,
+        pub pw_comment: *mut c_char,
+        pub pw_gecos: *mut c_char,
+        pub pw_dir: *mut c_char,
+        pub pw_shell: *mut c_char
+    }
+
+    pub struct if_nameindex {
+        pub if_index: c_uint,
+        pub if_name: *mut c_char,
+    }
+
+    pub struct ifconf {
+        pub ifc_len: c_int,
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+    }
+
+    pub struct ucred {
+        pub pid: pid_t,
+        pub uid: uid_t,
+        pub gid: gid_t,
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut c_void,
+        pub msg_namelen: socklen_t,
+        pub msg_iov: *mut iovec,
+        pub msg_iovlen: c_int,
+        pub msg_control: *mut c_void,
+        pub msg_controllen: socklen_t,
+        pub msg_flags: c_int,
+    }
+
+    pub struct cmsghdr {
+        pub cmsg_len: size_t,
+        pub cmsg_level: c_int,
+        pub cmsg_type: c_int,
+    }
+
+    pub struct Dl_info {
+        pub dli_fname: [c_char; PATH_MAX as usize],
+        pub dli_fbase: *mut c_void,
+        pub dli_sname: *const c_char,
+        pub dli_saddr: *mut c_void,
+    }
+
+    pub struct in6_pktinfo {
+        pub ipi6_addr: in6_addr,
+        pub ipi6_ifindex: u32,
+    }
+
+    pub struct sockaddr_in6 {
+        pub sin6_family: sa_family_t,
+        pub sin6_port: in_port_t,
+        pub sin6_flowinfo: u32,
+        pub sin6_addr: in6_addr,
+        pub sin6_scope_id: u32,
+    }
+
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_sourceaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
+    pub struct addrinfo {
+        pub ai_flags: c_int,
+        pub ai_family: c_int,
+        pub ai_socktype: c_int,
+        pub ai_protocol: c_int,
+        pub ai_addrlen: socklen_t,
+        pub ai_canonname: *mut c_char,
+        pub ai_addr: *mut sockaddr,
+        pub ai_next: *mut addrinfo,
+    }
+
+    pub struct lconv {
+        pub decimal_point: *mut c_char,
+        pub thousands_sep: *mut c_char,
+        pub grouping: *mut c_char,
+        pub int_curr_symbol: *mut c_char,
+        pub currency_symbol: *mut c_char,
+        pub mon_decimal_point: *mut c_char,
+        pub mon_thousands_sep: *mut c_char,
+        pub mon_grouping: *mut c_char,
+        pub positive_sign: *mut c_char,
+        pub negative_sign: *mut c_char,
+        pub int_frac_digits: c_char,
+        pub frac_digits: c_char,
+        pub p_cs_precedes: c_char,
+        pub p_sep_by_space: c_char,
+        pub n_cs_precedes: c_char,
+        pub n_sep_by_space: c_char,
+        pub p_sign_posn: c_char,
+        pub n_sign_posn: c_char,
+        pub int_n_cs_precedes: c_char,
+        pub int_n_sep_by_space: c_char,
+        pub int_n_sign_posn: c_char,
+        pub int_p_cs_precedes: c_char,
+        pub int_p_sep_by_space: c_char,
+        pub int_p_sign_posn: c_char,
+    }
+
+    pub struct termios {
+        pub c_iflag: tcflag_t,
+        pub c_oflag: tcflag_t,
+        pub c_cflag: tcflag_t,
+        pub c_lflag: tcflag_t,
+        pub c_line:  c_char,
+        pub c_cc: [cc_t; NCCS],
+        pub c_ispeed: speed_t,
+        pub c_ospeed: speed_t,
+    }
+
+    pub struct sched_param {
+        pub sched_priority: c_int,
+    }
+
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: off_t,
+        pub l_len: off_t,
+        pub l_pid: pid_t,
+    }
+}
+
 s_no_extra_traits! {
+    #[allow(missing_debug_implementations)]
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4]
+    }
+
+    pub struct fd_set {
+        fds_bits: [fd_mask; FD_SETSIZE / ULONG_SIZE],
+    }
+
     pub struct _uc_fpxreg {
         pub significand: [u16; 4],
         pub exponent: u16,
@@ -336,10 +363,226 @@ s_no_extra_traits! {
         pub oldmask: u64,
         pub cr2: u64,
     }
+
+    pub struct sigevent {
+        pub sigev_value: sigval,
+        pub sigev_signo: c_int,
+        pub sigev_notify: c_int,
+        __unused1: *mut c_void, //actually a function pointer
+        pub sigev_notify_attributes: *mut pthread_attr_t
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: c_int,
+        pub si_code: c_int,
+        pub si_pid: pid_t,
+        pub si_uid: uid_t,
+        pub si_errno: c_int,
+        __pad: [u32; 32],
+    }
+
+    #[repr(align(8))]
+    pub struct ucontext_t {
+        pub uc_mcontext: mcontext_t,
+        pub uc_link: *mut ucontext_t,
+        pub uc_sigmask: sigset_t,
+        pub uc_stack: stack_t,
+        pub uc_flags: c_ulong,
+    }
+
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: sockaddr,
+        pub ifru_broadaddr: sockaddr,
+        pub ifru_dstaddr: sockaddr,
+        pub ifru_netmask: sockaddr,
+        pub ifru_hwaddr: sockaddr,
+        pub ifru_flags: c_int,
+        pub ifru_metric: c_int,
+        pub ifru_mtu: c_int,
+        pub ifru_ifindex: c_int,
+        pub ifru_data: *mut c_char,
+        __ifru_pad: [c_char; 28],
+    }
+
+    pub struct ifreq {
+        /// if name, e.g. "en0"
+        pub ifr_name: [c_char; IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+    }
+
+    pub union __c_anonymous_ifc_ifcu {
+        pub ifcu_buf: caddr_t,
+        pub ifcu_req: *mut ifreq,
+    }
+
+    pub struct sockaddr {
+        pub sa_family: sa_family_t,
+        pub sa_data: [c_char; 14],
+    }
+
+    pub struct sockaddr_storage {
+        pub ss_family: sa_family_t,
+        __ss_pad1: [c_char; 6],
+        __ss_align: i64,
+        __ss_pad2: [c_char; 112],
+    }
+
+    pub struct stat {
+        pub st_dev: dev_t,
+        pub st_ino: ino_t,
+        pub st_mode: mode_t,
+        pub st_nlink: nlink_t,
+        pub st_uid: uid_t,
+        pub st_gid: gid_t,
+        pub st_rdev: dev_t,
+        pub st_size: off_t,
+        pub st_atime: time_t,
+        pub st_atime_nsec: c_long,
+        pub st_mtime: time_t,
+        pub st_mtime_nsec: c_long,
+        pub st_ctime: time_t,
+        pub st_ctime_nsec: c_long,
+        pub st_blksize: blksize_t,
+        pub st_blocks: blkcnt_t,
+        pub st_birthtime: time_t,
+        pub st_birthtime_nsec: c_long,
+    }
+
+    pub struct dirent {
+        __d_version: u32,
+        pub d_ino: ino_t,
+        pub d_type: c_uchar,
+        __d_unused1: [c_uchar; 3],
+        __d_internal1: u32,
+        pub d_name: [c_char; 256],
+    }
+
+    pub struct in_addr {
+        pub s_addr: in_addr_t,
+    }
+
+    pub struct ip_mreq {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+    }
+
+    pub struct in_pktinfo {
+        pub ipi_addr: in_addr,
+        pub ipi_ifindex: u32,
+    }
+
+    pub struct sockaddr_in {
+        pub sin_family: sa_family_t,
+        pub sin_port: in_port_t,
+        pub sin_addr: in_addr,
+        pub sin_zero: [u8; 8],
+    }
+
+    pub struct statvfs {
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: fsblkcnt_t,
+        pub f_bfree: fsblkcnt_t,
+        pub f_bavail: fsblkcnt_t,
+        pub f_files: fsfilcnt_t,
+        pub f_ffree: fsfilcnt_t,
+        pub f_favail: fsfilcnt_t,
+        pub f_fsid: c_ulong,
+        pub f_flag: c_ulong,
+        pub f_namemax: c_ulong,
+    }
+
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [c_char; 108]
+    }
+
+    pub struct utsname {
+        pub sysname: [c_char; 65],
+        pub nodename: [c_char; 65],
+        pub release: [c_char; 65],
+        pub version: [c_char; 65],
+        pub machine: [c_char; 65],
+        pub domainname: [c_char; 65],
+    }
+}
+
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut c_void {
+        #[repr(C)]
+        struct siginfo_si_addr {
+            _si_signo: c_int,
+            _si_code: c_int,
+            _si_pid: pid_t,
+            _si_uid: uid_t,
+            _si_errno: c_int,
+            si_addr: *mut c_void,
+        }
+        (*(self as *const siginfo_t as *const siginfo_si_addr)).si_addr
+    }
+
+    pub unsafe fn si_status(&self) -> c_int {
+        #[repr(C)]
+        struct siginfo_sigchld {
+            _si_signo: c_int,
+            _si_code: c_int,
+            _si_pid: pid_t,
+            _si_uid: uid_t,
+            _si_errno: c_int,
+            si_status: c_int,
+        }
+        (*(self as *const siginfo_t as *const siginfo_sigchld)).si_status
+    }
+
+    pub unsafe fn si_pid(&self) -> pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> uid_t {
+        self.si_uid
+    }
+
+    pub unsafe fn si_value(&self) -> sigval {
+        #[repr(C)]
+        struct siginfo_si_value {
+            _si_signo: c_int,
+            _si_code: c_int,
+            _si_pid: pid_t,
+            _si_uid: uid_t,
+            _si_errno: c_int,
+            si_value: sigval,
+        }
+        (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
+    }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for fd_set {
+            fn eq(&self, other: &fd_set) -> bool {
+                self.fds_bits
+                    .iter()
+                    .zip(other.fds_bits.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for fd_set {}
+
+        impl fmt::Debug for fd_set {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("fd_set")
+                    // FIXME: .field("fds_bits", &self.fds_bits)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for fd_set {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.fds_bits.hash(state);
+            }
+        }
+
         impl PartialEq for _uc_fpxreg {
             fn eq(&self, other: &_uc_fpxreg) -> bool {
                 self.significand == other.significand &&
@@ -601,21 +844,7 @@ cfg_if! {
                 self.cr2.hash(state);
             }
         }
-    }
-}
 
-s_no_extra_traits! {
-    pub struct sigevent {
-        pub sigev_value: sigval,
-        pub sigev_signo: c_int,
-        pub sigev_notify: c_int,
-        __unused1: *mut c_void,       //actually a function pointer
-        pub sigev_notify_attributes: *mut pthread_attr_t
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
         impl PartialEq for sigevent {
             fn eq(&self, other: &sigevent) -> bool {
                 self.sigev_value == other.sigev_value
@@ -648,78 +877,7 @@ cfg_if! {
                 self.sigev_notify_attributes.hash(state);
             }
         }
-    }
-}
 
-s_no_extra_traits! {
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_code: c_int,
-        pub si_pid: pid_t,
-        pub si_uid: uid_t,
-        pub si_errno: c_int,
-        #[doc(hidden)]
-        #[deprecated(
-            since="0.2.54",
-            note="Please leave a comment on \
-                  https://github.com/rust-lang/libc/pull/1316 if you're using \
-                  this field"
-        )]
-        pub __pad: [u32; 32],
-    }
-}
-
-impl siginfo_t {
-    pub unsafe fn si_addr(&self) -> *mut c_void {
-        #[repr(C)]
-        struct siginfo_si_addr {
-            _si_signo: c_int,
-            _si_code: c_int,
-            _si_pid: pid_t,
-            _si_uid: uid_t,
-            _si_errno: c_int,
-            si_addr: *mut c_void,
-        }
-        (*(self as *const siginfo_t as *const siginfo_si_addr)).si_addr
-    }
-
-    pub unsafe fn si_status(&self) -> c_int {
-        #[repr(C)]
-        struct siginfo_sigchld {
-            _si_signo: c_int,
-            _si_code: c_int,
-            _si_pid: pid_t,
-            _si_uid: uid_t,
-            _si_errno: c_int,
-            si_status: c_int,
-        }
-        (*(self as *const siginfo_t as *const siginfo_sigchld)).si_status
-    }
-
-    pub unsafe fn si_pid(&self) -> pid_t {
-        self.si_pid
-    }
-
-    pub unsafe fn si_uid(&self) -> uid_t {
-        self.si_uid
-    }
-
-    pub unsafe fn si_value(&self) -> sigval {
-        #[repr(C)]
-        struct siginfo_si_value {
-            _si_signo: c_int,
-            _si_code: c_int,
-            _si_pid: pid_t,
-            _si_uid: uid_t,
-            _si_errno: c_int,
-            si_value: sigval,
-        }
-        (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
         impl PartialEq for siginfo_t {
             fn eq(&self, other: &siginfo_t) -> bool {
                 self.si_signo == other.si_signo
@@ -756,8 +914,524 @@ cfg_if! {
                 // Ignore __pad
             }
         }
+
+        impl PartialEq for ucontext_t {
+            fn eq(&self, other: &ucontext_t) -> bool {
+                self.uc_mcontext == other.uc_mcontext
+                    && self.uc_link == other.uc_link
+                    && self.uc_sigmask == other.uc_sigmask
+                    && self.uc_stack == other.uc_stack
+                    && self.uc_flags == other.uc_flags
+            }
+        }
+
+        impl Eq for ucontext_t {}
+
+        impl fmt::Debug for ucontext_t {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ucontext_t")
+                    .field("uc_mcontext", &self.uc_mcontext)
+                    .field("uc_link", &self.uc_link)
+                    .field("uc_sigmask", &self.uc_sigmask)
+                    .field("uc_stack", &self.uc_stack)
+                    .field("uc_flags", &self.uc_flags)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for ucontext_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.uc_mcontext.hash(state);
+                self.uc_link.hash(state);
+                self.uc_sigmask.hash(state);
+                self.uc_stack.hash(state);
+                self.uc_flags.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifr_ifru {
+            fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
+                unsafe {
+                    self.ifru_addr == other.ifru_addr &&
+                    self.ifru_broadaddr == other.ifru_broadaddr &&
+                    self.ifru_dstaddr == other.ifru_dstaddr &&
+                    self.ifru_netmask == other.ifru_netmask &&
+                    self.ifru_hwaddr == other.ifru_hwaddr &&
+                    self.ifru_flags == other.ifru_flags &&
+                    self.ifru_metric == other.ifru_metric &&
+                    self.ifru_ifindex == other.ifru_ifindex &&
+                    self.ifru_mtu == other.ifru_mtu &&
+                    self.ifru_data == other.ifru_data
+                }
+            }
+        }
+
+        impl Eq for __c_anonymous_ifr_ifru {}
+
+        impl hash::Hash for __c_anonymous_ifr_ifru {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifru_addr.hash(state) };
+                unsafe { self.ifru_broadaddr.hash(state) };
+                unsafe { self.ifru_dstaddr.hash(state) };
+                unsafe { self.ifru_netmask.hash(state) };
+                unsafe { self.ifru_hwaddr.hash(state) };
+                unsafe { self.ifru_flags.hash(state) };
+                unsafe { self.ifru_metric.hash(state) };
+                unsafe { self.ifru_ifindex.hash(state) };
+                unsafe { self.ifru_mtu.hash(state) };
+                unsafe { self.ifru_data.hash(state) };
+            }
+        }
+
+        impl fmt::Debug for ifreq {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ifreq")
+                    .field("ifr_name", &self.ifr_name)
+                    .field("ifr_ifru", &self.ifr_ifru)
+                    .finish()
+            }
+        }
+
+        impl PartialEq for ifreq {
+            fn eq(&self, other: &ifreq) -> bool {
+                self.ifr_name == other.ifr_name && self.ifr_ifru == other.ifr_ifru
+            }
+        }
+
+        impl Eq for ifreq {}
+
+        impl hash::Hash for ifreq {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.ifr_name.hash(state);
+                self.ifr_ifru.hash(state);
+            }
+        }
+
+        impl Eq for __c_anonymous_ifc_ifcu {}
+
+        impl PartialEq for __c_anonymous_ifc_ifcu {
+            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
+                unsafe {
+                    self.ifcu_buf == other.ifcu_buf &&
+                    self.ifcu_req == other.ifcu_req
+                }
+            }
+        }
+
+        impl hash::Hash for __c_anonymous_ifc_ifcu {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.ifcu_buf.hash(state) };
+                unsafe { self.ifcu_req.hash(state) };
+            }
+        }
+
+        impl PartialEq for sockaddr {
+            fn eq(&self, other: &sockaddr) -> bool {
+                self.sa_family == other.sa_family
+                    && self
+                    .sa_data
+                    .iter()
+                    .zip(other.sa_data.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr {}
+
+        impl fmt::Debug for sockaddr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("sockaddr")
+                    .field("sa_family", &self.sa_family)
+                    // FIXME: .field("sa_data", &self.sa_data)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for sockaddr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sa_family.hash(state);
+                self.sa_data.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_family == other.ss_family
+            }
+        }
+
+        impl Eq for sockaddr_storage {}
+
+        impl fmt::Debug for sockaddr_storage {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("sockaddr_storage")
+                    .field("ss_family", &self.ss_family)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for sockaddr_storage {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.ss_family.hash(state);
+            }
+        }
+
+        impl PartialEq for stat {
+            fn eq(&self, other: &stat) -> bool {
+                self.st_dev == other.st_dev
+                    && self.st_ino == other.st_ino
+                    && self.st_mode == other.st_mode
+                    && self.st_nlink == other.st_nlink
+                    && self.st_uid == other.st_uid
+                    && self.st_gid == other.st_gid
+                    && self.st_rdev == other.st_rdev
+                    && self.st_size == other.st_size
+                    && self.st_atime == other.st_atime
+                    && self.st_atime_nsec == other.st_atime_nsec
+                    && self.st_mtime == other.st_mtime
+                    && self.st_mtime_nsec == other.st_mtime_nsec
+                    && self.st_ctime == other.st_ctime
+                    && self.st_ctime_nsec == other.st_ctime_nsec
+                    && self.st_blksize == other.st_blksize
+                    && self.st_blocks == other.st_blocks
+                    && self.st_birthtime == other.st_birthtime
+                    && self.st_birthtime_nsec == other.st_birthtime_nsec
+            }
+        }
+
+        impl Eq for stat {}
+
+        impl fmt::Debug for stat {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("stat")
+                    .field("st_dev", &self.st_dev)
+                    .field("st_ino", &self.st_ino)
+                    .field("st_mode", &self.st_mode)
+                    .field("st_nlink", &self.st_nlink)
+                    .field("st_uid", &self.st_uid)
+                    .field("st_gid", &self.st_gid)
+                    .field("st_rdev", &self.st_rdev)
+                    .field("st_size", &self.st_size)
+                    .field("st_atime", &self.st_atime)
+                    .field("st_atime_nsec", &self.st_atime_nsec)
+                    .field("st_mtime", &self.st_mtime)
+                    .field("st_mtime_nsec", &self.st_mtime_nsec)
+                    .field("st_ctime", &self.st_ctime)
+                    .field("st_ctime_nsec", &self.st_ctime_nsec)
+                    .field("st_blksize", &self.st_blksize)
+                    .field("st_blocks", &self.st_blocks)
+                    .field("st_birthtime", &self.st_birthtime)
+                    .field("st_birthtime_nsec", &self.st_birthtime_nsec)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for stat {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.st_dev.hash(state);
+                self.st_ino.hash(state);
+                self.st_mode.hash(state);
+                self.st_nlink.hash(state);
+                self.st_uid.hash(state);
+                self.st_gid.hash(state);
+                self.st_rdev.hash(state);
+                self.st_size.hash(state);
+                self.st_atime.hash(state);
+                self.st_atime_nsec.hash(state);
+                self.st_mtime.hash(state);
+                self.st_mtime_nsec.hash(state);
+                self.st_ctime.hash(state);
+                self.st_ctime_nsec.hash(state);
+                self.st_blksize.hash(state);
+                self.st_blocks.hash(state);
+                self.st_birthtime.hash(state);
+                self.st_birthtime_nsec.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_type == other.d_type
+                    && self
+                    .d_name
+                    .iter()
+                    .zip(other.d_name.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for dirent {}
+
+        impl fmt::Debug for dirent {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("dirent")
+                    .field("d_ino", &self.d_ino)
+                    .field("d_type", &self.d_type)
+                    // FIXME: .field("d_name", &self.d_name)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for dirent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_type.hash(state);
+                self.d_name.hash(state);
+            }
+        }
+
+        impl PartialEq for in_addr {
+            fn eq(&self, other: &in_addr) -> bool {
+                self.s_addr == other.s_addr
+            }
+        }
+
+        impl Eq for in_addr {}
+
+        impl fmt::Debug for in_addr {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                let s_addr = self.s_addr;
+                f.debug_struct("in_addr")
+                    .field("s_addr", &s_addr)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for in_addr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                let s_addr = self.s_addr;
+                s_addr.hash(state);
+            }
+        }
+
+        impl PartialEq for ip_mreq {
+            fn eq(&self, other: &ip_mreq) -> bool {
+                self.imr_multiaddr == other.imr_multiaddr
+                    && self.imr_interface == other.imr_interface
+            }
+        }
+
+        impl Eq for ip_mreq {}
+
+        impl fmt::Debug for ip_mreq {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("ip_mreq")
+                    .field("imr_multiaddr", &self.imr_multiaddr)
+                    .field("imr_interface", &self.imr_interface)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for ip_mreq {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.imr_multiaddr.hash(state);
+                self.imr_interface.hash(state);
+            }
+        }
+
+        impl PartialEq for in_pktinfo {
+            fn eq(&self, other: &in_pktinfo) -> bool {
+                self.ipi_addr == other.ipi_addr
+                    && self.ipi_ifindex == other.ipi_ifindex
+            }
+        }
+
+        impl Eq for in_pktinfo {}
+
+        impl fmt::Debug for in_pktinfo {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("in_pktinfo")
+                    .field("ipi_addr", &self.ipi_addr)
+                    .field("ipi_ifindex", &self.ipi_ifindex)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for in_pktinfo {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.ipi_addr.hash(state);
+                self.ipi_ifindex.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_in {
+            fn eq(&self, other: &sockaddr_in) -> bool {
+                self.sin_family == other.sin_family
+                    && self.sin_port == other.sin_port
+                    && self.sin_addr == other.sin_addr
+                    && self.sin_zero == other.sin_zero
+            }
+        }
+
+        impl Eq for sockaddr_in {}
+
+        impl fmt::Debug for sockaddr_in {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("sockaddr_in")
+                    .field("sin_family", &self.sin_family)
+                    .field("sin_port", &self.sin_port)
+                    .field("sin_addr", &self.sin_addr)
+                    .field("sin_zero", &self.sin_zero)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for sockaddr_in {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sin_family.hash(state);
+                self.sin_port.hash(state);
+                self.sin_addr.hash(state);
+                self.sin_zero.hash(state);
+            }
+        }
+
+        impl PartialEq for statvfs {
+            fn eq(&self, other: &statvfs) -> bool {
+                self.f_bsize == other.f_bsize
+                    && self.f_frsize == other.f_frsize
+                    && self.f_blocks == other.f_blocks
+                    && self.f_bfree == other.f_bfree
+                    && self.f_bavail == other.f_bavail
+                    && self.f_files == other.f_files
+                    && self.f_ffree == other.f_ffree
+                    && self.f_favail == other.f_favail
+                    && self.f_fsid == other.f_fsid
+                    && self.f_flag == other.f_flag
+                    && self.f_namemax == other.f_namemax
+            }
+        }
+
+        impl Eq for statvfs {}
+
+        impl fmt::Debug for statvfs {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("statvfs")
+                    .field("f_bsize", &self.f_bsize)
+                    .field("f_frsize", &self.f_frsize)
+                    .field("f_blocks", &self.f_blocks)
+                    .field("f_bfree", &self.f_bfree)
+                    .field("f_bavail", &self.f_bavail)
+                    .field("f_files", &self.f_files)
+                    .field("f_ffree", &self.f_ffree)
+                    .field("f_favail", &self.f_favail)
+                    .field("f_fsid", &self.f_fsid)
+                    .field("f_flag", &self.f_flag)
+                    .field("f_namemax", &self.f_namemax)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for statvfs {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.f_bsize.hash(state);
+                self.f_frsize.hash(state);
+                self.f_blocks.hash(state);
+                self.f_bfree.hash(state);
+                self.f_bavail.hash(state);
+                self.f_files.hash(state);
+                self.f_ffree.hash(state);
+                self.f_favail.hash(state);
+                self.f_fsid.hash(state);
+                self.f_flag.hash(state);
+                self.f_namemax.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_family == other.sun_family
+                    && self
+                    .sun_path
+                    .iter()
+                    .zip(other.sun_path.iter())
+                    .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_un {}
+
+        impl fmt::Debug for sockaddr_un {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("sockaddr_un")
+                    .field("sun_family", &self.sun_family)
+                // FIXME: .field("sun_path", &self.sun_path)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for sockaddr_un {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        impl PartialEq for utsname {
+            fn eq(&self, other: &utsname) -> bool {
+                self.sysname
+                    .iter()
+                    .zip(other.sysname.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .nodename
+                    .iter()
+                    .zip(other.nodename.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .release
+                    .iter()
+                    .zip(other.release.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .version
+                    .iter()
+                    .zip(other.version.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .machine
+                    .iter()
+                    .zip(other.machine.iter())
+                    .all(|(a,b)| a == b)
+                    && self
+                    .domainname
+                    .iter()
+                    .zip(other.domainname.iter())
+                    .all(|(a,b)| a == b)
+            }
+        }
+
+        impl Eq for utsname {}
+
+        impl fmt::Debug for utsname {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("utsname")
+                // FIXME: .field("sysname", &self.sysname)
+                // FIXME: .field("nodename", &self.nodename)
+                // FIXME: .field("release", &self.release)
+                // FIXME: .field("version", &self.version)
+                // FIXME: .field("machine", &self.machine)
+                // FIXME: .field("domainname", &self.domainname)
+                    .finish()
+            }
+        }
+
+        impl hash::Hash for utsname {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sysname.hash(state);
+                self.nodename.hash(state);
+                self.release.hash(state);
+                self.version.hash(state);
+                self.machine.hash(state);
+                self.domainname.hash(state);
+            }
+        }
     }
 }
+
+pub const FD_SETSIZE: usize = 1024;
+
+pub const CPU_SETSIZE: c_int = 0x400;
 
 // si_code values for SIGBUS signal
 pub const BUS_ADRALN: c_int = 25;
@@ -775,14 +1449,6 @@ pub const CLD_CONTINUED: c_int = 33;
 pub const SIGEV_SIGNAL: c_int = 0;
 pub const SIGEV_NONE: c_int = 1;
 pub const SIGEV_THREAD: c_int = 2;
-
-s! {
-    pub struct sigaction {
-        pub sa_sigaction: sighandler_t,
-        pub sa_mask: sigset_t,
-        pub sa_flags: c_int,
-    }
-}
 
 pub const SA_NOCLDSTOP: c_int = 0x00000001;
 pub const SA_NOCLDWAIT: c_int = 0; // FIXME: does not exist on Cygwin!
@@ -826,138 +1492,12 @@ pub const SIGPWR: c_int = 29;
 pub const SIGUSR1: c_int = 30;
 pub const SIGUSR2: c_int = 31;
 
-extern "C" {
-    pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
-    pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
-}
-
-// sys/ucontext.h
-s_no_extra_traits! {
-    #[repr(align(8))]
-    pub struct ucontext_t {
-        pub uc_mcontext: mcontext_t,
-        pub uc_link: *mut ucontext_t,
-        pub uc_sigmask: sigset_t,
-        pub uc_stack: stack_t,
-        pub uc_flags: c_ulong,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for ucontext_t {
-            fn eq(&self, other: &ucontext_t) -> bool {
-                self.uc_mcontext == other.uc_mcontext
-                    && self.uc_link == other.uc_link
-                    && self.uc_sigmask == other.uc_sigmask
-                    && self.uc_stack == other.uc_stack
-                    && self.uc_flags == other.uc_flags
-            }
-        }
-
-        impl Eq for ucontext_t {}
-
-        impl fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ucontext_t")
-                    .field("uc_mcontext", &self.uc_mcontext)
-                    .field("uc_link", &self.uc_link)
-                    .field("uc_sigmask", &self.uc_sigmask)
-                    .field("uc_stack", &self.uc_stack)
-                    .field("uc_flags", &self.uc_flags)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for ucontext_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.uc_mcontext.hash(state);
-                self.uc_link.hash(state);
-                self.uc_sigmask.hash(state);
-                self.uc_stack.hash(state);
-                self.uc_flags.hash(state);
-            }
-        }
-    }
-}
-
-// sys/signal.h
 pub const SS_ONSTACK: c_int = 0x1;
 pub const SS_DISABLE: c_int = 0x2;
-
-s! {
-    pub struct stack_t {
-        pub ss_sp: *mut c_void,
-        pub ss_flags: c_int,
-        pub ss_size: size_t,
-    }
-}
 
 pub const SIG_SETMASK: c_int = 0;
 pub const SIG_BLOCK: c_int = 1;
 pub const SIG_UNBLOCK: c_int = 2;
-
-extern "C" {
-    pub fn pthread_sigmask(how: c_int, set: *const sigset_t, oldset: *mut sigset_t) -> c_int;
-    pub fn sigsuspend(mask: *const sigset_t) -> c_int;
-    pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
-    pub fn pthread_kill(thread: pthread_t, sig: c_int) -> c_int;
-
-    pub fn sigtimedwait(
-        set: *const sigset_t,
-        info: *mut siginfo_t,
-        timeout: *const timespec,
-    ) -> c_int;
-}
-
-// time.h
-s! {
-    pub struct tm {
-        pub tm_sec: c_int,
-        pub tm_min: c_int,
-        pub tm_hour: c_int,
-        pub tm_mday: c_int,
-        pub tm_mon: c_int,
-        pub tm_year: c_int,
-        pub tm_wday: c_int,
-        pub tm_yday: c_int,
-        pub tm_isdst: c_int,
-        pub tm_gmtoff: c_long,
-        pub tm_zone: *const c_char,
-    }
-}
-
-extern "C" {
-    pub fn strftime(s: *mut c_char, max: size_t, format: *const c_char, tm: *const tm) -> size_t;
-
-    pub fn asctime_r(tm: *const tm, buf: *mut c_char) -> *mut c_char;
-    pub fn ctime_r(timep: *const time_t, buf: *mut c_char) -> *mut c_char;
-    pub fn strptime(s: *const c_char, format: *const c_char, tm: *mut tm) -> *mut c_char;
-    pub fn clock_settime(clk_id: clockid_t, tp: *const timespec) -> c_int;
-    pub fn clock_gettime(clk_id: clockid_t, tp: *mut timespec) -> c_int;
-    pub fn clock_getres(clk_id: clockid_t, tp: *mut timespec) -> c_int;
-
-    pub fn timer_create(clockid: clockid_t, sevp: *mut sigevent, timerid: *mut timer_t) -> c_int;
-
-    pub fn timer_delete(timerid: timer_t) -> c_int;
-
-    pub fn timer_settime(
-        timerid: timer_t,
-        flags: c_int,
-        new_value: *const itimerspec,
-        old_value: *mut itimerspec,
-    ) -> c_int;
-
-    pub fn timer_gettime(timerid: timer_t, curr_value: *mut itimerspec) -> c_int;
-    pub fn timer_getoverrun(timerid: timer_t) -> c_int;
-
-    pub fn clock_nanosleep(
-        clk_id: clockid_t,
-        flags: c_int,
-        rqtp: *const timespec,
-        rmtp: *mut timespec,
-    ) -> c_int;
-}
 
 pub const TIMER_ABSTIME: c_int = 4;
 pub const CLOCK_REALTIME_COARSE: clockid_t = 0;
@@ -971,45 +1511,10 @@ pub const CLOCK_BOOTTIME: clockid_t = 7;
 pub const CLOCK_REALTIME_ALARM: clockid_t = 8;
 pub const CLOCK_BOOTTIME_ALARM: clockid_t = 9;
 
-extern "C" {
-    pub fn clock_getcpuclockid(pid: pid_t, clk_id: *mut clockid_t) -> c_int;
-}
-
-// sys/time.h
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
-
-s! {
-    pub struct bintime {
-        pub sec: time_t,
-        pub frac: u64,
-    }
-}
-
 pub const ITIMER_REAL: c_int = 0;
 pub const ITIMER_VIRTUAL: c_int = 1;
 pub const ITIMER_PROF: c_int = 2;
 
-extern "C" {
-    pub fn futimes(fd: c_int, times: *const timeval) -> c_int;
-    pub fn lutimes(file: *const c_char, times: *const timeval) -> c_int;
-    pub fn settimeofday(tv: *const timeval, tz: *const timezone) -> c_int;
-    pub fn getitimer(which: c_int, curr_value: *mut itimerval) -> c_int;
-
-    pub fn setitimer(which: c_int, new_value: *const itimerval, old_value: *mut itimerval)
-        -> c_int;
-
-    pub fn gettimeofday(tp: *mut timeval, tz: *mut c_void) -> c_int;
-    pub fn futimesat(fd: c_int, path: *const c_char, times: *const timeval) -> c_int;
-}
-
-// sys/resource.h
 pub const PRIO_PROCESS: c_int = 0;
 pub const PRIO_PGRP: c_int = 1;
 pub const PRIO_USER: c_int = 2;
@@ -1026,55 +1531,9 @@ pub const RLIM_INFINITY: rlim_t = !0;
 pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
 
-pub type rlim_t = c_ulong;
-
 pub const RUSAGE_SELF: c_int = 0;
 pub const RUSAGE_CHILDREN: c_int = -1;
 
-extern "C" {
-    pub fn getrlimit(resource: c_int, rlim: *mut rlimit) -> c_int;
-    pub fn setrlimit(resource: c_int, rlim: *const rlimit) -> c_int;
-    pub fn getpriority(which: c_int, who: id_t) -> c_int;
-    pub fn setpriority(which: c_int, who: id_t, prio: c_int) -> c_int;
-}
-
-// pwd.h
-s! {
-    pub struct passwd {
-        pub pw_name: *mut c_char,
-        pub pw_passwd: *mut c_char,
-        pub pw_uid: uid_t,
-        pub pw_gid: gid_t,
-        pub pw_comment: *mut c_char,
-        pub pw_gecos: *mut c_char,
-        pub pw_dir: *mut c_char,
-        pub pw_shell: *mut c_char
-    }
-}
-
-extern "C" {
-    pub fn getpwnam_r(
-        name: *const c_char,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-
-    pub fn getpwuid_r(
-        uid: uid_t,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-
-    pub fn getpwent() -> *mut passwd;
-    pub fn setpwent();
-    pub fn endpwent();
-}
-
-// cygwin/if.h
 pub const IFF_UP: c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: c_int = 0x2; // broadcast address valid
 pub const IFF_LOOPBACK: c_int = 0x8; // is a loopback net
@@ -1087,148 +1546,9 @@ pub const IFF_MULTICAST: c_int = 0x1000; // supports multicast
 pub const IFF_LOWER_UP: c_int = 0x10000; // driver signals L1 up
 pub const IFF_DORMANT: c_int = 0x20000; // driver signals dormant
 
-s! {
-    pub struct if_nameindex {
-        pub if_index: c_uint,
-        pub if_name: *mut c_char,
-    }
-}
-
 pub const IF_NAMESIZE: size_t = 44;
 pub const IFNAMSIZ: size_t = IF_NAMESIZE;
 
-s_no_extra_traits! {
-    pub union __c_anonymous_ifr_ifru {
-        pub ifru_addr: sockaddr,
-        pub ifru_broadaddr: sockaddr,
-        pub ifru_dstaddr: sockaddr,
-        pub ifru_netmask: sockaddr,
-        pub ifru_hwaddr: sockaddr,
-        pub ifru_flags: c_int,
-        pub ifru_metric: c_int,
-        pub ifru_mtu: c_int,
-        pub ifru_ifindex: c_int,
-        pub ifru_data: *mut c_char,
-        __ifru_pad: [c_char; 28],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __c_anonymous_ifr_ifru {
-            fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
-                unsafe {
-                    self.ifru_addr == other.ifru_addr &&
-                    self.ifru_broadaddr == other.ifru_broadaddr &&
-                    self.ifru_dstaddr == other.ifru_dstaddr &&
-                    self.ifru_netmask == other.ifru_netmask &&
-                    self.ifru_hwaddr == other.ifru_hwaddr &&
-                    self.ifru_flags == other.ifru_flags &&
-                    self.ifru_metric == other.ifru_metric &&
-                    self.ifru_ifindex == other.ifru_ifindex &&
-                    self.ifru_mtu == other.ifru_mtu &&
-                    self.ifru_data == other.ifru_data
-                }
-            }
-        }
-
-        impl Eq for __c_anonymous_ifr_ifru {}
-
-        impl hash::Hash for __c_anonymous_ifr_ifru {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.ifru_addr.hash(state) };
-                unsafe { self.ifru_broadaddr.hash(state) };
-                unsafe { self.ifru_dstaddr.hash(state) };
-                unsafe { self.ifru_netmask.hash(state) };
-                unsafe { self.ifru_hwaddr.hash(state) };
-                unsafe { self.ifru_flags.hash(state) };
-                unsafe { self.ifru_metric.hash(state) };
-                unsafe { self.ifru_ifindex.hash(state) };
-                unsafe { self.ifru_mtu.hash(state) };
-                unsafe { self.ifru_data.hash(state) };
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
-    pub struct ifreq {
-        /// if name, e.g. "en0"
-        pub ifr_name: [c_char; IFNAMSIZ],
-        pub ifr_ifru: __c_anonymous_ifr_ifru,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifreq")
-                    .field("ifr_name", &self.ifr_name)
-                    .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-
-        impl PartialEq for ifreq {
-            fn eq(&self, other: &ifreq) -> bool {
-                self.ifr_name == other.ifr_name && self.ifr_ifru == other.ifr_ifru
-            }
-        }
-
-        impl Eq for ifreq {}
-
-        impl hash::Hash for ifreq {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ifr_name.hash(state);
-                self.ifr_ifru.hash(state);
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
-    pub union __c_anonymous_ifc_ifcu {
-        pub ifcu_buf: caddr_t,
-        pub ifcu_req: *mut ifreq,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl Eq for __c_anonymous_ifc_ifcu {}
-
-        impl PartialEq for __c_anonymous_ifc_ifcu {
-            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
-                unsafe {
-                    self.ifcu_buf == other.ifcu_buf &&
-                    self.ifcu_req == other.ifcu_req
-                }
-            }
-        }
-
-        impl hash::Hash for __c_anonymous_ifc_ifcu {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.ifcu_buf.hash(state) };
-                unsafe { self.ifcu_req.hash(state) };
-            }
-        }
-    }
-}
-
-s! {
-    pub struct ifconf {
-        pub ifc_len: c_int,
-        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-    }
-}
-
-extern "C" {
-    pub fn if_nameindex() -> *mut if_nameindex;
-    pub fn if_freenameindex(ptr: *mut if_nameindex);
-}
-
-// asm/socket.h
 pub const FIONREAD: Ioctl = 0x4008667f;
 pub const FIONBIO: Ioctl = 0x8004667e;
 pub const FIOASYNC: Ioctl = 0x8008667d;
@@ -1264,159 +1584,6 @@ pub const SO_SNDTIMEO: c_int = 0x1005;
 pub const SO_RCVTIMEO: c_int = 0x1006;
 pub const SO_ERROR: c_int = 0x1007;
 pub const SO_TYPE: c_int = 0x1008;
-
-// sys/uio.h
-extern "C" {
-    pub fn readv(fd: c_int, iov: *const iovec, iovcnt: c_int) -> ssize_t;
-    pub fn writev(fd: c_int, iov: *const iovec, iovcnt: c_int) -> ssize_t;
-}
-
-// cygwin/_ucred.h
-s! {
-    pub struct ucred {
-        pub pid: pid_t,
-        pub uid: uid_t,
-        pub gid: gid_t,
-    }
-}
-
-// cygwin/socket.h
-s_no_extra_traits! {
-    pub struct sockaddr {
-        pub sa_family: sa_family_t,
-        pub sa_data: [c_char; 14],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sockaddr {
-            fn eq(&self, other: &sockaddr) -> bool {
-                self.sa_family == other.sa_family
-                    && self
-                    .sa_data
-                    .iter()
-                    .zip(other.sa_data.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for sockaddr {}
-
-        impl fmt::Debug for sockaddr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr")
-                    .field("sa_family", &self.sa_family)
-                    // FIXME: .field("sa_data", &self.sa_data)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for sockaddr {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sa_family.hash(state);
-                self.sa_data.hash(state);
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
-    pub struct sockaddr_storage {
-        pub ss_family: sa_family_t,
-        __ss_pad1: [c_char; 6],
-        __ss_align: i64,
-        __ss_pad2: [c_char; 112],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sockaddr_storage {
-            fn eq(&self, other: &sockaddr_storage) -> bool {
-                self.ss_family == other.ss_family
-            }
-        }
-
-        impl Eq for sockaddr_storage {}
-
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_family", &self.ss_family)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for sockaddr_storage {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ss_family.hash(state);
-            }
-        }
-    }
-}
-
-s! {
-   pub struct msghdr {
-        pub msg_name: *mut c_void,
-        pub msg_namelen: socklen_t,
-        pub msg_iov: *mut iovec,
-        pub msg_iovlen: c_int,
-        pub msg_control: *mut c_void,
-        pub msg_controllen: socklen_t,
-        pub msg_flags: c_int,
-    }
-
-    pub struct cmsghdr {
-        pub cmsg_len: size_t,
-        pub cmsg_level: c_int,
-        pub cmsg_type: c_int,
-    }
-}
-
-const_fn! {
-    {const} fn CMSG_ALIGN(len: usize) -> usize {
-        len + core::mem::size_of::<usize>() - 1 & !(::core::mem::size_of::<usize>() - 1)
-    }
-}
-
-f! {
-    pub fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()))
-            as c_uint
-    }
-
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= core::mem::size_of::<cmsghdr>() {
-            (*mhdr).msg_control as *mut cmsghdr
-        } else {
-            0 as *mut cmsghdr
-        }
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
-                       cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = (cmsg as usize +
-                    CMSG_ALIGN((*cmsg).cmsg_len as usize))
-            as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize
-            + (*mhdr).msg_controllen as usize;
-        if next as usize + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as usize > max
-        {
-            0 as *mut cmsghdr
-        } else {
-            next as *mut cmsghdr
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1) as *mut c_uchar
-    }
-}
 
 pub const SCM_RIGHTS: c_int = 0x01;
 pub const SCM_CREDENTIALS: c_int = 0x02;
@@ -1536,108 +1703,6 @@ pub const SHUT_RD: c_int = 0;
 pub const SHUT_WR: c_int = 1;
 pub const SHUT_RDWR: c_int = 2;
 
-// cygwin/stat.h
-s_no_extra_traits! {
-    pub struct stat {
-        pub st_dev: dev_t,
-        pub st_ino: ino_t,
-        pub st_mode: mode_t,
-        pub st_nlink: nlink_t,
-        pub st_uid: uid_t,
-        pub st_gid: gid_t,
-        pub st_rdev: dev_t,
-        pub st_size: off_t,
-        pub st_atime: time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: time_t,
-        pub st_ctime_nsec: c_long,
-        pub st_blksize: blksize_t,
-        pub st_blocks: blkcnt_t,
-        pub st_birthtime: time_t,
-        pub st_birthtime_nsec: c_long,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for stat {
-            fn eq(&self, other: &stat) -> bool {
-                self.st_dev == other.st_dev
-                    && self.st_ino == other.st_ino
-                    && self.st_mode == other.st_mode
-                    && self.st_nlink == other.st_nlink
-                    && self.st_uid == other.st_uid
-                    && self.st_gid == other.st_gid
-                    && self.st_rdev == other.st_rdev
-                    && self.st_size == other.st_size
-                    && self.st_atime == other.st_atime
-                    && self.st_atime_nsec == other.st_atime_nsec
-                    && self.st_mtime == other.st_mtime
-                    && self.st_mtime_nsec == other.st_mtime_nsec
-                    && self.st_ctime == other.st_ctime
-                    && self.st_ctime_nsec == other.st_ctime_nsec
-                    && self.st_blksize == other.st_blksize
-                    && self.st_blocks == other.st_blocks
-                    && self.st_birthtime == other.st_birthtime
-                    && self.st_birthtime_nsec == other.st_birthtime_nsec
-            }
-        }
-
-        impl Eq for stat {}
-
-        impl fmt::Debug for stat {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("stat")
-                    .field("st_dev", &self.st_dev)
-                    .field("st_ino", &self.st_ino)
-                    .field("st_mode", &self.st_mode)
-                    .field("st_nlink", &self.st_nlink)
-                    .field("st_uid", &self.st_uid)
-                    .field("st_gid", &self.st_gid)
-                    .field("st_rdev", &self.st_rdev)
-                    .field("st_size", &self.st_size)
-                    .field("st_atime", &self.st_atime)
-                    .field("st_atime_nsec", &self.st_atime_nsec)
-                    .field("st_mtime", &self.st_mtime)
-                    .field("st_mtime_nsec", &self.st_mtime_nsec)
-                    .field("st_ctime", &self.st_ctime)
-                    .field("st_ctime_nsec", &self.st_ctime_nsec)
-                    .field("st_blksize", &self.st_blksize)
-                    .field("st_blocks", &self.st_blocks)
-                    .field("st_birthtime", &self.st_birthtime)
-                    .field("st_birthtime_nsec", &self.st_birthtime_nsec)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for stat {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.st_dev.hash(state);
-                self.st_ino.hash(state);
-                self.st_mode.hash(state);
-                self.st_nlink.hash(state);
-                self.st_uid.hash(state);
-                self.st_gid.hash(state);
-                self.st_rdev.hash(state);
-                self.st_size.hash(state);
-                self.st_atime.hash(state);
-                self.st_atime_nsec.hash(state);
-                self.st_mtime.hash(state);
-                self.st_mtime_nsec.hash(state);
-                self.st_ctime.hash(state);
-                self.st_ctime_nsec.hash(state);
-                self.st_blksize.hash(state);
-                self.st_blocks.hash(state);
-                self.st_birthtime.hash(state);
-                self.st_birthtime_nsec.hash(state);
-            }
-        }
-    }
-}
-
-// sys/stat.h
 pub const S_BLKSIZE: mode_t = 1024;
 pub const S_IREAD: mode_t = 256;
 pub const S_IWRITE: mode_t = 128;
@@ -1666,22 +1731,6 @@ pub const S_IXOTH: mode_t = 1;
 pub const UTIME_NOW: c_long = -2;
 pub const UTIME_OMIT: c_long = -1;
 
-extern "C" {
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
-
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
-
-    pub fn utimensat(
-        dirfd: c_int,
-        path: *const c_char,
-        times: *const timespec,
-        flag: c_int,
-    ) -> c_int;
-
-    pub fn futimens(fd: c_int, times: *const timespec) -> c_int;
-}
-
-// cygwin/limits.h
 pub const ARG_MAX: c_int = 32000;
 pub const CHILD_MAX: c_int = 256;
 pub const IOV_MAX: c_int = 1024;
@@ -1690,62 +1739,8 @@ pub const PATH_MAX: c_int = 4096;
 pub const PIPE_BUF: usize = 4096;
 pub const NGROUPS_MAX: c_int = 1024;
 
-// sys/dirent.h
-s_no_extra_traits! {
-    pub struct dirent {
-        __d_version: u32,
-        pub d_ino: ino_t,
-        pub d_type: c_uchar,
-        __d_unused1: [c_uchar; 3],
-        __d_internal1: u32,
-        pub d_name: [c_char; 256],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_type == other.d_type
-                    && self
-                    .d_name
-                    .iter()
-                    .zip(other.d_name.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for dirent {}
-
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_type", &self.d_type)
-                    // FIXME: .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-    }
-}
-
-// dlfcn.h
-
-// specific to CYGWIN
 pub const FORK_RELOAD: c_int = 1;
 pub const FORK_NO_RELOAD: c_int = 0;
-extern "C" {
-    pub fn dlfork(val: c_int);
-}
 
 pub const RTLD_DEFAULT: *mut c_void = 0isize as *mut c_void;
 pub const RTLD_LOCAL: c_int = 0;
@@ -1755,52 +1750,6 @@ pub const RTLD_GLOBAL: c_int = 4;
 pub const RTLD_NODELETE: c_int = 8;
 pub const RTLD_NOLOAD: c_int = 16;
 pub const RTLD_DEEPBIND: c_int = 32;
-
-s! {
-    pub struct Dl_info {
-        pub dli_fname: [c_char; PATH_MAX as usize],
-        pub dli_fbase: *mut c_void,
-        pub dli_sname: *const c_char,
-        pub dli_saddr: *mut c_void,
-    }
-}
-
-// sys/socket.h
-extern "C" {
-    pub fn accept4(s: c_int, addr: *mut sockaddr, addrlen: *mut socklen_t, flags: c_int) -> c_int;
-
-    pub fn bind(socket: c_int, address: *const sockaddr, address_len: socklen_t) -> c_int;
-
-    pub fn recvfrom(
-        socket: c_int,
-        buf: *mut c_void,
-        len: size_t,
-        flags: c_int,
-        addr: *mut sockaddr,
-        addrlen: *mut socklen_t,
-    ) -> ssize_t;
-
-    pub fn recvmsg(fd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
-    pub fn sendmsg(fd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
-}
-
-// cygwin/in6.h
-s! {
-    pub struct in6_pktinfo {
-        pub ipi6_addr: in6_addr,
-        pub ipi6_ifindex: u32,
-    }
-
-    pub struct sockaddr_in6 {
-        pub sin6_family: sa_family_t,
-        pub sin6_port: in_port_t,
-        pub sin6_flowinfo: u32,
-        pub sin6_addr: in6_addr,
-        pub sin6_scope_id: u32,
-    }
-}
-
-// cygwin/in.h
 
 /// IP6 hop-by-hop options
 pub const IPPROTO_HOPOPTS: c_int = 0;
@@ -1841,178 +1790,6 @@ pub const IPPROTO_DSTOPTS: c_int = 60;
 pub const IPPROTO_RAW: c_int = 255;
 pub const IPPROTO_MAX: c_int = 256;
 
-s_no_extra_traits! {
-    pub struct in_addr {
-        pub s_addr: in_addr_t,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for in_addr {
-            fn eq(&self, other: &in_addr) -> bool {
-                self.s_addr == other.s_addr
-            }
-        }
-
-        impl Eq for in_addr {}
-
-        impl fmt::Debug for in_addr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let s_addr = self.s_addr;
-                f.debug_struct("in_addr")
-                    .field("s_addr", &s_addr)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for in_addr {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                let s_addr = self.s_addr;
-                s_addr.hash(state);
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
-    pub struct ip_mreq {
-        pub imr_multiaddr: in_addr,
-        pub imr_interface: in_addr,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for ip_mreq {
-            fn eq(&self, other: &ip_mreq) -> bool {
-                self.imr_multiaddr == other.imr_multiaddr
-                    && self.imr_interface == other.imr_interface
-            }
-        }
-
-        impl Eq for ip_mreq {}
-
-        impl fmt::Debug for ip_mreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ip_mreq")
-                    .field("imr_multiaddr", &self.imr_multiaddr)
-                    .field("imr_interface", &self.imr_interface)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for ip_mreq {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.imr_multiaddr.hash(state);
-                self.imr_interface.hash(state);
-            }
-        }
-    }
-}
-
-s! {
-    pub struct ip_mreq_source {
-        pub imr_multiaddr: in_addr,
-        pub imr_sourceaddr: in_addr,
-        pub imr_interface: in_addr,
-    }
-}
-
-s_no_extra_traits! {
-    pub struct in_pktinfo {
-        pub ipi_addr: in_addr,
-        pub ipi_ifindex: u32,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for in_pktinfo {
-            fn eq(&self, other: &in_pktinfo) -> bool {
-                self.ipi_addr == other.ipi_addr
-                    && self.ipi_ifindex == other.ipi_ifindex
-            }
-        }
-
-        impl Eq for in_pktinfo {}
-
-        impl fmt::Debug for in_pktinfo {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("in_pktinfo")
-                    .field("ipi_addr", &self.ipi_addr)
-                    .field("ipi_ifindex", &self.ipi_ifindex)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for in_pktinfo {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ipi_addr.hash(state);
-                self.ipi_ifindex.hash(state);
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
-     pub struct sockaddr_in {
-        pub sin_family: sa_family_t,
-        pub sin_port: in_port_t,
-        pub sin_addr: in_addr,
-        pub sin_zero: [u8; 8],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sockaddr_in {
-            fn eq(&self, other: &sockaddr_in) -> bool {
-                self.sin_family == other.sin_family
-                    && self.sin_port == other.sin_port
-                    && self.sin_addr == other.sin_addr
-                    && self.sin_zero == other.sin_zero
-            }
-        }
-
-        impl Eq for sockaddr_in {}
-
-        impl fmt::Debug for sockaddr_in {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_in")
-                    .field("sin_family", &self.sin_family)
-                    .field("sin_port", &self.sin_port)
-                    .field("sin_addr", &self.sin_addr)
-                    .field("sin_zero", &self.sin_zero)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for sockaddr_in {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sin_family.hash(state);
-                self.sin_port.hash(state);
-                self.sin_addr.hash(state);
-                self.sin_zero.hash(state);
-            }
-        }
-    }
-}
-
-// netdb.h
-s! {
-    pub struct addrinfo {
-        pub ai_flags: c_int,
-        pub ai_family: c_int,
-        pub ai_socktype: c_int,
-        pub ai_protocol: c_int,
-        pub ai_addrlen: socklen_t,
-        pub ai_canonname: *mut c_char,
-        pub ai_addr: *mut sockaddr,
-        pub ai_next: *mut addrinfo,
-    }
-}
-
 pub const AI_PASSIVE: c_int = 0x1;
 pub const AI_CANONNAME: c_int = 0x2;
 pub const AI_NUMERICHOST: c_int = 0x4;
@@ -2039,19 +1816,6 @@ pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 pub const EAI_OVERFLOW: c_int = 14;
 
-extern "C" {
-    pub fn getnameinfo(
-        sa: *const sockaddr,
-        salen: socklen_t,
-        host: *mut c_char,
-        hostlen: socklen_t,
-        serv: *mut c_char,
-        sevlen: socklen_t,
-        flags: c_int,
-    ) -> c_int;
-}
-
-// sys/poll.h
 pub const POLLIN: c_short = 0x1;
 pub const POLLPRI: c_short = 0x2;
 pub const POLLOUT: c_short = 0x4;
@@ -2063,18 +1827,6 @@ pub const POLLRDBAND: c_short = 0x2;
 pub const POLLWRNORM: c_short = 0x4;
 pub const POLLWRBAND: c_short = 0x4;
 
-pub type nfds_t = c_uint;
-
-extern "C" {
-    pub fn ppoll(
-        fds: *mut pollfd,
-        nfds: nfds_t,
-        timeout: *const timespec,
-        sigmask: *const sigset_t,
-    ) -> c_int;
-}
-
-// locale.h
 pub const LC_ALL: c_int = 0;
 pub const LC_COLLATE: c_int = 1;
 pub const LC_CTYPE: c_int = 2;
@@ -2091,143 +1843,11 @@ pub const LC_TIME_MASK: c_int = 1 << 5;
 pub const LC_MESSAGES_MASK: c_int = 1 << 6;
 pub const LC_GLOBAL_LOCALE: locale_t = -1isize as locale_t;
 
-s! {
-    pub struct lconv {
-        pub decimal_point: *mut c_char,
-        pub thousands_sep: *mut c_char,
-        pub grouping: *mut c_char,
-        pub int_curr_symbol: *mut c_char,
-        pub currency_symbol: *mut c_char,
-        pub mon_decimal_point: *mut c_char,
-        pub mon_thousands_sep: *mut c_char,
-        pub mon_grouping: *mut c_char,
-        pub positive_sign: *mut c_char,
-        pub negative_sign: *mut c_char,
-        pub int_frac_digits: c_char,
-        pub frac_digits: c_char,
-        pub p_cs_precedes: c_char,
-        pub p_sep_by_space: c_char,
-        pub n_cs_precedes: c_char,
-        pub n_sep_by_space: c_char,
-        pub p_sign_posn: c_char,
-        pub n_sign_posn: c_char,
-        pub int_n_cs_precedes: c_char,
-        pub int_n_sep_by_space: c_char,
-        pub int_n_sign_posn: c_char,
-        pub int_p_cs_precedes: c_char,
-        pub int_p_sep_by_space: c_char,
-        pub int_p_sign_posn: c_char,
-    }
-}
-
-extern "C" {
-    pub fn newlocale(mask: c_int, locale: *const c_char, base: locale_t) -> locale_t;
-    pub fn freelocale(loc: locale_t);
-    pub fn duplocale(base: locale_t) -> locale_t;
-    pub fn uselocale(loc: locale_t) -> locale_t;
-}
-
-// semaphore.h
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum sem {}
-impl Copy for sem {}
-impl Clone for sem {
-    fn clone(&self) -> sem {
-        *self
-    }
-}
-
-pub type sem_t = *mut sem;
-
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 
-extern "C" {
-    pub fn sem_init(sem: *mut sem_t, pshared: c_int, value: c_uint) -> c_int;
-    pub fn sem_destroy(sem: *mut sem_t) -> c_int;
-    pub fn sem_open(name: *const c_char, oflag: c_int, ...) -> *mut sem_t;
-    pub fn sem_close(sem: *mut sem_t) -> c_int;
-    pub fn sem_unlink(name: *const c_char) -> c_int;
-    pub fn sem_timedwait(sem: *mut sem_t, abstime: *const timespec) -> c_int;
-    pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
-}
-
-// sys/statvfs.h
 pub const ST_RDONLY: c_ulong = 0x80000;
 pub const ST_NOSUID: c_ulong = 0;
 
-s_no_extra_traits! {
-    pub struct statvfs {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: fsblkcnt_t,
-        pub f_bfree: fsblkcnt_t,
-        pub f_bavail: fsblkcnt_t,
-        pub f_files: fsfilcnt_t,
-        pub f_ffree: fsfilcnt_t,
-        pub f_favail: fsfilcnt_t,
-        pub f_fsid: c_ulong,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for statvfs {
-            fn eq(&self, other: &statvfs) -> bool {
-                self.f_bsize == other.f_bsize
-                    && self.f_frsize == other.f_frsize
-                    && self.f_blocks == other.f_blocks
-                    && self.f_bfree == other.f_bfree
-                    && self.f_bavail == other.f_bavail
-                    && self.f_files == other.f_files
-                    && self.f_ffree == other.f_ffree
-                    && self.f_favail == other.f_favail
-                    && self.f_fsid == other.f_fsid
-                    && self.f_flag == other.f_flag
-                    && self.f_namemax == other.f_namemax
-            }
-        }
-
-        impl Eq for statvfs {}
-
-        impl fmt::Debug for statvfs {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("statvfs")
-                    .field("f_bsize", &self.f_bsize)
-                    .field("f_frsize", &self.f_frsize)
-                    .field("f_blocks", &self.f_blocks)
-                    .field("f_bfree", &self.f_bfree)
-                    .field("f_bavail", &self.f_bavail)
-                    .field("f_files", &self.f_files)
-                    .field("f_ffree", &self.f_ffree)
-                    .field("f_favail", &self.f_favail)
-                    .field("f_fsid", &self.f_fsid)
-                    .field("f_flag", &self.f_flag)
-                    .field("f_namemax", &self.f_namemax)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for statvfs {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.f_bsize.hash(state);
-                self.f_frsize.hash(state);
-                self.f_blocks.hash(state);
-                self.f_bfree.hash(state);
-                self.f_bavail.hash(state);
-                self.f_files.hash(state);
-                self.f_ffree.hash(state);
-                self.f_favail.hash(state);
-                self.f_fsid.hash(state);
-                self.f_flag.hash(state);
-                self.f_namemax.hash(state);
-            }
-        }
-    }
-}
-
-// sys/termios.h
 pub const TIOCMGET: Ioctl = 0x5415;
 pub const TIOCMBIS: Ioctl = 0x5416;
 pub const TIOCMBIC: Ioctl = 0x5417;
@@ -2387,113 +2007,19 @@ pub const VTIME: usize = 16;
 pub const VWERASE: usize = 17;
 pub const NCCS: usize = 18;
 
-pub type tcflag_t = c_uint;
-pub type speed_t = c_uint;
-
-s! {
-    pub struct termios {
-        pub c_iflag: tcflag_t,
-        pub c_oflag: tcflag_t,
-        pub c_cflag: tcflag_t,
-        pub c_lflag: tcflag_t,
-        pub c_line:  c_char,
-        pub c_cc: [cc_t; NCCS],
-        pub c_ispeed: speed_t,
-        pub c_ospeed: speed_t,
-    }
-}
-
 pub const TIOCGWINSZ: Ioctl = 0x5401;
 pub const TIOCSWINSZ: Ioctl = 0x5402;
 pub const TIOCLINUX: Ioctl = 0x5403;
 pub const TIOCGPGRP: Ioctl = 0x540f;
 pub const TIOCSPGRP: Ioctl = 0x5410;
 
-// cygwin/wait.h
 pub const WNOHANG: c_int = 1;
 pub const WUNTRACED: c_int = 2;
 pub const WCONTINUED: c_int = 8;
 
-safe_f! {
-    pub {const} fn WIFEXITED(status: c_int) -> bool {
-        (status & 0xff) == 0
-    }
-
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
-        (status & 0o177) != 0o177 && (status & 0o177) != 0
-    }
-
-    pub {const} fn WIFSTOPPED(status: c_int) -> bool {
-        (status & 0xff) == 0o177
-    }
-
-    pub {const} fn WIFCONTINUED(status: c_int) -> bool {
-        (status & 0o177777) == 0o177777
-    }
-
-    pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub {const} fn WTERMSIG(status: c_int) -> c_int {
-        status & 0o177
-    }
-
-    pub {const} fn WSTOPSIG(status: c_int) -> c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub {const} fn WCOREDUMP(status: c_int) -> bool {
-        WIFSIGNALED(status) && (status & 0x80) != 0
-    }
-}
-
-// cygwin/stdlib.h
-extern "C" {
-    pub fn clearenv() -> c_int;
-    pub fn ptsname_r(fd: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
-    pub fn getpt() -> c_int;
-    pub fn memalign(align: size_t, size: size_t) -> *mut c_void;
-    pub fn getloadavg(loadavg: *mut c_double, nelem: c_int) -> c_int;
-}
-
-// stdlib.h
 pub const EXIT_FAILURE: c_int = 1;
 pub const EXIT_SUCCESS: c_int = 0;
 
-extern "C" {
-    pub fn abs(i: c_int) -> c_int;
-    pub fn arc4random() -> u32;
-    pub fn arc4random_uniform(l: u32) -> u32;
-    pub fn arc4random_buf(buf: *mut c_void, size: size_t);
-    pub fn labs(i: c_long) -> c_long;
-    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
-    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
-    pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
-    pub fn rand() -> c_int;
-    pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
-    pub fn reallocf(ptr: *mut c_void, size: size_t) -> *mut c_void;
-    pub fn srand(seed: c_uint);
-    pub fn drand48() -> c_double;
-    pub fn erand48(xseed: *mut c_ushort) -> c_double;
-    pub fn jrand48(xseed: *mut c_ushort) -> c_long;
-    pub fn lcong48(p: *mut c_ushort);
-    pub fn lrand48() -> c_long;
-    pub fn mrand48() -> c_long;
-    pub fn nrand48(xseed: *mut c_ushort) -> c_long;
-    pub fn seed48(xseed: *mut c_ushort) -> *mut c_ushort;
-    pub fn srand48(seed: c_long);
-
-    pub fn qsort_r(
-        base: *mut c_void,
-        num: size_t,
-        size: size_t,
-        compar: Option<unsafe extern "C" fn(*const c_void, *const c_void, *mut c_void) -> c_int>,
-        arg: *mut c_void,
-    );
-}
-
-// sys/mman.h
 pub const PROT_NONE: c_int = 0;
 pub const PROT_READ: c_int = 1;
 pub const PROT_WRITE: c_int = 2;
@@ -2521,138 +2047,10 @@ pub const MADV_RANDOM: c_int = 2;
 pub const MADV_WILLNEED: c_int = 3;
 pub const MADV_DONTNEED: c_int = 4;
 
-extern "C" {
-    pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
-    pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
-    pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
-    pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
-    pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
-    pub fn shm_unlink(name: *const c_char) -> c_int;
-}
-
-// strings.h
-extern "C" {
-    pub fn explicit_bzero(s: *mut c_void, len: size_t);
-    pub fn ffs(value: c_int) -> c_int;
-    pub fn ffsl(value: c_long) -> c_int;
-    pub fn ffsll(value: c_longlong) -> c_int;
-    pub fn fls(value: c_int) -> c_int;
-    pub fn flsl(value: c_long) -> c_int;
-    pub fn flsll(value: c_longlong) -> c_int;
-    pub fn strcasecmp_l(s1: *const c_char, s2: *const c_char, loc: locale_t) -> c_int;
-
-    pub fn strncasecmp_l(s1: *const c_char, s2: *const c_char, n: size_t, loc: locale_t) -> c_int;
-}
-
-// string.h
-extern "C" {
-    pub fn timingsafe_bcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
-    pub fn timingsafe_memcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
-
-    pub fn memccpy(dest: *mut c_void, src: *const c_void, c: c_int, count: size_t) -> *mut c_void;
-
-    pub fn memmem(
-        haystack: *const c_void,
-        haystacklen: size_t,
-        needle: *const c_void,
-        needlelen: size_t,
-    ) -> *mut c_void;
-
-    pub fn memrchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
-    pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
-    pub fn strsep(string: *mut *mut c_char, delim: *const c_char) -> *mut c_char;
-
-    #[link_name = "__gnu_basename"]
-    pub fn basename(path: *const c_char) -> *mut c_char;
-}
-
-// sys/un.h
-s_no_extra_traits! {
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 108]
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sockaddr_un {
-            fn eq(&self, other: &sockaddr_un) -> bool {
-                self.sun_family == other.sun_family
-                    && self
-                    .sun_path
-                    .iter()
-                    .zip(other.sun_path.iter())
-                    .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for sockaddr_un {}
-
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_family", &self.sun_family)
-                // FIXME: .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for sockaddr_un {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sun_family.hash(state);
-                self.sun_path.hash(state);
-            }
-        }
-    }
-}
-
-// sys/unistd.h
-extern "C" {
-    pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
-    pub fn dup3(src: c_int, dst: c_int, flags: c_int) -> c_int;
-    pub fn eaccess(pathname: *const c_char, mode: c_int) -> c_int;
-    pub fn euidaccess(pathname: *const c_char, mode: c_int) -> c_int;
-    // pub fn execlpe(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-
-    pub fn execvpe(
-        file: *const c_char,
-        argv: *const *const c_char,
-        envp: *const *const c_char,
-    ) -> c_int;
-
-    pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
-
-    pub fn fexecve(fd: c_int, argv: *const *const c_char, envp: *const *const c_char) -> c_int;
-
-    pub fn fdatasync(fd: c_int) -> c_int;
-    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
-    pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
-    pub fn gethostid() -> c_long;
-    pub fn getpagesize() -> c_int;
-    pub fn getpeereid(socket: c_int, euid: *mut uid_t, egid: *mut gid_t) -> c_int;
-}
-
 pub const F_ULOCK: c_int = 0;
 pub const F_LOCK: c_int = 1;
 pub const F_TLOCK: c_int = 2;
 pub const F_TEST: c_int = 3;
-
-extern "C" {
-    pub fn pthread_atfork(
-        prepare: Option<unsafe extern "C" fn()>,
-        parent: Option<unsafe extern "C" fn()>,
-        child: Option<unsafe extern "C" fn()>,
-    ) -> c_int;
-
-    pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
-    pub fn sbrk(increment: intptr_t) -> *mut c_void;
-    pub fn setgroups(ngroups: c_int, ptr: *const gid_t) -> c_int;
-    pub fn sethostname(name: *const c_char, len: size_t) -> c_int;
-    pub fn vhangup() -> c_int;
-    pub fn getdtablesize() -> c_int;
-    pub fn sync();
-}
 
 pub const F_OK: c_int = 0;
 pub const R_OK: c_int = 4;
@@ -2837,7 +2235,6 @@ pub const _PC_REC_XFER_ALIGN: c_int = 19;
 pub const _PC_TIMESTAMP_RESOLUTION: c_int = 20;
 pub const _CS_PATH: c_int = 0;
 
-// sys/_default_fcntl.h
 pub const O_ACCMODE: c_int = 0x3;
 pub const O_RDONLY: c_int = 0;
 pub const O_WRONLY: c_int = 1;
@@ -2888,11 +2285,6 @@ pub const LOCK_SH: c_int = 1;
 pub const LOCK_EX: c_int = 2;
 pub const LOCK_NB: c_int = 4;
 pub const LOCK_UN: c_int = 8;
-
-// sys/errno.h
-extern "C" {
-    pub fn __errno() -> *mut c_int;
-}
 
 pub const EPERM: c_int = 1;
 pub const ENOENT: c_int = 2;
@@ -3018,35 +2410,10 @@ pub const EOWNERDEAD: c_int = 142;
 pub const ESTRPIPE: c_int = 143;
 pub const EWOULDBLOCK: c_int = EAGAIN; /* Operation would block */
 
-// sys/sched.h
 pub const SCHED_OTHER: c_int = 3;
 pub const SCHED_FIFO: c_int = 1;
 pub const SCHED_RR: c_int = 2;
 
-s! {
-    pub struct sched_param {
-        pub sched_priority: c_int,
-    }
-}
-
-// sched.h
-extern "C" {
-    pub fn sched_setparam(pid: pid_t, param: *const sched_param) -> c_int;
-    pub fn sched_getparam(pid: pid_t, param: *mut sched_param) -> c_int;
-
-    pub fn sched_setscheduler(pid: pid_t, policy: c_int, param: *const sched_param) -> c_int;
-
-    pub fn sched_getscheduler(pid: pid_t) -> c_int;
-    pub fn sched_get_priority_max(policy: c_int) -> c_int;
-    pub fn sched_get_priority_min(policy: c_int) -> c_int;
-    pub fn sched_rr_get_interval(pid: pid_t, t: *mut timespec) -> c_int;
-    pub fn sched_getcpu() -> c_int;
-    pub fn sched_getaffinity(pid: pid_t, cpusetsize: size_t, mask: *mut cpu_set_t) -> c_int;
-
-    pub fn sched_setaffinity(pid: pid_t, cpusetsize: size_t, cpuset: *const cpu_set_t) -> c_int;
-}
-
-// pthread.h
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 21 as *mut _;
 pub const PTHREAD_CREATE_DETACHED: c_int = 1;
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
@@ -3061,7 +2428,521 @@ pub const PTHREAD_PROCESS_SHARED: c_int = 1;
 pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 22 as *mut _;
 
+pub const LITTLE_ENDIAN: c_int = 1234;
+pub const BIG_ENDIAN: c_int = 4321;
+
+pub const TCP_NODELAY: c_int = 1;
+pub const TCP_KEEPIDLE: c_int = 3;
+pub const TCP_MAXSEG: c_int = 4;
+pub const TCP_QUICKACK: c_int = 12;
+pub const TCP_USER_TIMEOUT: c_int = 14;
+pub const TCP_FASTOPEN: c_int = 15;
+pub const TCP_KEEPCNT: c_int = 16;
+pub const TCP_KEEPINTVL: c_int = 17;
+
+pub const WINDOWS_POST: Ioctl = 0;
+pub const WINDOWS_SEND: Ioctl = 1;
+pub const WINDOWS_HWND: Ioctl = 2;
+
+pub const MOUNT_TEXT: c_uint = 0x01;
+pub const MOUNT_SYSTEM: c_uint = 0x08;
+pub const MOUNT_EXEC: c_uint = 0x10;
+pub const MOUNT_CYGDRIVE: c_uint = 0x20;
+pub const MOUNT_CYGWIN_EXEC: c_uint = 0x40;
+pub const MOUNT_SPARSE: c_uint = 0x80;
+pub const MOUNT_NOTEXEC: c_uint = 0x100;
+pub const MOUNT_DEVFS: c_uint = 0x200;
+pub const MOUNT_PROC: c_uint = 0x400;
+pub const MOUNT_RO: c_uint = 0x1000;
+pub const MOUNT_NOACL: c_uint = 0x2000;
+pub const MOUNT_NOPOSIX: c_uint = 0x4000;
+pub const MOUNT_OVERRIDE: c_uint = 0x8000;
+pub const MOUNT_IMMUTABLE: c_uint = 0x10000;
+pub const MOUNT_AUTOMATIC: c_uint = 0x20000;
+pub const MOUNT_DOS: c_uint = 0x40000;
+pub const MOUNT_IHASH: c_uint = 0x80000;
+pub const MOUNT_BIND: c_uint = 0x100000;
+pub const MOUNT_USER_TEMP: c_uint = 0x200000;
+pub const MOUNT_DONT_USE: c_uint = 0x80000000;
+
+pub const _POSIX_VDISABLE: cc_t = 0;
+
+pub const GRND_NONBLOCK: c_uint = 0x1;
+pub const GRND_RANDOM: c_uint = 0x2;
+
+pub const _IONBF: c_int = 2;
+pub const BUFSIZ: c_int = 1024;
+
+pub const POSIX_SPAWN_RESETIDS: c_int = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: c_int = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: c_int = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: c_int = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: c_int = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: c_int = 0x20;
+
+// intentionally not public, only used for fd_set
+cfg_if! {
+    if #[cfg(target_pointer_width = "32")] {
+        const ULONG_SIZE: usize = 32;
+    } else if #[cfg(target_pointer_width = "64")] {
+        const ULONG_SIZE: usize = 64;
+    } else {
+        // Unknown target_pointer_width
+    }
+}
+
+f! {
+    pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
+        return
+    }
+
+    pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
+        let fd = fd as usize;
+        let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
+    }
+
+    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
+        let fd = fd as usize;
+        let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        (*set).fds_bits[fd / size] |= 1 << (fd % size);
+        return
+    }
+
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
+        for slot in (*set).fds_bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+
+    pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
+        let _dummy: cpu_set_t = core::mem::zeroed();
+        let size_in_bits = 8 * core::mem::size_of_val(&_dummy.bits[0]);
+        ((count as size_t + size_in_bits - 1) / 8) as size_t
+    }
+
+    pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
+        let mut s: u32 = 0;
+        let size_of_mask = core::mem::size_of_val(&cpuset.bits[0]);
+        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+            s += i.count_ones();
+        };
+        s as c_int
+    }
+
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+        for slot in cpuset.bits.iter_mut() {
+            *slot = 0;
+        }
+    }
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let size_in_bits
+            = 8 * core::mem::size_of_val(&cpuset.bits[0]);
+        if cpu < size_in_bits {
+            let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
+            cpuset.bits[idx] |= 1 << offset;
+            ()
+        }
+    }
+
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+        let size_in_bits
+            = 8 * core::mem::size_of_val(&cpuset.bits[0]);
+        if cpu < size_in_bits {
+            let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
+            cpuset.bits[idx] &= !(1 << offset);
+            ()
+        }
+    }
+
+    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
+        let size_in_bits = 8 * core::mem::size_of_val(&cpuset.bits[0]);
+        if cpu < size_in_bits {
+            let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
+            0 != (cpuset.bits[idx] & (1 << offset))
+        } else {
+            false
+        }
+    }
+
+    pub fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
+        CPU_COUNT_S(::core::mem::size_of::<cpu_set_t>(), cpuset)
+    }
+
+    pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
+        set1.bits == set2.bits
+    }
+
+    pub fn major(dev: dev_t) -> c_uint {
+        ((dev >> 16) & 0xffff) as c_uint
+    }
+
+    pub fn minor(dev: dev_t) -> c_uint {
+        (dev & 0xffff) as c_uint
+    }
+
+    pub fn CMSG_LEN(length: c_uint) -> c_uint {
+        CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as c_uint + length
+    }
+
+    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()))
+            as c_uint
+    }
+
+    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
+        if (*mhdr).msg_controllen as usize >= core::mem::size_of::<cmsghdr>() {
+            (*mhdr).msg_control as *mut cmsghdr
+        } else {
+            0 as *mut cmsghdr
+        }
+    }
+
+    pub fn CMSG_NXTHDR(mhdr: *const msghdr,
+                       cmsg: *const cmsghdr) -> *mut cmsghdr {
+        let next = (cmsg as usize +
+                    CMSG_ALIGN((*cmsg).cmsg_len as usize))
+            as *mut cmsghdr;
+        let max = (*mhdr).msg_control as usize
+            + (*mhdr).msg_controllen as usize;
+        if next as usize + CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as usize > max
+        {
+            0 as *mut cmsghdr
+        } else {
+            next as *mut cmsghdr
+        }
+    }
+
+    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+        cmsg.offset(1) as *mut c_uchar
+    }
+}
+
+safe_f! {
+    pub {const} fn makedev(ma: c_uint, mi: c_uint) -> dev_t {
+        let ma = ma as dev_t;
+        let mi = mi as dev_t;
+        (ma << 16) | (mi & 0xffff)
+    }
+
+    pub {const} fn WIFEXITED(status: c_int) -> bool {
+        (status & 0xff) == 0
+    }
+
+    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+        (status & 0o177) != 0o177 && (status & 0o177) != 0
+    }
+
+    pub {const} fn WIFSTOPPED(status: c_int) -> bool {
+        (status & 0xff) == 0o177
+    }
+
+    pub {const} fn WIFCONTINUED(status: c_int) -> bool {
+        (status & 0o177777) == 0o177777
+    }
+
+    pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub {const} fn WTERMSIG(status: c_int) -> c_int {
+        status & 0o177
+    }
+
+    pub {const} fn WSTOPSIG(status: c_int) -> c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub {const} fn WCOREDUMP(status: c_int) -> bool {
+        WIFSIGNALED(status) && (status & 0x80) != 0
+    }
+}
+
+const_fn! {
+    {const} fn CMSG_ALIGN(len: usize) -> usize {
+        len + core::mem::size_of::<usize>() - 1 & !(::core::mem::size_of::<usize>() - 1)
+    }
+}
+
 extern "C" {
+    pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
+    pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
+
+    pub fn pthread_sigmask(how: c_int, set: *const sigset_t, oldset: *mut sigset_t) -> c_int;
+    pub fn sigsuspend(mask: *const sigset_t) -> c_int;
+    pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
+    pub fn pthread_kill(thread: pthread_t, sig: c_int) -> c_int;
+
+    pub fn sigtimedwait(
+        set: *const sigset_t,
+        info: *mut siginfo_t,
+        timeout: *const timespec,
+    ) -> c_int;
+
+    pub fn strftime(s: *mut c_char, max: size_t, format: *const c_char, tm: *const tm) -> size_t;
+
+    pub fn asctime_r(tm: *const tm, buf: *mut c_char) -> *mut c_char;
+    pub fn ctime_r(timep: *const time_t, buf: *mut c_char) -> *mut c_char;
+    pub fn strptime(s: *const c_char, format: *const c_char, tm: *mut tm) -> *mut c_char;
+    pub fn clock_settime(clk_id: clockid_t, tp: *const timespec) -> c_int;
+    pub fn clock_gettime(clk_id: clockid_t, tp: *mut timespec) -> c_int;
+    pub fn clock_getres(clk_id: clockid_t, tp: *mut timespec) -> c_int;
+
+    pub fn timer_create(clockid: clockid_t, sevp: *mut sigevent, timerid: *mut timer_t) -> c_int;
+
+    pub fn timer_delete(timerid: timer_t) -> c_int;
+
+    pub fn timer_settime(
+        timerid: timer_t,
+        flags: c_int,
+        new_value: *const itimerspec,
+        old_value: *mut itimerspec,
+    ) -> c_int;
+
+    pub fn timer_gettime(timerid: timer_t, curr_value: *mut itimerspec) -> c_int;
+    pub fn timer_getoverrun(timerid: timer_t) -> c_int;
+
+    pub fn clock_nanosleep(
+        clk_id: clockid_t,
+        flags: c_int,
+        rqtp: *const timespec,
+        rmtp: *mut timespec,
+    ) -> c_int;
+
+    pub fn clock_getcpuclockid(pid: pid_t, clk_id: *mut clockid_t) -> c_int;
+
+    pub fn futimes(fd: c_int, times: *const timeval) -> c_int;
+    pub fn lutimes(file: *const c_char, times: *const timeval) -> c_int;
+    pub fn settimeofday(tv: *const timeval, tz: *const timezone) -> c_int;
+    pub fn getitimer(which: c_int, curr_value: *mut itimerval) -> c_int;
+
+    pub fn setitimer(which: c_int, new_value: *const itimerval, old_value: *mut itimerval)
+        -> c_int;
+
+    pub fn gettimeofday(tp: *mut timeval, tz: *mut c_void) -> c_int;
+    pub fn futimesat(fd: c_int, path: *const c_char, times: *const timeval) -> c_int;
+
+    pub fn getrlimit(resource: c_int, rlim: *mut rlimit) -> c_int;
+    pub fn setrlimit(resource: c_int, rlim: *const rlimit) -> c_int;
+    pub fn getpriority(which: c_int, who: id_t) -> c_int;
+    pub fn setpriority(which: c_int, who: id_t, prio: c_int) -> c_int;
+
+    pub fn getpwnam_r(
+        name: *const c_char,
+        pwd: *mut passwd,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut passwd,
+    ) -> c_int;
+
+    pub fn getpwuid_r(
+        uid: uid_t,
+        pwd: *mut passwd,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut passwd,
+    ) -> c_int;
+
+    pub fn getpwent() -> *mut passwd;
+    pub fn setpwent();
+    pub fn endpwent();
+
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
+
+    pub fn readv(fd: c_int, iov: *const iovec, iovcnt: c_int) -> ssize_t;
+    pub fn writev(fd: c_int, iov: *const iovec, iovcnt: c_int) -> ssize_t;
+
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
+
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
+
+    pub fn utimensat(
+        dirfd: c_int,
+        path: *const c_char,
+        times: *const timespec,
+        flag: c_int,
+    ) -> c_int;
+
+    pub fn futimens(fd: c_int, times: *const timespec) -> c_int;
+
+    pub fn dlfork(val: c_int);
+
+    pub fn accept4(s: c_int, addr: *mut sockaddr, addrlen: *mut socklen_t, flags: c_int) -> c_int;
+
+    pub fn bind(socket: c_int, address: *const sockaddr, address_len: socklen_t) -> c_int;
+
+    pub fn recvfrom(
+        socket: c_int,
+        buf: *mut c_void,
+        len: size_t,
+        flags: c_int,
+        addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+    ) -> ssize_t;
+
+    pub fn recvmsg(fd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
+    pub fn sendmsg(fd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
+
+    pub fn getnameinfo(
+        sa: *const sockaddr,
+        salen: socklen_t,
+        host: *mut c_char,
+        hostlen: socklen_t,
+        serv: *mut c_char,
+        sevlen: socklen_t,
+        flags: c_int,
+    ) -> c_int;
+
+    pub fn ppoll(
+        fds: *mut pollfd,
+        nfds: nfds_t,
+        timeout: *const timespec,
+        sigmask: *const sigset_t,
+    ) -> c_int;
+
+    pub fn newlocale(mask: c_int, locale: *const c_char, base: locale_t) -> locale_t;
+    pub fn freelocale(loc: locale_t);
+    pub fn duplocale(base: locale_t) -> locale_t;
+    pub fn uselocale(loc: locale_t) -> locale_t;
+
+    pub fn sem_init(sem: *mut sem_t, pshared: c_int, value: c_uint) -> c_int;
+    pub fn sem_destroy(sem: *mut sem_t) -> c_int;
+    pub fn sem_open(name: *const c_char, oflag: c_int, ...) -> *mut sem_t;
+    pub fn sem_close(sem: *mut sem_t) -> c_int;
+    pub fn sem_unlink(name: *const c_char) -> c_int;
+    pub fn sem_timedwait(sem: *mut sem_t, abstime: *const timespec) -> c_int;
+    pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
+
+    pub fn clearenv() -> c_int;
+    pub fn ptsname_r(fd: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
+    pub fn getpt() -> c_int;
+    pub fn memalign(align: size_t, size: size_t) -> *mut c_void;
+    pub fn getloadavg(loadavg: *mut c_double, nelem: c_int) -> c_int;
+
+    pub fn abs(i: c_int) -> c_int;
+    pub fn arc4random() -> u32;
+    pub fn arc4random_uniform(l: u32) -> u32;
+    pub fn arc4random_buf(buf: *mut c_void, size: size_t);
+    pub fn labs(i: c_long) -> c_long;
+    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
+    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
+    pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
+    pub fn rand() -> c_int;
+    pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
+    pub fn reallocf(ptr: *mut c_void, size: size_t) -> *mut c_void;
+    pub fn srand(seed: c_uint);
+    pub fn drand48() -> c_double;
+    pub fn erand48(xseed: *mut c_ushort) -> c_double;
+    pub fn jrand48(xseed: *mut c_ushort) -> c_long;
+    pub fn lcong48(p: *mut c_ushort);
+    pub fn lrand48() -> c_long;
+    pub fn mrand48() -> c_long;
+    pub fn nrand48(xseed: *mut c_ushort) -> c_long;
+    pub fn seed48(xseed: *mut c_ushort) -> *mut c_ushort;
+    pub fn srand48(seed: c_long);
+
+    pub fn qsort_r(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        compar: Option<unsafe extern "C" fn(*const c_void, *const c_void, *mut c_void) -> c_int>,
+        arg: *mut c_void,
+    );
+
+    pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
+    pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
+    pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
+    pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
+    pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
+    pub fn shm_unlink(name: *const c_char) -> c_int;
+
+    pub fn explicit_bzero(s: *mut c_void, len: size_t);
+    pub fn ffs(value: c_int) -> c_int;
+    pub fn ffsl(value: c_long) -> c_int;
+    pub fn ffsll(value: c_longlong) -> c_int;
+    pub fn fls(value: c_int) -> c_int;
+    pub fn flsl(value: c_long) -> c_int;
+    pub fn flsll(value: c_longlong) -> c_int;
+    pub fn strcasecmp_l(s1: *const c_char, s2: *const c_char, loc: locale_t) -> c_int;
+
+    pub fn strncasecmp_l(s1: *const c_char, s2: *const c_char, n: size_t, loc: locale_t) -> c_int;
+
+    pub fn timingsafe_bcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
+    pub fn timingsafe_memcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
+
+    pub fn memccpy(dest: *mut c_void, src: *const c_void, c: c_int, count: size_t) -> *mut c_void;
+
+    pub fn memmem(
+        haystack: *const c_void,
+        haystacklen: size_t,
+        needle: *const c_void,
+        needlelen: size_t,
+    ) -> *mut c_void;
+
+    pub fn memrchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
+    pub fn strsep(string: *mut *mut c_char, delim: *const c_char) -> *mut c_char;
+
+    #[link_name = "__gnu_basename"]
+    pub fn basename(path: *const c_char) -> *mut c_char;
+
+    pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
+    pub fn dup3(src: c_int, dst: c_int, flags: c_int) -> c_int;
+    pub fn eaccess(pathname: *const c_char, mode: c_int) -> c_int;
+    pub fn euidaccess(pathname: *const c_char, mode: c_int) -> c_int;
+    // pub fn execlpe(path: *const c_char, arg0: *const c_char, ...) -> c_int;
+
+    pub fn execvpe(
+        file: *const c_char,
+        argv: *const *const c_char,
+        envp: *const *const c_char,
+    ) -> c_int;
+
+    pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
+
+    pub fn fexecve(fd: c_int, argv: *const *const c_char, envp: *const *const c_char) -> c_int;
+
+    pub fn fdatasync(fd: c_int) -> c_int;
+    pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
+    pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
+    pub fn gethostid() -> c_long;
+    pub fn getpagesize() -> c_int;
+    pub fn getpeereid(socket: c_int, euid: *mut uid_t, egid: *mut gid_t) -> c_int;
+
+    pub fn pthread_atfork(
+        prepare: Option<unsafe extern "C" fn()>,
+        parent: Option<unsafe extern "C" fn()>,
+        child: Option<unsafe extern "C" fn()>,
+    ) -> c_int;
+
+    pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
+    pub fn sbrk(increment: intptr_t) -> *mut c_void;
+    pub fn setgroups(ngroups: c_int, ptr: *const gid_t) -> c_int;
+    pub fn sethostname(name: *const c_char, len: size_t) -> c_int;
+    pub fn vhangup() -> c_int;
+    pub fn getdtablesize() -> c_int;
+    pub fn sync();
+
+    pub fn __errno() -> *mut c_int;
+
+    pub fn sched_setparam(pid: pid_t, param: *const sched_param) -> c_int;
+    pub fn sched_getparam(pid: pid_t, param: *mut sched_param) -> c_int;
+
+    pub fn sched_setscheduler(pid: pid_t, policy: c_int, param: *const sched_param) -> c_int;
+
+    pub fn sched_getscheduler(pid: pid_t) -> c_int;
+    pub fn sched_get_priority_max(policy: c_int) -> c_int;
+    pub fn sched_get_priority_min(policy: c_int) -> c_int;
+    pub fn sched_rr_get_interval(pid: pid_t, t: *mut timespec) -> c_int;
+    pub fn sched_getcpu() -> c_int;
+    pub fn sched_getaffinity(pid: pid_t, cpusetsize: size_t, mask: *mut cpu_set_t) -> c_int;
+
+    pub fn sched_setaffinity(pid: pid_t, cpusetsize: size_t, cpuset: *const cpu_set_t) -> c_int;
+
     pub fn pthread_attr_getguardsize(attr: *const pthread_attr_t, guardsize: *mut size_t) -> c_int;
 
     pub fn pthread_attr_getschedparam(
@@ -3185,185 +3066,22 @@ extern "C" {
 
     pub fn pthread_setname_np(thread: pthread_t, name: *const c_char) -> c_int;
     pub fn pthread_sigqueue(thread: *mut pthread_t, sig: c_int, value: sigval) -> c_int;
-}
 
-// bits/endian.h
-pub const LITTLE_ENDIAN: c_int = 1234;
-pub const BIG_ENDIAN: c_int = 4321;
-
-// netinet/tcp.h
-pub const TCP_NODELAY: c_int = 1;
-pub const TCP_KEEPIDLE: c_int = 3;
-pub const TCP_MAXSEG: c_int = 4;
-pub const TCP_QUICKACK: c_int = 12;
-pub const TCP_USER_TIMEOUT: c_int = 14;
-pub const TCP_FASTOPEN: c_int = 15;
-pub const TCP_KEEPCNT: c_int = 16;
-pub const TCP_KEEPINTVL: c_int = 17;
-
-// sys/ioctl.h
-pub const WINDOWS_POST: Ioctl = 0;
-pub const WINDOWS_SEND: Ioctl = 1;
-pub const WINDOWS_HWND: Ioctl = 2;
-
-extern "C" {
     pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
-}
 
-// sys/random.h
-extern "C" {
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
-}
 
-// sys/mount.h
-pub const MOUNT_TEXT: c_uint = 0x01;
-pub const MOUNT_SYSTEM: c_uint = 0x08;
-pub const MOUNT_EXEC: c_uint = 0x10;
-pub const MOUNT_CYGDRIVE: c_uint = 0x20;
-pub const MOUNT_CYGWIN_EXEC: c_uint = 0x40;
-pub const MOUNT_SPARSE: c_uint = 0x80;
-pub const MOUNT_NOTEXEC: c_uint = 0x100;
-pub const MOUNT_DEVFS: c_uint = 0x200;
-pub const MOUNT_PROC: c_uint = 0x400;
-pub const MOUNT_RO: c_uint = 0x1000;
-pub const MOUNT_NOACL: c_uint = 0x2000;
-pub const MOUNT_NOPOSIX: c_uint = 0x4000;
-pub const MOUNT_OVERRIDE: c_uint = 0x8000;
-pub const MOUNT_IMMUTABLE: c_uint = 0x10000;
-pub const MOUNT_AUTOMATIC: c_uint = 0x20000;
-pub const MOUNT_DOS: c_uint = 0x40000;
-pub const MOUNT_IHASH: c_uint = 0x80000;
-pub const MOUNT_BIND: c_uint = 0x100000;
-pub const MOUNT_USER_TEMP: c_uint = 0x200000;
-pub const MOUNT_DONT_USE: c_uint = 0x80000000;
-
-extern "C" {
     pub fn mount(src: *const c_char, target: *const c_char, flags: c_uint) -> c_int;
 
     pub fn umount(target: *const c_char) -> c_int;
     pub fn cygwin_umount(target: *const c_char, flags: c_uint) -> c_int;
-}
 
-// sys/features.h
-pub const _POSIX_VDISABLE: cc_t = 0;
-
-// dirent.h
-extern "C" {
     pub fn dirfd(dirp: *mut DIR) -> c_int;
     pub fn seekdir(dirp: *mut DIR, loc: c_long);
     pub fn telldir(dirp: *mut DIR) -> c_long;
-}
 
-// machine/types.h
-pub type vm_offset_t = c_ulong;
-
-s! {
-    pub struct flock {
-        pub l_type: c_short,
-        pub l_whence: c_short,
-        pub l_start: off_t,
-        pub l_len: off_t,
-        pub l_pid: pid_t,
-    }
-}
-
-// sys/utsname.h
-s_no_extra_traits! {
-    pub struct utsname {
-        pub sysname: [c_char; 65],
-        pub nodename: [c_char; 65],
-        pub release: [c_char; 65],
-        pub version: [c_char; 65],
-        pub machine: [c_char; 65],
-        pub domainname: [c_char; 65],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for utsname {
-            fn eq(&self, other: &utsname) -> bool {
-                self.sysname
-                    .iter()
-                    .zip(other.sysname.iter())
-                    .all(|(a,b)| a == b)
-                    && self
-                    .nodename
-                    .iter()
-                    .zip(other.nodename.iter())
-                    .all(|(a,b)| a == b)
-                    && self
-                    .release
-                    .iter()
-                    .zip(other.release.iter())
-                    .all(|(a,b)| a == b)
-                    && self
-                    .version
-                    .iter()
-                    .zip(other.version.iter())
-                    .all(|(a,b)| a == b)
-                    && self
-                    .machine
-                    .iter()
-                    .zip(other.machine.iter())
-                    .all(|(a,b)| a == b)
-                    && self
-                    .domainname
-                    .iter()
-                    .zip(other.domainname.iter())
-                    .all(|(a,b)| a == b)
-            }
-        }
-
-        impl Eq for utsname {}
-
-        impl fmt::Debug for utsname {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utsname")
-                // FIXME: .field("sysname", &self.sysname)
-                // FIXME: .field("nodename", &self.nodename)
-                // FIXME: .field("release", &self.release)
-                // FIXME: .field("version", &self.version)
-                // FIXME: .field("machine", &self.machine)
-                // FIXME: .field("domainname", &self.domainname)
-                    .finish()
-            }
-        }
-
-        impl hash::Hash for utsname {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sysname.hash(state);
-                self.nodename.hash(state);
-                self.release.hash(state);
-                self.version.hash(state);
-                self.machine.hash(state);
-                self.domainname.hash(state);
-            }
-        }
-    }
-}
-
-extern "C" {
     pub fn uname(buf: *mut utsname) -> c_int;
-}
 
-pub const GRND_NONBLOCK: c_uint = 0x1;
-pub const GRND_RANDOM: c_uint = 0x2;
-
-pub const _IONBF: c_int = 2;
-pub const BUFSIZ: c_int = 1024;
-
-pub type posix_spawn_file_actions_t = *mut c_void;
-pub type posix_spawnattr_t = *mut c_void;
-
-pub const POSIX_SPAWN_RESETIDS: c_int = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: c_int = 0x02;
-pub const POSIX_SPAWN_SETSCHEDPARAM: c_int = 0x04;
-pub const POSIX_SPAWN_SETSCHEDULER: c_int = 0x08;
-pub const POSIX_SPAWN_SETSIGDEF: c_int = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: c_int = 0x20;
-
-extern "C" {
     pub fn posix_spawn(
         pid: *mut pid_t,
         path: *const c_char,
