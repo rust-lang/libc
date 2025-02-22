@@ -563,7 +563,7 @@ cfg_if! {
                 self.fds_bits
                     .iter()
                     .zip(other.fds_bits.iter())
-                    .all(|(a,b)| a == b)
+                    .all(|(a, b)| a == b)
             }
         }
 
@@ -1029,7 +1029,7 @@ cfg_if! {
                         .sa_data
                         .iter()
                         .zip(other.sa_data.iter())
-                        .all(|(a,b)| a == b)
+                        .all(|(a, b)| a == b)
             }
         }
 
@@ -1154,7 +1154,7 @@ cfg_if! {
                         .d_name
                         .iter()
                         .zip(other.d_name.iter())
-                        .all(|(a,b)| a == b)
+                        .all(|(a, b)| a == b)
             }
         }
 
