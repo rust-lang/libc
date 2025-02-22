@@ -185,6 +185,7 @@ s! {
         pub mr_address: [c_uchar; 8],
     }
 
+    #[deprecated(since = "0.2.70", note = "sockaddr_ll type must be used instead")]
     pub struct sockaddr_pkt {
         pub spkt_family: c_ushort,
         pub spkt_device: [c_uchar; 14],
