@@ -10,6 +10,7 @@
     target_os = "linux",
     target_os = "netbsd",
     target_os = "openbsd",
+    target_os = "cygwin",
 ))]
 mod t {
     use libc::{self, c_uint, dev_t};
@@ -81,6 +82,7 @@ mod t {
         target_os = "freebsd",
         target_os = "fuchsia",
         target_os = "linux",
+        target_os = "cygwin",
     ))]
     #[test]
     fn test_fbsd12_like() {
