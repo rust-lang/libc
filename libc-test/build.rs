@@ -680,7 +680,7 @@ fn test_windows(target: &str) {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "DIR" | "Dl_info" => ty.to_string(),
 
-            // FIXME: these don't exist:
+            // FIXME(windows): these don't exist:
             "time64_t" => "__time64_t".to_string(),
             "ssize_t" => "SSIZE_T".to_string(),
 
@@ -712,7 +712,7 @@ fn test_windows(target: &str) {
     cfg.skip_type(move |name| match name {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
-        // FIXME: The size and alignment of this type are incorrect
+        // FIXME(windows): The size and alignment of this type are incorrect
         "time_t" if gnu && i686 => true,
         _ => false,
     });
@@ -722,7 +722,7 @@ fn test_windows(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: The size and alignment of this struct are incorrect
+            // FIXME(windows): The size and alignment of this struct are incorrect
             "timespec" if gnu && i686 => true,
             _ => false,
         }
@@ -730,12 +730,12 @@ fn test_windows(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
-            // FIXME: API error:
+            // FIXME(windows): API error:
             // SIG_ERR type is "void (*)(int)", not "int"
             "SIG_ERR" |
             // Similar for SIG_DFL/IGN/GET/SGE/ACK
             "SIG_DFL" | "SIG_IGN" | "SIG_GET" | "SIG_SGE" | "SIG_ACK" => true,
-            // FIXME: newer windows-gnu environment on CI?
+            // FIXME(windows): newer windows-gnu environment on CI?
             "_O_OBTAIN_DIR" if gnu => true,
             _ => false,
         }
@@ -745,7 +745,7 @@ fn test_windows(target: &str) {
         "CONTEXT" if field == "Fp" => true,
         _ => false,
     });
-    // FIXME: All functions point to the wrong addresses?
+    // FIXME(windows): All functions point to the wrong addresses?
     cfg.skip_fn_ptrcheck(|_| true);
 
     cfg.skip_signededness(move |c| {
@@ -1042,7 +1042,7 @@ fn test_solarish(target: &str) {
             // are still ABI compatible. We can wait for the next major release
             // to be compliant with the new API.
             //
-            // FIXME: unskip these for next major release
+            // FIXME(solarish): unskip these for next major release
             "setpriority" | "personality" => true,
 
             // signal is defined in terms of sighandler_t, so ignore
@@ -1077,7 +1077,7 @@ fn test_solarish(target: &str) {
             // excluded from the tests.
             "getifaddrs" if is_illumos => true,
 
-            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // FIXME(ctest): Our API is unsound. The Rust API allows aliasing
             // pointers, but the C API requires pointers not to alias.
             // We should probably be at least using `&`/`&mut` here, see:
             // https://github.com/gnzlbg/ctest/issues/68
@@ -1223,7 +1223,7 @@ fn test_netbsd(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: sighandler_t is crazy across platforms
+            // FIXME(netbsd): sighandler_t is crazy across platforms
             "sighandler_t" => true,
             _ => false,
         }
@@ -1267,7 +1267,7 @@ fn test_netbsd(target: &str) {
 
     cfg.skip_fn(move |name| {
         match name {
-            // FIXME: netbsd 10 minimum
+            // FIXME(netbsd): netbsd 10 minimum
             "getentropy" | "getrandom" => true,
 
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
@@ -1406,7 +1406,7 @@ fn test_dragonflybsd(target: &str) {
             | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
             | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
-            // FIXME: OSX calls this something else
+            // FIXME(dragonflybsd): OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
 
             t if is_union => format!("union {}", t),
@@ -1451,7 +1451,7 @@ fn test_dragonflybsd(target: &str) {
             return true;
         }
         match ty {
-            // FIXME: These are tested as part of the linux_fcntl tests since
+            // FIXME(dragonflybsd): These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other
             // structs.
             "termios2" => true,
@@ -1815,7 +1815,7 @@ fn test_android(target: &str) {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.to_string(),
-            // FIXME: appears that `epoll_event.data` is an union
+            // FIXME(union): appears that `epoll_event.data` is an union
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
@@ -1834,7 +1834,7 @@ fn test_android(target: &str) {
 
     cfg.skip_type(move |ty| {
         match ty {
-            // FIXME: `sighandler_t` type is incorrect, see:
+            // FIXME(android): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
 
@@ -1845,7 +1845,7 @@ fn test_android(target: &str) {
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
 
-            // FIXME: "'__uint128' undeclared" in C
+            // FIXME(android): "'__uint128' undeclared" in C
             "__uint128" => true,
 
             _ => false,
@@ -1868,12 +1868,12 @@ fn test_android(target: &str) {
             // These are tested in the `linux_elf.rs` file.
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
-            // FIXME: The type of `iv` has been changed.
+            // FIXME(android): The type of `iv` has been changed.
             "af_alg_iv" => true,
 
-            // FIXME: The size of struct has been changed:
+            // FIXME(android): The size of struct has been changed:
             "inotify_event" => true,
-            // FIXME: The field has been changed:
+            // FIXME(android): The field has been changed:
             "sockaddr_vm" => true,
 
             _ => false,
@@ -1900,13 +1900,13 @@ fn test_android(target: &str) {
             // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests:
             "ARPHRD_CAN" => true,
 
-            // FIXME: deprecated: not available in any header
+            // FIXME(deprecated): deprecated: not available in any header
             // See: https://github.com/rust-lang/libc/issues/1356
             "ENOATTR" => true,
 
-            // FIXME: still necessary?
+            // FIXME(android): still necessary?
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME: deprecated - removed in glibc 2.26
+            // FIXME(deprecated): deprecated - removed in glibc 2.26
             "SIGUNUSED" => true,
 
             // Needs a newer Android SDK for the definition
@@ -1915,7 +1915,7 @@ fn test_android(target: &str) {
             // Requires Linux kernel 5.6
             "VMADDR_CID_LOCAL" => true,
 
-            // FIXME: conflicts with standard C headers and is tested in
+            // FIXME(android): conflicts with standard C headers and is tested in
             // `linux_termios.rs` below:
             "BOTHER" => true,
             "IBSHIFT" => true,
@@ -1945,7 +1945,7 @@ fn test_android(target: &str) {
             // kernel 6.2 minimum
             "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
 
-            // FIXME: NDK r22 minimum required
+            // FIXME(android): NDK r22 minimum required
             | "FDB_NOTIFY_BIT"
             | "FDB_NOTIFY_INACTIVE_BIT"
             | "IFLA_ALT_IFNAME"
@@ -1958,16 +1958,16 @@ fn test_android(target: &str) {
             | "NFEA_DONT_REFRESH"
             | "NFEA_UNSPEC" => true,
 
-            // FIXME: NDK r23 minimum required
+            // FIXME(android): NDK r23 minimum required
             | "IFLA_PARENT_DEV_BUS_NAME"
             | "IFLA_PARENT_DEV_NAME" => true,
 
-            // FIXME: NDK r25 minimum required
+            // FIXME(android): NDK r25 minimum required
             | "IFLA_GRO_MAX_SIZE"
             | "NDA_FLAGS_EXT"
             | "NTF_EXT_MANAGED" => true,
 
-            // FIXME: NDK above r25 required
+            // FIXME(android): NDK above r25 required
             | "IFLA_ALLMULTI"
             | "IFLA_DEVLINK_PORT"
             | "IFLA_GRO_IPV4_MAX_SIZE"
@@ -1981,7 +1981,7 @@ fn test_android(target: &str) {
             | "NTF_EXT_LOCKED"
             | "ALG_SET_DRBG_ENTROPY" => true,
 
-            // FIXME: Something has been changed on r26b:
+            // FIXME(android): Something has been changed on r26b:
             | "IPPROTO_MAX"
             | "NFNL_SUBSYS_COUNT"
             | "NF_NETDEV_NUMHOOKS"
@@ -1989,10 +1989,10 @@ fn test_android(target: &str) {
             | "SW_MAX"
             | "SW_CNT" => true,
 
-            // FIXME: aarch64 env cannot find it:
+            // FIXME(android): aarch64 env cannot find it:
             | "PTRACE_GETREGS"
             | "PTRACE_SETREGS" if aarch64 => true,
-            // FIXME: The value has been changed on r26b:
+            // FIXME(android): The value has been changed on r26b:
             | "SYS_syscalls" if aarch64 => true,
 
             // From `<include/linux/sched.h>`.
@@ -2034,7 +2034,7 @@ fn test_android(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
-            // FIXME: for unknown reasons linker unable to find "fexecve"
+            // FIXME(android): for unknown reasons linker unable to find "fexecve"
             "fexecve" => true,
 
             // There are two versions of the sterror_r function, see
@@ -2088,7 +2088,7 @@ fn test_android(target: &str) {
             // Added in API level 26, but some tests use level 24.
             "getdomainname" | "setdomainname" => true,
 
-            // FIXME: bad function pointers:
+            // FIXME(android): bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
             | "ispunct" | "isspace" | "isupper" | "isxdigit" | "isblank" | "tolower"
             | "toupper" => true,
@@ -2104,12 +2104,12 @@ fn test_android(target: &str) {
         (struct_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
         (struct_ == "ff_effect" && field == "u") ||
-        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+        // FIXME(android): `sa_sigaction` has type `sighandler_t` but that type is
         // incorrect, see: https://github.com/rust-lang/libc/issues/1359
         (struct_ == "sigaction" && field == "sa_sigaction") ||
         // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
         (struct_ == "signalfd_siginfo" && field == "ssi_call_addr") ||
-        // FIXME: Seems the type has been changed on NDK r26b
+        // FIXME(android): Seems the type has been changed on NDK r26b
         (struct_ == "flock64" && (field == "l_start" || field == "l_len"))
     });
 
@@ -2304,7 +2304,7 @@ fn test_freebsd(target: &str) {
             | "devstat_match_flags"
             | "devstat_priority" => ty.to_string(),
 
-            // FIXME: https://github.com/rust-lang/libc/issues/1273
+            // FIXME(freebsd): https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
 
             t if is_union => format!("union {}", t),
@@ -2367,12 +2367,12 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // FIXME: These are deprecated - remove in a couple of releases.
+            // FIXME(deprecated): These are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r273250) but will
             // still be accepted and ignored at runtime.
             "MAP_RENAME" | "MAP_NORESERVE" => true,
 
-            // FIXME: This is deprecated - remove in a couple of releases.
+            // FIXME(deprecated): This is deprecated - remove in a couple of releases.
             // This was removed in FreeBSD 14 (git 1b4701fe1e8) and never
             // should've been used anywhere anyway.
             "TDF_UNUSED23" => true,
@@ -2389,7 +2389,7 @@ fn test_freebsd(target: &str) {
             // Removed in FreeBSD 14 (git 7ff9ae90f0b)
             "IFF_NOGROUP" => true,
 
-            // FIXME: These are deprecated - remove in a couple of releases.
+            // FIXME(deprecated): These are deprecated - remove in a couple of releases.
             // These symbols are not stable across OS-versions.  They were
             // changed for FreeBSD 14 in git revisions b62848b0c3f and
             // 2cf7870864e.
@@ -2503,7 +2503,7 @@ fn test_freebsd(target: &str) {
             }
 
             // Added in FreeBSD 14.
-            "F_KINFO" => true, // FIXME: depends how frequent freebsd 14 is updated on CI, this addition went this week only.
+            "F_KINFO" => true, // FIXME(freebsd): depends how frequent freebsd 14 is updated on CI, this addition went this week only.
             "SHM_RENAME_NOREPLACE"
             | "SHM_RENAME_EXCHANGE"
             | "SHM_LARGEPAGE_ALLOC_DEFAULT"
@@ -2559,11 +2559,11 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14
             "IFCAP_NV" if Some(14) > freebsd_ver => true,
 
-            // FIXME: Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822
+            // FIXME(freebsd): Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822
             // We maybe should deprecate them once a stable release ships them.
             "IP_BINDMULTI" | "IP_RSS_LISTEN_BUCKET" => true,
 
-            // FIXME: Removed in https://reviews.freebsd.org/D39127.
+            // FIXME(freebsd): Removed in https://reviews.freebsd.org/D39127.
             "KERN_VNODE" => true,
 
             // Added in FreeBSD 14
@@ -2586,10 +2586,10 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // FIXME: Removed in FreeBSD 15:
+            // FIXME(freebsd): Removed in FreeBSD 15:
             "LOCAL_CONNWAIT" => true,
 
-            // FIXME: The values has been changed in FreeBSD 15:
+            // FIXME(freebsd): The values has been changed in FreeBSD 15:
             "CLOCK_BOOTTIME" if Some(15) <= freebsd_ver => true,
 
             // Added in FreeBSD 14.0
@@ -2643,7 +2643,7 @@ fn test_freebsd(target: &str) {
             | "sctp_send_failed_event"
             | "sctp_stream_reset_event" => true,
 
-            // FIXME: Changed in FreeBSD 15
+            // FIXME(freebsd): Changed in FreeBSD 15
             "tcp_info" | "sockstat" if Some(15) >= freebsd_ver => true,
 
             _ => false,
@@ -2661,7 +2661,7 @@ fn test_freebsd(target: &str) {
             // Therefore the function pointer comparison does not make sense for it.
             "uname" => true,
 
-            // FIXME: Our API is unsound. The Rust API allows aliasing
+            // FIXME(ctest): Our API is unsound. The Rust API allows aliasing
             // pointers, but the C API requires pointers not to alias.
             // We should probably be at least using `&`/`&mut` here, see:
             // https://github.com/gnzlbg/ctest/issues/68
@@ -2724,7 +2724,7 @@ fn test_freebsd(target: &str) {
 
     cfg.skip_field(move |struct_, field| {
         match (struct_, field) {
-            // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
+            // FIXME(freebsd): `sa_sigaction` has type `sighandler_t` but that type is
             // incorrect, see: https://github.com/rust-lang/libc/issues/1359
             ("sigaction", "sa_sigaction") => true,
 
@@ -2756,7 +2756,7 @@ fn test_freebsd(target: &str) {
             // anonymous struct
             ("devstat", "dev_links") => true,
 
-            // FIXME: structs too complicated to bind for now...
+            // FIXME(freebsd): structs too complicated to bind for now...
             ("kinfo_proc", "ki_paddr") => true,
             ("kinfo_proc", "ki_addr") => true,
             ("kinfo_proc", "ki_tracep") => true,
@@ -2800,7 +2800,7 @@ fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
 
     let mut cfg = ctest_cfg();
-    cfg.define("_GNU_SOURCE", None); // FIXME: ??
+    cfg.define("_GNU_SOURCE", None); // FIXME(emscripten): ??
 
     headers! { cfg:
                "ctype.h",
@@ -2916,7 +2916,7 @@ fn test_emscripten(target: &str) {
     cfg.skip_type(move |ty| {
         match ty {
             // sighandler_t is crazy across platforms
-            // FIXME: is this necessary?
+            // FIXME(emscripten): is this necessary?
             "sighandler_t" => true,
 
             // No epoll support
@@ -2937,7 +2937,7 @@ fn test_emscripten(target: &str) {
             // This is actually a union, not a struct
             "sigval" => true,
 
-            // FIXME: Investigate why the test fails.
+            // FIXME(emscripten): Investigate why the test fails.
             // Skip for now to unblock CI.
             "pthread_condattr_t" => true,
             "pthread_mutexattr_t" => true,
