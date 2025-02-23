@@ -877,11 +877,12 @@ s_no_extra_traits! {
         pub f_namemax: c_ulong,
         pub f_owner: crate::uid_t,
 
-        pub f_spare: [u32; 4],
+        pub f_spare: [u64; 4],
 
         pub f_fstypename: [c_char; 32],
         pub f_mntonname: [c_char; 1024],
         pub f_mntfromname: [c_char; 1024],
+        pub f_mntfromlabel: [c_char; 1024],
     }
 
     pub struct sockaddr_storage {
@@ -1207,6 +1208,11 @@ cfg_if! {
                         .iter()
                         .zip(other.f_mntfromname.iter())
                         .all(|(a, b)| a == b)
+                    && self
+                        .f_mntfromlabel
+                        .iter()
+                        .zip(other.f_mntfromlabel.iter())
+                        .all(|(a, b)| a == b)
             }
         }
         impl Eq for statvfs {}
@@ -1237,6 +1243,7 @@ cfg_if! {
                     .field("f_fstypename", &self.f_fstypename)
                     // FIXME: .field("f_mntonname", &self.f_mntonname)
                     // FIXME: .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME: .field("f_mntfromlabel", &self.f_mntfromlabel)
                     .finish()
             }
         }
@@ -1266,6 +1273,7 @@ cfg_if! {
                 self.f_fstypename.hash(state);
                 self.f_mntonname.hash(state);
                 self.f_mntfromname.hash(state);
+                self.f_mntfromlabel.hash(state);
             }
         }
 
@@ -2849,8 +2857,9 @@ extern "C" {
         ntargets: size_t,
         hint: *const c_void,
     ) -> c_int;
-    #[link_name = "__getmntinfo13"]
+    #[link_name = "__getmntinfo90"]
     pub fn getmntinfo(mntbufp: *mut *mut crate::statvfs, flags: c_int) -> c_int;
+    #[link_name = "__getvfsstat90"]
     pub fn getvfsstat(buf: *mut statvfs, bufsize: size_t, flags: c_int) -> c_int;
 }
 

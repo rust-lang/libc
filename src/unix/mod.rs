@@ -1420,7 +1420,9 @@ extern "C" {
     pub fn sem_wait(sem: *mut sem_t) -> c_int;
     pub fn sem_trywait(sem: *mut sem_t) -> c_int;
     pub fn sem_post(sem: *mut sem_t) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__statvfs90")]
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__fstatvfs90")]
     pub fn fstatvfs(fd: c_int, buf: *mut statvfs) -> c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__sigemptyset14")]
