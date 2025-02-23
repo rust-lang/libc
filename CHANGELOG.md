@@ -1,6 +1,43 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.170](https://github.com/rust-lang/libc/compare/0.2.169...0.2.170) - 2025-02-23
+
+### Added
+
+- Android: Declare `setdomainname` and `getdomainname` <https://github.com/rust-lang/libc/pull/4212>
+- FreeBSD: Add `evdev` structures <https://github.com/rust-lang/libc/pull/3756>
+- FreeBSD: Add the new `st_filerev` field to `stat32` ([#4254](https://github.com/rust-lang/libc/pull/4254))
+- Linux: Add `SI_*`` and `TRAP_*`` signal codes <https://github.com/rust-lang/libc/pull/4225>
+- Linux: Add experimental configuration to enable 64-bit time in kernel APIs, set by `RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64`. <https://github.com/rust-lang/libc/pull/4148>
+- Linux: Add recent socket timestamping flags <https://github.com/rust-lang/libc/pull/4273>
+- Linux: Added new CANFD_FDF flag for the flags field of canfd_frame <https://github.com/rust-lang/libc/pull/4223>
+- Musl: add CLONE_NEWTIME <https://github.com/rust-lang/libc/pull/4226>
+- Solarish: add the posix_spawn family of functions <https://github.com/rust-lang/libc/pull/4259>
+
+### Deprecated
+
+- Linux: deprecate kernel modules syscalls <https://github.com/rust-lang/libc/pull/4228>
+
+### Changed
+
+- Emscripten: Assume version is at least 3.1.42 <https://github.com/rust-lang/libc/pull/4243>
+
+### Fixed
+
+- BSD: Correct the definition of `WEXITSTATUS` <https://github.com/rust-lang/libc/pull/4213>
+- Hurd: Fix CMSG_DATA on 64bit systems ([#4240](https://github.com/rust-lang/libc/pull/424))
+- NetBSD: fix `getmntinfo` ([#4265](https://github.com/rust-lang/libc/pull/4265)
+- VxWorks: Fix the size of `time_t` <https://github.com/rust-lang/libc/pull/426>
+
+### Other
+
+- Add labels to FIXMEs <https://github.com/rust-lang/libc/pull/4230>, <https://github.com/rust-lang/libc/pull/4229>, <https://github.com/rust-lang/libc/pull/4237>
+- CI: Bump FreeBSD CI to 13.4 and 14.2 <https://github.com/rust-lang/libc/pull/4260>
+- Copy definitions from core::ffi and centralize them <https://github.com/rust-lang/libc/pull/4256>
+- Define c_char at top-level and remove per-target c_char definitions <https://github.com/rust-lang/libc/pull/4202>
+- Port style.rs to syn and add tests for the style checker <https://github.com/rust-lang/libc/pull/4220>
+
 ## [0.2.169](https://github.com/rust-lang/libc/compare/0.2.168...0.2.169) - 2024-12-18
 
 ### Added
