@@ -14,7 +14,7 @@ A test crate for the libc crate.
 
 [dependencies.libc]
 path = ".."
-version = "0.2.169"
+version = "0.2.170"
 default-features = false
 
 [dev-dependencies]
