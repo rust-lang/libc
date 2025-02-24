@@ -308,7 +308,7 @@ s_no_extra_traits! {
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: crate::sigset_t,
         __private: [u8; 512],
-        // FIXME(linux): the shadow stack field requires glibc >= 2.28.
+        // FIXME(glibc): the shadow stack field requires glibc >= 2.28.
         // Re-add once we drop compatibility with glibc versions older than
         // 2.28.
         //
