@@ -1303,6 +1303,7 @@ cpuctl_cpuid_count_args_t
 cpuctl_msr_args_t
 cpuctl_update_args_t
 daemon
+devname
 devname_r
 difftime
 dirfd

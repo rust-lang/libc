@@ -1255,6 +1255,7 @@ clock_settime
 cmsghdr
 consttime_memequal
 daemon
+devname
 difftime
 dirfd
 dirname

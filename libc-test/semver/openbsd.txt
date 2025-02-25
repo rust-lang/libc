@@ -1066,6 +1066,7 @@ clock_getres
 clock_settime
 cmsghdr
 daemon
+devname
 difftime
 dirfd
 dirname
