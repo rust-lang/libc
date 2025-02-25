@@ -3018,6 +3018,19 @@ pub const MSG_NOERROR: c_int = 0o10000;
 pub const MSG_EXCEPT: c_int = 0o20000;
 pub const MSG_ZEROCOPY: c_int = 0x4000000;
 
+pub const SEM_UNDO: c_int = 0x1000;
+
+pub const GETPID: c_int = 11;
+pub const GETVAL: c_int = 12;
+pub const GETALL: c_int = 13;
+pub const GETNCNT: c_int = 14;
+pub const GETZCNT: c_int = 15;
+pub const SETVAL: c_int = 16;
+pub const SETALL: c_int = 17;
+pub const SEM_STAT: c_int = 18;
+pub const SEM_INFO: c_int = 19;
+pub const SEM_STAT_ANY: c_int = 20;
+
 pub const SHM_R: c_int = 0o400;
 pub const SHM_W: c_int = 0o200;
 
