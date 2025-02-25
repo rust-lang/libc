@@ -964,6 +964,8 @@ extern "C" {
         timeptr: *const crate::tm,
         locale: crate::locale_t,
     ) -> size_t;
+
+    pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 }
 
 cfg_if! {
