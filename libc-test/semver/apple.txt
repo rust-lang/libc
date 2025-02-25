@@ -1924,6 +1924,7 @@ cpu_type_t
 ctime
 ctime_r
 ctl_info
+devname
 difftime
 dirfd
 dirname
