@@ -272,7 +272,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [fd_mask; FD_SETSIZE / ULONG_SIZE],
+        fds_bits: [fd_mask; FD_SETSIZE / core::mem::size_of::<c_ulong>() / 8],
     }
 
     pub struct _uc_fpxreg {
@@ -1823,7 +1823,7 @@ f! {
     }
 
     pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
-        let _dummy: cpu_set_t = core::mem::zeroed();
+        let _dummy: cpu_set_t = cpu_set_t { bits: [0; 16] };
         let size_in_bits = 8 * core::mem::size_of_val(&_dummy.bits[0]);
         ((count as size_t + size_in_bits - 1) / 8) as size_t
     }
