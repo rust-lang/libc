@@ -721,7 +721,7 @@ fn test_cygwin(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
-            // FIXME: these constants do not exist on Cygwin
+            // FIXME(cygwin): these constants do not exist on Cygwin
             "ARPOP_REQUEST" | "ARPOP_REPLY" | "ATF_COM" | "ATF_PERM" | "ATF_PUBL"
             | "ATF_USETRAILERS" => true,
 
