@@ -135,19 +135,11 @@ s! {
         pub ipv6mr_interface: c_uint,
     }
 
+    #[cfg(not(target_os = "cygwin"))]
     pub struct hostent {
-        #[cfg(target_os = "cygwin")]
-        pub h_name: *const c_char,
-        #[cfg(not(target_os = "cygwin"))]
         pub h_name: *mut c_char,
         pub h_aliases: *mut *mut c_char,
-        #[cfg(target_os = "cygwin")]
-        pub h_addrtype: c_short,
-        #[cfg(not(target_os = "cygwin"))]
         pub h_addrtype: c_int,
-        #[cfg(target_os = "cygwin")]
-        pub h_length: c_short,
-        #[cfg(not(target_os = "cygwin"))]
         pub h_length: c_int,
         pub h_addr_list: *mut *mut c_char,
     }
@@ -170,15 +162,10 @@ s! {
         pub ws_ypixel: c_ushort,
     }
 
+    #[cfg(not(target_os = "cygwin"))]
     pub struct linger {
-        #[cfg(not(target_os = "cygwin"))]
         pub l_onoff: c_int,
-        #[cfg(target_os = "cygwin")]
-        pub l_onoff: c_ushort,
-        #[cfg(not(target_os = "cygwin"))]
         pub l_linger: c_int,
-        #[cfg(target_os = "cygwin")]
-        pub l_linger: c_ushort,
     }
 
     pub struct sigval {

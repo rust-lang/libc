@@ -262,6 +262,19 @@ s! {
         pub l_len: off_t,
         pub l_pid: pid_t,
     }
+
+    pub struct hostent {
+        pub h_name: *const c_char,
+        pub h_aliases: *mut *mut c_char,
+        pub h_addrtype: c_short,
+        pub h_length: c_short,
+        pub h_addr_list: *mut *mut c_char,
+    }
+
+    pub struct linger {
+        pub l_onoff: c_ushort,
+        pub l_linger: c_ushort,
+    }
 }
 
 s_no_extra_traits! {
