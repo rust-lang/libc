@@ -780,7 +780,7 @@ cfg_if! {
                     .field("d_reclen", &self.d_reclen)
                     .field("d_type", &self.d_type)
                     .field("d_namlen", &self.d_namlen)
-                    // FIXME: .field("d_name", &self.d_name)
+                    // FIXME(debug): .field("d_name", &self.d_name)
                     .finish()
             }
         }
@@ -873,8 +873,8 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("lastlog")
                     .field("ll_time", &self.ll_time)
-                    // FIXME: .field("ll_line", &self.ll_line)
-                    // FIXME: .field("ll_host", &self.ll_host)
+                    // FIXME(debug): .field("ll_line", &self.ll_line)
+                    // FIXME(debug): .field("ll_host", &self.ll_host)
                     .finish()
             }
         }
@@ -913,9 +913,9 @@ cfg_if! {
         impl fmt::Debug for utmp {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmp")
-                    // FIXME: .field("ut_line", &self.ut_line)
-                    // FIXME: .field("ut_name", &self.ut_name)
-                    // FIXME: .field("ut_host", &self.ut_host)
+                    // FIXME(debug): .field("ut_line", &self.ut_line)
+                    // FIXME(debug): .field("ut_name", &self.ut_name)
+                    // FIXME(debug): .field("ut_host", &self.ut_host)
                     .field("ut_time", &self.ut_time)
                     .finish()
             }
@@ -1048,10 +1048,10 @@ cfg_if! {
                     .field("f_namemax", &self.f_namemax)
                     .field("f_owner", &self.f_owner)
                     .field("f_ctime", &self.f_ctime)
-                    // FIXME: .field("f_fstypename", &self.f_fstypename)
-                    // FIXME: .field("f_mntonname", &self.f_mntonname)
-                    // FIXME: .field("f_mntfromname", &self.f_mntfromname)
-                    // FIXME: .field("f_mntfromspec", &self.f_mntfromspec)
+                    // FIXME(debug): .field("f_fstypename", &self.f_fstypename)
+                    // FIXME(debug): .field("f_mntonname", &self.f_mntonname)
+                    // FIXME(debug): .field("f_mntfromname", &self.f_mntfromname)
+                    // FIXME(debug): .field("f_mntfromspec", &self.f_mntfromspec)
                     .field("mount_info", &self.mount_info)
                     .finish()
             }
@@ -1949,19 +1949,6 @@ f! {
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_ALIGN(mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
-
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        ((dev as c_uint) >> 8) & 0xff
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        let dev = dev as c_uint;
-        let mut res = 0;
-        res |= (dev) & 0xff;
-        res |= ((dev) & 0xffff0000) >> 8;
-
-        res
-    }
 }
 
 safe_f! {
@@ -1989,6 +1976,18 @@ safe_f! {
         dev |= minor & 0xff;
         dev |= (minor & 0xffff00) << 8;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        ((dev as c_uint) >> 8) & 0xff
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        let dev = dev as c_uint;
+        let mut res = 0;
+        res |= (dev) & 0xff;
+        res |= ((dev) & 0xffff0000) >> 8;
+        res
     }
 }
 

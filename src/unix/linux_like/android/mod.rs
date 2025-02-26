@@ -1432,6 +1432,7 @@ pub const SOCK_STREAM: c_int = 1;
 pub const SOCK_DGRAM: c_int = 2;
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOCK_DCCP: c_int = 6;
+#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
 pub const IPPROTO_MAX: c_int = 256;
@@ -2900,6 +2901,9 @@ pub const SOF_TIMESTAMPING_OPT_TSONLY: c_uint = 1 << 11;
 pub const SOF_TIMESTAMPING_OPT_STATS: c_uint = 1 << 12;
 pub const SOF_TIMESTAMPING_OPT_PKTINFO: c_uint = 1 << 13;
 pub const SOF_TIMESTAMPING_OPT_TX_SWHW: c_uint = 1 << 14;
+pub const SOF_TIMESTAMPING_BIND_PHC: c_uint = 1 << 15;
+pub const SOF_TIMESTAMPING_OPT_ID_TCP: c_uint = 1 << 16;
+pub const SOF_TIMESTAMPING_OPT_RX_FILTER: c_uint = 1 << 17;
 
 #[deprecated(
     since = "0.2.55",
@@ -3601,12 +3605,6 @@ f! {
         set1.__bits == set2.__bits
     }
 
-    pub fn major(dev: crate::dev_t) -> c_int {
-        ((dev >> 8) & 0xfff) as c_int
-    }
-    pub fn minor(dev: crate::dev_t) -> c_int {
-        ((dev & 0xff) | ((dev >> 12) & 0xfff00)) as c_int
-    }
     pub fn NLA_ALIGN(len: c_int) -> c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1);
     }
@@ -3621,6 +3619,14 @@ safe_f! {
         let ma = ma as crate::dev_t;
         let mi = mi as crate::dev_t;
         ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_int {
+        ((dev >> 8) & 0xfff) as c_int
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_int {
+        ((dev & 0xff) | ((dev >> 12) & 0xfff00)) as c_int
     }
 }
 

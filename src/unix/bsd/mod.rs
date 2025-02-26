@@ -185,7 +185,7 @@ cfg_if! {
                 f.debug_struct("sockaddr_un")
                     .field("sun_len", &self.sun_len)
                     .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME(debug): .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -232,11 +232,11 @@ cfg_if! {
         impl fmt::Debug for utsname {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
-                    // FIXME: .field("sysname", &self.sysname)
-                    // FIXME: .field("nodename", &self.nodename)
-                    // FIXME: .field("release", &self.release)
-                    // FIXME: .field("version", &self.version)
-                    // FIXME: .field("machine", &self.machine)
+                    // FIXME(debug): .field("sysname", &self.sysname)
+                    // FIXME(debug): .field("nodename", &self.nodename)
+                    // FIXME(debug): .field("release", &self.release)
+                    // FIXME(debug): .field("version", &self.version)
+                    // FIXME(debug): .field("machine", &self.machine)
                     .finish()
             }
         }
@@ -639,7 +639,7 @@ safe_f! {
     }
 
     pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
-        status >> 8
+        (status >> 8) & 0x00ff
     }
 
     pub {const} fn WCOREDUMP(status: c_int) -> bool {
@@ -964,6 +964,8 @@ extern "C" {
         timeptr: *const crate::tm,
         locale: crate::locale_t,
     ) -> size_t;
+
+    pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 }
 
 cfg_if! {

@@ -185,6 +185,7 @@ s! {
         pub mr_address: [c_uchar; 8],
     }
 
+    #[deprecated(since = "0.2.70", note = "sockaddr_ll type must be used instead")]
     pub struct sockaddr_pkt {
         pub spkt_family: c_ushort,
         pub spkt_device: [c_uchar; 14],
@@ -4581,6 +4582,9 @@ pub const SOF_TIMESTAMPING_OPT_TSONLY: c_uint = 1 << 11;
 pub const SOF_TIMESTAMPING_OPT_STATS: c_uint = 1 << 12;
 pub const SOF_TIMESTAMPING_OPT_PKTINFO: c_uint = 1 << 13;
 pub const SOF_TIMESTAMPING_OPT_TX_SWHW: c_uint = 1 << 14;
+pub const SOF_TIMESTAMPING_BIND_PHC: c_uint = 1 << 15;
+pub const SOF_TIMESTAMPING_OPT_ID_TCP: c_uint = 1 << 16;
+pub const SOF_TIMESTAMPING_OPT_RX_FILTER: c_uint = 1 << 17;
 pub const SOF_TXTIME_DEADLINE_MODE: u32 = 1 << 0;
 pub const SOF_TXTIME_REPORT_ERRORS: u32 = 1 << 1;
 
@@ -5962,20 +5966,6 @@ f! {
         ()
     }
 
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        let mut major = 0;
-        major |= (dev & 0x00000000000fff00) >> 8;
-        major |= (dev & 0xfffff00000000000) >> 32;
-        major as c_uint
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        let mut minor = 0;
-        minor |= (dev & 0x00000000000000ff) >> 0;
-        minor |= (dev & 0x00000ffffff00000) >> 12;
-        minor as c_uint
-    }
-
     pub fn IPTOS_TOS(tos: u8) -> u8 {
         tos & IPTOS_TOS_MASK
     }
@@ -6065,6 +6055,20 @@ safe_f! {
         dev |= (minor & 0x000000ff) << 0;
         dev |= (minor & 0xffffff00) << 12;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        let mut major = 0;
+        major |= (dev & 0x00000000000fff00) >> 8;
+        major |= (dev & 0xfffff00000000000) >> 32;
+        major as c_uint
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        let mut minor = 0;
+        minor |= (dev & 0x00000000000000ff) >> 0;
+        minor |= (dev & 0x00000ffffff00000) >> 12;
+        minor as c_uint
     }
 
     pub {const} fn SCTP_PR_TTL_ENABLED(policy: c_int) -> bool {

@@ -1,5 +1,49 @@
-//! Compare libc's makdev function against the actual C macros, for various
+//! Compare libc's makedev, major, minor functions against the actual C macros, for various
 //! inputs.
+
+#[cfg(any(target_os = "solaris", target_os = "illumos"))]
+mod ret {
+    pub type MajorRetType = libc::major_t;
+    pub type MinorRetType = libc::minor_t;
+}
+
+#[cfg(any(
+    target_os = "linux",
+    target_os = "l4re",
+    target_os = "emscripten",
+    target_os = "fuchsia",
+    target_os = "aix",
+    target_os = "nto",
+    target_os = "hurd",
+    target_os = "openbsd",
+))]
+mod ret {
+    pub type MajorRetType = libc::c_uint;
+    pub type MinorRetType = libc::c_uint;
+}
+
+#[cfg(any(
+    target_os = "android",
+    target_os = "dragonfly",
+    target_os = "netbsd",
+    target_os = "freebsd",
+))]
+mod ret {
+    pub type MajorRetType = libc::c_int;
+    pub type MinorRetType = libc::c_int;
+}
+
+#[cfg(any(
+    target_os = "macos",
+    target_os = "ios",
+    target_os = "tvos",
+    target_os = "watchos",
+    target_os = "visionos"
+))]
+mod ret {
+    pub type MajorRetType = i32;
+    pub type MinorRetType = i32;
+}
 
 #[cfg(any(
     target_os = "android",
@@ -14,13 +58,21 @@
 mod t {
     use libc::{self, c_uint, dev_t};
 
+    use super::ret::*;
+
     extern "C" {
         pub fn makedev_ffi(major: c_uint, minor: c_uint) -> dev_t;
+        pub fn major_ffi(dev: dev_t) -> c_uint;
+        pub fn minor_ffi(dev: dev_t) -> c_uint;
     }
 
     fn compare(major: c_uint, minor: c_uint) {
-        let expected = unsafe { makedev_ffi(major, minor) };
-        assert_eq!(libc::makedev(major, minor), expected);
+        let dev = unsafe { makedev_ffi(major, minor) };
+        assert_eq!(libc::makedev(major, minor), dev);
+        let major = unsafe { major_ffi(dev) };
+        assert_eq!(libc::major(dev), major as MajorRetType);
+        let minor = unsafe { minor_ffi(dev) };
+        assert_eq!(libc::minor(dev), minor as MinorRetType);
     }
 
     // Every OS should be able to handle 8 bit major and minor numbers
