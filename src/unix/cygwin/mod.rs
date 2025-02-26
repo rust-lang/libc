@@ -949,40 +949,6 @@ cfg_if! {
             }
         }
 
-        impl PartialEq for __c_anonymous_ifr_ifru {
-            fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
-                unsafe {
-                    self.ifru_addr == other.ifru_addr
-                        && self.ifru_broadaddr == other.ifru_broadaddr
-                        && self.ifru_dstaddr == other.ifru_dstaddr
-                        && self.ifru_netmask == other.ifru_netmask
-                        && self.ifru_hwaddr == other.ifru_hwaddr
-                        && self.ifru_flags == other.ifru_flags
-                        && self.ifru_metric == other.ifru_metric
-                        && self.ifru_ifindex == other.ifru_ifindex
-                        && self.ifru_mtu == other.ifru_mtu
-                        && self.ifru_data == other.ifru_data
-                }
-            }
-        }
-
-        impl Eq for __c_anonymous_ifr_ifru {}
-
-        impl hash::Hash for __c_anonymous_ifr_ifru {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.ifru_addr.hash(state) };
-                unsafe { self.ifru_broadaddr.hash(state) };
-                unsafe { self.ifru_dstaddr.hash(state) };
-                unsafe { self.ifru_netmask.hash(state) };
-                unsafe { self.ifru_hwaddr.hash(state) };
-                unsafe { self.ifru_flags.hash(state) };
-                unsafe { self.ifru_metric.hash(state) };
-                unsafe { self.ifru_ifindex.hash(state) };
-                unsafe { self.ifru_mtu.hash(state) };
-                unsafe { self.ifru_data.hash(state) };
-            }
-        }
-
         impl fmt::Debug for ifreq {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("ifreq")
@@ -1004,21 +970,6 @@ cfg_if! {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifr_name.hash(state);
                 self.ifr_ifru.hash(state);
-            }
-        }
-
-        impl Eq for __c_anonymous_ifc_ifcu {}
-
-        impl PartialEq for __c_anonymous_ifc_ifcu {
-            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
-                unsafe { self.ifcu_buf == other.ifcu_buf && self.ifcu_req == other.ifcu_req }
-            }
-        }
-
-        impl hash::Hash for __c_anonymous_ifc_ifcu {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.ifcu_buf.hash(state) };
-                unsafe { self.ifcu_req.hash(state) };
             }
         }
 
