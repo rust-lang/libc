@@ -1,19 +1,6 @@
 use crate::prelude::*;
 use crate::*;
 
-pub type c_char = i8;
-pub type c_long = i64;
-pub type c_ulong = u64;
-
-cfg_if! {
-    if #[cfg(doc)] {
-        pub(crate) type Ioctl = c_int;
-    } else {
-        #[doc(hidden)]
-        pub type Ioctl = c_int;
-    }
-}
-
 pub type wchar_t = c_ushort;
 
 pub type blkcnt_t = i64;
@@ -1543,10 +1530,10 @@ pub const IFF_DORMANT: c_int = 0x20000; // driver signals dormant
 pub const IF_NAMESIZE: size_t = 44;
 pub const IFNAMSIZ: size_t = IF_NAMESIZE;
 
-pub const FIONREAD: Ioctl = 0x4008667f;
-pub const FIONBIO: Ioctl = 0x8004667e;
-pub const FIOASYNC: Ioctl = 0x8008667d;
-pub const FIOCLEX: Ioctl = 0; // FIXME: does not exist on Cygwin!
+pub const FIONREAD: c_int = 0x4008667f;
+pub const FIONBIO: c_int = 0x8004667e;
+pub const FIOASYNC: c_int = 0x8008667d;
+pub const FIOCLEX: c_int = 0; // FIXME: does not exist on Cygwin!
 pub const SIOCGIFCONF: c_ulong = 0x80107364;
 pub const SIOCGIFFLAGS: c_ulong = 0x80507365;
 pub const SIOCGIFADDR: c_ulong = 0x80507366;
@@ -1842,14 +1829,14 @@ pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
 pub const ST_RDONLY: c_ulong = 0x80000;
 pub const ST_NOSUID: c_ulong = 0;
 
-pub const TIOCMGET: Ioctl = 0x5415;
-pub const TIOCMBIS: Ioctl = 0x5416;
-pub const TIOCMBIC: Ioctl = 0x5417;
-pub const TIOCMSET: Ioctl = 0x5418;
-pub const TIOCINQ: Ioctl = 0x541B;
-pub const TIOCSCTTY: Ioctl = 0x540E;
-pub const TIOCSBRK: Ioctl = 0x5427;
-pub const TIOCCBRK: Ioctl = 0x5428;
+pub const TIOCMGET: c_int = 0x5415;
+pub const TIOCMBIS: c_int = 0x5416;
+pub const TIOCMBIC: c_int = 0x5417;
+pub const TIOCMSET: c_int = 0x5418;
+pub const TIOCINQ: c_int = 0x541B;
+pub const TIOCSCTTY: c_int = 0x540E;
+pub const TIOCSBRK: c_int = 0x5427;
+pub const TIOCCBRK: c_int = 0x5428;
 pub const TIOCM_DTR: c_int = 0x002;
 pub const TIOCM_RTS: c_int = 0x004;
 pub const TIOCM_CTS: c_int = 0x020;
@@ -1861,14 +1848,14 @@ pub const TCOOFF: c_int = 0;
 pub const TCOON: c_int = 1;
 pub const TCIOFF: c_int = 2;
 pub const TCION: c_int = 3;
-pub const TCGETA: Ioctl = 5;
-pub const TCSETA: Ioctl = 6;
-pub const TCSETAW: Ioctl = 7;
-pub const TCSETAF: Ioctl = 8;
+pub const TCGETA: c_int = 5;
+pub const TCSETA: c_int = 6;
+pub const TCSETAW: c_int = 7;
+pub const TCSETAF: c_int = 8;
 pub const TCIFLUSH: c_int = 0;
 pub const TCOFLUSH: c_int = 1;
 pub const TCIOFLUSH: c_int = 2;
-pub const TCFLSH: Ioctl = 3;
+pub const TCFLSH: c_int = 3;
 pub const TCSAFLUSH: c_int = 1;
 pub const TCSANOW: c_int = 2;
 pub const TCSADRAIN: c_int = 3;
@@ -2001,11 +1988,11 @@ pub const VTIME: usize = 16;
 pub const VWERASE: usize = 17;
 pub const NCCS: usize = 18;
 
-pub const TIOCGWINSZ: Ioctl = 0x5401;
-pub const TIOCSWINSZ: Ioctl = 0x5402;
-pub const TIOCLINUX: Ioctl = 0x5403;
-pub const TIOCGPGRP: Ioctl = 0x540f;
-pub const TIOCSPGRP: Ioctl = 0x5410;
+pub const TIOCGWINSZ: c_int = 0x5401;
+pub const TIOCSWINSZ: c_int = 0x5402;
+pub const TIOCLINUX: c_int = 0x5403;
+pub const TIOCGPGRP: c_int = 0x540f;
+pub const TIOCSPGRP: c_int = 0x5410;
 
 pub const WNOHANG: c_int = 1;
 pub const WUNTRACED: c_int = 2;
@@ -2434,9 +2421,9 @@ pub const TCP_FASTOPEN: c_int = 15;
 pub const TCP_KEEPCNT: c_int = 16;
 pub const TCP_KEEPINTVL: c_int = 17;
 
-pub const WINDOWS_POST: Ioctl = 0;
-pub const WINDOWS_SEND: Ioctl = 1;
-pub const WINDOWS_HWND: Ioctl = 2;
+pub const WINDOWS_POST: c_int = 0;
+pub const WINDOWS_SEND: c_int = 1;
+pub const WINDOWS_HWND: c_int = 2;
 
 pub const MOUNT_TEXT: c_uint = 0x01;
 pub const MOUNT_SYSTEM: c_uint = 0x08;
