@@ -1148,6 +1148,7 @@ pub const IPV6_DONTFRAG: c_int = 0x21;
 pub const IPV6_SEC_OPT: c_int = 0x22;
 pub const IPV6_TCLASS: c_int = 0x26;
 pub const IPV6_V6ONLY: c_int = 0x27;
+pub const IPV6_BOUND_IF: c_int = 0x41;
 
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
@@ -1691,6 +1692,7 @@ pub const IP_ADD_SOURCE_MEMBERSHIP: c_int = 23;
 pub const IP_DROP_SOURCE_MEMBERSHIP: c_int = 24;
 pub const IP_BLOCK_SOURCE: c_int = 21;
 pub const IP_UNBLOCK_SOURCE: c_int = 22;
+pub const IP_BOUND_IF: c_int = 0x41;
 
 // These TCP socket options are common between illumos and Solaris, while higher
 // numbers have generally diverged:
