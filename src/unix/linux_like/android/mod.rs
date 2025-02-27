@@ -1943,6 +1943,12 @@ pub const NLM_F_EXCL: c_int = 0x200;
 pub const NLM_F_CREATE: c_int = 0x400;
 pub const NLM_F_APPEND: c_int = 0x800;
 
+pub const NLM_F_NONREC: c_int = 0x100;
+pub const NLM_F_BULK: c_int = 0x200;
+
+pub const NLM_F_CAPPED: c_int = 0x100;
+pub const NLM_F_ACK_TLVS: c_int = 0x200;
+
 pub const NLMSG_NOOP: c_int = 0x1;
 pub const NLMSG_ERROR: c_int = 0x2;
 pub const NLMSG_DONE: c_int = 0x3;
