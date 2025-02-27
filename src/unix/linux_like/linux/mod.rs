@@ -4419,6 +4419,12 @@ pub const NLM_F_EXCL: c_int = 0x200;
 pub const NLM_F_CREATE: c_int = 0x400;
 pub const NLM_F_APPEND: c_int = 0x800;
 
+pub const NLM_F_NONREC: c_int = 0x100;
+pub const NLM_F_BULK: c_int = 0x200;
+
+pub const NLM_F_CAPPED: c_int = 0x100;
+pub const NLM_F_ACK_TLVS: c_int = 0x200;
+
 pub const NETLINK_ADD_MEMBERSHIP: c_int = 1;
 pub const NETLINK_DROP_MEMBERSHIP: c_int = 2;
 pub const NETLINK_PKTINFO: c_int = 3;
