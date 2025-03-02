@@ -1702,6 +1702,8 @@ extern "C" {
         mntvbufp: *mut *mut crate::statvfs,
         flags: c_int,
     ) -> c_int;
+
+    pub fn closefrom(lowfd: c_int) -> c_int;
 }
 
 #[link(name = "rt")]
