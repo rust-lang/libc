@@ -1702,6 +1702,9 @@ extern "C" {
         mntvbufp: *mut *mut crate::statvfs,
         flags: c_int,
     ) -> c_int;
+
+    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
+    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
 }
 
 #[link(name = "rt")]
