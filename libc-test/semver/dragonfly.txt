@@ -1296,6 +1296,7 @@ clock_getcpuclockid
 clock_getres
 clock_nanosleep
 clock_settime
+closefrom
 cmsgcred
 cmsghdr
 cpuctl_cpuid_args_t
