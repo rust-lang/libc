@@ -45,6 +45,9 @@ pub type vm_map_entry_t = *mut vm_map_entry;
 
 pub type pmap = __c_anonymous_pmap;
 
+pub type posix_spawnattr_t = *mut c_void;
+pub type posix_spawn_file_actions_t = *mut c_void;
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum sem {}
 impl Copy for sem {}
@@ -1537,6 +1540,13 @@ pub const RTAX_MPLS2: c_int = 9;
 pub const RTAX_MPLS3: c_int = 10;
 pub const RTAX_MAX: c_int = 11;
 
+pub const POSIX_SPAWN_RESETIDS: c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: c_short = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: c_short = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: c_short = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
+
 const_fn! {
     {const} fn _CMSG_ALIGN(n: usize) -> usize {
         (n + (mem::size_of::<c_long>() - 1)) & !(mem::size_of::<c_long>() - 1)
@@ -1705,6 +1715,80 @@ extern "C" {
 
     pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
     pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
+
+    pub fn posix_spawn(
+        pid: *mut crate::pid_t,
+        path: *const c_char,
+        file_actions: *const crate::posix_spawn_file_actions_t,
+        attrp: *const crate::posix_spawnattr_t,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+    ) -> c_int;
+    pub fn posix_spawnp(
+        pid: *mut crate::pid_t,
+        file: *const c_char,
+        file_actions: *const crate::posix_spawn_file_actions_t,
+        attrp: *const crate::posix_spawnattr_t,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+    ) -> c_int;
+    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> c_int;
+    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> c_int;
+    pub fn posix_spawnattr_getsigdefault(
+        attr: *const posix_spawnattr_t,
+        default: *mut crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setsigdefault(
+        attr: *mut posix_spawnattr_t,
+        default: *const crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_getsigmask(
+        attr: *const posix_spawnattr_t,
+        default: *mut crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setsigmask(
+        attr: *mut posix_spawnattr_t,
+        default: *const crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_getflags(attr: *const posix_spawnattr_t, flags: *mut c_short) -> c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: c_short) -> c_int;
+    pub fn posix_spawnattr_getpgroup(
+        attr: *const posix_spawnattr_t,
+        flags: *mut crate::pid_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: crate::pid_t) -> c_int;
+    pub fn posix_spawnattr_getschedpolicy(
+        attr: *const posix_spawnattr_t,
+        flags: *mut c_int,
+    ) -> c_int;
+    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: c_int) -> c_int;
+    pub fn posix_spawnattr_getschedparam(
+        attr: *const posix_spawnattr_t,
+        param: *mut crate::sched_param,
+    ) -> c_int;
+    pub fn posix_spawnattr_setschedparam(
+        attr: *mut posix_spawnattr_t,
+        param: *const crate::sched_param,
+    ) -> c_int;
+
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> c_int;
+    pub fn posix_spawn_file_actions_addopen(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+        path: *const c_char,
+        oflag: c_int,
+        mode: crate::mode_t,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addclose(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_adddup2(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+        newfd: c_int,
+    ) -> c_int;
 }
 
 #[link(name = "rt")]
