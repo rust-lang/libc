@@ -26,8 +26,6 @@ pub type cpulevel_t = c_int;
 pub type cpuwhich_t = c_int;
 
 pub type mqd_t = *mut c_void;
-pub type posix_spawnattr_t = *mut c_void;
-pub type posix_spawn_file_actions_t = *mut c_void;
 
 pub type pthread_spinlock_t = *mut __c_anonymous_pthread_spinlock;
 pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
@@ -3938,13 +3936,6 @@ pub const RTP_PRIO_REALTIME: c_ushort = 2;
 pub const RTP_PRIO_NORMAL: c_ushort = 3;
 pub const RTP_PRIO_IDLE: c_ushort = 4;
 
-pub const POSIX_SPAWN_RESETIDS: c_short = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: c_short = 0x02;
-pub const POSIX_SPAWN_SETSCHEDPARAM: c_short = 0x04;
-pub const POSIX_SPAWN_SETSCHEDULER: c_short = 0x08;
-pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x10;
-pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
-
 // Flags for chflags(2)
 pub const UF_SYSTEM: c_ulong = 0x00000080;
 pub const UF_SPARSE: c_ulong = 0x00000100;
@@ -5160,9 +5151,6 @@ extern "C" {
         sevp: *mut sigevent,
     ) -> c_int;
 
-    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
-    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
-
     pub fn getutxuser(user: *const c_char) -> *mut utmpx;
     pub fn setutxdb(_type: c_int, file: *const c_char) -> c_int;
 
@@ -5195,80 +5183,6 @@ extern "C" {
     pub fn pdkill(fd: c_int, signum: c_int) -> c_int;
 
     pub fn rtprio_thread(function: c_int, lwpid: crate::lwpid_t, rtp: *mut super::rtprio) -> c_int;
-
-    pub fn posix_spawn(
-        pid: *mut crate::pid_t,
-        path: *const c_char,
-        file_actions: *const crate::posix_spawn_file_actions_t,
-        attrp: *const crate::posix_spawnattr_t,
-        argv: *const *mut c_char,
-        envp: *const *mut c_char,
-    ) -> c_int;
-    pub fn posix_spawnp(
-        pid: *mut crate::pid_t,
-        file: *const c_char,
-        file_actions: *const crate::posix_spawn_file_actions_t,
-        attrp: *const crate::posix_spawnattr_t,
-        argv: *const *mut c_char,
-        envp: *const *mut c_char,
-    ) -> c_int;
-    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> c_int;
-    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> c_int;
-    pub fn posix_spawnattr_getsigdefault(
-        attr: *const posix_spawnattr_t,
-        default: *mut crate::sigset_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_setsigdefault(
-        attr: *mut posix_spawnattr_t,
-        default: *const crate::sigset_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_getsigmask(
-        attr: *const posix_spawnattr_t,
-        default: *mut crate::sigset_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_setsigmask(
-        attr: *mut posix_spawnattr_t,
-        default: *const crate::sigset_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_getflags(attr: *const posix_spawnattr_t, flags: *mut c_short) -> c_int;
-    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: c_short) -> c_int;
-    pub fn posix_spawnattr_getpgroup(
-        attr: *const posix_spawnattr_t,
-        flags: *mut crate::pid_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: crate::pid_t) -> c_int;
-    pub fn posix_spawnattr_getschedpolicy(
-        attr: *const posix_spawnattr_t,
-        flags: *mut c_int,
-    ) -> c_int;
-    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: c_int) -> c_int;
-    pub fn posix_spawnattr_getschedparam(
-        attr: *const posix_spawnattr_t,
-        param: *mut crate::sched_param,
-    ) -> c_int;
-    pub fn posix_spawnattr_setschedparam(
-        attr: *mut posix_spawnattr_t,
-        param: *const crate::sched_param,
-    ) -> c_int;
-
-    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> c_int;
-    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> c_int;
-    pub fn posix_spawn_file_actions_addopen(
-        actions: *mut posix_spawn_file_actions_t,
-        fd: c_int,
-        path: *const c_char,
-        oflag: c_int,
-        mode: crate::mode_t,
-    ) -> c_int;
-    pub fn posix_spawn_file_actions_addclose(
-        actions: *mut posix_spawn_file_actions_t,
-        fd: c_int,
-    ) -> c_int;
-    pub fn posix_spawn_file_actions_adddup2(
-        actions: *mut posix_spawn_file_actions_t,
-        fd: c_int,
-        newfd: c_int,
-    ) -> c_int;
 
     pub fn uuidgen(store: *mut uuid, count: c_int) -> c_int;
 

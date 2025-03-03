@@ -42,6 +42,9 @@ pub type iconv_t = *mut c_void;
 // making the type definition system dependent. Better not bind it exactly.
 pub type kvm_t = c_void;
 
+pub type posix_spawnattr_t = *mut c_void;
+pub type posix_spawn_file_actions_t = *mut c_void;
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
@@ -1481,6 +1484,13 @@ pub const GRND_NONBLOCK: c_uint = 0x1;
 pub const GRND_RANDOM: c_uint = 0x2;
 pub const GRND_INSECURE: c_uint = 0x4;
 
+pub const POSIX_SPAWN_RESETIDS: c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: c_short = 0x02;
+pub const POSIX_SPAWN_SETSCHEDPARAM: c_short = 0x04;
+pub const POSIX_SPAWN_SETSCHEDULER: c_short = 0x08;
+pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x10;
+pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
+
 safe_f! {
     pub {const} fn WIFCONTINUED(status: c_int) -> bool {
         status == 0x13
@@ -1791,6 +1801,83 @@ extern "C" {
         file: *const c_char,
         search_path: *const c_char,
         argv: *const *mut c_char,
+    ) -> c_int;
+
+    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
+    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
+
+    pub fn posix_spawn(
+        pid: *mut crate::pid_t,
+        path: *const c_char,
+        file_actions: *const crate::posix_spawn_file_actions_t,
+        attrp: *const crate::posix_spawnattr_t,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+    ) -> c_int;
+    pub fn posix_spawnp(
+        pid: *mut crate::pid_t,
+        file: *const c_char,
+        file_actions: *const crate::posix_spawn_file_actions_t,
+        attrp: *const crate::posix_spawnattr_t,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+    ) -> c_int;
+    pub fn posix_spawnattr_init(attr: *mut posix_spawnattr_t) -> c_int;
+    pub fn posix_spawnattr_destroy(attr: *mut posix_spawnattr_t) -> c_int;
+    pub fn posix_spawnattr_getsigdefault(
+        attr: *const posix_spawnattr_t,
+        default: *mut crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setsigdefault(
+        attr: *mut posix_spawnattr_t,
+        default: *const crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_getsigmask(
+        attr: *const posix_spawnattr_t,
+        default: *mut crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setsigmask(
+        attr: *mut posix_spawnattr_t,
+        default: *const crate::sigset_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_getflags(attr: *const posix_spawnattr_t, flags: *mut c_short) -> c_int;
+    pub fn posix_spawnattr_setflags(attr: *mut posix_spawnattr_t, flags: c_short) -> c_int;
+    pub fn posix_spawnattr_getpgroup(
+        attr: *const posix_spawnattr_t,
+        flags: *mut crate::pid_t,
+    ) -> c_int;
+    pub fn posix_spawnattr_setpgroup(attr: *mut posix_spawnattr_t, flags: crate::pid_t) -> c_int;
+    pub fn posix_spawnattr_getschedpolicy(
+        attr: *const posix_spawnattr_t,
+        flags: *mut c_int,
+    ) -> c_int;
+    pub fn posix_spawnattr_setschedpolicy(attr: *mut posix_spawnattr_t, flags: c_int) -> c_int;
+    pub fn posix_spawnattr_getschedparam(
+        attr: *const posix_spawnattr_t,
+        param: *mut crate::sched_param,
+    ) -> c_int;
+    pub fn posix_spawnattr_setschedparam(
+        attr: *mut posix_spawnattr_t,
+        param: *const crate::sched_param,
+    ) -> c_int;
+
+    pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> c_int;
+    pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> c_int;
+    pub fn posix_spawn_file_actions_addopen(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+        path: *const c_char,
+        oflag: c_int,
+        mode: crate::mode_t,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addclose(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_adddup2(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+        newfd: c_int,
     ) -> c_int;
 }
 
