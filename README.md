@@ -1,5 +1,7 @@
 # libc - Raw FFI bindings to platforms' system libraries
 
+poke ci
+
 [![GHA Status]][GitHub Actions] [![Cirrus CI Status]][Cirrus CI] [![Latest Version]][crates.io] [![Documentation]][docs.rs] ![License]
 
 `libc` provides all of the definitions necessary to easily interoperate with C
