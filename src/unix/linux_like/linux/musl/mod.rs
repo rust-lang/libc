@@ -1004,7 +1004,9 @@ cfg_if! {
         target_arch = "powerpc64",
         target_arch = "s390x",
         target_arch = "riscv64",
-        target_arch = "loongarch64"
+        target_arch = "loongarch64",
+        // musl-linux ABI for wasm32 follows b64 convention
+        target_arch = "wasm32",
     ))] {
         mod b64;
         pub use self::b64::*;
