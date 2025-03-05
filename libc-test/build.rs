@@ -4135,6 +4135,10 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.9 kernel headers.
             "epoll_params" => true,
 
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "dmabuf_cmsg" |
+            "dmabuf_token" => true,
+
             _ => false,
         }
     });
