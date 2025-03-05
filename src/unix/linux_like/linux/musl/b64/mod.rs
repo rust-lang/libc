@@ -107,6 +107,9 @@ cfg_if! {
     } else if #[cfg(any(target_arch = "loongarch64"))] {
         mod loongarch64;
         pub use self::loongarch64::*;
+    } else if #[cfg(any(target_arch = "wasm32"))] {
+        mod wasm32;
+        pub use self::wasm32::*;
     } else {
         // Unknown target_arch
     }
