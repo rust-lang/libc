@@ -97,11 +97,24 @@ pub const SO_TIMESTAMPING: c_int = 0x0023;
 // pub const SO_DETACH_REUSEPORT_BPF: c_int = 0x0047;
 pub const SO_PREFER_BUSY_POLL: c_int = 0x0048;
 pub const SO_BUSY_POLL_BUDGET: c_int = 0x0049;
+pub const SO_NETNS_COOKIE: c_int = 0x0050;
+pub const SO_BUF_LOCK: c_int = 0x0051;
+pub const SO_RESERVE_MEM: c_int = 0x0052;
+pub const SO_TXREHASH: c_int = 0x0053;
+pub const SO_RCVMARK: c_int = 0x0054;
+pub const SO_PASSPIDFD: c_int = 0x0055;
+pub const SO_PEERPIDFD: c_int = 0x0056;
+pub const SO_DEVMEM_LINEAR: c_int = 0x0057;
+pub const SO_DEVMEM_DMABUF: c_int = 0x0058;
+pub const SO_DEVMEM_DONTNEED: c_int = 0x0059;
 
 // Defined in unix/linux_like/mod.rs
 // pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 pub const SCM_TIMESTAMPNS: c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: c_int = SO_TIMESTAMPING;
+
+pub const SCM_DEVMEM_LINEAR: c_int = SO_DEVMEM_LINEAR;
+pub const SCM_DEVMEM_DMABUF: c_int = SO_DEVMEM_DMABUF;
 
 // Ioctl Constants
 

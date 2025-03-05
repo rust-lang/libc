@@ -147,6 +147,16 @@ cfg_if! {
 }
 pub const SO_PREFER_BUSY_POLL: c_int = 69;
 pub const SO_BUSY_POLL_BUDGET: c_int = 70;
+pub const SO_NETNS_COOKIE: c_int = 71;
+pub const SO_BUF_LOCK: c_int = 72;
+pub const SO_RESERVE_MEM: c_int = 73;
+pub const SO_TXREHASH: c_int = 74;
+pub const SO_RCVMARK: c_int = 75;
+pub const SO_PASSPIDFD: c_int = 76;
+pub const SO_PEERPIDFD: c_int = 77;
+pub const SO_DEVMEM_LINEAR: c_int = 78;
+pub const SO_DEVMEM_DMABUF: c_int = 79;
+pub const SO_DEVMEM_DONTNEED: c_int = 80;
 
 cfg_if! {
     if #[cfg(any(
@@ -168,6 +178,9 @@ cfg_if! {
 // pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 pub const SCM_TIMESTAMPNS: c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: c_int = SO_TIMESTAMPING;
+
+pub const SCM_DEVMEM_LINEAR: c_int = SO_DEVMEM_LINEAR;
+pub const SCM_DEVMEM_DMABUF: c_int = SO_DEVMEM_DMABUF;
 
 // Ioctl Constants
 
