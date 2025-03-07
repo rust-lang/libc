@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
+        run: ./ci/install-rust.sh && rustup component add rustfmt
       - name: Check style
         run: ./ci/style.sh
 
