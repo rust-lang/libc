@@ -135,7 +135,7 @@ s! {
         pub msg_rtime: crate::time_t,
         __glibc_reserved3: c_uint,
         pub msg_ctime: crate::time_t,
-        __msg_cbytes: c_ulong,
+        pub __msg_cbytes: c_ulong,
         pub msg_qnum: crate::msgqnum_t,
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,

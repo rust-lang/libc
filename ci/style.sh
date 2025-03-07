@@ -2,12 +2,7 @@
 
 set -eux
 
-if [ -n "${CI:-}" ]; then
-    rustup toolchain install nightly -c rustfmt --allow-downgrade
-    rustup override set nightly
-
-    check="--check"
-fi
+[ -n "${CI:-}" ] && check="--check"
 
 cargo test --manifest-path libc-test/Cargo.toml --test style -- --nocapture
 
