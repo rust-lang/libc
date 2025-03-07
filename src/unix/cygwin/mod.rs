@@ -1787,7 +1787,7 @@ pub const POSIX_SPAWN_SETSIGDEF: c_int = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: c_int = 0x20;
 
 f! {
-    pub fn FD_CLR(fd: c_int, set: *mut fd_set) {
+    pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
@@ -1799,13 +1799,13 @@ f! {
         ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
-    pub fn FD_SET(fd: c_int, set: *mut fd_set) {
+    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = core::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
     }
 
-    pub fn FD_ZERO(set: *mut fd_set) {
+    pub fn FD_ZERO(set: *mut fd_set) -> () {
         for slot in (*set).fds_bits.iter_mut() {
             *slot = 0;
         }
@@ -1826,12 +1826,12 @@ f! {
         s as c_int
     }
 
-    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) {
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
             *slot = 0;
         }
     }
-    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) {
+    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * core::mem::size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
@@ -1839,7 +1839,7 @@ f! {
         }
     }
 
-    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) {
+    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * core::mem::size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
@@ -1900,7 +1900,7 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1).cast_mut()
+        cmsg.offset(1).cast_mut().cast()
     }
 }
 
