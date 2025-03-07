@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.171](https://github.com/rust-lang/libc/compare/0.2.170...0.2.171) - 2025-03-07
+
+### Other
+
+- make `stat::st_size` signed
 ## [0.2.170](https://github.com/rust-lang/libc/compare/0.2.169...0.2.170) - 2025-02-23
 
 ### Added
