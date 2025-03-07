@@ -2167,6 +2167,7 @@ extern "C" {
     ) -> *mut c_void;
 
     pub fn memrchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    #[link_name = "__xpg_strerror_r"]
     pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
     pub fn strsep(string: *mut *mut c_char, delim: *const c_char) -> *mut c_char;
 
