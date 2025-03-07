@@ -24,7 +24,7 @@ if [ "$os" = "windows" ] && [ -n "${TARGET:-}" ]; then
 fi
 
 rustup set profile minimal
-rustup update --force "$toolchain"
+rustup update --force "$toolchain" --no-self-update
 rustup default "$toolchain"
 
 if [ -n "${TARGET:-}" ]; then
