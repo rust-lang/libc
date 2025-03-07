@@ -216,7 +216,7 @@ s! {
         __unused2: c_ulong,
         pub msg_ctime: crate::time_t,
         __unused3: c_ulong,
-        __msg_cbytes: c_ulong,
+        pub __msg_cbytes: c_ulong,
         pub msg_qnum: crate::msgqnum_t,
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
