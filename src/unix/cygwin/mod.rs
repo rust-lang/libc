@@ -2436,4 +2436,40 @@ extern "C" {
         fd: c_int,
         newfd: c_int,
     ) -> c_int;
+
+    pub fn forkpty(
+        amaster: *mut c_int,
+        name: *mut c_char,
+        termp: *const termios,
+        winp: *const crate::winsize,
+    ) -> crate::pid_t;
+    pub fn openpty(
+        amaster: *mut c_int,
+        aslave: *mut c_int,
+        name: *mut c_char,
+        termp: *const termios,
+        winp: *const crate::winsize,
+    ) -> c_int;
+
+    pub fn getgrgid_r(
+        gid: crate::gid_t,
+        grp: *mut crate::group,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut crate::group,
+    ) -> c_int;
+    pub fn getgrouplist(
+        user: *const c_char,
+        group: crate::gid_t,
+        groups: *mut crate::gid_t,
+        ngroups: *mut c_int,
+    ) -> c_int;
+    pub fn getgrnam_r(
+        name: *const c_char,
+        grp: *mut crate::group,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut crate::group,
+    ) -> c_int;
+    pub fn initgroups(user: *const c_char, group: crate::gid_t) -> c_int;
 }
