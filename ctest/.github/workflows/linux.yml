@@ -1,0 +1,46 @@
+name: CI (Linux)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - 1.63.0 # MSRV
+          - stable
+          - beta
+          - nightly
+        target:
+          - x86_64-unknown-linux-gnu
+
+    name: ${{ matrix.version }} - ${{ matrix.target }}
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ${{ matrix.version }}
+        run: TOOLCHAIN=${{ matrix.version }} TARGET=${{ matrix.target }} sh ./ci/install-rust.sh
+
+      - name: Check MSRV
+        if: matrix.version == '1.63.0'
+        run: cargo check
+
+      # FIXME: Some symbols cause multiple definitions error on the same line:
+      # /usr/bin/ld: /home/runner/work/ctest2/ctest2/target/debug/deps/libtestcrate-a072d428f9532abb.rlib(t1gen.o):
+      # /home/runner/work/ctest2/ctest2/testcrate/src/t1.h:65: multiple definition of `T1_static_mut_u8';
+      # /home/runner/work/ctest2/ctest2/target/debug/deps/libtestcrate-a072d428f9532abb.rlib(t1.o):
+      # /home/runner/work/ctest2/ctest2/testcrate/src/t1.h:65: first defined here
+      # - name: Run tests
+      #   if: matrix.version != '1.63.0'
+      #   run: cargo test --all -- --nocapture
+
+      - name: Run libc tests
+        if: matrix.version != '1.63.0'
+        run: sh ./ci/run-docker.sh ${{ matrix.target }}
