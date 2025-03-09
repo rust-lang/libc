@@ -1627,6 +1627,11 @@ s_no_extra_traits! {
         pub ifr_name: [c_char; crate::IFNAMSIZ],
         pub ifr_ifru: __c_anonymous_ifr_ifru6,
     }
+
+    pub struct proc_fdinfo {
+        pub proc_fd: i32,
+        pub proc_fdtype: u32,
+    }
 }
 
 impl siginfo_t {
@@ -4968,6 +4973,19 @@ pub const PROC_PIDTASKINFO: c_int = 4;
 pub const PROC_PIDTHREADINFO: c_int = 5;
 pub const PROC_PIDVNODEPATHINFO: c_int = 9;
 pub const PROC_PIDPATHINFO_MAXSIZE: c_int = 4096;
+
+pub const PROC_PIDLISTFDS: c_int = 1;
+pub const PROC_PIDLISTFD_SIZE: c_int = 8;
+pub const PROX_FDTYPE_ATALK: c_int = 0;
+pub const PROX_FDTYPE_VNODE: c_int = 1;
+pub const PROX_FDTYPE_SOCKET: c_int = 2;
+pub const PROX_FDTYPE_PSHM: c_int = 3;
+pub const PROX_FDTYPE_PSEM: c_int = 4;
+pub const PROX_FDTYPE_KQUEUE: c_int = 5;
+pub const PROX_FDTYPE_PIPE: c_int = 6;
+pub const PROX_FDTYPE_FSEVENTS: c_int = 7;
+pub const PROX_FDTYPE_NETPOLICY: c_int = 9;
+
 pub const PROC_CSM_ALL: c_uint = 0x0001;
 pub const PROC_CSM_NOSMT: c_uint = 0x0002;
 pub const PROC_CSM_TECS: c_uint = 0x0004;
