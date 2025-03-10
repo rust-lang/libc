@@ -4183,7 +4183,9 @@ fn test_linux(target: &str) {
             | "F_SEAL_SEAL"
             | "F_SEAL_SHRINK"
             | "F_SEAL_GROW"
-            | "F_SEAL_WRITE" => true,
+            | "F_SEAL_WRITE"
+            | "F_SEAL_FUTURE_WRITE"
+            | "F_SEAL_EXEC" => true,
             // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests
             // because including `linux/if_arp.h` causes some conflicts:
             "ARPHRD_CAN" => true,
