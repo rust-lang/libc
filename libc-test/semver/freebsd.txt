@@ -1907,6 +1907,7 @@ cpuset_setid
 cpusetid_t
 daemon
 dallocx
+devname
 devname_r
 difftime
 dirfd

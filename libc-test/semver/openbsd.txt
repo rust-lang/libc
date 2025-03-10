@@ -1068,8 +1068,10 @@ chroot
 clearerr
 clock_getres
 clock_settime
+closefrom
 cmsghdr
 daemon
+devname
 difftime
 dirfd
 dirname

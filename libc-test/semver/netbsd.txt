@@ -1252,9 +1252,11 @@ clearerr
 clock_getres
 clock_nanosleep
 clock_settime
+closefrom
 cmsghdr
 consttime_memequal
 daemon
+devname
 difftime
 dirfd
 dirname

@@ -1452,26 +1452,6 @@ f! {
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
     }
-
-    pub fn major(dev: crate::dev_t) -> c_uint {
-        // see
-        // https://github.com/emscripten-core/emscripten/blob/
-        // main/system/lib/libc/musl/include/sys/sysmacros.h
-        let mut major = 0;
-        major |= (dev & 0x00000fff) >> 8;
-        major |= (dev & 0xfffff000) >> 31 >> 1;
-        major as c_uint
-    }
-
-    pub fn minor(dev: crate::dev_t) -> c_uint {
-        // see
-        // https://github.com/emscripten-core/emscripten/blob/
-        // main/system/lib/libc/musl/include/sys/sysmacros.h
-        let mut minor = 0;
-        minor |= (dev & 0x000000ff) >> 0;
-        minor |= (dev & 0xffffff00) >> 12;
-        minor as c_uint
-    }
 }
 
 safe_f! {
@@ -1479,11 +1459,31 @@ safe_f! {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;
-        dev |= (major & 0x00000fff) << 8;
         dev |= (major & 0xfffff000) << 31 << 1;
-        dev |= (minor & 0x000000ff) << 0;
+        dev |= (major & 0x00000fff) << 8;
         dev |= (minor & 0xffffff00) << 12;
+        dev |= minor & 0x000000ff;
         dev
+    }
+
+    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+        // see
+        // https://github.com/emscripten-core/emscripten/blob/
+        // main/system/lib/libc/musl/include/sys/sysmacros.h
+        let mut major = 0;
+        major |= (dev >> 31 >> 1) & 0xfffff000;
+        major |= (dev >> 8) & 0x00000fff;
+        major as c_uint
+    }
+
+    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+        // see
+        // https://github.com/emscripten-core/emscripten/blob/
+        // main/system/lib/libc/musl/include/sys/sysmacros.h
+        let mut minor = 0;
+        minor |= (dev >> 12) & 0xffffff00;
+        minor |= dev & 0x000000ff;
+        minor as c_uint
     }
 }
 

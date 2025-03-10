@@ -589,7 +589,7 @@ cfg_if! {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("sockaddr_un")
                     .field("sun_family", &self.sun_family)
-                    // FIXME: .field("sun_path", &self.sun_path)
+                    // FIXME(debug): .field("sun_path", &self.sun_path)
                     .finish()
             }
         }
@@ -632,11 +632,11 @@ cfg_if! {
         impl fmt::Debug for utsname {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utsname")
-                    // FIXME: .field("sysname", &self.sysname)
-                    // FIXME: .field("nodename", &self.nodename)
-                    // FIXME: .field("release", &self.release)
-                    // FIXME: .field("version", &self.version)
-                    // FIXME: .field("machine", &self.machine)
+                    // FIXME(debug): .field("sysname", &self.sysname)
+                    // FIXME(debug): .field("nodename", &self.nodename)
+                    // FIXME(debug): .field("release", &self.release)
+                    // FIXME(debug): .field("version", &self.version)
+                    // FIXME(debug): .field("machine", &self.machine)
                     .finish()
             }
         }
@@ -662,7 +662,7 @@ cfg_if! {
         impl fmt::Debug for fd_set {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("fd_set")
-                    // FIXME: .field("fds_bits", &self.fds_bits)
+                    // FIXME(debug): .field("fds_bits", &self.fds_bits)
                     .finish()
             }
         }
@@ -691,7 +691,7 @@ cfg_if! {
                     .field("ss_family", &self.ss_family)
                     .field("__ss_pad1", &self.__ss_pad1)
                     .field("__ss_align", &self.__ss_align)
-                    // FIXME: .field("__ss_pad2", &self.__ss_pad2)
+                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
                     .finish()
             }
         }
@@ -740,7 +740,7 @@ cfg_if! {
                     && self.si_code == other.si_code
                     && self.si_errno == other.si_errno
                 {
-                    // FIXME: The `si_pad` field in the 64-bit version of the struct is ignored
+                    // FIXME(solarish): The `si_pad` field in the 64-bit version of the struct is ignored
                     // (for now) when doing comparisons.
 
                     let field_count = self.data_field_count();
@@ -760,7 +760,7 @@ cfg_if! {
                     .field("si_signo", &self.si_signo)
                     .field("si_code", &self.si_code)
                     .field("si_errno", &self.si_errno)
-                    // FIXME: .field("__pad", &self.__pad)
+                    // FIXME(debug): .field("__pad", &self.__pad)
                     .finish()
             }
         }
@@ -770,7 +770,7 @@ cfg_if! {
                 self.si_code.hash(state);
                 self.si_errno.hash(state);
 
-                // FIXME: The `si_pad` field in the 64-bit version of the struct is ignored
+                // FIXME(solarish): The `si_pad` field in the 64-bit version of the struct is ignored
                 // (for now) when doing hashing.
 
                 let field_count = self.data_field_count();
@@ -803,7 +803,7 @@ cfg_if! {
                     .field("sdl_nlen", &self.sdl_nlen)
                     .field("sdl_alen", &self.sdl_alen)
                     .field("sdl_slen", &self.sdl_slen)
-                    // FIXME: .field("sdl_data", &self.sdl_data)
+                    // FIXME(debug): .field("sdl_data", &self.sdl_data)
                     .finish()
             }
         }
@@ -853,7 +853,7 @@ cfg_if! {
         impl PartialEq for pad128_t {
             fn eq(&self, other: &pad128_t) -> bool {
                 unsafe {
-                    // FIXME: self._q == other._q ||
+                    // FIXME(solarish): self._q == other._q ||
                     self._l == other._l
                 }
             }
@@ -862,7 +862,7 @@ cfg_if! {
         impl hash::Hash for pad128_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
-                    // FIXME: state.write_i64(self._q as i64);
+                    // FIXME(solarish): state.write_i64(self._q as i64);
                     self._l.hash(state);
                 }
             }
@@ -870,7 +870,7 @@ cfg_if! {
         impl PartialEq for upad128_t {
             fn eq(&self, other: &upad128_t) -> bool {
                 unsafe {
-                    // FIXME: self._q == other._q ||
+                    // FIXME(solarish): self._q == other._q ||
                     self._l == other._l
                 }
             }
@@ -879,7 +879,7 @@ cfg_if! {
         impl hash::Hash for upad128_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
-                    // FIXME: state.write_i64(self._q as i64);
+                    // FIXME(solarish): state.write_i64(self._q as i64);
                     self._l.hash(state);
                 }
             }
@@ -1148,6 +1148,7 @@ pub const IPV6_DONTFRAG: c_int = 0x21;
 pub const IPV6_SEC_OPT: c_int = 0x22;
 pub const IPV6_TCLASS: c_int = 0x26;
 pub const IPV6_V6ONLY: c_int = 0x27;
+pub const IPV6_BOUND_IF: c_int = 0x41;
 
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
@@ -1691,6 +1692,7 @@ pub const IP_ADD_SOURCE_MEMBERSHIP: c_int = 23;
 pub const IP_DROP_SOURCE_MEMBERSHIP: c_int = 24;
 pub const IP_BLOCK_SOURCE: c_int = 21;
 pub const IP_UNBLOCK_SOURCE: c_int = 22;
+pub const IP_BOUND_IF: c_int = 0x41;
 
 // These TCP socket options are common between illumos and Solaris, while higher
 // numbers have generally diverged:

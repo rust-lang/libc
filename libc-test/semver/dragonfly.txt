@@ -1296,6 +1296,7 @@ clock_getcpuclockid
 clock_getres
 clock_nanosleep
 clock_settime
+closefrom
 cmsgcred
 cmsghdr
 cpuctl_cpuid_args_t
@@ -1303,6 +1304,7 @@ cpuctl_cpuid_count_args_t
 cpuctl_msr_args_t
 cpuctl_update_args_t
 daemon
+devname
 devname_r
 difftime
 dirfd
