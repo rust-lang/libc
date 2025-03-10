@@ -48,7 +48,6 @@ targets = [
     "armv7r-none-eabihf",
     # FIXME(hexagon): excluded due to duplicate symbol errors
     # "hexagon-unknown-linux-musl",
-    "i586-pc-windows-msvc",
     "i586-unknown-linux-gnu",
     "i586-unknown-linux-musl",
     "i686-linux-android",
