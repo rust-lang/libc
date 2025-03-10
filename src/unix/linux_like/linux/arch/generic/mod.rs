@@ -130,6 +130,11 @@ cfg_if! {
             target_arch = "csky",
             target_arch = "loongarch64"
         ),
+        // FIXME(musl):
+        // Musl hardcodes the SO_* constants instead
+        // of inheriting them from the kernel headers.
+        // For new constants you might need consider updating
+        // musl in the CI as well.
         not(any(target_env = "musl", target_env = "ohos"))
     ))] {
         pub const SO_TIMESTAMP_NEW: c_int = 63;
@@ -140,8 +145,8 @@ cfg_if! {
         pub const SO_DETACH_REUSEPORT_BPF: c_int = 68;
     }
 }
-// pub const SO_PREFER_BUSY_POLL: c_int = 69;
-// pub const SO_BUSY_POLL_BUDGET: c_int = 70;
+pub const SO_PREFER_BUSY_POLL: c_int = 69;
+pub const SO_BUSY_POLL_BUDGET: c_int = 70;
 
 cfg_if! {
     if #[cfg(any(
@@ -303,7 +308,8 @@ cfg_if! {
         target_arch = "riscv64",
         target_arch = "aarch64",
         target_arch = "s390x",
-        target_arch = "loongarch64"
+        target_arch = "loongarch64",
+        target_arch = "wasm32"
     ))] {
         pub const FS_IOC_GETFLAGS: Ioctl = 0x80086601;
         pub const FS_IOC_SETFLAGS: Ioctl = 0x40086602;

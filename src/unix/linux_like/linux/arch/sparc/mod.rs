@@ -95,8 +95,8 @@ pub const SO_TIMESTAMPING: c_int = 0x0023;
 // pub const SO_RCVTIMEO_NEW: c_int = 0x0044;
 // pub const SO_SNDTIMEO_NEW: c_int = 0x0045;
 // pub const SO_DETACH_REUSEPORT_BPF: c_int = 0x0047;
-// pub const SO_PREFER_BUSY_POLL: c_int = 0x0048;
-// pub const SO_BUSY_POLL_BUDGET: c_int = 0x0049;
+pub const SO_PREFER_BUSY_POLL: c_int = 0x0048;
+pub const SO_BUSY_POLL_BUDGET: c_int = 0x0049;
 
 // Defined in unix/linux_like/mod.rs
 // pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
