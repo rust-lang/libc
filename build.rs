@@ -43,7 +43,6 @@ fn main() {
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
-    let libc_check_cfg = env::var("LIBC_CHECK_CFG").is_ok() || rustc_minor_ver >= 80;
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
@@ -94,12 +93,9 @@ fn main() {
     // Set unconditionally when ctest is not being invoked.
     set_cfg("libc_const_extern_fn");
 
-    // check-cfg is a nightly cargo/rustc feature to warn when unknown cfgs are used across the
-    // codebase. libc can configure it if the appropriate environment variable is passed. Since
-    // rust-lang/rust enforces it, this is useful when using a custom libc fork there.
-    //
-    // https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#check-cfg
-    if libc_check_cfg {
+    // Since Rust 1.80, configuration that isn't recognized by default needs to be provided to
+    // avoid warnings.
+    if rustc_minor_ver >= 80 {
         for cfg in ALLOWED_CFGS {
             if rustc_minor_ver >= 75 {
                 println!("cargo:rustc-check-cfg=cfg({})", cfg);
