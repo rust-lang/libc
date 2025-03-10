@@ -192,7 +192,6 @@ armebv7r-none-eabihf \
 armv7-wrs-vxworks-eabihf \
 armv7r-none-eabi \
 armv7r-none-eabihf \
-i586-pc-windows-msvc \
 i686-pc-windows-msvc \
 i686-unknown-haiku \
 i686-unknown-netbsd \
