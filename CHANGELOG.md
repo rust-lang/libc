@@ -1,6 +1,55 @@
 # Changelog
 
 ## [Unreleased]
+## [0.2.171](https://github.com/rust-lang/libc/compare/0.2.170...0.2.171) - 2025-03-10
+
+### Added
+
+- Add PTY and group API ([#4309](https://github.com/rust-lang/libc/pull/4309))
+- add support ([#4279](https://github.com/rust-lang/libc/pull/4279))
+- Add SO_PREFER_BUSY_POLL and SO_BUSY_POLL_BUDGET
+- Added bindings for `wasm32-wali-linux-musl` target
+- Add SysV semaphore constants
+- add NetBSD, OpenBSD, DragonflyBSD ([#4290](https://github.com/rust-lang/libc/pull/4290))
+- adding if_nameindex/if_freenameindex support for Android.
+- add devname(3) ([#4285](https://github.com/rust-lang/libc/pull/4285))
+- add labels to each FIXME ([#4231](https://github.com/rust-lang/libc/pull/4231))
+- add labels to FIXMEs ([#4232](https://github.com/rust-lang/libc/pull/4232))
+- add pw_passwd field to passwd struct in NuttX ([#4222](https://github.com/rust-lang/libc/pull/4222))
+
+### Changed
+
+- Change the range syntax that is giving `ctest` problems
+
+### Deprecated
+
+- deprecate obsolete packet filter interfaces. ([#4267](https://github.com/rust-lang/libc/pull/4267))
+
+### Fixed
+
+- Fix strerror_r ([#4308](https://github.com/rust-lang/libc/pull/4308))
+- Fix usage of f! ([#4308](https://github.com/rust-lang/libc/pull/4308))
+- update tm_zone and d_name fields to use c_char type in NuttX ([#4222](https://github.com/rust-lang/libc/pull/4222))
+
+### Other
+
+- include prelude to define c_int ([#4304](https://github.com/rust-lang/libc/pull/4304))
+- Make msqid_ds.__msg_cbytes public.
+- Relocate <spawn.h> functions to define them to dragonfly.
+- Correct values for SI_TIMER, SI_MESGQ, SI_ASYNCIO ([#4292](https://github.com/rust-lang/libc/pull/4292))
+- define `IP_BOUND_IF` and `IPV6_BOUND_IF` ([#4287](https://github.com/rust-lang/libc/pull/4287))
+- Use sa_sigaction instead the union for AIX.
+- Make all `major`, `minor`, `makedev` into `const fn`.
+- gnu b32: Remove mips cfg conditionals in struct stat
+- gnu b32: Copy struct stat to mips and use it
+- move AF_XDP structs and constants to linux/mod.rs
+- make `stat::st_size` signed
+
+### Removed
+
+- Remove the `check_cfg` job
+- Remove tests for the `i586-pc-windows-msvc` target
+- Remove pthread_set_name_np from NuttX
 ## [0.2.170](https://github.com/rust-lang/libc/compare/0.2.169...0.2.170) - 2025-02-23
 
 ### Added
