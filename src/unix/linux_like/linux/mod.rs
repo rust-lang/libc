@@ -1320,6 +1320,21 @@ s! {
         pub propagation: crate::__u64,
         pub userns_fd: crate::__u64,
     }
+
+    // linux/uio.h
+
+    pub struct dmabuf_cmsg {
+        pub frag_offset: crate::__u64,
+        pub frag_size: crate::__u32,
+        pub frag_token: crate::__u32,
+        pub dmabuf_id: crate::__u32,
+        pub flags: crate::__u32,
+    }
+
+    pub struct dmabuf_token {
+        pub token_start: crate::__u32,
+        pub token_count: crate::__u32,
+    }
 }
 
 cfg_if! {
