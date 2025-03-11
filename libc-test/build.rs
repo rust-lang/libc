@@ -4135,6 +4135,10 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.9 kernel headers.
             "epoll_params" => true,
 
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "dmabuf_cmsg" |
+            "dmabuf_token" => true,
+
             _ => false,
         }
     });
@@ -4237,6 +4241,26 @@ fn test_linux(target: &str) {
             {
                 return true;
             }
+            // FIXME(musl): Not in musl yet
+            if name == "SO_NETNS_COOKIE"
+                || name == "SO_BUF_LOCK"
+                || name == "SO_RESERVE_MEM"
+                || name == "SO_TXREHASH"
+                || name == "SO_RCVMARK"
+                || name == "SO_PASSPIDFD"
+                || name == "SO_PEERPIDFD"
+                || name == "SO_DEVMEM_LINEAR"
+                || name == "SO_DEVMEM_DMABUF"
+                || name == "SO_DEVMEM_DONTNEED"
+            {
+                        return true;
+            }
+            // FIXME(musl): Not in musl yet
+            if name == "SCM_DEVMEM_LINEAR"
+                || name == "SCM_DEVMEM_DMABUF"
+            {
+                        return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
@@ -4255,7 +4279,9 @@ fn test_linux(target: &str) {
             | "F_SEAL_SEAL"
             | "F_SEAL_SHRINK"
             | "F_SEAL_GROW"
-            | "F_SEAL_WRITE" => true,
+            | "F_SEAL_WRITE"
+            | "F_SEAL_FUTURE_WRITE"
+            | "F_SEAL_EXEC" => true,
             // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests
             // because including `linux/if_arp.h` causes some conflicts:
             "ARPHRD_CAN" => true,
@@ -4533,6 +4559,13 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
+
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "SO_DEVMEM_LINEAR"
+            | "SO_DEVMEM_DMABUF"
+            | "SO_DEVMEM_DONTNEED"
+            | "SCM_DEVMEM_LINEAR"
+            | "SCM_DEVMEM_DMABUF" => true,
 
             _ => false,
         }

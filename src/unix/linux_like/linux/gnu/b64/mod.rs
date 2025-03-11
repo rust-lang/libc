@@ -77,7 +77,8 @@ s! {
             target_arch = "mips64r6",
             target_arch = "powerpc64",
             target_arch = "riscv64",
-            target_arch = "sparc64"
+            target_arch = "sparc64",
+            target_arch = "s390x",
         )))]
         __reserved: crate::__syscall_ulong_t,
         pub sem_ctime: crate::time_t,
@@ -88,7 +89,8 @@ s! {
             target_arch = "mips64r6",
             target_arch = "powerpc64",
             target_arch = "riscv64",
-            target_arch = "sparc64"
+            target_arch = "sparc64",
+            target_arch = "s390x",
         )))]
         __reserved2: crate::__syscall_ulong_t,
         pub sem_nsems: crate::__syscall_ulong_t,
