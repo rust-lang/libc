@@ -190,9 +190,11 @@ s! {
         pub l_whence: c_short,
         pub l_start: off_t,
         pub l_len: off_t,
+        #[cfg(not(gnu_file_offset_bits64))]
         pub l_sysid: c_long,
         pub l_pid: crate::pid_t,
-        pad: [c_long; 4],
+        #[cfg(not(gnu_file_offset_bits64))]
+        __glibc_reserved0: [c_long; 4],
     }
 }
 
