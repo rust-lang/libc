@@ -5939,22 +5939,22 @@ const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
 }
 
 /// Build an ioctl number for an argumentless ioctl.
-pub(crate) const fn _IO(ty: u32, nr: u32) -> u32 {
+pub const fn _IO(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_NONE, ty, nr, 0)
 }
 
 /// Build an ioctl number for an read-only ioctl.
-pub(crate) const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
+pub const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ, ty, nr, size_of::<T>())
 }
 
 /// Build an ioctl number for an write-only ioctl.
-pub(crate) const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
+pub const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_WRITE, ty, nr, size_of::<T>())
 }
 
 /// Build an ioctl number for a read-write ioctl.
-pub(crate) const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
+pub const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ | _IOC_WRITE, ty, nr, size_of::<T>())
 }
 
