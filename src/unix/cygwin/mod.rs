@@ -435,6 +435,19 @@ s! {
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
     }
+
+    pub struct statfs {
+        pub f_type: c_ulong,
+        pub f_bsize: c_ulong,
+        pub f_blocks: c_ulong,
+        pub f_bfree: c_ulong,
+        pub f_bavail: c_ulong,
+        pub f_files: c_ulong,
+        pub f_ffree: c_ulong,
+        pub f_fsid: c_ulong,
+        pub f_namelen: c_ulong,
+        pub f_spare: [c_ulong; 6],
+    }
 }
 
 s_no_extra_traits! {
@@ -1786,6 +1799,20 @@ pub const POSIX_SPAWN_SETSCHEDULER: c_int = 0x08;
 pub const POSIX_SPAWN_SETSIGDEF: c_int = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: c_int = 0x20;
 
+pub const POSIX_FADV_NORMAL: c_int = 0;
+pub const POSIX_FADV_SEQUENTIAL: c_int = 1;
+pub const POSIX_FADV_RANDOM: c_int = 2;
+pub const POSIX_FADV_WILLNEED: c_int = 3;
+pub const POSIX_FADV_DONTNEED: c_int = 4;
+pub const POSIX_FADV_NOREUSE: c_int = 5;
+
+pub const FALLOC_FL_PUNCH_HOLE: c_int = 0x0001;
+pub const FALLOC_FL_ZERO_RANGE: c_int = 0x0002;
+pub const FALLOC_FL_UNSHARE_RANGE: c_int = 0x0004;
+pub const FALLOC_FL_COLLAPSE_RANGE: c_int = 0x0008;
+pub const FALLOC_FL_INSERT_RANGE: c_int = 0x0010;
+pub const FALLOC_FL_KEEP_SIZE: c_int = 0x1000;
+
 f! {
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -2472,4 +2499,11 @@ extern "C" {
         result: *mut *mut crate::group,
     ) -> c_int;
     pub fn initgroups(user: *const c_char, group: crate::gid_t) -> c_int;
+
+    pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
+
+    pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
+    pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
 }
