@@ -87,7 +87,6 @@ test_flags="--skip check_style"
 case "$target" in
     # Only run `libc-test` 
     # FIXME(android): unit tests fail to start on Android
-    # FIXME(s390x): unit tests fail to locate glibc
     *android*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
     *s390x*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
     # For all other platforms, test everything in the workspace
