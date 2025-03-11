@@ -5,7 +5,15 @@
 
 set -eux
 
-musl_version=1.1.24
+case ${1} in
+    loongarch64)
+        musl_version=1.2.5
+        ;;
+    *)
+        musl_version=1.1.24
+        ;;
+esac
+
 musl="musl-${musl_version}"
 
 # Download, configure, build, and install musl:
@@ -50,6 +58,13 @@ case ${1} in
         musl_arch=s390x
         kernel_arch=s390
         CC=s390x-linux-gnu-gcc \
+          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
+    loongarch64)
+        musl_arch=loongarch64
+        kernel_arch=loongarch
+        CC=loongarch64-linux-gnu-gcc-14 \
           ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
