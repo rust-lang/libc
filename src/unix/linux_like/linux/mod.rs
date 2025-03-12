@@ -1708,7 +1708,6 @@ s_no_extra_traits! {
         pub data: [u8; CANFD_MAX_DLEN],
     }
 
-    #[repr(align(8))]
     #[allow(missing_debug_implementations)]
     pub struct canxl_frame {
         pub prio: canid_t,
