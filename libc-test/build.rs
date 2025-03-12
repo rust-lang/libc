@@ -3919,11 +3919,6 @@ fn test_linux(target: &str) {
             return true;
         }
 
-        // FIXME(linux): sparc64 CI has old headers
-        if sparc64 && (ty == "uinput_ff_erase" || ty == "uinput_abs_setup") {
-            return true;
-        }
-
         // FIXME(#1558): passing by value corrupts the value for reasons not understood.
         if (gnu && sparc64) && (ty == "ip_mreqn" || ty == "hwtstamp_config") {
             return true;
@@ -3994,36 +3989,9 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
-            // FIXME(linux): requires >= 6.1 kernel headers
-            "canxl_frame" => true,
-
             // FIXME(linux): The size of `iv` has been changed since Linux v6.0
             // https://github.com/torvalds/linux/commit/94dfc73e7cf4a31da66b8843f0b9283ddd6b8381
             "af_alg_iv" => true,
-
-            // FIXME(linux): Requires >= 5.1 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "tls12_crypto_info_aes_gcm_256"
-                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
-            {
-                true
-            }
-
-            // FIXME(linux): Requires >= 5.11 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "tls12_crypto_info_chacha20_poly1305"
-                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
-            {
-                true
-            }
-
-            // FIXME(linux): Requires >= 5.3 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_options" if musl => true,
-
-            // FIXME(linux): Requires >= 5.4 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             // A field was added in 6.8.
@@ -4031,10 +3999,6 @@ fn test_linux(target: &str) {
             // The previous version of the struct was removed in 6.11 due to a bug.
             // https://github.com/torvalds/linux/commit/32654bbd6313b4cfc82297e6634fa9725c3c900f
             "xdp_umem_reg" => true,
-
-            // FIXME(linux): Requires >= 5.9 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_statistics" if musl => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "xsk_tx_metadata"
@@ -4189,6 +4153,36 @@ fn test_linux(target: &str) {
             {
                         return true;
             }
+            // FIXME(musl): Not in musl yet
+            if name == "PR_SET_VMA"
+                || name == "PR_SET_VMA_ANON_NAME"
+                || name == "PR_SCHED_CORE"
+                || name == "PR_SCHED_CORE_GET"
+                || name == "PR_SCHED_CORE_CREATE"
+                || name == "PR_SCHED_CORE_SHARE_TO"
+                || name == "PR_SCHED_CORE_SHARE_FROM"
+                || name == "PR_SCHED_CORE_MAX"
+                || name == "PR_SCHED_CORE_SCOPE_THREAD"
+                || name == "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
+                || name == "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
+            {
+                return true;
+            }
+            // FIXME(musl): Not in musl yet
+            if name == "FAN_FS_ERROR"
+                || name == "FAN_RENAME"
+                || name == "FAN_REPORT_TARGET_FID"
+                || name == "FAN_REPORT_DFID_NAME_TARGET"
+                || name == "FAN_MARK_EVICTABLE"
+                || name == "FAN_EVENT_INFO_TYPE_ERROR"
+                || name == "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME"
+                || name == "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME"
+                || name == "FAN_RESPONSE_INFO_NONE"
+                || name == "FAN_RESPONSE_INFO_AUDIT_RULE"
+                || name == "FAN_INFO"
+            {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
@@ -4253,30 +4247,6 @@ fn test_linux(target: &str) {
             // FIXME(linux): Not defined on ARM, gnueabihf, musl, PowerPC, riscv64, s390x, and sparc64.
             "SYS_memfd_secret" if arm | gnueabihf | musl | ppc | riscv64 | s390x | sparc64 => true,
 
-            // FIXME(linux): Added in Linux 5.16
-            // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
-            "SYS_futex_waitv" => true,
-
-            // FIXME(linux): Added in Linux 5.17
-            // https://github.com/torvalds/linux/commit/c6018b4b254971863bd0ad36bb5e7d0fa0f0ddb0
-            "SYS_set_mempolicy_home_node" => true,
-
-            // FIXME(linux): Added in Linux 5.18
-            // https://github.com/torvalds/linux/commit/8b5413647262dda8d8d0e07e14ea1de9ac7cf0b2
-            "NFQA_PRIORITY" => true,
-
-            // FIXME(linux): requires more recent kernel headers on CI
-            | "UINPUT_VERSION"
-            | "SW_MAX"
-            | "SW_CNT"
-                if ppc64 || riscv64 => true,
-
-            // FIXME(linux): requires more recent kernel headers on CI
-            "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" if sparc64 => true,
-
-            // FIXME(linux): Not currently available in headers on ARM and musl.
-            "NETLINK_GET_STRICT_CHK" if arm => true,
-
             // Skip as this signal codes and trap reasons need newer headers
             "SI_DETHREAD" | "TRAP_PERF" => true,
 
@@ -4302,20 +4272,6 @@ fn test_linux(target: &str) {
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
 
-            // linux 5.17 min
-            "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
-
-            // present in recent kernels only
-            "PR_SCHED_CORE" | "PR_SCHED_CORE_CREATE" | "PR_SCHED_CORE_GET" | "PR_SCHED_CORE_MAX" | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP" | "PR_SCHED_CORE_SCOPE_THREAD" | "PR_SCHED_CORE_SCOPE_THREAD_GROUP" | "PR_SCHED_CORE_SHARE_FROM" | "PR_SCHED_CORE_SHARE_TO" => true,
-
-            // present in recent kernels only >= 5.13
-            "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
-            // present in recent kernels only >= 5.19
-            "PR_SME_SET_VL" | "PR_SME_GET_VL" | "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" => true,
-
-            // Added in Linux 5.14
-            "FUTEX_LOCK_PI2" => true,
-
             // Added in  linux 6.1
             "STATX_DIOALIGN"
             | "CAN_RAW_XL_FRAMES"
@@ -4334,27 +4290,12 @@ fn test_linux(target: &str) {
             | "CANXL_XLF"
              => true,
 
-            // FIXME(linux): Parts of netfilter/nfnetlink*.h require more recent kernel headers:
-            | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
-            | "RTNLGRP_TUNNEL" // linux v5.18+
-            | "RTNLGRP_STATS" // linux v5.18+
-                => true,
-
             // FIXME(linux): The below is no longer const in glibc 2.34:
             // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
             | "PTHREAD_STACK_MIN"
             | "SIGSTKSZ"
             | "MINSIGSTKSZ"
                 if gnu => true,
-
-            // FIXME(linux): Linux >= 5.16:
-            // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
-            "NF_NETDEV_EGRESS" if sparc64 => true,
-            // value changed
-            "NF_NETDEV_NUMHOOKS" if sparc64 => true,
-
-            // FIXME(linux): requires Linux >= v5.8
-            "IF_LINK_MODE_TESTING" if sparc64 => true,
 
             // FIXME(linux): Requires >= 6.3 kernel headers
             "MFD_EXEC" | "MFD_NOEXEC_SEAL" if sparc64 => true,
@@ -4366,15 +4307,8 @@ fn test_linux(target: &str) {
             "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
 
             // FIXME(linux): Requires more recent kernel headers
-            | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
-            | "IFLA_PARENT_DEV_BUS_NAME" // linux v5.13+
-            | "IFLA_GRO_MAX_SIZE"        // linux v5.16+
-            | "IFLA_TSO_MAX_SIZE"        // linux v5.18+
-            | "IFLA_TSO_MAX_SEGS"        // linux v5.18+
-            | "IFLA_ALLMULTI"            // linux v6.0+
-            | "MADV_DONTNEED_LOCKED"     // linux v5.18+
+            "IFLA_ALLMULTI"            // linux v6.0+
                 => true,
-            "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
 
             // kernel 6.5 minimum
             "MOVE_MOUNT_BENEATH" => true,
@@ -4382,19 +4316,8 @@ fn test_linux(target: &str) {
             "ALG_SET_KEY_BY_KEY_SERIAL" | "ALG_SET_DRBG_ENTROPY" => true,
 
             // FIXME(linux): Requires more recent kernel headers
-            | "FAN_FS_ERROR"                      // linux v5.16+
-            | "FAN_RENAME"                        // linux v5.17+
-            | "FAN_REPORT_TARGET_FID"             // linux v5.17+
-            | "FAN_REPORT_DFID_NAME_TARGET"       // linux v5.17+
-            | "FAN_MARK_EVICTABLE"                // linux v5.19+
             | "FAN_MARK_IGNORE"                   // linux v6.0+
             | "FAN_MARK_IGNORE_SURV"              // linux v6.0+
-            | "FAN_EVENT_INFO_TYPE_ERROR"         // linux v5.16+
-            | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME" // linux v5.17+
-            | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME" // linux v5.17+
-            | "FAN_RESPONSE_INFO_NONE"            // linux v5.16+
-            | "FAN_RESPONSE_INFO_AUDIT_RULE"      // linux v5.16+
-            | "FAN_INFO"                          // linux v5.16+
                 => true,
 
             // musl doesn't use <linux/fanotify.h> in <sys/fanotify.h>
