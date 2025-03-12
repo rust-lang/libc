@@ -5052,6 +5052,13 @@ pub const FF_MAX: __u16 = 0x7f;
 pub const FF_CNT: usize = FF_MAX as usize + 1;
 
 // linux/input-event-codes.h
+pub const INPUT_PROP_POINTER: u32 = 0x00;
+pub const INPUT_PROP_DIRECT: u32 = 0x01;
+pub const INPUT_PROP_BUTTONPAD: u32 = 0x02;
+pub const INPUT_PROP_SEMI_MT: u32 = 0x03;
+pub const INPUT_PROP_TOPBUTTONPAD: u32 = 0x04;
+pub const INPUT_PROP_POINTING_STICK: u32 = 0x05;
+pub const INPUT_PROP_ACCELEROMETER: u32 = 0x06;
 pub const INPUT_PROP_MAX: __u16 = 0x1f;
 pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
 pub const EV_MAX: __u16 = 0x1f;
