@@ -437,16 +437,16 @@ s! {
     }
 
     pub struct statfs {
-        pub f_type: c_ulong,
-        pub f_bsize: c_ulong,
-        pub f_blocks: c_ulong,
-        pub f_bfree: c_ulong,
-        pub f_bavail: c_ulong,
-        pub f_files: c_ulong,
-        pub f_ffree: c_ulong,
-        pub f_fsid: c_ulong,
-        pub f_namelen: c_ulong,
-        pub f_spare: [c_ulong; 6],
+        pub f_type: c_long,
+        pub f_bsize: c_long,
+        pub f_blocks: c_long,
+        pub f_bfree: c_long,
+        pub f_bavail: c_long,
+        pub f_files: c_long,
+        pub f_ffree: c_long,
+        pub f_fsid: c_long,
+        pub f_namelen: c_long,
+        pub f_spare: [c_long; 6],
     }
 }
 
