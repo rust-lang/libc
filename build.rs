@@ -29,7 +29,10 @@ const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
             "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin",
         ],
     ),
-    ("target_env", &["illumos", "wasi", "aix", "ohos"]),
+    (
+        "target_env",
+        &["illumos", "wasi", "aix", "ohos", "nto71_iosock", "nto80"],
+    ),
     (
         "target_arch",
         &["loongarch64", "mips32r6", "mips64r6", "csky"],
