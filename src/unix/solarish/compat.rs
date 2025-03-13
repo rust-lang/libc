@@ -176,24 +176,6 @@ pub unsafe fn forkpty(
     0
 }
 
-#[cfg(not(target_os = "illumos"))]
-extern "C" {
-    pub fn openpty(
-        amain: *mut c_int,
-        asubord: *mut c_int,
-        name: *mut c_char,
-        termp: *const crate::termios,
-        winp: *const crate::winsize,
-    ) -> c_int;
-
-    pub fn forkpty(
-        amain: *mut c_int,
-        name: *mut c_char,
-        termp: *const crate::termios,
-        winp: *const crate::winsize,
-    ) -> crate::pid_t;
-}
-
 pub unsafe fn getpwent_r(
     pwd: *mut passwd,
     buf: *mut c_char,
