@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use crate::{
     exit_status, off_t, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET, PRIV_DEBUG,
-    PRIV_PFEXEC, PRIV_XPOLICY,
+    PRIV_PFEXEC, PRIV_XPOLICY, termios,
 };
 
 pub type door_attr_t = c_uint;
@@ -242,4 +242,19 @@ extern "C" {
     pub fn pthread_getattr_np(thread: crate::pthread_t, attr: *mut crate::pthread_attr_t) -> c_int;
 
     pub fn euidaccess(path: *const c_char, amode: c_int) -> c_int;
+
+    pub fn openpty(
+        amain: *mut c_int,
+        asubord: *mut c_int,
+        name: *mut c_char,
+        termp: *mut termios,
+        winp: *mut crate::winsize,
+    ) -> c_int;
+
+    pub fn forkpty(
+        amain: *mut c_int,
+        name: *mut c_char,
+        termp: *mut termios,
+        winp: *mut crate::winsize,
+    ) -> crate::pid_t;
 }
