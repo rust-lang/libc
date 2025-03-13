@@ -123,57 +123,6 @@ pub unsafe fn openpty(
     0
 }
 
-pub unsafe fn forkpty(
-    amain: *mut c_int,
-    name: *mut c_char,
-    termp: *const termios,
-    winp: *const crate::winsize,
-) -> crate::pid_t {
-    let mut fds = -1;
-
-    if openpty(amain, &mut fds, name, termp, winp) != 0 {
-        return -1;
-    }
-
-    let pid = crate::fork();
-    if pid < 0 {
-        return bail(*amain, fds);
-    } else if pid > 0 {
-        // In the parent process, we close the subordinate device and return the
-        // process ID of the new child:
-        crate::close(fds);
-        return pid;
-    }
-
-    // The rest of this function executes in the child process.
-
-    // Close the main side of the pseudo-terminal pair:
-    crate::close(*amain);
-
-    // Use TIOCSCTTY to set the subordinate device as our controlling
-    // terminal.  This will fail (with ENOTTY) if we are not the leader in
-    // our own session, so we call setsid() first.  Finally, arrange for
-    // the pseudo-terminal to occupy the standard I/O descriptors.
-    if crate::setsid() < 0
-        || crate::ioctl(fds, TIOCSCTTY, 0) < 0
-        || crate::dup2(fds, 0) < 0
-        || crate::dup2(fds, 1) < 0
-        || crate::dup2(fds, 2) < 0
-    {
-        // At this stage there are no particularly good ways to handle failure.
-        // Exit as abruptly as possible, using _exit() to avoid messing with any
-        // state still shared with the parent process.
-        crate::_exit(EXIT_FAILURE);
-    }
-    // Close the inherited descriptor, taking care to avoid closing the standard
-    // descriptors by mistake:
-    if fds > 2 {
-        crate::close(fds);
-    }
-
-    0
-}
-
 pub unsafe fn getpwent_r(
     pwd: *mut passwd,
     buf: *mut c_char,
