@@ -238,14 +238,14 @@ extern "C" {
         amain: *mut c_int,
         asubord: *mut c_int,
         name: *mut c_char,
-        termp: *const crate::termios,
+        termp: *const termios,
         winp: *const crate::winsize,
     ) -> c_int;
 
     pub fn forkpty(
         amain: *mut c_int,
         name: *mut c_char,
-        termp: *const crate::termios,
+        termp: *const termios,
         winp: *const crate::winsize,
     ) -> crate::pid_t;
 }
