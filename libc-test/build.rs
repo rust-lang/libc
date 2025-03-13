@@ -4180,6 +4180,14 @@ fn test_linux(target: &str) {
                 || name == "FAN_RESPONSE_INFO_NONE"
                 || name == "FAN_RESPONSE_INFO_AUDIT_RULE"
                 || name == "FAN_INFO"
+                || name == "FAN_MARK_IGNORE"
+                || name == "FAN_MARK_IGNORE_SURV"
+            {
+                return true;
+            }
+            // FIXME(musl): Not in musl yet
+            if name == "IPPROTO_MPTCP"
+                || name == "IPPROTO_ETHERNET"
             {
                 return true;
             }
@@ -4237,9 +4245,7 @@ fn test_linux(target: &str) {
             "VMADDR_CID_RESERVED" => true,
 
             // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
-            | "IPPROTO_MAX"
-            | "IPPROTO_ETHERNET"
-            | "IPPROTO_MPTCP" => true,
+            "IPPROTO_MAX" => true,
 
             // FIXME(linux): Not yet implemented on sparc64
             "SYS_clone3" if sparc64 => true,
@@ -4272,24 +4278,6 @@ fn test_linux(target: &str) {
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
 
-            // Added in  linux 6.1
-            "STATX_DIOALIGN"
-            | "CAN_RAW_XL_FRAMES"
-            | "CANXL_HDR_SIZE"
-            | "CANXL_MAX_DLC"
-            | "CANXL_MAX_DLC_MASK"
-            | "CANXL_MAX_DLEN"
-            | "CANXL_MAX_MTU"
-            | "CANXL_MIN_DLC"
-            | "CANXL_MIN_DLEN"
-            | "CANXL_MIN_MTU"
-            | "CANXL_MTU"
-            | "CANXL_PRIO_BITS"
-            | "CANXL_PRIO_MASK"
-            | "CANXL_SEC"
-            | "CANXL_XLF"
-             => true,
-
             // FIXME(linux): The below is no longer const in glibc 2.34:
             // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
             | "PTHREAD_STACK_MIN"
@@ -4297,28 +4285,8 @@ fn test_linux(target: &str) {
             | "MINSIGSTKSZ"
                 if gnu => true,
 
-            // FIXME(linux): Requires >= 6.3 kernel headers
-            "MFD_EXEC" | "MFD_NOEXEC_SEAL" if sparc64 => true,
-
-            // kernel 6.1 minimum
-            "MADV_COLLAPSE" => true,
-
-            // kernel 6.2 minimum
-            "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
-
-            // FIXME(linux): Requires more recent kernel headers
-            "IFLA_ALLMULTI"            // linux v6.0+
-                => true,
-
             // kernel 6.5 minimum
             "MOVE_MOUNT_BENEATH" => true,
-            // FIXME(linux): Requires linux 6.1
-            "ALG_SET_KEY_BY_KEY_SERIAL" | "ALG_SET_DRBG_ENTROPY" => true,
-
-            // FIXME(linux): Requires more recent kernel headers
-            | "FAN_MARK_IGNORE"                   // linux v6.0+
-            | "FAN_MARK_IGNORE_SURV"              // linux v6.0+
-                => true,
 
             // musl doesn't use <linux/fanotify.h> in <sys/fanotify.h>
             "FAN_REPORT_PIDFD"
@@ -4401,9 +4369,6 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
             "MAP_DROPPABLE" => true,
-
-            // FIXME(linux): Requires >= 6.2 kernel headers.
-            "SOF_TIMESTAMPING_OPT_ID_TCP" => true,
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
