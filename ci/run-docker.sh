@@ -43,6 +43,7 @@ run() {
         --user "$(id -u)":"$(id -g)" \
         --env LIBC_CI \
         --env LIBC_CI_ZBUILD_STD \
+        --env RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS \
         --env CARGO_HOME=/cargo \
         --env CARGO_TARGET_DIR=/checkout/target \
         --volume "$CARGO_HOME":/cargo \
