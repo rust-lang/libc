@@ -3285,18 +3285,19 @@ pub const SECCOMP_SET_MODE_FILTER: c_uint = 1;
 pub const SECCOMP_GET_ACTION_AVAIL: c_uint = 2;
 pub const SECCOMP_GET_NOTIF_SIZES: c_uint = 3;
 
-pub const SECCOMP_FILTER_FLAG_TSYNC: c_ulong = 1;
-pub const SECCOMP_FILTER_FLAG_LOG: c_ulong = 2;
-pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: c_ulong = 4;
-pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: c_ulong = 8;
-pub const SECCOMP_FILTER_FLAG_TSYNC_ESRCH: c_ulong = 16;
-pub const SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV: c_ulong = 32;
+pub const SECCOMP_FILTER_FLAG_TSYNC: c_ulong = 1 << 0;
+pub const SECCOMP_FILTER_FLAG_LOG: c_ulong = 1 << 1;
+pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: c_ulong = 1 << 2;
+pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: c_ulong = 1 << 3;
+pub const SECCOMP_FILTER_FLAG_TSYNC_ESRCH: c_ulong = 1 << 4;
+pub const SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV: c_ulong = 1 << 5;
 
 pub const SECCOMP_RET_KILL_PROCESS: c_uint = 0x80000000;
 pub const SECCOMP_RET_KILL_THREAD: c_uint = 0x00000000;
 pub const SECCOMP_RET_KILL: c_uint = SECCOMP_RET_KILL_THREAD;
 pub const SECCOMP_RET_TRAP: c_uint = 0x00030000;
 pub const SECCOMP_RET_ERRNO: c_uint = 0x00050000;
+pub const SECCOMP_RET_USER_NOTIF: c_uint = 0x7fc00000;
 pub const SECCOMP_RET_TRACE: c_uint = 0x7ff00000;
 pub const SECCOMP_RET_LOG: c_uint = 0x7ffc0000;
 pub const SECCOMP_RET_ALLOW: c_uint = 0x7fff0000;
