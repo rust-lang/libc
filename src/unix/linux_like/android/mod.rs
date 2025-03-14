@@ -2158,18 +2158,22 @@ pub const GRND_NONBLOCK: c_uint = 0x0001;
 pub const GRND_RANDOM: c_uint = 0x0002;
 pub const GRND_INSECURE: c_uint = 0x0004;
 
+// <linux/seccomp.h>
 pub const SECCOMP_MODE_DISABLED: c_uint = 0;
 pub const SECCOMP_MODE_STRICT: c_uint = 1;
 pub const SECCOMP_MODE_FILTER: c_uint = 2;
 
-pub const SECCOMP_FILTER_FLAG_TSYNC: c_ulong = 1;
-pub const SECCOMP_FILTER_FLAG_LOG: c_ulong = 2;
-pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: c_ulong = 4;
-pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: c_ulong = 8;
+pub const SECCOMP_SET_MODE_STRICT: c_uint = 0;
+pub const SECCOMP_SET_MODE_FILTER: c_uint = 1;
+pub const SECCOMP_GET_ACTION_AVAIL: c_uint = 2;
+pub const SECCOMP_GET_NOTIF_SIZES: c_uint = 3;
 
-pub const SECCOMP_RET_ACTION_FULL: c_uint = 0xffff0000;
-pub const SECCOMP_RET_ACTION: c_uint = 0x7fff0000;
-pub const SECCOMP_RET_DATA: c_uint = 0x0000ffff;
+pub const SECCOMP_FILTER_FLAG_TSYNC: c_ulong = 1 << 0;
+pub const SECCOMP_FILTER_FLAG_LOG: c_ulong = 1 << 1;
+pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: c_ulong = 1 << 2;
+pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: c_ulong = 1 << 3;
+pub const SECCOMP_FILTER_FLAG_TSYNC_ESRCH: c_ulong = 1 << 4;
+pub const SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV: c_ulong = 1 << 5;
 
 pub const SECCOMP_RET_KILL_PROCESS: c_uint = 0x80000000;
 pub const SECCOMP_RET_KILL_THREAD: c_uint = 0x00000000;
@@ -2180,6 +2184,15 @@ pub const SECCOMP_RET_USER_NOTIF: c_uint = 0x7fc00000;
 pub const SECCOMP_RET_TRACE: c_uint = 0x7ff00000;
 pub const SECCOMP_RET_LOG: c_uint = 0x7ffc0000;
 pub const SECCOMP_RET_ALLOW: c_uint = 0x7fff0000;
+
+pub const SECCOMP_RET_ACTION_FULL: c_uint = 0xffff0000;
+pub const SECCOMP_RET_ACTION: c_uint = 0x7fff0000;
+pub const SECCOMP_RET_DATA: c_uint = 0x0000ffff;
+
+pub const SECCOMP_USER_NOTIF_FLAG_CONTINUE: c_ulong = 1;
+
+pub const SECCOMP_ADDFD_FLAG_SETFD: c_ulong = 1;
+pub const SECCOMP_ADDFD_FLAG_SEND: c_ulong = 2;
 
 pub const NLA_F_NESTED: c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: c_int = 1 << 14;
