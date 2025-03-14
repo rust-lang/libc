@@ -3258,6 +3258,7 @@ pub const SECCOMP_RET_KILL_THREAD: c_uint = 0x00000000;
 pub const SECCOMP_RET_KILL: c_uint = SECCOMP_RET_KILL_THREAD;
 pub const SECCOMP_RET_TRAP: c_uint = 0x00030000;
 pub const SECCOMP_RET_ERRNO: c_uint = 0x00050000;
+pub const SECCOMP_RET_USER_NOTIF: c_uint = 0x7fc00000;
 pub const SECCOMP_RET_TRACE: c_uint = 0x7ff00000;
 pub const SECCOMP_RET_LOG: c_uint = 0x7ffc0000;
 pub const SECCOMP_RET_ALLOW: c_uint = 0x7fff0000;
