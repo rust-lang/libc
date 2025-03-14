@@ -108,6 +108,13 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
+
       - name: Run natively
         if: "!matrix.docker"
         run: ./ci/run.sh ${{ matrix.target }}
@@ -173,6 +180,13 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.target }}
+
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
 
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
