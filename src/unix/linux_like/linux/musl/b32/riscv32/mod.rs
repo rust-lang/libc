@@ -111,7 +111,6 @@ s_no_extra_traits! {
 
 //pub const RLIM_INFINITY: crate::rlim_t = !0;
 pub const VEOF: usize = 4;
-pub const RTLD_DEEPBIND: c_int = 0x8;
 //pub const RLIMIT_RSS: crate::__rlimit_resource_t = 5;
 //pub const RLIMIT_AS: crate::__rlimit_resource_t = 9;
 //pub const RLIMIT_MEMLOCK: crate::__rlimit_resource_t = 8;
