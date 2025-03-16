@@ -53,6 +53,14 @@ s! {
 #[deprecated(since = "0.2.55")]
 pub const NET_RT_MAXID: c_int = 11;
 
+pub const __PTHREAD_SIZE__: usize = 8176;
+pub const __PTHREAD_MUTEX_SIZE__: usize = 56;
+pub const __PTHREAD_COND_SIZE__: usize = 40;
+pub const __PTHREAD_CONDATTR_SIZE__: usize = 8;
+pub const __PTHREAD_ONCE_SIZE__: usize = 8;
+pub const __PTHREAD_RWLOCK_SIZE__: usize = 192;
+pub const __PTHREAD_RWLOCKATTR_SIZE__: usize = 16;
+
 pub const TIOCTIMESTAMP: c_ulong = 0x40107459;
 pub const TIOCDCDTIMESTAMP: c_ulong = 0x40107458;
 
