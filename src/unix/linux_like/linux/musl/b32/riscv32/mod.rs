@@ -208,7 +208,7 @@ pub const ERFKILL: c_int = 132;
 
 pub const SOCK_STREAM: c_int = 1;
 pub const SOCK_DGRAM: c_int = 2;
-pub const SA_ONSTACK: c_int = 8;
+pub const SA_ONSTACK: c_int = 0x08000000;
 pub const SA_SIGINFO: c_int = 4;
 pub const SA_NOCLDWAIT: c_int = 2;
 pub const SIGTTIN: c_int = 21;
