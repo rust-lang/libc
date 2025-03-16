@@ -23,3 +23,10 @@ pthread_attr_getstackaddr
 pthread_attr_setstack
 ptsname_r
 syncfs
+TFD_CLOEXEC
+TFD_NONBLOCK
+TFD_TIMER_ABSTIME
+TFD_TIMER_CANCEL_ON_SET
+timerfd_create
+timerfd_gettime
+timerfd_settime
