@@ -4118,7 +4118,6 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "dmabuf_cmsg" | "dmabuf_token" => true,
-
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "mnt_ns_info" => true,
 
