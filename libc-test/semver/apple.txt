@@ -1773,7 +1773,6 @@ _UTX_LINESIZE
 _UTX_USERSIZE
 _WSTATUS
 _WSTOPPED
-_opaque_pthread_t
 __PTHREAD_CONDATTR_SIZE__
 __PTHREAD_COND_SIZE__
 __PTHREAD_MUTEX_SIZE__
@@ -1785,6 +1784,7 @@ __darwin_mcontext64
 __darwin_pthread_handler_rec
 __darwin_pthread_t
 __error
+_opaque_pthread_t
 abs
 acct
 aio_cancel

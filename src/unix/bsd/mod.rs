@@ -9,12 +9,14 @@ pub type sa_family_t = u8;
 
 cfg_if! {
     if #[cfg(any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos",
-        ))] {
+        target_os = "macos",
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    ))] {
+        pub type __darwin_pthread_t = *mut _opaque_pthread_t;
+        pub type pthread_t = __darwin_pthread_t;
         s! {
             pub struct __darwin_pthread_handler_rec {
                 __routine: Option<unsafe extern "C" fn(*mut c_void)>,
@@ -27,10 +29,7 @@ cfg_if! {
                 __opaque: [c_char; __PTHREAD_SIZE__],
             }
         }
-        pub type __darwin_pthread_t = *mut _opaque_pthread_t;
-        pub type pthread_t = __darwin_pthread_t;
-    }
-    else {
+    } else {
         pub type pthread_t = crate::uintptr_t;
     }
 }

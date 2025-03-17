@@ -4065,8 +4065,7 @@ fn test_linux(target: &str) {
             "epoll_params" => true,
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
-            "dmabuf_cmsg" |
-            "dmabuf_token" => true,
+            "dmabuf_cmsg" | "dmabuf_token" => true,
 
             _ => false,
         }
