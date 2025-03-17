@@ -449,6 +449,7 @@ fn test_apple(target: &str) {
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
 
+            "_opaque_pthread_t" => format!("struct {}", ty),
             t if is_union => format!("union {}", t),
             t if t.ends_with("_t") => t.to_string(),
             t if is_struct => format!("struct {}", t),
