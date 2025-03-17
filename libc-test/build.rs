@@ -2,20 +2,9 @@
 #![allow(clippy::match_like_matches_macro)]
 
 use std::fs::File;
-use std::io::{
-    BufRead,
-    BufReader,
-    BufWriter,
-    Write,
-};
-use std::path::{
-    Path,
-    PathBuf,
-};
-use std::{
-    env,
-    io,
-};
+use std::io::{BufRead, BufReader, BufWriter, Write};
+use std::path::{Path, PathBuf};
+use std::{env, io};
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
