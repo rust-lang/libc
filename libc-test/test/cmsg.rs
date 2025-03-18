@@ -68,10 +68,20 @@ mod t {
             mhdr.msg_control = pcmsghdr as *mut c_void;
             mhdr.msg_controllen = (160 - start_ofs) as _;
             for cmsg_len in 0..64 {
+                // Address must be a multiple of 0x4 for testing on AIX.
+                #[cfg(target_os = "aix")]
+                if cmsg_len % std::mem::size_of::<cmsghdr>() != 0 {
+                    continue;
+                }
                 for next_cmsg_len in 0..32 {
+                    // The size of socklen_t is 4-bytes on AIX.
+                    #[cfg(target_os = "aix")]
+                    let cmsg_len2: u32 = cmsg_len as u32;
+                    #[cfg(not(target_os = "aix"))]
+                    let cmsg_len2 = cmsg_len;
                     unsafe {
                         pcmsghdr.cast::<u8>().write_bytes(0, CAPACITY);
-                        (*pcmsghdr).cmsg_len = cmsg_len;
+                        (*pcmsghdr).cmsg_len = cmsg_len2;
                         let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
                         let next = cmsg_nxthdr(&mhdr, pcmsghdr);
                         assert_eq!(libc_next, next);
