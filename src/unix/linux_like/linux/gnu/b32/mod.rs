@@ -51,7 +51,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))] {
+    if #[cfg(not(any(
+        target_arch = "mips",
+        target_arch = "mips32r6",
+        target_arch = "powerpc"
+    )))] {
         s! {
             pub struct stat {
                 pub st_dev: crate::dev_t,
