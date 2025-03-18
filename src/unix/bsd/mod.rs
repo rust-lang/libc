@@ -5,7 +5,6 @@ pub type useconds_t = u32;
 pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-// pub type pthread_t = crate::uintptr_t;
 
 cfg_if! {
     if #[cfg(any(
