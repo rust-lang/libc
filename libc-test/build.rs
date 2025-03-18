@@ -70,6 +70,7 @@ fn do_ctest() {
         t if t.contains("windows") => test_windows(t),
         t if t.contains("vxworks") => test_vxworks(t),
         t if t.contains("nto-qnx") => test_neutrino(t),
+        t if t.contains("aix") => return test_aix(t),
         t => panic!("unknown target {t}"),
     }
 }
@@ -102,7 +103,9 @@ fn do_semver() {
     // NOTE: Android doesn't include the unix file (or the Linux file) because
     // there are some many definitions missing it's actually easier just to
     // maintain a file for Android.
-    if family != os && os != "android" {
+    // NOTE: AIX doesn't include the unix file because there are definitions
+    // missing on AIX. It is easier to maintain a file for AIX.
+    if family != os && !matches!(os.as_str(), "android" | "aix") {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
     // We don't do semver for unknown targets.
@@ -5483,5 +5486,240 @@ fn test_haiku(target: &str) {
             s => s.to_string(),
         }
     });
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+}
+
+fn test_aix(target: &str) {
+    assert!(target.contains("aix"));
+
+    // ctest generates arguments supported only by clang, so make sure to
+    // run with CC=clang. While debugging, "CFLAGS=-ferror-limit=<large num>"
+    // is useful to get more error output.
+    let mut cfg = ctest_cfg();
+    cfg.define("_THREAD_SAFE", None);
+
+    // Avoid the error for definitions such as '{0, 0, 0, 1}' for
+    // 'IN6ADDR_LOOPBACK_INIT' in netinent/in.h.
+    cfg.flag("-Wno-missing-braces");
+
+    headers! { cfg:
+               "aio.h",
+               "ctype.h",
+               "dirent.h",
+               "dlfcn.h",
+               "errno.h",
+               "fcntl.h",
+               "fnmatch.h",
+               "glob.h",
+               "grp.h",
+               "iconv.h",
+               "langinfo.h",
+               "libgen.h",
+               "limits.h",
+               "locale.h",
+               "malloc.h",
+               "mntent.h",
+               "mqueue.h",
+               "netinet/in.h", // this needs be before net/if.h
+               "poll.h", // this needs be before net/if.h
+               "sys/pollset.h", // this needs to be before net/if.h
+               "net/if.h",
+               "net/bpf.h", // this needs to be after net/if.h
+               "net/if_dl.h",
+               "netdb.h",
+               "netinet/tcp.h",
+               "pthread.h",
+               "pwd.h",
+               "rpcsvc/mount.h",
+               "rpcsvc/rstat.h",
+               "regex.h",
+               "resolv.h",
+               "sched.h",
+               "search.h",
+               "semaphore.h",
+               "signal.h",
+               "spawn.h",
+               "stddef.h",
+               "stdint.h",
+               "stdio.h",
+               "stdlib.h",
+               "string.h",
+               "strings.h",
+               "sys/aacct.h",
+               "sys/acct.h",
+               "sys/dr.h",
+               "sys/file.h",
+               "sys/io.h",
+               "sys/ioctl.h",
+               "sys/ipc.h",
+               "sys/ldr.h",
+               "sys/mman.h",
+               "sys/msg.h",
+               "sys/reg.h",
+               "sys/resource.h",
+               "sys/sem.h",
+               "sys/shm.h",
+               "sys/socket.h",
+               "sys/stat.h",
+               "sys/statfs.h",
+               "sys/statvfs.h",
+               "sys/stropts.h",
+               "sys/termio.h",
+               "sys/time.h",
+               "sys/times.h",
+               "sys/types.h",
+               "sys/uio.h",
+               "sys/un.h",
+               "sys/user.h",
+               "sys/utsname.h",
+               "sys/vattr.h",
+               "sys/vminfo.h",
+               "sys/wait.h",
+               "sys/xti.h",
+               "syslog.h",
+               "termios.h",
+               "thread.h",
+               "time.h",
+               "ucontext.h",
+               "unistd.h",
+               "utime.h",
+               "utmp.h",
+               "utmpx.h",
+               "wchar.h",
+    }
+
+    cfg.skip_type(move |ty| match ty {
+        // AIX does not define type 'sighandler_t'.
+        "sighandler_t" => true,
+
+        // The alignment of 'double' does not agree between C and Rust for AIX.
+        // We are working on a resolution.
+        "c_double" => true,
+
+        _ => false,
+    });
+
+    cfg.type_name(move |ty, is_struct, is_union| match ty {
+        "DIR"  => ty.to_string(),
+        "FILE"  => ty.to_string(),
+        "ACTION"  => ty.to_string(),
+
+        // 'sigval' is a struct in Rust, but a union in C.
+        "sigval" => format!("union sigval"),
+
+        t if t.ends_with("_t") => t.to_string(),
+        t if is_struct => format!("struct {}", t),
+        t if is_union => format!("union {}", t),
+        t => t.to_string(),
+    });
+
+    cfg.skip_const(move |name| match name {
+        // Skip 'sighandler_t' assignments.
+        "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
+
+        _ => false,
+    });
+
+    cfg.skip_struct(move |ty| {
+        match ty {
+            // FIXME(union): actually a union.
+            "sigval" => true,
+
+            // '__poll_ctl_ext_u' and '__pollfd_ext_u' are for unnamed unions.
+            "__poll_ctl_ext_u" => true,
+            "__pollfd_ext_u" => true,
+
+            // 'struct fpreg_t' is not defined in AIX headers. It is created to
+            // allow type 'double' to be used in signal contexts.
+            "fpreg_t" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field_type(move |struct_, field| {
+        match (struct_, field) {
+            // AIX does not define 'sighandler_t'.
+            ("sigaction", "sa_sigaction") => true,
+
+            // The type of 'fpr' is 'fpreg_t' which is created to allow type
+            // 'double' to be used in signal contexts.
+            ("__context64", "fpr") => true,
+            ("__tm_context_t", "fpr") => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_field(move |s, field| {
+        match s {
+            // The field 'u' is actually a unnamed union in the AIX header.
+            "poll_ctl_ext" if field == "u" => true,
+
+            // The field 'data' is actually a unnamed union in the AIX header.
+            "pollfd_ext" if field == "data" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |name| {
+        match name {
+            // 'sighandler_t' is not defined on AIX.
+            "signal" => true,
+
+            // The function is only available under macro _USE_IRS in 'netdb.h'.
+            "hstrerror" => true,
+
+            // _ALL_SOURCE signatures for these functions differ from POSIX's
+            // on AIX.
+            "poll" => true,
+            "readlinkat" => true,
+            "readlink" => true,
+            "pselect" => true,
+
+            // The AIX signature differs from POSIX's, issue opened.
+            "gai_strerror" => true,
+
+            // AIX implements POSIX-compliant versions of these functions
+            // using 'static' wrappers in the headers, which in turn call
+            // the corresponding system libc functions prefixed with '_posix_'
+            // (e.g., '_posix_aio_read' for 'aio_read').
+            // On the Rust side, these functions resolve directly to the
+            // POSIX-compliant versions in the system libc. As a result,
+            // function pointer comparisons between the C and Rust sides
+            // would fail.
+            "getpwuid_r" | "getpwnam_r" | "getgrgid_r" | "getgrnam_r"
+            | "aio_cancel" | "aio_error" | "aio_fsync" | "aio_read"
+            | "aio_return" | "aio_suspend" | "aio_write" | "select" => true,
+
+            // 'getdtablesize' is a constant in the AIX header but it is
+            // a real function in libc which the Rust side is resolved to.
+            // The function pointer comparison test would fail.
+            "getdtablesize" => true,
+
+            // FIXME(ctest): Our API is unsound. The Rust API allows aliasing
+            // pointers, but the C API requires pointers not to alias.
+            // We should probably be at least using '&'/'&mut' here, see:
+            // https://github.com/gnzlbg/ctest/issues/68.
+            "lio_listio" => true,
+
+            _ => false,
+        }
+    });
+
+
+    cfg.volatile_item(|i| {
+        use ctest::VolatileItemKind::*;
+        match i {
+            // 'aio_buf' is of type 'volatile void**' but since we cannot
+            // express that in Rust types, we have to explicitly tell the
+            // checker about it here.
+            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
+
+            _ => false,
+        }
+    });
+
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
