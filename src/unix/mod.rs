@@ -155,6 +155,7 @@ s! {
         pub revents: c_short,
     }
 
+    #[cfg(not(target_os = "aix"))]
     pub struct winsize {
         pub ws_row: c_ushort,
         pub ws_col: c_ushort,
@@ -220,7 +221,7 @@ pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
 
 cfg_if! {
-    if #[cfg(not(target_os = "nto"))] {
+    if #[cfg(all(not(target_os = "nto"), not(target_os = "aix")))] {
         pub const DT_UNKNOWN: u8 = 0;
         pub const DT_FIFO: u8 = 1;
         pub const DT_CHR: u8 = 2;
@@ -335,7 +336,7 @@ pub const ATF_PUBL: c_int = 0x08;
 pub const ATF_USETRAILERS: c_int = 0x10;
 
 cfg_if! {
-    if #[cfg(target_os = "nto")] {
+    if #[cfg(any(target_os = "nto", target_os = "aix"))] {
         pub const FNM_PERIOD: c_int = 1 << 1;
     } else {
         pub const FNM_PERIOD: c_int = 1 << 2;
@@ -346,7 +347,7 @@ pub const FNM_NOMATCH: c_int = 1;
 cfg_if! {
     if #[cfg(any(target_os = "illumos", target_os = "solaris",))] {
         pub const FNM_CASEFOLD: c_int = 1 << 3;
-    } else {
+    } else if #[cfg(not(target_os = "aix"))] {
         pub const FNM_CASEFOLD: c_int = 1 << 4;
     }
 }
@@ -375,6 +376,8 @@ cfg_if! {
         pub const FNM_NOESCAPE: c_int = 1 << 0;
     } else if #[cfg(target_os = "nto")] {
         pub const FNM_NOESCAPE: c_int = 1 << 2;
+    } else if #[cfg(target_os = "aix")] {
+        pub const FNM_NOESCAPE: c_int = 1 << 3;
     } else {
         pub const FNM_NOESCAPE: c_int = 1 << 1;
     }
@@ -666,7 +669,9 @@ extern "C" {
     pub fn strtoll(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_longlong;
     pub fn strtoul(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_ulong;
     pub fn strtoull(s: *const c_char, endp: *mut *mut c_char, base: c_int) -> c_ulonglong;
+    #[cfg_attr(target_os = "aix", link_name = "vec_calloc")]
     pub fn calloc(nobj: size_t, size: size_t) -> *mut c_void;
+    #[cfg_attr(target_os = "aix", link_name = "vec_malloc")]
     pub fn malloc(size: size_t) -> *mut c_void;
     pub fn realloc(p: *mut c_void, size: size_t) -> *mut c_void;
     pub fn free(p: *mut c_void);
@@ -778,6 +783,7 @@ extern "C" {
         link_name = "accept$UNIX2003"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_accept")]
+    #[cfg_attr(target_os = "aix", link_name = "naccept")]
     pub fn accept(socket: c_int, address: *mut sockaddr, address_len: *mut socklen_t) -> c_int;
     #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
     #[cfg_attr(
@@ -785,6 +791,7 @@ extern "C" {
         link_name = "getpeername$UNIX2003"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_getpeername")]
+    #[cfg_attr(target_os = "aix", link_name = "ngetpeername")]
     pub fn getpeername(socket: c_int, address: *mut sockaddr, address_len: *mut socklen_t)
         -> c_int;
     #[cfg(not(all(target_arch = "powerpc", target_vendor = "nintendo")))]
@@ -793,6 +800,7 @@ extern "C" {
         link_name = "getsockname$UNIX2003"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_getsockname")]
+    #[cfg_attr(target_os = "aix", link_name = "ngetsockname")]
     pub fn getsockname(socket: c_int, address: *mut sockaddr, address_len: *mut socklen_t)
         -> c_int;
     #[cfg_attr(target_os = "espidf", link_name = "lwip_setsockopt")]
@@ -1377,6 +1385,7 @@ extern "C" {
         ),
         link_name = "res_9_init"
     )]
+    #[cfg_attr(target_os = "aix", link_name = "_res_init")]
     pub fn res_init() -> c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
@@ -1411,6 +1420,7 @@ extern "C" {
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
     pub fn difftime(time1: time_t, time0: time_t) -> c_double;
+    #[cfg(not(target_os = "aix"))]
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
@@ -1471,6 +1481,7 @@ extern "C" {
         link_name = "select$UNIX2003"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__select50")]
+    #[cfg_attr(target_os = "aix", link_name = "__fd_select")]
     pub fn select(
         nfds: c_int,
         readfds: *mut fd_set,
@@ -1556,6 +1567,7 @@ extern "C" {
     pub fn ptsname(fd: c_int) -> *mut c_char;
     pub fn unlockpt(fd: c_int) -> c_int;
 
+    #[cfg(not(target_os = "aix"))]
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 
@@ -1588,7 +1600,8 @@ cfg_if! {
         target_os = "haiku",
         target_os = "nto",
         target_os = "solaris",
-        target_os = "cygwin"
+        target_os = "cygwin",
+        target_os = "aix",
     )))] {
         extern "C" {
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
@@ -1757,7 +1770,12 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(
+    if #[cfg(target_os = "aix")] {
+        extern "C" {
+            pub fn cfmakeraw(termios: *mut crate::termios) -> c_int;
+            pub fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
+        }
+    } else if #[cfg(not(any(
         target_os = "solaris",
         target_os = "illumos",
         target_os = "nto",

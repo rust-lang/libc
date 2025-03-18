@@ -24,7 +24,6 @@ cfg_if::cfg_if! {
         target_os = "l4re",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "aix",
         target_os = "nto",
         target_os = "hurd",
         target_os = "openbsd",
