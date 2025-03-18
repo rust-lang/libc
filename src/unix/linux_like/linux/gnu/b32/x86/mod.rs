@@ -135,7 +135,7 @@ s! {
     pub struct stat64 {
         pub st_dev: crate::dev_t,
         __pad1: c_uint,
-        __st_ino: crate::ino_t,
+        __st_ino: c_ulong,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
