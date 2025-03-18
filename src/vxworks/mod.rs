@@ -1268,6 +1268,7 @@ extern "C" {
     pub fn umask(mask: mode_t) -> mode_t;
     pub fn mlock(addr: *const c_void, len: size_t) -> c_int;
     pub fn mlockall(flags: c_int) -> c_int;
+    pub fn munlock(addr: *const c_void, len: size_t) -> c_int;
     pub fn munlockall() -> c_int;
 
     pub fn mmap(
@@ -1279,6 +1280,10 @@ extern "C" {
         offset: off_t,
     ) -> *mut c_void;
     pub fn munmap(addr: *mut c_void, len: size_t) -> c_int;
+
+    pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
+    pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
+
     pub fn truncate(path: *const c_char, length: off_t) -> c_int;
     pub fn shm_open(name: *const c_char, oflag: c_int, mode: crate::mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
@@ -1294,6 +1299,8 @@ extern "C" {
     pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction) -> c_int;
 
     pub fn utimes(filename: *const c_char, times: *const crate::timeval) -> c_int;
+
+    pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
 
     #[link_name = "_rtld_dlopen"]
     pub fn dlopen(filename: *const c_char, flag: c_int) -> *mut c_void;
