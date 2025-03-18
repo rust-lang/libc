@@ -26,7 +26,8 @@ s! {
 
         pub f_namelen: crate::__fsword_t,
         pub f_frsize: crate::__fsword_t,
-        f_spare: [crate::__fsword_t; 5],
+        pub f_flags: crate::__fsword_t,
+        f_spare: [crate::__fsword_t; 4],
     }
 
     pub struct siginfo_t {
