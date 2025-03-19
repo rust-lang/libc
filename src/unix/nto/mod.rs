@@ -3418,10 +3418,14 @@ extern "C" {
 
 // Models the implementation in stdlib.h.  Ctest will fail if trying to use the
 // default symbol from libc
-pub unsafe fn atexit(cb: extern "C" fn()) -> c_int {
+pub unsafe fn atexit(cb: unsafe extern "C" fn()) -> c_int {
     extern "C" {
         static __dso_handle: *mut c_void;
-        pub fn __cxa_atexit(cb: extern "C" fn(), __arg: *mut c_void, __dso: *mut c_void) -> c_int;
+        pub fn __cxa_atexit(
+            cb: unsafe extern "C" fn(),
+            __arg: *mut c_void,
+            __dso: *mut c_void,
+        ) -> c_int;
     }
     __cxa_atexit(cb, 0 as *mut c_void, __dso_handle)
 }

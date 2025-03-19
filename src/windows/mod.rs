@@ -334,7 +334,7 @@ extern "C" {
     pub fn abort() -> !;
     pub fn exit(status: c_int) -> !;
     pub fn _exit(status: c_int) -> !;
-    pub fn atexit(cb: extern "C" fn()) -> c_int;
+    pub fn atexit(cb: unsafe extern "C" fn()) -> c_int;
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
 
