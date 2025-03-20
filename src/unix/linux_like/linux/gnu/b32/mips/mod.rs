@@ -51,7 +51,7 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: c_ulong,
-        st_pad2: [c_long; 2],
+        st_pad2: [c_long; 3],
         pub st_size: off64_t,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
