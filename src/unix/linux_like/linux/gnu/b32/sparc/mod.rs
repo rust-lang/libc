@@ -102,7 +102,8 @@ s! {
         pub st_mtime_nsec: c_long,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_long,
-        __reserved: [c_long; 2],
+        __glibc_reserved4: c_ulong,
+        __glibc_reserved5: c_ulong,
     }
 
     pub struct statfs64 {
