@@ -54,7 +54,8 @@ cfg_if! {
     if #[cfg(not(any(
         target_arch = "mips",
         target_arch = "mips32r6",
-        target_arch = "powerpc"
+        target_arch = "powerpc",
+        target_arch = "sparc"
     )))] {
         s! {
             pub struct stat {
