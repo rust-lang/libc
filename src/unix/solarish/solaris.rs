@@ -161,6 +161,14 @@ cfg_if! {
     }
 }
 
+// FIXME(solaris): O_DIRECT and SIGINFO are NOT available on Solaris.
+// But in past they were defined here and thus other crates expected them.
+// Latest version v0.29.0 of Nix crate still expects this. Since last
+// version of Nix crate is almost one year ago let's define these two
+// temporarily before new Nix version is released.
+pub const O_DIRECT: c_int = 0x2000000;
+pub const SIGINFO: c_int = 41;
+
 pub const _UTMP_USER_LEN: usize = 32;
 pub const _UTMP_LINE_LEN: usize = 32;
 pub const _UTMP_ID_LEN: usize = 4;
