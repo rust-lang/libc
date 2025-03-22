@@ -656,7 +656,7 @@ pub const INIT_PROCESS: c_short = 5;
 pub const LOGIN_PROCESS: c_short = 6;
 pub const USER_PROCESS: c_short = 7;
 pub const DEAD_PROCESS: c_short = 8;
-// musl does not define ACCOUNTING
+pub const ACCOUNTING: c_short = 9;
 
 pub const SFD_CLOEXEC: c_int = 0x080000;
 
@@ -888,6 +888,10 @@ pub const _CS_V7_ENV: c_int = 1149;
 
 pub const CLONE_NEWTIME: c_int = 0x80;
 
+pub const UT_HOSTSIZE: usize = 256;
+pub const UT_LINESIZE: usize = 32;
+pub const UT_NAMESIZE: usize = 32;
+
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
         pub const POSIX_FADV_DONTNEED: c_int = 6;
@@ -990,6 +994,7 @@ extern "C" {
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
     pub fn setutxent();
     pub fn endutxent();
+    pub fn utmpxname(file: *const c_char) -> c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
