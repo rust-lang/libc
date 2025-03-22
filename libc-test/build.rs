@@ -998,6 +998,13 @@ fn test_solarish(target: &str) {
     cfg.define("__EXTENSIONS__", None);
     cfg.define("_LCONV_C99", None);
 
+    // FIXME(solaris): This should be removed once new Nix crate is released.
+    // See comment in src/unix/solarish/solaris.rs for these.
+    if is_solaris {
+        cfg.define("O_DIRECT", Some("0x2000000"));
+        cfg.define("SIGINFO", Some("41"));
+    }
+
     headers! {
         cfg:
         "aio.h",
