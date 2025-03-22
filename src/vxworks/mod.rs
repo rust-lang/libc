@@ -1758,7 +1758,7 @@ extern "C" {
     pub fn getppid() -> pid_t;
 
     // wait.h
-    pub fn waitpid(pid: pid_t, status: *mut c_int, optons: c_int) -> pid_t;
+    pub fn waitpid(pid: pid_t, status: *mut c_int, options: c_int) -> pid_t;
 
     // unistd.h
     pub fn sysconf(attr: c_int) -> c_long;
