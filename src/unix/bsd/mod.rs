@@ -5,7 +5,34 @@ pub type useconds_t = u32;
 pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type pthread_t = crate::uintptr_t;
+
+cfg_if! {
+    if #[cfg(any(
+        target_os = "macos",
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    ))] {
+        pub type __darwin_pthread_t = *mut _opaque_pthread_t;
+        pub type pthread_t = __darwin_pthread_t;
+        s! {
+            pub struct __darwin_pthread_handler_rec {
+                __routine: Option<unsafe extern "C" fn(*mut c_void)>,
+                __arg: *mut c_void,
+                __next: *mut __darwin_pthread_handler_rec,
+            }
+            pub struct _opaque_pthread_t {
+                __sig: c_long,
+                __cleanup_stack: *mut __darwin_pthread_handler_rec,
+                __opaque: [c_char; __PTHREAD_SIZE__],
+            }
+        }
+    } else {
+        pub type pthread_t = crate::uintptr_t;
+    }
+}
+
 pub type nfds_t = c_uint;
 pub type regoff_t = off_t;
 
