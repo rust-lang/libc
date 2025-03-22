@@ -360,7 +360,7 @@ extern "C" {
         loc: crate::locale_t,
     ) -> c_int;
 
-    pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
+    pub fn timerfd_create(clockid: c_int, flags: c_int) -> c_int;
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut crate::itimerspec) -> c_int;
     pub fn timerfd_settime(
         fd: c_int,
