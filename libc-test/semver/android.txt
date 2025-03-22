@@ -3338,6 +3338,7 @@ fwrite_unlocked
 gai_strerror
 genlmsghdr
 getaddrinfo
+getauxval
 getchar
 getchar_unlocked
 getcwd
