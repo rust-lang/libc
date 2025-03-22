@@ -15,6 +15,10 @@ POSIX_FADV_RANDOM
 POSIX_FADV_SEQUENTIAL
 POSIX_FADV_WILLNEED
 POSIX_SPAWN_SETSID
+TFD_CLOEXEC
+TFD_NONBLOCK
+TFD_TIMER_ABSTIME
+TFD_TIMER_CANCEL_ON_SET
 posix_fadvise
 posix_fallocate
 posix_spawn_file_actions_addfchdir_np
@@ -23,3 +27,6 @@ pthread_attr_getstackaddr
 pthread_attr_setstack
 ptsname_r
 syncfs
+timerfd_create
+timerfd_gettime
+timerfd_settime
