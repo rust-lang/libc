@@ -4043,6 +4043,8 @@ extern "C" {
 
     pub fn gettid() -> crate::pid_t;
 
+    pub fn getauxval(type_: c_ulong) -> c_ulong;
+
     /// Only available in API Version 28+
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
     pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
