@@ -13,6 +13,8 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
+    // Corresponds to `_FILE_OFFSET_BITS=64` in glibc
+    "gnu_file_offset_bits64",
     // FIXME(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
     "libc_const_extern_fn",
     "libc_deny_warnings",
@@ -83,6 +85,26 @@ fn main() {
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {
         set_cfg("linux_time_bits64");
+    }
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS64");
+    match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS64") {
+        Ok(val) => {
+            if val == "1" {
+                let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap();
+                let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+                let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap();
+                let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+                if target_env == "gnu"
+                    && target_os == "linux"
+                    && target_ptr_width == "32"
+                    && target_arch != "riscv32"
+                    && target_arch != "x86_64"
+                {
+                    set_cfg("gnu_file_offset_bits64");
+                }
+            }
+        }
+        Err(_e) => {}
     }
 
     // On CI: deny all warnings

@@ -385,6 +385,12 @@ cfg_if! {
         pub const RLIM_INFINITY: crate::rlim_t = !0;
     } else if #[cfg(all(
         any(target_arch = "mips", target_arch = "mips32r6"),
+        target_env = "gnu",
+        gnu_file_offset_bits64
+    ))] {
+        pub const RLIM_INFINITY: crate::rlim_t = !0;
+    } else if #[cfg(all(
+        any(target_arch = "mips", target_arch = "mips32r6"),
         any(target_env = "uclibc", target_env = "gnu"),
         not(linux_time_bits64)
     ))] {
