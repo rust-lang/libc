@@ -4031,6 +4031,7 @@ pthread_attr_setguardsize
 pthread_attr_setinheritsched
 pthread_attr_setschedparam
 pthread_attr_setschedpolicy
+pthread_attr_setstack
 pthread_barrier_destroy
 pthread_barrier_init
 pthread_barrier_t
