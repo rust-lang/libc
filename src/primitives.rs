@@ -6,70 +6,70 @@
 //!
 //! The fixed-width integer aliases are deprecated: use the Rust types instead.
 
-pub type c_schar = i8;
-pub type c_uchar = u8;
-pub type c_short = i16;
-pub type c_ushort = u16;
-
-pub type c_longlong = i64;
-pub type c_ulonglong = u64;
-
-pub type c_float = f32;
-pub type c_double = f64;
-
-cfg_if! {
-    if #[cfg(all(
-        not(windows),
-        // FIXME(ctest): just use `target_vendor` = "apple"` once `ctest` supports it
-        not(any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos",
-        )),
-        not(target_os = "vita"),
-        any(
-            target_arch = "aarch64",
-            target_arch = "arm",
-            target_arch = "csky",
-            target_arch = "hexagon",
-            target_arch = "msp430",
-            target_arch = "powerpc",
-            target_arch = "powerpc64",
-            target_arch = "riscv32",
-            target_arch = "riscv64",
-            target_arch = "s390x",
-            target_arch = "xtensa",
-        )
-    ))] {
-        pub type c_char = u8;
-    } else {
-        // On every other target, c_char is signed.
-        pub type c_char = i8;
-    }
-}
-
-cfg_if! {
-    if #[cfg(any(target_arch = "avr", target_arch = "msp430"))] {
-        pub type c_int = i16;
-        pub type c_uint = u16;
-    } else {
-        pub type c_int = i32;
-        pub type c_uint = u32;
-    }
-}
-
-cfg_if! {
-    if #[cfg(all(target_pointer_width = "64", not(windows)))] {
-        pub type c_long = i64;
-        pub type c_ulong = u64;
-    } else {
-        // The minimal size of `long` in the C standard is 32 bits
-        pub type c_long = i32;
-        pub type c_ulong = u32;
-    }
-}
+// pub type c_schar = i8;
+// pub type c_uchar = u8;
+// pub type c_short = i16;
+// pub type c_ushort = u16;
+//
+// pub type c_longlong = i64;
+// pub type c_ulonglong = u64;
+//
+// pub type c_float = f32;
+// pub type c_double = f64;
+//
+// cfg_if! {
+//     if #[cfg(all(
+//         not(windows),
+//         // FIXME(ctest): just use `target_vendor` = "apple"` once `ctest` supports it
+//         not(any(
+//             target_os = "macos",
+//             target_os = "ios",
+//             target_os = "tvos",
+//             target_os = "watchos",
+//             target_os = "visionos",
+//         )),
+//         not(target_os = "vita"),
+//         any(
+//             target_arch = "aarch64",
+//             target_arch = "arm",
+//             target_arch = "csky",
+//             target_arch = "hexagon",
+//             target_arch = "msp430",
+//             target_arch = "powerpc",
+//             target_arch = "powerpc64",
+//             target_arch = "riscv32",
+//             target_arch = "riscv64",
+//             target_arch = "s390x",
+//             target_arch = "xtensa",
+//         )
+//     ))] {
+//         pub type c_char = u8;
+//     } else {
+//         // On every other target, c_char is signed.
+//         pub type c_char = i8;
+//     }
+// }
+//
+// cfg_if! {
+//     if #[cfg(any(target_arch = "avr", target_arch = "msp430"))] {
+//         pub type c_int = i16;
+//         pub type c_uint = u16;
+//     } else {
+//         pub type c_int = i32;
+//         pub type c_uint = u32;
+//     }
+// }
+//
+// cfg_if! {
+//     if #[cfg(all(target_pointer_width = "64", not(windows)))] {
+//         pub type c_long = i64;
+//         pub type c_ulong = u64;
+//     } else {
+//         // The minimal size of `long` in the C standard is 32 bits
+//         pub type c_long = i32;
+//         pub type c_ulong = u32;
+//     }
+// }
 
 #[deprecated(since = "0.2.55", note = "Use i8 instead.")]
 pub type int8_t = i8;
@@ -186,3 +186,10 @@ cfg_if! {
         pub type __uint128_t = u128;
     }
 }
+
+// Re-export rust core::ffi c perimitive types
+#[allow(unused_imports)]
+pub use core::ffi::{
+    c_char, c_double, c_float, c_int, c_long, c_longlong, c_schar, c_short, c_uchar, c_uint,
+    c_ulong, c_ulonglong, c_ushort,
+};
