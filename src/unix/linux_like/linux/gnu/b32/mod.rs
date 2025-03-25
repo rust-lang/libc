@@ -204,23 +204,74 @@ s! {
 
     pub struct timex {
         pub modes: c_uint,
+        #[cfg(gnu_time_bits64)]
+        _pad1: c_int,
+        #[cfg(gnu_time_bits64)]
+        pub offset: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub offset: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub freq: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub freq: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub maxerror: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub maxerror: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub esterror: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub esterror: c_long,
         pub status: c_int,
+        #[cfg(gnu_time_bits64)]
+        _pad2: c_int,
+        #[cfg(gnu_time_bits64)]
+        pub constant: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub constant: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub precision: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub precision: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub tolerance: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub tolerance: c_long,
         pub time: crate::timeval,
+        #[cfg(gnu_time_bits64)]
+        pub tick: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub tick: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub ppsfreq: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub ppsfreq: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub jitter: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub jitter: c_long,
         pub shift: c_int,
+        #[cfg(gnu_time_bits64)]
+        _pad3: c_int,
+        #[cfg(gnu_time_bits64)]
+        pub stabil: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub stabil: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub jitcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub jitcnt: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub calcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub calcnt: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub errcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub errcnt: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub stbcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
         pub stbcnt: c_long,
         pub tai: c_int,
         pub __unused1: i32,
