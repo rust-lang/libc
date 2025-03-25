@@ -99,6 +99,12 @@ jobs:
             artifact-tag: offset-bits64
             env:
               RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+          - target: i686-unknown-linux-gnu
+            docker: true
+            os: ubuntu-24.04
+            artifact-tag: time-bits64
+            env:
+              RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           - target: x86_64-unknown-linux-gnu
             docker: true
             os: ubuntu-24.04
@@ -196,6 +202,10 @@ jobs:
             env:
               RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
             artifact-tag: offset-bits64
+          - target: arm-unknown-linux-gnueabihf
+            env:
+              RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
+            artifact-tag: time-bits64
           - target: aarch64-unknown-linux-musl
             env:
               RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
@@ -215,6 +225,10 @@ jobs:
           #   env:
           #     RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
           #   artifact-tag: offset-bits64
+          # - target: powerpc-unknown-linux-gnu
+          #   env:
+          #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
+          #   artifact-tag: time-bits64
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
