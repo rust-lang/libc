@@ -202,6 +202,45 @@ s! {
         __glibc_reserved4: crate::__syscall_ulong_t,
     }
 
+    #[cfg(gnu_time_bits64)]
+    pub struct timex {
+        pub modes: c_uint,
+        _pad1: c_int,
+        pub offset: c_longlong,
+        pub freq: c_longlong,
+        pub maxerror: c_longlong,
+        pub esterror: c_longlong,
+        pub status: c_int,
+        _pad2: c_int,
+        pub constant: c_longlong,
+        pub precision: c_longlong,
+        pub tolerance: c_longlong,
+        pub time: crate::timeval,
+        pub tick: c_longlong,
+        pub ppsfreq: c_longlong,
+        pub jitter: c_longlong,
+        pub shift: c_int,
+        _pad3: c_int,
+        pub stabil: c_longlong,
+        pub jitcnt: c_longlong,
+        pub calcnt: c_longlong,
+        pub errcnt: c_longlong,
+        pub stbcnt: c_longlong,
+        pub tai: c_int,
+        pub __unused1: i32,
+        pub __unused2: i32,
+        pub __unused3: i32,
+        pub __unused4: i32,
+        pub __unused5: i32,
+        pub __unused6: i32,
+        pub __unused7: i32,
+        pub __unused8: i32,
+        pub __unused9: i32,
+        pub __unused10: i32,
+        pub __unused11: i32,
+    }
+
+    #[cfg(not(gnu_time_bits64))]
     pub struct timex {
         pub modes: c_uint,
         pub offset: c_long,
