@@ -410,6 +410,7 @@ s_no_extra_traits! {
     pub struct dirent {
         pub d_ino: crate::ino_t,
         pub d_name: [c_char; _PARM_NAME_MAX as usize + 1],
+        pub d_type: c_uchar,
     }
 
     pub struct sockaddr_un {
@@ -458,6 +459,7 @@ cfg_if! {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_name", &&self.d_name[..])
+                    .field("d_type", &self.d_type)
                     .finish()
             }
         }
