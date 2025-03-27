@@ -189,6 +189,33 @@ s! {
     }
 }
 
+extern "C" {
+    pub fn fibril_mutex_lock(mutex: *mut fibril_mutex_t);
+    pub fn fibril_mutex_unlock(mutex: *mut fibril_mutex_t);
+    pub fn fibril_mutex_trylock(mutex: *mut fibril_mutex_t) -> bool;
+    pub fn fibril_mutex_is_locked(mutex: *mut fibril_mutex_t) -> bool;
+
+    pub fn fibril_condvar_initialize(condvar: *mut fibril_condvar_t);
+    pub fn fibril_condvar_wait(condvar: *mut fibril_condvar_t, mutex: *mut fibril_mutex_t);
+    pub fn fibril_condvar_wait_timeout(
+        condvar: *mut fibril_condvar_t,
+        mutex: *mut fibril_mutex_t,
+        timeout: usec_t,
+    ) -> errno_t;
+    pub fn fibril_condvar_signal(condvar: *mut fibril_condvar_t);
+    pub fn fibril_condvar_broadcast(condvar: *mut fibril_condvar_t);
+}
+
+// another 'static inline'
+f! {
+    pub fn fibril_mutex_initialize(fm: *mut fibril_mutex_t) -> () {
+        let fm = &mut *fm;
+        fm.oi.owned_by = core::ptr::null_mut();
+        fm.counter = 1;
+        list_initialize(&mut fm.waiters);
+    }
+}
+
 // uspace/lib/c/include/ipc/loc.h
 pub type service_id_t = sysarg_t;
 
@@ -431,31 +458,4 @@ extern "C" {
     pub fn chdir(buf: *const c_char) -> c_int;
     pub static environ: *const *const c_char;
     pub fn isatty(fd: c_int) -> c_int;
-}
-
-extern "C" {
-    pub fn fibril_mutex_lock(mutex: *mut fibril_mutex_t);
-    pub fn fibril_mutex_unlock(mutex: *mut fibril_mutex_t);
-    pub fn fibril_mutex_trylock(mutex: *mut fibril_mutex_t) -> bool;
-    pub fn fibril_mutex_is_locked(mutex: *mut fibril_mutex_t) -> bool;
-
-    pub fn fibril_condvar_initialize(condvar: *mut fibril_condvar_t);
-    pub fn fibril_condvar_wait(condvar: *mut fibril_condvar_t, mutex: *mut fibril_mutex_t);
-    pub fn fibril_condvar_wait_timeout(
-        condvar: *mut fibril_condvar_t,
-        mutex: *mut fibril_mutex_t,
-        timeout: usec_t,
-    ) -> errno_t;
-    pub fn fibril_condvar_signal(condvar: *mut fibril_condvar_t);
-    pub fn fibril_condvar_broadcast(condvar: *mut fibril_condvar_t);
-}
-
-// another 'static inline'
-f! {
-    pub fn fibril_mutex_initialize(fm: *mut fibril_mutex_t) -> () {
-        let fm = &mut *fm;
-        fm.oi.owned_by = core::ptr::null_mut();
-        fm.counter = 1;
-        list_initialize(&mut fm.waiters);
-    }
 }
