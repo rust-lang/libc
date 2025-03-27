@@ -72,6 +72,9 @@ cfg_if! {
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
         pub(crate) use haiku::*;
+    } else if #[cfg(target_os = "helenos")] {
+        mod helenos;
+        pub(crate) use helenos::*;
     } else if #[cfg(target_os = "hermit")] {
         mod hermit_abi;
         // pub(crate) use hermit_abi::*;
@@ -240,6 +243,16 @@ cfg_if! {
         pub use sys::file::*;
         pub use sys::ioccom::*;
         pub use sys::socket::*;
+    } else if #[cfg(target_os = "helenos")] {
+        pub use abi::errno::*;
+        pub use bits::*;
+        pub use dirent_mod::*;
+        pub use errno::*;
+        pub use fibril_synch::*;
+        pub use inet::dnsr::*;
+        pub use inet::tcp::*;
+        pub use stdlib::*;
+        pub use vfs::vfs::*;
     }
 }
 
