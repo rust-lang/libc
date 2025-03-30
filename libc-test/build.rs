@@ -13,7 +13,7 @@ fn src_hotfix_dir() -> PathBuf {
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
-    if cfg!(unix) {
+    if cfg!(unix) || target.contains("cygwin") {
         let exclude = ["redox", "wasi", "wali"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
@@ -700,6 +700,7 @@ fn test_cygwin(target: &str) {
         "dlfcn.h",
         "errno.h",
         "fcntl.h",
+        "fnmatch.h",
         "grp.h",
         "iconv.h",
         "langinfo.h",
@@ -710,11 +711,13 @@ fn test_cygwin(target: &str) {
         "netinet/tcp.h",
         "poll.h",
         "pthread.h",
+        "pty.h",
         "pwd.h",
         "resolv.h",
         "sched.h",
         "semaphore.h",
         "signal.h",
+        "spawn.h",
         "stddef.h",
         "stdlib.h",
         "string.h",
@@ -734,6 +737,7 @@ fn test_cygwin(target: &str) {
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
+        "sys/vfs.h",
         "syslog.h",
         "termios.h",
         "unistd.h",
@@ -853,7 +857,7 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.generate("../src/lib.rs", "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_windows(target: &str) {

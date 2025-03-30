@@ -511,7 +511,7 @@ s_no_extra_traits! {
     }
 
     pub struct utsname {
-        pub sysname: [c_char; 65],
+        pub sysname: [c_char; 66],
         pub nodename: [c_char; 65],
         pub release: [c_char; 65],
         pub version: [c_char; 65],
@@ -1911,14 +1911,6 @@ f! {
         set1.bits == set2.bits
     }
 
-    pub fn major(dev: dev_t) -> c_uint {
-        ((dev >> 16) & 0xffff) as c_uint
-    }
-
-    pub fn minor(dev: dev_t) -> c_uint {
-        (dev & 0xffff) as c_uint
-    }
-
     pub fn CMSG_LEN(length: c_uint) -> c_uint {
         CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as c_uint + length
     }
@@ -1955,6 +1947,14 @@ safe_f! {
         let ma = ma as dev_t;
         let mi = mi as dev_t;
         (ma << 16) | (mi & 0xffff)
+    }
+
+    pub {const} fn major(dev: dev_t) -> c_uint {
+        ((dev >> 16) & 0xffff) as c_uint
+    }
+
+    pub {const} fn minor(dev: dev_t) -> c_uint {
+        (dev & 0xffff) as c_uint
     }
 
     pub {const} fn WIFEXITED(status: c_int) -> bool {
@@ -2203,8 +2203,6 @@ extern "C" {
     pub fn timingsafe_bcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
     pub fn timingsafe_memcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
 
-    pub fn memccpy(dest: *mut c_void, src: *const c_void, c: c_int, count: size_t) -> *mut c_void;
-
     pub fn memmem(
         haystack: *const c_void,
         haystacklen: size_t,
@@ -2224,17 +2222,16 @@ extern "C" {
     pub fn dup3(src: c_int, dst: c_int, flags: c_int) -> c_int;
     pub fn eaccess(pathname: *const c_char, mode: c_int) -> c_int;
     pub fn euidaccess(pathname: *const c_char, mode: c_int) -> c_int;
-    // pub fn execlpe(path: *const c_char, arg0: *const c_char, ...) -> c_int;
 
     pub fn execvpe(
         file: *const c_char,
-        argv: *const *const c_char,
-        envp: *const *const c_char,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
     ) -> c_int;
 
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
 
-    pub fn fexecve(fd: c_int, argv: *const *const c_char, envp: *const *const c_char) -> c_int;
+    pub fn fexecve(fd: c_int, argv: *const *mut c_char, envp: *const *mut c_char) -> c_int;
 
     pub fn fdatasync(fd: c_int) -> c_int;
     pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
@@ -2395,7 +2392,7 @@ extern "C" {
     ) -> c_int;
 
     pub fn pthread_setname_np(thread: pthread_t, name: *const c_char) -> c_int;
-    pub fn pthread_sigqueue(thread: *mut pthread_t, sig: c_int, value: sigval) -> c_int;
+    pub fn pthread_sigqueue(thread: pthread_t, sig: c_int, value: sigval) -> c_int;
 
     pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
 

@@ -16,6 +16,7 @@ mod ret {
     target_os = "nto",
     target_os = "hurd",
     target_os = "openbsd",
+    target_os = "cygwin",
 ))]
 mod ret {
     pub type MajorRetType = libc::c_uint;
