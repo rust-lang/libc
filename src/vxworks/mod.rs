@@ -418,6 +418,7 @@ s_no_extra_traits! {
     pub struct dirent {
         pub d_ino: crate::ino_t,
         pub d_name: [c_char; _PARM_NAME_MAX as usize + 1],
+        pub d_type: c_uchar,
     }
 
     pub struct sockaddr_un {
@@ -466,6 +467,7 @@ cfg_if! {
                 f.debug_struct("dirent")
                     .field("d_ino", &self.d_ino)
                     .field("d_name", &&self.d_name[..])
+                    .field("d_type", &self.d_type)
                     .finish()
             }
         }
@@ -978,10 +980,33 @@ pub const SIGCONT: c_int = 19;
 pub const SIGCHLD: c_int = 20;
 pub const SIGTTIN: c_int = 21;
 pub const SIGTTOU: c_int = 22;
+pub const SIGUSR1: c_int = 30;
+pub const SIGUSR2: c_int = 31;
+pub const SIGPOLL: c_int = 32;
+pub const SIGPROF: c_int = 33;
+pub const SIGSYS: c_int = 34;
+pub const SIGURG: c_int = 35;
+pub const SIGVTALRM: c_int = 36;
+pub const SIGXCPU: c_int = 37;
+pub const SIGXFSZ: c_int = 38;
+pub const SIGRTMIN: c_int = 48;
+
+pub const SIGIO: c_int = SIGRTMIN;
+pub const SIGWINCH: c_int = SIGRTMIN + 5;
+pub const SIGLOST: c_int = SIGRTMIN + 6;
 
 pub const SIG_BLOCK: c_int = 1;
 pub const SIG_UNBLOCK: c_int = 2;
 pub const SIG_SETMASK: c_int = 3;
+
+pub const SA_NOCLDSTOP: c_int = 0x0001;
+pub const SA_SIGINFO: c_int = 0x0002;
+pub const SA_ONSTACK: c_int = 0x0004;
+pub const SA_INTERRUPT: c_int = 0x0008;
+pub const SA_RESETHAND: c_int = 0x0010;
+pub const SA_RESTART: c_int = 0x0020;
+pub const SA_NODEFER: c_int = 0x0040;
+pub const SA_NOCLDWAIT: c_int = 0x0080;
 
 pub const SI_SYNC: c_int = 0;
 pub const SI_USER: c_int = -1;
