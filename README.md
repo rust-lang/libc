@@ -106,6 +106,6 @@ dual licensed as above, without any additional terms or conditions.
 [Cirrus CI Status]: https://api.cirrus-ci.com/github/rust-lang/libc.svg
 [crates.io]: https://crates.io/crates/libc
 [Latest Version]: https://img.shields.io/crates/v/libc.svg
-[Documentation]: https://docs.rs/libc/badge.svg
+[Documentation]: https://img.shields.io/docsrs/libc/latest
 [docs.rs]: https://docs.rs/libc
 [License]: https://img.shields.io/crates/l/libc.svg
