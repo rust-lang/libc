@@ -3453,6 +3453,12 @@ pub const BPF_JSET: __u32 = 0x40;
 pub const BPF_K: __u32 = 0x00;
 pub const BPF_X: __u32 = 0x08;
 
+// linux/filter.h
+
+pub const BPF_A: __u32 = 0x10;
+pub const BPF_TAX: __u32 = 0x00;
+pub const BPF_TXA: __u32 = 0x80;
+
 // linux/openat2.h
 pub const RESOLVE_NO_XDEV: crate::__u64 = 0x01;
 pub const RESOLVE_NO_MAGICLINKS: crate::__u64 = 0x02;
@@ -6127,6 +6133,26 @@ f! {
 
     pub fn TPACKET_ALIGN(x: usize) -> usize {
         (x + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1)
+    }
+
+    pub fn BPF_CLASS(code: __u32) -> __u32 {
+        code & 0x07
+    }
+
+    pub fn BPF_SIZE(code: __u32) -> __u32 {
+        code & 0x18
+    }
+
+    pub fn BPF_MODE(code: __u32) -> __u32 {
+        code & 0xe0
+    }
+
+    pub fn BPF_OP(code: __u32) -> __u32 {
+        code & 0xf0
+    }
+
+    pub fn BPF_SRC(code: __u32) -> __u32 {
+        code & 0x08
     }
 
     pub fn BPF_RVAL(code: __u32) -> __u32 {
