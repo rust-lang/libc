@@ -1373,12 +1373,14 @@ s! {
         fdt_ofiles: [*mut c_void; 0],
     }
 
+    // FIXME: Should be private.
     #[doc(hidden)]
     pub struct sx {
         lock_object: lock_object,
         sx_lock: crate::uintptr_t,
     }
 
+    // FIXME: Should be private.
     #[doc(hidden)]
     pub struct lock_object {
         lo_name: *const c_char,
@@ -1388,6 +1390,7 @@ s! {
         lo_witness: *mut c_void,
     }
 
+    // FIXME: Should be private.
     #[doc(hidden)]
     pub struct kqlist {
         tqh_first: *mut c_void,
