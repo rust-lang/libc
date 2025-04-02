@@ -1,0 +1,35 @@
+[package]
+name = "testcrate"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+build = "build.rs"
+edition = "2021"
+publish = false
+
+[build-dependencies]
+ctest2 = { path = ".." }
+cc = "1.0"
+
+[dependencies]
+libc = "0.2"
+
+[lib]
+name = "testcrate"
+test = false
+doctest = false
+
+[[bin]]
+name = "t1"
+test = false
+
+[[bin]]
+name = "t2"
+test = false
+
+[[bin]]
+name = "t1_cxx"
+test = false
+
+[[bin]]
+name = "t2_cxx"
+test = false

@@ -1,0 +1,22 @@
+[package]
+name = "ctest"
+version = "0.4.10"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/rust-lang/libc"
+homepage = "https://github.com/rust-lang/libc"
+documentation = "https://docs.rs/ctest"
+description = """
+Automated tests of FFI bindings.
+"""
+include = ["src/lib.rs", "LICENSE-*", "README.md"]
+edition = "2021"
+rust-version = "1.63.0"
+
+[dependencies]
+garando_syntax = "0.1"
+cc = "1.0.1"
+rustc_version = "0.4"
+
+[workspace]
+members = ["testcrate"]
