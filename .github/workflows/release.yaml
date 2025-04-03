@@ -22,6 +22,12 @@ jobs:
           fetch-depth: 0
       - name: Install Rust (rustup)
         run: rustup update stable --no-self-update && rustup default stable
+        # Hide other projects to work around https://github.com/release-plz/release-plz/issues/2163
+      - name: Remove `libc`
+        run: >
+          mkdir tmp
+          mv * .* tmp
+          mv tmp/.git tmp/ctest/* tmp/.release-plz.toml .
       - name: Run release-plz
         uses: MarcoIeni/release-plz-action@v0.5
         env:
