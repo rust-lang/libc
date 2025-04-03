@@ -2638,6 +2638,7 @@ pub const IFF_ATTACH_QUEUE: c_int = 0x0200;
 pub const IFF_DETACH_QUEUE: c_int = 0x0400;
 pub const IFF_PERSIST: c_int = 0x0800;
 pub const IFF_NOFILTER: c_int = 0x1000;
+pub const TUN_TX_TIMESTAMP: c_int = 1;
 // Features for GSO (TUNSETOFFLOAD)
 pub const TUN_F_CSUM: c_uint = 0x01;
 pub const TUN_F_TSO4: c_uint = 0x02;
@@ -2646,6 +2647,40 @@ pub const TUN_F_TSO_ECN: c_uint = 0x08;
 pub const TUN_F_UFO: c_uint = 0x10;
 pub const TUN_F_USO4: c_uint = 0x20;
 pub const TUN_F_USO6: c_uint = 0x40;
+// Protocol info prepended to the packets (when IFF_NO_PI is not set)
+pub const TUN_PKT_STRIP: c_int = 0x0001;
+// Accept all multicast packets
+pub const TUN_FLT_ALLMULTI: c_int = 0x0001;
+// Ioctl operation codes
+const T_TYPE: u32 = b'T' as u32;
+pub const TUNSETNOCSUM: c_int = _IOW::<c_int>(T_TYPE, 200);
+pub const TUNSETDEBUG: c_int = _IOW::<c_int>(T_TYPE, 201);
+pub const TUNSETIFF: c_int = _IOW::<c_int>(T_TYPE, 202);
+pub const TUNSETPERSIST: c_int = _IOW::<c_int>(T_TYPE, 203);
+pub const TUNSETOWNER: c_int = _IOW::<c_int>(T_TYPE, 204);
+pub const TUNSETLINK: c_int = _IOW::<c_int>(T_TYPE, 205);
+pub const TUNSETGROUP: c_int = _IOW::<c_int>(T_TYPE, 206);
+pub const TUNGETFEATURES: c_int = _IOR::<c_int>(T_TYPE, 207);
+pub const TUNSETOFFLOAD: c_int = _IOW::<c_int>(T_TYPE, 208);
+pub const TUNSETTXFILTER: c_int = _IOW::<c_int>(T_TYPE, 209);
+pub const TUNGETIFF: c_int = _IOR::<c_int>(T_TYPE, 210);
+pub const TUNGETSNDBUF: c_int = _IOR::<c_int>(T_TYPE, 211);
+pub const TUNSETSNDBUF: c_int = _IOW::<c_int>(T_TYPE, 212);
+pub const TUNATTACHFILTER: c_int =  _IOW::<sock_fprog>(T_TYPE, 213);
+pub const TUNDETACHFILTER: c_int = _IOW::<sock_fprog>(T_TYPE, 214);
+pub const TUNGETVNETHDRSZ: c_int = _IOR::<c_int>(T_TYPE, 215);
+pub const TUNSETVNETHDRSZ: c_int = _IOW::<c_int>(T_TYPE, 216);
+pub const TUNSETQUEUE: c_int = _IOW::<c_int>(T_TYPE, 217);
+pub const TUNSETIFINDEX: c_int = _IOW::<c_int>(T_TYPE, 218);
+pub const TUNGETFILTER: c_int = _IOR::<sock_fprog>(T_TYPE, 219);
+pub const TUNSETVNETLE: c_int = _IOW::<c_int>(T_TYPE, 220);
+pub const TUNGETVNETLE: c_int = _IOR::<c_int>(T_TYPE, 221);
+pub const TUNSETVNETBE: c_int = _IOW::<c_int>(T_TYPE, 222);
+pub const TUNGETVNETBE: c_int = _IOR::<c_int>(T_TYPE, 223);
+pub const TUNSETSTEERINGEBPF: c_int = _IOR::<c_int>(T_TYPE, 224);
+pub const TUNSETFILTEREBPF: c_int = _IOR::<c_int>(T_TYPE, 225);
+pub const TUNSETCARRIER: c_int = _IOW::<c_int>(T_TYPE, 226);
+pub const TUNGETDEVNETNS: c_int = _IO(T_TYPE, 227);
 
 // start android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 // from https://android.googlesource.com/platform/bionic/+/HEAD/libc/kernel/uapi/linux/if_ether.h
@@ -4220,4 +4255,24 @@ impl siginfo_t {
     pub unsafe fn si_stime(&self) -> c_long {
         self.sifields().sigchld.si_stime
     }
+}
+
+ /// Build an ioctl number for an argumentless ioctl.
+ pub const fn _IO(ty: u32, nr: u32) -> c_int {
+    super::_IOC(super::_IOC_NONE, ty, nr, 0) as c_int
+}
+
+/// Build an ioctl number for an read-only ioctl.
+pub const fn _IOR<T>(ty: u32, nr: u32) -> c_int {
+    super::_IOC(super::_IOC_READ, ty, nr, mem::size_of::<T>())  as c_int
+}
+
+/// Build an ioctl number for an write-only ioctl.
+pub const fn _IOW<T>(ty: u32, nr: u32) -> c_int {
+    super::_IOC(super::_IOC_WRITE, ty, nr, mem::size_of::<T>())  as c_int
+}
+
+/// Build an ioctl number for a read-write ioctl.
+pub const fn _IOWR<T>(ty: u32, nr: u32) -> c_int {
+    super::_IOC(super::_IOC_READ | super::_IOC_WRITE, ty, nr, mem::size_of::<T>())  as c_int
 }
