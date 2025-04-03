@@ -14,6 +14,7 @@ build = "build.rs"
 exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
 rust-version = "1.63"
 description = "Raw FFI bindings to platform libraries like libc."
+publish = false # On the main branch, we don't want to publish anything
 
 [package.metadata.docs.rs]
 features = ["extra_traits"]
