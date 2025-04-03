@@ -5,7 +5,7 @@ set -ex
 
 run() {
     echo "Building docker container for TARGET=${1}"
-    docker build -t ctest2 -f ci/docker/$1/Dockerfile ci/
+    docker build -t ctest -f ci/docker/$1/Dockerfile ci/
     mkdir -p target
     target=$1
     echo "Running docker"
@@ -21,7 +21,7 @@ run() {
            --volume `pwd`/target:/checkout/target \
            --workdir /checkout \
            --privileged \
-           ctest2 \
+           ctest \
            bash \
            -c 'PATH=/rust/bin:$PATH exec ci/run.sh'
 }
