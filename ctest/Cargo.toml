@@ -1,0 +1,10 @@
+# This is a dummy package so the published stable `libc` can have `ctest` in
+# the workspace, which works around <https://github.com/release-plz/release-plz/issues/2163>.
+
+[package]
+name = "ctest"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
