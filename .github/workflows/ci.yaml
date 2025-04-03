@@ -287,6 +287,17 @@ jobs:
             export PATH=$HOME/.rust_solaris/bin:$PATH
             ./ci/run.sh ${{ matrix.target }}
 
+  docs:
+    name: Ensure docs build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: rustup update nightly --no-self-update && rustup default nightly
+    - uses: Swatinem/rust-cache@v2
+    - run: cargo doc --workspace --no-deps
+
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
   success:
@@ -298,8 +309,8 @@ jobs:
       - test_tier2
       - test_tier2_vm
       - verify_build
-      - clippy
-    # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
+      - docs
+    # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
     if: always() # make sure this is never "skipped"
