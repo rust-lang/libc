@@ -1,12 +1,8 @@
-# ctest2
+# ctest
 
 [Documentation][dox]
 
-[dox]: https://docs.rs/ctest2
-
-**Note: This is a fork of [`ctest`], intended as a temporary replacement until maintenance of [`ctest`] resumes.**
-
-[`ctest`]: https://crates.io/crates/ctest
+[dox]: https://docs.rs/ctest
 
 Automated testing of FFI bindings in Rust. This repository is intended to
 validate the `*-sys` crates that can be found on crates.io to ensure that the
@@ -38,14 +34,14 @@ mylib-sys = { path = "../mylib-sys" }
 libc = "0.2"
 
 [build-dependencies]
-ctest2 = "0.4"
+ctest = "0.4"
 ```
 
 Next, add a build script to `systest/build.rs`:
 
 ```rust
 fn main() {
-    let mut cfg = ctest2::TestGenerator::new();
+    let mut cfg = ctest::TestGenerator::new();
 
     // Include the header files where the C APIs are defined
     cfg.header("foo.h")
@@ -89,7 +85,7 @@ and returns information about the C side of things (which is validated in Rust).
 A large amount of configuration can be applied to how the C file is generated,
 you can browse [the documentation][dox].
 
-## Projects using ctest2
+## Projects using ctest
 
 - [libc](https://github.com/rust-lang/libc)
 - [libz-sys](https://github.com/rust-lang/libz-sys)
@@ -108,5 +104,5 @@ at your option.
 ## Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in ctest2 by you, as defined in the Apache-2.0 license, shall be
+for inclusion in ctest by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.

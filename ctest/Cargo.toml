@@ -17,6 +17,3 @@ rust-version = "1.63.0"
 garando_syntax = "0.1"
 cc = "1.0.1"
 rustc_version = "0.4"
-
-[workspace]
-members = ["testcrate"]

@@ -21,7 +21,7 @@ fn main() {
         .compile("libt2.a");
     println!("cargo:rerun-if-changed=src/t2.c");
     println!("cargo:rerun-if-changed=src/t2.h");
-    ctest2::TestGenerator::new()
+    ctest::TestGenerator::new()
         .header("t1.h")
         .include("src")
         .fn_cname(|a, b| b.unwrap_or(a).to_string())
@@ -36,7 +36,7 @@ fn main() {
         .array_arg(t1_arrays)
         .skip_roundtrip(|n| n == "Arr")
         .generate("src/t1.rs", "t1gen.rs");
-    ctest2::TestGenerator::new()
+    ctest::TestGenerator::new()
         .header("t2.h")
         .include("src")
         .type_name(move |ty, is_struct, is_union| match ty {
@@ -48,9 +48,9 @@ fn main() {
         .skip_roundtrip(|_| true)
         .generate("src/t2.rs", "t2gen.rs");
 
-    ctest2::TestGenerator::new()
+    ctest::TestGenerator::new()
         .header("t1.h")
-        .language(ctest2::Lang::CXX)
+        .language(ctest::Lang::CXX)
         .include("src")
         .fn_cname(|a, b| b.unwrap_or(a).to_string())
         .type_name(move |ty, is_struct, is_union| match ty {
@@ -64,9 +64,9 @@ fn main() {
         .array_arg(t1_arrays)
         .skip_roundtrip(|n| n == "Arr")
         .generate("src/t1.rs", "t1gen_cxx.rs");
-    ctest2::TestGenerator::new()
+    ctest::TestGenerator::new()
         .header("t2.h")
-        .language(ctest2::Lang::CXX)
+        .language(ctest::Lang::CXX)
         .include("src")
         .type_name(move |ty, is_struct, is_union| match ty {
             "T2Union" => ty.to_string(),
@@ -78,8 +78,8 @@ fn main() {
         .generate("src/t2.rs", "t2gen_cxx.rs");
 }
 
-fn t1_volatile(i: ctest2::VolatileItemKind) -> bool {
-    use ctest2::VolatileItemKind::*;
+fn t1_volatile(i: ctest::VolatileItemKind) -> bool {
+    use ctest::VolatileItemKind::*;
     match i {
         StructField(ref n, ref f) if n == "V" && f == "v" => true,
         Static(ref n) if n == "vol_ptr" => true,

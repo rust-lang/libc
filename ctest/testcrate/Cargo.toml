@@ -7,7 +7,7 @@ edition = "2021"
 publish = false
 
 [build-dependencies]
-ctest2 = { path = ".." }
+ctest = { path = ".." }
 cc = "1.0"
 
 [dependencies]

@@ -158,7 +158,7 @@ fn main() {
         std::fs::remove_dir_all(&hotfix_dir).unwrap();
     }
 
-    // FIXME(ctest): ctest2 cannot parse `crate::` in paths, so replace them with `::`
+    // FIXME(ctest): ctest cannot parse `crate::` in paths, so replace them with `::`
     let re = regex::bytes::Regex::new(r"(?-u:\b)crate::").unwrap();
     copy_dir_hotfix(Path::new("../src"), &hotfix_dir, &re, b"::");
 
@@ -1756,12 +1756,12 @@ fn test_wasi(target: &str) {
         "wchar.h",
     }
 
-    // Currently `ctest2` doesn't support macros-in-static-expressions and will
+    // Currently `ctest` doesn't support macros-in-static-expressions and will
     // panic on them. That affects `CLOCK_*` defines in wasi to set this here
     // to omit them.
     cfg.cfg("libc_ctest", None);
 
-    // `ctest2` has a hard-coded list of default cfgs which doesn't include
+    // `ctest` has a hard-coded list of default cfgs which doesn't include
     // wasip2, which is why it has to be set here manually.
     if p2 {
         cfg.cfg("target_env", Some("p2"));
