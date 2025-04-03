@@ -24,8 +24,7 @@ annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 
 [build-dependencies]
 cc = "1.0.83"
-# FIXME: Use fork ctest until the maintainer gets back.
-ctest2 = "0.4.3"
+ctest = { path = "../ctest" }
 regex = "1.11.1"
 
 [features]

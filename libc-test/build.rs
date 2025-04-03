@@ -1,7 +1,5 @@
 #![deny(warnings)]
 
-extern crate ctest2 as ctest;
-
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};

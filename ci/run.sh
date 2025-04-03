@@ -93,6 +93,19 @@ case "$target" in
     *) cmd="$cmd --workspace"
 esac
 
+# garando_errors only compiles on `cfg(any(unix, windows))`
+case "$target" in
+    *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test"
+esac
+
+# # FIXME(ctest): duplicate symbol errors for statics, e.g. T1_static_mut_u8, on Unix-
+# # like platforms.
+# cast "$(uname -s)" in
+#     *windows*msvc) ;;
+#     *apple*) ;;
+#     *) cmd="$cmd --exclude ctest-test" ;;
+# esca
+
 if [ "$target" = "s390x-unknown-linux-gnu" ]; then
     # FIXME: s390x-unknown-linux-gnu often fails to test due to timeout,
     # so we retry this N times.

@@ -12,12 +12,7 @@ cc = "1.0"
 
 [dependencies]
 cfg-if = "1.0.0"
-libc = "0.2"
-
-[lib]
-name = "testcrate"
-test = false
-doctest = false
+libc = { path = ".." }
 
 [[bin]]
 name = "t1"
