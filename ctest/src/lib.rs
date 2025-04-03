@@ -22,6 +22,7 @@ use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
 use garando_syntax as syntax;
+use indoc::writedoc;
 use syntax::abi::Abi;
 use syntax::ast;
 use syntax::ast::{Attribute, Name};
@@ -40,14 +41,8 @@ use syntax::ptr::P;
 use syntax::util::small_vector::SmallVector;
 use syntax::visit::{self, Visitor};
 
-macro_rules! t {
-    ($e:expr) => {
-        match $e {
-            Ok(e) => e,
-            Err(e) => panic!("{} failed with {}", stringify!($e), e),
-        }
-    };
-}
+type Error = Box<dyn std::error::Error>;
+type Result<T, E = Error> = std::result::Result<T, E>;
 
 /// Programming language
 #[derive(Debug)]
@@ -799,10 +794,7 @@ impl TestGenerator {
     /// cfg.generate("../path/to/libfoo-sys/lib.rs", "all.rs");
     /// ```
     pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) {
-        self._generate(krate.as_ref(), out_file)
-    }
-
-    fn _generate(&mut self, krate: &Path, out_file: &str) {
+        let krate = krate.as_ref();
         let out = self.generate_files(krate, out_file);
 
         let target = self
@@ -867,10 +859,12 @@ impl TestGenerator {
 
     #[doc(hidden)] // TODO: needs docs
     pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> PathBuf {
-        self._generate_files(krate.as_ref(), out_file)
+        self.generate_files_impl(krate, out_file)
+            .expect("generation failed")
     }
 
-    fn _generate_files(&mut self, krate: &Path, out_file: &str) -> PathBuf {
+    fn generate_files_impl<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
+        let krate = krate.as_ref();
         // Prep the test generator
         let out_dir = self
             .out_dir
@@ -882,8 +876,8 @@ impl TestGenerator {
             Lang::CXX => "cpp",
         };
         let c_file = out_file.with_extension(ext);
-        let rust_out = BufWriter::new(t!(File::create(&out_file)));
-        let c_out = BufWriter::new(t!(File::create(&c_file)));
+        let rust_out = BufWriter::new(File::create(&out_file)?);
+        let c_out = BufWriter::new(File::create(&c_file)?);
         let mut sess = ParseSess::new(FilePathMapping::empty());
         let target = self
             .target
@@ -937,7 +931,7 @@ impl TestGenerator {
         };
         visit::walk_crate(&mut types, &krate);
 
-        let mut gen = Generator {
+        let mut g = Generator {
             target: &target,
             rust: Box::new(rust_out),
             c: Box::new(c_out),
@@ -951,93 +945,21 @@ impl TestGenerator {
             sess: &sess,
             opts: self,
         };
-        t!(writeln!(gen.c, "#include <stdio.h>"));
-        t!(writeln!(gen.c, "#include <stdint.h>"));
-        t!(writeln!(gen.c, "#include <stddef.h>"));
+        writeln!(g.c, "#include <stdio.h>")?;
+        writeln!(g.c, "#include <stdint.h>")?;
+        writeln!(g.c, "#include <stddef.h>")?;
         for header in &self.headers {
-            t!(writeln!(gen.c, "#include <{}>", header));
+            writeln!(g.c, "#include <{}>", header)?;
         }
         eprintln!("rust version: {}", self.rust_version);
-        t!(gen.rust.write_all(
-            if self.rust_version < rustc_version::Version::new(1, 30, 0) {
-                br#"
-            static FAILED: AtomicBool = std::sync::atomic::ATOMIC_BOOL_INIT;
-            static NTESTS: AtomicUsize = std::sync::atomic::ATOMIC_USIZE_INIT;
-            "#
-            } else {
-                br#"
-            static FAILED: AtomicBool = AtomicBool::new(false);
-            static NTESTS: AtomicUsize = AtomicUsize::new(0);
-            "#
-            }
-        ));
 
-        t!(gen.rust.write_all(
-            br#"
-            use std::mem;
-            use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-
-            fn main() {
-                eprintln!("RUNNING ALL TESTS");
-                run_all();
-                if FAILED.load(Ordering::SeqCst) {
-                    panic!("some tests failed");
-                } else {
-                    eprintln!("PASSED {} tests", NTESTS.load(Ordering::SeqCst));
-                }
-            }
-
-            trait Pretty {
-                fn pretty(&self) -> String;
-            }
-
-            impl<'a> Pretty for &'a str {
-                fn pretty(&self) -> String { format!("{:?}", self) }
-            }
-            impl<T> Pretty for *const T {
-                fn pretty(&self) -> String { format!("{:?}", self) }
-            }
-            impl<T> Pretty for *mut T {
-                fn pretty(&self) -> String { format!("{:?}", self) }
-            }
-            macro_rules! p {
-                ($($i:ident)*) => ($(
-                    impl Pretty for $i {
-                        fn pretty(&self) -> String {
-                            format!("{} ({:#x})", self, self)
-                        }
-                    }
-                )*)
-            }
-            p! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
-
-            fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
-                if rust != c {
-                    eprintln!("bad {}: rust: {} != c {}", attr, rust.pretty(),
-                             c.pretty());
-                    FAILED.store(true, Ordering::SeqCst);
-                } else {
-                    NTESTS.fetch_add(1, Ordering::SeqCst);
-                }
-            }
-
-            macro_rules! offset_of {
-                ($ty:ident, $field:ident) => ({
-                    let value = std::mem::MaybeUninit::<$ty>::uninit();
-                    let base_pointer = value.as_ptr();
-                    let offset_pointer = std::ptr::addr_of!((*base_pointer).$field);
-                    (offset_pointer as u64) - (base_pointer as u64)
-                })
-            }
-
-        "#
-        ));
+        g.rust.write_all(include_bytes!("template.rs"))?;
 
         // Walk the crate, emitting test cases for everything found
-        visit::walk_crate(&mut gen, &krate);
-        gen.emit_run_all();
+        visit::walk_crate(&mut g, &krate);
+        g.emit_run_all()?;
 
-        out_file
+        Ok(out_file)
     }
 }
 
@@ -1221,39 +1143,40 @@ impl<'a> Generator<'a> {
         (self.opts.field_name)(struct_, field)
     }
 
-    fn test_type(&mut self, name: &str, ty: &ast::Ty) {
+    fn test_type(&mut self, name: &str, ty: &ast::Ty) -> Result<()> {
         if (self.opts.skip_type)(name) {
             if self.opts.verbose_skip {
                 eprintln!("skipping type \"{}\"", name);
             }
-            return;
+            return Ok(());
         }
         let c = self.rust_ty_to_c_ty(name);
-        self.test_size_align(name, &c);
-        self.test_sign(name, &c, ty);
+        self.test_size_align(name, &c)?;
+        self.test_sign(name, &c, ty)?;
+        Ok(())
     }
 
-    fn test_struct(&mut self, ty: &str, s: &ast::VariantData) {
+    fn test_struct(&mut self, ty: &str, s: &ast::VariantData) -> Result<()> {
         if (self.opts.skip_struct)(ty) {
             if self.opts.verbose_skip {
                 eprintln!("skipping struct \"{}\"", ty);
             }
-            return;
+            return Ok(());
         }
 
         let cty = self.rust_ty_to_c_ty(ty);
-        self.test_size_align(ty, &cty);
+        self.test_size_align(ty, &cty).unwrap();
 
         self.tests.push(format!("field_offset_size_{}", ty));
-        t!(writeln!(
+        writedoc!(
             self.rust,
             r#"
             #[allow(non_snake_case)]
             #[inline(never)]
             fn field_offset_size_{ty}() {{
-        "#,
+            "#,
             ty = ty
-        ));
+        )?;
         for field in s.fields() {
             match field.vis {
                 ast::Visibility::Public => {}
@@ -1275,7 +1198,7 @@ impl<'a> Generator<'a> {
 
             let cfield = self.rust2cfield(ty, &name);
 
-            t!(writeln!(
+            writedoc!(
                 self.c,
                 r#"
                 {linkage} uint64_t __test_offset_{ty}_{rust_field}(void) {{
@@ -1285,15 +1208,15 @@ impl<'a> Generator<'a> {
                     {cstructty}* foo = NULL;
                     return sizeof(foo->{c_field});
                 }}
-            "#,
+                "#,
                 ty = ty,
                 cstructty = cty,
                 rust_field = name,
                 c_field = cfield,
                 linkage = linkage(&self.opts.lang)
-            ));
+            )?;
 
-            t!(writeln!(
+            writedoc!(
                 self.rust,
                 r#"
                 extern "C" {{
@@ -1314,10 +1237,10 @@ impl<'a> Generator<'a> {
                          __test_fsize_{ty}_{field}(),
                          "field size {field} of {ty}");
                 }}
-            "#,
+                "#,
                 ty = ty,
                 field = name
-            ));
+            )?;
 
             if (self.opts.skip_field_type)(ty, &name.to_string()) {
                 if self.opts.verbose_skip {
@@ -1335,18 +1258,18 @@ impl<'a> Generator<'a> {
             )) {
                 sig = format!("volatile {}", sig);
             }
-            t!(writeln!(
+            writedoc!(
                 self.c,
                 r#"
                 {linkage} {sig} {{
                     return &b->{c_field};
                 }}
-            "#,
+                "#,
                 sig = sig,
                 c_field = cfield,
                 linkage = linkage(&self.opts.lang)
-            ));
-            t!(writeln!(
+            )?;
+            writedoc!(
                 self.rust,
                 r#"
                 extern "C" {{
@@ -1365,21 +1288,22 @@ impl<'a> Generator<'a> {
                     #[allow(unknown_lints, forgetting_copy_types)]
                     mem::forget(uninit_ty);
                 }}
-            "#,
+                "#,
                 ty = ty,
                 field = name
-            ));
+            )?;
         }
-        t!(writeln!(
+        writedoc!(
             self.rust,
             r#"
             }}
-        "#
-        ));
+            "#
+        )?;
+        Ok(())
     }
 
-    fn test_size_align(&mut self, rust: &str, c: &str) {
-        t!(writeln!(
+    fn test_size_align(&mut self, rust: &str, c: &str) -> Result<()> {
+        writedoc!(
             self.c,
             r#"
             {linkage} uint64_t __test_size_{ty}(void) {{ return sizeof({cty}); }}
@@ -1393,12 +1317,12 @@ impl<'a> Generator<'a> {
                 size_t v_addr = (size_t)(unsigned char*)(&t.v);
                 return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
             }}
-        "#,
+            "#,
             ty = rust,
             cty = c,
             linkage = linkage(&self.opts.lang)
-        ));
-        t!(writeln!(
+        )?;
+        writedoc!(
             self.rust,
             r#"
             #[allow(non_snake_case)]
@@ -1417,10 +1341,11 @@ impl<'a> Generator<'a> {
                          __test_align_{ty}(), "{ty} align");
                 }}
             }}
-        "#,
+            "#,
             ty = rust
-        ));
+        )?;
         self.tests.push(format!("size_align_{}", rust));
+        Ok(())
     }
 
     fn has_sign(&self, ty: &ast::Ty) -> bool {
@@ -1441,29 +1366,29 @@ impl<'a> Generator<'a> {
         }
     }
 
-    fn test_sign(&mut self, rust: &str, c: &str, ty: &ast::Ty) {
+    fn test_sign(&mut self, rust: &str, c: &str, ty: &ast::Ty) -> Result<()> {
         if (self.opts.skip_signededness)(rust) {
             if self.opts.verbose_skip {
                 eprintln!("skipping sign \"{}\"", rust);
             }
 
-            return;
+            return Ok(());
         }
         if !self.has_sign(ty) {
-            return;
+            return Ok(());
         }
-        t!(writeln!(
+        writedoc!(
             self.c,
             r#"
             {linkage} uint32_t __test_signed_{ty}(void) {{
                 return ((({cty}) -1) < 0);
             }}
-        "#,
+            "#,
             ty = rust,
             cty = c,
             linkage = linkage(&self.opts.lang)
-        ));
-        t!(writeln!(
+        )?;
+        writedoc!(
             self.rust,
             r#"
             #[inline(never)]
@@ -1478,10 +1403,11 @@ impl<'a> Generator<'a> {
                          __test_signed_{ty}(), "{ty} signed");
                 }}
             }}
-        "#,
+            "#,
             ty = rust
-        ));
+        )?;
         self.tests.push(format!("sign_{}", rust));
+        Ok(())
     }
 
     fn rust_ty_to_c_ty(&self, mut rust_ty: &str) -> String {
@@ -1502,34 +1428,34 @@ impl<'a> Generator<'a> {
     }
 
     #[allow(clippy::similar_names)]
-    fn test_const(&mut self, name: &str, rust_ty: &str) {
+    fn test_const(&mut self, name: &str, rust_ty: &str) -> Result<()> {
         if (self.opts.skip_const)(name) {
             if self.opts.verbose_skip {
                 eprintln!("skipping const \"{}\"", name);
             }
 
-            return;
+            return Ok(());
         }
 
         let c_name = (self.opts.const_cname)(name);
 
         let cty = self.rust_ty_to_c_ty(rust_ty);
-        t!(writeln!(
+        writedoc!(
             self.c,
             r#"
             static const {cty} __test_const_{name}_val = {c_name};
             {linkage} const {cty}* __test_const_{name}(void) {{
                 return &__test_const_{name}_val;
             }}
-        "#,
+            "#,
             name = name,
             c_name = c_name,
             cty = cty,
             linkage = linkage(&self.opts.lang)
-        ));
+        )?;
 
         if rust_ty == "&str" {
-            t!(writeln!(
+            writedoc!(
                 self.rust,
                 r#"
                 #[inline(never)]
@@ -1547,11 +1473,11 @@ impl<'a> Generator<'a> {
                         same(val, c, "{name} string");
                     }}
                 }}
-            "#,
+                "#,
                 name = name
-            ));
+            )?;
         } else {
-            t!(writeln!(
+            writedoc!(
                 self.rust,
                 r#"
                 #[allow(non_snake_case)]
@@ -1571,12 +1497,13 @@ impl<'a> Generator<'a> {
                         }}
                     }}
                 }}
-            "#,
+                "#,
                 ty = rust_ty,
                 name = name
-            ));
+            )?;
         }
         self.tests.push(format!("const_{}", name));
+        Ok(())
     }
 
     fn test_extern_fn(
@@ -1587,12 +1514,12 @@ impl<'a> Generator<'a> {
         ret: &str,
         variadic: bool,
         abi: Abi,
-    ) {
+    ) -> Result<()> {
         if (self.opts.skip_fn)(name) {
             if self.opts.verbose_skip {
                 eprintln!("skipping fn \"{}\"", name);
             }
-            return;
+            return Ok(());
         }
         let c_name = (self.opts.fn_cname)(name, c_name.as_ref().map(|s| &**s));
         let args = if args.is_empty() && !variadic {
@@ -1643,21 +1570,21 @@ impl<'a> Generator<'a> {
             c_ret = format!("volatile {}", c_ret);
         }
         let abi = self.abi2str(abi);
-        t!(writeln!(
+        writedoc!(
             self.c,
             r#"
             {linkage} {ret} ({abi}*__test_fn_{name}(void))({args}) {{
                 return {c_name};
             }}
-        "#,
+            "#,
             name = name,
             c_name = c_name,
             args = args,
             ret = c_ret,
             abi = abi,
             linkage = linkage(&self.opts.lang)
-        ));
-        t!(writeln!(
+        )?;
+        writedoc!(
             self.rust,
             r#"
             #[allow(non_snake_case)]
@@ -1675,15 +1602,16 @@ impl<'a> Generator<'a> {
                     }}
                 }}
             }}
-        "#,
+            "#,
             name = name,
             skip = (self.opts.skip_fn_ptrcheck)(name)
-        ));
+        )?;
         if self.opts.verbose_skip && (self.opts.skip_fn_ptrcheck)(name) {
             eprintln!("skipping fn ptr check \"{}\"", name);
         }
 
         self.tests.push(format!("fn_{}", name));
+        Ok(())
     }
 
     fn test_extern_static(
@@ -1693,49 +1621,49 @@ impl<'a> Generator<'a> {
         rust_ty: &str,
         c_ty: &str,
         mutbl: bool,
-    ) {
+    ) -> Result<()> {
         if (self.opts.skip_static)(name) {
             if self.opts.verbose_skip {
                 eprintln!("skipping static \"{}\"", name);
             }
-            return;
+            return Ok(());
         }
 
         let c_name = c_name.unwrap_or_else(|| name.to_string());
 
         if rust_ty.contains("extern fn") || rust_ty.contains("extern \"C\" fn") {
             let sig = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
-            t!(writeln!(
+            writedoc!(
                 self.c,
                 r#"
-            {sig} {{
-                return {c_name};
-            }}
-        "#,
+                {sig} {{
+                    return {c_name};
+                }}
+                "#,
                 sig = sig,
                 c_name = c_name
-            ));
-            t!(writeln!(
+            )?;
+            writedoc!(
                 self.rust,
                 r#"
-            #[inline(never)]
-            #[allow(non_snake_case)]
-            fn static_{name}() {{
-                extern "C" {{
-                    #[allow(non_snake_case)]
-                    fn __test_static_{name}() -> {ty};
+                #[inline(never)]
+                #[allow(non_snake_case)]
+                fn static_{name}() {{
+                    extern "C" {{
+                        #[allow(non_snake_case)]
+                        fn __test_static_{name}() -> {ty};
+                    }}
+                    unsafe {{
+                        // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+                        same(*(std::ptr::addr_of!({name}) as *const {ty}) as usize,
+                             __test_static_{name}() as usize,
+                             "{name} static");
+                    }}
                 }}
-                unsafe {{
-                    // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
-                    same(*(std::ptr::addr_of!({name}) as *const {ty}) as usize,
-                         __test_static_{name}() as usize,
-                         "{name} static");
-                }}
-            }}
-        "#,
+                "#,
                 name = name,
                 ty = rust_ty
-            ));
+            )?;
         } else if rust_ty.starts_with('[') && rust_ty.ends_with(']') {
             let c_ptr_ty = c_ty.split(' ').next().unwrap();
             let mut lens = Vec::new();
@@ -1750,38 +1678,38 @@ impl<'a> Generator<'a> {
                 name = name,
                 lens = lens.join("")
             );
-            t!(writeln!(
+            writedoc!(
                 self.c,
                 r#"
-            {array_test_name} {{
-                return &{c_name};
-            }}
-        "#,
+                {array_test_name} {{
+                    return &{c_name};
+                }}
+                "#,
                 array_test_name = array_test_name,
                 c_name = c_name
-            ));
-            t!(writeln!(
+            )?;
+            writedoc!(
                 self.rust,
                 r#"
-            #[inline(never)]
-            #[allow(non_snake_case)]
-            fn static_{name}() {{
-                extern "C" {{
-                    #[allow(non_snake_case)]
-                    fn __test_static_{name}() -> *{mutbl} {ty};
+                #[inline(never)]
+                #[allow(non_snake_case)]
+                fn static_{name}() {{
+                    extern "C" {{
+                        #[allow(non_snake_case)]
+                        fn __test_static_{name}() -> *{mutbl} {ty};
+                    }}
+                    unsafe {{
+                        // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+                        same(std::ptr::addr_of!({name}) as usize,
+                             __test_static_{name}() as usize,
+                             "{name} static");
+                    }}
                 }}
-                unsafe {{
-                    // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
-                    same(std::ptr::addr_of!({name}) as usize,
-                         __test_static_{name}() as usize,
-                         "{name} static");
-                }}
-            }}
-        "#,
+                "#,
                 name = name,
                 mutbl = if mutbl { "mut" } else { "const" },
                 ty = rust_ty
-            ));
+            )?;
         } else {
             let c_ty = if (self.opts.volatile_item)(VolatileItemKind::Static(name.to_owned())) {
                 format!("volatile {}", c_ty)
@@ -1789,13 +1717,13 @@ impl<'a> Generator<'a> {
                 c_ty.to_owned()
             };
 
-            t!(writeln!(
+            writedoc!(
                 self.c,
                 r#"
-            {mutbl}{ty}* __test_static_{name}(void) {{
-                return &{c_name};
-            }}
-        "#,
+                {mutbl}{ty}* __test_static_{name}(void) {{
+                    return &{c_name};
+                }}
+                "#,
                 mutbl = if mutbl || c_ty.contains("const") {
                     ""
                 } else {
@@ -1804,51 +1732,52 @@ impl<'a> Generator<'a> {
                 ty = c_ty,
                 name = name,
                 c_name = c_name
-            ));
-            t!(writeln!(
+            )?;
+            writedoc!(
                 self.rust,
                 r#"
-            #[allow(non_snake_case)]
-            #[inline(never)]
-            fn static_{name}() {{
-                extern "C" {{
-                    #[allow(non_snake_case)]
-                    fn __test_static_{name}() -> *{mutbl} {ty};
+                #[allow(non_snake_case)]
+                #[inline(never)]
+                fn static_{name}() {{
+                    extern "C" {{
+                        #[allow(non_snake_case)]
+                        fn __test_static_{name}() -> *{mutbl} {ty};
+                    }}
+                    unsafe {{
+                        // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+                        same(std::ptr::addr_of!({name}) as usize,
+                             __test_static_{name}() as usize,
+                             "{name} static");
+                    }}
                 }}
-                unsafe {{
-                    // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
-                    same(std::ptr::addr_of!({name}) as usize,
-                         __test_static_{name}() as usize,
-                         "{name} static");
-                }}
-            }}
-        "#,
+                "#,
                 name = name,
                 mutbl = if mutbl { "mut" } else { "const" },
                 ty = rust_ty
-            ));
+            )?;
         };
         self.tests.push(format!("static_{}", name));
+        Ok(())
     }
 
-    fn test_roundtrip(&mut self, rust: &str, ast: Option<&ast::VariantData>) {
+    fn test_roundtrip(&mut self, rust: &str, ast: Option<&ast::VariantData>) -> Result<()> {
         if (self.opts.skip_struct)(rust) {
             if self.opts.verbose_skip {
                 eprintln!("skipping roundtrip (skip_struct) \"{}\"", rust);
             }
-            return;
+            return Ok(());
         }
         if (self.opts.skip_type)(rust) {
             if self.opts.verbose_skip {
                 eprintln!("skipping roundtrip (skip_type) \"{}\"", rust);
             }
-            return;
+            return Ok(());
         }
         if (self.opts.skip_roundtrip)(rust) {
             if self.opts.verbose_skip {
                 eprintln!("skipping roundtrip (skip_roundtrip)\"{}\"", rust);
             }
-            return;
+            return Ok(());
         }
 
         let c = self.rust_ty_to_c_ty(rust);
@@ -1856,19 +1785,19 @@ impl<'a> Generator<'a> {
         // Generate a function that returns a vector for a type
         // that contains 1 if the byte is padding, and 0 if the byte is not
         // padding:
-        t!(writeln!(
+        writedoc!(
             self.rust,
             r#"
-                #[allow(non_snake_case, unused_mut, unused_variables, deprecated)]
-                #[inline(never)]
-                fn roundtrip_padding_{ty}() -> Vec<u8> {{
-                  // stores (offset, size) for each field
-                  let mut v = Vec::<(usize, usize)>::new();
-                  let foo = std::mem::MaybeUninit::<{ty}>::uninit();
-                  let foo = foo.as_ptr();
-               "#,
+            #[allow(non_snake_case, unused_mut, unused_variables, deprecated)]
+            #[inline(never)]
+            fn roundtrip_padding_{ty}() -> Vec<u8> {{
+                // stores (offset, size) for each field
+                let mut v = Vec::<(usize, usize)>::new();
+                let foo = std::mem::MaybeUninit::<{ty}>::uninit();
+                let foo = foo.as_ptr();
+            "#,
             ty = rust
-        ));
+        )?;
 
         if let Some(ast) = ast {
             for field in ast.fields() {
@@ -1885,7 +1814,7 @@ impl<'a> Generator<'a> {
                 };
                 let name = name.to_string();
 
-                t!(writeln!(
+                writedoc!(
                     self.rust,
                     r#"
                     unsafe {{
@@ -1898,32 +1827,32 @@ impl<'a> Generator<'a> {
                     "#,
                     ty = rust,
                     field = name
-                ));
+                )?;
             }
         }
-        t!(writeln!(
+        writedoc!(
             self.rust,
             r#"
-                  // This vector contains `1` if the byte is padding
-                  // and `0` if the byte is not padding.
-                  let mut pad = Vec::<u8>::new();
-                  // Initialize all bytes as:
-                  //  - padding if we have fields, this means that only
-                  //  the fields will be checked
-                  //  - no-padding if we have a type alias: if this
-                  //  causes problems the type alias should be skipped
-                  pad.resize(mem::size_of::<{ty}>(), {def});
-                  for (off, size) in &v {{
-                      for i in 0..*size {{
-                          pad[off + i] = 0;
-                      }}
-                  }}
-                  pad
+                // This vector contains `1` if the byte is padding
+                // and `0` if the byte is not padding.
+                let mut pad = Vec::<u8>::new();
+                // Initialize all bytes as:
+                //  - padding if we have fields, this means that only
+                //  the fields will be checked
+                //  - no-padding if we have a type alias: if this
+                //  causes problems the type alias should be skipped
+                pad.resize(mem::size_of::<{ty}>(), {def});
+                for (off, size) in &v {{
+                    for i in 0..*size {{
+                        pad[off + i] = 0;
+                    }}
                 }}
-                "#,
+                pad
+            }}
+            "#,
             ty = rust,
             def = if ast.is_some() { 1 } else { 0 }
-        ));
+        )?;
 
         // Rust writes 1,2,3... to each byte of the type, passes
         // the type to C by value exercising the call ABI.
@@ -1933,7 +1862,7 @@ impl<'a> Generator<'a> {
         // to a byte (42 is used instead). Uninitialized memory is often
         // all zeros, so for a single byte the test could return
         // success even though it should have failed.
-        t!(writeln!(
+        writedoc!(
             self.c,
             r#"
             #ifdef _MSC_VER
@@ -1979,12 +1908,12 @@ impl<'a> Generator<'a> {
             #ifdef _MSC_VER
             #  pragma warning(default:4365)
             #endif
-        "#,
+            "#,
             ty = rust,
             cty = c,
             linkage = linkage(&self.opts.lang),
-        ));
-        t!(writeln!(
+        )?;
+        writedoc!(
             self.rust,
             r#"
             #[allow(non_snake_case, deprecated)]
@@ -2018,7 +1947,7 @@ impl<'a> Generator<'a> {
                   }}
                   let r: U = __test_roundtrip_{ty}(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
                   if error == 1 {{
-                      FAILED.store(true, Ordering::SeqCst);
+                      FAILED.store(true, Ordering::Relaxed);
                       return;
                   }}
                   for i in 0..size_of::<U>() {{
@@ -2032,15 +1961,16 @@ impl<'a> Generator<'a> {
                             "rust [{{}}] = {{}} != {{}} (C): C \"{ty}\" -> Rust",
                              i, rust, c
                         );
-                        FAILED.store(true, Ordering::SeqCst);
+                        FAILED.store(true, Ordering::Relaxed);
                       }}
                   }}
                 }}
             }}
-        "#,
+            "#,
             ty = rust
-        ));
+        )?;
         self.tests.push(format!("roundtrip_{}", rust));
+        Ok(())
     }
 
     fn assert_no_generics(&self, _i: ast::Ident, generics: &ast::Generics) {
@@ -2277,43 +2207,44 @@ impl<'a> Generator<'a> {
         (ret, args, decl.variadic)
     }
 
-    fn emit_run_all(&mut self) {
+    fn emit_run_all(&mut self) -> Result<()> {
         const N: usize = 1000;
         let mut n = 0;
         let mut tests = self.tests.clone();
         while tests.len() > N {
             let name = format!("run_group{}", n);
             n += 1;
-            t!(writeln!(
+            writedoc!(
                 self.rust,
                 "
                 #[inline(never)]
                 fn {}() {{
-            ",
+                ",
                 name
-            ));
+            )?;
             for test in tests.drain(..1000) {
-                t!(writeln!(self.rust, "{}();", test));
+                writeln!(self.rust, "{}();", test)?;
             }
-            t!(writeln!(self.rust, "}}"));
+            writeln!(self.rust, "}}")?;
             tests.push(name);
         }
-        t!(writeln!(
+        writedoc!(
             self.rust,
             "
             #[inline(never)]
             fn run_all() {{
-        "
-        ));
+            "
+        )?;
         for test in &tests {
-            t!(writeln!(self.rust, "{}();", test));
+            writeln!(self.rust, "{}();", test)?;
         }
-        t!(writeln!(
+        writedoc!(
             self.rust,
             "
             }}
-        "
-        ));
+            "
+        )?;
+        Ok(())
     }
 }
 
@@ -2324,8 +2255,8 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
         match i.node {
             ast::ItemKind::Ty(ref ty, ref generics) if public => {
                 self.assert_no_generics(i.ident, generics);
-                self.test_type(&i.ident.to_string(), ty);
-                self.test_roundtrip(&i.ident.to_string(), None);
+                self.test_type(&i.ident.to_string(), ty).unwrap();
+                self.test_roundtrip(&i.ident.to_string(), None).unwrap();
             }
 
             ast::ItemKind::Struct(ref s, ref generics)
@@ -2341,13 +2272,13 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 if !is_c && !(self.opts.skip_struct)(&i.ident.to_string()) {
                     panic!("{} is not marked #[repr(C)]", i.ident);
                 }
-                self.test_struct(&i.ident.to_string(), s);
-                self.test_roundtrip(&i.ident.to_string(), Some(s));
+                self.test_struct(&i.ident.to_string(), s).unwrap();
+                self.test_roundtrip(&i.ident.to_string(), Some(s)).unwrap();
             }
 
             ast::ItemKind::Const(ref ty, _) if public => {
                 let ty = self.ty2name(ty, true);
-                self.test_const(&i.ident.to_string(), &ty);
+                self.test_const(&i.ident.to_string(), &ty).unwrap();
             }
 
             ast::ItemKind::ForeignMod(ref fm) => {
@@ -2381,14 +2312,16 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 let c_name = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
                     .map(|i| i.to_string());
                 let abi = self.abi;
-                self.test_extern_fn(&i.ident.to_string(), &c_name, &args, &ret, variadic, abi);
+                self.test_extern_fn(&i.ident.to_string(), &c_name, &args, &ret, variadic, abi)
+                    .unwrap();
             }
             ast::ForeignItemKind::Static(ref ty, mutbl) => {
                 let rust_ty = self.ty2name(&ty, true);
                 let c_ty = self.ty2name(&ty, false);
                 let c_name = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
                     .map(|i| i.to_string());
-                self.test_extern_static(&i.ident.to_string(), c_name, &rust_ty, &c_ty, mutbl);
+                self.test_extern_static(&i.ident.to_string(), c_name, &rust_ty, &c_ty, mutbl)
+                    .unwrap();
             }
         }
         visit::walk_foreign_item(self, i)
