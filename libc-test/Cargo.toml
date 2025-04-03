@@ -13,6 +13,7 @@ A test crate for the libc crate.
 """
 
 [dependencies]
+cfg-if = "1.0.0"
 libc = { path = "..", version = "1.0.0-alpha.1", default-features = false }
 
 [dev-dependencies]
