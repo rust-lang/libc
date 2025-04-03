@@ -3,6 +3,7 @@ allow-unauthenticated = [
     "C-*",
     "O-*",
     "S-*",
+    "ctest",
     "stable-nominated",
 ]
 
@@ -150,6 +151,12 @@ trigger_files = [
     "src/unix/solarish/x86_common.rs",
     "src/vxworks/x86.rs",
     "src/vxworks/x86_64.rs",
+]
+
+[autolabel.ctest]
+trigger_files = [
+    "ctest",
+    "ctest-test",
 ]
 
 [review-submitted]

@@ -511,7 +511,7 @@ s_no_extra_traits! {
     }
 
     pub struct utsname {
-        pub sysname: [c_char; 65],
+        pub sysname: [c_char; 66],
         pub nodename: [c_char; 65],
         pub release: [c_char; 65],
         pub version: [c_char; 65],
@@ -974,6 +974,8 @@ pub const SOL_UDP: c_int = 17;
 pub const IPTOS_LOWDELAY: u8 = 0x10;
 pub const IPTOS_THROUGHPUT: u8 = 0x08;
 pub const IPTOS_RELIABILITY: u8 = 0x04;
+pub const IPTOS_LOWCOST: u8 = 0x02;
+pub const IPTOS_MINCOST: u8 = IPTOS_LOWCOST;
 pub const IP_DEFAULT_MULTICAST_TTL: c_int = 1;
 pub const IP_DEFAULT_MULTICAST_LOOP: c_int = 1;
 pub const IP_OPTIONS: c_int = 1;
@@ -990,8 +992,18 @@ pub const IP_DROP_SOURCE_MEMBERSHIP: c_int = 16;
 pub const IP_BLOCK_SOURCE: c_int = 17;
 pub const IP_UNBLOCK_SOURCE: c_int = 18;
 pub const IP_PKTINFO: c_int = 19;
+pub const IP_RECVTTL: c_int = 21;
 pub const IP_UNICAST_IF: c_int = 31;
+pub const IP_RECVTOS: c_int = 40;
+pub const IP_MTU_DISCOVER: c_int = 71;
+pub const IP_MTU: c_int = 73;
+pub const IP_RECVERR: c_int = 75;
+pub const IP_PMTUDISC_WANT: c_int = 0;
+pub const IP_PMTUDISC_DO: c_int = 1;
+pub const IP_PMTUDISC_DONT: c_int = 2;
+pub const IP_PMTUDISC_PROBE: c_int = 3;
 pub const IPV6_HOPOPTS: c_int = 1;
+pub const IPV6_HDRINCL: c_int = 2;
 pub const IPV6_UNICAST_HOPS: c_int = 4;
 pub const IPV6_MULTICAST_IF: c_int = 9;
 pub const IPV6_MULTICAST_HOPS: c_int = 10;
@@ -1010,6 +1022,13 @@ pub const IPV6_RTHDR: c_int = 32;
 pub const IPV6_RECVRTHDR: c_int = 38;
 pub const IPV6_TCLASS: c_int = 39;
 pub const IPV6_RECVTCLASS: c_int = 40;
+pub const IPV6_MTU_DISCOVER: c_int = 71;
+pub const IPV6_MTU: c_int = 72;
+pub const IPV6_RECVERR: c_int = 75;
+pub const IPV6_PMTUDISC_WANT: c_int = 0;
+pub const IPV6_PMTUDISC_DO: c_int = 1;
+pub const IPV6_PMTUDISC_DONT: c_int = 2;
+pub const IPV6_PMTUDISC_PROBE: c_int = 3;
 pub const MCAST_JOIN_GROUP: c_int = 41;
 pub const MCAST_LEAVE_GROUP: c_int = 42;
 pub const MCAST_BLOCK_SOURCE: c_int = 43;
@@ -1892,14 +1911,6 @@ f! {
         set1.bits == set2.bits
     }
 
-    pub fn major(dev: dev_t) -> c_uint {
-        ((dev >> 16) & 0xffff) as c_uint
-    }
-
-    pub fn minor(dev: dev_t) -> c_uint {
-        (dev & 0xffff) as c_uint
-    }
-
     pub fn CMSG_LEN(length: c_uint) -> c_uint {
         CMSG_ALIGN(::core::mem::size_of::<cmsghdr>()) as c_uint + length
     }
@@ -1936,6 +1947,14 @@ safe_f! {
         let ma = ma as dev_t;
         let mi = mi as dev_t;
         (ma << 16) | (mi & 0xffff)
+    }
+
+    pub {const} fn major(dev: dev_t) -> c_uint {
+        ((dev >> 16) & 0xffff) as c_uint
+    }
+
+    pub {const} fn minor(dev: dev_t) -> c_uint {
+        (dev & 0xffff) as c_uint
     }
 
     pub {const} fn WIFEXITED(status: c_int) -> bool {
@@ -2184,8 +2203,6 @@ extern "C" {
     pub fn timingsafe_bcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
     pub fn timingsafe_memcmp(a: *const c_void, b: *const c_void, len: size_t) -> c_int;
 
-    pub fn memccpy(dest: *mut c_void, src: *const c_void, c: c_int, count: size_t) -> *mut c_void;
-
     pub fn memmem(
         haystack: *const c_void,
         haystacklen: size_t,
@@ -2205,17 +2222,16 @@ extern "C" {
     pub fn dup3(src: c_int, dst: c_int, flags: c_int) -> c_int;
     pub fn eaccess(pathname: *const c_char, mode: c_int) -> c_int;
     pub fn euidaccess(pathname: *const c_char, mode: c_int) -> c_int;
-    // pub fn execlpe(path: *const c_char, arg0: *const c_char, ...) -> c_int;
 
     pub fn execvpe(
         file: *const c_char,
-        argv: *const *const c_char,
-        envp: *const *const c_char,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
     ) -> c_int;
 
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
 
-    pub fn fexecve(fd: c_int, argv: *const *const c_char, envp: *const *const c_char) -> c_int;
+    pub fn fexecve(fd: c_int, argv: *const *mut c_char, envp: *const *mut c_char) -> c_int;
 
     pub fn fdatasync(fd: c_int) -> c_int;
     pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
@@ -2376,7 +2392,7 @@ extern "C" {
     ) -> c_int;
 
     pub fn pthread_setname_np(thread: pthread_t, name: *const c_char) -> c_int;
-    pub fn pthread_sigqueue(thread: *mut pthread_t, sig: c_int, value: sigval) -> c_int;
+    pub fn pthread_sigqueue(thread: pthread_t, sig: c_int, value: sigval) -> c_int;
 
     pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
 

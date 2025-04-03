@@ -351,6 +351,7 @@ cfg_if! {
         target_os = "freebsd",
         target_os = "android",
         target_os = "openbsd",
+        target_os = "cygwin",
     ))] {
         pub const FNM_PATHNAME: c_int = 1 << 1;
         pub const FNM_NOESCAPE: c_int = 1 << 0;

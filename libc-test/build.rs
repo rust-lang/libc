@@ -1,7 +1,5 @@
 #![deny(warnings)]
 
-extern crate ctest2 as ctest;
-
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
@@ -13,7 +11,7 @@ fn src_hotfix_dir() -> PathBuf {
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
-    if cfg!(unix) {
+    if cfg!(unix) || target.contains("cygwin") {
         let exclude = ["redox", "wasi", "wali"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
@@ -158,7 +156,7 @@ fn main() {
         std::fs::remove_dir_all(&hotfix_dir).unwrap();
     }
 
-    // FIXME(ctest): ctest2 cannot parse `crate::` in paths, so replace them with `::`
+    // FIXME(ctest): ctest cannot parse `crate::` in paths, so replace them with `::`
     let re = regex::bytes::Regex::new(r"(?-u:\b)crate::").unwrap();
     copy_dir_hotfix(Path::new("../src"), &hotfix_dir, &re, b"::");
 
@@ -656,6 +654,7 @@ fn test_cygwin(target: &str) {
         "dlfcn.h",
         "errno.h",
         "fcntl.h",
+        "fnmatch.h",
         "grp.h",
         "iconv.h",
         "langinfo.h",
@@ -666,11 +665,13 @@ fn test_cygwin(target: &str) {
         "netinet/tcp.h",
         "poll.h",
         "pthread.h",
+        "pty.h",
         "pwd.h",
         "resolv.h",
         "sched.h",
         "semaphore.h",
         "signal.h",
+        "spawn.h",
         "stddef.h",
         "stdlib.h",
         "string.h",
@@ -690,6 +691,7 @@ fn test_cygwin(target: &str) {
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
+        "sys/vfs.h",
         "syslog.h",
         "termios.h",
         "unistd.h",
@@ -809,7 +811,7 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.generate("../src/lib.rs", "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_windows(target: &str) {
@@ -1752,12 +1754,12 @@ fn test_wasi(target: &str) {
         "wchar.h",
     }
 
-    // Currently `ctest2` doesn't support macros-in-static-expressions and will
+    // Currently `ctest` doesn't support macros-in-static-expressions and will
     // panic on them. That affects `CLOCK_*` defines in wasi to set this here
     // to omit them.
     cfg.cfg("libc_ctest", None);
 
-    // `ctest2` has a hard-coded list of default cfgs which doesn't include
+    // `ctest` has a hard-coded list of default cfgs which doesn't include
     // wasip2, which is why it has to be set here manually.
     if p2 {
         cfg.cfg("target_env", Some("p2"));

@@ -1042,6 +1042,10 @@ TCP_KEEPINIT
 TCP_KEEPINTVL
 TCP_MAXSEG
 TCP_MD5SIG
+TFD_CLOEXEC
+TFD_NONBLOCK
+TFD_TIMER_ABSTIME
+TFD_TIMER_CANCEL_ON_SET
 THOUSEP
 TIMER_ABSTIME
 TIME_DEL
@@ -1613,6 +1617,9 @@ timer_getoverrun
 timer_gettime
 timer_settime
 timer_t
+timerfd_create
+timerfd_gettime
+timerfd_settime
 timex
 truncate
 ttyname_r
