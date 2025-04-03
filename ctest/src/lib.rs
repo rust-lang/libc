@@ -9,6 +9,8 @@
 //!
 //! [project]: https://github.com/rust-lang/libc/blob/main/ctest/README.md
 
+// FIXME(ctest): documenting `garando_syntax` overflows otherwise
+#![recursion_limit = "256"]
 #![deny(missing_docs)]
 
 use std::collections::{HashMap, HashSet};
