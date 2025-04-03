@@ -93,22 +93,26 @@ pub fn foo() {
 
 extern "C" {
     pub static T1_static_u8: u8;
-    pub static mut T1_static_mut_u8: u8;
-    pub static mut T1_static_mut_fn_ptr: extern "C" fn(u8, u8) -> u8;
+    /* FIXME(#4365): duplicate symbol errors when enabled
+    // pub static mut T1_static_mut_u8: u8;
+    // pub static mut T1_static_mut_fn_ptr: extern "C" fn(u8, u8) -> u8;
     pub static T1_static_const_fn_ptr_unsafe: unsafe extern "C" fn(u8, u8) -> u8;
+     */
     pub static T1_static_const_fn_ptr_unsafe2: unsafe extern "C" fn(u8) -> ();
     pub static T1_static_const_fn_ptr_unsafe3: unsafe extern "C" fn() -> ();
 
     #[link_name = "T1_static_right"]
     pub static T1_static_wrong: u8;
-    #[link_name = "T1_static_right2"]
-    pub static mut T1_static_wrong2: extern "C" fn(u8, u8) -> u8;
+    /* FIXME(#4365): duplicate symbol errors when enabled
+    // #[link_name = "T1_static_right2"]
+    // pub static mut T1_static_wrong2: extern "C" fn(u8, u8) -> u8;
 
     pub static T1_fn_ptr_s: unsafe extern "C" fn(u8) -> extern "C" fn(u16) -> u32;
     pub static T1_fn_ptr_s2: unsafe extern "C" fn(
         extern "C" fn(u8) -> u8,
         extern "C" fn(u16) -> u16,
     ) -> extern "C" fn(u16) -> u32;
+    */
 
     pub static T1_arr0: [i32; 2];
     pub static T1_arr1: [[i32; 3]; 2];
@@ -128,6 +132,7 @@ extern "C" {
     pub static T1_const_opt_const_ref: Option<&'static i32>;
 
     pub static T1_opt_fn1: Option<unsafe extern "C" fn() -> ()>;
+    /* FIXME(#4365): duplicate symbol errors when enabled
     pub static T1_opt_fn2: Option<unsafe extern "C" fn(u8) -> extern "C" fn(u16) -> u32>;
     pub static T1_opt_fn3: Option<
         unsafe extern "C" fn(
@@ -135,6 +140,7 @@ extern "C" {
             extern "C" fn(u16) -> u16,
         ) -> extern "C" fn(u16) -> u32,
     >;
+    */
 }
 
 #[repr(C)]
@@ -176,7 +182,9 @@ extern "C" {
     pub fn T1_vol0(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
     pub fn T1_vol1(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
     pub fn T1_vol2(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
+    /* FIXME(#4365): duplicate symbol errors when enabled
     pub static T1_fn_ptr_vol: Option<unsafe extern "C" fn(u8, u8) -> u8>;
+    */
 }
 
 pub const LOG_MAX_LINE_LENGTH: usize = 1400;

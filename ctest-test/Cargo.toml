@@ -11,6 +11,7 @@ ctest = { path = "../ctest" }
 cc = "1.0"
 
 [dependencies]
+cfg-if = "1.0.0"
 libc = "0.2"
 
 [lib]
