@@ -1779,8 +1779,12 @@ __PTHREAD_MUTEX_SIZE__
 __PTHREAD_ONCE_SIZE__
 __PTHREAD_RWLOCKATTR_SIZE__
 __PTHREAD_RWLOCK_SIZE__
+__PTHREAD_SIZE__
 __darwin_mcontext64
+__darwin_pthread_handler_rec
+__darwin_pthread_t
 __error
+_opaque_pthread_t
 abs
 acct
 aio_cancel
