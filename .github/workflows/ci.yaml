@@ -6,8 +6,12 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
+  CARGO_TERM_COLOR: always
   CARGO_TERM_VERBOSE: true
   LIBC_CI: 1
+  RUSTDOCFLAGS: -Dwarnings
+  RUSTFLAGS: -Dwarnings
+  RUST_BACKTRACE: full
 
 defaults:
   run:
@@ -41,6 +45,12 @@ jobs:
       TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@v4
+      # Remove `-Dwarnings` at the MSRV since lints may be different or buffier
+      - name: Update RUSTFLAGS
+        run: |
+          set -eux
+          [ "${{ matrix.toolchain }}" = "1.63.0" ] && echo 'RUSTFLAGS=' >> "$GITHUB_ENV" || true
+          
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
 
