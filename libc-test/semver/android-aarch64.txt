@@ -17,6 +17,9 @@ SYS_lseek
 SYS_memfd_secret
 SYS_mmap
 SYS_syscalls
+TUNATTACHFILTER
+TUNDETACHFILTER
+TUNGETFILTER
 __system_property_wait
 user_fpsimd_struct
 user_regs_struct

@@ -63,6 +63,9 @@ SYS_shmdt
 SYS_shmget
 SYS_tuxcall
 SYS_vserver
+TUNATTACHFILTER
+TUNDETACHFILTER
+TUNGETFILTER
 __c_anonymous_uc_sigmask
 _libc_fpxreg
 _libc_xmmreg
