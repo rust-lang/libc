@@ -12,10 +12,9 @@ description = """
 A test crate for the libc crate.
 """
 
-[dependencies.libc]
-path = ".."
-version = "0.2.171"
-default-features = false
+[dependencies]
+cfg-if = "1.0.0"
+libc = { path = "..", version = "0.2.171", default-features = false }
 
 [dev-dependencies]
 syn = { version = "2.0.91", features = ["full", "visit"] }

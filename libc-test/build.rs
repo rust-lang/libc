@@ -13,7 +13,7 @@ fn src_hotfix_dir() -> PathBuf {
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
-    if cfg!(unix) {
+    if cfg!(unix) || target.contains("cygwin") {
         let exclude = ["redox", "wasi", "wali"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
@@ -700,6 +700,7 @@ fn test_cygwin(target: &str) {
         "dlfcn.h",
         "errno.h",
         "fcntl.h",
+        "fnmatch.h",
         "grp.h",
         "iconv.h",
         "langinfo.h",
@@ -710,11 +711,13 @@ fn test_cygwin(target: &str) {
         "netinet/tcp.h",
         "poll.h",
         "pthread.h",
+        "pty.h",
         "pwd.h",
         "resolv.h",
         "sched.h",
         "semaphore.h",
         "signal.h",
+        "spawn.h",
         "stddef.h",
         "stdlib.h",
         "string.h",
@@ -734,6 +737,7 @@ fn test_cygwin(target: &str) {
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
+        "sys/vfs.h",
         "syslog.h",
         "termios.h",
         "unistd.h",
@@ -853,7 +857,7 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.generate("../src/lib.rs", "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_windows(target: &str) {
@@ -1048,6 +1052,13 @@ fn test_solarish(target: &str) {
     cfg.define("_XOPEN_SOURCE", Some("700"));
     cfg.define("__EXTENSIONS__", None);
     cfg.define("_LCONV_C99", None);
+
+    // FIXME(solaris): This should be removed once new Nix crate is released.
+    // See comment in src/unix/solarish/solaris.rs for these.
+    if is_solaris {
+        cfg.define("O_DIRECT", Some("0x2000000"));
+        cfg.define("SIGINFO", Some("41"));
+    }
 
     headers! {
         cfg:
@@ -1306,6 +1317,10 @@ fn test_solarish(target: &str) {
             // We should probably be at least using `&`/`&mut` here, see:
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" => true,
+
+            // Exists on illumos too but, for now, is
+            // [a recent addition](https://www.illumos.org/issues/17094).
+            "secure_getenv" if is_illumos => true,
 
             _ => false,
         }
@@ -4136,8 +4151,7 @@ fn test_linux(target: &str) {
             "epoll_params" => true,
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
-            "dmabuf_cmsg" |
-            "dmabuf_token" => true,
+            "dmabuf_cmsg" | "dmabuf_token" => true,
 
             _ => false,
         }

@@ -966,12 +966,52 @@ s! {
         pub rec_seq: [c_uchar; TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE],
     }
 
+    pub struct tls12_crypto_info_aes_ccm_128 {
+        pub info: tls_crypto_info,
+        pub iv: [c_uchar; TLS_CIPHER_AES_CCM_128_IV_SIZE],
+        pub key: [c_uchar; TLS_CIPHER_AES_CCM_128_KEY_SIZE],
+        pub salt: [c_uchar; TLS_CIPHER_AES_CCM_128_SALT_SIZE],
+        pub rec_seq: [c_uchar; TLS_CIPHER_AES_CCM_128_REC_SEQ_SIZE],
+    }
+
     pub struct tls12_crypto_info_chacha20_poly1305 {
         pub info: tls_crypto_info,
         pub iv: [c_uchar; TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE],
         pub key: [c_uchar; TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE],
         pub salt: [c_uchar; TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE],
         pub rec_seq: [c_uchar; TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_sm4_gcm {
+        pub info: tls_crypto_info,
+        pub iv: [c_uchar; TLS_CIPHER_SM4_GCM_IV_SIZE],
+        pub key: [c_uchar; TLS_CIPHER_SM4_GCM_KEY_SIZE],
+        pub salt: [c_uchar; TLS_CIPHER_SM4_GCM_SALT_SIZE],
+        pub rec_seq: [c_uchar; TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_sm4_ccm {
+        pub info: tls_crypto_info,
+        pub iv: [c_uchar; TLS_CIPHER_SM4_CCM_IV_SIZE],
+        pub key: [c_uchar; TLS_CIPHER_SM4_CCM_KEY_SIZE],
+        pub salt: [c_uchar; TLS_CIPHER_SM4_CCM_SALT_SIZE],
+        pub rec_seq: [c_uchar; TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_aria_gcm_128 {
+        pub info: tls_crypto_info,
+        pub iv: [c_uchar; TLS_CIPHER_ARIA_GCM_128_IV_SIZE],
+        pub key: [c_uchar; TLS_CIPHER_ARIA_GCM_128_KEY_SIZE],
+        pub salt: [c_uchar; TLS_CIPHER_ARIA_GCM_128_SALT_SIZE],
+        pub rec_seq: [c_uchar; TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE],
+    }
+
+    pub struct tls12_crypto_info_aria_gcm_256 {
+        pub info: tls_crypto_info,
+        pub iv: [c_uchar; TLS_CIPHER_ARIA_GCM_256_IV_SIZE],
+        pub key: [c_uchar; TLS_CIPHER_ARIA_GCM_256_KEY_SIZE],
+        pub salt: [c_uchar; TLS_CIPHER_ARIA_GCM_256_SALT_SIZE],
+        pub rec_seq: [c_uchar; TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE],
     }
 
     // linux/wireless.h
@@ -3285,18 +3325,19 @@ pub const SECCOMP_SET_MODE_FILTER: c_uint = 1;
 pub const SECCOMP_GET_ACTION_AVAIL: c_uint = 2;
 pub const SECCOMP_GET_NOTIF_SIZES: c_uint = 3;
 
-pub const SECCOMP_FILTER_FLAG_TSYNC: c_ulong = 1;
-pub const SECCOMP_FILTER_FLAG_LOG: c_ulong = 2;
-pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: c_ulong = 4;
-pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: c_ulong = 8;
-pub const SECCOMP_FILTER_FLAG_TSYNC_ESRCH: c_ulong = 16;
-pub const SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV: c_ulong = 32;
+pub const SECCOMP_FILTER_FLAG_TSYNC: c_ulong = 1 << 0;
+pub const SECCOMP_FILTER_FLAG_LOG: c_ulong = 1 << 1;
+pub const SECCOMP_FILTER_FLAG_SPEC_ALLOW: c_ulong = 1 << 2;
+pub const SECCOMP_FILTER_FLAG_NEW_LISTENER: c_ulong = 1 << 3;
+pub const SECCOMP_FILTER_FLAG_TSYNC_ESRCH: c_ulong = 1 << 4;
+pub const SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV: c_ulong = 1 << 5;
 
 pub const SECCOMP_RET_KILL_PROCESS: c_uint = 0x80000000;
 pub const SECCOMP_RET_KILL_THREAD: c_uint = 0x00000000;
 pub const SECCOMP_RET_KILL: c_uint = SECCOMP_RET_KILL_THREAD;
 pub const SECCOMP_RET_TRAP: c_uint = 0x00030000;
 pub const SECCOMP_RET_ERRNO: c_uint = 0x00050000;
+pub const SECCOMP_RET_USER_NOTIF: c_uint = 0x7fc00000;
 pub const SECCOMP_RET_TRACE: c_uint = 0x7ff00000;
 pub const SECCOMP_RET_LOG: c_uint = 0x7ffc0000;
 pub const SECCOMP_RET_ALLOW: c_uint = 0x7fff0000;
@@ -3450,6 +3491,12 @@ pub const BPF_JGE: __u32 = 0x30;
 pub const BPF_JSET: __u32 = 0x40;
 pub const BPF_K: __u32 = 0x00;
 pub const BPF_X: __u32 = 0x08;
+
+// linux/filter.h
+
+pub const BPF_A: __u32 = 0x10;
+pub const BPF_TAX: __u32 = 0x00;
+pub const BPF_TXA: __u32 = 0x80;
 
 // linux/openat2.h
 pub const RESOLVE_NO_XDEV: crate::__u64 = 0x01;
@@ -4419,6 +4466,12 @@ pub const NLM_F_EXCL: c_int = 0x200;
 pub const NLM_F_CREATE: c_int = 0x400;
 pub const NLM_F_APPEND: c_int = 0x800;
 
+pub const NLM_F_NONREC: c_int = 0x100;
+pub const NLM_F_BULK: c_int = 0x200;
+
+pub const NLM_F_CAPPED: c_int = 0x100;
+pub const NLM_F_ACK_TLVS: c_int = 0x200;
+
 pub const NETLINK_ADD_MEMBERSHIP: c_int = 1;
 pub const NETLINK_DROP_MEMBERSHIP: c_int = 2;
 pub const NETLINK_PKTINFO: c_int = 3;
@@ -4714,6 +4767,9 @@ pub const PTP_PF_PHYSYNC: c_uint = 3;
 pub const TLS_TX: c_int = 1;
 pub const TLS_RX: c_int = 2;
 
+pub const TLS_TX_ZEROCOPY_RO: c_int = 3;
+pub const TLS_RX_EXPECT_NO_PAD: c_int = 4;
+
 pub const TLS_1_2_VERSION_MAJOR: __u8 = 0x3;
 pub const TLS_1_2_VERSION_MINOR: __u8 = 0x3;
 pub const TLS_1_2_VERSION: __u16 =
@@ -4738,6 +4794,13 @@ pub const TLS_CIPHER_AES_GCM_256_SALT_SIZE: usize = 4;
 pub const TLS_CIPHER_AES_GCM_256_TAG_SIZE: usize = 16;
 pub const TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE: usize = 8;
 
+pub const TLS_CIPHER_AES_CCM_128: __u16 = 53;
+pub const TLS_CIPHER_AES_CCM_128_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_AES_CCM_128_KEY_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_CCM_128_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_AES_CCM_128_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_AES_CCM_128_REC_SEQ_SIZE: usize = 8;
+
 pub const TLS_CIPHER_CHACHA20_POLY1305: __u16 = 54;
 pub const TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE: usize = 12;
 pub const TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE: usize = 32;
@@ -4745,10 +4808,52 @@ pub const TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE: usize = 0;
 pub const TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE: usize = 16;
 pub const TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE: usize = 8;
 
+pub const TLS_CIPHER_SM4_GCM: __u16 = 55;
+pub const TLS_CIPHER_SM4_GCM_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_SM4_GCM_KEY_SIZE: usize = 16;
+pub const TLS_CIPHER_SM4_GCM_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_SM4_GCM_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_SM4_CCM: __u16 = 56;
+pub const TLS_CIPHER_SM4_CCM_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_SM4_CCM_KEY_SIZE: usize = 16;
+pub const TLS_CIPHER_SM4_CCM_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_SM4_CCM_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_ARIA_GCM_128: __u16 = 57;
+pub const TLS_CIPHER_ARIA_GCM_128_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_ARIA_GCM_128_KEY_SIZE: usize = 16;
+pub const TLS_CIPHER_ARIA_GCM_128_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_ARIA_GCM_128_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE: usize = 8;
+
+pub const TLS_CIPHER_ARIA_GCM_256: __u16 = 58;
+pub const TLS_CIPHER_ARIA_GCM_256_IV_SIZE: usize = 8;
+pub const TLS_CIPHER_ARIA_GCM_256_KEY_SIZE: usize = 32;
+pub const TLS_CIPHER_ARIA_GCM_256_SALT_SIZE: usize = 4;
+pub const TLS_CIPHER_ARIA_GCM_256_TAG_SIZE: usize = 16;
+pub const TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE: usize = 8;
+
 pub const TLS_SET_RECORD_TYPE: c_int = 1;
 pub const TLS_GET_RECORD_TYPE: c_int = 2;
 
 pub const SOL_TLS: c_int = 282;
+
+// enum
+pub const TLS_INFO_UNSPEC: c_int = 0x00;
+pub const TLS_INFO_VERSION: c_int = 0x01;
+pub const TLS_INFO_CIPHER: c_int = 0x02;
+pub const TLS_INFO_TXCONF: c_int = 0x03;
+pub const TLS_INFO_RXCONF: c_int = 0x04;
+pub const TLS_INFO_ZC_RO_TX: c_int = 0x05;
+pub const TLS_INFO_RX_NO_PAD: c_int = 0x06;
+
+pub const TLS_CONF_BASE: c_int = 1;
+pub const TLS_CONF_SW: c_int = 2;
+pub const TLS_CONF_HW: c_int = 3;
+pub const TLS_CONF_HW_RECORD: c_int = 4;
 
 // linux/if_alg.h
 pub const ALG_SET_KEY: c_int = 1;
@@ -5092,6 +5197,13 @@ pub const FF_MAX: __u16 = 0x7f;
 pub const FF_CNT: usize = FF_MAX as usize + 1;
 
 // linux/input-event-codes.h
+pub const INPUT_PROP_POINTER: __u16 = 0x00;
+pub const INPUT_PROP_DIRECT: __u16 = 0x01;
+pub const INPUT_PROP_BUTTONPAD: __u16 = 0x02;
+pub const INPUT_PROP_SEMI_MT: __u16 = 0x03;
+pub const INPUT_PROP_TOPBUTTONPAD: __u16 = 0x04;
+pub const INPUT_PROP_POINTING_STICK: __u16 = 0x05;
+pub const INPUT_PROP_ACCELEROMETER: __u16 = 0x06;
 pub const INPUT_PROP_MAX: __u16 = 0x1f;
 pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
 pub const EV_MAX: __u16 = 0x1f;
@@ -5933,22 +6045,22 @@ const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
 }
 
 /// Build an ioctl number for an argumentless ioctl.
-pub(crate) const fn _IO(ty: u32, nr: u32) -> u32 {
+pub const fn _IO(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_NONE, ty, nr, 0)
 }
 
 /// Build an ioctl number for an read-only ioctl.
-pub(crate) const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
+pub const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ, ty, nr, size_of::<T>())
 }
 
 /// Build an ioctl number for an write-only ioctl.
-pub(crate) const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
+pub const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_WRITE, ty, nr, size_of::<T>())
 }
 
 /// Build an ioctl number for a read-write ioctl.
-pub(crate) const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
+pub const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
     _IOC(_IOC_READ | _IOC_WRITE, ty, nr, size_of::<T>())
 }
 
@@ -6061,6 +6173,26 @@ f! {
 
     pub fn TPACKET_ALIGN(x: usize) -> usize {
         (x + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1)
+    }
+
+    pub fn BPF_CLASS(code: __u32) -> __u32 {
+        code & 0x07
+    }
+
+    pub fn BPF_SIZE(code: __u32) -> __u32 {
+        code & 0x18
+    }
+
+    pub fn BPF_MODE(code: __u32) -> __u32 {
+        code & 0xe0
+    }
+
+    pub fn BPF_OP(code: __u32) -> __u32 {
+        code & 0xf0
+    }
+
+    pub fn BPF_SRC(code: __u32) -> __u32 {
+        code & 0x08
     }
 
     pub fn BPF_RVAL(code: __u32) -> __u32 {
