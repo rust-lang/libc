@@ -1,3 +1,6 @@
+// FIXME(ctest): this test doesn't work when cross compiling.
+#![cfg(target_arch = "x86_64")]
+
 use std::collections::HashSet;
 use std::env;
 use std::process::{Command, ExitStatus};
@@ -12,25 +15,35 @@ fn cmd(name: &str) -> Command {
     Command::new(p)
 }
 
+fn output(cmd: &mut Command) -> (String, ExitStatus) {
+    eprintln!("command: {cmd:?}");
+    let output = cmd.output().unwrap();
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let stderr = String::from_utf8(output.stderr).unwrap();
+
+    (stdout + &stderr, output.status)
+}
+
 #[test]
 fn t1() {
     let (o, status) = output(&mut cmd("t1"));
-    assert!(status.success(), "{}", o);
+    assert!(status.success(), "output: {o}");
     assert!(!o.contains("bad "), "{}", o);
     eprintln!("o: {}", o);
 }
 
 #[test]
+#[cfg(has_cxx)]
 fn t1_cxx() {
     let (o, status) = output(&mut cmd("t1_cxx"));
-    assert!(status.success(), "{}", o);
+    assert!(status.success(), "output: {o}");
     assert!(!o.contains("bad "), "{}", o);
 }
 
 #[test]
 fn t2() {
     let (o, status) = output(&mut cmd("t2"));
-    assert!(!status.success(), "{}", o);
+    assert!(!status.success(), "output: {o}");
     let errors = [
         "bad T2Foo signed",
         "bad T2TypedefFoo signed",
@@ -72,9 +85,10 @@ fn t2() {
 }
 
 #[test]
+#[cfg(has_cxx)]
 fn t2_cxx() {
     let (o, status) = output(&mut cmd("t2_cxx"));
-    assert!(!status.success(), "{}", o);
+    assert!(!status.success(), "output: {o}");
     let errors = [
         "bad T2Foo signed",
         "bad T2TypedefFoo signed",
@@ -113,12 +127,4 @@ fn t2_cxx() {
         println!("output was:\n\n{}", o);
         panic!();
     }
-}
-
-fn output(cmd: &mut Command) -> (String, ExitStatus) {
-    let output = cmd.output().unwrap();
-    let stdout = String::from_utf8(output.stdout).unwrap();
-    let stderr = String::from_utf8(output.stderr).unwrap();
-
-    (stdout + &stderr, output.status)
 }

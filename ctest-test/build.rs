@@ -1,3 +1,5 @@
+use std::process::Command;
+
 fn main() {
     use std::env;
     let opt_level = env::var("OPT_LEVEL")
@@ -48,34 +50,43 @@ fn main() {
         .skip_roundtrip(|_| true)
         .generate("src/t2.rs", "t2gen.rs");
 
-    ctest::TestGenerator::new()
-        .header("t1.h")
-        .language(ctest::Lang::CXX)
-        .include("src")
-        .fn_cname(|a, b| b.unwrap_or(a).to_string())
-        .type_name(move |ty, is_struct, is_union| match ty {
-            "T1Union" => ty.to_string(),
-            "Transparent" => ty.to_string(),
-            t if is_struct => format!("struct {}", t),
-            t if is_union => format!("union {}", t),
-            t => t.to_string(),
-        })
-        .volatile_item(t1_volatile)
-        .array_arg(t1_arrays)
-        .skip_roundtrip(|n| n == "Arr")
-        .generate("src/t1.rs", "t1gen_cxx.rs");
-    ctest::TestGenerator::new()
-        .header("t2.h")
-        .language(ctest::Lang::CXX)
-        .include("src")
-        .type_name(move |ty, is_struct, is_union| match ty {
-            "T2Union" => ty.to_string(),
-            t if is_struct => format!("struct {}", t),
-            t if is_union => format!("union {}", t),
-            t => t.to_string(),
-        })
-        .skip_roundtrip(|_| true)
-        .generate("src/t2.rs", "t2gen_cxx.rs");
+    println!("cargo::rustc-check-cfg=cfg(has_cxx)");
+    if !cfg!(unix) || Command::new("c++").arg("v").output().is_ok() {
+        // A C compiler is always available, but these are only run if a C++ compiler is
+        // also available.
+        println!("cargo::rustc-cfg=has_cxx");
+
+        ctest::TestGenerator::new()
+            .header("t1.h")
+            .language(ctest::Lang::CXX)
+            .include("src")
+            .fn_cname(|a, b| b.unwrap_or(a).to_string())
+            .type_name(move |ty, is_struct, is_union| match ty {
+                "T1Union" => ty.to_string(),
+                "Transparent" => ty.to_string(),
+                t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
+                t => t.to_string(),
+            })
+            .volatile_item(t1_volatile)
+            .array_arg(t1_arrays)
+            .skip_roundtrip(|n| n == "Arr")
+            .generate("src/t1.rs", "t1gen_cxx.rs");
+        ctest::TestGenerator::new()
+            .header("t2.h")
+            .language(ctest::Lang::CXX)
+            .include("src")
+            .type_name(move |ty, is_struct, is_union| match ty {
+                "T2Union" => ty.to_string(),
+                t if is_struct => format!("struct {}", t),
+                t if is_union => format!("union {}", t),
+                t => t.to_string(),
+            })
+            .skip_roundtrip(|_| true)
+            .generate("src/t2.rs", "t2gen_cxx.rs");
+    } else {
+        println!("cargo::warning=skipping C++ tests");
+    }
 }
 
 fn t1_volatile(i: ctest::VolatileItemKind) -> bool {

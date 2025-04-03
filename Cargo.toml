@@ -140,4 +140,8 @@ rustc-dep-of-std = ["rustc-std-workspace-core"]
 extra_traits = []
 
 [workspace]
-members = ["libc-test"]
+members = [
+    "ctest",
+    "ctest-test",
+    "libc-test",
+]

@@ -72,4 +72,6 @@ void* T1_vol0(volatile void* x, void* a) { return a? a: (void*)x; }
 volatile void* T1_vol1(void* x, void*  b) { return b? (volatile void*)x : (volatile void*)x; }
 volatile void* T1_vol2(void*  c, volatile void* x) { return c? x : x; }
 
+/* FIXME(#4365): duplicate symbol errors when enabled
 uint8_t (* volatile T1_fn_ptr_vol)(uint8_t, uint8_t) = foo;
+*/

@@ -1,5 +1,5 @@
 [package]
-name = "testcrate"
+name = "ctest-test"
 version = "0.1.0"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
 build = "build.rs"
@@ -11,12 +11,8 @@ ctest = { path = "../ctest" }
 cc = "1.0"
 
 [dependencies]
-libc = "0.2"
-
-[lib]
-name = "testcrate"
-test = false
-doctest = false
+cfg-if = "1.0.0"
+libc = { path = ".." }
 
 [[bin]]
 name = "t1"

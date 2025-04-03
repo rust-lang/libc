@@ -62,14 +62,17 @@ void T1v(const Arr* a);
 
 extern uint32_t T1static;
 extern const uint8_t T1_static_u8;
-uint8_t T1_static_mut_u8;
-uint8_t (*T1_static_mut_fn_ptr)(uint8_t, uint8_t);
+/* FIXME(#4365): duplicate symbol errors when enabled
+// uint8_t T1_static_mut_u8;
+// uint8_t (*T1_static_mut_fn_ptr)(uint8_t, uint8_t);
 extern uint8_t (*const T1_static_const_fn_ptr_unsafe)(uint8_t, uint8_t);
+*/
 extern void (*const T1_static_const_fn_ptr_unsafe2)(uint8_t);
 extern void (*const T1_static_const_fn_ptr_unsafe3)(void);
 
 extern const uint8_t T1_static_right;
-uint8_t (*T1_static_right2)(uint8_t, uint8_t);
+/* FIXME(#4365): duplicate symbol errors when enabled
+// uint8_t (*T1_static_right2)(uint8_t, uint8_t);
 
 // T1_fn_ptr_nested: function pointer to a function, taking a uint8_t, and
 // returning a function pointer to a function taking a uint16_t and returning a
@@ -80,6 +83,7 @@ uint32_t (*(*T1_fn_ptr_s)(uint8_t))(uint16_t);
 // uint8_t -> uint8_t, and returning a function pointer to a function taking a
 // uint16_t and returning a uint32_t
 uint32_t (*(*T1_fn_ptr_s2)(uint8_t(*)(uint8_t), uint16_t(*)(uint16_t)))(uint16_t);
+*/
 
 extern const int32_t T1_arr0[2];
 extern const int32_t T1_arr1[2][3];
@@ -98,8 +102,10 @@ extern int32_t* T1_mut_opt_mut_ref;
 extern const int32_t* T1_const_opt_const_ref;
 
 extern void (*const T1_opt_fn1)(void);
-uint32_t (*(*T1_opt_fn2)(uint8_t))(uint16_t);
-uint32_t (*(*T1_opt_fn3)(uint8_t(*)(uint8_t), uint16_t(*)(uint16_t)))(uint16_t);
+/* FIXME(#4365): duplicate symbol errors when enabled
+// uint32_t (*(*T1_opt_fn2)(uint8_t))(uint16_t);
+// uint32_t (*(*T1_opt_fn3)(uint8_t(*)(uint8_t), uint16_t(*)(uint16_t)))(uint16_t);
+*/
 
 
 struct Q {
@@ -153,8 +159,10 @@ void* T1_vol0(volatile void*, void*);
 volatile void* T1_vol1(void*, void*);
 volatile void* T1_vol2(void*, volatile void*);
 
+/* FIXME(#4365): duplicate symbol errors when enabled
 // volatile function pointers:
 uint8_t (*volatile T1_fn_ptr_vol)(uint8_t, uint8_t);
+*/
 
 #define LOG_MAX_LINE_LENGTH (1400)
 
