@@ -2783,6 +2783,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14.0
             "TCP_FUNCTION_ALIAS" if Some(14) > freebsd_ver => true,
 
+            // FIXME(freebsd): Removed in FreeBSD 15, deprecated in libc
+            "TCP_PCAP_OUT" | "TCP_PCAP_IN" => true,
+
             _ => false,
         }
     });
