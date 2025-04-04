@@ -74,6 +74,11 @@ test_target() {
     if [ "$os" = "linux" ]; then
         # Test with the equivalent of __USE_TIME_BITS64
         RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64=1 $cmd
+        case "$target" in
+            # Test with the equivalent of __FILE_OFFSET_BITS=64
+            arm*-gnu*|i*86*-gnu|powerpc-*-gnu*|mips*-gnu|sparc-*-gnu|thumb-*gnu*)
+                RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS=64 $cmd;;
+        esac
     fi
 
     # Test again without default features, i.e. without "std"
@@ -91,7 +96,7 @@ test_target() {
         stable-x86_64-*freebsd*) do_freebsd_checks=1 ;;
         nightly-i686*freebsd*) do_freebsd_checks=1 ;;
     esac
-    
+
     if [ -n "${do_freebsd_checks:-}" ]; then
         for version in $freebsd_versions; do
             export RUST_LIBC_UNSTABLE_FREEBSD_VERSION="$version"
@@ -296,7 +301,7 @@ filter_and_run() {
         if [ "$target" = "wasm32-wasip2" ] && [ "$supports_wasi_pn" = "0" ]; then
             return
         fi
-            
+
         test_target "$target" "$no_dist"
         some_tests_run=1
     fi

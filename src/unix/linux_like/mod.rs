@@ -1791,9 +1791,12 @@ extern "C" {
     pub fn memalign(align: size_t, size: size_t) -> *mut c_void;
     pub fn setgroups(ngroups: size_t, ptr: *const crate::gid_t) -> c_int;
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "statfs64")]
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatfs64")]
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
     pub fn memrchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fadvise64")]
     pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
     pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
     pub fn utimensat(
@@ -1891,7 +1894,9 @@ extern "C" {
     ) -> size_t;
     pub fn strptime(s: *const c_char, format: *const c_char, tm: *mut crate::tm) -> *mut c_char;
 
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "mkostemp64")]
     pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "mkostemps64")]
     pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
 
     pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;

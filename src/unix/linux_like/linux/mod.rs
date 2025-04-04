@@ -74,9 +74,14 @@ pub type iconv_t = *mut c_void;
 pub type sctp_assoc_t = __s32;
 
 pub type eventfd_t = u64;
-missing! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
-    pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
+
+cfg_if! {
+    if #[cfg(not(target_env = "gnu"))] {
+        missing! {
+            #[cfg_attr(feature = "extra_traits", derive(Debug))]
+            pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
+        }
+    }
 }
 
 e! {
@@ -6260,17 +6265,23 @@ cfg_if! {
 cfg_if! {
     if #[cfg(all(not(target_env = "uclibc"), not(target_env = "ohos")))] {
         extern "C" {
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_read64")]
             pub fn aio_read(aiocbp: *mut aiocb) -> c_int;
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_write64")]
             pub fn aio_write(aiocbp: *mut aiocb) -> c_int;
             pub fn aio_fsync(op: c_int, aiocbp: *mut aiocb) -> c_int;
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_error64")]
             pub fn aio_error(aiocbp: *const aiocb) -> c_int;
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_return64")]
             pub fn aio_return(aiocbp: *mut aiocb) -> ssize_t;
             pub fn aio_suspend(
                 aiocb_list: *const *const aiocb,
                 nitems: c_int,
                 timeout: *const crate::timespec,
             ) -> c_int;
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_cancel64")]
             pub fn aio_cancel(fd: c_int, aiocbp: *mut aiocb) -> c_int;
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "lio_listio64")]
             pub fn lio_listio(
                 mode: c_int,
                 aiocb_list: *const *mut aiocb,
@@ -6284,12 +6295,14 @@ cfg_if! {
 cfg_if! {
     if #[cfg(not(target_env = "uclibc"))] {
         extern "C" {
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "pwritev64")]
             pub fn pwritev(
                 fd: c_int,
                 iov: *const crate::iovec,
                 iovcnt: c_int,
                 offset: off_t,
             ) -> ssize_t;
+            #[cfg_attr(gnu_file_offset_bits64, link_name = "preadv64")]
             pub fn preadv(
                 fd: c_int,
                 iov: *const crate::iovec,
@@ -6454,7 +6467,9 @@ extern "C" {
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn __errno_location() -> *mut c_int;
 
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "fallocate64")]
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fallocate64")]
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
     pub fn readahead(fd: c_int, offset: off64_t, count: size_t) -> ssize_t;
     pub fn getxattr(
@@ -6561,12 +6576,14 @@ extern "C" {
         ...
     ) -> *mut c_void;
 
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "glob64")]
     pub fn glob(
         pattern: *const c_char,
         flags: c_int,
         errfunc: Option<extern "C" fn(epath: *const c_char, errno: c_int) -> c_int>,
         pglob: *mut crate::glob_t,
     ) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "globfree64")]
     pub fn globfree(pglob: *mut crate::glob_t);
 
     pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
@@ -6592,6 +6609,7 @@ extern "C" {
         addr: *mut crate::sockaddr,
         addrlen: *mut crate::socklen_t,
     ) -> ssize_t;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "mkstemps64")]
     pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
 
     pub fn nl_langinfo(item: crate::nl_item) -> *mut c_char;
@@ -6756,6 +6774,7 @@ extern "C" {
         policy: c_int,
         param: *const crate::sched_param,
     ) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "sendfile64")]
     pub fn sendfile(out_fd: c_int, in_fd: c_int, offset: *mut off_t, count: size_t) -> ssize_t;
     pub fn sigsuspend(mask: *const crate::sigset_t) -> c_int;
     pub fn getgrgid_r(
