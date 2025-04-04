@@ -114,6 +114,9 @@ SYS_ustat
 SYS_utimes
 SYS_vfork
 SYS_vserver
+TUNATTACHFILTER
+TUNDETACHFILTER
+TUNGETFILTER
 __c_anonymous_uc_sigmask
 __c_anonymous_uc_sigmask_with_padding
 greg_t

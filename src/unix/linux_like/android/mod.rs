@@ -2623,7 +2623,7 @@ pub const SND_CNT: usize = SND_MAX as usize + 1;
 pub const UINPUT_VERSION: c_uint = 5;
 pub const UINPUT_MAX_NAME_SIZE: usize = 80;
 
-// bionic/libc/kernel/uapi/linux/if_tun.h
+// linux/if_tun.h
 pub const IFF_TUN: c_int = 0x0001;
 pub const IFF_TAP: c_int = 0x0002;
 pub const IFF_NAPI: c_int = 0x0010;
@@ -2638,6 +2638,7 @@ pub const IFF_ATTACH_QUEUE: c_int = 0x0200;
 pub const IFF_DETACH_QUEUE: c_int = 0x0400;
 pub const IFF_PERSIST: c_int = 0x0800;
 pub const IFF_NOFILTER: c_int = 0x1000;
+pub const TUN_TX_TIMESTAMP: c_int = 1;
 // Features for GSO (TUNSETOFFLOAD)
 pub const TUN_F_CSUM: c_uint = 0x01;
 pub const TUN_F_TSO4: c_uint = 0x02;
@@ -2646,6 +2647,36 @@ pub const TUN_F_TSO_ECN: c_uint = 0x08;
 pub const TUN_F_UFO: c_uint = 0x10;
 pub const TUN_F_USO4: c_uint = 0x20;
 pub const TUN_F_USO6: c_uint = 0x40;
+// Protocol info prepended to the packets (when IFF_NO_PI is not set)
+pub const TUN_PKT_STRIP: c_int = 0x0001;
+// Accept all multicast packets
+pub const TUN_FLT_ALLMULTI: c_int = 0x0001;
+// Ioctl operation codes
+pub const TUNSETNOCSUM: c_int = 0x400454c8;
+pub const TUNSETDEBUG: c_int = 0x400454c9;
+pub const TUNSETIFF: c_int = 0x400454ca;
+pub const TUNSETPERSIST: c_int = 0x400454cb;
+pub const TUNSETOWNER: c_int = 0x400454cc;
+pub const TUNSETLINK: c_int = 0x400454cd;
+pub const TUNSETGROUP: c_int = 0x400454ce;
+pub const TUNGETFEATURES: c_int = 0x800454cf;
+pub const TUNSETOFFLOAD: c_int = 0x400454d0;
+pub const TUNSETTXFILTER: c_int = 0x400454d1;
+pub const TUNGETIFF: c_int = 0x800454d2;
+pub const TUNGETSNDBUF: c_int = 0x800454d3;
+pub const TUNSETSNDBUF: c_int = 0x400454d4;
+pub const TUNGETVNETHDRSZ: c_int = 0x800454d7;
+pub const TUNSETVNETHDRSZ: c_int = 0x400454d8;
+pub const TUNSETQUEUE: c_int = 0x400454d9;
+pub const TUNSETIFINDEX: c_int = 0x400454da;
+pub const TUNSETVNETLE: c_int = 0x400454dc;
+pub const TUNGETVNETLE: c_int = 0x800454dd;
+pub const TUNSETVNETBE: c_int = 0x400454de;
+pub const TUNGETVNETBE: c_int =  0x800454df;
+pub const TUNSETSTEERINGEBPF: c_int = 0x800454e0;
+pub const TUNSETFILTEREBPF: c_int = 0x800454e1;
+pub const TUNSETCARRIER: c_int = 0x400454e2;
+pub const TUNGETDEVNETNS: c_int =  0x000054e3;
 
 // start android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 // from https://android.googlesource.com/platform/bionic/+/HEAD/libc/kernel/uapi/linux/if_ether.h

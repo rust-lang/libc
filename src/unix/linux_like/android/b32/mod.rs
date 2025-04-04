@@ -232,6 +232,12 @@ pub const UT_HOSTSIZE: usize = 16;
 pub const SIGSTKSZ: size_t = 8192;
 pub const MINSIGSTKSZ: size_t = 2048;
 
+// linux/if_tun.h
+// Ioctl operation codes
+pub const TUNATTACHFILTER: c_int = 0x400854d5;
+pub const TUNDETACHFILTER: c_int = 0x400854d6;
+pub const TUNGETFILTER: c_int = 0x800854db;
+
 extern "C" {
     pub fn timegm64(tm: *const crate::tm) -> crate::time64_t;
 }

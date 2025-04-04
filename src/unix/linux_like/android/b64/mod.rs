@@ -288,6 +288,12 @@ pub const UT_LINESIZE: usize = 32;
 pub const UT_NAMESIZE: usize = 32;
 pub const UT_HOSTSIZE: usize = 256;
 
+// linux/if_tun.h
+// Ioctl operation codes
+pub const TUNATTACHFILTER: c_int = 0x401054d5;
+pub const TUNDETACHFILTER: c_int = 0x401054d6;
+pub const TUNGETFILTER: c_int = 0x801054db;
+
 f! {
     // Sadly, Android before 5.0 (API level 21), the accept4 syscall is not
     // exposed by the libc. As work-around, we implement it through `syscall`
