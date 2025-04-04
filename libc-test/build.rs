@@ -2855,6 +2855,9 @@ fn test_freebsd(target: &str) {
             "CAP_UNUSED0_44" | "CAP_UNUSED0_57" | "CAP_UNUSED1_22" | "CAP_UNUSED1_57"
             | "CAP_ALL0" | "CAP_ALL1" => true,
 
+            // FIXME(freebsd): Removed in FreeBSD 15, deprecated in libc
+            "TCP_PCAP_OUT" | "TCP_PCAP_IN" => true,
+
             _ => false,
         }
     });
