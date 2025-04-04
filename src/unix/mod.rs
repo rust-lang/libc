@@ -1672,7 +1672,7 @@ cfg_if! {
             ) -> ssize_t;
             pub fn fmemopen(buf: *mut c_void, size: size_t, mode: *const c_char) -> *mut FILE;
             pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
-            pub fn atexit(cb: extern "C" fn()) -> c_int;
+            pub fn atexit(cb: unsafe extern "C" fn()) -> c_int;
             #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
             pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction)
                 -> c_int;
