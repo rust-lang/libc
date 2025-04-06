@@ -235,7 +235,14 @@ missing! {
 #[link(name = "c")]
 #[link(name = "posix")]
 #[link(name = "inet")]
-#[link(name = "startfiles")] // FIXME: when I tried to explicitly specify that this is a native library, it broke, I should later figure out why
+// FIXME: libstartfiles is a static library. But when we explicitly add `kind="static"` below, we an error
+// when building libc that says "could not find native static library `startfiles`, perhaps an -L flag is missing?"
+// It happens due to this piece of code:
+// https://github.com/rust-lang/rust/blob/1de931283df18f3af4922fe9a96adcc8936ac42e/compiler/rustc_codegen_ssa/src/back/link.rs#L370
+// When building .rlib, Rust doesn't invoke the native linker (which we specify in rustc_target), but instead
+// tries to find all the libraries by itself. And I suppose it doesn't learn the link search paths from
+// the linker.
+#[link(name = "startfiles")]
 extern "C" {}
 
 extern "C" {
