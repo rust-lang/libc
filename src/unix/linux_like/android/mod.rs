@@ -18,7 +18,6 @@ pub type off_t = c_long;
 pub type blkcnt_t = c_ulong;
 pub type blksize_t = c_ulong;
 pub type nlink_t = u32;
-pub type useconds_t = u32;
 pub type pthread_t = c_long;
 pub type pthread_mutexattr_t = c_long;
 pub type pthread_rwlockattr_t = c_long;
@@ -513,11 +512,6 @@ s! {
         pub ifr6_prefixlen: u32,
         pub ifr6_ifindex: c_int,
     }
-
-    pub struct if_nameindex {
-        pub if_index: c_uint,
-        pub if_name: *mut c_char,
-    }
 }
 
 s_no_extra_traits! {
@@ -656,58 +650,6 @@ cfg_if! {
                 self.nl_family.hash(state);
                 self.nl_pid.hash(state);
                 self.nl_groups.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for dirent {}
-
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent64 {
-            fn eq(&self, other: &dirent64) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for dirent64 {}
-
-        impl hash::Hash for dirent64 {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
             }
         }
 
@@ -3739,20 +3681,6 @@ extern "C" {
     pub fn pthread_kill(thread: crate::pthread_t, sig: c_int) -> c_int;
     pub fn sem_unlink(name: *const c_char) -> c_int;
     pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
-    pub fn getpwnam_r(
-        name: *const c_char,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-    pub fn getpwuid_r(
-        uid: crate::uid_t,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
     pub fn sigtimedwait(
         set: *const sigset_t,
         info: *mut siginfo_t,
@@ -3904,9 +3832,6 @@ extern "C" {
         newpath: *const c_char,
         flags: c_uint,
     ) -> c_int;
-
-    pub fn if_nameindex() -> *mut if_nameindex;
-    pub fn if_freenameindex(ptr: *mut if_nameindex);
 }
 
 cfg_if! {

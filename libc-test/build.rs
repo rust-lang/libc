@@ -57,6 +57,7 @@ fn do_ctest() {
         t if t.contains("emscripten") => test_emscripten(t),
         t if t.contains("freebsd") => test_freebsd(t),
         t if t.contains("haiku") => test_haiku(t),
+        t if t.contains("l4re") => test_linux(t),
         t if t.contains("linux") => test_linux(t),
         t if t.contains("netbsd") => test_netbsd(t),
         t if t.contains("openbsd") => test_openbsd(t),
@@ -96,9 +97,10 @@ fn do_semver() {
     // NOTE: Android doesn't include the unix file (or the Linux file) because
     // there are some many definitions missing it's actually easier just to
     // maintain a file for Android.
-    // NOTE: AIX doesn't include the unix file because there are definitions
-    // missing on AIX. It is easier to maintain a file for AIX.
-    if family != os && !matches!(os.as_str(), "android" | "aix") {
+    // NOTE: AIX and L4Re do not include the unix file because there are
+    // definitions missing on these systems. It is easier to maintain separate
+    // files for them.
+    if family != os && !matches!(os.as_str(), "android" | "aix" | "l4re") {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
     // We don't do semver for unknown targets.
@@ -3653,18 +3655,26 @@ fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
 }
 
 fn test_linux(target: &str) {
-    assert!(target.contains("linux"));
+    assert!(target.contains("linux") || target.contains("l4re"));
+
+    // target_os
+    let linux = target.contains("linux");
+    let l4re = target.contains("l4re");
 
     // target_env
     let gnu = target.contains("gnu");
     let musl = target.contains("musl") || target.contains("ohos");
     let uclibc = target.contains("uclibc");
 
-    match (gnu, musl, uclibc) {
-        (true, false, false) => (),
-        (false, true, false) => (),
-        (false, false, true) => (),
-        (_, _, _) => panic!("linux target lib is gnu: {gnu}, musl: {musl}, uclibc: {uclibc}"),
+    match (linux, gnu, musl, uclibc) {
+        (true, true, false, false) => (),
+        (true, false, true, false) => (),
+        (true, false, false, true) => (),
+        (false, false, false, true) => (),
+        (_, _, _, _) => panic!(
+            "{} target lib is gnu: {gnu}, musl: {musl}, uclibc: {uclibc}",
+            if linux { "linux" } else { "l4re" }
+        ),
     }
 
     let arm = target.contains("arm");
@@ -3696,8 +3706,10 @@ fn test_linux(target: &str) {
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
     // glibc versions older than 2.29.
     cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
-
     config_gnu_bits(target, &mut cfg);
+    if l4re {
+        cfg.flag("-Wno-unused-function");
+    }
 
     headers! { cfg:
                "ctype.h",
@@ -3716,11 +3728,12 @@ fn test_linux(target: &str) {
                "libgen.h",
                "limits.h",
                "link.h",
-               "linux/sysctl.h",
+               [uclibc]: "linux/if_ether.h",
+               [linux]: "linux/sysctl.h",
                "locale.h",
                "malloc.h",
                "mntent.h",
-               "mqueue.h",
+               [linux]: "mqueue.h",
                "net/ethernet.h",
                "net/if.h",
                "net/if_arp.h",
@@ -3730,6 +3743,7 @@ fn test_linux(target: &str) {
                "netinet/ip.h",
                "netinet/tcp.h",
                "netinet/udp.h",
+               [l4re]: "netpacket/packet.h",
                "poll.h",
                "pthread.h",
                "pty.h",
@@ -3740,43 +3754,44 @@ fn test_linux(target: &str) {
                "semaphore.h",
                "shadow.h",
                "signal.h",
-               "spawn.h",
-               "stddef.h",
+               [linux]: "spawn.h",
+               [linux]: "stddef.h",
                "stdint.h",
                "stdio.h",
                "stdlib.h",
                "string.h",
-               "sys/epoll.h",
-               "sys/eventfd.h",
+               [l4re]: "sys/auxv.h",
+               [linux]: "sys/epoll.h",
+               [linux]: "sys/eventfd.h",
                "sys/file.h",
-               "sys/fsuid.h",
-               "sys/klog.h",
-               "sys/inotify.h",
+               [linux]: "sys/fsuid.h",
+               [linux]: "sys/klog.h",
+               [linux]: "sys/inotify.h",
                "sys/ioctl.h",
                "sys/ipc.h",
                "sys/mman.h",
                "sys/mount.h",
-               "sys/msg.h",
-               "sys/personality.h",
+               [linux]: "sys/msg.h",
+               [linux]: "sys/personality.h",
                "sys/prctl.h",
-               "sys/ptrace.h",
-               "sys/quota.h",
-               "sys/random.h",
-               "sys/reboot.h",
+               [linux]: "sys/ptrace.h",
+               [linux]: "sys/quota.h",
+               [linux]: "sys/random.h",
+               [linux]: "sys/reboot.h",
                "sys/resource.h",
                "sys/sem.h",
-               "sys/sendfile.h",
+               [linux]: "sys/sendfile.h",
                "sys/shm.h",
-               "sys/signalfd.h",
+               [linux]: "sys/signalfd.h",
                "sys/socket.h",
                "sys/stat.h",
                "sys/statvfs.h",
-               "sys/swap.h",
+               [linux]: "sys/swap.h",
                "sys/syscall.h",
                "sys/time.h",
-               "sys/timerfd.h",
+               [linux]: "sys/timerfd.h",
                "sys/times.h",
-               "sys/timex.h",
+               [linux]: "sys/timex.h",
                "sys/types.h",
                "sys/uio.h",
                "sys/un.h",
@@ -3798,12 +3813,12 @@ fn test_linux(target: &str) {
                // ARM: https://bugzilla.redhat.com/show_bug.cgi?id=1116162
                // Also unavailable on gnueabihf with glibc 2.30.
                // https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=6b33f373c7b9199e00ba5fbafd94ac9bfb4337b1
-               [(x86_64 || x86_32 || arm) && !gnueabihf]: "sys/io.h",
+               [(x86_64 || x86_32 || arm) && !gnueabihf && !l4re]: "sys/io.h",
                // `sys/reg.h` is only available on x86 and x86_64
-               [x86_64 || x86_32]: "sys/reg.h",
+               [(x86_64 || x86_32) && !l4re]: "sys/reg.h",
                // sysctl system call is deprecated and not available on musl
                // It is also unsupported in x32, deprecated since glibc 2.30:
-               [!(x32 || musl || gnu)]: "sys/sysctl.h",
+               [!(x32 || musl || gnu || l4re)]: "sys/sysctl.h",
                // <execinfo.h> is not supported by musl:
                // https://www.openwall.com/lists/musl/2015/04/09/3
                // <execinfo.h> is not present on uclibc.
@@ -3813,11 +3828,11 @@ fn test_linux(target: &str) {
     // Include linux headers at the end:
     headers! {
         cfg:
-        [loongarch64 || riscv64]: "asm/hwcap.h",
-        "asm/mman.h",
+        [(loongarch64 || riscv64) && !l4re]: "asm/hwcap.h",
+        [linux]: "asm/mman.h",
     }
 
-    if !wasm32 {
+    if !wasm32 && !l4re {
         headers! { cfg:
             [gnu]: "linux/aio_abi.h",
             "linux/can.h",
@@ -3835,7 +3850,6 @@ fn test_linux(target: &str) {
             "linux/if.h",
             "linux/if_addr.h",
             "linux/if_alg.h",
-            "linux/if_ether.h",
             "linux/if_packet.h",
             "linux/if_tun.h",
             "linux/if_xdp.h",
@@ -3881,7 +3895,6 @@ fn test_linux(target: &str) {
             "linux/wait.h",
             "linux/wireless.h",
             "sys/fanotify.h",
-            // <sys/auxv.h> is not present on uclibc
             [!uclibc]: "sys/auxv.h",
             [gnu || musl]: "linux/close_range.h",
         }
@@ -3890,7 +3903,7 @@ fn test_linux(target: &str) {
     // note: aio.h must be included before sys/mount.h
     headers! {
         cfg:
-        "sys/xattr.h",
+        [linux]: "sys/xattr.h",
         "sys/sysinfo.h",
         // AIO is not supported by uclibc:
         [!uclibc]: "aio.h",
@@ -3903,11 +3916,13 @@ fn test_linux(target: &str) {
             | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
             | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
 
-            "Ioctl" if gnu => "unsigned long".to_string(),
+            "Ioctl" if gnu || uclibc => "unsigned long".to_string(),
             "Ioctl" => "int".to_string(),
 
             // LFS64 types have been removed in musl 1.2.4+
             "off64_t" if musl => "off_t".to_string(),
+
+            "fsword_t" if uclibc => "__SWORD_TYPE".to_string(),
 
             // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),
@@ -3956,6 +3971,8 @@ fn test_linux(target: &str) {
             return true;
         }
         match ty {
+            t if t.starts_with("l4_") => true,
+
             // FIXME(sighandler): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
@@ -3990,6 +4007,10 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_struct(move |ty| {
+        if ty.starts_with("l4_") {
+            return true;
+        }
+
         if ty.starts_with("__c_anonymous_") {
             return true;
         }
@@ -4169,6 +4190,12 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_const(move |name| {
+        // L4Re requires a min stack size of 64k; that isn't defined in uClibc, but
+        // somewhere in the core libraries. uClibc wants 16k, but that's not enough.
+        if name == "PTHREAD_STACK_MIN" {
+            return true;
+        }
+
         if !gnu {
             // Skip definitions from the kernel on non-glibc Linux targets.
             // They're libc-independent, so we only need to check them on one
@@ -4343,7 +4370,7 @@ fn test_linux(target: &str) {
 
             // FIXME(musl): on musl the pthread types are defined a little differently
             // - these constants are used by the glibc implementation.
-            n if musl && n.contains("__SIZEOF_PTHREAD") => true,
+            n if (musl || uclibc) && n.contains("__SIZEOF_PTHREAD") => true,
 
             // FIXME(linux): It was extended to 4096 since glibc 2.31 (Linux 5.4).
             // We should do so after a while.
@@ -4655,6 +4682,8 @@ fn test_linux(target: &str) {
     cfg.skip_fn(move |name| {
         // skip those that are manually verified
         match name {
+            n if n.starts_with("l4_") => true,
+
             // There are two versions of the sterror_r function, see
             //
             // https://linux.die.net/man/3/strerror_r
@@ -4920,7 +4949,9 @@ fn test_linux(target: &str) {
 
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 
-    test_linux_like_apis(target);
+    if linux {
+        test_linux_like_apis(target);
+    }
 }
 
 // This function tests APIs that are incompatible to test when other APIs
