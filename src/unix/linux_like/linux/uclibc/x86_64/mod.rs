@@ -23,6 +23,8 @@ pub type fsfilcnt64_t = u64;
 pub type __u64 = c_ulong;
 pub type __s64 = c_long;
 
+pub type pthread_t = c_ulong;
+
 s! {
     pub struct ipc_perm {
         pub __key: crate::key_t,
@@ -38,7 +40,6 @@ s! {
         __unused2: c_ulong,
     }
 
-    #[cfg(not(target_os = "l4re"))]
     pub struct pthread_attr_t {
         __detachstate: c_int,
         __schedpolicy: c_int,
@@ -331,13 +332,4 @@ pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const PIDFD_NONBLOCK: c_int = 0o4000;
-
-cfg_if! {
-    if #[cfg(target_os = "l4re")] {
-        mod l4re;
-        pub use self::l4re::*;
-    } else {
-        mod other;
-        pub use other::*;
-    }
-}
+pub const PTHREAD_STACK_MIN: usize = 16384;
