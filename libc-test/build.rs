@@ -3590,6 +3590,26 @@ fn test_vxworks(target: &str) {
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
+fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
+    match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+        Ok(val) if val == "64" => {
+            if target.contains("gnu")
+                && target.contains("linux")
+                && !target.ends_with("x32")
+                && !target.contains("riscv32")
+                && env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap() == "32"
+            {
+                cfg.define("_FILE_OFFSET_BITS", Some("64"));
+                cfg.cfg("gnu_file_offset_bits64", None);
+            }
+        }
+        Ok(val) if val != "32" => {
+            panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
+        }
+        _ => {}
+    }
+}
+
 fn test_linux(target: &str) {
     assert!(target.contains("linux"));
 
@@ -3632,6 +3652,8 @@ fn test_linux(target: &str) {
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
     // glibc versions older than 2.29.
     cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
+
+    config_gnu_bits(target, &mut cfg);
 
     headers! { cfg:
                "ctype.h",
@@ -4794,6 +4816,7 @@ fn test_linux_like_apis(target: &str) {
     if linux || android || emscripten {
         // test strerror_r from the `string.h` header
         let mut cfg = ctest_cfg();
+        config_gnu_bits(target, &mut cfg);
         cfg.skip_type(|_| true).skip_static(|_| true);
 
         headers! { cfg: "string.h" }
@@ -4810,6 +4833,7 @@ fn test_linux_like_apis(target: &str) {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
         let mut cfg = ctest_cfg();
+        config_gnu_bits(target, &mut cfg);
 
         if musl {
             cfg.header("fcntl.h");
@@ -4839,6 +4863,7 @@ fn test_linux_like_apis(target: &str) {
     if (linux && !wali) || android {
         // test termios
         let mut cfg = ctest_cfg();
+        config_gnu_bits(target, &mut cfg);
         cfg.header("asm/termbits.h");
         cfg.header("linux/termios.h");
         cfg.skip_type(|_| true)
@@ -4863,6 +4888,7 @@ fn test_linux_like_apis(target: &str) {
     if linux || android {
         // test IPV6_ constants:
         let mut cfg = ctest_cfg();
+        config_gnu_bits(target, &mut cfg);
         headers! {
             cfg:
             "linux/in6.h"
@@ -4894,6 +4920,7 @@ fn test_linux_like_apis(target: &str) {
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
         // making the tests for these fails when both are included.
         let mut cfg = ctest_cfg();
+        config_gnu_bits(target, &mut cfg);
         cfg.header("elf.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
@@ -4913,6 +4940,7 @@ fn test_linux_like_apis(target: &str) {
     if (linux && !wali) || android {
         // Test `ARPHRD_CAN`.
         let mut cfg = ctest_cfg();
+        config_gnu_bits(target, &mut cfg);
         cfg.header("linux/if_arp.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
