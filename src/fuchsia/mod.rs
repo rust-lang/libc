@@ -3616,7 +3616,7 @@ extern "C" {
     pub fn abort() -> !;
     pub fn exit(status: c_int) -> !;
     pub fn _exit(status: c_int) -> !;
-    pub fn atexit(cb: extern "C" fn()) -> c_int;
+    pub fn atexit(cb: unsafe extern "C" fn()) -> c_int;
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
 
@@ -4317,7 +4317,7 @@ extern "C" {
         abstime: *const crate::timespec,
     ) -> c_int;
     pub fn clone(
-        cb: extern "C" fn(*mut c_void) -> c_int,
+        cb: unsafe extern "C" fn(*mut c_void) -> c_int,
         child_stack: *mut c_void,
         flags: c_int,
         arg: *mut c_void,
