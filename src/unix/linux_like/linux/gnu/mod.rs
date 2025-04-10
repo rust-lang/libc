@@ -310,6 +310,13 @@ s! {
         pub u: __c_anonymous_ptrace_syscall_info_data,
     }
 
+    pub struct ptrace_sud_config {
+        pub mode: crate::__u64,
+        pub selector: crate::__u64,
+        pub offset: crate::__u64,
+        pub len: crate::__u64,
+    }
+
     pub struct iocb {
         pub aio_data: crate::__u64,
         #[cfg(target_endian = "little")]
@@ -937,6 +944,8 @@ pub const PTRACE_SYSCALL_INFO_NONE: crate::__u8 = 0;
 pub const PTRACE_SYSCALL_INFO_ENTRY: crate::__u8 = 1;
 pub const PTRACE_SYSCALL_INFO_EXIT: crate::__u8 = 2;
 pub const PTRACE_SYSCALL_INFO_SECCOMP: crate::__u8 = 3;
+pub const PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4210;
+pub const PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4211;
 
 // linux/fs.h
 

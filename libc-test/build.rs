@@ -4124,6 +4124,9 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "dmabuf_cmsg" | "dmabuf_token" => true,
 
+            // FIXME(linux): Requires >= 6.4 kernel headers.
+            "ptrace_sud_config" => true,
+
             _ => false,
         }
     });
@@ -4548,6 +4551,8 @@ fn test_linux(target: &str) {
             | "SO_DEVMEM_DONTNEED"
             | "SCM_DEVMEM_LINEAR"
             | "SCM_DEVMEM_DMABUF" => true,
+            // FIXME(linux): Requires >= 6.4 kernel headers.
+            "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG" | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
 
             _ => false,
         }
