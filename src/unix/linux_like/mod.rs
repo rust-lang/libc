@@ -1630,6 +1630,73 @@ cfg_if! {
     }
 }
 
+// https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
+cfg_if! {
+    if #[cfg(any(
+        target_os = "linux",
+        target_os = "android",
+        target_os = "l4re"
+    ))] {
+        const _IOC_NRBITS: u32 = 8;
+        const _IOC_TYPEBITS: u32 = 8;
+
+        cfg_if! {
+            if #[cfg(any(
+                any(target_arch = "powerpc", target_arch = "powerpc64"),
+                any(target_arch = "sparc", target_arch = "sparc64"),
+                any(target_arch = "mips", target_arch = "mips64"),
+            ))] {
+                // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/powerpc/include/uapi/asm/ioctl.h
+                // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/sparc/include/uapi/asm/ioctl.h
+                // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/arch/mips/include/uapi/asm/ioctl.h
+
+                const _IOC_SIZEBITS: u32 = 13;
+                const _IOC_DIRBITS: u32 = 3;
+
+                const _IOC_NONE: u32 = 1;
+                const _IOC_READ: u32 = 2;
+                const _IOC_WRITE: u32 = 4;
+            } else {
+                // https://github.com/torvalds/linux/blob/b311c1b497e51a628aa89e7cb954481e5f9dced2/include/uapi/asm-generic/ioctl.h
+
+                const _IOC_SIZEBITS: u32 = 14;
+                const _IOC_DIRBITS: u32 = 2;
+
+                const _IOC_NONE: u32 = 0;
+                const _IOC_WRITE: u32 = 1;
+                const _IOC_READ: u32 = 2;
+            }
+        }
+        const _IOC_NRMASK: u32 = (1 << _IOC_NRBITS) - 1;
+        const _IOC_TYPEMASK: u32 = (1 << _IOC_TYPEBITS) - 1;
+        const _IOC_SIZEMASK: u32 = (1 << _IOC_SIZEBITS) - 1;
+        const _IOC_DIRMASK: u32 = (1 << _IOC_DIRBITS) - 1;
+
+        const _IOC_NRSHIFT: u32 = 0;
+        const _IOC_TYPESHIFT: u32 = _IOC_NRSHIFT + _IOC_NRBITS;
+        const _IOC_SIZESHIFT: u32 = _IOC_TYPESHIFT + _IOC_TYPEBITS;
+        const _IOC_DIRSHIFT: u32 = _IOC_SIZESHIFT + _IOC_SIZEBITS;
+
+        // adapted from https://github.com/torvalds/linux/blob/8a696a29c6905594e4abf78eaafcb62165ac61f1/rust/kernel/ioctl.rs
+
+        /// Build an ioctl number, analogous to the C macro of the same name.
+        const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> u32 {
+            // FIXME(ctest) the `garando_syntax` crate (used by ctest in the CI test suite)
+            // cannot currently parse these `debug_assert!`s
+            //
+            // debug_assert!(dir <= _IOC_DIRMASK);
+            // debug_assert!(ty <= _IOC_TYPEMASK);
+            // debug_assert!(nr <= _IOC_NRMASK);
+            // debug_assert!(size <= (_IOC_SIZEMASK as usize));
+
+            (dir << _IOC_DIRSHIFT)
+                | (ty << _IOC_TYPESHIFT)
+                | (nr << _IOC_NRSHIFT)
+                | ((size as u32) << _IOC_SIZESHIFT)
+        }
+    }
+}
+
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
         len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
