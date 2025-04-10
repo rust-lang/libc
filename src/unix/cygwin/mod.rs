@@ -2479,6 +2479,22 @@ extern "C" {
         fd: c_int,
         newfd: c_int,
     ) -> c_int;
+    pub fn posix_spawn_file_actions_addchdir(
+        actions: *mut crate::posix_spawn_file_actions_t,
+        path: *const c_char,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addfchdir(
+        actions: *mut crate::posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addchdir_np(
+        actions: *mut crate::posix_spawn_file_actions_t,
+        path: *const c_char,
+    ) -> c_int;
+    pub fn posix_spawn_file_actions_addfchdir_np(
+        actions: *mut crate::posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
 
     pub fn forkpty(
         amaster: *mut c_int,
