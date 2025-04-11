@@ -8,7 +8,7 @@ git_tag_name = "{{ version }}"
 name = "ctest"
 changelog_path = "ctest/CHANGELOG.md"
 git_release_name = "ctest-{{ version }}"
-git_tag_name = "ctest-{{ version }}"
+git_tag_name = "ctest-v{{ version }}"
 
 [changelog]
 body = """
