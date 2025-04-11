@@ -9,7 +9,7 @@ documentation = "https://docs.rs/ctest"
 description = """
 Automated tests of FFI bindings.
 """
-include = ["src/lib.rs", "LICENSE-*", "README.md"]
+exclude = ["CHANGELOG.md"]
 edition = "2021"
 rust-version = "1.63.0"
 
