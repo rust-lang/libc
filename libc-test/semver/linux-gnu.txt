@@ -348,6 +348,8 @@ PR_SET_VMA
 PR_SET_VMA_ANON_NAME
 PTHREAD_MUTEX_ADAPTIVE_NP
 PTRACE_GET_SYSCALL_INFO
+PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG
+PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG
 PTRACE_SYSCALL_INFO_ENTRY
 PTRACE_SYSCALL_INFO_EXIT
 PTRACE_SYSCALL_INFO_NONE
@@ -652,6 +654,7 @@ pthread_rwlockattr_getkind_np
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setkind_np
 ptrace_peeksiginfo_args
+ptrace_sud_config
 ptrace_syscall_info
 putgrent
 putpwent
