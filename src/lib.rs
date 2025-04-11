@@ -79,6 +79,14 @@ cfg_if! {
         pub use crate::solid::*;
 
         prelude!();
+    } else if #[cfg(target_os = "l4re")] {
+        mod primitives;
+        pub use crate::primitives::*;
+
+        mod l4re;
+        pub use crate::l4re::*;
+
+        prelude!();
     } else if #[cfg(unix)] {
         mod primitives;
         pub use crate::primitives::*;

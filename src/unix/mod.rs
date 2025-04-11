@@ -386,13 +386,8 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(
-        target_os = "l4re",
-        target_os = "espidf",
-        target_os = "nuttx"
-    ))] {
+    if #[cfg(any(target_os = "espidf", target_os = "nuttx"))] {
         // required libraries are linked externally for these platforms:
-        // * L4Re
         // * ESP-IDF
         // * NuttX
     } else if #[cfg(feature = "std")] {
@@ -1774,7 +1769,6 @@ cfg_if! {
         pub use self::newlib::*;
     } else if #[cfg(any(
         target_os = "linux",
-        target_os = "l4re",
         target_os = "android",
         target_os = "emscripten"
     ))] {
