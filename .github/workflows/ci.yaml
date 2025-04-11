@@ -77,6 +77,12 @@ jobs:
           - target: i686-unknown-linux-gnu
             docker: true
             os: ubuntu-24.04
+          - target: i686-unknown-linux-gnu
+            docker: true
+            os: ubuntu-24.04
+            artifact-tag: offset-bits64
+            env:
+              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
           - target: x86_64-unknown-linux-gnu
             docker: true
             os: ubuntu-24.04
@@ -108,6 +114,13 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
+
       - name: Run natively
         if: "!matrix.docker"
         run: ./ci/run.sh ${{ matrix.target }}
@@ -116,11 +129,13 @@ jobs:
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
+        id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
       - uses: actions/upload-artifact@v4
+        if: always() && steps.create_artifacts.outcome == 'success'
         with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
@@ -140,15 +155,11 @@ jobs:
           - aarch64-unknown-linux-gnu
           - aarch64-unknown-linux-musl
           - arm-linux-androideabi
-          - arm-unknown-linux-gnueabihf
           - arm-unknown-linux-musleabihf
           - i686-linux-android
           - i686-unknown-linux-musl
           - loongarch64-unknown-linux-gnu
           - loongarch64-unknown-linux-musl
-          # FIXME(ppc): SIGILL running tests, see
-          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
-          # - powerpc-unknown-linux-gnu
           - powerpc64-unknown-linux-gnu
           - powerpc64le-unknown-linux-gnu
           - riscv64gc-unknown-linux-gnu
@@ -163,6 +174,19 @@ jobs:
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
           # - x86_64-unknown-redox
+        include:
+          - target: arm-unknown-linux-gnueabihf
+          - target: arm-unknown-linux-gnueabihf
+            env:
+              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+            artifact-tag: offset-bits64
+          # FIXME(ppc): SIGILL running tests, see
+          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
+          # - target: powerpc-unknown-linux-gnu
+          # - target: powerpc-unknown-linux-gnu
+          #   env:
+          #     RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+          #   artifact-tag: offset-bits64
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
@@ -174,15 +198,24 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
+
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
+        id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
       - uses: actions/upload-artifact@v4
+        if: always() && steps.create_artifacts.outcome == 'success'
         with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 

@@ -3771,7 +3771,9 @@ pub const TCP_PERF_INFO: c_int = 78;
 pub const TCP_LRD: c_int = 79;
 pub const TCP_KEEPINIT: c_int = 128;
 pub const TCP_FASTOPEN: c_int = 1025;
+#[deprecated(since = "0.2.171", note = "removed in FreeBSD 15")]
 pub const TCP_PCAP_OUT: c_int = 2048;
+#[deprecated(since = "0.2.171", note = "removed in FreeBSD 15")]
 pub const TCP_PCAP_IN: c_int = 4096;
 pub const TCP_FUNCTION_BLK: c_int = 8192;
 pub const TCP_FUNCTION_ALIAS: c_int = 8193;

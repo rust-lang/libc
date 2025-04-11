@@ -13,6 +13,8 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
     "freebsd13",
     "freebsd14",
     "freebsd15",
+    // Corresponds to `_FILE_OFFSET_BITS=64` in glibc
+    "gnu_file_offset_bits64",
     // FIXME(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
     "libc_const_extern_fn",
     "libc_deny_warnings",
@@ -44,6 +46,10 @@ fn main() {
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
     let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
+    let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
+    let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
+    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 11.
@@ -84,6 +90,23 @@ fn main() {
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {
         set_cfg("linux_time_bits64");
+    }
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
+    match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+        Ok(val) if val == "64" => {
+            if target_env == "gnu"
+                && target_os == "linux"
+                && target_ptr_width == "32"
+                && target_arch != "riscv32"
+                && target_arch != "x86_64"
+            {
+                set_cfg("gnu_file_offset_bits64");
+            }
+        }
+        Ok(val) if val != "32" => {
+            panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
+        }
+        _ => {}
     }
 
     // On CI: deny all warnings
