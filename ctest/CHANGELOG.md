@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.11 (2024-04-11)
+
+- Clean up some `ctest` internals
+- Increase the recursion limit to fix building on docs.rs
+
+<!-- FIXME(ctest): some versions are missing -->
+
 ## 0.4.7 (2023-06-10)
 
 ### Commit Statistics
