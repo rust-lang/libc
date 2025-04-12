@@ -4218,6 +4218,10 @@ fn test_linux(target: &str) {
             if loongarch64 && (name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC") {
                 return true;
             }
+            // FIXME: Requires >= 6.3 (6.6) kernel headers
+            if name == "PR_GET_MDWE" || name == "PR_MDWE_NO_INHERIT" || name == "PR_MDWE_REFUSE_EXEC_GAIN" || name == "PR_SET_MDWE" {
+                return true;
+            }
             // FIXME(musl): Requires musl >= 1.2
             if name == "SO_PREFER_BUSY_POLL"
                 || name == "SO_BUSY_POLL_BUDGET"
@@ -4498,6 +4502,9 @@ fn test_linux(target: &str) {
             {
                 true
             }
+
+            // FIXME(linux): Requires >= 6.6 kernel headers.
+            "PR_MDWE_NO_INHERIT" => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"
