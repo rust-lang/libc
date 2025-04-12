@@ -3342,6 +3342,11 @@ pub const PR_GET_CHILD_SUBREAPER: c_int = 37;
 pub const PR_SET_NO_NEW_PRIVS: c_int = 38;
 pub const PR_GET_NO_NEW_PRIVS: c_int = 39;
 
+pub const PR_SET_MDWE: c_int = 65;
+pub const PR_GET_MDWE: c_int = 66;
+pub const PR_MDWE_REFUSE_EXEC_GAIN: c_uint = 1 << 0;
+pub const PR_MDWE_NO_INHERIT: c_uint = 1 << 1;
+
 pub const PR_GET_TID_ADDRESS: c_int = 40;
 
 pub const PR_SET_THP_DISABLE: c_int = 41;
