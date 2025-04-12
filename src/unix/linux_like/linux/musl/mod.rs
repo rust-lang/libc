@@ -787,8 +787,6 @@ pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
 pub const SFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
-pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;
-
 pub const TCSANOW: c_int = 0;
 pub const TCSADRAIN: c_int = 1;
 pub const TCSAFLUSH: c_int = 2;
