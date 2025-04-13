@@ -93,6 +93,16 @@ e! {
     }
 }
 
+c_enum! {
+    pid_type {
+        PIDTYPE_PID,
+        PIDTYPE_TGID,
+        PIDTYPE_PGID,
+        PIDTYPE_SID,
+        PIDTYPE_MAX,
+    }
+}
+
 s! {
     pub struct glob_t {
         pub gl_pathc: size_t,

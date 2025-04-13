@@ -2171,6 +2171,11 @@ PF_WANPIPE
 PF_WQ_WORKER
 PF_X
 PF_X25
+PIDTYPE_MAX
+PIDTYPE_PGID
+PIDTYPE_PID
+PIDTYPE_SID
+PIDTYPE_TGID
 PIPE_BUF
 PM_STR
 POLLRDBAND
@@ -4038,6 +4043,7 @@ packet_mreq
 pause
 personality
 pgn_t
+pid_type
 pipe2
 popen
 posix_fadvise
