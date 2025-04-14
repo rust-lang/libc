@@ -10,7 +10,7 @@ APIs in Rust match the APIs defined in C.
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is 1.63.0 because of the transitive dependencies.
+The MSRV is 1.64.0 because of the transitive dependencies.
 Note that MSRV may be changed anytime by dependencies.
 
 ## Example

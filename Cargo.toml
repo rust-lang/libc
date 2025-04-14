@@ -6,11 +6,11 @@ categories = ["external-ffi-bindings", "no-std", "os"]
 exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
 description = "Raw FFI bindings to platform libraries like libc."
 publish = false # On the main branch, we don't want to publish anything
-authors = ["The Rust Project Developers"]
-edition = "2021"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rust-lang/libc"
-rust-version = "1.63"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
 
 [package.metadata.docs.rs]
 features = ["extra_traits"]
@@ -143,14 +143,18 @@ members = [
     "libc-test",
 ]
 
-# FIXME(msrv): These should be renamed as `[workspace.lints.*]` once MSRV is above 1.64
-#       This way all crates can use it with `[lints] workspace=true` section
+[workspace.package]
+authors = ["The Rust Project Developers"]
+license = "MIT OR Apache-2.0"
+edition = "2021"
+repository = "https://github.com/rust-lang/libc"
+rust-version = "1.64"
 
-[lints.rust]
+[workspace.lints.rust]
 # FIXME(cleanup): make ident usage consistent in each file
 unused_qualifications = "allow"
 
-[lints.clippy]
+[workspace.lints.clippy]
 missing_safety_doc = "allow"
 
 # FIXME(clippy): all these are default lints and should probably be fixed
