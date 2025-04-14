@@ -2667,7 +2667,7 @@ pub const TUNSETTXFILTER: c_int = _IOW::<c_int>(T_TYPE, 209);
 pub const TUNGETIFF: c_int = _IOR::<c_int>(T_TYPE, 210);
 pub const TUNGETSNDBUF: c_int = _IOR::<c_int>(T_TYPE, 211);
 pub const TUNSETSNDBUF: c_int = _IOW::<c_int>(T_TYPE, 212);
-pub const TUNATTACHFILTER: c_int =  _IOW::<sock_fprog>(T_TYPE, 213);
+pub const TUNATTACHFILTER: c_int = _IOW::<sock_fprog>(T_TYPE, 213);
 pub const TUNDETACHFILTER: c_int = _IOW::<sock_fprog>(T_TYPE, 214);
 pub const TUNGETVNETHDRSZ: c_int = _IOR::<c_int>(T_TYPE, 215);
 pub const TUNSETVNETHDRSZ: c_int = _IOW::<c_int>(T_TYPE, 216);
@@ -4258,22 +4258,27 @@ impl siginfo_t {
     }
 }
 
- /// Build an ioctl number for an argumentless ioctl.
- pub const fn _IO(ty: u32, nr: u32) -> c_int {
+/// Build an ioctl number for an argumentless ioctl.
+pub const fn _IO(ty: u32, nr: u32) -> c_int {
     super::_IOC(super::_IOC_NONE, ty, nr, 0) as c_int
 }
 
 /// Build an ioctl number for an read-only ioctl.
 pub const fn _IOR<T>(ty: u32, nr: u32) -> c_int {
-    super::_IOC(super::_IOC_READ, ty, nr, mem::size_of::<T>())  as c_int
+    super::_IOC(super::_IOC_READ, ty, nr, mem::size_of::<T>()) as c_int
 }
 
 /// Build an ioctl number for an write-only ioctl.
 pub const fn _IOW<T>(ty: u32, nr: u32) -> c_int {
-    super::_IOC(super::_IOC_WRITE, ty, nr, mem::size_of::<T>())  as c_int
+    super::_IOC(super::_IOC_WRITE, ty, nr, mem::size_of::<T>()) as c_int
 }
 
 /// Build an ioctl number for a read-write ioctl.
 pub const fn _IOWR<T>(ty: u32, nr: u32) -> c_int {
-    super::_IOC(super::_IOC_READ | super::_IOC_WRITE, ty, nr, mem::size_of::<T>())  as c_int
+    super::_IOC(
+        super::_IOC_READ | super::_IOC_WRITE,
+        ty,
+        nr,
+        mem::size_of::<T>(),
+    ) as c_int
 }
