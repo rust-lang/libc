@@ -255,7 +255,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: |
-        msrv="$(perl -ne 'print if s/rust-version\s*=\s*"(.*)"/\1/g' ctest/Cargo.toml)"
+        msrv="$(cargo metadata --format-version 1 | jq -r --arg CRATE_NAME ctest  '.packages | map(select(.name == $CRATE_NAME)) | first | .rust_version')"
         echo "MSRV: $msrv"
         echo "MSRV=$msrv" >> "$GITHUB_ENV"
     - name: Install Rust

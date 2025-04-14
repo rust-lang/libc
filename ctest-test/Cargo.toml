@@ -2,9 +2,8 @@
 name = "ctest-test"
 version = "0.1.0"
 authors = ["Alex Crichton <alex@alexcrichton.com>"]
-build = "build.rs"
-edition = "2021"
 publish = false
+edition = "2021"
 
 [build-dependencies]
 ctest = { path = "../ctest" }

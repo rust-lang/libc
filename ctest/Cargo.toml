@@ -1,16 +1,11 @@
 [package]
 name = "ctest"
 version = "0.4.11"
-license = "MIT OR Apache-2.0"
-readme = "README.md"
-repository = "https://github.com/rust-lang/libc"
-homepage = "https://github.com/rust-lang/libc"
-documentation = "https://docs.rs/ctest"
-description = """
-Automated tests of FFI bindings.
-"""
+description = "Automated tests of FFI bindings."
 exclude = ["CHANGELOG.md"]
 edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rust-lang/libc"
 rust-version = "1.63.0"
 
 [dependencies]
