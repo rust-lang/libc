@@ -753,6 +753,7 @@ pub const S_taskLib_ILLEGAL_PRIORITY: c_int = taskErrorBase + 0x0068;
 
 // FIXME(vxworks): could also be useful for TASK_DESC type
 pub const VX_TASK_NAME_LENGTH: c_int = 31;
+pub const VX_TASK_RENAME_LENGTH: c_int = 16;
 
 // semLibCommon.h
 pub const S_semLib_INVALID_STATE: c_int = semErrorBase + 0x0065;
@@ -813,6 +814,9 @@ pub const S_IROTH: c_int = 0o0004;
 pub const S_IWOTH: c_int = 0o0002;
 pub const S_IXOTH: c_int = 0o0001;
 pub const S_IRWXO: c_int = 0o0007;
+
+pub const UTIME_OMIT: c_long = 0x3ffffffe;
+pub const UTIME_NOW: c_long = 0x3fffffff;
 
 // socket.h
 pub const SOL_SOCKET: c_int = 0xffff;
