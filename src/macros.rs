@@ -76,6 +76,8 @@ macro_rules! prelude {
             #[allow(unused_imports)]
             pub(crate) use ::core::option::Option;
             #[allow(unused_imports)]
+            pub(crate) use ::core::prelude::v1::derive;
+            #[allow(unused_imports)]
             pub(crate) use ::core::{fmt, hash, iter, mem};
 
             // Commonly used types defined in this crate
