@@ -151,15 +151,21 @@ members = [
 unused_qualifications = "allow"
 
 [lints.clippy]
-missing_safety_doc = "allow"
+# Enable pedantic lints - use this manually once in a while, but don't enable by default
+# pedantic = { level = "warn", priority = -1 }
 
-# FIXME(clippy): all these are default lints and should probably be fixed
-identity_op = "allow"
-if_same_then_else = "allow"
-non_minimal_cfg = "allow"
-precedence = "allow"
-redundant_field_names = "allow"
-redundant_static_lifetimes = "allow"
-unnecessary_cast = "allow"
-unused_unit = "allow"
-zero_ptr = "allow"
+# We are okay with the current state of these lints
+explicit_iter_loop = "warn"
+identity_op = "allow"  # some expressions like `0 | x` are clearer for bit ops
+manual_assert = "warn"
+map_unwrap_or = "warn"
+missing_safety_doc = "allow"  # safety? in libc? seriously?
+non_minimal_cfg = "allow"  # for some reason cfg_if! sometimes trigger this
+ptr_as_ptr = "warn"
+unnecessary_semicolon = "warn"
+
+# FIXME(clippy): these should be fixed if possible
+expl_impl_clone_on_copy = "allow"
+uninlined_format_args = "allow"
+unnecessary_cast = "allow"  # some casts like `as usize` are only needed for some targets
+used_underscore_binding = "allow"
