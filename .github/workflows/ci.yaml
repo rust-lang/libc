@@ -29,6 +29,22 @@ jobs:
       - name: Check style
         run: ./ci/style.sh
 
+  clippy:
+    name: Clippy on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-14, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup update stable --no-self-update
+      - uses: Swatinem/rust-cache@v2
+      # Here we use the latest stable Rust toolchain already installed by GitHub
+      # Ideally we should run it for every target, but we cannot rely on unstable toolchains
+      # due to Clippy not being consistent between them.
+      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+
   # This runs `cargo build --target ...` for all T1 and T2 targets`
   verify_build:
     name: Verify build
@@ -287,7 +303,8 @@ jobs:
       - verify_build
       - ctest_msrv
       - docs
-    # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
+      - clippy
+    # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
     if: always() # make sure this is never "skipped"

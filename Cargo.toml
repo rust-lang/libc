@@ -142,3 +142,24 @@ members = [
     "ctest-test",
     "libc-test",
 ]
+
+# FIXME(msrv): These should be renamed as `[workspace.lints.*]` once MSRV is above 1.64
+#       This way all crates can use it with `[lints] workspace=true` section
+
+[lints.rust]
+# FIXME(cleanup): make ident usage consistent in each file
+unused_qualifications = "allow"
+
+[lints.clippy]
+missing_safety_doc = "allow"
+
+# FIXME(clippy): all these are default lints and should probably be fixed
+identity_op = "allow"
+if_same_then_else = "allow"
+non_minimal_cfg = "allow"
+precedence = "allow"
+redundant_field_names = "allow"
+redundant_static_lifetimes = "allow"
+unnecessary_cast = "allow"
+unused_unit = "allow"
+zero_ptr = "allow"
