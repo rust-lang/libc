@@ -160,12 +160,11 @@ fn rustc_version_cmd(is_clippy_driver: bool) -> Output {
 
     let output = cmd.output().expect("Failed to get rustc version");
 
-    if !output.status.success() {
-        panic!(
-            "failed to run rustc: {}",
-            String::from_utf8_lossy(output.stderr.as_slice())
-        );
-    }
+    assert!(
+        output.status.success(),
+        "failed to run rustc: {}",
+        String::from_utf8_lossy(output.stderr.as_slice())
+    );
 
     output
 }
@@ -192,9 +191,11 @@ fn rustc_minor_nightly() -> (u32, bool) {
 
     let mut pieces = version.split('.');
 
-    if pieces.next() != Some("rustc 1") {
-        panic!("Failed to get rustc version");
-    }
+    assert_eq!(
+        pieces.next(),
+        Some("rustc 1"),
+        "Failed to get rustc version"
+    );
 
     let minor = pieces.next();
 
@@ -204,9 +205,9 @@ fn rustc_minor_nightly() -> (u32, bool) {
     // since a nightly build should either come from CI
     // or a git checkout
     let nightly_raw = otry!(pieces.next()).split('-').nth(1);
-    let nightly = nightly_raw
-        .map(|raw| raw.starts_with("dev") || raw.starts_with("nightly"))
-        .unwrap_or(false);
+    let nightly = nightly_raw.map_or(false, |raw| {
+        raw.starts_with("dev") || raw.starts_with("nightly")
+    });
     let minor = otry!(otry!(minor).parse().ok());
 
     (minor, nightly)
@@ -251,8 +252,9 @@ fn emcc_version_code() -> Option<u64> {
 }
 
 fn set_cfg(cfg: &str) {
-    if !ALLOWED_CFGS.contains(&cfg) {
-        panic!("trying to set cfg {cfg}, but it is not in ALLOWED_CFGS");
-    }
+    assert!(
+        ALLOWED_CFGS.contains(&cfg),
+        "trying to set cfg {cfg}, but it is not in ALLOWED_CFGS",
+    );
     println!("cargo:rustc-cfg={cfg}");
 }

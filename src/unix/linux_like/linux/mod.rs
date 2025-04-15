@@ -5977,7 +5977,7 @@ f! {
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
             return core::ptr::null_mut::<cmsghdr>();
-        };
+        }
         let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if (next.wrapping_offset(1)) as usize > max
@@ -5996,7 +5996,7 @@ f! {
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        for slot in cpuset.bits.iter_mut() {
+        for slot in &mut cpuset.bits {
             *slot = 0;
         }
     }
@@ -6022,7 +6022,7 @@ f! {
     pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = mem::size_of_val(&cpuset.bits[0]);
-        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+        for i in &cpuset.bits[..(size / size_of_mask)] {
             s += i.count_ones();
         }
         s as c_int
