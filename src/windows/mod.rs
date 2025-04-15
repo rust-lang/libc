@@ -30,13 +30,9 @@ pub type off_t = i32;
 pub type dev_t = u32;
 pub type ino_t = u16;
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
+
 pub type time64_t = i64;
 
 pub type SOCKET = crate::uintptr_t;
@@ -244,21 +240,12 @@ pub const SIG_SGE: crate::sighandler_t = 3;
 pub const SIG_ACK: crate::sighandler_t = 4;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum fpos_t {} // FIXME(windows): fill this out with a struct
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
-}
 
 // Special handling for all print and scan type functions because of https://github.com/rust-lang/libc/issues/2860
 cfg_if! {

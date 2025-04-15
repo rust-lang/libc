@@ -58,22 +58,12 @@ pub type posix_spawnattr_t = *mut c_void;
 pub type posix_spawn_file_actions_t = *mut c_void;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum ucred_t {}
-impl Copy for ucred_t {}
-impl Clone for ucred_t {
-    fn clone(&self) -> ucred_t {
-        *self
-    }
-}
 
 s! {
     pub struct in_addr {
@@ -896,71 +886,46 @@ cfg_if! {
 }
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct siginfo_fault {
     addr: *mut c_void,
     trapno: c_int,
     pc: *mut crate::caddr_t,
 }
-impl Copy for siginfo_fault {}
-impl Clone for siginfo_fault {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct siginfo_cldval {
     utime: crate::clock_t,
     status: c_int,
     stime: crate::clock_t,
 }
-impl Copy for siginfo_cldval {}
-impl Clone for siginfo_cldval {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct siginfo_killval {
     uid: crate::uid_t,
     value: crate::sigval,
     // Pad out to match the SIGCLD value size
     _pad: *mut c_void,
 }
-impl Copy for siginfo_killval {}
-impl Clone for siginfo_killval {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct siginfo_sigcld {
     pid: crate::pid_t,
     val: siginfo_cldval,
     ctid: crate::ctid_t,
     zoneid: crate::zoneid_t,
 }
-impl Copy for siginfo_sigcld {}
-impl Clone for siginfo_sigcld {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
 
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct siginfo_kill {
     pid: crate::pid_t,
     val: siginfo_killval,
     ctid: crate::ctid_t,
     zoneid: crate::zoneid_t,
-}
-impl Copy for siginfo_kill {}
-impl Clone for siginfo_kill {
-    fn clone(&self) -> Self {
-        *self
-    }
 }
 
 impl siginfo_t {

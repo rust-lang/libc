@@ -176,15 +176,11 @@ pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum qos_class_t {
     QOS_CLASS_USER_INTERACTIVE = 0x21,
@@ -194,14 +190,9 @@ pub enum qos_class_t {
     QOS_CLASS_BACKGROUND = 0x09,
     QOS_CLASS_UNSPECIFIED = 0x00,
 }
-impl Copy for qos_class_t {}
-impl Clone for qos_class_t {
-    fn clone(&self) -> qos_class_t {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum sysdir_search_path_directory_t {
     SYSDIR_DIRECTORY_APPLICATION = 1,
@@ -229,14 +220,9 @@ pub enum sysdir_search_path_directory_t {
     SYSDIR_DIRECTORY_ALL_APPLICATIONS = 100,
     SYSDIR_DIRECTORY_ALL_LIBRARIES = 101,
 }
-impl Copy for sysdir_search_path_directory_t {}
-impl Clone for sysdir_search_path_directory_t {
-    fn clone(&self) -> sysdir_search_path_directory_t {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum sysdir_search_path_domain_mask_t {
     SYSDIR_DOMAIN_MASK_USER = (1 << 0),
@@ -244,12 +230,6 @@ pub enum sysdir_search_path_domain_mask_t {
     SYSDIR_DOMAIN_MASK_NETWORK = (1 << 2),
     SYSDIR_DOMAIN_MASK_SYSTEM = (1 << 3),
     SYSDIR_DOMAIN_MASK_ALL = 0x0ffff,
-}
-impl Copy for sysdir_search_path_domain_mask_t {}
-impl Clone for sysdir_search_path_domain_mask_t {
-    fn clone(&self) -> sysdir_search_path_domain_mask_t {
-        *self
-    }
 }
 
 s! {

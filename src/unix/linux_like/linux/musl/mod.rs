@@ -65,18 +65,13 @@ impl siginfo_t {
 
 // Internal, for casts to access union fields
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct sifields_sigchld {
     si_pid: crate::pid_t,
     si_uid: crate::uid_t,
     si_status: c_int,
     si_utime: c_long,
     si_stime: c_long,
-}
-impl Copy for sifields_sigchld {}
-impl Clone for sifields_sigchld {
-    fn clone(&self) -> sifields_sigchld {
-        *self
-    }
 }
 
 // Internal, for casts to access union fields

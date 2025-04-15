@@ -51,6 +51,7 @@ pub type sctp_assoc_t = u32;
 pub type eventfd_t = u64;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_support_flags {
     DEVSTAT_ALL_SUPPORTED = 0x00,
@@ -58,14 +59,9 @@ pub enum devstat_support_flags {
     DEVSTAT_NO_ORDERED_TAGS = 0x02,
     DEVSTAT_BS_UNAVAILABLE = 0x04,
 }
-impl Copy for devstat_support_flags {}
-impl Clone for devstat_support_flags {
-    fn clone(&self) -> devstat_support_flags {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_trans_flags {
     DEVSTAT_NO_DATA = 0x00,
@@ -74,14 +70,8 @@ pub enum devstat_trans_flags {
     DEVSTAT_FREE = 0x03,
 }
 
-impl Copy for devstat_trans_flags {}
-impl Clone for devstat_trans_flags {
-    fn clone(&self) -> devstat_trans_flags {
-        *self
-    }
-}
-
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_tag_type {
     DEVSTAT_TAG_SIMPLE = 0x00,
@@ -89,14 +79,9 @@ pub enum devstat_tag_type {
     DEVSTAT_TAG_ORDERED = 0x02,
     DEVSTAT_TAG_NONE = 0x03,
 }
-impl Copy for devstat_tag_type {}
-impl Clone for devstat_tag_type {
-    fn clone(&self) -> devstat_tag_type {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_match_flags {
     DEVSTAT_MATCH_NONE = 0x00,
@@ -104,14 +89,9 @@ pub enum devstat_match_flags {
     DEVSTAT_MATCH_IF = 0x02,
     DEVSTAT_MATCH_PASS = 0x04,
 }
-impl Copy for devstat_match_flags {}
-impl Clone for devstat_match_flags {
-    fn clone(&self) -> devstat_match_flags {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_priority {
     DEVSTAT_PRIORITY_MIN = 0x000,
@@ -125,14 +105,9 @@ pub enum devstat_priority {
     DEVSTAT_PRIORITY_ARRAY = 0x120,
     DEVSTAT_PRIORITY_MAX = 0xfff,
 }
-impl Copy for devstat_priority {}
-impl Clone for devstat_priority {
-    fn clone(&self) -> devstat_priority {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_type_flags {
     DEVSTAT_TYPE_DIRECT = 0x000,
@@ -157,14 +132,9 @@ pub enum devstat_type_flags {
     DEVSTAT_TYPE_IF_MASK = 0x0f0,
     DEVSTAT_TYPE_PASS = 0x100,
 }
-impl Copy for devstat_type_flags {}
-impl Clone for devstat_type_flags {
-    fn clone(&self) -> devstat_type_flags {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_metric {
     DSM_NONE,
@@ -214,26 +184,15 @@ pub enum devstat_metric {
     DSM_TOTAL_BUSY_TIME,
     DSM_MAX,
 }
-impl Copy for devstat_metric {}
-impl Clone for devstat_metric {
-    fn clone(&self) -> devstat_metric {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum devstat_select_mode {
     DS_SELECT_ADD,
     DS_SELECT_ONLY,
     DS_SELECT_REMOVE,
     DS_SELECT_ADDONLY,
-}
-impl Copy for devstat_select_mode {}
-impl Clone for devstat_select_mode {
-    fn clone(&self) -> devstat_select_mode {
-        *self
-    }
 }
 
 s! {
@@ -2600,6 +2559,7 @@ cfg_if! {
 }
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 #[repr(u32)]
 pub enum dot3Vendors {
     dot3VendorAMD = 1,
@@ -2608,12 +2568,6 @@ pub enum dot3Vendors {
     dot3VendorFujitsu = 5,
     dot3VendorDigital = 6,
     dot3VendorWesternDigital = 7,
-}
-impl Copy for dot3Vendors {}
-impl Clone for dot3Vendors {
-    fn clone(&self) -> dot3Vendors {
-        *self
-    }
 }
 
 // aio.h

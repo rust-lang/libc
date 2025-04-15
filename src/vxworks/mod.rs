@@ -6,13 +6,8 @@ use core::ptr::null_mut;
 use crate::prelude::*;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum DIR {}
-impl Copy for DIR {}
-impl Clone for DIR {
-    fn clone(&self) -> DIR {
-        *self
-    }
-}
 
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
@@ -97,13 +92,8 @@ pub type sa_family_t = c_uchar;
 pub type mqd_t = c_int;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum _Vx_semaphore {}
-impl Copy for _Vx_semaphore {}
-impl Clone for _Vx_semaphore {
-    fn clone(&self) -> _Vx_semaphore {
-        *self
-    }
-}
 
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut c_void {
@@ -1114,21 +1104,12 @@ pub const MAP_CONTIG: c_int = 0x0020;
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
-}
 
 f! {
     pub {const} fn CMSG_ALIGN(len: usize) -> usize {
