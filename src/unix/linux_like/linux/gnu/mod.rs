@@ -470,18 +470,13 @@ s_no_extra_traits! {
 
 // Internal, for casts to access union fields
 #[repr(C)]
+#[derive(Clone, Copy)]
 struct sifields_sigchld {
     si_pid: crate::pid_t,
     si_uid: crate::uid_t,
     si_status: c_int,
     si_utime: c_long,
     si_stime: c_long,
-}
-impl Copy for sifields_sigchld {}
-impl Clone for sifields_sigchld {
-    fn clone(&self) -> sifields_sigchld {
-        *self
-    }
 }
 
 // Internal, for casts to access union fields
@@ -526,16 +521,11 @@ impl siginfo_t {
     }
 }
 
+#[derive(Clone, Copy)]
 pub union __c_anonymous_ptrace_syscall_info_data {
     pub entry: __c_anonymous_ptrace_syscall_info_entry,
     pub exit: __c_anonymous_ptrace_syscall_info_exit,
     pub seccomp: __c_anonymous_ptrace_syscall_info_seccomp,
-}
-impl Copy for __c_anonymous_ptrace_syscall_info_data {}
-impl Clone for __c_anonymous_ptrace_syscall_info_data {
-    fn clone(&self) -> __c_anonymous_ptrace_syscall_info_data {
-        *self
-    }
 }
 
 s_no_extra_traits! {

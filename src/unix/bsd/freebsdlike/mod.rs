@@ -60,13 +60,8 @@ cfg_if! {
 // link.h
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
 
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut c_void {

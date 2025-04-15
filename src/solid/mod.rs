@@ -396,21 +396,12 @@ pub const SIGUSR2: c_int = 31;
 pub const SIGPWR: c_int = 32;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum fpos_t {}
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
-}
 
 extern "C" {
     // ctype.h
