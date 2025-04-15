@@ -29,6 +29,18 @@ jobs:
       - name: Check style
         run: ./ci/style.sh
 
+  clippy:
+    name: Clippy check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      # Here we use the latest stable Rust toolchain already installed by GitHub
+      # Ideally we should run it for every target, but we cannot rely on unstable toolchains
+      # due to Clippy not being consistent between them.
+      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+
   # This runs `cargo build --target ...` for all T1 and T2 targets`
   verify_build:
     name: Verify build
