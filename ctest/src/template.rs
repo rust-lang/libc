@@ -22,19 +22,19 @@ trait Pretty {
 
 impl<'a> Pretty for &'a str {
     fn pretty(&self) -> String {
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 }
 
 impl<T> Pretty for *const T {
     fn pretty(&self) -> String {
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 }
 
 impl<T> Pretty for *mut T {
     fn pretty(&self) -> String {
-        format!("{:?}", self)
+        format!("{self:?}")
     }
 }
 
@@ -42,7 +42,7 @@ macro_rules! impl_pretty {
     ($($i:ident)*) => ($(
         impl Pretty for $i {
             fn pretty(&self) -> String {
-                format!("{} ({:#x})", self, self)
+                format!("{self} ({self:#x})")
             }
         }
     )*)
@@ -52,7 +52,7 @@ impl_pretty! { i8 i16 i32 i64 u8 u16 u32 u64 usize isize }
 
 fn same<T: Eq + Pretty>(rust: T, c: T, attr: &str) {
     if rust != c {
-        eprintln!("bad {}: rust: {} != c {}", attr, rust.pretty(), c.pretty());
+        eprintln!("bad {attr}: rust: {} != c {}", rust.pretty(), c.pretty());
         FAILED.store(true, Ordering::Relaxed);
     } else {
         NTESTS.fetch_add(1, Ordering::Relaxed);

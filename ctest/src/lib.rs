@@ -156,9 +156,9 @@ impl TestGenerator {
             fn_cname: Box::new(|a, _| a.to_string()),
             type_name: Box::new(|f, is_struct, is_union| {
                 if is_struct {
-                    format!("struct {}", f)
+                    format!("struct {f}")
                 } else if is_union {
-                    format!("union {}", f)
+                    format!("union {f}")
                 } else {
                     f.to_string()
                 }
@@ -381,7 +381,7 @@ impl TestGenerator {
     /// let mut cfg = TestGenerator::new();
     /// cfg.type_name(|ty, is_struct, is_union| {
     ///     if is_struct {
-    ///         format!("{}_t", ty)
+    ///         format!("{ty}_t")
     ///     } else {
     ///         ty.to_string()
     ///     }
@@ -854,7 +854,7 @@ impl TestGenerator {
         let stem = out.file_stem().unwrap().to_str().unwrap();
         cfg.target(&target)
             .out_dir(out.parent().unwrap())
-            .compile(&format!("lib{}.a", stem));
+            .compile(&format!("lib{stem}.a"));
     }
 
     #[doc(hidden)] // TODO: needs docs
@@ -949,7 +949,7 @@ impl TestGenerator {
         writeln!(g.c, "#include <stdint.h>")?;
         writeln!(g.c, "#include <stddef.h>")?;
         for header in &self.headers {
-            writeln!(g.c, "#include <{}>", header)?;
+            writeln!(g.c, "#include <{header}>")?;
         }
         eprintln!("rust version: {}", self.rust_version);
 
@@ -1008,7 +1008,7 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     } else if target.starts_with("loongarch64") {
         ("loongarch64", "64", "little")
     } else {
-        panic!("unknown arch/pointer width: {}", target)
+        panic!("unknown arch/pointer width: {target}")
     };
     let (os, family, env) = if target.contains("unknown-linux-gnu") {
         ("linux", "unix", "gnu")
@@ -1071,7 +1071,7 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
     } else if target.contains("cygwin") {
         ("cygwin", "unix", "")
     } else {
-        panic!("unknown os/family: {}", target)
+        panic!("unknown os/family: {target}")
     };
 
     ret.push((family.to_string(), None));
@@ -1146,7 +1146,7 @@ impl<'a> Generator<'a> {
     fn test_type(&mut self, name: &str, ty: &ast::Ty) -> Result<()> {
         if (self.opts.skip_type)(name) {
             if self.opts.verbose_skip {
-                eprintln!("skipping type \"{}\"", name);
+                eprintln!("skipping type \"{name}\"");
             }
             return Ok(());
         }
@@ -1159,7 +1159,7 @@ impl<'a> Generator<'a> {
     fn test_struct(&mut self, ty: &str, s: &ast::VariantData) -> Result<()> {
         if (self.opts.skip_struct)(ty) {
             if self.opts.verbose_skip {
-                eprintln!("skipping struct \"{}\"", ty);
+                eprintln!("skipping struct \"{ty}\"");
             }
             return Ok(());
         }
@@ -1167,7 +1167,7 @@ impl<'a> Generator<'a> {
         let cty = self.rust_ty_to_c_ty(ty);
         self.test_size_align(ty, &cty).unwrap();
 
-        self.tests.push(format!("field_offset_size_{}", ty));
+        self.tests.push(format!("field_offset_size_{ty}"));
         writedoc!(
             self.rust,
             r#"
@@ -1190,7 +1190,7 @@ impl<'a> Generator<'a> {
 
             if (self.opts.skip_field)(ty, &name) {
                 if self.opts.verbose_skip {
-                    eprintln!("skipping field \"{}\" of struct \"{}\"", name, ty);
+                    eprintln!("skipping field \"{name}\" of struct \"{ty}\"");
                 }
 
                 continue;
@@ -1244,19 +1244,19 @@ impl<'a> Generator<'a> {
 
             if (self.opts.skip_field_type)(ty, &name.to_string()) {
                 if self.opts.verbose_skip {
-                    eprintln!("skipping field type \"{}\" of struct \"{}\"", name, ty);
+                    eprintln!("skipping field type \"{name}\" of struct \"{ty}\"");
                 }
 
                 continue;
             }
 
-            let sig = format!("__test_field_type_{}_{}({}* b)", ty, name, cty);
+            let sig = format!("__test_field_type_{ty}_{name}({cty}* b)");
             let mut sig = self.csig_returning_ptr(&field.ty, &sig);
             if (self.opts.volatile_item)(VolatileItemKind::StructField(
                 ty.to_string(),
                 name.to_string(),
             )) {
-                sig = format!("volatile {}", sig);
+                sig = format!("volatile {sig}");
             }
             writedoc!(
                 self.c,
@@ -1344,7 +1344,7 @@ impl<'a> Generator<'a> {
             "#,
             ty = rust
         )?;
-        self.tests.push(format!("size_align_{}", rust));
+        self.tests.push(format!("size_align_{rust}"));
         Ok(())
     }
 
@@ -1369,7 +1369,7 @@ impl<'a> Generator<'a> {
     fn test_sign(&mut self, rust: &str, c: &str, ty: &ast::Ty) -> Result<()> {
         if (self.opts.skip_signededness)(rust) {
             if self.opts.verbose_skip {
-                eprintln!("skipping sign \"{}\"", rust);
+                eprintln!("skipping sign \"{rust}\"");
             }
 
             return Ok(());
@@ -1406,7 +1406,7 @@ impl<'a> Generator<'a> {
             "#,
             ty = rust
         )?;
-        self.tests.push(format!("sign_{}", rust));
+        self.tests.push(format!("sign_{rust}"));
         Ok(())
     }
 
@@ -1417,10 +1417,10 @@ impl<'a> Generator<'a> {
         let mut cty = self.rust2c(&rust_ty.replace("*mut ", "").replace("*const ", ""));
         while rust_ty.starts_with('*') {
             if rust_ty.starts_with("*const") {
-                cty = format!("const {}*", cty);
+                cty = format!("const {cty}*");
                 rust_ty = &rust_ty[7..];
             } else {
-                cty = format!("{}*", cty);
+                cty = format!("{cty}*");
                 rust_ty = &rust_ty[5..];
             }
         }
@@ -1431,7 +1431,7 @@ impl<'a> Generator<'a> {
     fn test_const(&mut self, name: &str, rust_ty: &str) -> Result<()> {
         if (self.opts.skip_const)(name) {
             if self.opts.verbose_skip {
-                eprintln!("skipping const \"{}\"", name);
+                eprintln!("skipping const \"{name}\"");
             }
 
             return Ok(());
@@ -1493,7 +1493,7 @@ impl<'a> Generator<'a> {
                         for i in 0..mem::size_of::<{ty}>() {{
                             let i = i as isize;
                             same(*ptr1.offset(i), *ptr2.offset(i),
-                                 &format!("{name} value at byte {{}}", i));
+                                 &format!("{name} value at byte {{i}}"));
                         }}
                     }}
                 }}
@@ -1502,7 +1502,7 @@ impl<'a> Generator<'a> {
                 name = name
             )?;
         }
-        self.tests.push(format!("const_{}", name));
+        self.tests.push(format!("const_{name}"));
         Ok(())
     }
 
@@ -1517,7 +1517,7 @@ impl<'a> Generator<'a> {
     ) -> Result<()> {
         if (self.opts.skip_fn)(name) {
             if self.opts.verbose_skip {
-                eprintln!("skipping fn \"{}\"", name);
+                eprintln!("skipping fn \"{name}\"");
             }
             return Ok(());
         }
@@ -1533,13 +1533,13 @@ impl<'a> Generator<'a> {
                         name.to_string(),
                         idx,
                     )) {
-                        arg = format!("volatile {}", arg);
+                        arg = format!("volatile {arg}");
                     }
                     if (self.opts.array_arg)(name, idx) {
                         if let Some(last_ptr) = arg.rfind('*') {
                             arg = arg[..last_ptr].to_string();
                         } else {
-                            panic!("C FFI decl `{}` contains array argument", name);
+                            panic!("C FFI decl `{name}` contains array argument");
                         }
                     }
                     arg
@@ -1557,7 +1557,7 @@ impl<'a> Generator<'a> {
                         let has_const = pointers.contains("const");
                         let pointers = pointers.replace("const *", "* const");
                         let prefix = prefix.replacen("const", "", if has_const { 1 } else { 0 });
-                        return format!("{} ({}) {}", prefix, pointers, postfix);
+                        return format!("{prefix} ({pointers}) {postfix}");
                     }
                     s
                 })
@@ -1567,7 +1567,7 @@ impl<'a> Generator<'a> {
         };
         let mut c_ret = self.rust_ty_to_c_ty(ret);
         if (self.opts.volatile_item)(VolatileItemKind::FunctionRet(name.to_string())) {
-            c_ret = format!("volatile {}", c_ret);
+            c_ret = format!("volatile {c_ret}");
         }
         let abi = self.abi2str(abi);
         writedoc!(
@@ -1607,10 +1607,10 @@ impl<'a> Generator<'a> {
             skip = (self.opts.skip_fn_ptrcheck)(name)
         )?;
         if self.opts.verbose_skip && (self.opts.skip_fn_ptrcheck)(name) {
-            eprintln!("skipping fn ptr check \"{}\"", name);
+            eprintln!("skipping fn ptr check \"{name}\"");
         }
 
-        self.tests.push(format!("fn_{}", name));
+        self.tests.push(format!("fn_{name}"));
         Ok(())
     }
 
@@ -1624,7 +1624,7 @@ impl<'a> Generator<'a> {
     ) -> Result<()> {
         if (self.opts.skip_static)(name) {
             if self.opts.verbose_skip {
-                eprintln!("skipping static \"{}\"", name);
+                eprintln!("skipping static \"{name}\"");
             }
             return Ok(());
         }
@@ -1632,7 +1632,7 @@ impl<'a> Generator<'a> {
         let c_name = c_name.unwrap_or_else(|| name.to_string());
 
         if rust_ty.contains("extern fn") || rust_ty.contains("extern \"C\" fn") {
-            let sig = c_ty.replacen("(*)", &format!("(* __test_static_{}(void))", name), 1);
+            let sig = c_ty.replacen("(*)", &format!("(* __test_static_{name}(void))"), 1);
             writedoc!(
                 self.c,
                 r#"
@@ -1712,7 +1712,7 @@ impl<'a> Generator<'a> {
             )?;
         } else {
             let c_ty = if (self.opts.volatile_item)(VolatileItemKind::Static(name.to_owned())) {
-                format!("volatile {}", c_ty)
+                format!("volatile {c_ty}")
             } else {
                 c_ty.to_owned()
             };
@@ -1756,26 +1756,26 @@ impl<'a> Generator<'a> {
                 ty = rust_ty
             )?;
         };
-        self.tests.push(format!("static_{}", name));
+        self.tests.push(format!("static_{name}"));
         Ok(())
     }
 
     fn test_roundtrip(&mut self, rust: &str, ast: Option<&ast::VariantData>) -> Result<()> {
         if (self.opts.skip_struct)(rust) {
             if self.opts.verbose_skip {
-                eprintln!("skipping roundtrip (skip_struct) \"{}\"", rust);
+                eprintln!("skipping roundtrip (skip_struct) \"{rust}\"");
             }
             return Ok(());
         }
         if (self.opts.skip_type)(rust) {
             if self.opts.verbose_skip {
-                eprintln!("skipping roundtrip (skip_type) \"{}\"", rust);
+                eprintln!("skipping roundtrip (skip_type) \"{rust}\"");
             }
             return Ok(());
         }
         if (self.opts.skip_roundtrip)(rust) {
             if self.opts.verbose_skip {
-                eprintln!("skipping roundtrip (skip_roundtrip)\"{}\"", rust);
+                eprintln!("skipping roundtrip (skip_roundtrip)\"{rust}\"");
             }
             return Ok(());
         }
@@ -1952,14 +1952,13 @@ impl<'a> Generator<'a> {
                   }}
                   for i in 0..size_of::<U>() {{
                       if pad[i] == 1 {{ continue; }}
-                      // eprintln!("Rust testing byte {{}} of {{}} of {ty}", i, size_of::<U>());
+                      // eprintln!("Rust testing byte {{i}} of {{}} of {ty}", size_of::<U>());
                       let rust = (*y_ptr.add(i)) as usize;
                       let c = (&r as *const _ as *const u8)
                                  .add(i).read_volatile() as usize;
                       if rust != c {{
                         eprintln!(
-                            "rust [{{}}] = {{}} != {{}} (C): C \"{ty}\" -> Rust",
-                             i, rust, c
+                            "rust [{{i}}] = {{rust}} != {{c}} (C): C \"{ty}\" -> Rust",
                         );
                         FAILED.store(true, Ordering::Relaxed);
                       }}
@@ -1969,7 +1968,7 @@ impl<'a> Generator<'a> {
             "#,
             ty = rust
         )?;
-        self.tests.push(format!("roundtrip_{}", rust));
+        self.tests.push(format!("roundtrip_{rust}"));
         Ok(())
     }
 
@@ -2014,14 +2013,14 @@ impl<'a> Generator<'a> {
                     match t.ty.node {
                         ast::TyKind::BareFn(..) => self.ty2name(&t.ty, rust),
                         ast::TyKind::Ptr(..) => {
-                            format!("{} {}*", self.ty2name(&t.ty, rust), modifier)
+                            format!("{} {modifier}*", self.ty2name(&t.ty, rust))
                         }
                         ast::TyKind::Array(ref t, ref e) => {
                             let len = self.expr2str(e);
                             let ty = self.ty2name(t, rust);
-                            format!("{} {} [{}]", modifier, ty, len)
+                            format!("{modifier} {ty} [{len}]")
                         }
-                        _ => format!("{}{}*", modifier, self.ty2name(&t.ty, rust)),
+                        _ => format!("{modifier}{}*", self.ty2name(&t.ty, rust)),
                     }
                 }
             }
@@ -2038,7 +2037,7 @@ impl<'a> Generator<'a> {
                         ast::FunctionRetTy::Default(..) => "()".to_string(),
                         ast::FunctionRetTy::Ty(ref t) => self.ty2name(t, rust),
                     };
-                    format!("extern \"C\" fn({}) -> {}", args, ret)
+                    format!("extern \"C\" fn({args}) -> {ret}")
                 } else {
                     assert!(t.lifetimes.is_empty());
                     let (ret, mut args, variadic) = self.decl2rust(&t.decl);
@@ -2050,7 +2049,7 @@ impl<'a> Generator<'a> {
                     if ret.contains("(*)") {
                         ret.replace("(*)", &format!("(*(*)({}))", args.join(", ")))
                     } else {
-                        format!("{}(*)({})", ret, args.join(", "))
+                        format!("{ret}(*)({})", args.join(", "))
                     }
                 }
             }
@@ -2060,7 +2059,7 @@ impl<'a> Generator<'a> {
                 } else {
                     let len = self.expr2str(e);
                     let ty = self.ty2name(t, rust);
-                    format!("{} [{}]", ty, len)
+                    format!("{ty} [{len}]")
                 }
             }
             ast::TyKind::Rptr(l, ast::MutTy { ref ty, mutbl }) => {
@@ -2070,15 +2069,15 @@ impl<'a> Generator<'a> {
                         assert!(!rust);
                         return format!("{}{}*", self.rustmut2c(mutbl), self.ty2name(t, rust));
                     }
-                    _ => panic!("unknown ty {:?}", ty),
+                    _ => panic!("unknown ty {ty:?}"),
                 };
                 if path.segments.len() != 1 {
-                    panic!("unknown ty {:?}", ty)
+                    panic!("unknown ty {ty:?}")
                 }
                 match &*path.segments[0].identifier.name.as_str() {
                     "str" => {
                         if mutbl != ast::Mutability::Immutable {
-                            panic!("unknown ty {:?}", ty)
+                            panic!("unknown ty {ty:?}")
                         }
                         if rust {
                             "&str".to_string()
@@ -2105,7 +2104,7 @@ impl<'a> Generator<'a> {
                             format!("{}{}*", self.rustmut2c(mutbl), self.rust2c(c))
                         }
                     }
-                    v => panic!("ref of unknown ty {:?} {:?} {:?} => {:?}", l, mutbl, ty, v),
+                    v => panic!("ref of unknown ty {l:?} {mutbl:?} {ty:?} => {v:?}"),
                 }
             }
             ast::TyKind::Tup(ref v) if v.is_empty() => {
@@ -2115,7 +2114,7 @@ impl<'a> Generator<'a> {
                     "void".to_string()
                 }
             }
-            _ => panic!("unknown ty {:?}", ty),
+            _ => panic!("unknown ty {ty:?}"),
         }
     }
 
@@ -2141,19 +2140,18 @@ impl<'a> Generator<'a> {
                 } else if args.is_empty() {
                     args.push("void".to_string());
                 }
-                format!("{}({}**{})({})", ret, abi, sig, args.join(", "))
+                format!("{ret}({abi}**{sig})({})", args.join(", "))
             }
             ast::TyKind::Array(ref t, ref e) => match t.node {
                 ast::TyKind::Array(ref t2, ref e2) => format!(
-                    "{}(*{})[{}][{}]",
+                    "{}(*{sig})[{}][{}]",
                     self.ty2name(t2, false),
-                    sig,
                     self.expr2str(e),
                     self.expr2str(e2)
                 ),
-                _ => format!("{}(*{})[{}]", self.ty2name(t, false), sig, self.expr2str(e)),
+                _ => format!("{}(*{sig})[{}]", self.ty2name(t, false), self.expr2str(e)),
             },
-            _ => format!("{}* {}", self.ty2name(ty, false), sig),
+            _ => format!("{}* {sig}", self.ty2name(ty, false)),
         }
     }
 
@@ -2161,7 +2159,7 @@ impl<'a> Generator<'a> {
         match e.node {
             ast::ExprKind::Lit(ref l) => match l.node {
                 ast::LitKind::Int(a, _) => a.to_string(),
-                _ => panic!("unknown literal: {:?}", l),
+                _ => panic!("unknown literal: {l:?}"),
             },
             ast::ExprKind::Path(_, ref path) => {
                 path.segments.last().unwrap().identifier.to_string()
@@ -2171,12 +2169,12 @@ impl<'a> Generator<'a> {
                 let e1 = self.expr2str(e1);
                 let e2 = self.expr2str(e2);
                 match op.node {
-                    ast::BinOpKind::Add => format!("{} + {}", e1, e2),
-                    ast::BinOpKind::Sub => format!("{} - {}", e1, e2),
-                    _ => panic!("unknown op: {:?}", op),
+                    ast::BinOpKind::Add => format!("{e1} + {e2}"),
+                    ast::BinOpKind::Sub => format!("{e1} - {e2}"),
+                    _ => panic!("unknown op: {op:?}"),
                 }
             }
-            _ => panic!("unknown expr: {:?}", e),
+            _ => panic!("unknown expr: {e:?}"),
         }
     }
 
@@ -2186,7 +2184,7 @@ impl<'a> Generator<'a> {
             Abi::Stdcall => "__stdcall ",
             Abi::System if self.target.contains("i686-pc-windows") => "__stdcall ",
             Abi::System => "",
-            a => panic!("unknown ABI: {}", a),
+            a => panic!("unknown ABI: {a}"),
         }
     }
 
@@ -2212,7 +2210,7 @@ impl<'a> Generator<'a> {
         let mut n = 0;
         let mut tests = self.tests.clone();
         while tests.len() > N {
-            let name = format!("run_group{}", n);
+            let name = format!("run_group{n}");
             n += 1;
             writedoc!(
                 self.rust,
@@ -2223,7 +2221,7 @@ impl<'a> Generator<'a> {
                 name
             )?;
             for test in tests.drain(..1000) {
-                writeln!(self.rust, "{}();", test)?;
+                writeln!(self.rust, "{test}();")?;
             }
             writeln!(self.rust, "}}")?;
             tests.push(name);
@@ -2236,7 +2234,7 @@ impl<'a> Generator<'a> {
             "
         )?;
         for test in &tests {
-            writeln!(self.rust, "{}();", test)?;
+            writeln!(self.rust, "{test}();")?;
         }
         writedoc!(
             self.rust,
@@ -2289,7 +2287,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
         }
         let file = self.sess.codemap().span_to_filename(i.span);
         if self.files.insert(file.clone()) {
-            println!("cargo:rerun-if-changed={}", file);
+            println!("cargo:rerun-if-changed={file}");
         }
         visit::walk_item(self, i);
         self.abi = prev_abi;
@@ -2303,7 +2301,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                     if let ast::TyKind::Array(_, _) = arg.ty.node {
                         panic!(
                             "Foreign Function decl `{}` uses array in C FFI",
-                            &i.ident.to_string()
+                            i.ident
                         );
                     }
                 }
