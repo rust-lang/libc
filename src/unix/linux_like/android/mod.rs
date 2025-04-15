@@ -2,6 +2,15 @@
 
 use crate::prelude::*;
 
+cfg_if! {
+    if #[cfg(doc)] {
+        pub(crate) type Ioctl = c_int;
+    } else {
+        #[doc(hidden)]
+        pub type Ioctl = c_int;
+    }
+}
+
 pub type clock_t = c_long;
 pub type time_t = c_long;
 pub type suseconds_t = c_long;
@@ -335,19 +344,6 @@ s! {
         pub dlpi_subs: c_ulonglong,
         pub dlpi_tls_modid: size_t,
         pub dlpi_tls_data: *mut c_void,
-    }
-
-    // linux/filter.h
-    pub struct sock_filter {
-        pub code: crate::__u16,
-        pub jt: crate::__u8,
-        pub jf: crate::__u8,
-        pub k: crate::__u32,
-    }
-
-    pub struct sock_fprog {
-        pub len: c_ushort,
-        pub filter: *mut sock_filter,
     }
 
     // linux/seccomp.h
@@ -1698,27 +1694,6 @@ pub const FIONREAD: c_int = 0x541B;
 pub const TIOCCONS: c_int = 0x541D;
 pub const TIOCSBRK: c_int = 0x5427;
 pub const TIOCCBRK: c_int = 0x5428;
-cfg_if! {
-    if #[cfg(any(
-        target_arch = "x86",
-        target_arch = "x86_64",
-        target_arch = "arm",
-        target_arch = "aarch64",
-        target_arch = "riscv64",
-        target_arch = "s390x"
-    ))] {
-        pub const FICLONE: c_int = 0x40049409;
-        pub const FICLONERANGE: c_int = 0x4020940D;
-    } else if #[cfg(any(
-        target_arch = "mips",
-        target_arch = "mips64",
-        target_arch = "powerpc",
-        target_arch = "powerpc64"
-    ))] {
-        pub const FICLONE: c_int = 0x80049409;
-        pub const FICLONERANGE: c_int = 0x8020940D;
-    }
-}
 
 pub const ST_RDONLY: c_ulong = 1;
 pub const ST_NOSUID: c_ulong = 2;
@@ -1899,38 +1874,6 @@ pub const BLKIOMIN: c_int = 0x1278;
 pub const BLKIOOPT: c_int = 0x1279;
 pub const BLKSSZGET: c_int = 0x1268;
 pub const BLKPBSZGET: c_int = 0x127B;
-
-cfg_if! {
-    // Those type are constructed using the _IOC macro
-    // DD-SS_SSSS_SSSS_SSSS-TTTT_TTTT-NNNN_NNNN
-    // where D stands for direction (either None (00), Read (01) or Write (11))
-    // where S stands for size (int, long, struct...)
-    // where T stands for type ('f','v','X'...)
-    // where N stands for NR (NumbeR)
-    if #[cfg(any(target_arch = "x86", target_arch = "arm"))] {
-        pub const FS_IOC_GETFLAGS: c_int = 0x80046601;
-        pub const FS_IOC_SETFLAGS: c_int = 0x40046602;
-        pub const FS_IOC_GETVERSION: c_int = 0x80047601;
-        pub const FS_IOC_SETVERSION: c_int = 0x40047602;
-        pub const FS_IOC32_GETFLAGS: c_int = 0x80046601;
-        pub const FS_IOC32_SETFLAGS: c_int = 0x40046602;
-        pub const FS_IOC32_GETVERSION: c_int = 0x80047601;
-        pub const FS_IOC32_SETVERSION: c_int = 0x40047602;
-    } else if #[cfg(any(
-        target_arch = "x86_64",
-        target_arch = "riscv64",
-        target_arch = "aarch64"
-    ))] {
-        pub const FS_IOC_GETFLAGS: c_int = 0x80086601;
-        pub const FS_IOC_SETFLAGS: c_int = 0x40086602;
-        pub const FS_IOC_GETVERSION: c_int = 0x80087601;
-        pub const FS_IOC_SETVERSION: c_int = 0x40087602;
-        pub const FS_IOC32_GETFLAGS: c_int = 0x80046601;
-        pub const FS_IOC32_SETFLAGS: c_int = 0x40046602;
-        pub const FS_IOC32_GETVERSION: c_int = 0x80047601;
-        pub const FS_IOC32_SETVERSION: c_int = 0x40047602;
-    }
-}
 
 pub const EAI_AGAIN: c_int = 2;
 pub const EAI_BADFLAGS: c_int = 3;
@@ -2665,65 +2608,6 @@ pub const SND_CNT: usize = SND_MAX as usize + 1;
 // linux/uinput.h
 pub const UINPUT_VERSION: c_uint = 5;
 pub const UINPUT_MAX_NAME_SIZE: usize = 80;
-
-// bionic/libc/kernel/uapi/linux/if_tun.h
-pub const IFF_TUN: c_int = 0x0001;
-pub const IFF_TAP: c_int = 0x0002;
-pub const IFF_NAPI: c_int = 0x0010;
-pub const IFF_NAPI_FRAGS: c_int = 0x0020;
-pub const IFF_NO_CARRIER: c_int = 0x0040;
-pub const IFF_NO_PI: c_int = 0x1000;
-pub const IFF_ONE_QUEUE: c_int = 0x2000;
-pub const IFF_VNET_HDR: c_int = 0x4000;
-pub const IFF_TUN_EXCL: c_int = 0x8000;
-pub const IFF_MULTI_QUEUE: c_int = 0x0100;
-pub const IFF_ATTACH_QUEUE: c_int = 0x0200;
-pub const IFF_DETACH_QUEUE: c_int = 0x0400;
-pub const IFF_PERSIST: c_int = 0x0800;
-pub const IFF_NOFILTER: c_int = 0x1000;
-pub const TUN_TX_TIMESTAMP: c_int = 1;
-// Features for GSO (TUNSETOFFLOAD)
-pub const TUN_F_CSUM: c_uint = 0x01;
-pub const TUN_F_TSO4: c_uint = 0x02;
-pub const TUN_F_TSO6: c_uint = 0x04;
-pub const TUN_F_TSO_ECN: c_uint = 0x08;
-pub const TUN_F_UFO: c_uint = 0x10;
-pub const TUN_F_USO4: c_uint = 0x20;
-pub const TUN_F_USO6: c_uint = 0x40;
-// Protocol info prepended to the packets (when IFF_NO_PI is not set)
-pub const TUN_PKT_STRIP: c_int = 0x0001;
-// Accept all multicast packets
-pub const TUN_FLT_ALLMULTI: c_int = 0x0001;
-// Ioctl operation codes
-const T_TYPE: u32 = b'T' as u32;
-pub const TUNSETNOCSUM: c_int = _IOW::<c_int>(T_TYPE, 200);
-pub const TUNSETDEBUG: c_int = _IOW::<c_int>(T_TYPE, 201);
-pub const TUNSETIFF: c_int = _IOW::<c_int>(T_TYPE, 202);
-pub const TUNSETPERSIST: c_int = _IOW::<c_int>(T_TYPE, 203);
-pub const TUNSETOWNER: c_int = _IOW::<c_int>(T_TYPE, 204);
-pub const TUNSETLINK: c_int = _IOW::<c_int>(T_TYPE, 205);
-pub const TUNSETGROUP: c_int = _IOW::<c_int>(T_TYPE, 206);
-pub const TUNGETFEATURES: c_int = _IOR::<c_int>(T_TYPE, 207);
-pub const TUNSETOFFLOAD: c_int = _IOW::<c_int>(T_TYPE, 208);
-pub const TUNSETTXFILTER: c_int = _IOW::<c_int>(T_TYPE, 209);
-pub const TUNGETIFF: c_int = _IOR::<c_int>(T_TYPE, 210);
-pub const TUNGETSNDBUF: c_int = _IOR::<c_int>(T_TYPE, 211);
-pub const TUNSETSNDBUF: c_int = _IOW::<c_int>(T_TYPE, 212);
-pub const TUNATTACHFILTER: c_int = _IOW::<sock_fprog>(T_TYPE, 213);
-pub const TUNDETACHFILTER: c_int = _IOW::<sock_fprog>(T_TYPE, 214);
-pub const TUNGETVNETHDRSZ: c_int = _IOR::<c_int>(T_TYPE, 215);
-pub const TUNSETVNETHDRSZ: c_int = _IOW::<c_int>(T_TYPE, 216);
-pub const TUNSETQUEUE: c_int = _IOW::<c_int>(T_TYPE, 217);
-pub const TUNSETIFINDEX: c_int = _IOW::<c_int>(T_TYPE, 218);
-pub const TUNGETFILTER: c_int = _IOR::<sock_fprog>(T_TYPE, 219);
-pub const TUNSETVNETLE: c_int = _IOW::<c_int>(T_TYPE, 220);
-pub const TUNGETVNETLE: c_int = _IOR::<c_int>(T_TYPE, 221);
-pub const TUNSETVNETBE: c_int = _IOW::<c_int>(T_TYPE, 222);
-pub const TUNGETVNETBE: c_int = _IOR::<c_int>(T_TYPE, 223);
-pub const TUNSETSTEERINGEBPF: c_int = _IOR::<c_int>(T_TYPE, 224);
-pub const TUNSETFILTEREBPF: c_int = _IOR::<c_int>(T_TYPE, 225);
-pub const TUNSETCARRIER: c_int = _IOW::<c_int>(T_TYPE, 226);
-pub const TUNGETDEVNETNS: c_int = _IO(T_TYPE, 227);
 
 // start android/platform/bionic/libc/kernel/uapi/linux/if_ether.h
 // from https://android.googlesource.com/platform/bionic/+/HEAD/libc/kernel/uapi/linux/if_ether.h
@@ -3758,7 +3642,6 @@ extern "C" {
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut crate::timezone) -> c_int;
     pub fn mlock2(addr: *const c_void, len: size_t, flags: c_int) -> c_int;
     pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
-    pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
     pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn recvfrom(
@@ -4298,29 +4181,4 @@ impl siginfo_t {
     pub unsafe fn si_stime(&self) -> c_long {
         self.sifields().sigchld.si_stime
     }
-}
-
-/// Build an ioctl number for an argumentless ioctl.
-pub const fn _IO(ty: u32, nr: u32) -> c_int {
-    super::_IOC(super::_IOC_NONE, ty, nr, 0) as c_int
-}
-
-/// Build an ioctl number for an read-only ioctl.
-pub const fn _IOR<T>(ty: u32, nr: u32) -> c_int {
-    super::_IOC(super::_IOC_READ, ty, nr, mem::size_of::<T>()) as c_int
-}
-
-/// Build an ioctl number for an write-only ioctl.
-pub const fn _IOW<T>(ty: u32, nr: u32) -> c_int {
-    super::_IOC(super::_IOC_WRITE, ty, nr, mem::size_of::<T>()) as c_int
-}
-
-/// Build an ioctl number for a read-write ioctl.
-pub const fn _IOWR<T>(ty: u32, nr: u32) -> c_int {
-    super::_IOC(
-        super::_IOC_READ | super::_IOC_WRITE,
-        ty,
-        nr,
-        mem::size_of::<T>(),
-    ) as c_int
 }
