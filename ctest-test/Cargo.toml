@@ -28,3 +28,17 @@ test = false
 [[bin]]
 name = "t2_cxx"
 test = false
+
+#
+# TODO: These should be moved to the root Cargo.toml as `[workspace.lints.*]` once MSRV is abve 1.64
+#       replace it with `[lints] workspace=true`
+#
+
+[lints.rust]
+# TODO: make ident usage consistent in each file
+unused_qualifications = "allow"
+
+[lints.clippy]
+# TODO: fix these, and enable pedantic lints with needed exceptions
+match_like_matches_macro = "allow"
+eq_op = "allow"

@@ -13,3 +13,25 @@ garando_syntax = "0.1"
 cc = "1.0.1"
 rustc_version = "0.4"
 indoc = "2.0.6"
+
+#
+# TODO: These should be moved to the root Cargo.toml as `[workspace.lints.*]` once MSRV is abve 1.64
+#       replace it with `[lints] workspace=true`
+#
+
+[lints.rust]
+# TODO: make ident usage consistent in each file
+unused_qualifications = "allow"
+
+[lints.clippy]
+# TODO: fix these, and enable pedantic lints with needed exceptions
+doc_lazy_continuation = "allow"
+if_same_then_else = "allow"
+needless_borrow = "allow"
+needless_borrowed_reference = "allow"
+needless_borrows_for_generic_args = "allow"
+needless_lifetimes = "allow"
+only_used_in_recursion = "allow"
+option_as_ref_deref = "allow"
+type_complexity = "allow"
+useless_format = "allow"

@@ -44,9 +44,13 @@ test_target() {
     # The basic command that is run each time
     cmd="cargo +$rust build --target $target"
 
+    # The basic clippy command
+    clippy_cmd="cargo +$rust clippy --all-targets --target $target"
+
     if [ "${no_dist}" != "0" ]; then
         # If we can't download a `core`, we need to build it
         cmd="$cmd -Zbuild-std=core,alloc"
+        clippy_cmd="$clippy_cmd -Zbuild-std=core,alloc"
 
         # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
         RUSTFLAGS="${RUSTFLAGS:-} -Aimproper_ctypes_definitions"
@@ -66,6 +70,9 @@ test_target() {
             sleep 1
         done
     fi
+
+    # Run cargo clippy first
+    $clippy_cmd
 
     # Test with expected combinations of features
     $cmd
