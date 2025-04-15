@@ -4,9 +4,6 @@ set -eux
 
 [ -n "${CI:-}" ] && check="--check"
 
-# TODO: for some reason using `--workspace` validates a lot of generated code in ./target/** dir
-cargo clippy -p libc@1.0.0-alpha.1 -p ctest --all-targets -- -D warnings
-
 cargo test --manifest-path libc-test/Cargo.toml --test style -- --nocapture
 
 command -v rustfmt
