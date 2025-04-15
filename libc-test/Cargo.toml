@@ -104,3 +104,26 @@ harness = true
 name = "style_tests"
 path = "test/style_tests.rs"
 harness = true
+
+#
+# TODO: These should be moved to the root Cargo.toml as `[workspace.lints.*]` once MSRV is abve 1.64
+#       replace it with `[lints] workspace=true`
+#
+
+[lints.rust]
+# TODO: make ident usage consistent in each file
+unused_qualifications = "allow"
+
+[lints.clippy]
+# TODO: fix these, and enable pedantic lints with needed exceptions
+needless_return = "allow"
+comparison_to_empty = "allow"
+unused_io_amount = "allow"
+write_with_newline = "allow"
+needless_borrows_for_generic_args = "allow"
+only_used_in_recursion = "allow"
+match_like_matches_macro = "allow"
+useless_format = "allow"
+wildcard_in_or_patterns = "allow"
+nonminimal_bool = "allow"
+match_single_binding = "allow"
