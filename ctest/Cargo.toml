@@ -14,17 +14,15 @@ cc = "1.0.1"
 rustc_version = "0.4"
 indoc = "2.0.6"
 
-#
-# TODO: These should be moved to the root Cargo.toml as `[workspace.lints.*]` once MSRV is abve 1.64
-#       replace it with `[lints] workspace=true`
-#
+# FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`
+#              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
 
 [lints.rust]
-# TODO: make ident usage consistent in each file
+# FIXME(cleanup): make ident usage consistent in each file
 unused_qualifications = "allow"
 
 [lints.clippy]
-# TODO: fix these, and enable pedantic lints with needed exceptions
+# FIXME(clippy): fix these
 doc_lazy_continuation = "allow"
 if_same_then_else = "allow"
 needless_borrow = "allow"
