@@ -107,19 +107,5 @@ harness = true
 #              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
 
 [lints.rust]
-# FIXME(cleanup): make ident usage consistent in each file
-unused_qualifications = "allow"
 
 [lints.clippy]
-# FIXME(clippy): fix these
-needless_return = "allow"
-comparison_to_empty = "allow"
-unused_io_amount = "allow"
-write_with_newline = "allow"
-needless_borrows_for_generic_args = "allow"
-only_used_in_recursion = "allow"
-match_like_matches_macro = "allow"
-useless_format = "allow"
-wildcard_in_or_patterns = "allow"
-nonminimal_bool = "allow"
-match_single_binding = "allow"
