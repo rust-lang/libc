@@ -1986,6 +1986,8 @@ fn test_android(target: &str) {
             // sigval is a struct in Rust, but a union in C:
             "sigval" => format!("union sigval"),
 
+            "Ioctl" => "int".to_string(),
+
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {}", t),
 
