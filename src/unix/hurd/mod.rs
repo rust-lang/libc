@@ -2150,35 +2150,35 @@ pub const SF_NOUNLINK: c_uint = 1048576;
 pub const SF_SNAPSHOT: c_uint = 2097152;
 pub const UTIME_NOW: c_long = -1;
 pub const UTIME_OMIT: c_long = -2;
-pub const S_IFMT: crate::mode_t = 0o17_0000;
-pub const S_IFDIR: crate::mode_t = 0o4_0000;
-pub const S_IFCHR: crate::mode_t = 0o2_0000;
-pub const S_IFBLK: crate::mode_t = 0o6_0000;
-pub const S_IFREG: crate::mode_t = 0o10_0000;
-pub const S_IFIFO: crate::mode_t = 0o1_0000;
-pub const S_IFLNK: crate::mode_t = 0o12_0000;
-pub const S_IFSOCK: crate::mode_t = 0o14_0000;
-pub const S_ISUID: crate::mode_t = 0o4000;
-pub const S_ISGID: crate::mode_t = 0o2000;
-pub const S_ISVTX: crate::mode_t = 0o1000;
-pub const S_IRUSR: crate::mode_t = 0o0400;
-pub const S_IWUSR: crate::mode_t = 0o0200;
-pub const S_IXUSR: crate::mode_t = 0o0100;
-pub const S_IRWXU: crate::mode_t = 0o0700;
-pub const S_IREAD: crate::mode_t = 0o0400;
-pub const S_IWRITE: crate::mode_t = 0o0200;
-pub const S_IEXEC: crate::mode_t = 0o0100;
-pub const S_IRGRP: crate::mode_t = 0o0040;
-pub const S_IWGRP: crate::mode_t = 0o0020;
-pub const S_IXGRP: crate::mode_t = 0o0010;
-pub const S_IRWXG: crate::mode_t = 0o0070;
-pub const S_IROTH: crate::mode_t = 0o0004;
-pub const S_IWOTH: crate::mode_t = 0o0002;
-pub const S_IXOTH: crate::mode_t = 0o0001;
-pub const S_IRWXO: crate::mode_t = 0o0007;
-pub const ACCESSPERMS: crate::mode_t = 511;
-pub const ALLPERMS: crate::mode_t = 4095;
-pub const DEFFILEMODE: crate::mode_t = 438;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_ISUID: mode_t = 0o4000;
+pub const S_ISGID: mode_t = 0o2000;
+pub const S_ISVTX: mode_t = 0o1000;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IREAD: mode_t = 0o0400;
+pub const S_IWRITE: mode_t = 0o0200;
+pub const S_IEXEC: mode_t = 0o0100;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IROTH: mode_t = 0o0004;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const ACCESSPERMS: mode_t = 511;
+pub const ALLPERMS: mode_t = 4095;
+pub const DEFFILEMODE: mode_t = 438;
 pub const S_BLKSIZE: usize = 512;
 pub const STATX_TYPE: c_uint = 1;
 pub const STATX_MODE: c_uint = 2;
@@ -3574,8 +3574,7 @@ extern "C" {
 
     pub fn mkfifoat(__fd: c_int, __path: *const c_char, __mode: __mode_t) -> c_int;
 
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t, dev: dev_t)
-        -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
 
     pub fn __libc_current_sigrtmin() -> c_int;
 
@@ -4246,7 +4245,7 @@ extern "C" {
         fd: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_addclose(
         actions: *mut posix_spawn_file_actions_t,

@@ -1452,9 +1452,9 @@ pub const GRPQUOTA: c_int = 1;
 
 pub const SIGIOT: c_int = 6;
 
-pub const S_ISUID: crate::mode_t = 0o4000;
-pub const S_ISGID: crate::mode_t = 0o2000;
-pub const S_ISVTX: crate::mode_t = 0o1000;
+pub const S_ISUID: mode_t = 0o4000;
+pub const S_ISGID: mode_t = 0o2000;
+pub const S_ISVTX: mode_t = 0o1000;
 
 pub const IF_NAMESIZE: size_t = 16;
 pub const IFNAMSIZ: size_t = IF_NAMESIZE;
@@ -1585,26 +1585,26 @@ pub const O_RDONLY: c_int = 0;
 pub const O_WRONLY: c_int = 1;
 pub const O_RDWR: c_int = 2;
 
-pub const S_IFIFO: crate::mode_t = 0o1_0000;
-pub const S_IFCHR: crate::mode_t = 0o2_0000;
-pub const S_IFBLK: crate::mode_t = 0o6_0000;
-pub const S_IFDIR: crate::mode_t = 0o4_0000;
-pub const S_IFREG: crate::mode_t = 0o10_0000;
-pub const S_IFLNK: crate::mode_t = 0o12_0000;
-pub const S_IFSOCK: crate::mode_t = 0o14_0000;
-pub const S_IFMT: crate::mode_t = 0o17_0000;
-pub const S_IRWXU: crate::mode_t = 0o0700;
-pub const S_IXUSR: crate::mode_t = 0o0100;
-pub const S_IWUSR: crate::mode_t = 0o0200;
-pub const S_IRUSR: crate::mode_t = 0o0400;
-pub const S_IRWXG: crate::mode_t = 0o0070;
-pub const S_IXGRP: crate::mode_t = 0o0010;
-pub const S_IWGRP: crate::mode_t = 0o0020;
-pub const S_IRGRP: crate::mode_t = 0o0040;
-pub const S_IRWXO: crate::mode_t = 0o0007;
-pub const S_IXOTH: crate::mode_t = 0o0001;
-pub const S_IWOTH: crate::mode_t = 0o0002;
-pub const S_IROTH: crate::mode_t = 0o0004;
+pub const S_IFIFO: mode_t = 0o1_0000;
+pub const S_IFCHR: mode_t = 0o2_0000;
+pub const S_IFBLK: mode_t = 0o6_0000;
+pub const S_IFDIR: mode_t = 0o4_0000;
+pub const S_IFREG: mode_t = 0o10_0000;
+pub const S_IFLNK: mode_t = 0o12_0000;
+pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFMT: mode_t = 0o17_0000;
+pub const S_IRWXU: mode_t = 0o0700;
+pub const S_IXUSR: mode_t = 0o0100;
+pub const S_IWUSR: mode_t = 0o0200;
+pub const S_IRUSR: mode_t = 0o0400;
+pub const S_IRWXG: mode_t = 0o0070;
+pub const S_IXGRP: mode_t = 0o0010;
+pub const S_IWGRP: mode_t = 0o0020;
+pub const S_IRGRP: mode_t = 0o0040;
+pub const S_IRWXO: mode_t = 0o0007;
+pub const S_IXOTH: mode_t = 0o0001;
+pub const S_IWOTH: mode_t = 0o0002;
+pub const S_IROTH: mode_t = 0o0004;
 pub const F_OK: c_int = 0;
 pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
@@ -3726,12 +3726,7 @@ extern "C" {
     pub fn rewinddir(dirp: *mut crate::DIR);
 
     pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
-    pub fn fchmodat(
-        dirfd: c_int,
-        pathname: *const c_char,
-        mode: crate::mode_t,
-        flags: c_int,
-    ) -> c_int;
+    pub fn fchmodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, flags: c_int) -> c_int;
     pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
     pub fn fchownat(
         dirfd: c_int,
@@ -3748,7 +3743,7 @@ extern "C" {
         newpath: *const c_char,
         flags: c_int,
     ) -> c_int;
-    pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn readlinkat(
         dirfd: c_int,
         pathname: *const c_char,
@@ -3959,7 +3954,7 @@ extern "C" {
     pub fn gmtime(time_p: *const time_t) -> *mut tm;
     pub fn localtime(time_p: *const time_t) -> *mut tm;
 
-    pub fn mknod(pathname: *const c_char, mode: crate::mode_t, dev: crate::dev_t) -> c_int;
+    pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
     pub fn uname(buf: *mut crate::utsname) -> c_int;
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn getservbyname(name: *const c_char, proto: *const c_char) -> *mut servent;
@@ -4079,8 +4074,7 @@ extern "C" {
 
     pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
 
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t, dev: dev_t)
-        -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
     pub fn pthread_condattr_getclock(
         attr: *const pthread_condattr_t,
         clock_id: *mut clockid_t,
@@ -4205,7 +4199,7 @@ extern "C" {
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
 
     // Not available now on Android
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn sync_file_range(fd: c_int, offset: off64_t, nbytes: off64_t, flags: c_uint) -> c_int;

@@ -171,7 +171,7 @@ s! {
         pub gid: crate::gid_t,
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
-        pub mode: crate::mode_t,
+        pub mode: mode_t,
         pub __seq: c_int,
         __unused1: c_long,
         __unused2: c_long,
@@ -229,7 +229,7 @@ s! {
         __st_dev_padding: c_int,
         #[cfg(emscripten_old_stat_abi)]
         __st_ino_truncated: c_long,
-        pub st_mode: crate::mode_t,
+        pub st_mode: mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
@@ -1530,7 +1530,7 @@ extern "C" {
     ) -> c_int;
     pub fn getloadavg(loadavg: *mut c_double, nelem: c_int) -> c_int;
 
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
 

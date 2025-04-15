@@ -220,7 +220,7 @@ s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
+        pub st_mode: mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
@@ -800,7 +800,7 @@ pub const S_IFSOCK: c_int = 0o14_0000;
 pub const S_ISUID: c_int = 0o4000;
 pub const S_ISGID: c_int = 0o2000;
 pub const S_ISTXT: c_int = 0o1000;
-pub const S_ISVTX: mode_t = 0o1000;
+pub const S_ISVTX: mode_t = 0o1000; // BUG? this is the only mode_t value
 pub const S_IRUSR: c_int = 0o0400;
 pub const S_IWUSR: c_int = 0o0200;
 pub const S_IXUSR: c_int = 0o0100;
@@ -1310,7 +1310,7 @@ extern "C" {
     pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
 
     pub fn truncate(path: *const c_char, length: off_t) -> c_int;
-    pub fn shm_open(name: *const c_char, oflag: c_int, mode: crate::mode_t) -> c_int;
+    pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
 
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
@@ -1821,13 +1821,13 @@ extern "C" {
     pub fn rmdir(path: *const c_char) -> c_int;
 
     // stat.h
-    pub fn mkdir(dirName: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkdir(dirName: *const c_char, mode: mode_t) -> c_int;
 
     // stat.h
-    pub fn chmod(path: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn chmod(path: *const c_char, mode: mode_t) -> c_int;
 
     // stat.h
-    pub fn fchmod(attr1: c_int, attr2: crate::mode_t) -> c_int;
+    pub fn fchmod(attr1: c_int, attr2: mode_t) -> c_int;
 
     // unistd.h
     pub fn fsync(fd: c_int) -> c_int;

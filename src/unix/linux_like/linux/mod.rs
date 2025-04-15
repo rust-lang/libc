@@ -5949,8 +5949,8 @@ pub const EPIOCGPARAMS: Ioctl = 0x80088a02;
 pub const SI_DETHREAD: c_int = -7;
 pub const TRAP_PERF: c_int = 6;
 
- /// Build an ioctl number for an argumentless ioctl.
- pub const fn _IO(ty: u32, nr: u32) -> u32 {
+/// Build an ioctl number for an argumentless ioctl.
+pub const fn _IO(ty: u32, nr: u32) -> u32 {
     super::_IOC(super::_IOC_NONE, ty, nr, 0)
 }
 
@@ -6504,7 +6504,7 @@ extern "C" {
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
 
     // Not available now on Android
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn sync_file_range(fd: c_int, offset: off64_t, nbytes: off64_t, flags: c_uint) -> c_int;
@@ -6859,7 +6859,7 @@ extern "C" {
         fd: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_addclose(
         actions: *mut posix_spawn_file_actions_t,
