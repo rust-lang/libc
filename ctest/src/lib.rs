@@ -74,6 +74,7 @@ pub enum VolatileItemKind {
 /// This builder has a number of configuration options which modify how the
 /// generated tests are emitted, and it is also the main entry point for parsing
 /// an FFI header crate for definitions.
+#[allow(clippy::type_complexity)]
 pub struct TestGenerator {
     headers: Vec<String>,
     includes: Vec<PathBuf>,
@@ -163,7 +164,7 @@ impl TestGenerator {
                     f.to_string()
                 }
             }),
-            const_cname: Box::new(std::string::ToString::to_string),
+            const_cname: Box::new(ToString::to_string),
             rust_version: rustc_version::version().unwrap(),
         }
     }
@@ -324,7 +325,7 @@ impl TestGenerator {
     /// ```
     pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.defines
-            .push((k.to_string(), v.map(std::string::ToString::to_string)));
+            .push((k.to_string(), v.map(ToString::to_string)));
         self
     }
 
@@ -337,10 +338,10 @@ impl TestGenerator {
     /// optional value of `v`:
     ///
     /// * `k == "foo"` and `v == None` makes `#[cfg(foo)]` expand. That is,
-    /// `cfg!(foo)` expands to `true`.
+    ///   `cfg!(foo)` expands to `true`.
     ///
     /// * `k == "bar"` and `v == Some("baz")` makes `#[cfg(bar = "baz")]`
-    /// expand. That is, `cfg!(bar = "baz")` expands to `true`.
+    ///   expand. That is, `cfg!(bar = "baz")` expands to `true`.
     ///
     /// # Examples
     ///
@@ -352,8 +353,7 @@ impl TestGenerator {
     ///    .cfg("bar", Some("baz")); // cfg!(bar = "baz")
     /// ```
     pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut Self {
-        self.cfg
-            .push((k.to_string(), v.map(std::string::ToString::to_string)));
+        self.cfg.push((k.to_string(), v.map(ToString::to_string)));
         self
     }
 
@@ -811,7 +811,7 @@ impl TestGenerator {
             Lang::C => "c",
             Lang::CXX => "cpp",
         };
-        cfg.file(&out.with_extension(ext));
+        cfg.file(out.with_extension(ext));
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
                 // ignored warnings
@@ -844,7 +844,7 @@ impl TestGenerator {
             cfg.flag(flag);
         }
 
-        for &(ref a, ref b) in &self.defines {
+        for (a, b) in &self.defines {
             cfg.define(a, b.as_ref().map(|s| &s[..]));
         }
         for p in &self.includes {
@@ -884,7 +884,7 @@ impl TestGenerator {
             .clone()
             .unwrap_or_else(|| env::var("TARGET").unwrap());
         for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
-            let s = |s: &str| ast::Name::intern(s);
+            let s = |s: &str| Name::intern(s);
             sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
         }
 
@@ -995,9 +995,7 @@ fn default_cfg(target: &str) -> Vec<(String, Option<String>)> {
         ("powerpc", "32", "big")
     } else if target.starts_with("s390x") {
         ("s390x", "64", "big")
-    } else if target.starts_with("sparc64") {
-        ("sparc64", "64", "big")
-    } else if target.starts_with("sparcv9") {
+    } else if target.starts_with("sparc64") || target.starts_with("sparcv9") {
         ("sparc64", "64", "big")
     } else if target.starts_with("asmjs") {
         ("asmjs", "32", "little")
@@ -1092,7 +1090,7 @@ fn linkage(lang: &Lang) -> &'static str {
     }
 }
 
-impl<'a> Generator<'a> {
+impl Generator<'_> {
     fn rust2c_test(&self, ty: &str) -> bool {
         let rustc_types = [
             "usize", "u8", "u16", "u32", "u64", "isize", "i8", "i16", "i32", "i64",
@@ -1116,7 +1114,7 @@ impl<'a> Generator<'a> {
 
     fn rust2c(&self, ty: &str) -> String {
         match ty {
-            "c_longdouble" | "c_long_double" => format!("long double"),
+            "c_longdouble" | "c_long_double" => "long double".to_string(),
             t if t.starts_with("c_") => match &ty[2..].replace("long", " long")[..] {
                 s if s.starts_with('u') => format!("unsigned {}", &s[1..]),
                 "short" => "short".to_string(),
@@ -1983,8 +1981,8 @@ impl<'a> Generator<'a> {
             ast::TyKind::Path(_, ref path) => {
                 let last = path.segments.last().unwrap();
                 if last.identifier.to_string() == "Option" {
-                    match last.parameters.as_ref().map(|p| &**p) {
-                        Some(&ast::PathParameters::AngleBracketed(ref p)) => {
+                    match last.parameters.as_deref() {
+                        Some(ast::PathParameters::AngleBracketed(p)) => {
                             self.ty2name(&p.types[0], rust)
                         }
                         _ => panic!(),
@@ -2016,7 +2014,7 @@ impl<'a> Generator<'a> {
                             format!("{} {modifier}*", self.ty2name(&t.ty, rust))
                         }
                         ast::TyKind::Array(ref t, ref e) => {
-                            let len = self.expr2str(e);
+                            let len = Self::expr2str(e);
                             let ty = self.ty2name(t, rust);
                             format!("{modifier} {ty} [{len}]")
                         }
@@ -2055,9 +2053,9 @@ impl<'a> Generator<'a> {
             }
             ast::TyKind::Array(ref t, ref e) => {
                 if rust {
-                    format!("[{}; {}]", self.ty2name(t, rust), self.expr2str(e))
+                    format!("[{}; {}]", self.ty2name(t, rust), Self::expr2str(e))
                 } else {
-                    let len = self.expr2str(e);
+                    let len = Self::expr2str(e);
                     let ty = self.ty2name(t, rust);
                     format!("{ty} [{len}]")
                 }
@@ -2124,8 +2122,8 @@ impl<'a> Generator<'a> {
                 if path.segments.last().unwrap().identifier.to_string() == "Option" =>
             {
                 let last = path.segments.last().unwrap();
-                match last.parameters.as_ref().map(|s| &**s) {
-                    Some(&ast::PathParameters::AngleBracketed(ref p)) => {
+                match last.parameters.as_deref() {
+                    Some(ast::PathParameters::AngleBracketed(p)) => {
                         self.csig_returning_ptr(&p.types[0], sig)
                     }
                     _ => panic!(),
@@ -2146,16 +2144,16 @@ impl<'a> Generator<'a> {
                 ast::TyKind::Array(ref t2, ref e2) => format!(
                     "{}(*{sig})[{}][{}]",
                     self.ty2name(t2, false),
-                    self.expr2str(e),
-                    self.expr2str(e2)
+                    Self::expr2str(e),
+                    Self::expr2str(e2)
                 ),
-                _ => format!("{}(*{sig})[{}]", self.ty2name(t, false), self.expr2str(e)),
+                _ => format!("{}(*{sig})[{}]", self.ty2name(t, false), Self::expr2str(e)),
             },
             _ => format!("{}* {sig}", self.ty2name(ty, false)),
         }
     }
 
-    fn expr2str(&self, e: &ast::Expr) -> String {
+    fn expr2str(e: &ast::Expr) -> String {
         match e.node {
             ast::ExprKind::Lit(ref l) => match l.node {
                 ast::LitKind::Int(a, _) => a.to_string(),
@@ -2164,10 +2162,10 @@ impl<'a> Generator<'a> {
             ast::ExprKind::Path(_, ref path) => {
                 path.segments.last().unwrap().identifier.to_string()
             }
-            ast::ExprKind::Cast(ref e, _) => self.expr2str(e),
+            ast::ExprKind::Cast(ref e, _) => Self::expr2str(e),
             ast::ExprKind::Binary(ref op, ref e1, ref e2) => {
-                let e1 = self.expr2str(e1);
-                let e2 = self.expr2str(e2);
+                let e1 = Self::expr2str(e1);
+                let e2 = Self::expr2str(e2);
                 match op.node {
                     ast::BinOpKind::Add => format!("{e1} + {e2}"),
                     ast::BinOpKind::Sub => format!("{e1} - {e2}"),
@@ -2246,7 +2244,7 @@ impl<'a> Generator<'a> {
     }
 }
 
-impl<'a, 'v> Visitor<'v> for Generator<'a> {
+impl<'v> Visitor<'v> for Generator<'_> {
     fn visit_item(&mut self, i: &'v ast::Item) {
         let prev_abi = self.abi;
         let public = i.vis == ast::Visibility::Public;
@@ -2299,10 +2297,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.assert_no_generics(i.ident, generics);
                 for arg in &decl.inputs {
                     if let ast::TyKind::Array(_, _) = arg.ty.node {
-                        panic!(
-                            "Foreign Function decl `{}` uses array in C FFI",
-                            i.ident
-                        );
+                        panic!("Foreign Function decl `{}` uses array in C FFI", i.ident);
                     }
                 }
 
@@ -2314,8 +2309,8 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                     .unwrap();
             }
             ast::ForeignItemKind::Static(ref ty, mutbl) => {
-                let rust_ty = self.ty2name(&ty, true);
-                let c_ty = self.ty2name(&ty, false);
+                let rust_ty = self.ty2name(ty, true);
+                let c_ty = self.ty2name(ty, false);
                 let c_name = attr::first_attr_value_str_by_name(&i.attrs, "link_name")
                     .map(|i| i.to_string());
                 self.test_extern_static(&i.ident.to_string(), c_name, &rust_ty, &c_ty, mutbl)
@@ -2354,7 +2349,7 @@ struct MyResolver<'a> {
     map: HashMap<Name, Rc<SyntaxExtension>>,
 }
 
-impl<'a> Resolver for MyResolver<'a> {
+impl Resolver for MyResolver<'_> {
     fn next_node_id(&mut self) -> ast::NodeId {
         self.id += 1;
         ast::NodeId::new(self.id)
@@ -2461,7 +2456,7 @@ struct MyVisitor<'b> {
     map: &'b mut HashMap<Name, Rc<SyntaxExtension>>,
 }
 
-impl<'a, 'b> Visitor<'a> for MyVisitor<'b> {
+impl<'a> Visitor<'a> for MyVisitor<'_> {
     fn visit_item(&mut self, item: &'a ast::Item) {
         if let ast::ItemKind::MacroDef(..) = item.node {
             self.map.insert(

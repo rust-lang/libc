@@ -18,18 +18,6 @@ indoc = "2.0.6"
 #              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
 
 [lints.rust]
-# FIXME(cleanup): make ident usage consistent in each file
-unused_qualifications = "allow"
+unused_qualifications = "warn"
 
 [lints.clippy]
-# FIXME(clippy): fix these
-doc_lazy_continuation = "allow"
-if_same_then_else = "allow"
-needless_borrow = "allow"
-needless_borrowed_reference = "allow"
-needless_borrows_for_generic_args = "allow"
-needless_lifetimes = "allow"
-only_used_in_recursion = "allow"
-option_as_ref_deref = "allow"
-type_complexity = "allow"
-useless_format = "allow"
