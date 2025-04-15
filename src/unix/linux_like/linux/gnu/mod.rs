@@ -447,7 +447,7 @@ impl siginfo_t {
             _si_code: c_int,
             si_addr: *mut c_void,
         }
-        (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
+        (*(self as *const siginfo_t).cast::<siginfo_sigfault>()).si_addr
     }
 
     pub unsafe fn si_value(&self) -> crate::sigval {
@@ -460,7 +460,7 @@ impl siginfo_t {
             _si_overrun: c_int,
             si_sigval: crate::sigval,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer)).si_sigval
+        (*(self as *const siginfo_t).cast::<siginfo_timer>()).si_sigval
     }
 }
 
@@ -498,7 +498,7 @@ struct siginfo_f {
 
 impl siginfo_t {
     unsafe fn sifields(&self) -> &sifields {
-        &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+        &(*(self as *const siginfo_t).cast::<siginfo_f>()).sifields
     }
 
     pub unsafe fn si_pid(&self) -> crate::pid_t {
