@@ -67,7 +67,7 @@ fn do_ctest() {
         t if t.contains("windows") => return test_windows(t),
         t if t.contains("vxworks") => return test_vxworks(t),
         t if t.contains("nto-qnx") => return test_neutrino(t),
-        t => panic!("unknown target {}", t),
+        t => panic!("unknown target {t}"),
     }
 }
 
@@ -102,13 +102,13 @@ fn do_semver() {
         process_semver_file(&mut output, &mut semver_root, &vendor);
     }
     process_semver_file(&mut output, &mut semver_root, &os);
-    let os_arch = format!("{}-{}", os, arch);
+    let os_arch = format!("{os}-{arch}");
     process_semver_file(&mut output, &mut semver_root, &os_arch);
     if target_env != "" {
-        let os_env = format!("{}-{}", os, target_env);
+        let os_env = format!("{os}-{target_env}");
         process_semver_file(&mut output, &mut semver_root, &os_env);
 
-        let os_env_arch = format!("{}-{}-{}", os, target_env, arch);
+        let os_env_arch = format!("{os}-{target_env}-{arch}");
         process_semver_file(&mut output, &mut semver_root, &os_env_arch);
     }
 }
@@ -125,7 +125,7 @@ fn process_semver_file<W: Write, P: AsRef<Path>>(output: &mut W, path: &mut Path
             path.pop();
             return;
         }
-        Err(err) => panic!("unexpected error opening file: {}", err),
+        Err(err) => panic!("unexpected error opening file: {err}"),
     };
     let input = BufReader::new(input_file);
 
@@ -447,9 +447,9 @@ fn test_apple(target: &str) {
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
             t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
             t => t.to_string(),
         }
     });
@@ -608,9 +608,9 @@ fn test_openbsd(target: &str) {
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
             t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
             t => t.to_string(),
         }
     });
@@ -707,7 +707,7 @@ fn test_cygwin(target: &str) {
 
             "Ioctl" => "int".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -715,7 +715,7 @@ fn test_cygwin(target: &str) {
             "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             t => t.to_string(),
         }
@@ -859,7 +859,7 @@ fn test_windows(target: &str) {
             "sighandler_t" if !gnu => "_crt_signal_t".to_string(),
             "sighandler_t" if gnu => "__p_sig_fn_t".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
             t if t.ends_with("_t") => t.to_string(),
 
             // Windows uppercase structs don't have `struct` in front:
@@ -872,7 +872,7 @@ fn test_windows(target: &str) {
                     "struct __utimbuf64".to_string()
                 } else {
                     // put `struct` in front of all structs:
-                    format!("struct {}", t)
+                    format!("struct {t}")
                 }
             }
             t => t.to_string(),
@@ -1111,8 +1111,8 @@ fn test_solarish(target: &str) {
         "FILE" => "__FILE".to_string(),
         "DIR" | "Dl_info" => ty.to_string(),
         t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {}", t),
-        t if is_union => format!("union {}", t),
+        t if is_struct => format!("struct {t}"),
+        t if is_union => format!("union {t}"),
         t => t.to_string(),
     });
 
@@ -1378,12 +1378,12 @@ fn test_netbsd(target: &str) {
             // OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             t => t.to_string(),
         }
@@ -1592,7 +1592,7 @@ fn test_dragonflybsd(target: &str) {
             // FIXME(dragonflybsd): OSX calls this something else
             "sighandler_t" => "sig_t".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -1600,7 +1600,7 @@ fn test_dragonflybsd(target: &str) {
             "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             t => t.to_string(),
         }
@@ -1767,11 +1767,11 @@ fn test_wasi(target: &str) {
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "FILE" | "fd_set" | "DIR" => ty.to_string(),
-        t if is_union => format!("union {}", t),
-        t if t.starts_with("__wasi") && t.ends_with("_u") => format!("union {}", t),
-        t if t.starts_with("__wasi") && is_struct => format!("struct {}", t),
+        t if is_union => format!("union {t}"),
+        t if t.starts_with("__wasi") && t.ends_with("_u") => format!("union {t}"),
+        t if t.starts_with("__wasi") && is_struct => format!("struct {t}"),
         t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {}", t),
+        t if is_struct => format!("struct {t}"),
         t => t.to_string(),
     });
 
@@ -1820,7 +1820,7 @@ fn test_android(target: &str) {
     let target_pointer_width = match target {
         t if t.contains("aarch64") || t.contains("x86_64") => 64,
         t if t.contains("i686") || t.contains("arm") => 32,
-        t => panic!("unsupported target: {}", t),
+        t => panic!("unsupported target: {t}"),
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
@@ -1979,7 +1979,7 @@ fn test_android(target: &str) {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -1987,7 +1987,7 @@ fn test_android(target: &str) {
             "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             t => t.to_string(),
         }
@@ -2495,7 +2495,7 @@ fn test_freebsd(target: &str) {
             // FIXME(freebsd): https://github.com/rust-lang/libc/issues/1273
             "sighandler_t" => "sig_t".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
 
@@ -2503,7 +2503,7 @@ fn test_freebsd(target: &str) {
             "sigval" => format!("union sigval"),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             t => t.to_string(),
         }
@@ -3082,10 +3082,10 @@ fn test_emscripten(target: &str) {
             t if t.ends_with("_t") => t.to_string(),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             // put `union` in front of all unions:
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t => t.to_string(),
         }
@@ -3367,12 +3367,12 @@ fn test_neutrino(target: &str) {
 
             "Ioctl" => "int".to_string(),
 
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
 
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
 
             t => t.to_string(),
         }
@@ -3590,9 +3590,9 @@ fn test_vxworks(target: &str) {
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "DIR" | "FILE" | "Dl_info" | "RTP_DESC" => ty.to_string(),
-        t if is_union => format!("union {}", t),
+        t if is_union => format!("union {t}"),
         t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {}", t),
+        t if is_struct => format!("struct {t}"),
         t => t.to_string(),
     });
 
@@ -3642,10 +3642,7 @@ fn test_linux(target: &str) {
         (true, false, false) => (),
         (false, true, false) => (),
         (false, false, true) => (),
-        (_, _, _) => panic!(
-            "linux target lib is gnu: {}, musl: {}, uclibc: {}",
-            gnu, musl, uclibc
-        ),
+        (_, _, _) => panic!("linux target lib is gnu: {gnu}, musl: {musl}, uclibc: {uclibc}"),
     }
 
     let arm = target.contains("arm");
@@ -3885,9 +3882,9 @@ fn test_linux(target: &str) {
             // typedefs don't need any keywords
             t if t.ends_with("_t") => t.to_string(),
             // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
             // put `union` in front of all unions:
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
 
             t => t.to_string(),
         }
@@ -4877,8 +4874,8 @@ fn test_linux_like_apis(target: &str) {
                 _ => true,
             })
             .type_name(move |ty, is_struct, is_union| match ty {
-                t if is_struct => format!("struct {}", t),
-                t if is_union => format!("union {}", t),
+                t if is_struct => format!("struct {t}"),
+                t if is_union => format!("union {t}"),
                 t => t.to_string(),
             });
 
@@ -4903,8 +4900,8 @@ fn test_linux_like_apis(target: &str) {
             .type_name(move |ty, is_struct, is_union| match ty {
                 "Ioctl" if gnu => "unsigned long".to_string(),
                 "Ioctl" => "int".to_string(),
-                t if is_struct => format!("struct {}", t),
-                t if is_union => format!("union {}", t),
+                t if is_struct => format!("struct {t}"),
+                t if is_union => format!("union {t}"),
                 t => t.to_string(),
             });
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_termios.rs");
@@ -4932,8 +4929,8 @@ fn test_linux_like_apis(target: &str) {
                 _ => true,
             })
             .type_name(move |ty, is_struct, is_union| match ty {
-                t if is_struct => format!("struct {}", t),
-                t if is_union => format!("union {}", t),
+                t if is_struct => format!("struct {t}"),
+                t if is_union => format!("union {t}"),
                 t => t.to_string(),
             });
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_ipv6.rs");
@@ -5318,9 +5315,9 @@ fn test_haiku(target: &str) {
 
             // is actually a union
             "sigval" => format!("union sigval"),
-            t if is_union => format!("union {}", t),
+            t if is_union => format!("union {t}"),
             t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {}", t),
+            t if is_struct => format!("struct {t}"),
             t => t.to_string(),
         }
     });

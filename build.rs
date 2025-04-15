@@ -124,17 +124,17 @@ fn main() {
     if rustc_minor_ver >= 80 {
         for cfg in ALLOWED_CFGS {
             if rustc_minor_ver >= 75 {
-                println!("cargo:rustc-check-cfg=cfg({})", cfg);
+                println!("cargo:rustc-check-cfg=cfg({cfg})");
             } else {
-                println!("cargo:rustc-check-cfg=values({})", cfg);
+                println!("cargo:rustc-check-cfg=values({cfg})");
             }
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
             if rustc_minor_ver >= 75 {
-                println!("cargo:rustc-check-cfg=cfg({},values(\"{}\"))", name, values);
+                println!("cargo:rustc-check-cfg=cfg({name},values(\"{values}\"))");
             } else {
-                println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
+                println!("cargo:rustc-check-cfg=values({name},\"{values}\")");
             }
         }
     }
@@ -255,7 +255,7 @@ fn emcc_version_code() -> Option<u64> {
 
 fn set_cfg(cfg: &str) {
     if !ALLOWED_CFGS.contains(&cfg) {
-        panic!("trying to set cfg {}, but it is not in ALLOWED_CFGS", cfg);
+        panic!("trying to set cfg {cfg}, but it is not in ALLOWED_CFGS");
     }
-    println!("cargo:rustc-cfg={}", cfg);
+    println!("cargo:rustc-cfg={cfg}");
 }

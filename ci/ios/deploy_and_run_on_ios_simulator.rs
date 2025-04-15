@@ -16,7 +16,7 @@ use std::process::Command;
 macro_rules! t {
     ($e:expr) => (match $e {
         Ok(e) => e,
-        Err(e) => panic!("{} failed with: {}", stringify!($e), e),
+        Err(e) => panic!("{} failed with: {e}", stringify!($e)),
     })
 }
 
@@ -143,7 +143,7 @@ trait CheckStatus {
 
 impl CheckStatus for Command {
     fn check_status(&mut self) {
-        println!("\trunning: {:?}", self);
+        println!("\trunning: {self:?}");
         assert!(t!(self.status()).success());
     }
 }
