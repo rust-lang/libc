@@ -2299,10 +2299,7 @@ impl<'a, 'v> Visitor<'v> for Generator<'a> {
                 self.assert_no_generics(i.ident, generics);
                 for arg in &decl.inputs {
                     if let ast::TyKind::Array(_, _) = arg.ty.node {
-                        panic!(
-                            "Foreign Function decl `{}` uses array in C FFI",
-                            i.ident
-                        );
+                        panic!("Foreign Function decl `{}` uses array in C FFI", i.ident);
                     }
                 }
 
