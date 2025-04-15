@@ -5463,7 +5463,7 @@ pub const VMADDR_PORT_ANY: c_uint = 0xFFFFFFFF;
 
 const fn __DARWIN_ALIGN32(p: usize) -> usize {
     const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
-    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+    (p + __DARWIN_ALIGNBYTES32) & !__DARWIN_ALIGNBYTES32
 }
 
 pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =

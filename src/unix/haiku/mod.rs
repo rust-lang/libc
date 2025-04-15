@@ -1570,7 +1570,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         }
     }
 
@@ -1595,7 +1595,7 @@ f! {
             + CMSG_ALIGN(mem::size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         } else {
             (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
         }

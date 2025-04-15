@@ -2483,7 +2483,7 @@ f! {
 
     pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut cmsghdr {
         if ((*mhdr).msg_controllen as usize) < size_of::<cmsghdr>() {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         } else {
             (*mhdr).msg_control as *mut cmsghdr
         }
@@ -2497,7 +2497,7 @@ f! {
             _CMSG_HDR_ALIGN(cmsg as usize + (*cmsg).cmsg_len as usize + size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         } else {
             _CMSG_HDR_ALIGN(cmsg as usize + (*cmsg).cmsg_len as usize) as *mut cmsghdr
         }

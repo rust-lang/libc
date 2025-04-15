@@ -1699,7 +1699,7 @@ cfg_if! {
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
-        len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
+        (len + mem::size_of::<usize>() - 1) & !(mem::size_of::<usize>() - 1)
     }
 }
 
@@ -1708,7 +1708,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         }
     }
 

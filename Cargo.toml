@@ -147,19 +147,14 @@ members = [
 #       This way all crates can use it with `[lints] workspace=true` section
 
 [lints.rust]
-# FIXME(cleanup): make ident usage consistent in each file
-unused_qualifications = "allow"
+# FIXME(cleanup): should be cleaned up
+unused_imports = "allow"
+unused_qualifications = "allow"  # make ident usage consistent in each file
 
 [lints.clippy]
-missing_safety_doc = "allow"
+identity_op = "allow"  # some expressions like `0 | x` are clearer for bit ops
+missing_safety_doc = "allow"  # safety? in libc? seriously?
 
-# FIXME(clippy): all these are default lints and should probably be fixed
-identity_op = "allow"
-if_same_then_else = "allow"
-non_minimal_cfg = "allow"
-precedence = "allow"
-redundant_field_names = "allow"
-redundant_static_lifetimes = "allow"
-unnecessary_cast = "allow"
-unused_unit = "allow"
-zero_ptr = "allow"
+# FIXME(clippy): all these should probably be fixed
+non_minimal_cfg = "allow"  # for some reason cfg_if! sometimes trigger this
+unnecessary_cast = "allow"  # some casts like `as usize` are only needed for some targets
