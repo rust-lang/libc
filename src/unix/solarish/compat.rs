@@ -1,6 +1,8 @@
 // Common functions that are unfortunately missing on illumos and
 // Solaris, but often needed by other crates.
 use core::cmp::min;
+#[cfg(target_os = "illumos")]
+use core::cmp::{Ord, Ordering};
 
 use crate::unix::solarish::*;
 use crate::{c_char, c_int, size_t};
@@ -50,7 +52,7 @@ unsafe fn bail(fdm: c_int, fds: c_int) -> c_int {
         crate::close(fdm);
     }
     *___errno() = e;
-    return -1;
+    -1
 }
 
 #[cfg(target_os = "illumos")]
@@ -88,16 +90,18 @@ pub unsafe fn openpty(
 
     // Check if the STREAMS modules are already pushed:
     let setup = crate::ioctl(fds, I_FIND, LDTERM.as_ptr());
-    if setup < 0 {
-        return bail(fdm, fds);
-    } else if setup == 0 {
-        // The line discipline is not present, so push the appropriate STREAMS
-        // modules for the subordinate device:
-        if crate::ioctl(fds, I_PUSH, PTEM.as_ptr()) < 0
-            || crate::ioctl(fds, I_PUSH, LDTERM.as_ptr()) < 0
-        {
-            return bail(fdm, fds);
+    match setup.cmp(&0) {
+        Ordering::Less => return bail(fdm, fds),
+        Ordering::Equal => {
+            // The line discipline is not present, so push the appropriate STREAMS
+            // modules for the subordinate device:
+            if crate::ioctl(fds, I_PUSH, PTEM.as_ptr()) < 0
+                || crate::ioctl(fds, I_PUSH, LDTERM.as_ptr()) < 0
+            {
+                return bail(fdm, fds);
+            }
         }
+        Ordering::Greater => {}
     }
 
     // If provided, set the terminal parameters:
@@ -138,13 +142,17 @@ pub unsafe fn forkpty(
     }
 
     let pid = crate::fork();
-    if pid < 0 {
-        return bail(*amain, fds);
-    } else if pid > 0 {
-        // In the parent process, we close the subordinate device and return the
-        // process ID of the new child:
-        crate::close(fds);
-        return pid;
+    match pid.cmp(&0) {
+        Ordering::Less => {
+            return bail(*amain, fds);
+        }
+        Ordering::Greater => {
+            // In the parent process, we close the subordinate device and return the
+            // process ID of the new child:
+            crate::close(fds);
+            return pid;
+        }
+        Ordering::Equal => {}
     }
 
     // The rest of this function executes in the child process.
@@ -184,7 +192,7 @@ pub unsafe fn getpwent_r(
 ) -> c_int {
     let old_errno = *crate::___errno();
     *crate::___errno() = 0;
-    *result = native_getpwent_r(pwd, buf, min(buflen, c_int::max_value() as size_t) as c_int);
+    *result = native_getpwent_r(pwd, buf, min(buflen, c_int::MAX as size_t) as c_int);
 
     let ret = if (*result).is_null() {
         *crate::___errno()
@@ -204,7 +212,7 @@ pub unsafe fn getgrent_r(
 ) -> c_int {
     let old_errno = *crate::___errno();
     *crate::___errno() = 0;
-    *result = native_getgrent_r(grp, buf, min(buflen, c_int::max_value() as size_t) as c_int);
+    *result = native_getgrent_r(grp, buf, min(buflen, c_int::MAX as size_t) as c_int);
 
     let ret = if (*result).is_null() {
         *crate::___errno()

@@ -1143,7 +1143,7 @@ f! {
         if next <= max {
             (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
         } else {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         }
     }
 
@@ -1151,7 +1151,7 @@ f! {
         if (*mhdr).msg_controllen as usize > 0 {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         }
     }
 
