@@ -1420,6 +1420,9 @@ pub const IFF_LOWER_UP: c_int = 0x10000;
 pub const IFF_DORMANT: c_int = 0x20000;
 pub const IFF_ECHO: c_int = 0x40000;
 
+// linux/fcntl.h
+pub const AT_EXECVE_CHECK: c_int = 0x10000;
+
 // linux/if_addr.h
 pub const IFA_UNSPEC: c_ushort = 0;
 pub const IFA_ADDRESS: c_ushort = 1;
