@@ -50,7 +50,7 @@ jobs:
     name: Verify build
     strategy:
       matrix:
-        toolchain: [stable, nightly, 1.63.0]
+        toolchain: [stable, nightly, 1.64.0]
         os: [ubuntu-24.04, macos-14, windows-2022]
         include:
           - toolchain: beta
@@ -65,7 +65,7 @@ jobs:
       - name: Update RUSTFLAGS
         run: |
           set -eux
-          [ "${{ matrix.toolchain }}" = "1.63.0" ] && echo 'RUSTFLAGS=' >> "$GITHUB_ENV" || true
+          [ "${{ matrix.toolchain }}" = "1.64.0" ] && echo 'RUSTFLAGS=' >> "$GITHUB_ENV" || true
           
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh

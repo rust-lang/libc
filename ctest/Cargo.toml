@@ -3,10 +3,10 @@ name = "ctest"
 version = "0.4.11"
 description = "Automated tests of FFI bindings."
 exclude = ["CHANGELOG.md"]
-edition = "2021"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rust-lang/libc"
-rust-version = "1.63.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
 
 [dependencies]
 garando_syntax = "0.1"
