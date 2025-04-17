@@ -3800,6 +3800,7 @@ pub const PACKET_LOSS: c_int = 14;
 pub const PACKET_TIMESTAMP: c_int = 17;
 pub const PACKET_FANOUT: c_int = 18;
 pub const PACKET_QDISC_BYPASS: c_int = 20;
+pub const PACKET_IGNORE_OUTGOING: c_int = 23;
 
 pub const PACKET_FANOUT_HASH: c_uint = 0;
 pub const PACKET_FANOUT_LB: c_uint = 1;
