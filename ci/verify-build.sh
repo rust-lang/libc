@@ -196,6 +196,7 @@ armv7r-none-eabi \
 armv7r-none-eabihf \
 i686-pc-windows-msvc \
 i686-unknown-haiku \
+i686-unknown-helenos \
 i686-unknown-netbsd \
 i686-unknown-openbsd \
 i686-wrs-vxworks \
@@ -239,6 +240,7 @@ thumbv8m.main-none-eabi \
 x86_64-pc-windows-msvc \
 x86_64-unknown-dragonfly \
 x86_64-unknown-haiku \
+x86_64-unknown-helenos \
 x86_64-unknown-hermit \
 x86_64-unknown-l4re-uclibc \
 x86_64-unknown-openbsd \

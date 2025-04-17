@@ -28,7 +28,7 @@ const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
     (
         "target_os",
         &[
-            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin",
+            "switch", "aix", "ohos", "hurd", "rtems", "visionos", "nuttx", "cygwin", "helenos",
         ],
     ),
     (
