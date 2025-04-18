@@ -50,23 +50,23 @@ fn do_cc() {
 
 fn do_ctest() {
     match &env::var("TARGET").unwrap() {
-        t if t.contains("android") => return test_android(t),
-        t if t.contains("apple") => return test_apple(t),
-        t if t.contains("dragonfly") => return test_dragonflybsd(t),
-        t if t.contains("emscripten") => return test_emscripten(t),
-        t if t.contains("freebsd") => return test_freebsd(t),
-        t if t.contains("haiku") => return test_haiku(t),
-        t if t.contains("linux") => return test_linux(t),
-        t if t.contains("netbsd") => return test_netbsd(t),
-        t if t.contains("openbsd") => return test_openbsd(t),
-        t if t.contains("cygwin") => return test_cygwin(t),
-        t if t.contains("redox") => return test_redox(t),
-        t if t.contains("solaris") => return test_solarish(t),
-        t if t.contains("illumos") => return test_solarish(t),
-        t if t.contains("wasi") => return test_wasi(t),
-        t if t.contains("windows") => return test_windows(t),
-        t if t.contains("vxworks") => return test_vxworks(t),
-        t if t.contains("nto-qnx") => return test_neutrino(t),
+        t if t.contains("android") => test_android(t),
+        t if t.contains("apple") => test_apple(t),
+        t if t.contains("dragonfly") => test_dragonflybsd(t),
+        t if t.contains("emscripten") => test_emscripten(t),
+        t if t.contains("freebsd") => test_freebsd(t),
+        t if t.contains("haiku") => test_haiku(t),
+        t if t.contains("linux") => test_linux(t),
+        t if t.contains("netbsd") => test_netbsd(t),
+        t if t.contains("openbsd") => test_openbsd(t),
+        t if t.contains("cygwin") => test_cygwin(t),
+        t if t.contains("redox") => test_redox(t),
+        t if t.contains("solaris") => test_solarish(t),
+        t if t.contains("illumos") => test_solarish(t),
+        t if t.contains("wasi") => test_wasi(t),
+        t if t.contains("windows") => test_windows(t),
+        t if t.contains("vxworks") => test_vxworks(t),
+        t if t.contains("nto-qnx") => test_neutrino(t),
         t => panic!("unknown target {t}"),
     }
 }
@@ -104,7 +104,7 @@ fn do_semver() {
     process_semver_file(&mut output, &mut semver_root, &os);
     let os_arch = format!("{os}-{arch}");
     process_semver_file(&mut output, &mut semver_root, &os_arch);
-    if target_env != "" {
+    if !target_env.is_empty() {
         let os_env = format!("{os}-{target_env}");
         process_semver_file(&mut output, &mut semver_root, &os_env);
 
@@ -129,21 +129,21 @@ fn process_semver_file<W: Write, P: AsRef<Path>>(output: &mut W, path: &mut Path
     };
     let input = BufReader::new(input_file);
 
-    write!(output, "// Source: {}.\n", path.display()).unwrap();
-    output.write(b"use libc::{\n").unwrap();
+    writeln!(output, "// Source: {}.", path.display()).unwrap();
+    output.write_all(b"use libc::{\n").unwrap();
     for line in input.lines() {
         let line = line.unwrap().into_bytes();
         match line.first() {
             // Ignore comments and empty lines.
             Some(b'#') | None => continue,
             _ => {
-                output.write(b"    ").unwrap();
-                output.write(&line).unwrap();
-                output.write(b",\n").unwrap();
+                output.write_all(b"    ").unwrap();
+                output.write_all(&line).unwrap();
+                output.write_all(b",\n").unwrap();
             }
         }
     }
-    output.write(b"};\n\n").unwrap();
+    output.write_all(b"};\n\n").unwrap();
     path.pop();
 }
 
@@ -165,8 +165,10 @@ fn main() {
     do_semver();
 }
 
+// FIXME(clippy): removing `replace` somehow fails the `Test tier1 (x86_64-pc-windows-msvc, windows-2022)` CI job
+#[allow(clippy::only_used_in_recursion)]
 fn copy_dir_hotfix(src: &Path, dst: &Path, regex: &regex::bytes::Regex, replace: &[u8]) {
-    std::fs::create_dir(&dst).unwrap();
+    std::fs::create_dir(dst).unwrap();
     for entry in src.read_dir().unwrap() {
         let entry = entry.unwrap();
         let src_path = entry.path();
@@ -433,10 +435,7 @@ fn test_apple(target: &str) {
 
     cfg.volatile_item(|i| {
         use ctest::VolatileItemKind::*;
-        match i {
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
-            _ => false,
-        }
+        matches!(i, StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf")
     });
 
     cfg.type_name(move |ty, is_struct, is_union| {
@@ -712,7 +711,7 @@ fn test_cygwin(target: &str) {
             t if t.ends_with("_t") => t.to_string(),
 
             // sigval is a struct in Rust, but a union in C:
-            "sigval" => format!("union sigval"),
+            "sigval" => "union sigval".to_string(),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {t}"),
@@ -913,10 +912,7 @@ fn test_windows(target: &str) {
         }
     });
 
-    cfg.skip_field(move |s, field| match s {
-        "CONTEXT" if field == "Fp" => true,
-        _ => false,
-    });
+    cfg.skip_field(|s, field| s == "CONTEXT" && field == "Fp");
     // FIXME(windows): All functions point to the wrong addresses?
     cfg.skip_fn_ptrcheck(|_| true);
 
@@ -1102,10 +1098,7 @@ fn test_solarish(target: &str) {
         }
     }
 
-    cfg.skip_type(move |ty| match ty {
-        "sighandler_t" => true,
-        _ => false,
-    });
+    cfg.skip_type(|ty| ty == "sighandler_t");
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "FILE" => "__FILE".to_string(),
@@ -1449,6 +1442,7 @@ fn test_netbsd(target: &str) {
     });
 
     cfg.skip_fn(move |name| {
+        #[expect(clippy::wildcard_in_or_patterns)]
         match name {
             // FIXME(netbsd): netbsd 10 minimum
             "getentropy" | "getrandom" => true,
@@ -1597,7 +1591,7 @@ fn test_dragonflybsd(target: &str) {
             t if t.ends_with("_t") => t.to_string(),
 
             // sigval is a struct in Rust, but a union in C:
-            "sigval" => format!("union sigval"),
+            "sigval" => "union sigval".to_string(),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {t}"),
@@ -1984,7 +1978,7 @@ fn test_android(target: &str) {
             t if t.ends_with("_t") => t.to_string(),
 
             // sigval is a struct in Rust, but a union in C:
-            "sigval" => format!("union sigval"),
+            "sigval" => "union sigval".to_string(),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {t}"),
@@ -2346,18 +2340,9 @@ fn test_freebsd(target: &str) {
     // Required for making freebsd11_stat available in the headers
     cfg.define("_WANT_FREEBSD11_STAT", None);
 
-    let freebsd13 = match freebsd_ver {
-        Some(n) if n >= 13 => true,
-        _ => false,
-    };
-    let freebsd14 = match freebsd_ver {
-        Some(n) if n >= 14 => true,
-        _ => false,
-    };
-    let freebsd15 = match freebsd_ver {
-        Some(n) if n >= 15 => true,
-        _ => false,
-    };
+    let freebsd13 = matches!(freebsd_ver, Some(n) if n >= 13);
+    let freebsd14 = matches!(freebsd_ver, Some(n) if n >= 14);
+    let freebsd15 = matches!(freebsd_ver, Some(n) if n >= 15);
 
     headers! { cfg:
                 "aio.h",
@@ -2500,7 +2485,7 @@ fn test_freebsd(target: &str) {
             t if t.ends_with("_t") => t.to_string(),
 
             // sigval is a struct in Rust, but a union in C:
-            "sigval" => format!("union sigval"),
+            "sigval" => "union sigval".to_string(),
 
             // put `struct` in front of all structs:.
             t if is_struct => format!("struct {t}"),
@@ -3237,7 +3222,7 @@ fn test_neutrino(target: &str) {
 
     let mut cfg = ctest_cfg();
     if target.ends_with("_iosock") {
-        let qnx_target_val = std::env::var("QNX_TARGET")
+        let qnx_target_val = env::var("QNX_TARGET")
             .unwrap_or_else(|_| "QNX_TARGET_not_set_please_source_qnxsdp".into());
 
         cfg.include(qnx_target_val + "/usr/include/io-sock");
@@ -3484,17 +3469,17 @@ fn test_neutrino(target: &str) {
         struct_ == "_idle_hook" && field == "time"
     });
 
-    cfg.skip_field(move |struct_, field| {
-        (struct_ == "__sched_param" && field == "reserved") ||
-        (struct_ == "sched_param" && field == "reserved") ||
-        (struct_ == "sigevent" && field == "__padding1") || // ensure alignment
-        (struct_ == "sigevent" && field == "__padding2") || // union
-        (struct_ == "sigevent" && field == "__sigev_un2") || // union
-        // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // does not exist
-        (struct_ == "syspage_entry" && field == "__reserved") ||
-        false // keep me for smaller diffs when something is added above
+    cfg.skip_field(|struct_, field| {
+        matches!(
+            (struct_, field),
+            ("__sched_param", "reserved")
+            | ("sched_param", "reserved")
+            | ("sigevent", "__padding1") // ensure alignment
+            | ("sigevent", "__padding2") // union
+            | ("sigevent", "__sigev_un2") // union
+            | ("sigaction", "sa_sigaction") // sighandler_t type is super weird
+            | ("syspage_entry", "__reserved") // does not exist
+        )
     });
 
     cfg.skip_static(move |name| (name == "__dso_handle"));
@@ -3574,19 +3559,16 @@ fn test_vxworks(target: &str) {
         _ => false,
     });
     // FIXME(vxworks)
-    cfg.skip_type(move |ty| match ty {
-        "stat64" | "sighandler_t" | "off64_t" => true,
-        _ => false,
+    cfg.skip_type(|ty| matches!(ty, "stat64" | "sighandler_t" | "off64_t"));
+
+    cfg.skip_field_type(|struct_, field| {
+        matches!(
+            (struct_, field),
+            ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u")
+        )
     });
 
-    cfg.skip_field_type(move |struct_, field| match (struct_, field) {
-        ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u") => true,
-        _ => false,
-    });
-
-    cfg.skip_roundtrip(move |s| match s {
-        _ => false,
-    });
+    cfg.skip_roundtrip(|_| false);
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
         "DIR" | "FILE" | "Dl_info" | "RTP_DESC" => ty.to_string(),
@@ -4842,12 +4824,9 @@ fn test_linux_like_apis(target: &str) {
         cfg.skip_type(|_| true).skip_static(|_| true);
 
         headers! { cfg: "string.h" }
-        cfg.skip_fn(|f| match f {
-            "strerror_r" => false,
-            _ => true,
-        })
-        .skip_const(|_| true)
-        .skip_struct(|_| true);
+        cfg.skip_fn(|f| f != "strerror_r")
+            .skip_const(|_| true)
+            .skip_struct(|_| true);
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_strerror_r.rs");
     }
 
@@ -4891,10 +4870,11 @@ fn test_linux_like_apis(target: &str) {
         cfg.skip_type(|_| true)
             .skip_static(|_| true)
             .skip_fn(|_| true)
-            .skip_const(|c| match c {
-                "BOTHER" | "IBSHIFT" => false,
-                "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => false,
-                _ => true,
+            .skip_const(|c| {
+                !matches!(
+                    c,
+                    "BOTHER" | "IBSHIFT" | "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2"
+                )
             })
             .skip_struct(|s| s != "termios2")
             .type_name(move |ty, is_struct, is_union| match ty {
@@ -4920,13 +4900,15 @@ fn test_linux_like_apis(target: &str) {
             .skip_fn(|_| true)
             .skip_const(|_| true)
             .skip_struct(|_| true)
-            .skip_const(move |name| match name {
-                "IPV6_FLOWINFO"
-                | "IPV6_FLOWLABEL_MGR"
-                | "IPV6_FLOWINFO_SEND"
-                | "IPV6_FLOWINFO_FLOWLABEL"
-                | "IPV6_FLOWINFO_PRIORITY" => false,
-                _ => true,
+            .skip_const(|name| {
+                !matches!(
+                    name,
+                    "IPV6_FLOWINFO"
+                        | "IPV6_FLOWLABEL_MGR"
+                        | "IPV6_FLOWINFO_SEND"
+                        | "IPV6_FLOWINFO_FLOWLABEL"
+                        | "IPV6_FLOWINFO_PRIORITY"
+                )
             })
             .type_name(move |ty, is_struct, is_union| match ty {
                 t if is_struct => format!("struct {t}"),
@@ -4948,14 +4930,8 @@ fn test_linux_like_apis(target: &str) {
             .skip_static(|_| true)
             .skip_const(|_| true)
             .type_name(move |ty, _is_struct, _is_union| ty.to_string())
-            .skip_struct(move |ty| match ty {
-                "Elf64_Phdr" | "Elf32_Phdr" => false,
-                _ => true,
-            })
-            .skip_type(move |ty| match ty {
-                "Elf64_Phdr" | "Elf32_Phdr" => false,
-                _ => true,
-            });
+            .skip_struct(|ty| !matches!(ty, "Elf64_Phdr" | "Elf32_Phdr"))
+            .skip_type(|ty| !matches!(ty, "Elf64_Phdr" | "Elf32_Phdr"));
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_elf.rs");
     }
 
@@ -4966,10 +4942,7 @@ fn test_linux_like_apis(target: &str) {
         cfg.header("linux/if_arp.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
-            .skip_const(move |name| match name {
-                "ARPHRD_CAN" => false,
-                _ => true,
-            })
+            .skip_const(|name| name != "ARPHRD_CAN")
             .skip_struct(|_| true)
             .skip_type(|_| true);
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_if_arp.rs");
@@ -5314,7 +5287,7 @@ fn test_haiku(target: &str) {
             }
 
             // is actually a union
-            "sigval" => format!("union sigval"),
+            "sigval" => "union sigval".to_string(),
             t if is_union => format!("union {t}"),
             t if t.ends_with("_t") => t.to_string(),
             t if is_struct => format!("struct {t}"),
