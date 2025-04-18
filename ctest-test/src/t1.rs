@@ -87,6 +87,7 @@ extern "C" {
     pub static T1static: c_uint;
 }
 
+#[expect(clippy::eq_op)]
 pub fn foo() {
     assert_eq!(1, 1);
 }

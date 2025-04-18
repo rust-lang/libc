@@ -103,8 +103,5 @@ fn t1_volatile(i: ctest::VolatileItemKind) -> bool {
 }
 
 fn t1_arrays(n: &str, i: usize) -> bool {
-    match n {
-        "T1r" | "T1s" | "T1t" | "T1v" if i == 0 => true,
-        _ => false,
-    }
+    i == 0 && matches!(n, "T1r" | "T1s" | "T1t" | "T1v")
 }
