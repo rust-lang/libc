@@ -84,8 +84,8 @@ cfg_if! {
     }
 }
 
-e! {
-    pub enum tpacket_versions {
+c_enum! {
+    tpacket_versions {
         TPACKET_V1,
         TPACKET_V2,
         TPACKET_V3,
