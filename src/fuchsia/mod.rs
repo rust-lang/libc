@@ -81,30 +81,16 @@ pub type rlim_t = c_ulonglong;
 // FIXME(fuchsia): why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-pub enum DIR {}
-impl Copy for DIR {}
-impl Clone for DIR {
-    fn clone(&self) -> DIR {
-        *self
-    }
-}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
+pub enum DIR {}
+
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum fpos64_t {} // FIXME(fuchsia): fill this out with a struct
-impl Copy for fpos64_t {}
-impl Clone for fpos64_t {
-    fn clone(&self) -> fpos64_t {
-        *self
-    }
-}
 
 // PUB_STRUCT
 
@@ -3541,21 +3527,12 @@ fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
 extern "C" {}
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
+
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum fpos_t {} // FIXME(fuchsia): fill this out with a struct
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
-}
 
 extern "C" {
     pub fn isalnum(c: c_int) -> c_int;
