@@ -909,25 +909,36 @@ impl TestGenerator {
         let c_file = out_file.with_extension(ext);
         let rust_out = BufWriter::new(File::create(&out_file)?);
         let c_out = BufWriter::new(File::create(&c_file)?);
-        let mut sess = ParseSess::new(FilePathMapping::empty());
-        let target = self.target.clone().unwrap_or_else(|| {
-            env::var("TARGET")
-                .map_err(|_| Error::from("TARGET environment variable not set"))
-                .unwrap_or_default()
-        });
-        for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
-            let s = |s: &str| Name::intern(s);
-            sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
-        }
+        // let mut sess = ParseSess::new(FilePathMapping::empty());
+        let target = self
+            .target
+            .clone()
+            .or_else(|| env::var("TARGET").ok())
+            .filter(|t| !t.is_empty())
+            .ok_or_else(|| Error::from("TARGET environment variable not set"))?;
 
-        // Parse with panic‑catching since the API parse::parse_crate_from_file extensively use panic!()
-        let (krate, sess) = match catch_unwind(AssertUnwindSafe(|| parse_with_session(krate))) {
+        let (krate, sess) = match catch_unwind(AssertUnwindSafe(|| {
+            let mut sess = ParseSess::new(FilePathMapping::empty());
+            for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
+                let s = |s: &str| Name::intern(s);
+                sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
+            }
+            // Convert DiagnosticBuilder -> Error so the `?` works
+            let krate = parse::parse_crate_from_file(krate, &sess)
+                .map_err(|d| Error::from(format!("failed to parse crate: {:?}", d)))?;
+
+            Ok::<_, Error>((krate, sess))
+        })) {
+            // closure produced an ordinary Ok
             Ok(Ok(pair)) => pair,
+            // no panic, but closure produced an ordinary Err
             Ok(Err(e)) => return Err(e),
-            Err(payload) => {
-                let msg = panic_payload_to_string(payload);
-                // Output the panic payload
-                return Err(Error::from(format!("parser panicked: {msg}")));
+            // closure/code panicked and return the panic's payload
+            Err(p) => {
+                return Err(Error::from(format!(
+                    "Parser panic: {}",
+                    panic_payload_to_string(p)
+                )))
             }
         };
 
@@ -1001,27 +1012,6 @@ impl TestGenerator {
 
         Ok(out_file)
     }
-}
-
-/// Parses a Rust source file into an AST crate.
-///
-/// This function creates a new parsing session and attempts to parse the specified file
-/// into an AST representation of a Rust crate.
-fn parse_with_session(path: &Path) -> Result<(ast::Crate, ParseSess), Error> {
-    let sess = ParseSess::new(FilePathMapping::empty());
-
-    // ↓ make the result live only inside this block
-    let krate = {
-        let parse_result = parse::parse_crate_from_file(path, &sess);
-
-        match parse_result {
-            Ok(k) => k,
-            Err(e) => {
-                return Err(Error::from(format!("failed to parse crate: {e:?}")));
-            }
-        }
-    };
-    Ok((krate, sess))
 }
 
 /// Convert a panic payload into something printable.

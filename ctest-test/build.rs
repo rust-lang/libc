@@ -78,7 +78,7 @@ fn main() {
 
     // Test parsing error
     // Create a temporary file with invalid Rust syntax
-    let temp_dir = std::env::temp_dir();
+    let temp_dir = env::temp_dir();
     let invalid_file = temp_dir.join("invalid.rs");
     std::fs::write(&invalid_file, "fn invalid_syntax {").unwrap();
 
