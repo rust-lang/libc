@@ -13,16 +13,18 @@
 #![recursion_limit = "256"]
 #![deny(missing_docs)]
 
+use garando_syntax as syntax;
+use indoc::writedoc;
+use std::any::Any;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
+use std::panic::catch_unwind;
+use std::panic::AssertUnwindSafe;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
-
-use garando_syntax as syntax;
-use indoc::writedoc;
 use syntax::abi::Abi;
 use syntax::ast;
 use syntax::ast::{Attribute, Name};
@@ -793,9 +795,9 @@ impl TestGenerator {
     /// let mut cfg = TestGenerator::new();
     /// cfg.generate("../path/to/libfoo-sys/lib.rs", "all.rs");
     /// ```
-    pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) {
+    pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         let krate = krate.as_ref();
-        let out = self.generate_files(krate, out_file);
+        let out = self.generate_files(krate, out_file)?;
 
         let target = self
             .target
@@ -851,25 +853,54 @@ impl TestGenerator {
             cfg.include(p);
         }
 
-        let stem = out.file_stem().unwrap().to_str().unwrap();
-        cfg.target(&target)
-            .out_dir(out.parent().unwrap())
-            .compile(&format!("lib{stem}.a"));
+        let stem = out
+            .file_stem()
+            .ok_or_else(|| Error::from("Output file has no stem"))?
+            .to_str()
+            .ok_or_else(|| Error::from("Output filename is not valid UTF-8"))?;
+
+        let parent = out
+            .parent()
+            .ok_or_else(|| Error::from("Output file has no parent directory"))?;
+
+        cfg.target(&target).out_dir(parent);
+
+        match catch_unwind(|| cfg.compile(&format!("lib{stem}.a"))) {
+            Ok(_) => Ok(out),
+            Err(_) => Err(Error::from("Compilation failed")),
+        }
     }
 
     #[doc(hidden)] // TODO: needs docs
-    pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> PathBuf {
+    pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         self.generate_files_impl(krate, out_file)
-            .expect("generation failed")
     }
 
     fn generate_files_impl<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         let krate = krate.as_ref();
+
+        // Check if all specified header files exist in the include paths
+        for header in &self.headers {
+            // Check if header exists in any of the include paths
+            for include_path in &self.includes {
+                let header_path = include_path.join(header);
+                if !header_path.exists() {
+                    return Err(Error::from(format!(
+                        "{} does not exist",
+                        header_path.display()
+                    )));
+                }
+            }
+        }
+
         // Prep the test generator
         let out_dir = self
             .out_dir
             .clone()
-            .unwrap_or_else(|| PathBuf::from(env::var_os("OUT_DIR").unwrap()));
+            .or_else(|| env::var_os("OUT_DIR").map(PathBuf::from))
+            .filter(|p| p.is_dir())
+            .ok_or_else(|| Error::from("OUT_DIR not set or directory missing"))?;
+
         let out_file = out_dir.join(out_file);
         let ext = match self.lang {
             Lang::C => "c",
@@ -878,18 +909,38 @@ impl TestGenerator {
         let c_file = out_file.with_extension(ext);
         let rust_out = BufWriter::new(File::create(&out_file)?);
         let c_out = BufWriter::new(File::create(&c_file)?);
-        let mut sess = ParseSess::new(FilePathMapping::empty());
+        // let mut sess = ParseSess::new(FilePathMapping::empty());
         let target = self
             .target
             .clone()
-            .unwrap_or_else(|| env::var("TARGET").unwrap());
-        for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
-            let s = |s: &str| Name::intern(s);
-            sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
-        }
+            .or_else(|| env::var("TARGET").ok())
+            .filter(|t| !t.is_empty())
+            .ok_or_else(|| Error::from("TARGET environment variable not set"))?;
 
-        // Parse the libc crate
-        let krate = parse::parse_crate_from_file(krate, &sess).ok().unwrap();
+        let (krate, sess) = match catch_unwind(AssertUnwindSafe(|| {
+            let mut sess = ParseSess::new(FilePathMapping::empty());
+            for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
+                let s = |s: &str| Name::intern(s);
+                sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
+            }
+            // Convert DiagnosticBuilder -> Error so the `?` works
+            let krate = parse::parse_crate_from_file(krate, &sess)
+                .map_err(|d| Error::from(format!("failed to parse crate: {:?}", d)))?;
+
+            Ok::<_, Error>((krate, sess))
+        })) {
+            // closure produced an ordinary Ok
+            Ok(Ok(pair)) => pair,
+            // no panic, but closure produced an ordinary Err
+            Ok(Err(e)) => return Err(e),
+            // closure/code panicked and return the panic's payload
+            Err(p) => {
+                return Err(Error::from(format!(
+                    "Parser panic: {}",
+                    panic_payload_to_string(p)
+                )))
+            }
+        };
 
         // Remove things like functions, impls, traits, etc, that we're not
         // looking at
@@ -960,6 +1011,21 @@ impl TestGenerator {
         g.emit_run_all()?;
 
         Ok(out_file)
+    }
+}
+
+/// Convert a panic payload into something printable.
+///
+/// * `panic!("msg")` → `"msg"`
+/// * `panic!(String)` → the string’s contents
+/// * anything else → the payload’s type name
+fn panic_payload_to_string(p: Box<dyn Any + Send + 'static>) -> String {
+    if let Some(s) = p.downcast_ref::<&'static str>() {
+        s.to_string()
+    } else if let Some(s) = p.downcast_ref::<String>() {
+        s.clone()
+    } else {
+        std::any::type_name::<Box<dyn Any + Send>>().to_string()
     }
 }
 
