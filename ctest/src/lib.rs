@@ -16,7 +16,6 @@
 use garando_syntax as syntax;
 use indoc::writedoc;
 use std::any::Any;
-use std::backtrace::Backtrace;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -800,11 +799,10 @@ impl TestGenerator {
         let krate = krate.as_ref();
         let out = self.generate_files(krate, out_file)?;
 
-        let target = self.target.clone().unwrap_or_else(|| {
-            env::var("TARGET").unwrap_or_else(|_| {
-                return Err(Error::from("TARGET environment variable not set")).unwrap();
-            })
-        });
+        let target = self
+            .target
+            .clone()
+            .unwrap_or_else(|| env::var("TARGET").unwrap());
 
         // Compile our C shim to be linked into tests
         let mut cfg = cc::Build::new();
@@ -896,12 +894,13 @@ impl TestGenerator {
         }
 
         // Prep the test generator
-        let out_dir = match &self.out_dir {
-            Some(dir) => dir.clone(),
-            None => env::var_os("OUT_DIR")
-                .ok_or_else(|| Error::from("OUT_DIR environment variable not set"))?
-                .into(),
-        };
+        let out_dir = self
+            .out_dir
+            .clone()
+            .or_else(|| env::var_os("OUT_DIR").map(PathBuf::from))
+            .filter(|p| p.is_dir())
+            .ok_or_else(|| Error::from("OUT_DIR not set or directory missing"))?;
+
         let out_file = out_dir.join(out_file);
         let ext = match self.lang {
             Lang::C => "c",
@@ -926,10 +925,9 @@ impl TestGenerator {
             Ok(Ok(pair)) => pair,
             Ok(Err(e)) => return Err(e),
             Err(payload) => {
-                let bt = Backtrace::force_capture();
                 let msg = panic_payload_to_string(payload);
-                // Output the panic payload & the backtrace
-                return Err(Error::from(format!("parser panicked: {msg}\n{bt}")));
+                // Output the panic payload
+                return Err(Error::from(format!("parser panicked: {msg}")));
             }
         };
 
