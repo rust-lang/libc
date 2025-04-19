@@ -1376,6 +1376,25 @@ s! {
         pub userns_fd: crate::__u64,
     }
 
+    // linux/pidfd.h
+
+    pub struct pidfd_info {
+        mask: crate::__u64,
+        cgroupid: crate::__u64,
+        pid: crate::__u32,
+        tgid: crate::__u32,
+        ppid: crate::__u32,
+        ruid: crate::__u32,
+        rgid: crate::__u32,
+        euid: crate::__u32,
+        egid: crate::__u32,
+        suid: crate::__u32,
+        sgid: crate::__u32,
+        fsuid: crate::__u32,
+        fsgid: crate::__u32,
+        exit_code: crate::__s32,
+    }
+
     // linux/uio.h
 
     pub struct dmabuf_cmsg {
@@ -3153,6 +3172,35 @@ pub const MREMAP_MAYMOVE: c_int = 1;
 pub const MREMAP_FIXED: c_int = 2;
 pub const MREMAP_DONTUNMAP: c_int = 4;
 
+// linux/pidfd.h
+pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;
+pub const PIDFD_THREAD: c_uint = O_EXCL as c_uint;
+
+pub const PIDFD_SIGNAL_THREAD: c_uint = 1 << 0;
+pub const PIDFD_SIGNAL_THREAD_GROUP: c_uint = 1 << 1;
+pub const PIDFD_SIGNAL_PROCESS_GROUP: c_uint = 1 << 2;
+
+pub const PIDFD_INFO_PID: c_uint = 1 << 0;
+pub const PIDFD_INFO_CREDS: c_uint = 1 << 1;
+pub const PIDFD_INFO_CGROUPID: c_uint = 1 << 2;
+pub const PIDFD_INFO_EXIT: c_uint = 1 << 3;
+
+pub const PIDFD_INFO_SIZE_VER0: c_uint = 64;
+
+const PIDFS_IOCTL_MAGIC: c_uint = 0xFF;
+pub const PIDFD_GET_CGROUP_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 1);
+pub const PIDFD_GET_IPC_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 2);
+pub const PIDFD_GET_MNT_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 3);
+pub const PIDFD_GET_NET_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 4);
+pub const PIDFD_GET_PID_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 5);
+pub const PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 6);
+pub const PIDFD_GET_TIME_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 7);
+pub const PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 8);
+pub const PIDFD_GET_USER_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 9);
+pub const PIDFD_GET_UTS_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 10);
+pub const PIDFD_GET_INFO: c_uint = _IOWR::<pidfd_info>(PIDFS_IOCTL_MAGIC, 11);
+
+// linux/prctl.h
 pub const PR_SET_PDEATHSIG: c_int = 1;
 pub const PR_GET_PDEATHSIG: c_int = 2;
 
