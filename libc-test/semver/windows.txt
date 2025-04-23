@@ -174,12 +174,15 @@ c_void
 calloc
 chdir
 chmod
+clock
 clock_t
 close
 commit
 connect
 creat
+ctime
 dev_t
+difftime
 dup
 dup2
 errno_t
@@ -214,7 +217,11 @@ fsetpos
 fstat
 ftell
 fwrite
+get_daylight
+get_dstbias
 get_osfhandle
+get_timezone
+get_tzname
 getchar
 getcwd
 getenv
@@ -326,6 +333,7 @@ tm
 tmpfile
 tolower
 toupper
+tzset
 uint16_t
 uint32_t
 uint64_t
