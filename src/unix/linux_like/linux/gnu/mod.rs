@@ -310,6 +310,13 @@ s! {
         pub u: __c_anonymous_ptrace_syscall_info_data,
     }
 
+    pub struct ptrace_sud_config {
+        pub mode: crate::__u64,
+        pub selector: crate::__u64,
+        pub offset: crate::__u64,
+        pub len: crate::__u64,
+    }
+
     pub struct iocb {
         pub aio_data: crate::__u64,
         #[cfg(target_endian = "little")]
@@ -389,6 +396,24 @@ s! {
         #[cfg(target_pointer_width = "64")]
         __size: [c_char; 32],
     }
+
+    pub struct mbstate_t {
+        __count: c_int,
+        __wchb: [c_char; 4],
+    }
+
+    pub struct fpos64_t {
+        __pos: off64_t,
+        __state: crate::mbstate_t,
+    }
+
+    pub struct fpos_t {
+        #[cfg(not(gnu_file_offset_bits64))]
+        __pos: off_t,
+        #[cfg(gnu_file_offset_bits64)]
+        __pos: off64_t,
+        __state: crate::mbstate_t,
+    }
 }
 
 impl siginfo_t {
@@ -433,7 +458,11 @@ s_no_extra_traits! {
         __return_value: ssize_t,
         // FIXME(off64): visible fields depend on __USE_FILE_OFFSET64
         pub aio_offset: off_t,
-        #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
+        #[cfg(all(
+            not(gnu_file_offset_bits64),
+            not(target_arch = "x86_64"),
+            target_pointer_width = "32"
+        ))]
         __pad: [c_char; 4],
         __glibc_reserved: [c_char; 32],
     }
@@ -915,6 +944,8 @@ pub const PTRACE_SYSCALL_INFO_NONE: crate::__u8 = 0;
 pub const PTRACE_SYSCALL_INFO_ENTRY: crate::__u8 = 1;
 pub const PTRACE_SYSCALL_INFO_EXIT: crate::__u8 = 2;
 pub const PTRACE_SYSCALL_INFO_SECCOMP: crate::__u8 = 3;
+pub const PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4210;
+pub const PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4211;
 
 // linux/fs.h
 
@@ -1203,8 +1234,11 @@ extern "C" {
     pub fn getrlimit64(resource: crate::__rlimit_resource_t, rlim: *mut crate::rlimit64) -> c_int;
     pub fn setrlimit64(resource: crate::__rlimit_resource_t, rlim: *const crate::rlimit64)
         -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "getrlimit64")]
     pub fn getrlimit(resource: crate::__rlimit_resource_t, rlim: *mut crate::rlimit) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "setrlimit64")]
     pub fn setrlimit(resource: crate::__rlimit_resource_t, rlim: *const crate::rlimit) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "prlimit64")]
     pub fn prlimit(
         pid: crate::pid_t,
         resource: crate::__rlimit_resource_t,
@@ -1245,6 +1279,7 @@ extern "C" {
         dirfd: c_int,
         path: *const c_char,
     ) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "preadv64v2")]
     pub fn preadv2(
         fd: c_int,
         iov: *const crate::iovec,
@@ -1252,6 +1287,7 @@ extern "C" {
         offset: off_t,
         flags: c_int,
     ) -> ssize_t;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "pwritev64v2")]
     pub fn pwritev2(
         fd: c_int,
         iov: *const crate::iovec,

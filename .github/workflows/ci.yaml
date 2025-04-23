@@ -29,6 +29,22 @@ jobs:
       - name: Check style
         run: ./ci/style.sh
 
+  clippy:
+    name: Clippy on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-14, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup update stable --no-self-update
+      - uses: Swatinem/rust-cache@v2
+      # Here we use the latest stable Rust toolchain already installed by GitHub
+      # Ideally we should run it for every target, but we cannot rely on unstable toolchains
+      # due to Clippy not being consistent between them.
+      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+
   # This runs `cargo build --target ...` for all T1 and T2 targets`
   verify_build:
     name: Verify build
@@ -76,6 +92,12 @@ jobs:
           - target: i686-unknown-linux-gnu
             docker: true
             os: ubuntu-24.04
+          - target: i686-unknown-linux-gnu
+            docker: true
+            os: ubuntu-24.04
+            artifact-tag: offset-bits64
+            env:
+              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
           - target: x86_64-unknown-linux-gnu
             docker: true
             os: ubuntu-24.04
@@ -107,6 +129,13 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
+
       - name: Run natively
         if: "!matrix.docker"
         run: ./ci/run.sh ${{ matrix.target }}
@@ -115,11 +144,13 @@ jobs:
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
+        id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
       - uses: actions/upload-artifact@v4
+        if: always() && steps.create_artifacts.outcome == 'success'
         with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
@@ -139,15 +170,11 @@ jobs:
           - aarch64-unknown-linux-gnu
           - aarch64-unknown-linux-musl
           - arm-linux-androideabi
-          - arm-unknown-linux-gnueabihf
           - arm-unknown-linux-musleabihf
           - i686-linux-android
           - i686-unknown-linux-musl
           - loongarch64-unknown-linux-gnu
           - loongarch64-unknown-linux-musl
-          # FIXME(ppc): SIGILL running tests, see
-          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
-          # - powerpc-unknown-linux-gnu
           - powerpc64-unknown-linux-gnu
           - powerpc64le-unknown-linux-gnu
           - riscv64gc-unknown-linux-gnu
@@ -162,6 +189,19 @@ jobs:
           # FIXME: It seems some items in `src/unix/mod.rs`
           # aren't defined on redox actually.
           # - x86_64-unknown-redox
+        include:
+          - target: arm-unknown-linux-gnueabihf
+          - target: arm-unknown-linux-gnueabihf
+            env:
+              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+            artifact-tag: offset-bits64
+          # FIXME(ppc): SIGILL running tests, see
+          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
+          # - target: powerpc-unknown-linux-gnu
+          # - target: powerpc-unknown-linux-gnu
+          #   env:
+          #     RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+          #   artifact-tag: offset-bits64
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
@@ -173,15 +213,24 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
+
       - name: Execute run-docker.sh
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
+        id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
       - uses: actions/upload-artifact@v4
+        if: always() && steps.create_artifacts.outcome == 'success'
         with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
@@ -222,13 +271,24 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: |
-        msrv="$(perl -ne 'print if s/rust-version\s*=\s*"(.*)"/\1/g' ctest/Cargo.toml)"
+        msrv="$(cargo metadata --format-version 1 | jq -r --arg CRATE_NAME ctest  '.packages | map(select(.name == $CRATE_NAME)) | first | .rust_version')"
         echo "MSRV: $msrv"
         echo "MSRV=$msrv" >> "$GITHUB_ENV"
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
     - uses: Swatinem/rust-cache@v2
     - run: cargo build -p ctest
+
+  docs:
+    name: Ensure docs build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: rustup update nightly --no-self-update && rustup default nightly
+    - uses: Swatinem/rust-cache@v2
+    - run: cargo doc --workspace --no-deps
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
@@ -242,7 +302,9 @@ jobs:
       - test_tier2_vm
       - verify_build
       - ctest_msrv
-    # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
+      - docs
+      - clippy
+    # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
     if: always() # make sure this is never "skipped"

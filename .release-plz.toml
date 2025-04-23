@@ -3,12 +3,13 @@ name = "libc"
 changelog_path = "CHANGELOG.md"
 git_release_name = "{{ version }}"
 git_tag_name = "{{ version }}"
+publish = false # On the main branch, we don't want to publish anything
 
 [[package]]
 name = "ctest"
 changelog_path = "ctest/CHANGELOG.md"
 git_release_name = "ctest-{{ version }}"
-git_tag_name = "ctest-{{ version }}"
+git_tag_name = "ctest-v{{ version }}"
 
 [changelog]
 body = """

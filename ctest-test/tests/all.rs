@@ -28,8 +28,8 @@ fn output(cmd: &mut Command) -> (String, ExitStatus) {
 fn t1() {
     let (o, status) = output(&mut cmd("t1"));
     assert!(status.success(), "output: {o}");
-    assert!(!o.contains("bad "), "{}", o);
-    eprintln!("o: {}", o);
+    assert!(!o.contains("bad "), "{o}");
+    eprintln!("o: {o}");
 }
 
 #[test]
@@ -37,7 +37,7 @@ fn t1() {
 fn t1_cxx() {
     let (o, status) = output(&mut cmd("t1_cxx"));
     assert!(status.success(), "output: {o}");
-    assert!(!o.contains("bad "), "{}", o);
+    assert!(!o.contains("bad "), "{o}");
 }
 
 #[test]
@@ -69,17 +69,17 @@ fn t2() {
     for line in o.lines().filter(|l| l.starts_with("bad ")) {
         let msg = &line[..line.find(":").unwrap()];
         if !errors.remove(&msg) {
-            println!("unknown error: {}", msg);
+            println!("unknown error: {msg}");
             bad = true;
         }
     }
 
     for error in errors {
-        println!("didn't find error: {}", error);
+        println!("didn't find error: {error}");
         bad = true;
     }
     if bad {
-        println!("output was:\n\n{}", o);
+        println!("output was:\n\n{o}");
         panic!();
     }
 }
@@ -114,17 +114,17 @@ fn t2_cxx() {
     for line in o.lines().filter(|l| l.starts_with("bad ")) {
         let msg = &line[..line.find(":").unwrap()];
         if !errors.remove(&msg) {
-            println!("unknown error: {}", msg);
+            println!("unknown error: {msg}");
             bad = true;
         }
     }
 
     for error in errors {
-        println!("didn't find error: {}", error);
+        println!("didn't find error: {error}");
         bad = true;
     }
     if bad {
-        println!("output was:\n\n{}", o);
+        println!("output was:\n\n{o}");
         panic!();
     }
 }

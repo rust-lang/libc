@@ -96,7 +96,7 @@ s! {
         pub gid: crate::gid_t,
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
-        pub mode: crate::mode_t,
+        pub mode: mode_t,
         pub seq: c_uint,
         pub key: crate::key_t,
     }
@@ -328,7 +328,7 @@ s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
+        pub st_mode: mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
@@ -2648,9 +2648,8 @@ extern "C" {
     pub fn getpriority(which: c_int, who: c_int) -> c_int;
     pub fn setpriority(which: c_int, who: c_int, prio: c_int) -> c_int;
 
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t, dev: dev_t)
-        -> c_int;
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn sethostname(name: *const c_char, len: c_int) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
@@ -2727,7 +2726,7 @@ extern "C" {
         fildes: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_addclose(
         file_actions: *mut posix_spawn_file_actions_t,
@@ -2810,7 +2809,7 @@ extern "C" {
 
     pub fn shmget(key: key_t, size: size_t, shmflg: c_int) -> c_int;
 
-    pub fn shm_open(name: *const c_char, oflag: c_int, mode: crate::mode_t) -> c_int;
+    pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
 
     pub fn seekdir(dirp: *mut crate::DIR, loc: c_long);

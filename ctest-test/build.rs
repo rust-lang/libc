@@ -30,8 +30,8 @@ fn main() {
         .type_name(move |ty, is_struct, is_union| match ty {
             "T1Union" => ty.to_string(),
             "Transparent" => ty.to_string(),
-            t if is_struct => format!("struct {}", t),
-            t if is_union => format!("union {}", t),
+            t if is_struct => format!("struct {t}"),
+            t if is_union => format!("union {t}"),
             t => t.to_string(),
         })
         .volatile_item(t1_volatile)
@@ -43,8 +43,8 @@ fn main() {
         .include("src")
         .type_name(move |ty, is_struct, is_union| match ty {
             "T2Union" => ty.to_string(),
-            t if is_struct => format!("struct {}", t),
-            t if is_union => format!("union {}", t),
+            t if is_struct => format!("struct {t}"),
+            t if is_union => format!("union {t}"),
             t => t.to_string(),
         })
         .skip_roundtrip(|_| true)
@@ -64,8 +64,8 @@ fn main() {
             .type_name(move |ty, is_struct, is_union| match ty {
                 "T1Union" => ty.to_string(),
                 "Transparent" => ty.to_string(),
-                t if is_struct => format!("struct {}", t),
-                t if is_union => format!("union {}", t),
+                t if is_struct => format!("struct {t}"),
+                t if is_union => format!("union {t}"),
                 t => t.to_string(),
             })
             .volatile_item(t1_volatile)
@@ -78,8 +78,8 @@ fn main() {
             .include("src")
             .type_name(move |ty, is_struct, is_union| match ty {
                 "T2Union" => ty.to_string(),
-                t if is_struct => format!("struct {}", t),
-                t if is_union => format!("union {}", t),
+                t if is_struct => format!("struct {t}"),
+                t if is_union => format!("union {t}"),
                 t => t.to_string(),
             })
             .skip_roundtrip(|_| true)

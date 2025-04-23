@@ -65,7 +65,6 @@ s! {
         pub cgid: crate::gid_t,
         pub mode: c_uint,
         pub __seq: c_int,
-        __pad2: c_ushort,
         __unused1: c_ulong,
         __unused2: c_ulong,
     }

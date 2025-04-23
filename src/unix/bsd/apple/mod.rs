@@ -739,7 +739,7 @@ s! {
         pub gid: crate::gid_t,
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
-        pub mode: crate::mode_t,
+        pub mode: mode_t,
         pub _seq: c_ushort,
         pub _key: crate::key_t,
     }
@@ -6151,7 +6151,7 @@ extern "C" {
         fd: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_addclose(
         actions: *mut posix_spawn_file_actions_t,
@@ -6449,9 +6449,8 @@ extern "C" {
     pub fn dirname(path: *mut c_char) -> *mut c_char;
     pub fn basename(path: *mut c_char) -> *mut c_char;
 
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t, dev: dev_t)
-        -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
     pub fn freadlink(fd: c_int, buf: *mut c_char, size: size_t) -> c_int;
     pub fn execvP(
         file: *const c_char,
