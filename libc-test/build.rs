@@ -4039,6 +4039,10 @@ fn test_linux(target: &str) {
             // Might differ between kernel versions
             "open_how" => true,
 
+            // Linux >= 6.13 (pidfd_info.exit_code: Linux >= 6.15)
+            // Might differ between kernel versions
+            "pidfd_info" => true,
+
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
@@ -4145,6 +4149,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("OPEN_TREE_")
                 || name.starts_with("P_")
                 || name.starts_with("PF_")
+                || name.starts_with("PIDFD_")
                 || name.starts_with("RLIMIT_")
                 || name.starts_with("RTEXT_FILTER_")
                 || name.starts_with("SOL_")
@@ -4348,6 +4353,30 @@ fn test_linux(target: &str) {
 
             // headers conflicts with linux/pidfd.h
             "PIDFD_NONBLOCK" => true,
+            // Linux >= 6.9
+            "PIDFD_THREAD"
+            | "PIDFD_SIGNAL_THREAD"
+            | "PIDFD_SIGNAL_THREAD_GROUP"
+            | "PIDFD_SIGNAL_PROCESS_GROUP" => true,
+            // Linux >= 6.11
+            "PIDFD_GET_CGROUP_NAMESPACE"
+            | "PIDFD_GET_IPC_NAMESPACE"
+            | "PIDFD_GET_MNT_NAMESPACE"
+            | "PIDFD_GET_NET_NAMESPACE"
+            | "PIDFD_GET_PID_NAMESPACE"
+            | "PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE"
+            | "PIDFD_GET_TIME_NAMESPACE"
+            | "PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE"
+            | "PIDFD_GET_USER_NAMESPACE"
+            | "PIDFD_GET_UTS_NAMESPACE" => true,
+            // Linux >= 6.13
+            "PIDFD_GET_INFO"
+            | "PIDFD_INFO_PID"
+            | "PIDFD_INFO_CREDS"
+            | "PIDFD_INFO_CGROUPID"
+            | "PIDFD_INFO_SIZE_VER0" => true,
+            // Linux >= 6.15
+            "PIDFD_INFO_EXIT" | "PIDFD_SELF" | "PIDFD_SELF_PROCESS" => true,
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
