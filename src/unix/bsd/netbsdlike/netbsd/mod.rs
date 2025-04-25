@@ -38,8 +38,8 @@ pub type Elf64_Xword = u64;
 
 pub type iconv_t = *mut c_void;
 
-e! {
-    pub enum fae_action {
+c_enum! {
+    fae_action {
         FAE_OPEN,
         FAE_DUP2,
         FAE_CLOSE,
@@ -2423,7 +2423,7 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_ALIGN(mem::size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(_ALIGN(mem::size_of::<cmsghdr>()))
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
@@ -2438,7 +2438,7 @@ f! {
             cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(mem::size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         } else {
             (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
         }

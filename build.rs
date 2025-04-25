@@ -4,7 +4,7 @@ use std::{env, str};
 // List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
 // need to know all the possible cfgs that this script will set. If you need to set another cfg
 // make sure to add it to this list as well.
-const ALLOWED_CFGS: &'static [&'static str] = &[
+const ALLOWED_CFGS: &[&str] = &[
     "emscripten_old_stat_abi",
     "espidf_time32",
     "freebsd10",
@@ -24,7 +24,7 @@ const ALLOWED_CFGS: &'static [&'static str] = &[
 ];
 
 // Extra values to allow for check-cfg.
-const CHECK_CFG_EXTRA: &'static [(&'static str, &'static [&'static str])] = &[
+const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
     (
         "target_os",
         &[
@@ -46,7 +46,6 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
-    let rustc_dep_of_std = env::var("CARGO_FEATURE_RUSTC_DEP_OF_STD").is_ok();
     let libc_ci = env::var("LIBC_CI").is_ok();
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
@@ -66,10 +65,8 @@ fn main() {
         vers
     } else if libc_ci {
         which_freebsd().unwrap_or(12)
-    } else if rustc_dep_of_std {
-        12
     } else {
-        12
+        12 // regardless of CARGO_FEATURE_RUSTC_DEP_OF_STD env var
     };
 
     match which_freebsd {
@@ -124,17 +121,17 @@ fn main() {
     if rustc_minor_ver >= 80 {
         for cfg in ALLOWED_CFGS {
             if rustc_minor_ver >= 75 {
-                println!("cargo:rustc-check-cfg=cfg({})", cfg);
+                println!("cargo:rustc-check-cfg=cfg({cfg})");
             } else {
-                println!("cargo:rustc-check-cfg=values({})", cfg);
+                println!("cargo:rustc-check-cfg=values({cfg})");
             }
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
             if rustc_minor_ver >= 75 {
-                println!("cargo:rustc-check-cfg=cfg({},values(\"{}\"))", name, values);
+                println!("cargo:rustc-check-cfg=cfg({name},values(\"{values}\"))");
             } else {
-                println!("cargo:rustc-check-cfg=values({},\"{}\")", name, values);
+                println!("cargo:rustc-check-cfg=values({name},\"{values}\")");
             }
         }
     }
@@ -163,12 +160,11 @@ fn rustc_version_cmd(is_clippy_driver: bool) -> Output {
 
     let output = cmd.output().expect("Failed to get rustc version");
 
-    if !output.status.success() {
-        panic!(
-            "failed to run rustc: {}",
-            String::from_utf8_lossy(output.stderr.as_slice())
-        );
-    }
+    assert!(
+        output.status.success(),
+        "failed to run rustc: {}",
+        String::from_utf8_lossy(output.stderr.as_slice())
+    );
 
     output
 }
@@ -195,9 +191,11 @@ fn rustc_minor_nightly() -> (u32, bool) {
 
     let mut pieces = version.split('.');
 
-    if pieces.next() != Some("rustc 1") {
-        panic!("Failed to get rustc version");
-    }
+    assert_eq!(
+        pieces.next(),
+        Some("rustc 1"),
+        "Failed to get rustc version"
+    );
 
     let minor = pieces.next();
 
@@ -207,9 +205,9 @@ fn rustc_minor_nightly() -> (u32, bool) {
     // since a nightly build should either come from CI
     // or a git checkout
     let nightly_raw = otry!(pieces.next()).split('-').nth(1);
-    let nightly = nightly_raw
-        .map(|raw| raw.starts_with("dev") || raw.starts_with("nightly"))
-        .unwrap_or(false);
+    let nightly = nightly_raw.map_or(false, |raw| {
+        raw.starts_with("dev") || raw.starts_with("nightly")
+    });
     let minor = otry!(otry!(minor).parse().ok());
 
     (minor, nightly)
@@ -235,7 +233,13 @@ fn which_freebsd() -> Option<i32> {
 }
 
 fn emcc_version_code() -> Option<u64> {
-    let output = Command::new("emcc").arg("-dumpversion").output().ok()?;
+    let emcc = if cfg!(target_os = "windows") {
+        "emcc.bat"
+    } else {
+        "emcc"
+    };
+
+    let output = Command::new(emcc).arg("-dumpversion").output().ok()?;
     if !output.status.success() {
         return None;
     }
@@ -254,8 +258,9 @@ fn emcc_version_code() -> Option<u64> {
 }
 
 fn set_cfg(cfg: &str) {
-    if !ALLOWED_CFGS.contains(&cfg) {
-        panic!("trying to set cfg {}, but it is not in ALLOWED_CFGS", cfg);
-    }
-    println!("cargo:rustc-cfg={}", cfg);
+    assert!(
+        ALLOWED_CFGS.contains(&cfg),
+        "trying to set cfg {cfg}, but it is not in ALLOWED_CFGS",
+    );
+    println!("cargo:rustc-cfg={cfg}");
 }

@@ -1,16 +1,12 @@
 [package]
 name = "libc-test"
 version = "0.1.0"
-edition = "2021"
-authors = ["The Rust Project Developers"]
-license = "MIT OR Apache-2.0"
-build = "build.rs"
+description = "A test crate for the libc crate."
 publish = false
+authors = ["The Rust Project Developers"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-lang/libc"
-homepage = "https://github.com/rust-lang/libc"
-description = """
-A test crate for the libc crate.
-"""
 
 [dependencies]
 cfg-if = "1.0.0"
@@ -23,9 +19,7 @@ glob = "0.3.2"
 annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 
 [build-dependencies]
-# FIXME(cc): pinned until a fix for https://github.com/rust-lang/cc-rs/issues/1452
-# is released.
-cc = ">=1.0.83, <1.2.18"
+cc = "1.0.83"
 ctest = { path = "../ctest" }
 regex = "1.11.1"
 
@@ -108,3 +102,10 @@ harness = true
 name = "style_tests"
 path = "test/style_tests.rs"
 harness = true
+
+# FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`
+#              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
+
+[lints.rust]
+
+[lints.clippy]

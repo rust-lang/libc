@@ -1,20 +1,16 @@
 [package]
 name = "libc"
 version = "1.0.0-alpha.1"
-authors = ["The Rust Project Developers"]
-license = "MIT OR Apache-2.0"
-readme = "README.md"
-edition = "2021"
-repository = "https://github.com/rust-lang/libc"
-homepage = "https://github.com/rust-lang/libc"
-documentation = "https://docs.rs/libc/"
 keywords = ["libc", "ffi", "bindings", "operating", "system"]
 categories = ["external-ffi-bindings", "no-std", "os"]
-build = "build.rs"
 exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
-rust-version = "1.63"
 description = "Raw FFI bindings to platform libraries like libc."
 publish = false # On the main branch, we don't want to publish anything
+authors = ["The Rust Project Developers"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rust-lang/libc"
+rust-version = "1.63"
 
 [package.metadata.docs.rs]
 features = ["extra_traits"]
@@ -146,3 +142,30 @@ members = [
     "ctest-test",
     "libc-test",
 ]
+
+# FIXME(msrv): These should be renamed as `[workspace.lints.*]` once MSRV is above 1.64
+#       This way all crates can use it with `[lints] workspace=true` section
+
+[lints.rust]
+# FIXME(cleanup): make ident usage consistent in each file
+unused_qualifications = "allow"
+
+[lints.clippy]
+# Enable pedantic lints - use this manually once in a while, but don't enable by default
+# pedantic = { level = "warn", priority = -1 }
+
+# We are okay with the current state of these lints
+explicit_iter_loop = "warn"
+identity_op = "allow"  # some expressions like `0 | x` are clearer for bit ops
+manual_assert = "warn"
+map_unwrap_or = "warn"
+missing_safety_doc = "allow"  # safety? in libc? seriously?
+non_minimal_cfg = "allow"  # for some reason cfg_if! sometimes trigger this
+ptr_as_ptr = "warn"
+unnecessary_semicolon = "warn"
+
+# FIXME(clippy): these should be fixed if possible
+expl_impl_clone_on_copy = "allow"
+uninlined_format_args = "allow"
+unnecessary_cast = "allow"  # some casts like `as usize` are only needed for some targets
+used_underscore_binding = "allow"

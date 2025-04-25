@@ -739,7 +739,7 @@ s! {
         pub gid: crate::gid_t,
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
-        pub mode: crate::mode_t,
+        pub mode: mode_t,
         pub _seq: c_ushort,
         pub _key: crate::key_t,
     }
@@ -1653,7 +1653,7 @@ impl siginfo_t {
             si_value: crate::sigval,
         }
 
-        (*(self as *const siginfo_t as *const siginfo_timer)).si_value
+        (*(self as *const siginfo_t).cast::<siginfo_timer>()).si_value
     }
 
     pub unsafe fn si_pid(&self) -> crate::pid_t {
@@ -5463,7 +5463,7 @@ pub const VMADDR_PORT_ANY: c_uint = 0xFFFFFFFF;
 
 const fn __DARWIN_ALIGN32(p: usize) -> usize {
     const __DARWIN_ALIGNBYTES32: usize = mem::size_of::<u32>() - 1;
-    p + __DARWIN_ALIGNBYTES32 & !__DARWIN_ALIGNBYTES32
+    (p + __DARWIN_ALIGNBYTES32) & !__DARWIN_ALIGNBYTES32
 }
 
 pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
@@ -5538,7 +5538,7 @@ f! {
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
-        };
+        }
         let cmsg_len = (*cmsg).cmsg_len as usize;
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
@@ -6151,7 +6151,7 @@ extern "C" {
         fd: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_addclose(
         actions: *mut posix_spawn_file_actions_t,
@@ -6449,9 +6449,8 @@ extern "C" {
     pub fn dirname(path: *mut c_char) -> *mut c_char;
     pub fn basename(path: *mut c_char) -> *mut c_char;
 
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t, dev: dev_t)
-        -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
     pub fn freadlink(fd: c_int, buf: *mut c_char, size: size_t) -> c_int;
     pub fn execvP(
         file: *const c_char,

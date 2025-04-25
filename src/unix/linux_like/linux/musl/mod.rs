@@ -656,7 +656,7 @@ pub const INIT_PROCESS: c_short = 5;
 pub const LOGIN_PROCESS: c_short = 6;
 pub const USER_PROCESS: c_short = 7;
 pub const DEAD_PROCESS: c_short = 8;
-// musl does not define ACCOUNTING
+pub const ACCOUNTING: c_short = 9;
 
 pub const SFD_CLOEXEC: c_int = 0x080000;
 
@@ -789,8 +789,6 @@ pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
 pub const SFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
-pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;
-
 pub const TCSANOW: c_int = 0;
 pub const TCSADRAIN: c_int = 1;
 pub const TCSAFLUSH: c_int = 2;
@@ -887,6 +885,10 @@ pub const _CS_V6_ENV: c_int = 1148;
 pub const _CS_V7_ENV: c_int = 1149;
 
 pub const CLONE_NEWTIME: c_int = 0x80;
+
+pub const UT_HOSTSIZE: usize = 256;
+pub const UT_LINESIZE: usize = 32;
+pub const UT_NAMESIZE: usize = 32;
 
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {
@@ -987,12 +989,41 @@ extern "C" {
         fd: c_int,
     ) -> c_int;
 
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
     pub fn getutxent() -> *mut utmpx;
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
     pub fn setutxent();
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
     pub fn endutxent();
+    #[deprecated(
+        since = "0.2.172",
+        note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
+    )]
+    pub fn utmpxname(file: *const c_char) -> c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support

@@ -88,7 +88,7 @@ cfg_if! {
 
         impl hash::Hash for fpreg_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                let d: u64 = unsafe { mem::transmute(self.d) };
+                let d: u64 = self.d.to_bits();
                 d.hash(state);
             }
         }
