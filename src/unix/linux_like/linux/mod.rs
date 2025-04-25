@@ -6035,16 +6035,16 @@ f! {
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
-            return 0 as *mut cmsghdr;
-        };
+            return core::ptr::null_mut::<cmsghdr>();
+        }
         let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if (next.wrapping_offset(1)) as usize > max
             || next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         } else {
-            next as *mut cmsghdr
+            next
         }
     }
 
@@ -6055,7 +6055,7 @@ f! {
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        for slot in cpuset.bits.iter_mut() {
+        for slot in &mut cpuset.bits {
             *slot = 0;
         }
     }
@@ -6064,14 +6064,12 @@ f! {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
-        ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
-        ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
@@ -6083,7 +6081,7 @@ f! {
     pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = mem::size_of_val(&cpuset.bits[0]);
-        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+        for i in &cpuset.bits[..(size / size_of_mask)] {
             s += i.count_ones();
         }
         s as c_int
@@ -6098,7 +6096,7 @@ f! {
     }
 
     pub fn SCTP_PR_INDEX(policy: c_int) -> c_int {
-        policy >> 4 - 1
+        policy >> (4 - 1)
     }
 
     pub fn SCTP_PR_POLICY(policy: c_int) -> c_int {
@@ -6108,7 +6106,6 @@ f! {
     pub fn SCTP_PR_SET_POLICY(flags: &mut c_int, policy: c_int) -> () {
         *flags &= !SCTP_PR_SCTP_MASK;
         *flags |= policy;
-        ()
     }
 
     pub fn IPTOS_TOS(tos: u8) -> u8 {
@@ -6169,20 +6166,15 @@ f! {
 
     pub fn BPF_STMT(code: __u16, k: __u32) -> sock_filter {
         sock_filter {
-            code: code,
+            code,
             jt: 0,
             jf: 0,
-            k: k,
+            k,
         }
     }
 
     pub fn BPF_JUMP(code: __u16, k: __u32, jt: __u8, jf: __u8) -> sock_filter {
-        sock_filter {
-            code: code,
-            jt: jt,
-            jf: jf,
-            k: k,
-        }
+        sock_filter { code, jt, jf, k }
     }
 
     pub fn ELF32_R_SYM(val: Elf32_Word) -> Elf32_Word {
@@ -6194,7 +6186,7 @@ f! {
     }
 
     pub fn ELF32_R_INFO(sym: Elf32_Word, t: Elf32_Word) -> Elf32_Word {
-        sym << 8 + t & 0xff
+        sym << (8 + t) & 0xff
     }
 
     pub fn ELF64_R_SYM(val: Elf64_Xword) -> Elf64_Xword {
@@ -6206,7 +6198,7 @@ f! {
     }
 
     pub fn ELF64_R_INFO(sym: Elf64_Xword, t: Elf64_Xword) -> Elf64_Xword {
-        sym << 32 + t
+        sym << (32 + t)
     }
 }
 
