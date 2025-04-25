@@ -661,14 +661,14 @@ pub const SIGPWR: c_int = 30;
 pub const SIGSYS: c_int = 31;
 pub const NSIG: c_int = 32;
 
-pub const SA_NOCLDSTOP: c_ulong = 0x00000001;
-pub const SA_NOCLDWAIT: c_ulong = 0x00000002;
-pub const SA_SIGINFO: c_ulong = 0x00000004;
-pub const SA_RESTORER: c_ulong = 0x04000000;
-pub const SA_ONSTACK: c_ulong = 0x08000000;
-pub const SA_RESTART: c_ulong = 0x10000000;
-pub const SA_NODEFER: c_ulong = 0x40000000;
-pub const SA_RESETHAND: c_ulong = 0x80000000;
+pub const SA_NOCLDWAIT: c_ulong = 0x0000_0002;
+pub const SA_RESTORER: c_ulong = 0x0000_0004; // FIXME(redox): remove after relibc removes it
+pub const SA_SIGINFO: c_ulong = 0x0200_0000;
+pub const SA_ONSTACK: c_ulong = 0x0400_0000;
+pub const SA_RESTART: c_ulong = 0x0800_0000;
+pub const SA_NODEFER: c_ulong = 0x1000_0000;
+pub const SA_RESETHAND: c_ulong = 0x2000_0000;
+pub const SA_NOCLDSTOP: c_ulong = 0x4000_0000;
 
 // sys/file.h
 pub const LOCK_SH: c_int = 1;
