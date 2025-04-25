@@ -37,6 +37,3 @@ test = false
 unused_qualifications = "allow"
 
 [lints.clippy]
-# FIXME(clippy): fix these
-match_like_matches_macro = "allow"
-eq_op = "allow"
