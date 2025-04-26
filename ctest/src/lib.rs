@@ -13,16 +13,18 @@
 #![recursion_limit = "256"]
 #![deny(missing_docs)]
 
+use anyhow::{Context, Result};
+use garando_syntax as syntax;
+use indoc::writedoc;
+use std::any::Any;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
+use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
-
-use garando_syntax as syntax;
-use indoc::writedoc;
 use syntax::abi::Abi;
 use syntax::ast;
 use syntax::ast::{Attribute, Name};
@@ -40,9 +42,6 @@ use syntax::parse::{self, ParseSess};
 use syntax::ptr::P;
 use syntax::util::small_vector::SmallVector;
 use syntax::visit::{self, Visitor};
-
-type Error = Box<dyn std::error::Error>;
-type Result<T, E = Error> = std::result::Result<T, E>;
 
 /// Programming language
 #[derive(Debug)]
@@ -773,6 +772,17 @@ impl TestGenerator {
         self
     }
 
+    /// Generate all tests and panic on any errors.
+    ///
+    /// This function is a convenience wrapper around `try_generate` that panics instead of returning
+    /// errors.
+    ///
+    /// See `try_generate` for the error-handling version of this function.
+    pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) {
+        self.try_generate(krate, out_file)
+            .unwrap_or_else(|e| panic!("Failed to generate tests: {e}"));
+    }
+
     /// Generate all tests.
     ///
     /// This function is first given the path to the `*-sys` crate which is
@@ -791,16 +801,16 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.generate("../path/to/libfoo-sys/lib.rs", "all.rs");
+    /// cfg.try_generate("../path/to/libfoo-sys/lib.rs", "all.rs");
     /// ```
-    pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) {
+    pub fn try_generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         let krate = krate.as_ref();
-        let out = self.generate_files(krate, out_file);
+        let out = self.generate_files(krate, out_file)?;
 
-        let target = self
-            .target
-            .clone()
-            .unwrap_or_else(|| env::var("TARGET").unwrap());
+        let target = match self.target.clone() {
+            Some(t) => t,
+            None => env::var("TARGET").context("TARGET environment variable not found")?,
+        };
 
         // Compile our C shim to be linked into tests
         let mut cfg = cc::Build::new();
@@ -815,19 +825,19 @@ impl TestGenerator {
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
                 // ignored warnings
-               .flag("/wd4820")  // warning about adding padding?
-               .flag("/wd4100")  // unused parameters
-               .flag("/wd4996")  // deprecated functions
-               .flag("/wd4296")  // '<' being always false
-               .flag("/wd4255")  // converting () to (void)
-               .flag("/wd4668")  // using an undefined thing in preprocessor?
-               .flag("/wd4366")  // taking ref to packed struct field might be unaligned
-               .flag("/wd4189")  // local variable initialized but not referenced
-               .flag("/wd4710")  // function not inlined
-               .flag("/wd5045")  // compiler will insert Spectre mitigation
-               .flag("/wd4514")  // unreferenced inline function removed
-               .flag("/wd4711")  // function selected for automatic inline
-                ;
+                .flag("/wd4820")  // warning about adding padding?
+                .flag("/wd4100")  // unused parameters
+                .flag("/wd4996")  // deprecated functions
+                .flag("/wd4296")  // '<' being always false
+                .flag("/wd4255")  // converting () to (void)
+                .flag("/wd4668")  // using an undefined thing in preprocessor?
+                .flag("/wd4366")  // taking ref to packed struct field might be unaligned
+                .flag("/wd4189")  // local variable initialized but not referenced
+                .flag("/wd4710")  // function not inlined
+                .flag("/wd5045")  // compiler will insert Spectre mitigation
+                .flag("/wd4514")  // unreferenced inline function removed
+                .flag("/wd4711")  // function selected for automatic inline
+            ;
         } else {
             cfg.flag("-Wall")
                 .flag("-Wextra")
@@ -851,25 +861,54 @@ impl TestGenerator {
             cfg.include(p);
         }
 
-        let stem = out.file_stem().unwrap().to_str().unwrap();
-        cfg.target(&target)
-            .out_dir(out.parent().unwrap())
-            .compile(&format!("lib{stem}.a"));
+        let stem = out.file_stem().context("Failed to get file stem")?;
+
+        let parent = out
+            .parent()
+            .context("Output file has no parent directory")?;
+
+        cfg.target(&target).out_dir(parent);
+
+        match cfg.try_compile(&format!("lib{stem:?}.a")) {
+            Ok(_) => Ok(out),
+            Err(e) => Err(anyhow::anyhow!("Compilation failed").context(format!("Error: {}", e))),
+        }
     }
 
     #[doc(hidden)] // TODO: needs docs
-    pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> PathBuf {
+    pub fn generate_files<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         self.generate_files_impl(krate, out_file)
-            .expect("generation failed")
     }
 
     fn generate_files_impl<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         let krate = krate.as_ref();
+
+        // Check if all specified header files exist in the include paths
+        for header in &self.headers {
+            // Check if header exists in any of the include paths
+            for include_path in &self.includes {
+                let header_path = include_path.join(header);
+                if !header_path.exists() {
+                    return Err(anyhow::anyhow!("Header file not found"))
+                        .with_context(|| format!("Path {} does not exist", header_path.display()));
+                }
+            }
+        }
+
         // Prep the test generator
         let out_dir = self
             .out_dir
             .clone()
-            .unwrap_or_else(|| PathBuf::from(env::var_os("OUT_DIR").unwrap()));
+            .or_else(|| env::var_os("OUT_DIR").map(PathBuf::from))
+            .context("Neither out_dir nor OUT_DIR environment variable is set")?;
+
+        if !out_dir.is_dir() {
+            return Err(anyhow::anyhow!(
+                "Output directory does not exist: {}",
+                out_dir.display()
+            ));
+        }
+
         let out_file = out_dir.join(out_file);
         let ext = match self.lang {
             Lang::C => "c",
@@ -878,18 +917,39 @@ impl TestGenerator {
         let c_file = out_file.with_extension(ext);
         let rust_out = BufWriter::new(File::create(&out_file)?);
         let c_out = BufWriter::new(File::create(&c_file)?);
-        let mut sess = ParseSess::new(FilePathMapping::empty());
+        // let mut sess = ParseSess::new(FilePathMapping::empty());
         let target = self
             .target
             .clone()
-            .unwrap_or_else(|| env::var("TARGET").unwrap());
-        for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
-            let s = |s: &str| Name::intern(s);
-            sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
-        }
+            .or_else(|| env::var("TARGET").ok())
+            .filter(|t| !t.is_empty())
+            .context("TARGET environment variable not set or empty")?;
 
-        // Parse the libc crate
-        let krate = parse::parse_crate_from_file(krate, &sess).ok().unwrap();
+        let (krate, sess) = match catch_unwind(AssertUnwindSafe(|| {
+            let mut sess = ParseSess::new(FilePathMapping::empty());
+            for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
+                let s = |s: &str| Name::intern(s);
+                sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
+            }
+            // Convert DiagnosticBuilder -> Error so the `?` works
+            let krate = parse::parse_crate_from_file(krate, &sess).map_err(|d| {
+                anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {:?}", d))
+            })?;
+
+            Ok::<_, anyhow::Error>((krate, sess))
+        })) {
+            // closure produced an ordinary Ok
+            Ok(Ok(pair)) => pair,
+            // no panic, but closure produced an ordinary Err
+            Ok(Err(e)) => return Err(e),
+            // closure/code panicked and return the panic's payload
+            Err(p) => {
+                return Err(anyhow::anyhow!(
+                    "Parser panic: {}",
+                    panic_payload_to_string(p)
+                ))
+            }
+        };
 
         // Remove things like functions, impls, traits, etc, that we're not
         // looking at
@@ -960,6 +1020,21 @@ impl TestGenerator {
         g.emit_run_all()?;
 
         Ok(out_file)
+    }
+}
+
+/// Convert a panic payload into something printable.
+///
+/// * `panic!("msg")` → `"msg"`
+/// * `panic!(String)` → the string’s contents
+/// * anything else → the payload’s type name
+fn panic_payload_to_string(p: Box<dyn Any + Send + 'static>) -> String {
+    if let Some(s) = p.downcast_ref::<&'static str>() {
+        s.to_string()
+    } else if let Some(s) = p.downcast_ref::<String>() {
+        s.clone()
+    } else {
+        std::any::type_name::<Box<dyn Any + Send>>().to_string()
     }
 }
 

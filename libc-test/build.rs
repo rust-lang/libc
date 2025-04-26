@@ -4868,8 +4868,8 @@ fn test_linux_like_apis(target: &str) {
             "strerror_r" => false,
             _ => true,
         })
-            .skip_const(|_| true)
-            .skip_struct(|_| true);
+        .skip_const(|_| true)
+        .skip_struct(|_| true);
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_strerror_r.rs");
     }
 
@@ -4943,10 +4943,10 @@ fn test_linux_like_apis(target: &str) {
             .skip_const(|_| true)
             .skip_struct(|_| true)
             .skip_const(move |name| match name {
-                    "IPV6_FLOWINFO"
-                        | "IPV6_FLOWLABEL_MGR"
-                        | "IPV6_FLOWINFO_SEND"
-                        | "IPV6_FLOWINFO_FLOWLABEL"
+                "IPV6_FLOWINFO"
+                | "IPV6_FLOWLABEL_MGR"
+                | "IPV6_FLOWINFO_SEND"
+                | "IPV6_FLOWINFO_FLOWLABEL"
                 | "IPV6_FLOWINFO_PRIORITY" => false,
                 _ => true,
             })
