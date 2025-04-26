@@ -861,7 +861,11 @@ impl TestGenerator {
             cfg.include(p);
         }
 
-        let stem = out.file_stem().context("Failed to get file stem")?;
+        let stem = out
+            .file_stem()
+            .context("Failed to get file stem")?
+            .to_str()
+            .context("Failed to convert to str")?;
 
         let parent = out
             .parent()
@@ -869,7 +873,7 @@ impl TestGenerator {
 
         cfg.target(&target).out_dir(parent);
 
-        match cfg.try_compile(&format!("lib{stem:?}.a")) {
+        match cfg.try_compile(&format!("lib{stem}.a")) {
             Ok(_) => Ok(out),
             Err(e) => Err(anyhow::anyhow!("Compilation failed").context(format!("Error: {}", e))),
         }
