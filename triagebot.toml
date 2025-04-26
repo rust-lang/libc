@@ -16,6 +16,12 @@ contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
     "@tgross35",
 ]
 
+# Ensure issue links link to this repo
+[issue-links]
+
+# Prevents mentions in commits to avoid users being spammed
+[no-mentions]
+
 [autolabel."A-CI"]
 trigger_files = [
     ".cirrus.yml",
