@@ -917,7 +917,7 @@ impl TestGenerator {
         let c_file = out_file.with_extension(ext);
         let rust_out = BufWriter::new(File::create(&out_file)?);
         let c_out = BufWriter::new(File::create(&c_file)?);
-        // let mut sess = ParseSess::new(FilePathMapping::empty());
+
         let target = self
             .target
             .clone()
