@@ -9,6 +9,7 @@ repository = "https://github.com/rust-lang/libc"
 rust-version = "1.63.0"
 
 [dependencies]
+anyhow = "1.0"
 garando_syntax = "0.1"
 cc = "1.0.1"
 rustc_version = "0.4"

@@ -43,8 +43,7 @@ use syntax::ptr::P;
 use syntax::util::small_vector::SmallVector;
 use syntax::visit::{self, Visitor};
 
-type Error = Box<dyn std::error::Error>;
-type Result<T, E = Error> = std::result::Result<T, E>;
+use anyhow::{Context, Error, Result};
 
 /// Programming language
 #[derive(Debug)]
@@ -775,6 +774,17 @@ impl TestGenerator {
         self
     }
 
+    /// Generate all tests and panic on any errors.
+    ///
+    /// This function is a convenience wrapper around `try_generate` that panics instead of returning
+    /// errors.
+    ///
+    /// See `try_generate` for the error-handling version of this function.
+    pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) {
+        self.try_generate(krate, out_file)
+            .unwrap_or_else(|e| panic!("Failed to generate tests: {e}"));
+    }
+
     /// Generate all tests.
     ///
     /// This function is first given the path to the `*-sys` crate which is
@@ -793,16 +803,16 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.generate("../path/to/libfoo-sys/lib.rs", "all.rs");
+    /// cfg.try_generate("../path/to/libfoo-sys/lib.rs", "all.rs");
     /// ```
-    pub fn generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
+    pub fn try_generate<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         let krate = krate.as_ref();
         let out = self.generate_files(krate, out_file)?;
 
-        let target = self
-            .target
-            .clone()
-            .unwrap_or_else(|| env::var("TARGET").unwrap());
+        let target = match self.target.clone() {
+            Some(t) => t,
+            None => env::var("TARGET").context("TARGET environment variable not found")?,
+        };
 
         // Compile our C shim to be linked into tests
         let mut cfg = cc::Build::new();
@@ -817,19 +827,19 @@ impl TestGenerator {
         if target.contains("msvc") {
             cfg.flag("/W3").flag("/Wall").flag("/WX")
                 // ignored warnings
-               .flag("/wd4820")  // warning about adding padding?
-               .flag("/wd4100")  // unused parameters
-               .flag("/wd4996")  // deprecated functions
-               .flag("/wd4296")  // '<' being always false
-               .flag("/wd4255")  // converting () to (void)
-               .flag("/wd4668")  // using an undefined thing in preprocessor?
-               .flag("/wd4366")  // taking ref to packed struct field might be unaligned
-               .flag("/wd4189")  // local variable initialized but not referenced
-               .flag("/wd4710")  // function not inlined
-               .flag("/wd5045")  // compiler will insert Spectre mitigation
-               .flag("/wd4514")  // unreferenced inline function removed
-               .flag("/wd4711")  // function selected for automatic inline
-                ;
+                .flag("/wd4820")  // warning about adding padding?
+                .flag("/wd4100")  // unused parameters
+                .flag("/wd4996")  // deprecated functions
+                .flag("/wd4296")  // '<' being always false
+                .flag("/wd4255")  // converting () to (void)
+                .flag("/wd4668")  // using an undefined thing in preprocessor?
+                .flag("/wd4366")  // taking ref to packed struct field might be unaligned
+                .flag("/wd4189")  // local variable initialized but not referenced
+                .flag("/wd4710")  // function not inlined
+                .flag("/wd5045")  // compiler will insert Spectre mitigation
+                .flag("/wd4514")  // unreferenced inline function removed
+                .flag("/wd4711")  // function selected for automatic inline
+            ;
         } else {
             cfg.flag("-Wall")
                 .flag("-Wextra")
@@ -853,21 +863,17 @@ impl TestGenerator {
             cfg.include(p);
         }
 
-        let stem = out
-            .file_stem()
-            .ok_or_else(|| Error::from("Output file has no stem"))?
-            .to_str()
-            .ok_or_else(|| Error::from("Output filename is not valid UTF-8"))?;
+        let stem = out.file_stem().context("Failed to get file stem")?;
 
         let parent = out
             .parent()
-            .ok_or_else(|| Error::from("Output file has no parent directory"))?;
+            .context("Output file has no parent directory")?;
 
         cfg.target(&target).out_dir(parent);
 
-        match catch_unwind(|| cfg.compile(&format!("lib{stem}.a"))) {
+        match cfg.try_compile(&format!("lib{stem:?}.a")) {
             Ok(_) => Ok(out),
-            Err(_) => Err(Error::from("Compilation failed")),
+            Err(e) => Err(anyhow::anyhow!("Compilation failed").context(format!("Error: {}", e))),
         }
     }
 
@@ -885,10 +891,8 @@ impl TestGenerator {
             for include_path in &self.includes {
                 let header_path = include_path.join(header);
                 if !header_path.exists() {
-                    return Err(Error::from(format!(
-                        "{} does not exist",
-                        header_path.display()
-                    )));
+                    return Err(anyhow::anyhow!("Header file not found"))
+                        .with_context(|| format!("Path {} does not exist", header_path.display()));
                 }
             }
         }
@@ -898,8 +902,14 @@ impl TestGenerator {
             .out_dir
             .clone()
             .or_else(|| env::var_os("OUT_DIR").map(PathBuf::from))
-            .filter(|p| p.is_dir())
-            .ok_or_else(|| Error::from("OUT_DIR not set or directory missing"))?;
+            .context("Neither out_dir nor OUT_DIR environment variable is set")?;
+
+        if !out_dir.is_dir() {
+            return Err(anyhow::anyhow!(
+                "Output directory does not exist: {}",
+                out_dir.display()
+            ));
+        }
 
         let out_file = out_dir.join(out_file);
         let ext = match self.lang {
@@ -915,7 +925,7 @@ impl TestGenerator {
             .clone()
             .or_else(|| env::var("TARGET").ok())
             .filter(|t| !t.is_empty())
-            .ok_or_else(|| Error::from("TARGET environment variable not set"))?;
+            .context("TARGET environment variable not set or empty")?;
 
         let (krate, sess) = match catch_unwind(AssertUnwindSafe(|| {
             let mut sess = ParseSess::new(FilePathMapping::empty());
@@ -924,8 +934,9 @@ impl TestGenerator {
                 sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
             }
             // Convert DiagnosticBuilder -> Error so the `?` works
-            let krate = parse::parse_crate_from_file(krate, &sess)
-                .map_err(|d| Error::from(format!("failed to parse crate: {:?}", d)))?;
+            let krate = parse::parse_crate_from_file(krate, &sess).map_err(|d| {
+                anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {:?}", d))
+            })?;
 
             Ok::<_, Error>((krate, sess))
         })) {
@@ -935,10 +946,10 @@ impl TestGenerator {
             Ok(Err(e)) => return Err(e),
             // closure/code panicked and return the panic's payload
             Err(p) => {
-                return Err(Error::from(format!(
+                return Err(anyhow::anyhow!(
                     "Parser panic: {}",
                     panic_payload_to_string(p)
-                )))
+                ))
             }
         };
 

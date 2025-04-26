@@ -477,8 +477,7 @@ fn test_apple(target: &str) {
         "uuid_t" | "vol_capabilities_set_t" => true,
         _ => false,
     });
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_openbsd(target: &str) {
@@ -643,8 +642,7 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_cygwin(target: &str) {
@@ -816,8 +814,7 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_windows(target: &str) {
@@ -939,8 +936,7 @@ fn test_windows(target: &str) {
 
     cfg.skip_fn(|_| false);
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_redox(target: &str) {
@@ -990,8 +986,7 @@ fn test_redox(target: &str) {
         "wchar.h",
     }
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_solarish(target: &str) {
@@ -1278,8 +1273,7 @@ fn test_solarish(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_netbsd(target: &str) {
@@ -1493,8 +1487,7 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_dragonflybsd(target: &str) {
@@ -1716,8 +1709,7 @@ fn test_dragonflybsd(target: &str) {
         (struct_ == "sigevent" && field == "sigev_notify_thread_id")
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_wasi(target: &str) {
@@ -1824,8 +1816,7 @@ fn test_wasi(target: &str) {
     // doesn't support sizeof.
     cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_android(target: &str) {
@@ -2333,8 +2324,7 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 
     test_linux_like_apis(target);
 }
@@ -2989,8 +2979,7 @@ fn test_freebsd(target: &str) {
         });
     }
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_emscripten(target: &str) {
@@ -3235,8 +3224,7 @@ fn test_emscripten(target: &str) {
         ].contains(&field))
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_neutrino(target: &str) {
@@ -3504,10 +3492,9 @@ fn test_neutrino(target: &str) {
         )
     });
 
-    cfg.skip_static(move |name| (name == "__dso_handle"));
+    cfg.skip_static(move |name| name == "__dso_handle");
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn test_vxworks(target: &str) {
@@ -3613,8 +3600,7 @@ fn test_vxworks(target: &str) {
         _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
 
 fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
@@ -4855,8 +4841,7 @@ fn test_linux(target: &str) {
         _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 
     test_linux_like_apis(target);
 }
@@ -4885,10 +4870,6 @@ fn test_linux_like_apis(target: &str) {
         })
         .skip_const(|_| true)
         .skip_struct(|_| true);
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_strerror_r.rs")
-            .expect("generation failed");
-            .skip_const(|_| true)
-            .skip_struct(|_| true);
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_strerror_r.rs");
     }
 
@@ -4920,8 +4901,7 @@ fn test_linux_like_apis(target: &str) {
                 t => t.to_string(),
             });
 
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_fcntl.rs")
-            .expect("generation failed");
+        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_fcntl.rs");
     }
 
     if (linux && !wali) || android {
@@ -4946,8 +4926,7 @@ fn test_linux_like_apis(target: &str) {
                 t if is_union => format!("union {t}"),
                 t => t.to_string(),
             });
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_termios.rs")
-            .expect("generation failed");
+        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_termios.rs");
     }
 
     if linux || android {
@@ -4964,10 +4943,10 @@ fn test_linux_like_apis(target: &str) {
             .skip_const(|_| true)
             .skip_struct(|_| true)
             .skip_const(move |name| match name {
-                    "IPV6_FLOWINFO"
-                        | "IPV6_FLOWLABEL_MGR"
-                        | "IPV6_FLOWINFO_SEND"
-                        | "IPV6_FLOWINFO_FLOWLABEL"
+                "IPV6_FLOWINFO"
+                | "IPV6_FLOWLABEL_MGR"
+                | "IPV6_FLOWINFO_SEND"
+                | "IPV6_FLOWINFO_FLOWLABEL"
                 | "IPV6_FLOWINFO_PRIORITY" => false,
                 _ => true,
             })
@@ -4976,8 +4955,7 @@ fn test_linux_like_apis(target: &str) {
                 t if is_union => format!("union {t}"),
                 t => t.to_string(),
             });
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_ipv6.rs")
-            .expect("generation failed");
+        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_ipv6.rs");
     }
 
     if (linux && !wali) || android {
@@ -5000,8 +4978,7 @@ fn test_linux_like_apis(target: &str) {
                 "Elf64_Phdr" | "Elf32_Phdr" => false,
                 _ => true,
             });
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_elf.rs")
-            .expect("generation failed");
+        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_elf.rs");
     }
 
     if (linux && !wali) || android {
@@ -5017,8 +4994,7 @@ fn test_linux_like_apis(target: &str) {
             })
             .skip_struct(|_| true)
             .skip_type(|_| true);
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_if_arp.rs")
-            .expect("generation failed");
+        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_if_arp.rs");
     }
 }
 
@@ -5381,6 +5357,5 @@ fn test_haiku(target: &str) {
             s => s.to_string(),
         }
     });
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs")
-        .expect("generation failed");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
