@@ -11,11 +11,6 @@ allow-unauthenticated = [
 warn_non_default_branch.enable = true
 contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
 
-[assign.owners]
-"*" = [
-    "@tgross35",
-]
-
 # Ensure issue links link to this repo
 [issue-links]
 
