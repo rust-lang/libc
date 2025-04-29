@@ -16,13 +16,11 @@
 use anyhow::{Context, Result};
 use garando_syntax as syntax;
 use indoc::writedoc;
-use std::any::Any;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
-use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use syntax::abi::Abi;
@@ -929,31 +927,16 @@ impl TestGenerator {
             .filter(|t| !t.is_empty())
             .context("TARGET environment variable not set or empty")?;
 
-        let (krate, sess) = match catch_unwind(AssertUnwindSafe(|| {
-            let mut sess = ParseSess::new(FilePathMapping::empty());
-            for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
-                let s = |s: &str| Name::intern(s);
-                sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
-            }
-            // Convert DiagnosticBuilder -> Error so the `?` works
-            let krate = parse::parse_crate_from_file(krate, &sess).map_err(|d| {
-                anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {:?}", d))
-            })?;
+        let mut sess = ParseSess::new(FilePathMapping::empty());
+        for (k, v) in default_cfg(&target).into_iter().chain(self.cfg.clone()) {
+            let s = |s: &str| Name::intern(s);
+            sess.config.insert((s(&k), v.as_ref().map(|n| s(n))));
+        }
 
-            Ok::<_, anyhow::Error>((krate, sess))
-        })) {
-            // closure produced an ordinary Ok
-            Ok(Ok(pair)) => pair,
-            // no panic, but closure produced an ordinary Err
-            Ok(Err(e)) => return Err(e),
-            // closure/code panicked and return the panic's payload
-            Err(p) => {
-                return Err(anyhow::anyhow!(
-                    "Parser panic: {}",
-                    panic_payload_to_string(p)
-                ))
-            }
-        };
+        // Convert DiagnosticBuilder -> Error so the `?` works
+        let krate = parse::parse_crate_from_file(krate, &sess).map_err(|d| {
+            anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {:?}", d))
+        })?;
 
         // Remove things like functions, impls, traits, etc, that we're not
         // looking at
@@ -1024,21 +1007,6 @@ impl TestGenerator {
         g.emit_run_all()?;
 
         Ok(out_file)
-    }
-}
-
-/// Convert a panic payload into something printable.
-///
-/// * `panic!("msg")` → `"msg"`
-/// * `panic!(String)` → the string’s contents
-/// * anything else → the payload’s type name
-fn panic_payload_to_string(p: Box<dyn Any + Send + 'static>) -> String {
-    if let Some(s) = p.downcast_ref::<&'static str>() {
-        s.to_string()
-    } else if let Some(s) = p.downcast_ref::<String>() {
-        s.clone()
-    } else {
-        std::any::type_name::<Box<dyn Any + Send>>().to_string()
     }
 }
 
