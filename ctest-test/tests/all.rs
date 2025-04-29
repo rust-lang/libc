@@ -171,6 +171,7 @@ fn test_parsing_error() {
     let err = ctest::TestGenerator::new()
         .header("t1.h")
         .include("src")
+        .target("x86_64-unknown-linux-gnu")
         .try_generate(&invalid_file, "parse_gen.rs");
 
     assert!(err.is_err(), "Expected error when parsing invalid syntax");

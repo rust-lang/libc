@@ -934,8 +934,11 @@ impl TestGenerator {
         }
 
         // Convert DiagnosticBuilder -> Error so the `?` works
-        let krate = parse::parse_crate_from_file(krate, &sess).map_err(|d| {
-            anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {:?}", d))
+        let krate = parse::parse_crate_from_file(krate, &sess).map_err(|mut d| {
+            let diag_info = format!("{:?}", d);
+            // Emit the diagnostic to properly handle it and show error to the user
+            d.emit();
+            anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {}", diag_info))
         })?;
 
         // Remove things like functions, impls, traits, etc, that we're not
