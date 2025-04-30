@@ -4734,6 +4734,51 @@ pub const RTNLGRP_MCTP_IFADDR: c_uint = 0x22;
 pub const RTNLGRP_TUNNEL: c_uint = 0x23;
 pub const RTNLGRP_STATS: c_uint = 0x24;
 
+// linux/cn_proc.h
+c_enum! {
+    proc_cn_mcast_op {
+        PROC_CN_MCAST_LISTEN = 1,
+        PROC_CN_MCAST_IGNORE = 2,
+    }
+}
+
+c_enum! {
+    proc_cn_event {
+        PROC_EVENT_NONE = 0x00000000,
+        PROC_EVENT_FORK = 0x00000001,
+        PROC_EVENT_EXEC = 0x00000002,
+        PROC_EVENT_UID = 0x00000004,
+        PROC_EVENT_GID = 0x00000040,
+        PROC_EVENT_SID = 0x00000080,
+        PROC_EVENT_PTRACE = 0x00000100,
+        PROC_EVENT_COMM = 0x00000200,
+        PROC_EVENT_NONZERO_EXIT = 0x20000000,
+        PROC_EVENT_COREDUMP = 0x40000000,
+        PROC_EVENT_EXIT = 0x80000000,
+    }
+}
+
+// linux/connector.h
+pub const CN_IDX_PROC: c_uint = 0x1;
+pub const CN_VAL_PROC: c_uint = 0x1;
+pub const CN_IDX_CIFS: c_uint = 0x2;
+pub const CN_VAL_CIFS: c_uint = 0x1;
+pub const CN_W1_IDX: c_uint = 0x3;
+pub const CN_W1_VAL: c_uint = 0x1;
+pub const CN_IDX_V86D: c_uint = 0x4;
+pub const CN_VAL_V86D_UVESAFB: c_uint = 0x1;
+pub const CN_IDX_BB: c_uint = 0x5;
+pub const CN_DST_IDX: c_uint = 0x6;
+pub const CN_DST_VAL: c_uint = 0x1;
+pub const CN_IDX_DM: c_uint = 0x7;
+pub const CN_VAL_DM_USERSPACE_LOG: c_uint = 0x1;
+pub const CN_IDX_DRBD: c_uint = 0x8;
+pub const CN_VAL_DRBD: c_uint = 0x1;
+pub const CN_KVP_IDX: c_uint = 0x9;
+pub const CN_KVP_VAL: c_uint = 0x1;
+pub const CN_VSS_IDX: c_uint = 0xA;
+pub const CN_VSS_VAL: c_uint = 0x1;
+
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: c_uint = 0x0002;
