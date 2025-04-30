@@ -3805,6 +3805,8 @@ fn test_linux(target: &str) {
             "linux/can.h",
             "linux/can/raw.h",
             "linux/can/j1939.h",
+            "linux/cn_proc.h",
+            "linux/connector.h",
             "linux/dccp.h",
             "linux/errqueue.h",
             "linux/falloc.h",
@@ -4624,6 +4626,9 @@ fn test_linux(target: &str) {
             | "SCM_DEVMEM_DMABUF" => true,
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG" | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
+
+            // FIXME(linux): Requires >= 6.6 kernel headers.
+            "PROC_EVENT_NONZERO_EXIT" => true,
 
             _ => false,
         }
