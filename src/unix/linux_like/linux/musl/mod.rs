@@ -731,9 +731,6 @@ pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
-#[cfg(not(target_arch = "loongarch64"))]
-pub const CPU_SETSIZE: c_int = 128;
-#[cfg(target_arch = "loongarch64")]
 pub const CPU_SETSIZE: c_int = 1024;
 
 pub const PTRACE_TRACEME: c_int = 0;
