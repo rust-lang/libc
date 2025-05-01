@@ -54,7 +54,7 @@ s! {
     }
 
     pub struct ipc_perm {
-        pub __ipc_perm_key: crate::key_t,
+        pub __key: crate::key_t,
         pub uid: crate::uid_t,
         pub gid: crate::gid_t,
         pub cuid: crate::uid_t,
