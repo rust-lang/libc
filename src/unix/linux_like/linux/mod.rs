@@ -1376,6 +1376,13 @@ s! {
         pub userns_fd: crate::__u64,
     }
 
+    // linux/nsfs.h
+    pub struct mnt_ns_info {
+        pub size: crate::__u32,
+        pub nr_mounts: crate::__u32,
+        pub mnt_ns_id: crate::__u64,
+    }
+
     // linux/pidfd.h
 
     pub struct pidfd_info {
@@ -3171,6 +3178,27 @@ cfg_if! {
 pub const MREMAP_MAYMOVE: c_int = 1;
 pub const MREMAP_FIXED: c_int = 2;
 pub const MREMAP_DONTUNMAP: c_int = 4;
+
+// linux/nsfs.h
+const NSIO: c_uint = 0xb7;
+
+pub const NS_GET_USERNS: c_uint = _IO(NSIO, 0x1);
+pub const NS_GET_PARENT: c_uint = _IO(NSIO, 0x2);
+pub const NS_GET_NSTYPE: c_uint = _IO(NSIO, 0x3);
+pub const NS_GET_OWNER_UID: c_uint = _IO(NSIO, 0x4);
+
+pub const NS_GET_MNTNS_ID: c_uint = _IOR::<__u64>(NSIO, 0x5);
+
+pub const NS_GET_PID_FROM_PIDNS: c_uint = _IOR::<c_int>(NSIO, 0x6);
+pub const NS_GET_TGID_FROM_PIDNS: c_uint = _IOR::<c_int>(NSIO, 0x7);
+pub const NS_GET_PID_IN_PIDNS: c_uint = _IOR::<c_int>(NSIO, 0x8);
+pub const NS_GET_TGID_IN_PIDNS: c_uint = _IOR::<c_int>(NSIO, 0x9);
+
+pub const MNT_NS_INFO_SIZE_VER0: c_uint = 16;
+
+pub const NS_MNT_GET_INFO: c_uint = _IOR::<mnt_ns_info>(NSIO, 10);
+pub const NS_MNT_GET_NEXT: c_uint = _IOR::<mnt_ns_info>(NSIO, 11);
+pub const NS_MNT_GET_PREV: c_uint = _IOR::<mnt_ns_info>(NSIO, 12);
 
 // linux/pidfd.h
 pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;

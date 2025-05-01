@@ -3825,6 +3825,7 @@ fn test_linux(target: &str) {
             "linux/netfilter_ipv6.h",
             "linux/netfilter_ipv6/ip6_tables.h",
             "linux/netlink.h",
+            "linux/nsfs.h",
             "linux/openat2.h",
             // FIXME(linux): some items require Linux >= 5.6:
             "linux/ptp_clock.h",
@@ -4117,6 +4118,9 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "dmabuf_cmsg" | "dmabuf_token" => true,
+
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "mnt_ns_info" => true,
 
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "ptrace_sud_config" => true,
@@ -4516,6 +4520,11 @@ fn test_linux(target: &str) {
                 true
             }
 
+            // FIXME(linux): Requires >= 6.11 kernel headers.
+            "NS_GET_MNTNS_ID" | "NS_GET_PID_FROM_PIDNS" | "NS_GET_TGID_FROM_PIDNS" | "NS_GET_PID_IN_PIDNS" | "NS_GET_TGID_IN_PIDNS" => true,
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "MNT_NS_INFO_SIZE_VER0" | "NS_MNT_GET_INFO" | "NS_MNT_GET_NEXT" | "NS_MNT_GET_PREV" => true,
+
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "SYS_fchmodat2" => true,
 
@@ -4868,8 +4877,8 @@ fn test_linux_like_apis(target: &str) {
             "strerror_r" => false,
             _ => true,
         })
-            .skip_const(|_| true)
-            .skip_struct(|_| true);
+        .skip_const(|_| true)
+        .skip_struct(|_| true);
         cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_strerror_r.rs");
     }
 
@@ -4943,10 +4952,10 @@ fn test_linux_like_apis(target: &str) {
             .skip_const(|_| true)
             .skip_struct(|_| true)
             .skip_const(move |name| match name {
-                    "IPV6_FLOWINFO"
-                        | "IPV6_FLOWLABEL_MGR"
-                        | "IPV6_FLOWINFO_SEND"
-                        | "IPV6_FLOWINFO_FLOWLABEL"
+                "IPV6_FLOWINFO"
+                | "IPV6_FLOWLABEL_MGR"
+                | "IPV6_FLOWINFO_SEND"
+                | "IPV6_FLOWINFO_FLOWLABEL"
                 | "IPV6_FLOWINFO_PRIORITY" => false,
                 _ => true,
             })
