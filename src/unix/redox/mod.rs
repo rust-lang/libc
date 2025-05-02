@@ -782,6 +782,7 @@ pub const MSG_PEEK: c_int = 2;
 pub const MSG_TRUNC: c_int = 32;
 pub const MSG_DONTWAIT: c_int = 64;
 pub const MSG_WAITALL: c_int = 256;
+pub const SCM_RIGHTS: c_int = 1;
 pub const SHUT_RD: c_int = 0;
 pub const SHUT_WR: c_int = 1;
 pub const SHUT_RDWR: c_int = 2;
