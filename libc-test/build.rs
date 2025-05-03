@@ -4265,6 +4265,10 @@ fn test_linux(target: &str) {
             if old_musl && (riscv64 || x86_64) && name == "O_LARGEFILE" {
                 return true;
             }
+            // Values changed in newer musl versions
+            if old_musl && name == "RLIM_NLIMITS" {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
