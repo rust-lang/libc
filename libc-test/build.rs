@@ -4329,6 +4329,10 @@ fn test_linux(target: &str) {
             {
                         return true;
             }
+            // Values changed in newer musl versions on these arches
+            if old_musl && (riscv64 || x86_64) && name == "O_LARGEFILE" {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
