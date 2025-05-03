@@ -4897,8 +4897,8 @@ fn test_linux(target: &str) {
         (struct_ == "statvfs64" && field == "__f_spare") ||
         // the `xsk_tx_metadata_union` field is an anonymous union
         (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
-        // FIXME(musl): After musl 1.2.0, the type becomes `int` instead of `long`.
-        (struct_ == "utmpx" && field == "ut_session")
+        // After musl 1.2.0, the type becomes `int` instead of `long`.
+        (old_musl && struct_ == "utmpx" && field == "ut_session")
     });
 
     cfg.skip_roundtrip(move |s| match s {
