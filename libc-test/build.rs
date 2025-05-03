@@ -3730,6 +3730,9 @@ fn test_linux(target: &str) {
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
 
+    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let old_musl = musl && !musl_v1_2_3;
+
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
     // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
@@ -4300,9 +4303,9 @@ fn test_linux(target: &str) {
             if name == "PR_GET_MDWE" || name == "PR_MDWE_NO_INHERIT" || name == "PR_MDWE_REFUSE_EXEC_GAIN" || name == "PR_SET_MDWE" {
                 return true;
             }
-            // FIXME(musl): Requires musl >= 1.2
-            if name == "SO_PREFER_BUSY_POLL"
-                || name == "SO_BUSY_POLL_BUDGET"
+            // Requires musl >= 1.2
+            if old_musl && (name == "SO_PREFER_BUSY_POLL"
+                || name == "SO_BUSY_POLL_BUDGET")
             {
                 return true;
             }
@@ -4734,18 +4737,18 @@ fn test_linux(target: &str) {
             "getnameinfo" if uclibc => true,
 
             // FIXME(musl): This needs musl 1.2.2 or later.
-            "gettid" if musl => true,
+            "gettid" if old_musl => true,
 
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
 
-            "reallocarray" if musl => true,
+            "reallocarray" if old_musl => true,
 
             // Not defined in uclibc as of 1.0.34
             "gettid" if uclibc => true,
 
             // Needs musl 1.2.3 or later.
-            "pthread_getname_np" if musl => true,
+            "pthread_getname_np" if old_musl => true,
 
             // pthread_sigqueue uses sigval, which was initially declared
             // as a struct but should be defined as a union. However due
