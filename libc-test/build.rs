@@ -3660,6 +3660,9 @@ fn test_linux(target: &str) {
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
+    if musl_v1_2_3 {
+        cfg.cfg("musl_v1_2_3", None);
+    }
     cfg.define("_GNU_SOURCE", None);
     // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
