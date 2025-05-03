@@ -74,9 +74,18 @@ s! {
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
         pub mode: crate::mode_t,
+
+        #[cfg(musl_v1_2_3)]
+        pub __seq: c_int,
+        #[cfg(not(musl_v1_2_3))]
+        #[deprecated(
+            since = "0.2.173",
+            note = "The type of this field has changed from c_ushort to c_int,
+                we'll follow that change in the future release."
+        )]
         pub __seq: c_ushort,
-        __unused1: c_ulong,
-        __unused2: c_ulong,
+        __unused1: c_long,
+        __unused2: c_long,
     }
 
     pub struct ucontext_t {
