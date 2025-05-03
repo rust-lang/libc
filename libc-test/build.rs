@@ -4205,6 +4205,9 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "ptrace_sud_config" => true,
 
+            // Struct has changed for new musl versions
+            "tcp_info" if old_musl => true,
+
             _ => false,
         }
     });

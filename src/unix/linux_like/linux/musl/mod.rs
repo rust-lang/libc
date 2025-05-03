@@ -323,16 +323,11 @@ s! {
         pub tcpi_probes: u8,
         pub tcpi_backoff: u8,
         pub tcpi_options: u8,
-        /*
-         * FIXME(musl): enable on all targets once musl headers are more up to date
-         */
         /// This contains the bitfields `tcpi_snd_wscale` and `tcpi_rcv_wscale`.
         /// Each is 4 bits.
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_rcv_wscale: u8,
         /// This contains the bitfields `tcpi_delivery_rate_app_limited` (1 bit) and
         /// `tcpi_fastopen_client_fail` (2 bits).
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_delivery_fastopen_bitfields: u8,
         pub tcpi_rto: u32,
         pub tcpi_ato: u32,
@@ -378,10 +373,7 @@ s! {
         pub tcpi_bytes_retrans: u64,
         pub tcpi_dsack_dups: u32,
         pub tcpi_reord_seen: u32,
-        // FIXME(musl): enable on all targets once CI musl is updated
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_rcv_ooopack: u32,
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_wnd: u32,
     }
 
