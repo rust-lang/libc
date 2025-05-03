@@ -22,6 +22,7 @@ const ALLOWED_CFGS: &[&str] = &[
     "libc_ctest",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
+    "musl_v1_2_3"
 ];
 
 // Extra values to allow for check-cfg.
@@ -89,6 +90,13 @@ fn main() {
         _ => (),
     }
 
+    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
+    // loongarch64 and ohos have already updated
+    if musl_v1_2_3 || target_os == "loongarch64" || target_env == "ohos" {
+        // FIXME(musl): enable time64 api as well
+        set_cfg("musl_v1_2_3");
+    }
     let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {
