@@ -13,6 +13,7 @@ contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
 
 # Ensure issue links link to this repo
 [issue-links]
+check-commits = false # don't forbid links to issues
 
 # Prevents mentions in commits to avoid users being spammed
 [no-mentions]
