@@ -13,7 +13,7 @@
 #![recursion_limit = "256"]
 #![deny(missing_docs)]
 
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use garando_syntax as syntax;
 use indoc::writedoc;
 use std::collections::{HashMap, HashSet};
@@ -871,10 +871,11 @@ impl TestGenerator {
 
         cfg.target(&target).out_dir(parent);
 
-        match cfg.try_compile(&format!("lib{stem}.a")) {
-            Ok(_) => Ok(out),
-            Err(e) => Err(anyhow::anyhow!("Compilation failed").context(format!("Error: {}", e))),
-        }
+        let name = format!("lib{stem}.a");
+
+        cfg.try_compile(&name)
+            .context(format!("failed to compile `{}`", name))
+            .map(|_| out)
     }
 
     #[doc(hidden)] // TODO: needs docs
@@ -885,31 +886,12 @@ impl TestGenerator {
     fn generate_files_impl<P: AsRef<Path>>(&mut self, krate: P, out_file: &str) -> Result<PathBuf> {
         let krate = krate.as_ref();
 
-        // Check if all specified header files exist in the include paths
-        for header in &self.headers {
-            // Check if header exists in any of the include paths
-            for include_path in &self.includes {
-                let header_path = include_path.join(header);
-                if !header_path.exists() {
-                    return Err(anyhow::anyhow!("Header file not found"))
-                        .with_context(|| format!("Path {} does not exist", header_path.display()));
-                }
-            }
-        }
-
         // Prep the test generator
         let out_dir = self
             .out_dir
             .clone()
             .or_else(|| env::var_os("OUT_DIR").map(PathBuf::from))
             .context("Neither out_dir nor OUT_DIR environment variable is set")?;
-
-        if !out_dir.is_dir() {
-            return Err(anyhow::anyhow!(
-                "Output directory does not exist: {}",
-                out_dir.display()
-            ));
-        }
 
         let out_file = out_dir.join(out_file);
         let ext = match self.lang {
@@ -935,10 +917,9 @@ impl TestGenerator {
 
         // Convert DiagnosticBuilder -> Error so the `?` works
         let krate = parse::parse_crate_from_file(krate, &sess).map_err(|mut d| {
-            let diag_info = format!("{:?}", d);
             // Emit the diagnostic to properly handle it and show error to the user
             d.emit();
-            anyhow::anyhow!("failed to parse crate").context(format!("Diagnostic: {}", diag_info))
+            anyhow!("failed to parse crate: {:?}", d)
         })?;
 
         // Remove things like functions, impls, traits, etc, that we're not
