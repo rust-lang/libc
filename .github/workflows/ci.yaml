@@ -195,6 +195,18 @@ jobs:
             env:
               RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
             artifact-tag: offset-bits64
+          - target: aarch64-unknown-linux-musl
+            env:
+              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: arm-unknown-linux-musleabihf
+            env:
+              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: i686-unknown-linux-musl
+            env:
+              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: loongarch64-unknown-linux-musl
+            env:
+              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu

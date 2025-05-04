@@ -10,7 +10,7 @@ case ${1} in
         musl_version=1.2.5
         ;;
     *)
-        musl_version=1.1.24
+        [ -n "${RUST_LIBC_UNSTABLE_MUSL_V1_2_3:-}" ] && musl_version=1.2.3 || musl_version=1.1.24
         ;;
 esac
 
