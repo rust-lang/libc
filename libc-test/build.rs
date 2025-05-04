@@ -3825,6 +3825,7 @@ fn test_linux(target: &str) {
             "linux/netfilter_ipv6.h",
             "linux/netfilter_ipv6/ip6_tables.h",
             "linux/netlink.h",
+            "linux/nsfs.h",
             "linux/openat2.h",
             // FIXME(linux): some items require Linux >= 5.6:
             "linux/ptp_clock.h",
@@ -4118,6 +4119,9 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "dmabuf_cmsg" | "dmabuf_token" => true,
 
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "mnt_ns_info" => true,
+
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "ptrace_sud_config" => true,
 
@@ -4216,6 +4220,10 @@ fn test_linux(target: &str) {
             }
             // FIXME: Requires >= 6.3 kernel headers
             if loongarch64 && (name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC") {
+                return true;
+            }
+            // FIXME: Requires >= 6.3 (6.6) kernel headers
+            if name == "PR_GET_MDWE" || name == "PR_MDWE_NO_INHERIT" || name == "PR_MDWE_REFUSE_EXEC_GAIN" || name == "PR_SET_MDWE" {
                 return true;
             }
             // FIXME(musl): Requires musl >= 1.2
@@ -4499,6 +4507,9 @@ fn test_linux(target: &str) {
                 true
             }
 
+            // FIXME(linux): Requires >= 6.6 kernel headers.
+            "PR_MDWE_NO_INHERIT" => true,
+
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"
             | "XDP_TXMD_FLAGS_TIMESTAMP"
@@ -4515,6 +4526,11 @@ fn test_linux(target: &str) {
             {
                 true
             }
+
+            // FIXME(linux): Requires >= 6.11 kernel headers.
+            "NS_GET_MNTNS_ID" | "NS_GET_PID_FROM_PIDNS" | "NS_GET_TGID_FROM_PIDNS" | "NS_GET_PID_IN_PIDNS" | "NS_GET_TGID_IN_PIDNS" => true,
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "MNT_NS_INFO_SIZE_VER0" | "NS_MNT_GET_INFO" | "NS_MNT_GET_NEXT" | "NS_MNT_GET_PREV" => true,
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "SYS_fchmodat2" => true,
@@ -4795,7 +4811,9 @@ fn test_linux(target: &str) {
         (struct_ == "statvfs" && field == "__f_spare") ||
         (struct_ == "statvfs64" && field == "__f_spare") ||
         // the `xsk_tx_metadata_union` field is an anonymous union
-        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union")
+        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
+        // FIXME(musl): After musl 1.2.0, the type becomes `int` instead of `long`.
+        (struct_ == "utmpx" && field == "ut_session")
     });
 
     cfg.skip_roundtrip(move |s| match s {
