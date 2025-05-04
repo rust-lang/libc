@@ -3,6 +3,7 @@ use crate::prelude::*;
 
 #[repr(C)]
 #[cfg_attr(feature = "extra_traits", derive(Debug, Eq, Hash, PartialEq))]
+#[derive(Clone, Copy)]
 pub struct stat {
     pub st_dev: crate::dev_t,
     pub st_ino: crate::ino_t,
@@ -25,11 +26,4 @@ pub struct stat {
     pub st_lspare: i32,
     pub st_birthtime: crate::time_t,
     pub st_birthtime_nsec: c_long,
-}
-
-impl Copy for crate::stat {}
-impl Clone for crate::stat {
-    fn clone(&self) -> crate::stat {
-        *self
-    }
 }
