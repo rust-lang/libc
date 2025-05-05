@@ -17,7 +17,7 @@ esac
 musl="musl-${musl_version}"
 
 # Download, configure, build, and install musl:
-curl --retry 5 https://www.musl-libc.org/releases/${musl}.tar.gz | tar xzf -
+curl --retry 5 "https://www.musl-libc.org/releases/${musl}.tar.gz" | tar xzf -
 
 cd "$musl"
 case ${1} in
