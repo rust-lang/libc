@@ -21,6 +21,8 @@ const ALLOWED_CFGS: &[&str] = &[
     "libc_ctest",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
+    "ntoqnx_mutex_u_is_nodestroy",
+    "ntoqnx_mutex_owner_is_free",
 ];
 
 // Extra values to allow for check-cfg.
@@ -106,6 +108,11 @@ fn main() {
             panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
         }
         _ => {}
+    }
+
+    if env::var("CARGO_CFG_TARGET_OS").unwrap() == "nto" {
+        nto_qnx::unit_tests::run();
+        nto_qnx::dynamic_qnx_neutrino_values();
     }
 
     // On CI: deny all warnings
@@ -263,4 +270,111 @@ fn set_cfg(cfg: &str) {
         "trying to set cfg {cfg}, but it is not in ALLOWED_CFGS",
     );
     println!("cargo:rustc-cfg={cfg}");
+}
+
+mod nto_qnx {
+
+    use std::env;
+
+    // Unfortunately, some "constant" values get changed between release
+    // of the Neutrino QNX toolchain, including in minorpatch-versions.
+    // This function tries to determine the values by reading
+    // header files that are always provided when building
+    // for QNX. This is not a proper C parser, but very simple code
+    // which checks for usage of other constants.
+    // So far, only the three versions used in the unit tests
+    // have been observed, and the algorithm works fine for them.
+    pub fn dynamic_qnx_neutrino_values() {
+        // The QNX toolchain reads files (e.g. headers, library files) from
+        // directory $QNX_TARGET
+        // When the path changes, also the header files can change.
+        println!("cargo:rerun-if-env-changed=QNX_TARGET");
+        let qnx_target_dir = env::var("QNX_TARGET").unwrap();
+        let include_dir = qnx_target_dir + "/usr/include";
+        let pthread_h = include_dir + "/pthread.h";
+        println!("cargo:rerun-if-changed={pthread_h}");
+        let pthread_h = std::fs::read_to_string(pthread_h).unwrap();
+        let mut take_next_line = true;
+        let pthread_mutex_init = pthread_h
+            .lines()
+            .map(|l| l.trim())
+            .skip_while(|l| !l.contains("#define PTHREAD_RMUTEX_INITIALIZER"))
+            .take_while(|l| match take_next_line {
+                true => {
+                    take_next_line = l.ends_with("\\");
+                    true
+                }
+                false => false,
+            })
+            .collect::<String>();
+
+        dbg!(&pthread_mutex_init);
+
+        let u = extract_u(&pthread_mutex_init).unwrap();
+        if u.contains("_NTO_SYNC_NODESTROY") {
+            super::set_cfg("ntoqnx_mutex_u_is_nodestroy");
+        }
+        let owner = extract_owner(&pthread_mutex_init).unwrap();
+        if owner.contains("_NTO_SYNC_MUTEX_FREE") {
+            super::set_cfg("ntoqnx_mutex_owner_is_free");
+        }
+    }
+
+    fn extract_value(name: &str, text: &str) -> Option<String> {
+        let text = text.split_once(name)?.1;
+        let value = text
+            .chars()
+            .skip_while(|c| *c != '=')
+            .skip(1)
+            .skip_while(|c| *c == '{' || c.is_whitespace())
+            .skip_while(|c| c.is_whitespace())
+            .take_while(|c| *c != '}' && *c != ',')
+            .collect::<String>();
+        let value = value.trim().to_string();
+        Some(value)
+    }
+
+    fn extract_u(text: &str) -> Option<String> {
+        dbg!(text);
+        extract_value(".__count", text).or_else(|| extract_value(".__u", text))
+    }
+
+    fn extract_owner(text: &str) -> Option<String> {
+        extract_value(".__owner", text)
+    }
+
+    pub mod unit_tests {
+        use super::*;
+
+        pub fn run() {
+            test_extract_value_qnx7orig();
+            test_extract_value_qnx7_variant();
+            test_extract_value_qnx8();
+        }
+        fn test_extract_value_qnx7orig() {
+            let text = "#define PTHREAD_MUTEX_INITIALIZER       { .__u={_NTO_SYNC_NONRECURSIVE}, .__owner=_NTO_SYNC_INITIALIZER }";
+            let value = extract_u(text).unwrap();
+            assert_eq!(value, "_NTO_SYNC_NONRECURSIVE");
+            let value = extract_owner(text).unwrap();
+            assert_eq!(value, "_NTO_SYNC_INITIALIZER");
+        }
+
+        fn test_extract_value_qnx7_variant() {
+            let text = "#define PTHREAD_RMUTEX_INITIALIZER	\
+{ .__u = { .__count = _NTO_SYNC_NODESTROY}, .__owner=_NTO_SYNC_MUTEX_FREE }";
+            let value = extract_u(text).unwrap();
+            assert_eq!(value, "_NTO_SYNC_NODESTROY");
+            let value = extract_owner(text).unwrap();
+            assert_eq!(value, "_NTO_SYNC_MUTEX_FREE");
+        }
+
+        fn test_extract_value_qnx8() {
+            let text = "#define PTHREAD_RMUTEX_INITIALIZER	\
+   { .__u = { .__count = _NTO_SYNC_NONRECURSIVE }, .__owner = _NTO_SYNC_MUTEX_FREE }";
+            let value = extract_u(text).unwrap();
+            assert_eq!(value, "_NTO_SYNC_NONRECURSIVE");
+            let value = extract_owner(text).unwrap();
+            assert_eq!(value, "_NTO_SYNC_MUTEX_FREE");
+        }
+    }
 }
