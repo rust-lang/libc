@@ -330,7 +330,7 @@ cfg_if! {
         pub const RLIMIT_RTPRIO: c_int = 14;
         pub const RLIMIT_RTTIME: c_int = 15;
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
-        pub const RLIM_NLIMITS: c_int = 15;
+        pub const RLIM_NLIMITS: c_int = 16;
         #[allow(deprecated)]
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: c_int = RLIM_NLIMITS;
