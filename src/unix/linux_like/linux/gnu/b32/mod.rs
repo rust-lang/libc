@@ -29,6 +29,18 @@ cfg_if! {
         pub type fsfilcnt_t = u64;
         pub type rlim_t = u64;
         pub type blksize_t = i64;
+    } else if #[cfg(gnu_time_bits64)] {
+        pub type time_t = i64;
+        pub type suseconds_t = i32;
+        type __ino_t = c_ulong;
+        type __ino64_t = u64;
+        pub type ino_t = __ino64_t;
+        pub type off_t = i64;
+        pub type blkcnt_t = i64;
+        pub type fsblkcnt_t = u64;
+        pub type fsfilcnt_t = u64;
+        pub type rlim_t = u64;
+        pub type blksize_t = i32;
     } else if #[cfg(gnu_file_offset_bits64)] {
         pub type time_t = i32;
         pub type suseconds_t = i32;
@@ -67,11 +79,12 @@ cfg_if! {
             pub struct stat {
                 pub st_dev: crate::dev_t,
 
+                #[cfg(not(gnu_time_bits64))]
                 __pad1: c_uint,
 
-                #[cfg(not(gnu_file_offset_bits64))]
+                #[cfg(any(gnu_time_bits64, not(gnu_file_offset_bits64)))]
                 pub st_ino: crate::ino_t,
-                #[cfg(all(gnu_file_offset_bits64))]
+                #[cfg(all(not(gnu_time_bits64), gnu_file_offset_bits64))]
                 __st_ino: __ino_t,
 
                 pub st_mode: crate::mode_t,
@@ -81,6 +94,7 @@ cfg_if! {
 
                 pub st_rdev: crate::dev_t,
 
+                #[cfg(not(gnu_time_bits64))]
                 __pad2: c_uint,
 
                 pub st_size: off_t,
@@ -90,16 +104,22 @@ cfg_if! {
 
                 pub st_atime: crate::time_t,
                 pub st_atime_nsec: c_long,
+                #[cfg(gnu_time_bits64)]
+                _atime_pad: c_int,
                 pub st_mtime: crate::time_t,
                 pub st_mtime_nsec: c_long,
+                #[cfg(gnu_time_bits64)]
+                _mtime_pad: c_int,
                 pub st_ctime: crate::time_t,
                 pub st_ctime_nsec: c_long,
+                #[cfg(gnu_time_bits64)]
+                _ctime_pad: c_int,
 
                 #[cfg(not(gnu_file_offset_bits64))]
                 __glibc_reserved4: c_long,
                 #[cfg(not(gnu_file_offset_bits64))]
                 __glibc_reserved5: c_long,
-                #[cfg(gnu_file_offset_bits64)]
+                #[cfg(all(not(gnu_time_bits64), gnu_file_offset_bits64))]
                 pub st_ino: crate::ino_t,
             }
         }
@@ -154,27 +174,125 @@ s! {
 
     pub struct semid_ds {
         pub sem_perm: ipc_perm,
-        #[cfg(target_arch = "powerpc")]
+        #[cfg(all(not(gnu_time_bits64), target_arch = "powerpc"))]
         __reserved: crate::__syscall_ulong_t,
         pub sem_otime: crate::time_t,
         #[cfg(not(any(
+            gnu_time_bits64,
             target_arch = "mips",
             target_arch = "mips32r6",
             target_arch = "powerpc"
         )))]
         __reserved: crate::__syscall_ulong_t,
-        #[cfg(target_arch = "powerpc")]
+        #[cfg(all(not(gnu_time_bits64), target_arch = "powerpc"))]
         __reserved2: crate::__syscall_ulong_t,
         pub sem_ctime: crate::time_t,
         #[cfg(not(any(
+            gnu_time_bits64,
             target_arch = "mips",
             target_arch = "mips32r6",
             target_arch = "powerpc"
         )))]
         __reserved2: crate::__syscall_ulong_t,
         pub sem_nsems: crate::__syscall_ulong_t,
+        #[cfg(all(
+            gnu_time_bits64,
+            not(any(
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "powerpc",
+                target_arch = "arm",
+                target_arch = "x86"
+            ))
+        ))]
+        __reserved2: crate::__syscall_ulong_t,
         __glibc_reserved3: crate::__syscall_ulong_t,
         __glibc_reserved4: crate::__syscall_ulong_t,
+    }
+
+    pub struct timex {
+        pub modes: c_uint,
+        #[cfg(gnu_time_bits64)]
+        _pad1: c_int,
+        #[cfg(gnu_time_bits64)]
+        pub offset: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub offset: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub freq: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub freq: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub maxerror: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub maxerror: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub esterror: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub esterror: c_long,
+        pub status: c_int,
+        #[cfg(gnu_time_bits64)]
+        _pad2: c_int,
+        #[cfg(gnu_time_bits64)]
+        pub constant: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub constant: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub precision: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub precision: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub tolerance: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub tolerance: c_long,
+        pub time: crate::timeval,
+        #[cfg(gnu_time_bits64)]
+        pub tick: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub tick: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub ppsfreq: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub ppsfreq: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub jitter: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub jitter: c_long,
+        pub shift: c_int,
+        #[cfg(gnu_time_bits64)]
+        _pad3: c_int,
+        #[cfg(gnu_time_bits64)]
+        pub stabil: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub stabil: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub jitcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub jitcnt: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub calcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub calcnt: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub errcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub errcnt: c_long,
+        #[cfg(gnu_time_bits64)]
+        pub stbcnt: c_longlong,
+        #[cfg(not(gnu_time_bits64))]
+        pub stbcnt: c_long,
+        pub tai: c_int,
+        pub __unused1: i32,
+        pub __unused2: i32,
+        pub __unused3: i32,
+        pub __unused4: i32,
+        pub __unused5: i32,
+        pub __unused6: i32,
+        pub __unused7: i32,
+        pub __unused8: i32,
+        pub __unused9: i32,
+        pub __unused10: i32,
+        pub __unused11: i32,
     }
 }
 
