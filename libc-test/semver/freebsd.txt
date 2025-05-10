@@ -1466,6 +1466,7 @@ SO_PROTOTYPE
 SO_REUSEPORT
 SO_REUSEPORT_LB
 SO_SETFIB
+SO_SPLICE
 SO_TIMESTAMP
 SO_TS_BINTIME
 SO_TS_CLOCK
@@ -2360,6 +2361,7 @@ sigwait
 sigwaitinfo
 sockaddr_dl
 sockcred
+splice
 srand
 srand48
 stack_t

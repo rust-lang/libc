@@ -2853,6 +2853,9 @@ fn test_freebsd(target: &str) {
             // FIXME(freebsd): Removed in FreeBSD 15, deprecated in libc
             "TCP_PCAP_OUT" | "TCP_PCAP_IN" => true,
 
+            // Added in FreeBSD 14.2
+            "SO_SPLICE" if Some(14) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -2903,6 +2906,9 @@ fn test_freebsd(target: &str) {
 
             // FIXME(freebsd): Changed in FreeBSD 15
             "tcp_info" | "sockstat" if Some(15) >= freebsd_ver => true,
+
+            // `splice` introduced in FreeBSD 14.2
+            "splice" if Some(14) > freebsd_ver => true,
 
             _ => false,
         }
