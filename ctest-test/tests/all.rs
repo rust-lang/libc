@@ -128,3 +128,75 @@ fn t2_cxx() {
         panic!();
     }
 }
+
+#[test]
+fn test_missing_out_dir() {
+    // Save original OUT_DIR
+    let orig_out_dir = env::var_os("OUT_DIR");
+    env::remove_var("OUT_DIR");
+
+    // Test error handling for OUT_DIR missing
+    let result = ctest::TestGenerator::new()
+        .header("t1.h")
+        .try_generate("src/t1.rs", "out_dir_gen.rs");
+
+    // Restore OUT_DIR
+    if let Some(dir) = orig_out_dir {
+        env::set_var("OUT_DIR", dir);
+    }
+
+    assert!(result.is_err(), "Expected error when OUT_DIR is missing");
+}
+
+#[test]
+fn test_invalid_output_path() {
+    // Test error handling for invalid output path
+    let err = ctest::TestGenerator::new()
+        .header("t1.h")
+        .include("src")
+        .out_dir("/nonexistent_dir") // Should fail with permission error
+        .try_generate("src/t1.rs", "out_path_gen.rs");
+
+    assert!(err.is_err(), "Expected error with invalid output path");
+}
+
+#[test]
+fn test_parsing_error() {
+    // Test parsing error
+    // Create a temporary file with invalid Rust syntax
+    let temp_dir = env::temp_dir();
+    let invalid_file = temp_dir.join("invalid.rs");
+    std::fs::write(&invalid_file, "fn invalid_syntax {").unwrap();
+
+    let err = ctest::TestGenerator::new()
+        .header("t1.h")
+        .include("src")
+        .target("x86_64-unknown-linux-gnu")
+        .try_generate(&invalid_file, "parse_gen.rs");
+
+    assert!(err.is_err(), "Expected error when parsing invalid syntax");
+    let _ = std::fs::remove_file(invalid_file);
+}
+
+#[test]
+fn test_non_existent_header() {
+    // Test non-existent header
+    let err = ctest::TestGenerator::new()
+        .header("nonexistent_header.h")
+        .include("src")
+        .try_generate("src/t1.rs", "missing_header_gen.rs");
+
+    assert!(err.is_err(), "Expected error with non-existent header");
+}
+
+#[test]
+fn test_invalid_include_path() {
+    // Test invalid include path
+    let err = ctest::TestGenerator::new()
+        .header("t1.h")
+        .include("nonexistent_directory")
+        .try_generate("src/t1.rs", "invalid_include_gen.rs");
+
+    assert!(err.is_err(), "Expected error with invalid include path");
+}
+
