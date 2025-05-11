@@ -4468,6 +4468,15 @@ fn test_linux(target: &str) {
             // kernel 6.2 minimum
             "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
 
+            // kernel 6.9 minimum
+            "RWF_NOAPPEND" => true,
+
+            // kernel 6.11 minimum
+            "RWF_ATOMIC" => true,
+
+            // kernel 6.14 minimum
+            "RWF_DONTCACHE" => true,
+
             // FIXME(linux): Requires more recent kernel headers
             | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
             | "IFLA_PARENT_DEV_BUS_NAME" // linux v5.13+

@@ -749,12 +749,6 @@ pub const PTRACE_PEEKSIGINFO: c_int = 0x4209;
 pub const PTRACE_GETSIGMASK: c_uint = 0x420a;
 pub const PTRACE_SETSIGMASK: c_uint = 0x420b;
 
-pub const RWF_HIPRI: c_int = 0x00000001;
-pub const RWF_DSYNC: c_int = 0x00000002;
-pub const RWF_SYNC: c_int = 0x00000004;
-pub const RWF_NOWAIT: c_int = 0x00000008;
-pub const RWF_APPEND: c_int = 0x00000010;
-
 pub const AF_IB: c_int = 27;
 pub const AF_MPLS: c_int = 28;
 pub const AF_NFC: c_int = 39;

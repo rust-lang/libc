@@ -2858,6 +2858,18 @@ pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
 pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
 pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
 
+// linux/fs.h
+
+// Flags for preadv2/pwritev2
+pub const RWF_HIPRI: c_int = 0x00000001;
+pub const RWF_DSYNC: c_int = 0x00000002;
+pub const RWF_SYNC: c_int = 0x00000004;
+pub const RWF_NOWAIT: c_int = 0x00000008;
+pub const RWF_APPEND: c_int = 0x00000010;
+pub const RWF_NOAPPEND: c_int = 0x00000020;
+pub const RWF_ATOMIC: c_int = 0x00000040;
+pub const RWF_DONTCACHE: c_int = 0x00000080;
+
 // linux/if_link.h
 pub const IFLA_UNSPEC: c_ushort = 0;
 pub const IFLA_ADDRESS: c_ushort = 1;
