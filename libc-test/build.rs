@@ -3648,7 +3648,6 @@ fn test_linux(target: &str) {
     let x32 = target.contains("x32");
     let x86_32 = target.contains("i686");
     let x86_64 = target.contains("x86_64");
-    let aarch64_musl = aarch64 && musl;
     let gnueabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
@@ -3656,7 +3655,13 @@ fn test_linux(target: &str) {
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
 
+    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let old_musl = musl && !musl_v1_2_3;
+
     let mut cfg = ctest_cfg();
+    if musl_v1_2_3 {
+        cfg.cfg("musl_v1_2_3", None);
+    }
     cfg.define("_GNU_SOURCE", None);
     // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
@@ -4125,6 +4130,9 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "ptrace_sud_config" => true,
 
+            // Struct has changed for new musl versions
+            "tcp_info" if old_musl => true,
+
             _ => false,
         }
     });
@@ -4226,9 +4234,9 @@ fn test_linux(target: &str) {
             if name == "PR_GET_MDWE" || name == "PR_MDWE_NO_INHERIT" || name == "PR_MDWE_REFUSE_EXEC_GAIN" || name == "PR_SET_MDWE" {
                 return true;
             }
-            // FIXME(musl): Requires musl >= 1.2
-            if name == "SO_PREFER_BUSY_POLL"
-                || name == "SO_BUSY_POLL_BUDGET"
+            // Requires musl >= 1.2
+            if old_musl && (name == "SO_PREFER_BUSY_POLL"
+                || name == "SO_BUSY_POLL_BUDGET")
             {
                 return true;
             }
@@ -4251,6 +4259,14 @@ fn test_linux(target: &str) {
                 || name == "SCM_DEVMEM_DMABUF"
             {
                         return true;
+            }
+            // Values changed in newer musl versions on these arches
+            if old_musl && (riscv64 || x86_64) && name == "O_LARGEFILE" {
+                return true;
+            }
+            // Values changed in newer musl versions
+            if old_musl && name == "RLIM_NLIMITS" {
+                return true;
             }
         }
         match name {
@@ -4657,18 +4673,18 @@ fn test_linux(target: &str) {
             "getnameinfo" if uclibc => true,
 
             // FIXME(musl): This needs musl 1.2.2 or later.
-            "gettid" if musl => true,
+            "gettid" if old_musl => true,
 
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
 
-            "reallocarray" if musl => true,
+            "reallocarray" if old_musl => true,
 
             // Not defined in uclibc as of 1.0.34
             "gettid" if uclibc => true,
 
             // Needs musl 1.2.3 or later.
-            "pthread_getname_np" if musl => true,
+            "pthread_getname_np" if old_musl => true,
 
             // pthread_sigqueue uses sigval, which was initially declared
             // as a struct but should be defined as a union. However due
@@ -4762,8 +4778,8 @@ fn test_linux(target: &str) {
             "sched_ss_init_budget",
             "sched_ss_max_repl",
         ].contains(&field) && musl) ||
-        // FIXME(musl): After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
-        (struct_ == "ipc_perm" && field == "__seq" && aarch64_musl) ||
+        // After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
+        (struct_ == "ipc_perm" && field == "__seq" && old_musl && aarch64) ||
         // glibc uses unnamed fields here and Rust doesn't support that yet
         (struct_ == "timex" && field.starts_with("__unused")) ||
         // FIXME(linux): It now takes mode_t since glibc 2.31 on some targets.
@@ -4812,8 +4828,8 @@ fn test_linux(target: &str) {
         (struct_ == "statvfs64" && field == "__f_spare") ||
         // the `xsk_tx_metadata_union` field is an anonymous union
         (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
-        // FIXME(musl): After musl 1.2.0, the type becomes `int` instead of `long`.
-        (struct_ == "utmpx" && field == "ut_session")
+        // After musl 1.2.0, the type becomes `int` instead of `long`.
+        (old_musl && struct_ == "utmpx" && field == "ut_session")
     });
 
     cfg.skip_roundtrip(move |s| match s {

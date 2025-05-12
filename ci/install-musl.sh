@@ -10,14 +10,14 @@ case ${1} in
         musl_version=1.2.5
         ;;
     *)
-        musl_version=1.1.24
+        [ -n "${RUST_LIBC_UNSTABLE_MUSL_V1_2_3:-}" ] && musl_version=1.2.3 || musl_version=1.1.24
         ;;
 esac
 
 musl="musl-${musl_version}"
 
 # Download, configure, build, and install musl:
-curl --retry 5 https://www.musl-libc.org/releases/${musl}.tar.gz | tar xzf -
+curl --retry 5 "https://www.musl-libc.org/releases/${musl}.tar.gz" | tar xzf -
 
 cd "$musl"
 case ${1} in

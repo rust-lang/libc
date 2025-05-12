@@ -303,16 +303,11 @@ s! {
         pub tcpi_probes: u8,
         pub tcpi_backoff: u8,
         pub tcpi_options: u8,
-        /*
-         * FIXME(musl): enable on all targets once musl headers are more up to date
-         */
         /// This contains the bitfields `tcpi_snd_wscale` and `tcpi_rcv_wscale`.
         /// Each is 4 bits.
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_rcv_wscale: u8,
         /// This contains the bitfields `tcpi_delivery_rate_app_limited` (1 bit) and
         /// `tcpi_fastopen_client_fail` (2 bits).
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_delivery_fastopen_bitfields: u8,
         pub tcpi_rto: u32,
         pub tcpi_ato: u32,
@@ -358,10 +353,7 @@ s! {
         pub tcpi_bytes_retrans: u64,
         pub tcpi_dsack_dups: u32,
         pub tcpi_reord_seen: u32,
-        // FIXME(musl): enable on all targets once CI musl is updated
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_rcv_ooopack: u32,
-        #[cfg(target_arch = "loongarch64")]
         pub tcpi_snd_wnd: u32,
     }
 
@@ -440,13 +432,6 @@ s_no_extra_traits! {
         pub __reserved: [c_char; 256],
     }
 
-    // FIXME(musl): musl added paddings and adjusted
-    // layout in 1.2.0 but our CI is still 1.1.24.
-    // So, I'm leaving some fields as cfg for now.
-    // ref. https://github.com/bminor/musl/commit/
-    // 1e7f0fcd7ff2096904fd93a2ee6d12a2392be392
-    //
-    // OpenHarmony uses the musl 1.2 layout.
     pub struct utmpx {
         pub ut_type: c_short,
         __ut_pad1: c_short,
@@ -457,31 +442,24 @@ s_no_extra_traits! {
         pub ut_host: [c_char; 256],
         pub ut_exit: __exit_status,
 
-        #[cfg(target_env = "musl")]
-        #[cfg(not(target_arch = "loongarch64"))]
+        #[cfg(not(musl_v1_2_3))]
+        #[deprecated(
+            since = "0.2.173",
+            note = "The ABI of this field has changed from c_long to c_int with padding, \
+                we'll follow that change in the future release. See #4443 for more info."
+        )]
         pub ut_session: c_long,
 
-        #[cfg(target_env = "musl")]
-        #[cfg(target_arch = "loongarch64")]
-        pub ut_session: c_int,
-
-        #[cfg(target_env = "musl")]
-        #[cfg(target_arch = "loongarch64")]
-        __ut_pad2: c_int,
-
-        #[cfg(target_env = "ohos")]
-        #[cfg(target_endian = "little")]
-        pub ut_session: c_int,
-        #[cfg(target_env = "ohos")]
-        #[cfg(target_endian = "little")]
-        __ut_pad2: c_int,
-
-        #[cfg(target_env = "ohos")]
+        #[cfg(musl_v1_2_3)]
         #[cfg(not(target_endian = "little"))]
         __ut_pad2: c_int,
-        #[cfg(target_env = "ohos")]
-        #[cfg(not(target_endian = "little"))]
+
+        #[cfg(musl_v1_2_3)]
         pub ut_session: c_int,
+
+        #[cfg(musl_v1_2_3)]
+        #[cfg(target_endian = "little")]
+        __ut_pad2: c_int,
 
         pub ut_tv: crate::timeval,
         pub ut_addr_v6: [c_uint; 4],
@@ -557,6 +535,7 @@ cfg_if! {
         }
 
         impl PartialEq for utmpx {
+            #[allow(deprecated)]
             fn eq(&self, other: &utmpx) -> bool {
                 self.ut_type == other.ut_type
                     //&& self.__ut_pad1 == other.__ut_pad1
@@ -581,6 +560,7 @@ cfg_if! {
         impl Eq for utmpx {}
 
         impl fmt::Debug for utmpx {
+            #[allow(deprecated)]
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("utmpx")
                     .field("ut_type", &self.ut_type)
@@ -601,6 +581,7 @@ cfg_if! {
         }
 
         impl hash::Hash for utmpx {
+            #[allow(deprecated)]
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
                 //self.__ut_pad1.hash(state);
