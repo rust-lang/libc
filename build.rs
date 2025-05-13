@@ -22,7 +22,7 @@ const ALLOWED_CFGS: &[&str] = &[
     "libc_ctest",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
-    "musl_v1_2_3"
+    "musl_v1_2_3",
 ];
 
 // Extra values to allow for check-cfg.
