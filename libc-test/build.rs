@@ -3598,13 +3598,20 @@ fn test_linux(target: &str) {
     let loongarch64 = target.contains("loongarch64");
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
+    let mips64 = target.contains("mips64");
+    let mips32 = target.contains("mips") && !mips64;
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let musl32_time64 = env::var("RUST_LIBC_UNSTABLE_MUSL_TIME64").is_ok();
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
-    if musl_v1_2_3 {
+    if (musl_v1_2_3 || loongarch64) && musl {
         cfg.cfg("musl_v1_2_3", None);
+        if musl32_time64 && (arm || ppc || x86_32 || mips32) {
+            cfg.cfg("musl32_time64", None);
+            cfg.cfg("linux_time_bits64", None);
+        }
     }
     cfg.define("_GNU_SOURCE", None)
         // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
