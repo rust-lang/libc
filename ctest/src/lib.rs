@@ -13,9 +13,6 @@
 #![recursion_limit = "256"]
 #![deny(missing_docs)]
 
-use anyhow::{anyhow, Context, Result};
-use garando_syntax as syntax;
-use indoc::writedoc;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -23,6 +20,10 @@ use std::io::prelude::*;
 use std::io::BufWriter;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
+
+use anyhow::{anyhow, Context, Result};
+use garando_syntax as syntax;
+use indoc::writedoc;
 use syntax::abi::Abi;
 use syntax::ast;
 use syntax::ast::{Attribute, Name};

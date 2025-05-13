@@ -386,7 +386,12 @@ extern "C" {
     #[link_name = "_get_timezone"]
     pub fn get_timezone(seconds: *mut c_long) -> errno_t;
     #[link_name = "_get_tzname"]
-    pub fn get_tzname(p_return_value: *mut size_t, time_zone_name: *mut c_char, size_in_bytes: size_t, index: c_int) -> errno_t;
+    pub fn get_tzname(
+        p_return_value: *mut size_t,
+        time_zone_name: *mut c_char,
+        size_in_bytes: size_t,
+        index: c_int,
+    ) -> errno_t;
     #[link_name = "_localtime64_s"]
     pub fn localtime_s(tmDest: *mut tm, sourceTime: *const time_t) -> crate::errno_t;
     #[link_name = "_time64"]
