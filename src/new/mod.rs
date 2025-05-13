@@ -58,6 +58,7 @@ cfg_if! {
         pub(crate) use dragonfly::*;
     } else if #[cfg(target_os = "emscripten")] {
         mod emscripten;
+        pub use emscripten::sched::*;
         pub(crate) use emscripten::*;
     } else if #[cfg(target_os = "espidf")] {
         mod espidf;
@@ -150,6 +151,7 @@ cfg_if! {
     } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
         // OhOS also uses the musl libc
         mod musl;
+        pub use musl::sched::*;
         pub(crate) use musl::*;
     } else if #[cfg(target_env = "newlib")] {
         mod newlib;
