@@ -13,6 +13,46 @@ missing! {
     pub enum timezone {}
 }
 
+// FIXME(musl): these changes are not strictly part of time64 but the fact musl_v1_2_3 is enabled
+// on ohos makes it awkward.
+cfg_if! {
+    if #[cfg(not(any(target_env = "musl", target_os = "emscripten", target_env = "ohos")))] {
+        s! {
+            pub struct sched_param {
+                pub sched_priority: c_int,
+            }
+        }
+    } else if #[cfg(musl32_time64)] {
+        s! {
+            pub struct sched_param {
+                pub sched_priority: c_int,
+
+                __reserved1: c_int,
+                //#[cfg(musl32_time64)]
+                __reserved2: [c_long; 4],
+                //#[cfg(not(musl32_time64))]
+                //__reserved2: [crate::timespec; 2],
+                __reserved3: c_int,
+            }
+        }
+    } else {
+        s! {
+            pub struct sched_param {
+                pub sched_priority: c_int,
+
+                #[deprecated(since = "0.2.173", note = "This field has been removed upstream and we'll follow that change in a future release.")]
+                pub sched_ss_low_priority: c_int,
+                #[deprecated(since = "0.2.173", note = "This field has been removed upstream and we'll follow that change in a future release.")]
+                pub sched_ss_repl_period: crate::timespec,
+                #[deprecated(since = "0.2.173", note = "This field has been removed upstream and we'll follow that change in a future release.")]
+                pub sched_ss_init_budget: crate::timespec,
+                #[deprecated(since = "0.2.173", note = "This field has been removed upstream and we'll follow that change in a future release.")]
+                pub sched_ss_max_repl: c_int,
+            }
+        }
+    }
+}
+
 s! {
     // FIXME(1.0): This should not implement `PartialEq`
     #[allow(unpredictable_function_pointer_comparisons)]
@@ -108,18 +148,6 @@ s! {
         pub tm_isdst: c_int,
         pub tm_gmtoff: c_long,
         pub tm_zone: *const c_char,
-    }
-
-    pub struct sched_param {
-        pub sched_priority: c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_low_priority: c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_repl_period: crate::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_init_budget: crate::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_max_repl: c_int,
     }
 
     pub struct Dl_info {
