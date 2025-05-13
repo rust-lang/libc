@@ -59,6 +59,10 @@ done < "$tmpfile"
 
 rm "$tmpfile"
 
+# Run once from workspace root to get everything that wasn't handled as an
+# individual file.
+cargo fmt
+
 if shellcheck --version ; then
     find . -name '*.sh' -print0 | xargs -0 shellcheck
 else
