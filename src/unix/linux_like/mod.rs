@@ -110,16 +110,9 @@ s! {
         pub tm_zone: *const c_char,
     }
 
+    #[cfg(not(any(target_env = "musl", target_os = "emscripten", target_env = "ohos")))]
     pub struct sched_param {
         pub sched_priority: c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_low_priority: c_int,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_repl_period: crate::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_init_budget: crate::timespec,
-        #[cfg(any(target_env = "musl", target_os = "emscripten", target_env = "ohos"))]
-        pub sched_ss_max_repl: c_int,
     }
 
     pub struct Dl_info {
