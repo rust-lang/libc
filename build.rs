@@ -28,6 +28,8 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
+    // Corresponds to `_REDIR_TIME64` in musl
+    "musl32_time64",
     "vxworks_lt_25_09",
 ];
 
@@ -48,6 +50,9 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
         &["loongarch64", "mips32r6", "mips64r6", "csky"],
     ),
 ];
+
+/// Musl architectures that set `#define _REDIR_TIME64 1`.
+const MUSL_REDIR_TIME64_ARCHES: &[&str] = &["arm", "mips", "powerpc", "x86"];
 
 fn main() {
     // Avoid unnecessary re-building.
@@ -99,12 +104,29 @@ fn main() {
         _ => (),
     }
 
-    let musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
+    let mut musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
-    // loongarch64 and ohos have already updated
-    if musl_v1_2_3 || target_arch == "loongarch64" || target_env == "ohos" {
-        // FIXME(musl): enable time64 api as well
+
+    // OpenHarmony uses a fork of the musl libc
+    let musl = target_env == "musl" || target_env == "ohos";
+
+    // loongarch64 and ohos only exist with recent musl
+    if target_arch == "loongarch64" || target_env == "ohos" {
+        musl_v1_2_3 = true;
+    }
+
+    if musl && musl_v1_2_3 {
         set_cfg("musl_v1_2_3");
+        if MUSL_REDIR_TIME64_ARCHES.contains(&target_arch.as_str()) {
+            set_cfg("musl32_time64");
+            set_cfg("linux_time_bits64");
+        }
+    }
+
+    let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
+    if linux_time_bits64 {
+        set_cfg("linux_time_bits64");
     }
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_TIME_BITS");
