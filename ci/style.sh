@@ -63,14 +63,6 @@ rm "$tmpfile"
 # individual file.
 cargo fmt
 
-if shellcheck --version ; then
-    # FIXME(ctest): update ctest scripts so we don't need to exclude them
-    find . -name '*.sh' -not -path './ctest/*' -print0 | xargs -0 shellcheck
-else
-    echo "shellcheck not found"
-    exit 1
-fi
-
 # Ensure that `sort` output is not locale-dependent
 export LC_ALL=C
 
@@ -92,3 +84,10 @@ for file in libc-test/semver/*.txt; do
         exit 1
     fi
 done
+
+if shellcheck --version ; then
+    find . -name '*.sh' -print0 | xargs -0 shellcheck
+else
+    echo "shellcheck not found"
+    exit 1
+fi
