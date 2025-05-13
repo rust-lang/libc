@@ -59,6 +59,10 @@ done < "$tmpfile"
 
 rm "$tmpfile"
 
+# Run once from workspace root to get everything that wasn't handled as an
+# individual file.
+cargo fmt
+
 if shellcheck --version ; then
     # FIXME(ctest): update ctest scripts so we don't need to exclude them
     find . -name '*.sh' -not -path './ctest/*' -print0 | xargs -0 shellcheck
