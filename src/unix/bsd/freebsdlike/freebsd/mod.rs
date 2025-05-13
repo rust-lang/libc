@@ -1396,6 +1396,12 @@ s! {
         tqh_first: *mut c_void,
         tqh_last: *mut *mut c_void,
     }
+
+    pub struct splice {
+        pub sp_fd: c_int,
+        pub sp_max: off_t,
+        pub sp_idle: crate::timeval,
+    }
 }
 
 s_no_extra_traits! {
@@ -3186,6 +3192,7 @@ pub const SO_PROTOCOL: c_int = 0x1016;
 pub const SO_PROTOTYPE: c_int = SO_PROTOCOL;
 pub const SO_TS_CLOCK: c_int = 0x1017;
 pub const SO_DOMAIN: c_int = 0x1019;
+pub const SO_SPLICE: c_int = 0x1023;
 pub const SO_VENDOR: c_int = 0x80000000;
 
 pub const SO_TS_REALTIME_MICRO: c_int = 0;
