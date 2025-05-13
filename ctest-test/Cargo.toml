@@ -9,6 +9,9 @@ edition = "2021"
 ctest = { path = "../ctest" }
 cc = "1.0"
 
+[dev-dependencies]
+ctest = { path = "../ctest" }
+
 [dependencies]
 cfg-if = "1.0.0"
 libc = { path = ".." }
