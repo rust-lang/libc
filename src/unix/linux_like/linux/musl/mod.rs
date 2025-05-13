@@ -750,6 +750,7 @@ extern "C" {
         new_limit: *const crate::rlimit,
         old_limit: *mut crate::rlimit,
     ) -> c_int;
+    #[cfg_attr(musl32_time64, link_name = "__gettimeofday_time64")]
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
     pub fn ptrace(request: c_int, ...) -> c_long;
     pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
@@ -785,7 +786,9 @@ extern "C" {
     // Added in `musl` 1.2.2
     pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
 
+    #[cfg_attr(musl32_time64, link_name = "__adjtimex_time64")]
     pub fn adjtimex(buf: *mut crate::timex) -> c_int;
+    #[cfg_attr(musl32_time64, link_name = "__clock_adjtime64")]
     pub fn clock_adjtime(clk_id: crate::clockid_t, buf: *mut crate::timex) -> c_int;
 
     pub fn ctermid(s: *mut c_char) -> *mut c_char;
