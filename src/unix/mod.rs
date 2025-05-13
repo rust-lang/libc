@@ -72,10 +72,14 @@ s! {
     #[cfg(all(not(target_env = "gnu"), not(target_os = "aix")))]
     pub struct timespec {
         pub tv_sec: time_t,
+        #[cfg(all(musl32_time64, target_endian = "big"))]
+        __pad0: Padding<u32>,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         pub tv_nsec: i64,
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pub tv_nsec: c_long,
+        #[cfg(all(musl32_time64, target_endian = "little"))]
+        __pad0: Padding<u32>,
     }
 
     pub struct rlimit {
