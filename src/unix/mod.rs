@@ -1013,13 +1013,28 @@ extern "C" {
     pub fn execle(path: *const c_char, arg0: *const c_char, ...) -> c_int;
     pub fn execlp(file: *const c_char, arg0: *const c_char, ...) -> c_int;
 
+    #[cfg(target_os = "aix")]
+    pub fn execv(prog: *const c_char, argv: *const *mut c_char) -> c_int;
+    #[cfg(not(target_os = "aix"))]
     // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execv(prog: *const c_char, argv: *const *const c_char) -> c_int;
+    #[cfg(target_os = "aix")]
+    pub fn execve(
+	prog: *const c_char,
+	argv: *const *mut c_char,
+	envp: *const *mut c_char,
+    ) -> c_int;
+    #[cfg(not(target_os = "aix"))]
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execve(
         prog: *const c_char,
         argv: *const *const c_char,
         envp: *const *const c_char,
     ) -> c_int;
+    #[cfg(target_os = "aix")]
+    pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> c_int;
+    #[cfg(not(target_os = "aix"))]
+    // DIFF(main): changed to `*const *mut` in e77f551de9
     pub fn execvp(c: *const c_char, argv: *const *const c_char) -> c_int;
 
     pub fn fork() -> pid_t;
