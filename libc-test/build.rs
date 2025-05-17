@@ -356,9 +356,6 @@ fn test_apple(target: &str) {
             // FIXME(macos): Requires the macOS 14.4 SDK.
             "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
 
-            // FIXME(macos): "'__uint128' undeclared" in C
-            "__uint128" => true,
-
             _ => false,
         }
     });
@@ -2037,8 +2034,6 @@ fn test_android(target: &str) {
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
 
-            // FIXME(android): "'__uint128' undeclared" in C
-            "__uint128" => true,
             // Added in API level 24
             "if_nameindex" => true,
 
@@ -3413,9 +3408,6 @@ fn test_neutrino(target: &str) {
             // Does not exist in Neutrino
             "locale_t" => true,
 
-            // FIXME: "'__uint128' undeclared" in C
-            "__uint128" => true,
-
             _ => false,
         }
     });
@@ -3954,9 +3946,6 @@ fn test_linux(target: &str) {
             // For internal use only, to define architecture specific ioctl constants with a libc
             // specific type.
             "Ioctl" => true,
-
-            // FIXME: "'__uint128' undeclared" in C
-            "__uint128" => true,
 
             t => {
                 if musl {
@@ -5525,9 +5514,9 @@ fn test_aix(target: &str) {
     });
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "DIR"  => ty.to_string(),
-        "FILE"  => ty.to_string(),
-        "ACTION"  => ty.to_string(),
+        "DIR" => ty.to_string(),
+        "FILE" => ty.to_string(),
+        "ACTION" => ty.to_string(),
 
         // 'sigval' is a struct in Rust, but a union in C.
         "sigval" => format!("union sigval"),
@@ -5614,9 +5603,9 @@ fn test_aix(target: &str) {
             // POSIX-compliant versions in the system libc. As a result,
             // function pointer comparisons between the C and Rust sides
             // would fail.
-            "getpwuid_r" | "getpwnam_r" | "getgrgid_r" | "getgrnam_r"
-            | "aio_cancel" | "aio_error" | "aio_fsync" | "aio_read"
-            | "aio_return" | "aio_suspend" | "aio_write" | "select" => true,
+            "getpwuid_r" | "getpwnam_r" | "getgrgid_r" | "getgrnam_r" | "aio_cancel"
+            | "aio_error" | "aio_fsync" | "aio_read" | "aio_return" | "aio_suspend"
+            | "aio_write" | "select" => true,
 
             // 'getdtablesize' is a constant in the AIX header but it is
             // a real function in libc which the Rust side is resolved to.
@@ -5632,7 +5621,6 @@ fn test_aix(target: &str) {
             _ => false,
         }
     });
-
 
     cfg.volatile_item(|i| {
         use ctest::VolatileItemKind::*;
