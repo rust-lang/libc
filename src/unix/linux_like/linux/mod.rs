@@ -1,4 +1,5 @@
 //! Linux-specific definitions for linux-like values
+use core::cfg;
 
 use crate::prelude::*;
 use crate::{
@@ -2767,9 +2768,9 @@ pub const IPC_NOWAIT: c_int = 0o4000;
 
 pub const IPC_RMID: c_int = 0;
 pub const IPC_SET: c_int = 1;
-pub const IPC_STAT: c_int = 2;
+pub const IPC_STAT: c_int = if cfg!(musl32_time64) { 0x102 } else { 2 };
 pub const IPC_INFO: c_int = 3;
-pub const MSG_STAT: c_int = 11;
+pub const MSG_STAT: c_int = if cfg!(musl32_time64) { 0x10b } else { 11 };
 pub const MSG_INFO: c_int = 12;
 pub const MSG_NOTIFICATION: c_int = 0x8000;
 
@@ -2786,9 +2787,9 @@ pub const GETNCNT: c_int = 14;
 pub const GETZCNT: c_int = 15;
 pub const SETVAL: c_int = 16;
 pub const SETALL: c_int = 17;
-pub const SEM_STAT: c_int = 18;
+pub const SEM_STAT: c_int = if cfg!(musl32_time64) { 0x112 } else { 18 };
 pub const SEM_INFO: c_int = 19;
-pub const SEM_STAT_ANY: c_int = 20;
+pub const SEM_STAT_ANY: c_int = if cfg!(musl32_time64) { 0x114 } else { 20 };
 
 pub const SHM_R: c_int = 0o400;
 pub const SHM_W: c_int = 0o200;
