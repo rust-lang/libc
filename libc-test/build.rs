@@ -4558,7 +4558,9 @@ fn test_linux(target: &str) {
         // `frames` is a flexible array member
         (struct_ == "bcm_msg_head" && field == "frames") ||
         // FAM
-        (struct_ == "af_alg_iv" && field == "iv")
+        (struct_ == "af_alg_iv" && field == "iv") ||
+        // FIXME(linux): this is changed to separate sec/usec fields when time64 is enabled
+        (struct_ == "input_event" && field == "time")
     });
 
     cfg.skip_roundtrip(move |s| match s {
