@@ -976,7 +976,7 @@ pub const IPC_NOWAIT: c_int = 0o4000;
 
 pub const IPC_RMID: c_int = 0;
 pub const IPC_SET: c_int = 1;
-pub const IPC_STAT: c_int = 2;
+pub const IPC_STAT: c_int = if cfg!(musl32_time64) { 0x102 } else { 2 };
 pub const IPC_INFO: c_int = 3;
 
 pub const SHM_R: c_int = 0o400;

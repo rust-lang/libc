@@ -1,5 +1,4 @@
 //! Linux-specific definitions for linux-like values
-
 use crate::prelude::*;
 use crate::{
     sock_filter,
@@ -1572,7 +1571,7 @@ pub const RENAME_NOREPLACE: c_uint = 1;
 pub const RENAME_EXCHANGE: c_uint = 2;
 pub const RENAME_WHITEOUT: c_uint = 4;
 
-pub const MSG_STAT: c_int = 11;
+pub const MSG_STAT: c_int = 11 | (crate::IPC_STAT & 0x100);
 pub const MSG_INFO: c_int = 12;
 pub const MSG_NOTIFICATION: c_int = 0x8000;
 
@@ -1589,9 +1588,9 @@ pub const GETNCNT: c_int = 14;
 pub const GETZCNT: c_int = 15;
 pub const SETVAL: c_int = 16;
 pub const SETALL: c_int = 17;
-pub const SEM_STAT: c_int = 18;
+pub const SEM_STAT: c_int = 18 | (crate::IPC_STAT & 0x100);
 pub const SEM_INFO: c_int = 19;
-pub const SEM_STAT_ANY: c_int = 20;
+pub const SEM_STAT_ANY: c_int = 20 | (crate::IPC_STAT & 0x100);
 
 pub const QFMT_VFS_OLD: c_int = 1;
 pub const QFMT_VFS_V0: c_int = 2;
