@@ -3019,8 +3019,14 @@ pub const IPC_NOWAIT: c_int = 0o4000;
 
 pub const IPC_RMID: c_int = 0;
 pub const IPC_SET: c_int = 1;
+#[cfg(musl_time64)]
+pub const IPC_STAT: c_int = 0x102;
+#[cfg(not(musl_time64))]
 pub const IPC_STAT: c_int = 2;
 pub const IPC_INFO: c_int = 3;
+#[cfg(musl_time64)]
+pub const MSG_STAT: c_int = 0x10b;
+#[cfg(not(musl_time64))]
 pub const MSG_STAT: c_int = 11;
 pub const MSG_INFO: c_int = 12;
 pub const MSG_NOTIFICATION: c_int = 0x8000;
@@ -3038,8 +3044,14 @@ pub const GETNCNT: c_int = 14;
 pub const GETZCNT: c_int = 15;
 pub const SETVAL: c_int = 16;
 pub const SETALL: c_int = 17;
+#[cfg(musl_time64)]
+pub const SEM_STAT: c_int = 0x112;
+#[cfg(not(musl_time64))]
 pub const SEM_STAT: c_int = 18;
 pub const SEM_INFO: c_int = 19;
+#[cfg(musl_time64)]
+pub const SEM_STAT_ANY: c_int = 0x114;
+#[cfg(not(musl_time64))]
 pub const SEM_STAT_ANY: c_int = 20;
 
 pub const SHM_R: c_int = 0o400;
