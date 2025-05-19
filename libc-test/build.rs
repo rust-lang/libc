@@ -4897,7 +4897,9 @@ fn test_linux(target: &str) {
         // the `xsk_tx_metadata_union` field is an anonymous union
         (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
         // After musl 1.2.0, the type becomes `int` instead of `long`.
-        (old_musl && struct_ == "utmpx" && field == "ut_session")
+        (old_musl && struct_ == "utmpx" && field == "ut_session") ||
+        // FIXME(linux): this is changed to separate sec/usec fields when time64 is enabled
+        (struct_ == "input_event" && field == "time")
     });
 
     cfg.skip_roundtrip(move |s| match s {
