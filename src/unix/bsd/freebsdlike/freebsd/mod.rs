@@ -1735,6 +1735,31 @@ s_no_extra_traits! {
         pub xig_sogen: so_gen_t,
         _xig_spare64: [u64; 4],
     }
+
+    pub struct in_addr_4in6 {
+        _ia46_pad32: [u32; 3],
+        pub ia46_addr4: crate::in_addr,
+    }
+
+    pub union in_dependaddr {
+        pub id46_addr: crate::in_addr_4in6,
+        pub id6_addr: crate::in6_addr,
+    }
+
+    pub struct in_endpoints {
+        pub ie_fport: u16,
+        pub ie_lport: u16,
+        pub ie_dependfaddr: crate::in_dependaddr,
+        pub ie_dependladdr: crate::in_dependaddr,
+        pub ie6_zoneid: u32,
+    }
+
+    pub struct in_conninfo {
+        pub inc_flags: u8,
+        pub inc_len: u8,
+        pub inc_fibnum: u16,
+        pub inc_ie: crate::in_endpoints,
+    }
 }
 
 cfg_if! {
@@ -4604,6 +4629,10 @@ pub const RB_REROOT: c_int = 0x200000;
 pub const RB_POWERCYCLE: c_int = 0x400000;
 pub const RB_PROBE: c_int = 0x10000000;
 pub const RB_MULTIPLE: c_int = 0x20000000;
+
+// netinet/in_pcb.h
+pub const INC_ISIPV6: c_uchar = 0x01;
+pub const INC_IPV6MINMTU: c_uchar = 0x02;
 
 // sys/time.h
 pub const CLOCK_BOOTTIME: crate::clockid_t = crate::CLOCK_UPTIME;
