@@ -1760,6 +1760,38 @@ s_no_extra_traits! {
         pub inc_fibnum: u16,
         pub inc_ie: crate::in_endpoints,
     }
+
+    pub struct xktls_session_onedir {
+        pub gennum: u64,
+        _rsrv1: [u64; 8],
+        _rsrv2: [u32; 8],
+        pub iv: [u8; 32],
+        pub cipher_algorithm: i32,
+        pub auth_algorithm: i32,
+        pub cipher_key_len: u16,
+        pub iv_len: u16,
+        pub auth_key_len: u16,
+        pub max_frame_len: u16,
+        pub tls_vmajor: u8,
+        pub tls_vminor: u8,
+        pub tls_hlen: u8,
+        pub tls_tlen: u8,
+        pub tls_bs: u8,
+        pub flags: u8,
+        pub drv_st_len: u16,
+        pub ifnet: [u8; 16],
+    }
+
+    pub struct xktls_session {
+        pub tsz: u32,
+        pub fsz: u32,
+        pub inp_gencnt: u64,
+        pub so_pcb: kvaddr_t,
+        pub coninf: crate::in_conninfo,
+        pub rx_vlan_id: c_ushort,
+        pub rcv: crate::xktls_session_onedir,
+        pub snd: crate::xktls_session_onedir,
+    }
 }
 
 cfg_if! {
