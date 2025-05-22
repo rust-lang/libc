@@ -2,7 +2,6 @@ use crate::off64_t;
 use crate::prelude::*;
 
 pub type pthread_t = c_ulong;
-pub type __priority_which_t = c_uint;
 pub type __rlimit_resource_t = c_uint;
 pub type Lmid_t = c_long;
 pub type regoff_t = c_int;
@@ -719,9 +718,9 @@ pub const MAP_HUGE_1GB: c_int = HUGETLB_FLAG_ENCODE_1GB;
 pub const MAP_HUGE_2GB: c_int = HUGETLB_FLAG_ENCODE_2GB;
 pub const MAP_HUGE_16GB: c_int = HUGETLB_FLAG_ENCODE_16GB;
 
-pub const PRIO_PROCESS: crate::__priority_which_t = 0;
-pub const PRIO_PGRP: crate::__priority_which_t = 1;
-pub const PRIO_USER: crate::__priority_which_t = 2;
+pub const PRIO_PROCESS: c_int = 0;
+pub const PRIO_PGRP: c_int = 1;
+pub const PRIO_USER: c_int = 2;
 
 pub const MS_RMT_MASK: c_ulong = 0x02800051;
 
@@ -1305,8 +1304,8 @@ extern "C" {
         cpusetsize: size_t,
         cpuset: *const crate::cpu_set_t,
     ) -> c_int;
-    pub fn getpriority(which: crate::__priority_which_t, who: crate::id_t) -> c_int;
-    pub fn setpriority(which: crate::__priority_which_t, who: crate::id_t, prio: c_int) -> c_int;
+    pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
+    pub fn setpriority(which: c_int, who: crate::id_t, prio: c_int) -> c_int;
     pub fn pthread_rwlockattr_getkind_np(
         attr: *const crate::pthread_rwlockattr_t,
         val: *mut c_int,
