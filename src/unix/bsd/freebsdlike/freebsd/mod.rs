@@ -11,6 +11,9 @@ pub type fixpt_t = __fixpt_t;
 pub type __lwpid_t = i32;
 pub type lwpid_t = __lwpid_t;
 pub type blksize_t = i32;
+pub type ksize_t = u64;
+pub type inp_gen_t = u64;
+pub type so_gen_t = u64;
 pub type clockid_t = c_int;
 pub type sem_t = _sem;
 pub type timer_t = *mut __c_anonymous__timer;
@@ -1721,6 +1724,16 @@ s_no_extra_traits! {
         pub uc_stack: crate::stack_t,
         pub uc_flags: c_int,
         __spare__: [c_int; 4],
+    }
+
+    #[repr(align(8))]
+    pub struct xinpgen {
+        pub xig_len: ksize_t,
+        pub xig_count: u32,
+        _xig_spare32: u32,
+        pub xig_gen: inp_gen_t,
+        pub xig_sogen: so_gen_t,
+        _xig_spare64: [u64; 4],
     }
 }
 
