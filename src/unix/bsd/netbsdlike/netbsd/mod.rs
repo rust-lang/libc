@@ -1712,6 +1712,29 @@ pub const MNT_WAIT: c_int = 1;
 pub const MNT_NOWAIT: c_int = 2;
 pub const MNT_LAZY: c_int = 3;
 
+// sys/ioccom.h
+pub const IOCPARM_SHIFT: u32 = 16;
+pub const IOCGROUP_SHIFT: u32 = 8;
+
+pub const fn IOCPARM_LEN(x: u32) -> u32 {
+    (x >> IOCPARM_SHIFT) & crate::IOCPARM_MASK
+}
+
+pub const fn IOCBASECMD(x: u32) -> u32 {
+    x & (!(crate::IOCPARM_MASK << IOCPARM_SHIFT))
+}
+
+pub const fn IOCGROUP(x: u32) -> u32 {
+    (x >> IOCGROUP_SHIFT) & 0xff
+}
+
+pub const fn _IOC(inout: c_ulong, group: c_ulong, num: c_ulong, len: c_ulong) -> c_ulong {
+    (inout)
+        | (((len) & crate::IOCPARM_MASK as c_ulong) << IOCPARM_SHIFT)
+        | ((group) << IOCGROUP_SHIFT)
+        | (num)
+}
+
 //<sys/timex.h>
 pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 2;
 pub const CLOCK_THREAD_CPUTIME_ID: crate::clockid_t = 4;
