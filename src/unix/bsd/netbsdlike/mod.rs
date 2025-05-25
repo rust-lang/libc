@@ -441,30 +441,12 @@ pub const MNT_QUOTA: c_int = 0x00002000;
 
 // sys/ioccom.h in NetBSD and OpenBSD
 pub const IOCPARM_MASK: u32 = 0x1fff;
-pub const IOCPARM_SHIFT: u32 = 16;
-pub const IOCGROUP_SHIFT: u32 = 8;
-
-pub const fn IOCPARM_LEN(x: u32) -> u32 {
-    (x >> IOCPARM_SHIFT) & IOCPARM_MASK
-}
-
-pub const fn IOCBASECMD(x: u32) -> u32 {
-    x & (!(IOCPARM_MASK << IOCPARM_SHIFT))
-}
-
-pub const fn IOCGROUP(x: u32) -> u32 {
-    (x >> IOCGROUP_SHIFT) & 0xff
-}
 
 pub const IOC_VOID: u32 = 0x20000000;
 pub const IOC_OUT: u32 = 0x40000000;
 pub const IOC_IN: u32 = 0x80000000;
 pub const IOC_INOUT: u32 = IOC_IN | IOC_IN;
 pub const IOC_DIRMASK: u32 = 0xe0000000;
-
-pub const fn _IOC(inout: u32, group: u32, num: u32, len: u32) -> u32 {
-    (inout) | (((len) & IOCPARM_MASK) << IOCPARM_SHIFT) | ((group) << IOCGROUP_SHIFT) | (num)
-}
 
 pub const fn _IO(g: u32, n: u32) -> u32 {
     _IOC(IOC_VOID, g, n, 0)

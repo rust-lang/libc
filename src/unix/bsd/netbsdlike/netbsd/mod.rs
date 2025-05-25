@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::unix::bsd::IOCPARM_MASK;
 use crate::{cmsghdr, off_t};
 
 pub type clock_t = c_uint;
@@ -1849,6 +1850,25 @@ pub const MNT_ACLS: c_int = MNT_POSIX1EACLS;
 pub const MNT_WAIT: c_int = 1;
 pub const MNT_NOWAIT: c_int = 2;
 pub const MNT_LAZY: c_int = 3;
+
+// sys/ioccom.h 
+pub const IOCPARM_SHIFT: u32 = 16;
+pub const IOCGROUP_SHIFT: u32 = 8;
+
+pub const fn IOCPARM_LEN(x: u32) -> u32 {
+    (x >> IOCPARM_SHIFT) & IOCPARM_MASK
+}
+
+pub const fn IOCBASECMD(x: u32) -> u32 {
+    x & (!(IOCPARM_MASK << IOCPARM_SHIFT))
+}
+
+pub const fn IOCGROUP(x: u32) -> u32 {
+    (x >> IOCGROUP_SHIFT) & 0xff
+}
+pub const fn _IOC(inout: u32, group: u32, num: u32, len: u32) -> u32 {
+    (inout) | (((len) & IOCPARM_MASK) << IOCPARM_SHIFT) | ((group) << IOCGROUP_SHIFT) | (num)
+}
 
 //<sys/timex.h>
 pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 2;
