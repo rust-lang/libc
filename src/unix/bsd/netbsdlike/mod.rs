@@ -445,7 +445,7 @@ pub const IOCPARM_MASK: u32 = 0x1fff;
 pub const IOC_VOID: u32 = 0x20000000;
 pub const IOC_OUT: u32 = 0x40000000;
 pub const IOC_IN: u32 = 0x80000000;
-pub const IOC_INOUT: u32 = IOC_IN | IOC_IN;
+pub const IOC_INOUT: u32 = IOC_IN | IOC_OUT;
 pub const IOC_DIRMASK: u32 = 0xe0000000;
 
 pub const fn _IO(g: u32, n: u32) -> u32 {
