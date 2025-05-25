@@ -472,17 +472,17 @@ pub const fn _IO(g: u32, n: u32) -> u32 {
 
 /// Build an ioctl number for an read-only ioctl.
 pub const fn _IOR<T>(g: u32, n: u32) -> u32 {
-    _IOC(IOC_OUT, g, n, size_of::<T>() as u32)
+    _IOC(IOC_OUT, g, n, mem::size_of::<T>() as u32)
 }
 
 /// Build an ioctl number for an write-only ioctl.
 pub const fn _IOW<T>(g: u32, n: u32) -> u32 {
-    _IOC(IOC_IN, g, n, size_of::<T>() as u32)
+    _IOC(IOC_IN, g, n, mem::size_of::<T>() as u32)
 }
 
 /// Build an ioctl number for a read-write ioctl.
 pub const fn _IOWR<T>(g: u32, n: u32) -> u32 {
-    _IOC(IOC_INOUT, g, n, size_of::<T>() as u32)
+    _IOC(IOC_INOUT, g, n, mem::size_of::<T>() as u32)
 }
 
 pub const AF_UNSPEC: c_int = 0;
