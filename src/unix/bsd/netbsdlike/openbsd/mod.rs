@@ -1,6 +1,5 @@
 use crate::prelude::*;
 use crate::unix::bsd::O_SYNC;
-use crate::unix::bsd::IOCPARM_MASK;
 use crate::{cmsghdr, off_t};
 
 pub type clock_t = i64;
@@ -1807,18 +1806,18 @@ pub const PF_MASKPROC: u32 = 0xf0000000;
 
 // sys/ioccom.h 
 pub const fn IOCPARM_LEN(x: u32) -> u32 {
-    (x >> 16) & IOCPARM_MASK
+    (x >> 16) & crate::IOCPARM_MASK
 }
 
 pub const fn IOCBASECMD(x: u32) -> u32 {
-    x & (!(IOCPARM_MASK << 16))
+    x & (!(crate::IOCPARM_MASK << 16))
 }
 
 pub const fn IOCGROUP(x: u32) -> u32 {
     (x >> 8) & 0xff
 }
 pub const fn _IOC(inout: u32, group: u32, num: u32, len: u32) -> u32 {
-    (inout) | (((len) & IOCPARM_MASK) << 16) | ((group) << 8) | (num)
+    (inout) | (((len) & crate::IOCPARM_MASK) << 16) | ((group) << 8) | (num)
 }
 
 
