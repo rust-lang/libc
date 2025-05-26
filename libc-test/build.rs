@@ -4232,6 +4232,10 @@ fn test_linux(target: &str) {
             if old_musl && name == "RLIM_NLIMITS" {
                 return true;
             }
+            // Incorrectly named and renamed upstream:
+            if old_musl && name == "SIGSTKFLT" {
+                return true;
+            }
             // FIXME: Does not exist on non-x86 architectures, slated for removal
             // in libc in 1.0
             if ppc64 && name == "MAP_32BIT" {
