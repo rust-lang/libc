@@ -562,6 +562,13 @@ pub const SIGTSTP: c_int = 24;
 pub const SIGURG: c_int = 21;
 pub const SIGIO: c_int = 22;
 pub const SIGSYS: c_int = 12;
+pub const SIGEMT: c_int = 7;
+#[cfg(not(musl_v1_2_3))]
+#[deprecated(
+    since = "0.2.173",
+    note = "This signal actually corresponds to SIGEMT was incorrectly named in musl.
+        As it does not exist on mips it will be dropped entirely in a future release"
+)]
 pub const SIGSTKFLT: c_int = 7;
 pub const SIGPOLL: c_int = crate::SIGIO;
 pub const SIGPWR: c_int = 19;
