@@ -1818,7 +1818,7 @@ pub const fn IOCGROUP(x: u32) -> u32 {
 }
 
 pub const fn _IOC(inout: c_ulong, group: c_ulong, num: c_ulong, len: c_ulong) -> c_ulong {
-    (inout) | (((len) & crate::IOCPARM_MASK) << 16) | ((group) << 8) | (num)
+    (inout) | (((len) & crate::IOCPARM_MASK as c_ulong) << 16) | ((group) << 8) | (num)
 }
 
 // sys/mount.h
