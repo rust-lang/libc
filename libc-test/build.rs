@@ -4287,6 +4287,10 @@ fn test_linux(target: &str) {
             if old_musl && name == "RLIM_NLIMITS" {
                 return true;
             }
+            // Incorrectly named and renamed upstream:
+            if old_musl && name == "SIGSTKFLT" {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
