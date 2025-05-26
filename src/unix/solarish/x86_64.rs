@@ -91,7 +91,9 @@ s_no_extra_traits! {
         #[cfg(target_os = "solaris")]
         pub uc_xrs: solaris::xrs_t,
         #[cfg(target_os = "solaris")]
-        pub uc_filler: [c_long; 3],
+        pub uc_lwpid: c_uint,
+        #[cfg(target_os = "solaris")]
+        pub uc_filler: [c_long; 2],
     }
 }
 
