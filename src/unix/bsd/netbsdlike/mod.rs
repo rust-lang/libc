@@ -442,29 +442,29 @@ pub const MNT_QUOTA: c_int = 0x00002000;
 // sys/ioccom.h in NetBSD and OpenBSD
 pub const IOCPARM_MASK: u32 = 0x1fff;
 
-pub const IOC_VOID: u32 = 0x20000000;
-pub const IOC_OUT: u32 = 0x40000000;
-pub const IOC_IN: u32 = 0x80000000;
-pub const IOC_INOUT: u32 = IOC_IN | IOC_OUT;
-pub const IOC_DIRMASK: u32 = 0xe0000000;
+pub const IOC_VOID: c_ulong = 0x20000000;
+pub const IOC_OUT: c_ulong = 0x40000000;
+pub const IOC_IN: c_ulong = 0x80000000;
+pub const IOC_INOUT: c_ulong = IOC_IN | IOC_OUT;
+pub const IOC_DIRMASK: c_ulong = 0xe0000000;
 
-pub const fn _IO(g: u32, n: u32) -> u32 {
+pub const fn _IO(g: c_ulong, n: c_ulong) -> c_ulong {
     _IOC(IOC_VOID, g, n, 0)
 }
 
 /// Build an ioctl number for an read-only ioctl.
-pub const fn _IOR<T>(g: u32, n: u32) -> u32 {
-    _IOC(IOC_OUT, g, n, mem::size_of::<T>() as u32)
+pub const fn _IOR<T>(g: c_ulong, n: c_ulong) -> c_ulong {
+    _IOC(IOC_OUT, g, n, mem::size_of::<T>() as c_ulong)
 }
 
 /// Build an ioctl number for an write-only ioctl.
-pub const fn _IOW<T>(g: u32, n: u32) -> u32 {
-    _IOC(IOC_IN, g, n, mem::size_of::<T>() as u32)
+pub const fn _IOW<T>(g: c_ulong, n: c_ulong) -> c_ulong {
+    _IOC(IOC_IN, g, n, mem::size_of::<T>() as c_ulong)
 }
 
 /// Build an ioctl number for a read-write ioctl.
-pub const fn _IOWR<T>(g: u32, n: u32) -> u32 {
-    _IOC(IOC_INOUT, g, n, mem::size_of::<T>() as u32)
+pub const fn _IOWR<T>(g: c_ulong, n: c_ulong) -> c_ulong {
+    _IOC(IOC_INOUT, g, n, mem::size_of::<T>() as c_ulong)
 }
 
 pub const AF_UNSPEC: c_int = 0;
