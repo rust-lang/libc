@@ -927,6 +927,13 @@ extern "C" {
         flags: c_int,
     ) -> ssize_t;
     pub fn getauxval(type_: c_ulong) -> c_ulong;
+    pub fn renameat2(
+        oldfd: c_int,
+        old: *const c_char,
+        newfd: c_int,
+        new: *const c_char,
+        flags: c_uint,
+    ) -> c_int;
 
     // Added in `musl` 1.1.20
     pub fn explicit_bzero(s: *mut c_void, len: size_t);
