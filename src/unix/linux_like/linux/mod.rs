@@ -93,6 +93,16 @@ e! {
     }
 }
 
+c_enum! {
+    pid_type {
+        PIDTYPE_PID,
+        PIDTYPE_TGID,
+        PIDTYPE_PGID,
+        PIDTYPE_SID,
+        PIDTYPE_MAX,
+    }
+}
+
 s! {
     pub struct glob_t {
         pub gl_pathc: size_t,
@@ -1364,6 +1374,25 @@ s! {
         pub attr_clr: crate::__u64,
         pub propagation: crate::__u64,
         pub userns_fd: crate::__u64,
+    }
+
+    // linux/pidfd.h
+
+    pub struct pidfd_info {
+        mask: crate::__u64,
+        cgroupid: crate::__u64,
+        pid: crate::__u32,
+        tgid: crate::__u32,
+        ppid: crate::__u32,
+        ruid: crate::__u32,
+        rgid: crate::__u32,
+        euid: crate::__u32,
+        egid: crate::__u32,
+        suid: crate::__u32,
+        sgid: crate::__u32,
+        fsuid: crate::__u32,
+        fsgid: crate::__u32,
+        exit_code: crate::__s32,
     }
 
     // linux/uio.h
@@ -3182,6 +3211,35 @@ pub const MREMAP_MAYMOVE: c_int = 1;
 pub const MREMAP_FIXED: c_int = 2;
 pub const MREMAP_DONTUNMAP: c_int = 4;
 
+// linux/pidfd.h
+pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;
+pub const PIDFD_THREAD: c_uint = O_EXCL as c_uint;
+
+pub const PIDFD_SIGNAL_THREAD: c_uint = 1 << 0;
+pub const PIDFD_SIGNAL_THREAD_GROUP: c_uint = 1 << 1;
+pub const PIDFD_SIGNAL_PROCESS_GROUP: c_uint = 1 << 2;
+
+pub const PIDFD_INFO_PID: c_uint = 1 << 0;
+pub const PIDFD_INFO_CREDS: c_uint = 1 << 1;
+pub const PIDFD_INFO_CGROUPID: c_uint = 1 << 2;
+pub const PIDFD_INFO_EXIT: c_uint = 1 << 3;
+
+pub const PIDFD_INFO_SIZE_VER0: c_uint = 64;
+
+const PIDFS_IOCTL_MAGIC: c_uint = 0xFF;
+pub const PIDFD_GET_CGROUP_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 1);
+pub const PIDFD_GET_IPC_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 2);
+pub const PIDFD_GET_MNT_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 3);
+pub const PIDFD_GET_NET_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 4);
+pub const PIDFD_GET_PID_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 5);
+pub const PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 6);
+pub const PIDFD_GET_TIME_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 7);
+pub const PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 8);
+pub const PIDFD_GET_USER_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 9);
+pub const PIDFD_GET_UTS_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 10);
+pub const PIDFD_GET_INFO: c_uint = _IOWR::<pidfd_info>(PIDFS_IOCTL_MAGIC, 11);
+
+// linux/prctl.h
 pub const PR_SET_PDEATHSIG: c_int = 1;
 pub const PR_GET_PDEATHSIG: c_int = 2;
 
@@ -3283,6 +3341,11 @@ pub const PR_GET_CHILD_SUBREAPER: c_int = 37;
 
 pub const PR_SET_NO_NEW_PRIVS: c_int = 38;
 pub const PR_GET_NO_NEW_PRIVS: c_int = 39;
+
+pub const PR_SET_MDWE: c_int = 65;
+pub const PR_GET_MDWE: c_int = 66;
+pub const PR_MDWE_REFUSE_EXEC_GAIN: c_uint = 1 << 0;
+pub const PR_MDWE_NO_INHERIT: c_uint = 1 << 1;
 
 pub const PR_GET_TID_ADDRESS: c_int = 40;
 
@@ -3830,6 +3893,7 @@ pub const PACKET_LOSS: c_int = 14;
 pub const PACKET_TIMESTAMP: c_int = 17;
 pub const PACKET_FANOUT: c_int = 18;
 pub const PACKET_QDISC_BYPASS: c_int = 20;
+pub const PACKET_IGNORE_OUTGOING: c_int = 23;
 
 pub const PACKET_FANOUT_HASH: c_uint = 0;
 pub const PACKET_FANOUT_LB: c_uint = 1;
@@ -6544,7 +6608,7 @@ extern "C" {
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
 
     // Not available now on Android
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
     pub fn sync_file_range(fd: c_int, offset: off64_t, nbytes: off64_t, flags: c_uint) -> c_int;
@@ -6899,7 +6963,7 @@ extern "C" {
         fd: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_addclose(
         actions: *mut posix_spawn_file_actions_t,

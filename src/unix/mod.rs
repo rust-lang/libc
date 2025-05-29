@@ -245,9 +245,9 @@ cfg_if! {
 }
 pub const SIGIOT: c_int = 6;
 
-pub const S_ISUID: crate::mode_t = 0o4000;
-pub const S_ISGID: crate::mode_t = 0o2000;
-pub const S_ISVTX: crate::mode_t = 0o1000;
+pub const S_ISUID: mode_t = 0o4000;
+pub const S_ISGID: mode_t = 0o2000;
+pub const S_ISVTX: mode_t = 0o1000;
 
 cfg_if! {
     if #[cfg(not(any(
@@ -939,12 +939,7 @@ extern "C" {
     )]
     pub fn rewinddir(dirp: *mut crate::DIR);
 
-    pub fn fchmodat(
-        dirfd: c_int,
-        pathname: *const c_char,
-        mode: crate::mode_t,
-        flags: c_int,
-    ) -> c_int;
+    pub fn fchmodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, flags: c_int) -> c_int;
     pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
     pub fn fchownat(
         dirfd: c_int,
@@ -1421,7 +1416,7 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "mknod@FBSD_1.0"
     )]
-    pub fn mknod(pathname: *const c_char, mode: crate::mode_t, dev: crate::dev_t) -> c_int;
+    pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn endservent();
     pub fn getservbyname(name: *const c_char, proto: *const c_char) -> *mut servent;
@@ -1659,7 +1654,7 @@ cfg_if! {
             )]
             pub fn pause() -> c_int;
 
-            pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
+            pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
             #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
             pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
 

@@ -220,7 +220,7 @@ s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
+        pub st_mode: mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
@@ -745,6 +745,7 @@ pub const S_taskLib_ILLEGAL_PRIORITY: c_int = taskErrorBase + 0x0068;
 
 // FIXME(vxworks): could also be useful for TASK_DESC type
 pub const VX_TASK_NAME_LENGTH: c_int = 31;
+pub const VX_TASK_RENAME_LENGTH: c_int = 16;
 
 // semLibCommon.h
 pub const S_semLib_INVALID_STATE: c_int = semErrorBase + 0x0065;
@@ -805,6 +806,9 @@ pub const S_IROTH: c_int = 0o0004;
 pub const S_IWOTH: c_int = 0o0002;
 pub const S_IXOTH: c_int = 0o0001;
 pub const S_IRWXO: c_int = 0o0007;
+
+pub const UTIME_OMIT: c_long = 0x3ffffffe;
+pub const UTIME_NOW: c_long = 0x3fffffff;
 
 // socket.h
 pub const SOL_SOCKET: c_int = 0xffff;
@@ -1299,7 +1303,7 @@ extern "C" {
     pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
 
     pub fn truncate(path: *const c_char, length: off_t) -> c_int;
-    pub fn shm_open(name: *const c_char, oflag: c_int, mode: crate::mode_t) -> c_int;
+    pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
 
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
@@ -1810,13 +1814,13 @@ extern "C" {
     pub fn rmdir(path: *const c_char) -> c_int;
 
     // stat.h
-    pub fn mkdir(dirName: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn mkdir(dirName: *const c_char, mode: mode_t) -> c_int;
 
     // stat.h
-    pub fn chmod(path: *const c_char, mode: crate::mode_t) -> c_int;
+    pub fn chmod(path: *const c_char, mode: mode_t) -> c_int;
 
     // stat.h
-    pub fn fchmod(attr1: c_int, attr2: crate::mode_t) -> c_int;
+    pub fn fchmod(attr1: c_int, attr2: mode_t) -> c_int;
 
     // unistd.h
     pub fn fsync(fd: c_int) -> c_int;

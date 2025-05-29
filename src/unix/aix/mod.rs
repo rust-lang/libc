@@ -2881,9 +2881,8 @@ extern "C" {
     ) -> *mut c_void;
     pub fn memset_s(s: *mut c_void, smax: size_t, c: c_int, n: size_t) -> c_int;
     pub fn mincore(addr: *const c_void, len: size_t, vec: *mut c_char) -> c_int;
-    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t) -> c_int;
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: crate::mode_t, dev: dev_t)
-        -> c_int;
+    pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
     pub fn mount(device: *const c_char, path: *const c_char, flags: c_int) -> c_int;
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn mq_close(mqd: crate::mqd_t) -> c_int;
@@ -2977,7 +2976,7 @@ extern "C" {
         fd: c_int,
         path: *const c_char,
         oflag: c_int,
-        mode: crate::mode_t,
+        mode: mode_t,
     ) -> c_int;
     pub fn posix_spawn_file_actions_destroy(actions: *mut posix_spawn_file_actions_t) -> c_int;
     pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> c_int;
@@ -3142,7 +3141,7 @@ extern "C" {
     pub fn shmdt(shmaddr: *const c_void) -> c_int;
     pub fn shmctl(shmid: c_int, cmd: c_int, buf: *mut crate::shmid_ds) -> c_int;
     pub fn shmget(key: key_t, size: size_t, shmflg: c_int) -> c_int;
-    pub fn shm_open(name: *const c_char, oflag: c_int, mode: crate::mode_t) -> c_int;
+    pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
     pub fn splice(socket1: c_int, socket2: c_int, flags: c_int) -> c_int;
     pub fn srand(seed: c_uint);

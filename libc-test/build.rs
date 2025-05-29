@@ -4123,6 +4123,10 @@ fn test_linux(target: &str) {
             // Might differ between kernel versions
             "open_how" => true,
 
+            // Linux >= 6.13 (pidfd_info.exit_code: Linux >= 6.15)
+            // Might differ between kernel versions
+            "pidfd_info" => true,
+
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
@@ -4229,6 +4233,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("OPEN_TREE_")
                 || name.starts_with("P_")
                 || name.starts_with("PF_")
+                || name.starts_with("PIDFD_")
                 || name.starts_with("RLIMIT_")
                 || name.starts_with("RTEXT_FILTER_")
                 || name.starts_with("SOL_")
@@ -4295,6 +4300,10 @@ fn test_linux(target: &str) {
             }
             // FIXME: Requires >= 6.3 kernel headers
             if loongarch64 && (name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC") {
+                return true;
+            }
+            // FIXME: Requires >= 6.3 (6.6) kernel headers
+            if name == "PR_GET_MDWE" || name == "PR_MDWE_NO_INHERIT" || name == "PR_MDWE_REFUSE_EXEC_GAIN" || name == "PR_SET_MDWE" {
                 return true;
             }
             // FIXME(musl): Requires musl >= 1.2
@@ -4432,6 +4441,30 @@ fn test_linux(target: &str) {
 
             // headers conflicts with linux/pidfd.h
             "PIDFD_NONBLOCK" => true,
+            // Linux >= 6.9
+            "PIDFD_THREAD"
+            | "PIDFD_SIGNAL_THREAD"
+            | "PIDFD_SIGNAL_THREAD_GROUP"
+            | "PIDFD_SIGNAL_PROCESS_GROUP" => true,
+            // Linux >= 6.11
+            "PIDFD_GET_CGROUP_NAMESPACE"
+            | "PIDFD_GET_IPC_NAMESPACE"
+            | "PIDFD_GET_MNT_NAMESPACE"
+            | "PIDFD_GET_NET_NAMESPACE"
+            | "PIDFD_GET_PID_NAMESPACE"
+            | "PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE"
+            | "PIDFD_GET_TIME_NAMESPACE"
+            | "PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE"
+            | "PIDFD_GET_USER_NAMESPACE"
+            | "PIDFD_GET_UTS_NAMESPACE" => true,
+            // Linux >= 6.13
+            "PIDFD_GET_INFO"
+            | "PIDFD_INFO_PID"
+            | "PIDFD_INFO_CREDS"
+            | "PIDFD_INFO_CGROUPID"
+            | "PIDFD_INFO_SIZE_VER0" => true,
+            // Linux >= 6.15
+            "PIDFD_INFO_EXIT" | "PIDFD_SELF" | "PIDFD_SELF_PROCESS" => true,
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
@@ -4553,6 +4586,9 @@ fn test_linux(target: &str) {
             {
                 true
             }
+
+            // FIXME(linux): Requires >= 6.6 kernel headers.
+            "PR_MDWE_NO_INHERIT" => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"
@@ -4851,7 +4887,9 @@ fn test_linux(target: &str) {
         (struct_ == "statvfs" && field == "__f_spare") ||
         (struct_ == "statvfs64" && field == "__f_spare") ||
         // the `xsk_tx_metadata_union` field is an anonymous union
-        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union")
+        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
+        // FIXME(musl): After musl 1.2.0, the type becomes `int` instead of `long`.
+        (struct_ == "utmpx" && field == "ut_session")
     });
 
     cfg.skip_roundtrip(move |s| match s {

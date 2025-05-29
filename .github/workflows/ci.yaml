@@ -232,7 +232,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: test on Solaris
-        uses: vmactions/solaris-vm@v1
+        uses: vmactions/solaris-vm@v1.1.3
         with:
           release: "11.4-gcc"
           usesh: true
