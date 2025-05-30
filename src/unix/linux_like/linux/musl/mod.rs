@@ -3,6 +3,9 @@ use crate::prelude::*;
 
 pub type pthread_t = *mut c_void;
 pub type clock_t = c_long;
+#[cfg(musl_time64)]
+pub type time_t = i64;
+#[cfg(not(musl_time64))]
 #[cfg_attr(
     not(feature = "rustc-dep-of-std"),
     deprecated(
@@ -13,6 +16,18 @@ pub type clock_t = c_long;
     )
 )]
 pub type time_t = c_long;
+#[cfg(musl_time64)]
+pub type suseconds_t = i64;
+#[cfg(not(musl_time64))]
+#[cfg_attr(
+    not(feature = "rustc-dep-of-std"),
+    deprecated(
+        since = "0.2.80",
+        note = "This type is changed to 64-bit in musl 1.2.0, \
+                we'll follow that change in the future release. \
+                See #1848 for more info."
+    )
+)]
 pub type suseconds_t = c_long;
 pub type ino_t = u64;
 pub type off_t = i64;
@@ -882,6 +897,7 @@ extern "C" {
         vlen: c_uint,
         flags: c_uint,
     ) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__recvmmsg_time64")]
     pub fn recvmmsg(
         sockfd: c_int,
         msgvec: *mut crate::mmsghdr,
@@ -898,6 +914,7 @@ extern "C" {
         new_limit: *const crate::rlimit,
         old_limit: *mut crate::rlimit,
     ) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__gettimeofday_time64")]
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
     pub fn ptrace(request: c_int, ...) -> c_long;
     pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
@@ -933,7 +950,9 @@ extern "C" {
     // Added in `musl` 1.2.2
     pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
 
+    #[cfg_attr(musl_time64, link_name = "__adjtimex_time64")]
     pub fn adjtimex(buf: *mut crate::timex) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__clock_adjtime64")]
     pub fn clock_adjtime(clk_id: crate::clockid_t, buf: *mut crate::timex) -> c_int;
 
     pub fn ctermid(s: *mut c_char) -> *mut c_char;

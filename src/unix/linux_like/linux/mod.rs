@@ -3019,8 +3019,14 @@ pub const IPC_NOWAIT: c_int = 0o4000;
 
 pub const IPC_RMID: c_int = 0;
 pub const IPC_SET: c_int = 1;
+#[cfg(musl_time64)]
+pub const IPC_STAT: c_int = 0x102;
+#[cfg(not(musl_time64))]
 pub const IPC_STAT: c_int = 2;
 pub const IPC_INFO: c_int = 3;
+#[cfg(musl_time64)]
+pub const MSG_STAT: c_int = 0x10b;
+#[cfg(not(musl_time64))]
 pub const MSG_STAT: c_int = 11;
 pub const MSG_INFO: c_int = 12;
 pub const MSG_NOTIFICATION: c_int = 0x8000;
@@ -3038,8 +3044,14 @@ pub const GETNCNT: c_int = 14;
 pub const GETZCNT: c_int = 15;
 pub const SETVAL: c_int = 16;
 pub const SETALL: c_int = 17;
+#[cfg(musl_time64)]
+pub const SEM_STAT: c_int = 0x112;
+#[cfg(not(musl_time64))]
 pub const SEM_STAT: c_int = 18;
 pub const SEM_INFO: c_int = 19;
+#[cfg(musl_time64)]
+pub const SEM_STAT_ANY: c_int = 0x114;
+#[cfg(not(musl_time64))]
 pub const SEM_STAT_ANY: c_int = 20;
 
 pub const SHM_R: c_int = 0o400;
@@ -6231,6 +6243,7 @@ cfg_if! {
             pub fn aio_error(aiocbp: *const aiocb) -> c_int;
             #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_return64")]
             pub fn aio_return(aiocbp: *mut aiocb) -> ssize_t;
+            #[cfg_attr(musl_time64, link_name = "__aio_suspend_time64")]
             pub fn aio_suspend(
                 aiocb_list: *const *const aiocb,
                 nitems: c_int,
@@ -6292,6 +6305,7 @@ cfg_if! {
                 riovcnt: c_ulong,
                 flags: c_ulong,
             ) -> isize;
+            #[cfg_attr(musl_time64, link_name = "__futimes_time64")]
             pub fn futimes(fd: c_int, times: *const crate::timeval) -> c_int;
         }
     }
@@ -6321,6 +6335,7 @@ cfg_if! {
                 msg_len: size_t,
                 msg_prio: *mut c_uint,
             ) -> ssize_t;
+            #[cfg_attr(musl_time64, link_name = "__mq_timedreceive_time64")]
             pub fn mq_timedreceive(
                 mqd: crate::mqd_t,
                 msg_ptr: *mut c_char,
@@ -6334,6 +6349,7 @@ cfg_if! {
                 msg_len: size_t,
                 msg_prio: c_uint,
             ) -> c_int;
+            #[cfg_attr(musl_time64, link_name = "__mq_timedsend_time64")]
             pub fn mq_timedsend(
                 mqd: crate::mqd_t,
                 msg_ptr: *const c_char,
@@ -6384,6 +6400,7 @@ extern "C" {
     pub fn seed48(xseed: *mut c_ushort) -> *mut c_ushort;
     pub fn lcong48(p: *mut c_ushort);
 
+    #[cfg_attr(musl_time64, link_name = "__lutimes_time64")]
     pub fn lutimes(file: *const c_char, times: *const crate::timeval) -> c_int;
 
     pub fn setpwent();
@@ -6476,7 +6493,9 @@ extern "C" {
     pub fn fremovexattr(filedes: c_int, name: *const c_char) -> c_int;
     pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__timerfd_gettime64")]
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut itimerspec) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__timerfd_settime64")]
     pub fn timerfd_settime(
         fd: c_int,
         flags: c_int,
@@ -6492,6 +6511,7 @@ extern "C" {
         sigmask: *const crate::sigset_t,
     ) -> c_int;
     pub fn dup3(oldfd: c_int, newfd: c_int, flags: c_int) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__sigtimedwait_time64")]
     pub fn sigtimedwait(
         set: *const sigset_t,
         info: *mut siginfo_t,
@@ -6603,6 +6623,7 @@ extern "C" {
     pub fn umount(target: *const c_char) -> c_int;
     pub fn sched_get_priority_max(policy: c_int) -> c_int;
     pub fn tee(fd_in: c_int, fd_out: c_int, len: size_t, flags: c_uint) -> ssize_t;
+    #[cfg_attr(musl_time64, link_name = "__settimeofday_time64")]
     pub fn settimeofday(tv: *const crate::timeval, tz: *const crate::timezone) -> c_int;
     pub fn splice(
         fd_in: c_int,
@@ -6616,7 +6637,9 @@ extern "C" {
     pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 
+    #[cfg_attr(musl_time64, link_name = "__sched_rr_get_interval_time64")]
     pub fn sched_rr_get_interval(pid: crate::pid_t, tp: *mut crate::timespec) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__sem_timedwait_time64")]
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const crate::timespec) -> c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
     pub fn sched_setparam(pid: crate::pid_t, param: *const crate::sched_param) -> c_int;
@@ -6634,6 +6657,7 @@ extern "C" {
     pub fn personality(persona: c_ulong) -> c_int;
     pub fn prctl(option: c_int, ...) -> c_int;
     pub fn sched_getparam(pid: crate::pid_t, param: *mut crate::sched_param) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__ppoll_time64")]
     pub fn ppoll(
         fds: *mut crate::pollfd,
         nfds: nfds_t,
@@ -6646,6 +6670,7 @@ extern "C" {
     ) -> c_int;
     pub fn pthread_mutexattr_setprotocol(attr: *mut pthread_mutexattr_t, protocol: c_int) -> c_int;
 
+    #[cfg_attr(musl_time64, link_name = "__pthread_mutex_timedlock_time64")]
     pub fn pthread_mutex_timedlock(
         lock: *mut pthread_mutex_t,
         abstime: *const crate::timespec,
@@ -6680,6 +6705,7 @@ extern "C" {
         ...
     ) -> c_int;
     pub fn sched_getscheduler(pid: crate::pid_t) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__clock_nanosleep_time64")]
     pub fn clock_nanosleep(
         clk_id: crate::clockid_t,
         flags: c_int,
@@ -6937,7 +6963,9 @@ extern "C" {
     ) -> c_int;
     pub fn timer_delete(timerid: crate::timer_t) -> c_int;
     pub fn timer_getoverrun(timerid: crate::timer_t) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__timer_gettime64")]
     pub fn timer_gettime(timerid: crate::timer_t, curr_value: *mut crate::itimerspec) -> c_int;
+    #[cfg_attr(musl_time64, link_name = "__timer_settime64")]
     pub fn timer_settime(
         timerid: crate::timer_t,
         flags: c_int,
