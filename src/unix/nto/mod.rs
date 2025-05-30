@@ -73,13 +73,8 @@ pub type sem_t = sync_t;
 pub type nl_item = c_int;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
 
 s! {
     pub struct dirent_extra {
