@@ -26,7 +26,7 @@ while IFS= read -r file; do
 
     # Turn all braced macro `foo! { /* ... */ }` invocations into
     # `fn foo_fmt_tmp() { /* ... */ }`.
-    perl -pi -e 's/(?!macro_rules)\b(\w+)!\s*\{/fn $1_fmt_tmp() {/g' "$file"
+    perl -pi -e 's/(?!macro_rules|c_enum)\b(\w+)!\s*\{/fn $1_fmt_tmp() {/g' "$file"
 
     # Replace `if #[cfg(...)]` within `cfg_if` with `if cfg_tmp!([...])` which
     # `rustfmt` will format. We put brackets within the parens so it is easy to
