@@ -139,6 +139,7 @@ extra_traits = []
 [workspace]
 members = [
     "ctest",
+    "ctest-next",
     "ctest-test",
     "libc-test",
 ]
