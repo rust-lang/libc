@@ -4625,6 +4625,9 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG" | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
 
+            // Linux 6.14
+            "AT_EXECVE_CHECK" => true,
+
             _ => false,
         }
     });
