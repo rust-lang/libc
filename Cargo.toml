@@ -148,6 +148,7 @@ use_std = ['std']
 [workspace]
 members = [
     "ctest",
+    "ctest-next",
     "libc-test",
 ]
 
