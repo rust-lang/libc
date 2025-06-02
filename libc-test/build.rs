@@ -3615,22 +3615,37 @@ fn test_vxworks(target: &str) {
 }
 
 fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
-    match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
-        Ok(val) if val == "64" => {
-            if target.contains("gnu")
-                && target.contains("linux")
-                && !target.ends_with("x32")
-                && !target.contains("riscv32")
-                && env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap() == "32"
-            {
+    let pointer_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
+    if target.contains("gnu")
+        && target.contains("linux")
+        && !target.ends_with("x32")
+        && !target.contains("riscv32")
+        && pointer_width == "32"
+    {
+        match env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
+            Ok(val) if val == "64" => {
                 cfg.define("_FILE_OFFSET_BITS", Some("64"));
+                cfg.define("_TIME_BITS", Some("64"));
                 cfg.cfg("gnu_file_offset_bits64", None);
+                cfg.cfg("linux_time_bits64", None);
+                cfg.cfg("gnu_time_bits64", None);
+            }
+            Ok(val) if val != "32" => {
+                panic!("RUST_LIBC_UNSTABLE_GNU_TIME_BITS may only be set to '32' or '64'")
+            }
+            _ => {
+                match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+                    Ok(val) if val == "64" => {
+                        cfg.define("_FILE_OFFSET_BITS", Some("64"));
+                        cfg.cfg("gnu_file_offset_bits64", None);
+                    }
+                    Ok(val) if val != "32" => {
+                        panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
+                    }
+                    _ => {}
+                }
             }
         }
-        Ok(val) if val != "32" => {
-            panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
-        }
-        _ => {}
     }
 }
 

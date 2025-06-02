@@ -15,6 +15,8 @@ const ALLOWED_CFGS: &[&str] = &[
     "freebsd15",
     // Corresponds to `_FILE_OFFSET_BITS=64` in glibc
     "gnu_file_offset_bits64",
+    // Corresponds to `_TIME_BITS=64` in glibc
+    "gnu_time_bits64",
     // FIXME(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
     "libc_const_extern_fn",
     "libc_deny_warnings",
@@ -99,23 +101,35 @@ fn main() {
         set_cfg("linux_time_bits64");
     }
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
-    match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
-        Ok(val) if val == "64" => {
-            if target_env == "gnu"
-                && target_os == "linux"
-                && target_ptr_width == "32"
-                && target_arch != "riscv32"
-                && target_arch != "x86_64"
-            {
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_TIME_BITS");
+    if target_env == "gnu"
+        && target_os == "linux"
+        && target_ptr_width == "32"
+        && target_arch != "riscv32"
+        && target_arch != "x86_64"
+    {
+        match env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
+            Ok(val) if val == "64" => {
                 set_cfg("gnu_file_offset_bits64");
+                set_cfg("linux_time_bits64");
+                set_cfg("gnu_time_bits64");
+            }
+            Ok(val) if val != "32" => {
+                panic!("RUST_LIBC_UNSTABLE_GNU_TIME_BITS may only be set to '32' or '64'")
+            }
+            _ => {
+                match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+                    Ok(val) if val == "64" => {
+                        set_cfg("gnu_file_offset_bits64");
+                    }
+                    Ok(val) if val != "32" => {
+                        panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
+                    }
+                    _ => {}
+                }
             }
         }
-        Ok(val) if val != "32" => {
-            panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
-        }
-        _ => {}
     }
-
     // On CI: deny all warnings
     if libc_ci {
         set_cfg("libc_deny_warnings");
