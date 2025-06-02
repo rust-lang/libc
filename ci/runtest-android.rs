@@ -37,8 +37,8 @@ fn main() {
     let stderr = String::from_utf8_lossy(&output.stderr);
 
     println!(
-        "status: {}\nstdout ---\n{}\nstderr ---\n{}",
-        output.status, stdout, stderr
+        "status: {}\nstdout ---\n{stdout}\nstderr ---\n{stderr}",
+        output.status,
     );
 
     if !stderr.lines().any(|l| {

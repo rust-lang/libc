@@ -532,6 +532,8 @@ pub const ENOTRECOVERABLE: c_int = 131;
 pub const EHWPOISON: c_int = 133;
 pub const ERFKILL: c_int = 132;
 
+pub const MADV_SOFT_OFFLINE: c_int = 101;
+
 pub const SA_ONSTACK: c_int = 0x08000000;
 pub const SA_SIGINFO: c_int = 0x00000004;
 pub const SA_NOCLDWAIT: c_int = 0x00000002;

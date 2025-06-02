@@ -26,7 +26,7 @@ while IFS= read -r file; do
 
     # Turn all braced macro `foo! { /* ... */ }` invocations into
     # `fn foo_fmt_tmp() { /* ... */ }`.
-    perl -pi -e 's/(?!macro_rules)\b(\w+)!\s*\{/fn $1_fmt_tmp() {/g' "$file"
+    perl -pi -e 's/(?!macro_rules|c_enum)\b(\w+)!\s*\{/fn $1_fmt_tmp() {/g' "$file"
 
     # Replace `if #[cfg(...)]` within `cfg_if` with `if cfg_tmp!([...])` which
     # `rustfmt` will format. We put brackets within the parens so it is easy to
@@ -59,12 +59,9 @@ done < "$tmpfile"
 
 rm "$tmpfile"
 
-if shellcheck --version ; then
-    find . -name '*.sh' -print0 | xargs -0 shellcheck
-else
-    echo "shellcheck not found"
-    exit 1
-fi
+# Run once from workspace root to get everything that wasn't handled as an
+# individual file.
+cargo fmt
 
 # Ensure that `sort` output is not locale-dependent
 export LC_ALL=C
@@ -87,3 +84,10 @@ for file in libc-test/semver/*.txt; do
         exit 1
     fi
 done
+
+if shellcheck --version ; then
+    find . -name '*.sh' -print0 | xargs -0 shellcheck
+else
+    echo "shellcheck not found"
+    exit 1
+fi

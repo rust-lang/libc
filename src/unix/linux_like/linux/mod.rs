@@ -3,6 +3,7 @@
 use core::mem::size_of;
 
 use crate::prelude::*;
+use crate::{sock_filter, _IO, _IOR, _IOW, _IOWR};
 
 pub type useconds_t = u32;
 pub type dev_t = u64;
@@ -758,19 +759,6 @@ s! {
         pub addr_mask: u8,
     }
 
-    // linux/filter.h
-    pub struct sock_filter {
-        pub code: __u16,
-        pub jt: __u8,
-        pub jf: __u8,
-        pub k: __u32,
-    }
-
-    pub struct sock_fprog {
-        pub len: c_ushort,
-        pub filter: *mut sock_filter,
-    }
-
     // linux/seccomp.h
     pub struct seccomp_data {
         pub nr: c_int,
@@ -823,13 +811,6 @@ s! {
     pub struct nlattr {
         pub nla_len: u16,
         pub nla_type: u16,
-    }
-
-    pub struct file_clone_range {
-        pub src_fd: crate::__s64,
-        pub src_offset: crate::__u64,
-        pub src_length: crate::__u64,
-        pub dest_offset: crate::__u64,
     }
 
     pub struct __c_anonymous_ifru_map {
@@ -1374,6 +1355,13 @@ s! {
         pub attr_clr: crate::__u64,
         pub propagation: crate::__u64,
         pub userns_fd: crate::__u64,
+    }
+
+    // linux/nsfs.h
+    pub struct mnt_ns_info {
+        pub size: crate::__u32,
+        pub nr_mounts: crate::__u32,
+        pub mnt_ns_id: crate::__u64,
     }
 
     // linux/pidfd.h
@@ -2890,6 +2878,18 @@ pub const IFA_F_NOPREFIXROUTE: u32 = 0x200;
 pub const IFA_F_MCAUTOJOIN: u32 = 0x400;
 pub const IFA_F_STABLE_PRIVACY: u32 = 0x800;
 
+// linux/fs.h
+
+// Flags for preadv2/pwritev2
+pub const RWF_HIPRI: c_int = 0x00000001;
+pub const RWF_DSYNC: c_int = 0x00000002;
+pub const RWF_SYNC: c_int = 0x00000004;
+pub const RWF_NOWAIT: c_int = 0x00000008;
+pub const RWF_APPEND: c_int = 0x00000010;
+pub const RWF_NOAPPEND: c_int = 0x00000020;
+pub const RWF_ATOMIC: c_int = 0x00000040;
+pub const RWF_DONTCACHE: c_int = 0x00000080;
+
 // linux/if_link.h
 pub const IFLA_UNSPEC: c_ushort = 0;
 pub const IFLA_ADDRESS: c_ushort = 1;
@@ -2961,46 +2961,6 @@ pub const IFLA_INFO_DATA: c_ushort = 2;
 pub const IFLA_INFO_XSTATS: c_ushort = 3;
 pub const IFLA_INFO_SLAVE_KIND: c_ushort = 4;
 pub const IFLA_INFO_SLAVE_DATA: c_ushort = 5;
-
-// linux/if_tun.h
-/* TUNSETIFF ifr flags */
-pub const IFF_TUN: c_int = 0x0001;
-pub const IFF_TAP: c_int = 0x0002;
-pub const IFF_NAPI: c_int = 0x0010;
-pub const IFF_NAPI_FRAGS: c_int = 0x0020;
-// Used in TUNSETIFF to bring up tun/tap without carrier
-pub const IFF_NO_CARRIER: c_int = 0x0040;
-pub const IFF_NO_PI: c_int = 0x1000;
-// Read queue size
-pub const TUN_READQ_SIZE: c_short = 500;
-// TUN device type flags: deprecated. Use IFF_TUN/IFF_TAP instead.
-pub const TUN_TUN_DEV: c_short = crate::IFF_TUN as c_short;
-pub const TUN_TAP_DEV: c_short = crate::IFF_TAP as c_short;
-pub const TUN_TYPE_MASK: c_short = 0x000f;
-// This flag has no real effect
-pub const IFF_ONE_QUEUE: c_int = 0x2000;
-pub const IFF_VNET_HDR: c_int = 0x4000;
-pub const IFF_TUN_EXCL: c_int = 0x8000;
-pub const IFF_MULTI_QUEUE: c_int = 0x0100;
-pub const IFF_ATTACH_QUEUE: c_int = 0x0200;
-pub const IFF_DETACH_QUEUE: c_int = 0x0400;
-// read-only flag
-pub const IFF_PERSIST: c_int = 0x0800;
-pub const IFF_NOFILTER: c_int = 0x1000;
-// Socket options
-pub const TUN_TX_TIMESTAMP: c_int = 1;
-// Features for GSO (TUNSETOFFLOAD)
-pub const TUN_F_CSUM: c_uint = 0x01;
-pub const TUN_F_TSO4: c_uint = 0x02;
-pub const TUN_F_TSO6: c_uint = 0x04;
-pub const TUN_F_TSO_ECN: c_uint = 0x08;
-pub const TUN_F_UFO: c_uint = 0x10;
-pub const TUN_F_USO4: c_uint = 0x20;
-pub const TUN_F_USO6: c_uint = 0x40;
-// Protocol info prepended to the packets (when IFF_NO_PI is not set)
-pub const TUN_PKT_STRIP: c_int = 0x0001;
-// Accept all multicast packets
-pub const TUN_FLT_ALLMULTI: c_int = 0x0001;
 
 // Since Linux 3.1
 pub const SEEK_DATA: c_int = 3;
@@ -3211,6 +3171,27 @@ pub const MREMAP_MAYMOVE: c_int = 1;
 pub const MREMAP_FIXED: c_int = 2;
 pub const MREMAP_DONTUNMAP: c_int = 4;
 
+// linux/nsfs.h
+const NSIO: c_uint = 0xb7;
+
+pub const NS_GET_USERNS: Ioctl = _IO(NSIO, 0x1);
+pub const NS_GET_PARENT: Ioctl = _IO(NSIO, 0x2);
+pub const NS_GET_NSTYPE: Ioctl = _IO(NSIO, 0x3);
+pub const NS_GET_OWNER_UID: Ioctl = _IO(NSIO, 0x4);
+
+pub const NS_GET_MNTNS_ID: Ioctl = _IOR::<__u64>(NSIO, 0x5);
+
+pub const NS_GET_PID_FROM_PIDNS: Ioctl = _IOR::<c_int>(NSIO, 0x6);
+pub const NS_GET_TGID_FROM_PIDNS: Ioctl = _IOR::<c_int>(NSIO, 0x7);
+pub const NS_GET_PID_IN_PIDNS: Ioctl = _IOR::<c_int>(NSIO, 0x8);
+pub const NS_GET_TGID_IN_PIDNS: Ioctl = _IOR::<c_int>(NSIO, 0x9);
+
+pub const MNT_NS_INFO_SIZE_VER0: Ioctl = 16;
+
+pub const NS_MNT_GET_INFO: Ioctl = _IOR::<mnt_ns_info>(NSIO, 10);
+pub const NS_MNT_GET_NEXT: Ioctl = _IOR::<mnt_ns_info>(NSIO, 11);
+pub const NS_MNT_GET_PREV: Ioctl = _IOR::<mnt_ns_info>(NSIO, 12);
+
 // linux/pidfd.h
 pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;
 pub const PIDFD_THREAD: c_uint = O_EXCL as c_uint;
@@ -3227,17 +3208,17 @@ pub const PIDFD_INFO_EXIT: c_uint = 1 << 3;
 pub const PIDFD_INFO_SIZE_VER0: c_uint = 64;
 
 const PIDFS_IOCTL_MAGIC: c_uint = 0xFF;
-pub const PIDFD_GET_CGROUP_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 1);
-pub const PIDFD_GET_IPC_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 2);
-pub const PIDFD_GET_MNT_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 3);
-pub const PIDFD_GET_NET_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 4);
-pub const PIDFD_GET_PID_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 5);
-pub const PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 6);
-pub const PIDFD_GET_TIME_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 7);
-pub const PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 8);
-pub const PIDFD_GET_USER_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 9);
-pub const PIDFD_GET_UTS_NAMESPACE: c_uint = _IO(PIDFS_IOCTL_MAGIC, 10);
-pub const PIDFD_GET_INFO: c_uint = _IOWR::<pidfd_info>(PIDFS_IOCTL_MAGIC, 11);
+pub const PIDFD_GET_CGROUP_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 1);
+pub const PIDFD_GET_IPC_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 2);
+pub const PIDFD_GET_MNT_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 3);
+pub const PIDFD_GET_NET_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 4);
+pub const PIDFD_GET_PID_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 5);
+pub const PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 6);
+pub const PIDFD_GET_TIME_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 7);
+pub const PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 8);
+pub const PIDFD_GET_USER_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 9);
+pub const PIDFD_GET_UTS_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 10);
+pub const PIDFD_GET_INFO: Ioctl = _IOWR::<pidfd_info>(PIDFS_IOCTL_MAGIC, 11);
 
 // linux/prctl.h
 pub const PR_SET_PDEATHSIG: c_int = 1;
@@ -4753,6 +4734,51 @@ pub const RTNLGRP_MCTP_IFADDR: c_uint = 0x22;
 pub const RTNLGRP_TUNNEL: c_uint = 0x23;
 pub const RTNLGRP_STATS: c_uint = 0x24;
 
+// linux/cn_proc.h
+c_enum! {
+    proc_cn_mcast_op {
+        PROC_CN_MCAST_LISTEN = 1,
+        PROC_CN_MCAST_IGNORE = 2,
+    }
+}
+
+c_enum! {
+    proc_cn_event {
+        PROC_EVENT_NONE = 0x00000000,
+        PROC_EVENT_FORK = 0x00000001,
+        PROC_EVENT_EXEC = 0x00000002,
+        PROC_EVENT_UID = 0x00000004,
+        PROC_EVENT_GID = 0x00000040,
+        PROC_EVENT_SID = 0x00000080,
+        PROC_EVENT_PTRACE = 0x00000100,
+        PROC_EVENT_COMM = 0x00000200,
+        PROC_EVENT_NONZERO_EXIT = 0x20000000,
+        PROC_EVENT_COREDUMP = 0x40000000,
+        PROC_EVENT_EXIT = 0x80000000,
+    }
+}
+
+// linux/connector.h
+pub const CN_IDX_PROC: c_uint = 0x1;
+pub const CN_VAL_PROC: c_uint = 0x1;
+pub const CN_IDX_CIFS: c_uint = 0x2;
+pub const CN_VAL_CIFS: c_uint = 0x1;
+pub const CN_W1_IDX: c_uint = 0x3;
+pub const CN_W1_VAL: c_uint = 0x1;
+pub const CN_IDX_V86D: c_uint = 0x4;
+pub const CN_VAL_V86D_UVESAFB: c_uint = 0x1;
+pub const CN_IDX_BB: c_uint = 0x5;
+pub const CN_DST_IDX: c_uint = 0x6;
+pub const CN_DST_VAL: c_uint = 0x1;
+pub const CN_IDX_DM: c_uint = 0x7;
+pub const CN_VAL_DM_USERSPACE_LOG: c_uint = 0x1;
+pub const CN_IDX_DRBD: c_uint = 0x8;
+pub const CN_VAL_DRBD: c_uint = 0x1;
+pub const CN_KVP_IDX: c_uint = 0x9;
+pub const CN_KVP_VAL: c_uint = 0x1;
+pub const CN_VSS_IDX: c_uint = 0xA;
+pub const CN_VSS_VAL: c_uint = 0x1;
+
 // linux/module.h
 pub const MODULE_INIT_IGNORE_MODVERSIONS: c_uint = 0x0001;
 pub const MODULE_INIT_IGNORE_VERMAGIC: c_uint = 0x0002;
@@ -4806,25 +4832,25 @@ pub const PTP_MAX_SAMPLES: c_uint = 25; // Maximum allowed offset measurement sa
 
 const PTP_CLK_MAGIC: u32 = b'=' as u32;
 
-pub const PTP_CLOCK_GETCAPS: c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
-pub const PTP_EXTTS_REQUEST: c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
-pub const PTP_PEROUT_REQUEST: c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
-pub const PTP_ENABLE_PPS: c_uint = _IOW::<c_int>(PTP_CLK_MAGIC, 4);
-pub const PTP_SYS_OFFSET: c_uint = _IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 5);
-pub const PTP_PIN_GETFUNC: c_uint = _IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 6);
-pub const PTP_PIN_SETFUNC: c_uint = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
-pub const PTP_SYS_OFFSET_PRECISE: c_uint = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
-pub const PTP_SYS_OFFSET_EXTENDED: c_uint = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
+pub const PTP_CLOCK_GETCAPS: Ioctl = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 1);
+pub const PTP_EXTTS_REQUEST: Ioctl = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 2);
+pub const PTP_PEROUT_REQUEST: Ioctl = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 3);
+pub const PTP_ENABLE_PPS: Ioctl = _IOW::<c_int>(PTP_CLK_MAGIC, 4);
+pub const PTP_SYS_OFFSET: Ioctl = _IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 5);
+pub const PTP_PIN_GETFUNC: Ioctl = _IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 6);
+pub const PTP_PIN_SETFUNC: Ioctl = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 7);
+pub const PTP_SYS_OFFSET_PRECISE: Ioctl = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 8);
+pub const PTP_SYS_OFFSET_EXTENDED: Ioctl = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 9);
 
-pub const PTP_CLOCK_GETCAPS2: c_uint = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
-pub const PTP_EXTTS_REQUEST2: c_uint = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
-pub const PTP_PEROUT_REQUEST2: c_uint = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
-pub const PTP_ENABLE_PPS2: c_uint = _IOW::<c_int>(PTP_CLK_MAGIC, 13);
-pub const PTP_SYS_OFFSET2: c_uint = _IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 14);
-pub const PTP_PIN_GETFUNC2: c_uint = _IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 15);
-pub const PTP_PIN_SETFUNC2: c_uint = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 16);
-pub const PTP_SYS_OFFSET_PRECISE2: c_uint = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 17);
-pub const PTP_SYS_OFFSET_EXTENDED2: c_uint = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
+pub const PTP_CLOCK_GETCAPS2: Ioctl = _IOR::<ptp_clock_caps>(PTP_CLK_MAGIC, 10);
+pub const PTP_EXTTS_REQUEST2: Ioctl = _IOW::<ptp_extts_request>(PTP_CLK_MAGIC, 11);
+pub const PTP_PEROUT_REQUEST2: Ioctl = _IOW::<ptp_perout_request>(PTP_CLK_MAGIC, 12);
+pub const PTP_ENABLE_PPS2: Ioctl = _IOW::<c_int>(PTP_CLK_MAGIC, 13);
+pub const PTP_SYS_OFFSET2: Ioctl = _IOW::<ptp_sys_offset>(PTP_CLK_MAGIC, 14);
+pub const PTP_PIN_GETFUNC2: Ioctl = _IOWR::<ptp_pin_desc>(PTP_CLK_MAGIC, 15);
+pub const PTP_PIN_SETFUNC2: Ioctl = _IOW::<ptp_pin_desc>(PTP_CLK_MAGIC, 16);
+pub const PTP_SYS_OFFSET_PRECISE2: Ioctl = _IOWR::<ptp_sys_offset_precise>(PTP_CLK_MAGIC, 17);
+pub const PTP_SYS_OFFSET_EXTENDED2: Ioctl = _IOWR::<ptp_sys_offset_extended>(PTP_CLK_MAGIC, 18);
 
 // enum ptp_pin_function
 pub const PTP_PF_NONE: c_uint = 0;
@@ -6053,26 +6079,6 @@ pub const EPIOCGPARAMS: Ioctl = 0x80088a02;
 pub const SI_DETHREAD: c_int = -7;
 pub const TRAP_PERF: c_int = 6;
 
-/// Build an ioctl number for an argumentless ioctl.
-pub const fn _IO(ty: u32, nr: u32) -> u32 {
-    super::_IOC(super::_IOC_NONE, ty, nr, 0)
-}
-
-/// Build an ioctl number for an read-only ioctl.
-pub const fn _IOR<T>(ty: u32, nr: u32) -> u32 {
-    super::_IOC(super::_IOC_READ, ty, nr, size_of::<T>())
-}
-
-/// Build an ioctl number for an write-only ioctl.
-pub const fn _IOW<T>(ty: u32, nr: u32) -> u32 {
-    super::_IOC(super::_IOC_WRITE, ty, nr, size_of::<T>())
-}
-
-/// Build an ioctl number for a read-write ioctl.
-pub const fn _IOWR<T>(ty: u32, nr: u32) -> u32 {
-    super::_IOC(super::_IOC_READ | super::_IOC_WRITE, ty, nr, size_of::<T>())
-}
-
 f! {
     pub fn NLA_ALIGN(len: c_int) -> c_int {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1);
@@ -6080,16 +6086,16 @@ f! {
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
-            return 0 as *mut cmsghdr;
-        };
+            return core::ptr::null_mut::<cmsghdr>();
+        }
         let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if (next.wrapping_offset(1)) as usize > max
             || next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
-            0 as *mut cmsghdr
+            core::ptr::null_mut::<cmsghdr>()
         } else {
-            next as *mut cmsghdr
+            next
         }
     }
 
@@ -6100,7 +6106,7 @@ f! {
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        for slot in cpuset.bits.iter_mut() {
+        for slot in &mut cpuset.bits {
             *slot = 0;
         }
     }
@@ -6109,14 +6115,12 @@ f! {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
-        ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
-        ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
@@ -6128,7 +6132,7 @@ f! {
     pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = mem::size_of_val(&cpuset.bits[0]);
-        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+        for i in &cpuset.bits[..(size / size_of_mask)] {
             s += i.count_ones();
         }
         s as c_int
@@ -6143,7 +6147,7 @@ f! {
     }
 
     pub fn SCTP_PR_INDEX(policy: c_int) -> c_int {
-        policy >> 4 - 1
+        policy >> (4 - 1)
     }
 
     pub fn SCTP_PR_POLICY(policy: c_int) -> c_int {
@@ -6153,7 +6157,6 @@ f! {
     pub fn SCTP_PR_SET_POLICY(flags: &mut c_int, policy: c_int) -> () {
         *flags &= !SCTP_PR_SCTP_MASK;
         *flags |= policy;
-        ()
     }
 
     pub fn IPTOS_TOS(tos: u8) -> u8 {
@@ -6214,20 +6217,15 @@ f! {
 
     pub fn BPF_STMT(code: __u16, k: __u32) -> sock_filter {
         sock_filter {
-            code: code,
+            code,
             jt: 0,
             jf: 0,
-            k: k,
+            k,
         }
     }
 
     pub fn BPF_JUMP(code: __u16, k: __u32, jt: __u8, jf: __u8) -> sock_filter {
-        sock_filter {
-            code: code,
-            jt: jt,
-            jf: jf,
-            k: k,
-        }
+        sock_filter { code, jt, jf, k }
     }
 
     pub fn ELF32_R_SYM(val: Elf32_Word) -> Elf32_Word {
@@ -6239,7 +6237,7 @@ f! {
     }
 
     pub fn ELF32_R_INFO(sym: Elf32_Word, t: Elf32_Word) -> Elf32_Word {
-        sym << 8 + t & 0xff
+        sym << (8 + t) & 0xff
     }
 
     pub fn ELF64_R_SYM(val: Elf64_Xword) -> Elf64_Xword {
@@ -6251,7 +6249,7 @@ f! {
     }
 
     pub fn ELF64_R_INFO(sym: Elf64_Xword, t: Elf64_Xword) -> Elf64_Xword {
-        sym << 32 + t
+        sym << (32 + t)
     }
 }
 
@@ -7065,8 +7063,6 @@ extern "C" {
     ) -> ssize_t;
 
     pub fn klogctl(syslog_type: c_int, bufp: *mut c_char, len: c_int) -> c_int;
-
-    pub fn ioctl(fd: c_int, request: Ioctl, ...) -> c_int;
 }
 
 // LFS64 extensions

@@ -447,7 +447,7 @@ impl siginfo_t {
             _si_code: c_int,
             si_addr: *mut c_void,
         }
-        (*(self as *const siginfo_t as *const siginfo_sigfault)).si_addr
+        (*(self as *const siginfo_t).cast::<siginfo_sigfault>()).si_addr
     }
 
     pub unsafe fn si_value(&self) -> crate::sigval {
@@ -460,7 +460,7 @@ impl siginfo_t {
             _si_overrun: c_int,
             si_sigval: crate::sigval,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer)).si_sigval
+        (*(self as *const siginfo_t).cast::<siginfo_timer>()).si_sigval
     }
 }
 
@@ -498,7 +498,7 @@ struct siginfo_f {
 
 impl siginfo_t {
     unsafe fn sifields(&self) -> &sifields {
-        &(*(self as *const siginfo_t as *const siginfo_f)).sifields
+        &(*(self as *const siginfo_t).cast::<siginfo_f>()).sifields
     }
 
     pub unsafe fn si_pid(&self) -> crate::pid_t {
@@ -942,15 +942,6 @@ pub const PTRACE_SYSCALL_INFO_SECCOMP: crate::__u8 = 3;
 pub const PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4210;
 pub const PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4211;
 
-// linux/fs.h
-
-// Flags for preadv2/pwritev2
-pub const RWF_HIPRI: c_int = 0x00000001;
-pub const RWF_DSYNC: c_int = 0x00000002;
-pub const RWF_SYNC: c_int = 0x00000004;
-pub const RWF_NOWAIT: c_int = 0x00000008;
-pub const RWF_APPEND: c_int = 0x00000010;
-
 // linux/rtnetlink.h
 pub const TCA_PAD: c_ushort = 9;
 pub const TCA_DUMP_INVISIBLE: c_ushort = 10;
@@ -1157,33 +1148,6 @@ pub const REG_STARTEND: c_int = 4;
 pub const REG_EEND: c_int = 14;
 pub const REG_ESIZE: c_int = 15;
 pub const REG_ERPAREN: c_int = 16;
-
-cfg_if! {
-    if #[cfg(any(
-        target_arch = "x86",
-        target_arch = "x86_64",
-        target_arch = "arm",
-        target_arch = "aarch64",
-        target_arch = "loongarch64",
-        target_arch = "riscv64",
-        target_arch = "s390x"
-    ))] {
-        pub const TUNSETCARRIER: Ioctl = 0x400454e2;
-        pub const TUNGETDEVNETNS: Ioctl = 0x54e3;
-    } else if #[cfg(any(
-        target_arch = "mips",
-        target_arch = "mips64",
-        target_arch = "powerpc",
-        target_arch = "powerpc64",
-        target_arch = "sparc",
-        target_arch = "sparc64"
-    ))] {
-        pub const TUNSETCARRIER: Ioctl = 0x800454e2;
-        pub const TUNGETDEVNETNS: Ioctl = 0x200054e3;
-    } else {
-        // Unknown target_arch
-    }
-}
 
 extern "C" {
     pub fn fgetspent_r(

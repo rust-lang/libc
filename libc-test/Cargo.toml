@@ -104,3 +104,10 @@ harness = true
 name = "style_tests"
 path = "test/style_tests.rs"
 harness = true
+
+# FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`
+#              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
+
+[lints.rust]
+
+[lints.clippy]

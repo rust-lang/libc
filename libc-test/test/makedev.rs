@@ -24,14 +24,13 @@ cfg_if::cfg_if! {
         target_os = "l4re",
         target_os = "emscripten",
         target_os = "fuchsia",
-        target_os = "aix",
         target_os = "nto",
         target_os = "hurd",
         target_os = "openbsd",
         target_os = "cygwin",
     ))] {
-        pub type MajorRetType = libc::c_uint;
-        pub type MinorRetType = libc::c_uint;
+        pub type MajorRetType = c_uint;
+        pub type MinorRetType = c_uint;
     } else if #[cfg(any(
         target_os = "android",
         target_os = "dragonfly",
@@ -129,7 +128,7 @@ fn test_openbsd_like() {
 ))]
 #[test]
 fn test_fbsd12_like() {
-    if std::mem::size_of::<dev_t>() >= 8 {
+    if size_of::<dev_t>() >= 8 {
         for major_exp in [0, 16, 24, 31] {
             for major in [(1 << major_exp) - 1, (1 << major_exp)] {
                 for minor_exp in [1, 8, 16, 24, 31] {
