@@ -222,28 +222,30 @@ macro_rules! e {
 /// purpose is to calculate the correct enum values.
 ///
 /// See <https://github.com/rust-lang/libc/issues/4419> for more.
+// FIXME(ctest): ctest doesn't recognize the `literal` fragment specifier or the `?` kleene. See
+// inline comments for how this should be updated once ctest is fixed.
 macro_rules! c_enum {
     (
-        $(#[repr($repr:ty)])?
+        $(#[repr($repr:ty)])* /* ? */
         enum $ty_name:ident {
-            $($variant:ident $(= $value:literal)?,)+
+            $($variant:ident $(= $value:expr /* literal */)* /* ? */,)+
         }
     ) => {
-        pub type $ty_name = c_enum!(@ty $($repr)?);
-        c_enum!(@one; $ty_name; 0; $($variant $(= $value)?,)+);
+        pub type $ty_name = c_enum!(@ty $($repr)*);
+        c_enum!(@one; $ty_name; 0; $($variant $(= $value)*,)+);
     };
 
     // Matcher for a single variant
     (@one; $_ty_name:ident; $_idx:expr;) => {};
     (
         @one; $ty_name:ident; $default_val:expr;
-        $variant:ident $(= $value:literal)?,
+        $variant:ident $(= $value:expr /* literal */)* /* ? */,
         $($tail:tt)*
     ) => {
         pub const $variant: $ty_name = {
             #[allow(unused_variables)]
             let r = $default_val;
-            $(let r = $value;)?
+            $(let r = $value;)*
             r
         };
 
@@ -254,7 +256,7 @@ macro_rules! c_enum {
 
     // Use a specific type if provided, otherwise default to `c_uint`
     (@ty $repr:ty) => { $repr };
-    (@ty) => { $crate::c_uint };
+    (@ty) => { /* $ */ crate::c_uint };
 }
 
 // This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
