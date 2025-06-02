@@ -7,9 +7,6 @@
     bad_style,
     overflowing_literals,
     improper_ctypes,
-    // This lint is renamed but we run CI for old stable rustc so should be here.
-    redundant_semicolon,
-    redundant_semicolons,
     unused_macros,
     unused_macro_rules,
     // FIXME(1.0): temporarily allow dead_code to fix CI:
