@@ -121,11 +121,13 @@ s_no_extra_traits! {
         pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
 
+    #[allow(missing_debug_implementations)]
     pub struct __c_anonymous_sockaddr_can_tp {
         pub rx_id: canid_t,
         pub tx_id: canid_t,
     }
 
+    #[allow(missing_debug_implementations)]
     pub struct __c_anonymous_sockaddr_can_j1939 {
         pub name: u64,
         pub pgn: u32,
