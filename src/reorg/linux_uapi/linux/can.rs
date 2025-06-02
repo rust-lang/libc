@@ -108,26 +108,26 @@ pub const CAN_NPROTO: c_int = 8;
 pub const SOL_CAN_BASE: c_int = 100;
 
 s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
+    // #[allow(missing_debug_implementations)]
     pub struct sockaddr_can {
         pub can_family: crate::sa_family_t,
         pub can_ifindex: c_int,
         pub can_addr: __c_anonymous_sockaddr_can_can_addr,
     }
 
-    #[allow(missing_debug_implementations)]
+    // #[allow(missing_debug_implementations)]
     pub union __c_anonymous_sockaddr_can_can_addr {
         pub tp: __c_anonymous_sockaddr_can_tp,
         pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
 
-    #[allow(missing_debug_implementations)]
+    #[derive(Debug)]
     pub struct __c_anonymous_sockaddr_can_tp {
         pub rx_id: canid_t,
         pub tx_id: canid_t,
     }
 
-    #[allow(missing_debug_implementations)]
+    #[derive(Debug)]
     pub struct __c_anonymous_sockaddr_can_j1939 {
         pub name: u64,
         pub pgn: u32,
