@@ -107,7 +107,7 @@ pub const CAN_NPROTO: c_int = 8;
 
 pub const SOL_CAN_BASE: c_int = 100;
 
-s! {
+s_no_extra_traits! {
     #[allow(missing_debug_implementations)]
     pub struct sockaddr_can {
         pub can_family: crate::sa_family_t,
