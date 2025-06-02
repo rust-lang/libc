@@ -177,7 +177,8 @@ jobs:
           - aarch64-unknown-linux-musl
           - arm-linux-androideabi
           - arm-unknown-linux-musleabihf
-          - i686-linux-android
+          # FIXME(#4297): Disabled due to spurious failueSome android jobs are disabled because of high rates of
+          # - i686-linux-android
           - i686-unknown-linux-musl
           - loongarch64-unknown-linux-gnu
           - loongarch64-unknown-linux-musl
