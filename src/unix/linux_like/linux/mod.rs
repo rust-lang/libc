@@ -77,7 +77,7 @@ cfg_if! {
 }
 
 c_enum! {
-    tpacket_versions {
+    enum tpacket_versions {
         TPACKET_V1,
         TPACKET_V2,
         TPACKET_V3,
@@ -85,7 +85,7 @@ c_enum! {
 }
 
 c_enum! {
-    pid_type {
+    enum pid_type {
         PIDTYPE_PID,
         PIDTYPE_TGID,
         PIDTYPE_PGID,
