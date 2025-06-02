@@ -1,4 +1,4 @@
-//! header: linux/can.h
+//! Header: `uapi/linux/can.h`
 
 #[path = "can/j1939.rs"]
 pub(crate) mod j1939;
@@ -115,6 +115,12 @@ s! {
         pub can_addr: __c_anonymous_sockaddr_can_can_addr,
     }
 
+    #[allow(missing_debug_implementations)]
+    pub union __c_anonymous_sockaddr_can_can_addr {
+        pub tp: __c_anonymous_sockaddr_can_tp,
+        pub j1939: __c_anonymous_sockaddr_can_j1939,
+    }
+
     pub struct __c_anonymous_sockaddr_can_tp {
         pub rx_id: canid_t,
         pub tx_id: canid_t,
@@ -125,18 +131,12 @@ s! {
         pub pgn: u32,
         pub addr: u8,
     }
+}
 
+s! {
     pub struct can_filter {
         pub can_id: canid_t,
         pub can_mask: canid_t,
-    }
-}
-
-s_no_extra_traits! {
-    #[allow(missing_debug_implementations)]
-    pub union __c_anonymous_sockaddr_can_can_addr {
-        pub tp: __c_anonymous_sockaddr_can_tp,
-        pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
 }
 
