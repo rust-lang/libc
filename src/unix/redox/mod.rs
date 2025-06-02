@@ -1258,14 +1258,6 @@ extern "C" {
     ) -> ssize_t;
     pub fn recvmsg(socket: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
     pub fn sendmsg(socket: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
-    pub fn sendto(
-        socket: c_int,
-        buf: *const c_void,
-        len: size_t,
-        flags: c_int,
-        addr: *const crate::sockaddr,
-        addrlen: crate::socklen_t,
-    ) -> ssize_t;
 
     // sys/stat.h
     pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
