@@ -590,8 +590,11 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
-            // Removed in OpenBSD 7.7 (unused since 1991)
+            // Removed in OpenBSD 7.7
             "ATF_COM" | "ATF_PERM" | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+
+            // Removed in OpenBSD 7.8
+            "CTL_FS" | "SO_NETPROC" => true,
 
             _ => false,
         }
