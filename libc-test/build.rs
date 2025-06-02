@@ -5548,9 +5548,9 @@ fn test_aix(target: &str) {
     });
 
     cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "DIR"  => ty.to_string(),
-        "FILE"  => ty.to_string(),
-        "ACTION"  => ty.to_string(),
+        "DIR" => ty.to_string(),
+        "FILE" => ty.to_string(),
+        "ACTION" => ty.to_string(),
 
         // 'sigval' is a struct in Rust, but a union in C.
         "sigval" => format!("union sigval"),
@@ -5637,9 +5637,9 @@ fn test_aix(target: &str) {
             // POSIX-compliant versions in the system libc. As a result,
             // function pointer comparisons between the C and Rust sides
             // would fail.
-            "getpwuid_r" | "getpwnam_r" | "getgrgid_r" | "getgrnam_r"
-            | "aio_cancel" | "aio_error" | "aio_fsync" | "aio_read"
-            | "aio_return" | "aio_suspend" | "aio_write" | "select" => true,
+            "getpwuid_r" | "getpwnam_r" | "getgrgid_r" | "getgrnam_r" | "aio_cancel"
+            | "aio_error" | "aio_fsync" | "aio_read" | "aio_return" | "aio_suspend"
+            | "aio_write" | "select" => true,
 
             // 'getdtablesize' is a constant in the AIX header but it is
             // a real function in libc which the Rust side is resolved to.
@@ -5655,7 +5655,6 @@ fn test_aix(target: &str) {
             _ => false,
         }
     });
-
 
     cfg.volatile_item(|i| {
         use ctest::VolatileItemKind::*;

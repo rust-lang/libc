@@ -585,14 +585,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_un {}
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_family", &self.sun_family)
-                    // FIXME(debug): .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_un {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
@@ -629,17 +621,6 @@ cfg_if! {
             }
         }
         impl Eq for utsname {}
-        impl fmt::Debug for utsname {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utsname")
-                    // FIXME(debug): .field("sysname", &self.sysname)
-                    // FIXME(debug): .field("nodename", &self.nodename)
-                    // FIXME(debug): .field("release", &self.release)
-                    // FIXME(debug): .field("version", &self.version)
-                    // FIXME(debug): .field("machine", &self.machine)
-                    .finish()
-            }
-        }
         impl hash::Hash for utsname {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sysname.hash(state);
@@ -659,13 +640,6 @@ cfg_if! {
             }
         }
         impl Eq for fd_set {}
-        impl fmt::Debug for fd_set {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("fd_set")
-                    // FIXME(debug): .field("fds_bits", &self.fds_bits)
-                    .finish()
-            }
-        }
         impl hash::Hash for fd_set {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.fds_bits.hash(state);
@@ -685,16 +659,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_storage {}
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_pad1", &self.__ss_pad1)
-                    .field("__ss_align", &self.__ss_align)
-                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_storage {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ss_family.hash(state);
@@ -754,16 +718,6 @@ cfg_if! {
             }
         }
         impl Eq for siginfo_t {}
-        impl fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("siginfo_t")
-                    .field("si_signo", &self.si_signo)
-                    .field("si_code", &self.si_code)
-                    .field("si_errno", &self.si_errno)
-                    // FIXME(debug): .field("__pad", &self.__pad)
-                    .finish()
-            }
-        }
         impl hash::Hash for siginfo_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.si_signo.hash(state);
@@ -794,19 +748,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_dl {}
-        impl fmt::Debug for sockaddr_dl {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_dl")
-                    .field("sdl_family", &self.sdl_family)
-                    .field("sdl_index", &self.sdl_index)
-                    .field("sdl_type", &self.sdl_type)
-                    .field("sdl_nlen", &self.sdl_nlen)
-                    .field("sdl_alen", &self.sdl_alen)
-                    .field("sdl_slen", &self.sdl_slen)
-                    // FIXME(debug): .field("sdl_data", &self.sdl_data)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_dl {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sdl_family.hash(state);
@@ -829,17 +770,6 @@ cfg_if! {
             }
         }
         impl Eq for sigevent {}
-        impl fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_value", &self.sigev_value)
-                    .field("ss_sp", &self.ss_sp)
-                    .field("sigev_notify_attributes", &self.sigev_notify_attributes)
-                    .finish()
-            }
-        }
         impl hash::Hash for sigevent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sigev_notify.hash(state);

@@ -1874,15 +1874,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_nl {}
-        impl fmt::Debug for sockaddr_nl {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_nl")
-                    .field("nl_family", &self.nl_family)
-                    .field("nl_pid", &self.nl_pid)
-                    .field("nl_groups", &self.nl_groups)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_nl {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.nl_family.hash(state);
@@ -1906,18 +1897,6 @@ cfg_if! {
         }
 
         impl Eq for dirent {}
-
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for dirent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -1945,18 +1924,6 @@ cfg_if! {
 
         impl Eq for dirent64 {}
 
-        impl fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent64")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for dirent64 {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
@@ -1975,14 +1942,6 @@ cfg_if! {
 
         impl Eq for pthread_cond_t {}
 
-        impl fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_cond_t")
-                    // FIXME(debug): .field("size", &self.size)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for pthread_cond_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
@@ -1996,14 +1955,6 @@ cfg_if! {
         }
 
         impl Eq for pthread_mutex_t {}
-
-        impl fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_mutex_t")
-                    // FIXME(debug): .field("size", &self.size)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for pthread_mutex_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2019,14 +1970,6 @@ cfg_if! {
 
         impl Eq for pthread_rwlock_t {}
 
-        impl fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_rwlock_t")
-                    // FIXME(debug): .field("size", &self.size)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for pthread_rwlock_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
@@ -2040,14 +1983,6 @@ cfg_if! {
         }
 
         impl Eq for pthread_barrier_t {}
-
-        impl fmt::Debug for pthread_barrier_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_barrier_t")
-                    .field("size", &self.size)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for pthread_barrier_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2075,18 +2010,6 @@ cfg_if! {
 
         impl Eq for sockaddr_alg {}
 
-        impl fmt::Debug for sockaddr_alg {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_alg")
-                    .field("salg_family", &self.salg_family)
-                    .field("salg_type", &self.salg_type)
-                    .field("salg_feat", &self.salg_feat)
-                    .field("salg_mask", &self.salg_mask)
-                    .field("salg_name", &&self.salg_name[..])
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sockaddr_alg {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.salg_family.hash(state);
@@ -2105,16 +2028,6 @@ cfg_if! {
             }
         }
         impl Eq for uinput_setup {}
-
-        impl fmt::Debug for uinput_setup {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("id", &self.id)
-                    .field("name", &&self.name[..])
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for uinput_setup {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2137,20 +2050,6 @@ cfg_if! {
         }
         impl Eq for uinput_user_dev {}
 
-        impl fmt::Debug for uinput_user_dev {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("name", &&self.name[..])
-                    .field("id", &self.id)
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .field("absmax", &&self.absmax[..])
-                    .field("absmin", &&self.absmin[..])
-                    .field("absfuzz", &&self.absfuzz[..])
-                    .field("absflat", &&self.absflat[..])
-                    .finish()
-            }
-        }
-
         impl hash::Hash for uinput_user_dev {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.name.hash(state);
@@ -2172,47 +2071,12 @@ cfg_if! {
             }
         }
         impl Eq for mq_attr {}
-        impl fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("mq_attr")
-                    .field("mq_flags", &self.mq_flags)
-                    .field("mq_maxmsg", &self.mq_maxmsg)
-                    .field("mq_msgsize", &self.mq_msgsize)
-                    .field("mq_curmsgs", &self.mq_curmsgs)
-                    .finish()
-            }
-        }
         impl hash::Hash for mq_attr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mq_flags.hash(state);
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
                 self.mq_curmsgs.hash(state);
-            }
-        }
-        impl fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifreq")
-                    .field("ifr_name", &self.ifr_name)
-                    .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-        impl fmt::Debug for ifconf {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifconf")
-                    .field("ifc_len", &self.ifc_len)
-                    .field("ifc_ifcu", &self.ifc_ifcu)
-                    .finish()
-            }
-        }
-        impl fmt::Debug for hwtstamp_config {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("hwtstamp_config")
-                    .field("flags", &self.flags)
-                    .field("tx_type", &self.tx_type)
-                    .field("rx_filter", &self.rx_filter)
-                    .finish()
             }
         }
         impl PartialEq for hwtstamp_config {
@@ -2231,20 +2095,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for sched_attr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sched_attr")
-                    .field("size", &self.size)
-                    .field("sched_policy", &self.sched_policy)
-                    .field("sched_flags", &self.sched_flags)
-                    .field("sched_nice", &self.sched_nice)
-                    .field("sched_priority", &self.sched_priority)
-                    .field("sched_runtime", &self.sched_runtime)
-                    .field("sched_deadline", &self.sched_deadline)
-                    .field("sched_period", &self.sched_period)
-                    .finish()
-            }
-        }
         impl PartialEq for sched_attr {
             fn eq(&self, other: &sched_attr) -> bool {
                 self.size == other.size
@@ -2268,25 +2118,6 @@ cfg_if! {
                 self.sched_runtime.hash(state);
                 self.sched_deadline.hash(state);
                 self.sched_period.hash(state);
-            }
-        }
-
-        impl fmt::Debug for iw_event {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("iw_event")
-                    .field("len", &self.len)
-                    .field("cmd", &self.cmd)
-                    .field("u", &self.u)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for iwreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("iwreq")
-                    .field("ifr_ifrn", &self.ifr_ifrn)
-                    .field("u", &self.u)
-                    .finish()
             }
         }
     }

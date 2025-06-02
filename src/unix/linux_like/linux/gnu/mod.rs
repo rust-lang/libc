@@ -376,7 +376,6 @@ impl siginfo_t {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_lio_opcode: c_int,
@@ -459,19 +458,13 @@ impl siginfo_t {
     }
 }
 
-pub union __c_anonymous_ptrace_syscall_info_data {
-    pub entry: __c_anonymous_ptrace_syscall_info_entry,
-    pub exit: __c_anonymous_ptrace_syscall_info_exit,
-    pub seccomp: __c_anonymous_ptrace_syscall_info_seccomp,
-}
-impl Copy for __c_anonymous_ptrace_syscall_info_data {}
-impl Clone for __c_anonymous_ptrace_syscall_info_data {
-    fn clone(&self) -> __c_anonymous_ptrace_syscall_info_data {
-        *self
-    }
-}
-
 s_no_extra_traits! {
+    pub union __c_anonymous_ptrace_syscall_info_data {
+        pub entry: __c_anonymous_ptrace_syscall_info_entry,
+        pub exit: __c_anonymous_ptrace_syscall_info_exit,
+        pub seccomp: __c_anonymous_ptrace_syscall_info_seccomp,
+    }
+
     pub struct utmpx {
         pub ut_type: c_short,
         pub ut_pid: crate::pid_t,
@@ -541,24 +534,6 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_user", &self.ut_user)
-                    // FIXME(debug): .field("ut_host", &self.ut_host)
-                    .field("ut_exit", &self.ut_exit)
-                    .field("ut_session", &self.ut_session)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_addr_v6", &self.ut_addr_v6)
-                    .field("__glibc_reserved", &self.__glibc_reserved)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utmpx {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
@@ -586,18 +561,6 @@ cfg_if! {
         }
 
         impl Eq for __c_anonymous_ptrace_syscall_info_data {}
-
-        impl fmt::Debug for __c_anonymous_ptrace_syscall_info_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__c_anonymous_ptrace_syscall_info_data")
-                        .field("entry", &self.entry)
-                        .field("exit", &self.exit)
-                        .field("seccomp", &self.seccomp)
-                        .finish()
-                }
-            }
-        }
 
         impl hash::Hash for __c_anonymous_ptrace_syscall_info_data {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {

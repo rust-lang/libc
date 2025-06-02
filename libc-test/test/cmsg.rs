@@ -70,7 +70,7 @@ mod t {
             for cmsg_len in 0..64 {
                 // Address must be a multiple of 0x4 for testing on AIX.
                 if cfg!(target_os = "aix") && cmsg_len % std::mem::size_of::<cmsghdr>() != 0 {
-                   continue;
+                    continue;
                 }
                 for next_cmsg_len in 0..32 {
                     unsafe {
