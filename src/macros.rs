@@ -219,16 +219,6 @@ macro_rules! e {
 ///
 /// See <https://github.com/rust-lang/libc/issues/4419> for more.
 macro_rules! c_enum {
-    (
-        $(#[repr($repr:ty)])*
-        $ty_name:ident {
-            $($variant:ident $(= $value:expr)*,)+
-        }
-    ) => {
-        pub type $ty_name = c_enum!(@ty $($repr)*);
-        c_enum!(@one; $ty_name; 0; $($variant $(= $value)*,)+);
-    };
-
     // Matcher for a single variant
     (@one; $_ty_name:ident; $_idx:expr;) => {};
     (
@@ -251,6 +241,16 @@ macro_rules! c_enum {
     // Use a specific type if provided, otherwise default to `c_uint`
     (@ty $repr:ty) => { $repr };
     (@ty) => { crate::c_uint };
+
+    (
+        $(#[repr($repr:ty)])*
+        $ty_name:ident {
+            $($variant:ident $(= $value:expr)*,)+
+        }
+    ) => {
+        pub type $ty_name = c_enum!(@ty $($repr)*);
+        c_enum!(@one; $ty_name; 0; $($variant $(= $value)*,)+);
+    };
 }
 
 // This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
