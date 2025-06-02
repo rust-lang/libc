@@ -567,7 +567,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_env = "gnu"))] {
+    if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
         missing! {
             #[cfg_attr(feature = "extra_traits", derive(Debug))]
             pub enum fpos_t {} // FIXME(unix): fill this out with a struct
