@@ -29,13 +29,8 @@ pub type suseconds_t = c_long;
 pub type useconds_t = c_ulong;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
 
 pub type sigset_t = c_ulong;
 
@@ -76,13 +71,8 @@ pub type nfds_t = c_uint;
 pub type sem_t = *mut sem;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Clone, Copy)]
 pub enum sem {}
-impl Copy for sem {}
-impl Clone for sem {
-    fn clone(&self) -> sem {
-        *self
-    }
-}
 
 pub type tcflag_t = c_uint;
 pub type speed_t = c_uint;
