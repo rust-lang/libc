@@ -1,0 +1,12 @@
+[package]
+name = "ctest-next"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.77"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rust-lang/libc"
+publish = false
+
+[dependencies]
+cc = "1.2.25"
+syn = { version = "2.0.101", features = ["full", "visit", "visit-mut", "fold"] }
