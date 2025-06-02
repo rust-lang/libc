@@ -334,16 +334,6 @@ cfg_if! {
             }
         }
         impl Eq for epoll_event {}
-        impl fmt::Debug for epoll_event {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let events = self.events;
-                let u64 = self.u64;
-                f.debug_struct("epoll_event")
-                    .field("events", &events)
-                    .field("u64", &u64)
-                    .finish()
-            }
-        }
         impl hash::Hash for epoll_event {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let events = self.events;
@@ -364,14 +354,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_un {}
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_family", &self.sun_family)
-                    // FIXME(debug): .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_un {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
@@ -391,16 +373,6 @@ cfg_if! {
         }
 
         impl Eq for sockaddr_storage {}
-
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_align", &self.__ss_align)
-                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for sockaddr_storage {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -445,19 +417,6 @@ cfg_if! {
 
         impl Eq for utsname {}
 
-        impl fmt::Debug for utsname {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utsname")
-                    // FIXME(debug): .field("sysname", &self.sysname)
-                    // FIXME(debug): .field("nodename", &self.nodename)
-                    // FIXME(debug): .field("release", &self.release)
-                    // FIXME(debug): .field("version", &self.version)
-                    // FIXME(debug): .field("machine", &self.machine)
-                    // FIXME(debug): .field("domainname", &self.domainname)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utsname {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sysname.hash(state);
@@ -478,16 +437,6 @@ cfg_if! {
             }
         }
         impl Eq for sigevent {}
-        impl fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_value", &self.sigev_value)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_notify_thread_id", &self.sigev_notify_thread_id)
-                    .finish()
-            }
-        }
         impl hash::Hash for sigevent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sigev_value.hash(state);
