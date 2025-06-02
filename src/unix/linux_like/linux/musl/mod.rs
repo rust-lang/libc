@@ -393,7 +393,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_lio_opcode: c_int,
@@ -494,27 +493,6 @@ cfg_if! {
 
         impl Eq for sysinfo {}
 
-        impl fmt::Debug for sysinfo {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sysinfo")
-                    .field("uptime", &self.uptime)
-                    .field("loads", &self.loads)
-                    .field("totalram", &self.totalram)
-                    .field("freeram", &self.freeram)
-                    .field("sharedram", &self.sharedram)
-                    .field("bufferram", &self.bufferram)
-                    .field("totalswap", &self.totalswap)
-                    .field("freeswap", &self.freeswap)
-                    .field("procs", &self.procs)
-                    .field("pad", &self.pad)
-                    .field("totalhigh", &self.totalhigh)
-                    .field("freehigh", &self.freehigh)
-                    .field("mem_unit", &self.mem_unit)
-                    // FIXME(debug): .field("__reserved", &self.__reserved)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sysinfo {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uptime.hash(state);
@@ -558,27 +536,6 @@ cfg_if! {
         }
 
         impl Eq for utmpx {}
-
-        impl fmt::Debug for utmpx {
-            #[allow(deprecated)]
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    //.field("__ut_pad1", &self.__ut_pad1)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_user", &self.ut_user)
-                    //FIXME(debug): .field("ut_host", &self.ut_host)
-                    .field("ut_exit", &self.ut_exit)
-                    .field("ut_session", &self.ut_session)
-                    //.field("__ut_pad2", &self.__ut_pad2)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_addr_v6", &self.ut_addr_v6)
-                    .field("__unused", &self.__unused)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for utmpx {
             #[allow(deprecated)]

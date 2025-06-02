@@ -811,16 +811,6 @@ cfg_if! {
             }
         }
         impl Eq for sigevent {}
-        impl fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_value", &self.sigev_value)
-                    .field("__sigev_un2", &self.__sigev_un2)
-                    .finish()
-            }
-        }
         impl hash::Hash for sigevent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sigev_notify.hash(state);
@@ -842,15 +832,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_un {}
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_len", &self.sun_len)
-                    .field("sun_family", &self.sun_family)
-                    // FIXME(debug): .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for sockaddr_un {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -867,13 +848,6 @@ cfg_if! {
             }
         }
         impl Eq for sigset_t {}
-        impl fmt::Debug for sigset_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigset_t")
-                    .field("__val", &self.__val)
-                    .finish()
-            }
-        }
         impl hash::Hash for sigset_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.__val.hash(state);
@@ -881,50 +855,10 @@ cfg_if! {
         }
 
         // msg
-        impl fmt::Debug for msg {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("msg")
-                    .field("msg_next", &self.msg_next)
-                    .field("msg_type", &self.msg_type)
-                    .field("msg_ts", &self.msg_ts)
-                    .field("msg_spot", &self.msg_spot)
-                    .finish()
-            }
-        }
 
         // msqid_ds
-        impl fmt::Debug for msqid_ds {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("msqid_ds")
-                    .field("msg_perm", &self.msg_perm)
-                    .field("msg_first", &self.msg_first)
-                    .field("msg_cbytes", &self.msg_cbytes)
-                    .field("msg_qnum", &self.msg_qnum)
-                    .field("msg_qbytes", &self.msg_qbytes)
-                    .field("msg_lspid", &self.msg_lspid)
-                    .field("msg_lrpid", &self.msg_lrpid)
-                    .field("msg_stime", &self.msg_stime)
-                    .field("msg_rtime", &self.msg_rtime)
-                    .field("msg_ctime", &self.msg_ctime)
-                    .finish()
-            }
-        }
 
         // sockaddr_dl
-        impl fmt::Debug for sockaddr_dl {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_dl")
-                    .field("sdl_len", &self.sdl_len)
-                    .field("sdl_family", &self.sdl_family)
-                    .field("sdl_index", &self.sdl_index)
-                    .field("sdl_type", &self.sdl_type)
-                    .field("sdl_nlen", &self.sdl_nlen)
-                    .field("sdl_alen", &self.sdl_alen)
-                    .field("sdl_slen", &self.sdl_slen)
-                    .field("sdl_data", &self.sdl_data)
-                    .finish()
-            }
-        }
         impl PartialEq for sockaddr_dl {
             fn eq(&self, other: &sockaddr_dl) -> bool {
                 self.sdl_len == other.sdl_len
@@ -952,73 +886,6 @@ cfg_if! {
                 self.sdl_alen.hash(state);
                 self.sdl_slen.hash(state);
                 self.sdl_data.hash(state);
-            }
-        }
-
-        // sync_t
-        impl fmt::Debug for sync_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sync_t")
-                    .field("__owner", &self.__owner)
-                    .field("__u", &self.__u)
-                    .finish()
-            }
-        }
-
-        // pthread_barrier_t
-        impl fmt::Debug for pthread_barrier_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_barrier_t")
-                    .field("__pad", &self.__pad)
-                    .finish()
-            }
-        }
-
-        // pthread_rwlock_t
-        impl fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_rwlock_t")
-                    .field("__active", &self.__active)
-                    .field("__blockedwriters", &self.__blockedwriters)
-                    .field("__blockedreaders", &self.__blockedreaders)
-                    .field("__heavy", &self.__heavy)
-                    .field("__lock", &self.__lock)
-                    .field("__rcond", &self.__rcond)
-                    .field("__wcond", &self.__wcond)
-                    .field("__owner", &self.__owner)
-                    .field("__spare", &self.__spare)
-                    .finish()
-            }
-        }
-
-        // syspage_entry
-        impl fmt::Debug for syspage_entry {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("syspage_entry")
-                    .field("size", &self.size)
-                    .field("total_size", &self.total_size)
-                    .field("type_", &self.type_)
-                    .field("num_cpu", &self.num_cpu)
-                    .field("system_private", &self.system_private)
-                    .field("old_asinfo", &self.old_asinfo)
-                    .field("hwinfo", &self.hwinfo)
-                    .field("old_cpuinfo", &self.old_cpuinfo)
-                    .field("old_cacheattr", &self.old_cacheattr)
-                    .field("qtime", &self.qtime)
-                    .field("callout", &self.callout)
-                    .field("callin", &self.callin)
-                    .field("typed_strings", &self.typed_strings)
-                    .field("strings", &self.strings)
-                    .field("old_intrinfo", &self.old_intrinfo)
-                    .field("smp", &self.smp)
-                    .field("pminfo", &self.pminfo)
-                    .field("old_mdriver", &self.old_mdriver)
-                    .field("new_asinfo", &self.new_asinfo)
-                    .field("new_cpuinfo", &self.new_cpuinfo)
-                    .field("new_cacheattr", &self.new_cacheattr)
-                    .field("new_intrinfo", &self.new_intrinfo)
-                    .field("new_mdriver", &self.new_mdriver)
-                    .finish()
             }
         }
 
@@ -1053,18 +920,6 @@ cfg_if! {
 
         impl Eq for utsname {}
 
-        impl fmt::Debug for utsname {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utsname")
-                    // FIXME(debug): .field("sysname", &self.sysname)
-                    // FIXME(debug): .field("nodename", &self.nodename)
-                    // FIXME(debug): .field("release", &self.release)
-                    // FIXME(debug): .field("version", &self.version)
-                    // FIXME(debug): .field("machine", &self.machine)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utsname {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sysname.hash(state);
@@ -1089,19 +944,6 @@ cfg_if! {
 
         impl Eq for mq_attr {}
 
-        impl fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("mq_attr")
-                    .field("mq_maxmsg", &self.mq_maxmsg)
-                    .field("mq_msgsize", &self.mq_msgsize)
-                    .field("mq_flags", &self.mq_flags)
-                    .field("mq_curmsgs", &self.mq_curmsgs)
-                    .field("mq_msgsize", &self.mq_msgsize)
-                    .field("mq_sendwait", &self.mq_sendwait)
-                    .field("mq_recvwait", &self.mq_recvwait)
-                    .finish()
-            }
-        }
         impl hash::Hash for mq_attr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mq_maxmsg.hash(state);
@@ -1129,18 +971,6 @@ cfg_if! {
 
         impl Eq for sockaddr_storage {}
 
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_len", &self.ss_len)
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_pad1", &self.__ss_pad1)
-                    .field("__ss_align", &self.__ss_align)
-                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sockaddr_storage {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ss_len.hash(state);
@@ -1165,18 +995,6 @@ cfg_if! {
         }
 
         impl Eq for dirent {}
-
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_offset", &self.d_offset)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_namelen", &self.d_namelen)
-                    .field("d_name", &&self.d_name[..self.d_namelen as _])
-                    .finish()
-            }
-        }
 
         impl hash::Hash for dirent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {

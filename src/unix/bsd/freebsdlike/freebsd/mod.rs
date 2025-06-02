@@ -1405,14 +1405,12 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub struct __aiocb_private {
         status: c_long,
         error: c_long,
         spare: *mut c_void,
     }
 
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_offset: off_t,
@@ -1747,20 +1745,6 @@ cfg_if! {
             }
         }
         impl Eq for utmpx {}
-        impl fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_user", &self.ut_user)
-                    .field("ut_line", &self.ut_line)
-                    // FIXME(debug): .field("ut_host", &self.ut_host)
-                    // FIXME(debug): .field("__ut_spare", &self.__ut_spare)
-                    .finish()
-            }
-        }
         impl hash::Hash for utmpx {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
@@ -1796,17 +1780,6 @@ cfg_if! {
             }
         }
         impl Eq for xucred {}
-        impl fmt::Debug for xucred {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("xucred")
-                    .field("cr_version", &self.cr_version)
-                    .field("cr_uid", &self.cr_uid)
-                    .field("cr_ngroups", &self.cr_ngroups)
-                    .field("cr_groups", &self.cr_groups)
-                    .field("cr_pid__c_anonymous_union", &self.cr_pid__c_anonymous_union)
-                    .finish()
-            }
-        }
         impl hash::Hash for xucred {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.cr_version.hash(state);
@@ -1834,20 +1807,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_dl {}
-        impl fmt::Debug for sockaddr_dl {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_dl")
-                    .field("sdl_len", &self.sdl_len)
-                    .field("sdl_family", &self.sdl_family)
-                    .field("sdl_index", &self.sdl_index)
-                    .field("sdl_type", &self.sdl_type)
-                    .field("sdl_nlen", &self.sdl_nlen)
-                    .field("sdl_alen", &self.sdl_alen)
-                    .field("sdl_slen", &self.sdl_slen)
-                    // FIXME(debug): .field("sdl_data", &self.sdl_data)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_dl {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sdl_len.hash(state);
@@ -1870,34 +1829,12 @@ cfg_if! {
             }
         }
         impl Eq for mq_attr {}
-        impl fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("mq_attr")
-                    .field("mq_flags", &self.mq_flags)
-                    .field("mq_maxmsg", &self.mq_maxmsg)
-                    .field("mq_msgsize", &self.mq_msgsize)
-                    .field("mq_curmsgs", &self.mq_curmsgs)
-                    .finish()
-            }
-        }
         impl hash::Hash for mq_attr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mq_flags.hash(state);
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
                 self.mq_curmsgs.hash(state);
-            }
-        }
-
-        impl fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_value", &self.sigev_value)
-                    // Skip _sigev_un, since we can't guarantee that it will be
-                    // properly initialized.
-                    .finish()
             }
         }
 
@@ -1910,16 +1847,6 @@ cfg_if! {
             }
         }
         impl Eq for ptsstat {}
-        impl fmt::Debug for ptsstat {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let self_devname: &[c_char] = &self.devname;
-
-                f.debug_struct("ptsstat")
-                    .field("dev", &self.dev)
-                    .field("devname", &self_devname)
-                    .finish()
-            }
-        }
         impl hash::Hash for ptsstat {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let self_devname: &[c_char] = &self.devname;
@@ -1941,14 +1868,6 @@ cfg_if! {
             }
         }
         impl Eq for Elf32_Auxinfo {}
-        impl fmt::Debug for Elf32_Auxinfo {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("Elf32_Auxinfo")
-                    .field("a_type", &self.a_type)
-                    .field("a_un", &self.a_un)
-                    .finish()
-            }
-        }
 
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
@@ -1998,14 +1917,6 @@ cfg_if! {
             }
         }
         impl Eq for ifreq {}
-        impl fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifreq")
-                    .field("ifr_name", &self.ifr_name)
-                    .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
         impl hash::Hash for ifreq {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifr_name.hash(state);
@@ -2037,16 +1948,6 @@ cfg_if! {
             }
         }
         impl Eq for ifstat {}
-        impl fmt::Debug for ifstat {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let ascii: &[c_char] = &self.ascii;
-
-                f.debug_struct("ifstat")
-                    .field("ifs_name", &self.ifs_name)
-                    .field("ascii", &ascii)
-                    .finish()
-            }
-        }
         impl hash::Hash for ifstat {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifs_name.hash(state);
@@ -2067,19 +1968,6 @@ cfg_if! {
             }
         }
         impl Eq for ifrsskey {}
-        impl fmt::Debug for ifrsskey {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let ifrk_key: &[u8] = &self.ifrk_key;
-
-                f.debug_struct("ifrsskey")
-                    .field("ifrk_name", &self.ifrk_name)
-                    .field("ifrk_func", &self.ifrk_func)
-                    .field("ifrk_spare0", &self.ifrk_spare0)
-                    .field("ifrk_keylen", &self.ifrk_keylen)
-                    .field("ifrk_key", &ifrk_key)
-                    .finish()
-            }
-        }
         impl hash::Hash for ifrsskey {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifrk_name.hash(state);
@@ -2102,18 +1990,6 @@ cfg_if! {
             }
         }
         impl Eq for ifdownreason {}
-        impl fmt::Debug for ifdownreason {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let ifdr_msg: &[c_char] = &self.ifdr_msg;
-
-                f.debug_struct("ifdownreason")
-                    .field("ifdr_name", &self.ifdr_name)
-                    .field("ifdr_reason", &self.ifdr_reason)
-                    .field("ifdr_vendor", &self.ifdr_vendor)
-                    .field("ifdr_msg", &ifdr_msg)
-                    .finish()
-            }
-        }
         impl hash::Hash for ifdownreason {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifdr_name.hash(state);
@@ -2183,37 +2059,6 @@ cfg_if! {
             }
         }
         impl Eq for if_data {}
-        impl fmt::Debug for if_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("if_data")
-                    .field("ifi_type", &self.ifi_type)
-                    .field("ifi_physical", &self.ifi_physical)
-                    .field("ifi_addrlen", &self.ifi_addrlen)
-                    .field("ifi_hdrlen", &self.ifi_hdrlen)
-                    .field("ifi_link_state", &self.ifi_link_state)
-                    .field("ifi_vhid", &self.ifi_vhid)
-                    .field("ifi_datalen", &self.ifi_datalen)
-                    .field("ifi_mtu", &self.ifi_mtu)
-                    .field("ifi_metric", &self.ifi_metric)
-                    .field("ifi_baudrate", &self.ifi_baudrate)
-                    .field("ifi_ipackets", &self.ifi_ipackets)
-                    .field("ifi_ierrors", &self.ifi_ierrors)
-                    .field("ifi_opackets", &self.ifi_opackets)
-                    .field("ifi_oerrors", &self.ifi_oerrors)
-                    .field("ifi_collisions", &self.ifi_collisions)
-                    .field("ifi_ibytes", &self.ifi_ibytes)
-                    .field("ifi_obytes", &self.ifi_obytes)
-                    .field("ifi_imcasts", &self.ifi_imcasts)
-                    .field("ifi_omcasts", &self.ifi_omcasts)
-                    .field("ifi_iqdrops", &self.ifi_iqdrops)
-                    .field("ifi_oqdrops", &self.ifi_oqdrops)
-                    .field("ifi_noproto", &self.ifi_noproto)
-                    .field("ifi_hwassist", &self.ifi_hwassist)
-                    .field("__ifi_epoch", &self.__ifi_epoch)
-                    .field("__ifi_lastchange", &self.__ifi_lastchange)
-                    .finish()
-            }
-        }
         impl hash::Hash for if_data {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ifi_type.hash(state);
@@ -2253,16 +2098,6 @@ cfg_if! {
             }
         }
         impl Eq for sctphdr {}
-        impl fmt::Debug for sctphdr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctphdr")
-                    .field("src_port", &{ self.src_port })
-                    .field("dest_port", &{ self.dest_port })
-                    .field("v_tag", &{ self.v_tag })
-                    .field("checksum", &{ self.checksum })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctphdr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.src_port }.hash(state);
@@ -2280,15 +2115,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_chunkhdr {}
-        impl fmt::Debug for sctp_chunkhdr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_chunkhdr")
-                    .field("chunk_type", &{ self.chunk_type })
-                    .field("chunk_flags", &{ self.chunk_flags })
-                    .field("chunk_length", &{ self.chunk_length })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_chunkhdr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.chunk_type }.hash(state);
@@ -2305,14 +2131,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_paramhdr {}
-        impl fmt::Debug for sctp_paramhdr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_paramhdr")
-                    .field("param_type", &{ self.param_type })
-                    .field("param_length", &{ self.param_length })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_paramhdr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.param_type }.hash(state);
@@ -2331,15 +2149,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_gen_error_cause {}
-        impl fmt::Debug for sctp_gen_error_cause {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_gen_error_cause")
-                    .field("code", &{ self.code })
-                    .field("length", &{ self.length })
-                    // FIXME(debug): .field("info", &{self.info})
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_gen_error_cause {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.code }.hash(state);
@@ -2354,14 +2163,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_cause {}
-        impl fmt::Debug for sctp_error_cause {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_cause")
-                    .field("code", &{ self.code })
-                    .field("length", &{ self.length })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_cause {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.code }.hash(state);
@@ -2377,14 +2178,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_invalid_stream {}
-        impl fmt::Debug for sctp_error_invalid_stream {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_invalid_stream")
-                    .field("cause", &{ self.cause })
-                    .field("stream_id", &{ self.stream_id })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_invalid_stream {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2403,15 +2196,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_missing_param {}
-        impl fmt::Debug for sctp_error_missing_param {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_missing_param")
-                    .field("cause", &{ self.cause })
-                    .field("num_missing_params", &{ self.num_missing_params })
-                    // FIXME(debug): .field("tpe", &{self.tpe})
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_missing_param {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2428,14 +2212,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_stale_cookie {}
-        impl fmt::Debug for sctp_error_stale_cookie {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_stale_cookie")
-                    .field("cause", &{ self.cause })
-                    .field("stale_time", &{ self.stale_time })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_stale_cookie {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2449,13 +2225,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_out_of_resource {}
-        impl fmt::Debug for sctp_error_out_of_resource {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_out_of_resource")
-                    .field("cause", &{ self.cause })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_out_of_resource {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2468,13 +2237,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_unresolv_addr {}
-        impl fmt::Debug for sctp_error_unresolv_addr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_unresolv_addr")
-                    .field("cause", &{ self.cause })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_unresolv_addr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2487,14 +2249,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_unrecognized_chunk {}
-        impl fmt::Debug for sctp_error_unrecognized_chunk {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_unrecognized_chunk")
-                    .field("cause", &{ self.cause })
-                    .field("ch", &{ self.ch })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_unrecognized_chunk {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2508,14 +2262,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_no_user_data {}
-        impl fmt::Debug for sctp_error_no_user_data {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_no_user_data")
-                    .field("cause", &{ self.cause })
-                    .field("tsn", &{ self.tsn })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_no_user_data {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2529,14 +2275,6 @@ cfg_if! {
             }
         }
         impl Eq for sctp_error_auth_invalid_hmac {}
-        impl fmt::Debug for sctp_error_auth_invalid_hmac {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sctp_error_invalid_hmac")
-                    .field("cause", &{ self.cause })
-                    .field("hmac_id", &{ self.hmac_id })
-                    .finish()
-            }
-        }
         impl hash::Hash for sctp_error_auth_invalid_hmac {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 { self.cause }.hash(state);
@@ -2562,21 +2300,6 @@ cfg_if! {
             }
         }
         impl Eq for kinfo_file {}
-        impl fmt::Debug for kinfo_file {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("kinfo_file")
-                    .field("kf_structsize", &self.kf_structsize)
-                    .field("kf_type", &self.kf_type)
-                    .field("kf_fd", &self.kf_fd)
-                    .field("kf_ref_count", &self.kf_ref_count)
-                    .field("kf_flags", &self.kf_flags)
-                    .field("kf_offset", &self.kf_offset)
-                    .field("kf_status", &self.kf_status)
-                    .field("kf_cap_rights", &self.kf_cap_rights)
-                    .field("kf_path", &&self.kf_path[..])
-                    .finish()
-            }
-        }
         impl hash::Hash for kinfo_file {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.kf_structsize.hash(state);
@@ -2588,18 +2311,6 @@ cfg_if! {
                 self.kf_status.hash(state);
                 self.kf_cap_rights.hash(state);
                 self.kf_path.hash(state);
-            }
-        }
-
-        impl fmt::Debug for ucontext_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ucontext_t")
-                    .field("uc_sigmask", &self.uc_sigmask)
-                    .field("uc_mcontext", &self.uc_mcontext)
-                    .field("uc_link", &self.uc_link)
-                    .field("uc_stack", &self.uc_stack)
-                    .field("uc_flags", &self.uc_flags)
-                    .finish()
             }
         }
     }
