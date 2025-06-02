@@ -1,6 +1,8 @@
-//! `linux/can.h`
+//! header: linux/can.h
 
+#[path = "can/j1939.rs"]
 pub(crate) mod j1939;
+#[path = "can/raw.rs"]
 pub(crate) mod raw;
 
 pub use j1939::*;
