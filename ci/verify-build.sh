@@ -81,6 +81,15 @@ test_target() {
                 # Test with the equivalent of _TIME_BITS=64
                 RUST_LIBC_UNSTABLE_GNU_TIME_BITS=64 $cmd
                 ;;
+            arm*-*-musl*|i*86-*-musl|powerpc-*-musl*|mips-*-musl|mipsel-*-musl)
+                # Test with new musl changes and the equivalent of _REDIR_TIME64
+                RUST_LIBC_UNSTABLE_MUSL_V1_2_3=1 \
+                    RUST_LIBC_UNSTABLE_MUSL_TIME64=1 $cmd
+                ;;
+            *musl*)
+                # Test with the new musl changes.
+                RUST_LIBC_UNSTABLE_MUSL_V1_2_3=1 $cmd
+                ;;
         esac
     fi
 
