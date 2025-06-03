@@ -29,6 +29,7 @@
 
 #[macro_use]
 mod macros;
+mod reorg;
 
 cfg_if! {
     if #[cfg(feature = "rustc-dep-of-std")] {
@@ -37,6 +38,9 @@ cfg_if! {
 }
 
 pub use core::ffi::c_void;
+
+#[allow(unused_imports)] // needed while the module is empty on some platforms
+pub use reorg::*;
 
 cfg_if! {
     if #[cfg(windows)] {
