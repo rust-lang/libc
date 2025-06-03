@@ -1084,24 +1084,6 @@ cfg_if! {
 
         impl Eq for utmpx {}
 
-        impl fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_user", &self.ut_user)
-                    // FIXME(debug): .field("ut_host", &self.ut_host)
-                    .field("ut_exit", &self.ut_exit)
-                    .field("ut_session", &self.ut_session)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_addr_v6", &self.ut_addr_v6)
-                    .field("__glibc_reserved", &self.__glibc_reserved)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utmpx {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);

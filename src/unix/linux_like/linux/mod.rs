@@ -1880,15 +1880,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_nl {}
-        impl fmt::Debug for sockaddr_nl {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_nl")
-                    .field("nl_family", &self.nl_family)
-                    .field("nl_pid", &self.nl_pid)
-                    .field("nl_groups", &self.nl_groups)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_nl {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.nl_family.hash(state);
@@ -1912,18 +1903,6 @@ cfg_if! {
         }
 
         impl Eq for dirent {}
-
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for dirent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -1951,18 +1930,6 @@ cfg_if! {
 
         impl Eq for dirent64 {}
 
-        impl fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent64")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for dirent64 {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
@@ -1981,14 +1948,6 @@ cfg_if! {
 
         impl Eq for pthread_cond_t {}
 
-        impl fmt::Debug for pthread_cond_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_cond_t")
-                    // FIXME(debug): .field("size", &self.size)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for pthread_cond_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
@@ -2002,14 +1961,6 @@ cfg_if! {
         }
 
         impl Eq for pthread_mutex_t {}
-
-        impl fmt::Debug for pthread_mutex_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_mutex_t")
-                    // FIXME(debug): .field("size", &self.size)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for pthread_mutex_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2025,14 +1976,6 @@ cfg_if! {
 
         impl Eq for pthread_rwlock_t {}
 
-        impl fmt::Debug for pthread_rwlock_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_rwlock_t")
-                    // FIXME(debug): .field("size", &self.size)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for pthread_rwlock_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
@@ -2046,14 +1989,6 @@ cfg_if! {
         }
 
         impl Eq for pthread_barrier_t {}
-
-        impl fmt::Debug for pthread_barrier_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("pthread_barrier_t")
-                    .field("size", &self.size)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for pthread_barrier_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2081,18 +2016,6 @@ cfg_if! {
 
         impl Eq for sockaddr_alg {}
 
-        impl fmt::Debug for sockaddr_alg {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_alg")
-                    .field("salg_family", &self.salg_family)
-                    .field("salg_type", &self.salg_type)
-                    .field("salg_feat", &self.salg_feat)
-                    .field("salg_mask", &self.salg_mask)
-                    .field("salg_name", &&self.salg_name[..])
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sockaddr_alg {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.salg_family.hash(state);
@@ -2111,16 +2034,6 @@ cfg_if! {
             }
         }
         impl Eq for uinput_setup {}
-
-        impl fmt::Debug for uinput_setup {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("id", &self.id)
-                    .field("name", &&self.name[..])
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for uinput_setup {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2142,20 +2055,6 @@ cfg_if! {
             }
         }
         impl Eq for uinput_user_dev {}
-
-        impl fmt::Debug for uinput_user_dev {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("name", &&self.name[..])
-                    .field("id", &self.id)
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .field("absmax", &&self.absmax[..])
-                    .field("absmin", &&self.absmin[..])
-                    .field("absfuzz", &&self.absfuzz[..])
-                    .field("absflat", &&self.absflat[..])
-                    .finish()
-            }
-        }
 
         impl hash::Hash for uinput_user_dev {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -2187,15 +2086,6 @@ cfg_if! {
         impl Eq for af_alg_iv {}
 
         #[allow(deprecated)]
-        impl fmt::Debug for af_alg_iv {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("af_alg_iv")
-                    .field("ivlen", &self.ivlen)
-                    .finish()
-            }
-        }
-
-        #[allow(deprecated)]
         impl hash::Hash for af_alg_iv {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.as_slice().hash(state);
@@ -2211,47 +2101,12 @@ cfg_if! {
             }
         }
         impl Eq for mq_attr {}
-        impl fmt::Debug for mq_attr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("mq_attr")
-                    .field("mq_flags", &self.mq_flags)
-                    .field("mq_maxmsg", &self.mq_maxmsg)
-                    .field("mq_msgsize", &self.mq_msgsize)
-                    .field("mq_curmsgs", &self.mq_curmsgs)
-                    .finish()
-            }
-        }
         impl hash::Hash for mq_attr {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.mq_flags.hash(state);
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
                 self.mq_curmsgs.hash(state);
-            }
-        }
-        impl fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifreq")
-                    .field("ifr_name", &self.ifr_name)
-                    .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-        impl fmt::Debug for ifconf {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifconf")
-                    .field("ifc_len", &self.ifc_len)
-                    .field("ifc_ifcu", &self.ifc_ifcu)
-                    .finish()
-            }
-        }
-        impl fmt::Debug for hwtstamp_config {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("hwtstamp_config")
-                    .field("flags", &self.flags)
-                    .field("tx_type", &self.tx_type)
-                    .field("rx_filter", &self.rx_filter)
-                    .finish()
             }
         }
         impl PartialEq for hwtstamp_config {
@@ -2270,20 +2125,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for sched_attr {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sched_attr")
-                    .field("size", &self.size)
-                    .field("sched_policy", &self.sched_policy)
-                    .field("sched_flags", &self.sched_flags)
-                    .field("sched_nice", &self.sched_nice)
-                    .field("sched_priority", &self.sched_priority)
-                    .field("sched_runtime", &self.sched_runtime)
-                    .field("sched_deadline", &self.sched_deadline)
-                    .field("sched_period", &self.sched_period)
-                    .finish()
-            }
-        }
         impl PartialEq for sched_attr {
             fn eq(&self, other: &sched_attr) -> bool {
                 self.size == other.size
@@ -2307,25 +2148,6 @@ cfg_if! {
                 self.sched_runtime.hash(state);
                 self.sched_deadline.hash(state);
                 self.sched_period.hash(state);
-            }
-        }
-
-        impl fmt::Debug for iw_event {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("iw_event")
-                    .field("len", &self.len)
-                    .field("cmd", &self.cmd)
-                    .field("u", &self.u)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for iwreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("iwreq")
-                    .field("ifr_ifrn", &self.ifr_ifrn)
-                    .field("u", &self.u)
-                    .finish()
             }
         }
     }
@@ -6316,6 +6138,7 @@ cfg_if! {
             pub fn aio_error(aiocbp: *const aiocb) -> c_int;
             #[cfg_attr(gnu_file_offset_bits64, link_name = "aio_return64")]
             pub fn aio_return(aiocbp: *mut aiocb) -> ssize_t;
+            #[cfg_attr(gnu_time_bits64, link_name = "__aio_suspend_time64")]
             pub fn aio_suspend(
                 aiocb_list: *const *const aiocb,
                 nitems: c_int,
@@ -6377,6 +6200,7 @@ cfg_if! {
                 riovcnt: c_ulong,
                 flags: c_ulong,
             ) -> isize;
+            #[cfg_attr(gnu_time_bits64, link_name = "__futimes64")]
             pub fn futimes(fd: c_int, times: *const crate::timeval) -> c_int;
         }
     }
@@ -6406,6 +6230,7 @@ cfg_if! {
                 msg_len: size_t,
                 msg_prio: *mut c_uint,
             ) -> ssize_t;
+            #[cfg_attr(gnu_time_bits64, link_name = "__mq_timedreceive_time64")]
             pub fn mq_timedreceive(
                 mqd: crate::mqd_t,
                 msg_ptr: *mut c_char,
@@ -6419,6 +6244,7 @@ cfg_if! {
                 msg_len: size_t,
                 msg_prio: c_uint,
             ) -> c_int;
+            #[cfg_attr(gnu_time_bits64, link_name = "__mq_timedsend_time64")]
             pub fn mq_timedsend(
                 mqd: crate::mqd_t,
                 msg_ptr: *const c_char,
@@ -6469,6 +6295,7 @@ extern "C" {
     pub fn seed48(xseed: *mut c_ushort) -> *mut c_ushort;
     pub fn lcong48(p: *mut c_ushort);
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__lutimes64")]
     pub fn lutimes(file: *const c_char, times: *const crate::timeval) -> c_int;
 
     pub fn setpwent();
@@ -6490,11 +6317,14 @@ extern "C" {
     pub fn shmget(key: crate::key_t, size: size_t, shmflg: c_int) -> c_int;
     pub fn shmat(shmid: c_int, shmaddr: *const c_void, shmflg: c_int) -> *mut c_void;
     pub fn shmdt(shmaddr: *const c_void) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__shmctl64")]
     pub fn shmctl(shmid: c_int, cmd: c_int, buf: *mut crate::shmid_ds) -> c_int;
     pub fn ftok(pathname: *const c_char, proj_id: c_int) -> crate::key_t;
     pub fn semget(key: crate::key_t, nsems: c_int, semflag: c_int) -> c_int;
     pub fn semop(semid: c_int, sops: *mut crate::sembuf, nsops: size_t) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__semctl64")]
     pub fn semctl(semid: c_int, semnum: c_int, cmd: c_int, ...) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__msgctl64")]
     pub fn msgctl(msqid: c_int, cmd: c_int, buf: *mut msqid_ds) -> c_int;
     pub fn msgget(key: crate::key_t, msgflg: c_int) -> c_int;
     pub fn msgrcv(
@@ -6561,7 +6391,9 @@ extern "C" {
     pub fn fremovexattr(filedes: c_int, name: *const c_char) -> c_int;
     pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__timerfd_gettime64")]
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut itimerspec) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__timerfd_settime64")]
     pub fn timerfd_settime(
         fd: c_int,
         flags: c_int,
@@ -6577,6 +6409,7 @@ extern "C" {
         sigmask: *const crate::sigset_t,
     ) -> c_int;
     pub fn dup3(oldfd: c_int, newfd: c_int, flags: c_int) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__sigtimedwait64")]
     pub fn sigtimedwait(
         set: *const sigset_t,
         info: *mut siginfo_t,
@@ -6618,14 +6451,22 @@ extern "C" {
         ...
     ) -> *mut c_void;
 
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "glob64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__glob64_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "glob64"
+    )]
     pub fn glob(
         pattern: *const c_char,
         flags: c_int,
         errfunc: Option<extern "C" fn(epath: *const c_char, errno: c_int) -> c_int>,
         pglob: *mut crate::glob_t,
     ) -> c_int;
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "globfree64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__globfree64_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "globfree64"
+    )]
     pub fn globfree(pglob: *mut crate::glob_t);
 
     pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
@@ -6688,6 +6529,7 @@ extern "C" {
     pub fn umount(target: *const c_char) -> c_int;
     pub fn sched_get_priority_max(policy: c_int) -> c_int;
     pub fn tee(fd_in: c_int, fd_out: c_int, len: size_t, flags: c_uint) -> ssize_t;
+    #[cfg_attr(gnu_time_bits64, link_name = "__settimeofday64")]
     pub fn settimeofday(tv: *const crate::timeval, tz: *const crate::timezone) -> c_int;
     pub fn splice(
         fd_in: c_int,
@@ -6701,7 +6543,9 @@ extern "C" {
     pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__sched_rr_get_interval64")]
     pub fn sched_rr_get_interval(pid: crate::pid_t, tp: *mut crate::timespec) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__sem_timedwait64")]
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const crate::timespec) -> c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
     pub fn sched_setparam(pid: crate::pid_t, param: *const crate::sched_param) -> c_int;
@@ -6717,8 +6561,10 @@ extern "C" {
         data: *const c_void,
     ) -> c_int;
     pub fn personality(persona: c_ulong) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__prctl_time64")]
     pub fn prctl(option: c_int, ...) -> c_int;
     pub fn sched_getparam(pid: crate::pid_t, param: *mut crate::sched_param) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__ppoll64")]
     pub fn ppoll(
         fds: *mut crate::pollfd,
         nfds: nfds_t,
@@ -6731,6 +6577,7 @@ extern "C" {
     ) -> c_int;
     pub fn pthread_mutexattr_setprotocol(attr: *mut pthread_mutexattr_t, protocol: c_int) -> c_int;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__pthread_mutex_timedlock64")]
     pub fn pthread_mutex_timedlock(
         lock: *mut pthread_mutex_t,
         abstime: *const crate::timespec,
@@ -6765,6 +6612,7 @@ extern "C" {
         ...
     ) -> c_int;
     pub fn sched_getscheduler(pid: crate::pid_t) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__clock_nanosleep_time64")]
     pub fn clock_nanosleep(
         clk_id: crate::clockid_t,
         flags: c_int,
@@ -7022,7 +6870,9 @@ extern "C" {
     ) -> c_int;
     pub fn timer_delete(timerid: crate::timer_t) -> c_int;
     pub fn timer_getoverrun(timerid: crate::timer_t) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__timer_gettime64")]
     pub fn timer_gettime(timerid: crate::timer_t, curr_value: *mut crate::itimerspec) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__timer_settime64")]
     pub fn timer_settime(
         timerid: crate::timer_t,
         flags: c_int,

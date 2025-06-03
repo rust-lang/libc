@@ -5,9 +5,6 @@ use core::cmp::min;
 use crate::unix::solarish::*;
 use crate::{c_char, c_int, size_t};
 
-const PTEM: &[u8] = b"ptem\0";
-const LDTERM: &[u8] = b"ldterm\0";
-
 pub unsafe fn cfmakeraw(termios: *mut crate::termios) {
     (*termios).c_iflag &=
         !(IMAXBEL | IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
@@ -41,6 +38,7 @@ pub unsafe fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) ->
     0
 }
 
+#[cfg(target_os = "illumos")]
 unsafe fn bail(fdm: c_int, fds: c_int) -> c_int {
     let e = *___errno();
     if fds >= 0 {
@@ -61,6 +59,9 @@ pub unsafe fn openpty(
     termp: *const termios,
     winp: *const crate::winsize,
 ) -> c_int {
+    const PTEM: &[u8] = b"ptem\0";
+    const LDTERM: &[u8] = b"ldterm\0";
+
     // Open the main pseudo-terminal device, making sure not to set it as the
     // controlling terminal for this process:
     let fdm = crate::posix_openpt(O_RDWR | O_NOCTTY);

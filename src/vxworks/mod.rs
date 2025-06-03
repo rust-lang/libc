@@ -454,53 +454,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_name", &&self.d_name[..])
-                    .field("d_type", &self.d_type)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_len", &self.sun_len)
-                    .field("sun_family", &self.sun_family)
-                    .field("sun_path", &&self.sun_path[..])
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for RTP_DESC {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("RTP_DESC")
-                    .field("status", &self.status)
-                    .field("options", &self.options)
-                    .field("entrAddr", &self.entrAddr)
-                    .field("initTaskId", &self.initTaskId)
-                    .field("parentId", &self.parentId)
-                    .field("pathName", &&self.pathName[..])
-                    .field("taskCnt", &self.taskCnt)
-                    .field("textStart", &self.textStart)
-                    .field("textEnd", &self.textEnd)
-                    .finish()
-            }
-        }
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_len", &self.ss_len)
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_pad1", &&self.__ss_pad1[..])
-                    .field("__ss_align", &self.__ss_align)
-                    .field("__ss_pad2", &&self.__ss_pad2[..])
-                    .finish()
-            }
-        }
-
         impl PartialEq for sa_u_t {
             fn eq(&self, other: &sa_u_t) -> bool {
                 unsafe {

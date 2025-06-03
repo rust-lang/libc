@@ -141,7 +141,8 @@ macro_rules! s_paren {
     )*);
 }
 
-/// Implement `Clone` and `Copy` for a struct with no `extra_traits` feature.
+/// Implement `Clone` and `Copy` for a struct with no `extra_traits` feature, as well as `Debug`
+/// with `extra_traits` since that can always be derived.
 ///
 /// Most items will prefer to use [`s`].
 macro_rules! s_no_extra_traits {
@@ -172,6 +173,7 @@ macro_rules! s_no_extra_traits {
         __item! {
             #[repr(C)]
             #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+            #[cfg_attr(feature = "extra_traits", ::core::prelude::v1::derive(Debug))]
             $(#[$attr])*
             pub struct $i { $($field)* }
         }

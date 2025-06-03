@@ -76,9 +76,12 @@ test_target() {
         # Test with the equivalent of __USE_TIME_BITS64
         RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64=1 $cmd
         case "$target" in
-            # Test with the equivalent of __FILE_OFFSET_BITS=64
             arm*-gnu*|i*86*-gnu|powerpc-*-gnu*|mips*-gnu|sparc-*-gnu|thumb-*gnu*)
-                RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS=64 $cmd;;
+                # Test with the equivalent of _FILE_OFFSET_BITS=64
+                RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS=64 $cmd
+                # Test with the equivalent of _TIME_BITS=64
+                RUST_LIBC_UNSTABLE_GNU_TIME_BITS=64 $cmd
+                ;;
         esac
     fi
 

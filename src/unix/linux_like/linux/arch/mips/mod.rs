@@ -33,16 +33,17 @@ pub const SO_SNDBUF: c_int = 0x1001;
 pub const SO_RCVBUF: c_int = 0x1002;
 pub const SO_SNDLOWAT: c_int = 0x1003;
 pub const SO_RCVLOWAT: c_int = 0x1004;
-// NOTE: These definitions are now being renamed with _OLD postfix,
-// but CI haven't support them yet.
-// Some related consts could be found in b32.rs and b64.rs
-const SO_SNDTIMEO_OLD: c_int = 0x1005;
-const SO_RCVTIMEO_OLD: c_int = 0x1006;
 cfg_if! {
     if #[cfg(linux_time_bits64)] {
+        const SO_RCVTIMEO_NEW: c_int = 66;
+        const SO_SNDTIMEO_NEW: c_int = 67;
+
         pub const SO_SNDTIMEO: c_int = SO_SNDTIMEO_NEW;
         pub const SO_RCVTIMEO: c_int = SO_RCVTIMEO_NEW;
     } else {
+        const SO_SNDTIMEO_OLD: c_int = 0x1005;
+        const SO_RCVTIMEO_OLD: c_int = 0x1006;
+
         pub const SO_SNDTIMEO: c_int = SO_SNDTIMEO_OLD;
         pub const SO_RCVTIMEO: c_int = SO_RCVTIMEO_OLD;
     }
@@ -95,28 +96,27 @@ pub const SO_ZEROCOPY: c_int = 60;
 pub const SO_TXTIME: c_int = 61;
 pub const SCM_TXTIME: c_int = SO_TXTIME;
 pub const SO_BINDTOIFINDEX: c_int = 62;
-// NOTE: These definitions are now being renamed with _OLD postfix,
-// but CI haven't support them yet.
-// Some related consts could be found in b32.rs and b64.rs
-const SO_TIMESTAMP_OLD: c_int = 29;
-const SO_RCVTIMEO_NEW: c_int = 66;
-const SO_SNDTIMEO_NEW: c_int = 67;
-const SO_TIMESTAMPNS_OLD: c_int = 35;
-const SO_TIMESTAMPING_OLD: c_int = 37;
-const SO_TIMESTAMP_NEW: c_int = 63;
-const SO_TIMESTAMPNS_NEW: c_int = 64;
-const SO_TIMESTAMPING_NEW: c_int = 65;
+
 cfg_if! {
     if #[cfg(linux_time_bits64)] {
+        const SO_TIMESTAMP_NEW: c_int = 63;
+        const SO_TIMESTAMPNS_NEW: c_int = 64;
+        const SO_TIMESTAMPING_NEW: c_int = 65;
+
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_NEW;
         pub const SO_TIMESTAMPNS: c_int = SO_TIMESTAMPNS_NEW;
         pub const SO_TIMESTAMPING: c_int = SO_TIMESTAMPING_NEW;
     } else {
+        const SO_TIMESTAMP_OLD: c_int = 29;
+        const SO_TIMESTAMPNS_OLD: c_int = 35;
+        const SO_TIMESTAMPING_OLD: c_int = 37;
+
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_OLD;
         pub const SO_TIMESTAMPNS: c_int = SO_TIMESTAMPNS_OLD;
         pub const SO_TIMESTAMPING: c_int = SO_TIMESTAMPING_OLD;
     }
 }
+
 // pub const SO_DETACH_REUSEPORT_BPF: c_int = 68;
 pub const SO_PREFER_BUSY_POLL: c_int = 69;
 pub const SO_BUSY_POLL_BUDGET: c_int = 70;

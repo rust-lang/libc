@@ -73,6 +73,7 @@ targets = [
     "powerpc-unknown-netbsd",
     "powerpc-wrs-vxworks",
     "powerpc-wrs-vxworks-spe",
+    "powerpc64-ibm-aix",
     "powerpc64-unknown-freebsd",
     "powerpc64-unknown-linux-gnu",
     "powerpc64-wrs-vxworks",
@@ -148,6 +149,7 @@ use_std = ['std']
 [workspace]
 members = [
     "ctest",
+    "ctest-next",
     "libc-test",
 ]
 

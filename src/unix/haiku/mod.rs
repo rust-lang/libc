@@ -517,22 +517,6 @@ cfg_if! {
         }
 
         impl Eq for utmpx {}
-
-        impl fmt::Debug for utmpx {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_user", &self.ut_user)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_host", &self.ut_host)
-                    .field("__ut_reserved", &self.__ut_reserved)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utmpx {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
@@ -557,15 +541,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_un {}
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_len", &self.sun_len)
-                    .field("sun_family", &self.sun_family)
-                    // FIXME(debug): .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_un {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sun_len.hash(state);
@@ -592,17 +567,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_storage {}
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_len", &self.ss_len)
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_pad1", &self.__ss_pad1)
-                    .field("__ss_pad2", &self.__ss_pad2)
-                    // FIXME(debug): .field("__ss_pad3", &self.__ss_pad3)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_storage {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ss_len.hash(state);
@@ -628,18 +592,6 @@ cfg_if! {
             }
         }
         impl Eq for dirent {}
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_dev", &self.d_dev)
-                    .field("d_pdev", &self.d_pdev)
-                    .field("d_ino", &self.d_ino)
-                    .field("d_pino", &self.d_pino)
-                    .field("d_reclen", &self.d_reclen)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
         impl hash::Hash for dirent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_dev.hash(state);
@@ -660,16 +612,6 @@ cfg_if! {
             }
         }
         impl Eq for sigevent {}
-        impl fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_notify", &self.sigev_notify)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_value", &self.sigev_value)
-                    .field("sigev_notify_attributes", &self.sigev_notify_attributes)
-                    .finish()
-            }
-        }
         impl hash::Hash for sigevent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sigev_notify.hash(state);

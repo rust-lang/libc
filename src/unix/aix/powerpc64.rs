@@ -313,22 +313,6 @@ cfg_if! {
             }
         }
         impl Eq for siginfo_t {}
-        impl fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("siginfo_t")
-                    .field("si_signo", &self.si_signo)
-                    .field("si_errno", &self.si_errno)
-                    .field("si_code", &self.si_code)
-                    .field("si_pid", &self.si_pid)
-                    .field("si_uid", &self.si_uid)
-                    .field("si_status", &self.si_status)
-                    .field("si_addr", &self.si_addr)
-                    .field("si_band", &self.si_band)
-                    .field("si_value", &self.si_value)
-                    .field("__si_flags", &self.__si_flags)
-                    .finish()
-            }
-        }
         impl hash::Hash for siginfo_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.si_signo.hash(state);
@@ -372,16 +356,6 @@ cfg_if! {
             }
         }
         impl Eq for pollfd_ext {}
-        impl fmt::Debug for pollfd_ext {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("pollfd_ext")
-                    .field("fd", &self.fd)
-                    .field("events", &self.events)
-                    .field("revents", &self.revents)
-                    .field("data", &self.data)
-                    .finish()
-            }
-        }
         impl hash::Hash for pollfd_ext {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.fd.hash(state);
@@ -397,12 +371,6 @@ cfg_if! {
         }
 
         impl Eq for fpreg_t {}
-
-        impl fmt::Debug for fpreg_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("fpreg_t").field("d", &self.d).finish()
-            }
-        }
 
         impl hash::Hash for fpreg_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
