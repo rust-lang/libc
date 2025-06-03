@@ -220,11 +220,12 @@ macro_rules! e {
 /// purpose is to calculate the correct enum values.
 ///
 /// See <https://github.com/rust-lang/libc/issues/4419> for more.
+// FIXME(ctest): ctest doesn't recognize the `literal` fragment specifier.
 macro_rules! c_enum {
     (
         $(#[repr($repr:ty)])?
         $ty_name:ident {
-            $($variant:ident $(= $value:literal)?,)+
+            $($variant:ident $(= $value:expr /* literal */)?,)+
         }
     ) => {
         pub type $ty_name = c_enum!(@ty $($repr)?);
@@ -235,7 +236,7 @@ macro_rules! c_enum {
     (@one; $_ty_name:ident; $_idx:expr;) => {};
     (
         @one; $ty_name:ident; $default_val:expr;
-        $variant:ident $(= $value:literal)?,
+        $variant:ident $(= $value:expr /* literal */)?,
         $($tail:tt)*
     ) => {
         pub const $variant: $ty_name = {
