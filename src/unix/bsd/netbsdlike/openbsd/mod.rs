@@ -1721,6 +1721,23 @@ pub const PF_R: u32 = 0x4;
 pub const PF_MASKOS: u32 = 0x0ff00000;
 pub const PF_MASKPROC: u32 = 0xf0000000;
 
+// sys/ioccom.h
+pub const fn IOCPARM_LEN(x: u32) -> u32 {
+    (x >> 16) & crate::IOCPARM_MASK
+}
+
+pub const fn IOCBASECMD(x: u32) -> u32 {
+    x & (!(crate::IOCPARM_MASK << 16))
+}
+
+pub const fn IOCGROUP(x: u32) -> u32 {
+    (x >> 8) & 0xff
+}
+
+pub const fn _IOC(inout: c_ulong, group: c_ulong, num: c_ulong, len: c_ulong) -> c_ulong {
+    (inout) | (((len) & crate::IOCPARM_MASK as c_ulong) << 16) | ((group) << 8) | (num)
+}
+
 // sys/mount.h
 pub const MNT_NOPERM: c_int = 0x00000020;
 pub const MNT_WXALLOWED: c_int = 0x00000800;
