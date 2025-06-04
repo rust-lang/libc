@@ -24,6 +24,8 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
+    "musl_time64",
+    "musl_not_time64",
 ];
 
 // Extra values to allow for check-cfg.
@@ -43,6 +45,8 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
         &["loongarch64", "mips32r6", "mips64r6", "csky"],
     ),
 ];
+
+const MUSL_TIME64_ARCHS: &[&str] = &["arm", "mips", "powerpc", "x86"];
 
 fn main() {
     // Avoid unnecessary re-building.
@@ -90,10 +94,20 @@ fn main() {
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
+    let musl_time64 = env::var("RUST_LIBC_UNSTABLE_MUSL_TIME64").is_ok();
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_TIME64");
     // loongarch64 and ohos have already updated
-    if musl_v1_2_3 || target_os == "loongarch64" || target_env == "ohos" {
-        // FIXME(musl): enable time64 api as well
+    if ((musl_v1_2_3 || target_os == "loongarch64") && target_env == "musl") || target_env == "ohos"
+    {
         set_cfg("musl_v1_2_3");
+        if musl_time64 && MUSL_TIME64_ARCHS.contains(&target_arch.as_str()) {
+            set_cfg("musl_time64");
+            set_cfg("linux_time_bits64");
+        } else {
+            set_cfg("musl_not_time64");
+        }
+    } else if target_env == "musl" || target_env == "ohos" {
+        set_cfg("musl_not_time64");
     }
     let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
