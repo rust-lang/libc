@@ -590,8 +590,11 @@ fn test_openbsd(target: &str) {
 
     cfg.skip_const(move |name| {
         match name {
-            // Removed in OpenBSD 7.7 (unused since 1991)
+            // Removed in OpenBSD 7.7
             "ATF_COM" | "ATF_PERM" | "ATF_PUBL" | "ATF_USETRAILERS" => true,
+
+            // Removed in OpenBSD 7.8
+            "CTL_FS" | "SO_NETPROC" => true,
 
             _ => false,
         }
@@ -3615,22 +3618,37 @@ fn test_vxworks(target: &str) {
 }
 
 fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
-    match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
-        Ok(val) if val == "64" => {
-            if target.contains("gnu")
-                && target.contains("linux")
-                && !target.ends_with("x32")
-                && !target.contains("riscv32")
-                && env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap() == "32"
-            {
+    let pointer_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
+    if target.contains("gnu")
+        && target.contains("linux")
+        && !target.ends_with("x32")
+        && !target.contains("riscv32")
+        && pointer_width == "32"
+    {
+        match env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
+            Ok(val) if val == "64" => {
                 cfg.define("_FILE_OFFSET_BITS", Some("64"));
+                cfg.define("_TIME_BITS", Some("64"));
                 cfg.cfg("gnu_file_offset_bits64", None);
+                cfg.cfg("linux_time_bits64", None);
+                cfg.cfg("gnu_time_bits64", None);
+            }
+            Ok(val) if val != "32" => {
+                panic!("RUST_LIBC_UNSTABLE_GNU_TIME_BITS may only be set to '32' or '64'")
+            }
+            _ => {
+                match env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+                    Ok(val) if val == "64" => {
+                        cfg.define("_FILE_OFFSET_BITS", Some("64"));
+                        cfg.cfg("gnu_file_offset_bits64", None);
+                    }
+                    Ok(val) if val != "32" => {
+                        panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
+                    }
+                    _ => {}
+                }
             }
         }
-        Ok(val) if val != "32" => {
-            panic!("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS may only be set to '32' or '64'")
-        }
-        _ => {}
     }
 }
 
@@ -3805,6 +3823,8 @@ fn test_linux(target: &str) {
             "linux/can.h",
             "linux/can/raw.h",
             "linux/can/j1939.h",
+            "linux/cn_proc.h",
+            "linux/connector.h",
             "linux/dccp.h",
             "linux/errqueue.h",
             "linux/falloc.h",
@@ -4624,6 +4644,9 @@ fn test_linux(target: &str) {
             | "SCM_DEVMEM_DMABUF" => true,
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG" | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
+
+            // FIXME(linux): Requires >= 6.6 kernel headers.
+            "PROC_EVENT_NONZERO_EXIT" => true,
 
             _ => false,
         }

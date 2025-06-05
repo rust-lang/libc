@@ -240,9 +240,9 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(any(
-            target_env = "gnu",
-            target_os = "android",
-            target_env = "musl"
+        target_env = "gnu",
+        target_os = "android",
+        target_env = "musl"
     ))] {
         s! {
             pub struct statx {
@@ -343,16 +343,6 @@ cfg_if! {
             }
         }
         impl Eq for epoll_event {}
-        impl fmt::Debug for epoll_event {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                let events = self.events;
-                let u64 = self.u64;
-                f.debug_struct("epoll_event")
-                    .field("events", &events)
-                    .field("u64", &u64)
-                    .finish()
-            }
-        }
         impl hash::Hash for epoll_event {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let events = self.events;
@@ -373,14 +363,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_un {}
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_family", &self.sun_family)
-                    // FIXME(debug): .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_un {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
@@ -400,16 +382,6 @@ cfg_if! {
         }
 
         impl Eq for sockaddr_storage {}
-
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_align", &self.__ss_align)
-                    // FIXME(debug): .field("__ss_pad2", &self.__ss_pad2)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for sockaddr_storage {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -454,19 +426,6 @@ cfg_if! {
 
         impl Eq for utsname {}
 
-        impl fmt::Debug for utsname {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utsname")
-                    // FIXME(debug): .field("sysname", &self.sysname)
-                    // FIXME(debug): .field("nodename", &self.nodename)
-                    // FIXME(debug): .field("release", &self.release)
-                    // FIXME(debug): .field("version", &self.version)
-                    // FIXME(debug): .field("machine", &self.machine)
-                    // FIXME(debug): .field("domainname", &self.domainname)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utsname {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sysname.hash(state);
@@ -475,18 +434,6 @@ cfg_if! {
                 self.version.hash(state);
                 self.machine.hash(state);
                 self.domainname.hash(state);
-            }
-        }
-
-        impl fmt::Debug for sigevent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sigevent")
-                    .field("sigev_value", &self.sigev_value)
-                    .field("sigev_signo", &self.sigev_signo)
-                    .field("sigev_notify", &self.sigev_notify)
-                    // Skip _sigev_un, since we can't guarantee that it will be
-                    // properly initialized.
-                    .finish()
             }
         }
     }
@@ -1833,6 +1780,7 @@ cfg_if! {
         }
 
         extern "C" {
+            #[cfg_attr(gnu_time_bits64, link_name = "__ioctl_time64")]
             pub fn ioctl(fd: c_int, request: Ioctl, ...) -> c_int;
         }
     }
@@ -1978,8 +1926,11 @@ extern "C" {
     pub fn fdatasync(fd: c_int) -> c_int;
     pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_uchar) -> c_int;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__clock_getres64")]
     pub fn clock_getres(clk_id: crate::clockid_t, tp: *mut crate::timespec) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__clock_gettime64")]
     pub fn clock_gettime(clk_id: crate::clockid_t, tp: *mut crate::timespec) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__clock_settime64")]
     pub fn clock_settime(clk_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
     pub fn clock_getcpuclockid(pid: crate::pid_t, clk_id: *mut crate::clockid_t) -> c_int;
 
@@ -2006,7 +1957,9 @@ extern "C" {
     pub fn memrchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fadvise64")]
     pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__futimens64")]
     pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__utimensat64")]
     pub fn utimensat(
         dirfd: c_int,
         path: *const c_char,
@@ -2056,6 +2009,7 @@ extern "C" {
     pub fn sbrk(increment: intptr_t) -> *mut c_void;
     pub fn setresgid(rgid: crate::gid_t, egid: crate::gid_t, sgid: crate::gid_t) -> c_int;
     pub fn setresuid(ruid: crate::uid_t, euid: crate::uid_t, suid: crate::uid_t) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__wait4_time64")]
     pub fn wait4(
         pid: crate::pid_t,
         status: *mut c_int,
@@ -2080,7 +2034,9 @@ extern "C" {
     pub fn writev(fd: c_int, iov: *const crate::iovec, iovcnt: c_int) -> ssize_t;
     pub fn readv(fd: c_int, iov: *const crate::iovec, iovcnt: c_int) -> ssize_t;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__sendmsg64")]
     pub fn sendmsg(fd: c_int, msg: *const crate::msghdr, flags: c_int) -> ssize_t;
+    #[cfg_attr(gnu_time_bits64, link_name = "__recvmsg64")]
     pub fn recvmsg(fd: c_int, msg: *mut crate::msghdr, flags: c_int) -> ssize_t;
     pub fn uname(buf: *mut crate::utsname) -> c_int;
 
@@ -2122,7 +2078,9 @@ cfg_if! {
             pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
             pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
             pub fn creat64(path: *const c_char, mode: mode_t) -> c_int;
+            #[cfg_attr(gnu_time_bits64, link_name = "__fstat64_time64")]
             pub fn fstat64(fildes: c_int, buf: *mut stat64) -> c_int;
+            #[cfg_attr(gnu_time_bits64, link_name = "__fstatat64_time64")]
             pub fn fstatat64(
                 dirfd: c_int,
                 pathname: *const c_char,
@@ -2131,6 +2089,7 @@ cfg_if! {
             ) -> c_int;
             pub fn ftruncate64(fd: c_int, length: off64_t) -> c_int;
             pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
+            #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
             pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
             pub fn mmap64(
                 addr: *mut c_void,
@@ -2161,6 +2120,7 @@ cfg_if! {
                 entry: *mut crate::dirent64,
                 result: *mut *mut crate::dirent64,
             ) -> c_int;
+            #[cfg_attr(gnu_time_bits64, link_name = "__stat64_time64")]
             pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
             pub fn truncate64(path: *const c_char, length: off64_t) -> c_int;
         }
