@@ -581,18 +581,6 @@ cfg_if! {
             }
         }
         impl Eq for poll_ctl_ext {}
-        impl fmt::Debug for poll_ctl_ext {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("poll_ctl_ext")
-                    .field("version", &self.version)
-                    .field("command", &self.command)
-                    .field("events", &self.events)
-                    .field("fd", &self.fd)
-                    .field("u", &self.u)
-                    .field("reserved64", &self.reserved64)
-                    .finish()
-            }
-        }
         impl hash::Hash for poll_ctl_ext {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.version.hash(state);

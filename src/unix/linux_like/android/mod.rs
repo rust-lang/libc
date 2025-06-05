@@ -651,15 +651,6 @@ cfg_if! {
             }
         }
         impl Eq for sockaddr_nl {}
-        impl fmt::Debug for sockaddr_nl {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_nl")
-                    .field("nl_family", &self.nl_family)
-                    .field("nl_pid", &self.nl_pid)
-                    .field("nl_groups", &self.nl_groups)
-                    .finish()
-            }
-        }
         impl hash::Hash for sockaddr_nl {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.nl_family.hash(state);
@@ -683,18 +674,6 @@ cfg_if! {
         }
 
         impl Eq for dirent {}
-
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for dirent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -722,18 +701,6 @@ cfg_if! {
 
         impl Eq for dirent64 {}
 
-        impl fmt::Debug for dirent64 {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent64")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for dirent64 {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
@@ -755,18 +722,6 @@ cfg_if! {
         }
 
         impl Eq for siginfo_t {}
-
-        impl fmt::Debug for siginfo_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("siginfo_t")
-                    .field("si_signo", &self.si_signo)
-                    .field("si_errno", &self.si_errno)
-                    .field("si_code", &self.si_code)
-                    // Ignore _pad
-                    // Ignore _align
-                    .finish()
-            }
-        }
 
         impl hash::Hash for siginfo_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -795,16 +750,6 @@ cfg_if! {
         }
 
         impl Eq for lastlog {}
-
-        impl fmt::Debug for lastlog {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("lastlog")
-                    .field("ll_time", &self.ll_time)
-                    .field("ll_line", &self.ll_line)
-                    // FIXME(debug): .field("ll_host", &self.ll_host)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for lastlog {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -844,24 +789,6 @@ cfg_if! {
 
         impl Eq for utmp {}
 
-        impl fmt::Debug for utmp {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmp")
-                    .field("ut_type", &self.ut_type)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_user", &self.ut_user)
-                    // FIXME(debug): .field("ut_host", &self.ut_host)
-                    .field("ut_exit", &self.ut_exit)
-                    .field("ut_session", &self.ut_session)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_addr_v6", &self.ut_addr_v6)
-                    .field("unused", &self.unused)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for utmp {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.ut_type.hash(state);
@@ -898,18 +825,6 @@ cfg_if! {
 
         impl Eq for sockaddr_alg {}
 
-        impl fmt::Debug for sockaddr_alg {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_alg")
-                    .field("salg_family", &self.salg_family)
-                    .field("salg_type", &self.salg_type)
-                    .field("salg_feat", &self.salg_feat)
-                    .field("salg_mask", &self.salg_mask)
-                    .field("salg_name", &&self.salg_name[..])
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sockaddr_alg {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.salg_family.hash(state);
@@ -928,16 +843,6 @@ cfg_if! {
             }
         }
         impl Eq for uinput_setup {}
-
-        impl fmt::Debug for uinput_setup {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("id", &self.id)
-                    .field("name", &&self.name[..])
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for uinput_setup {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -960,20 +865,6 @@ cfg_if! {
         }
         impl Eq for uinput_user_dev {}
 
-        impl fmt::Debug for uinput_user_dev {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("uinput_setup")
-                    .field("name", &&self.name[..])
-                    .field("id", &self.id)
-                    .field("ff_effects_max", &self.ff_effects_max)
-                    .field("absmax", &&self.absmax[..])
-                    .field("absmin", &&self.absmin[..])
-                    .field("absfuzz", &&self.absfuzz[..])
-                    .field("absflat", &&self.absflat[..])
-                    .finish()
-            }
-        }
-
         impl hash::Hash for uinput_user_dev {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.name.hash(state);
@@ -986,24 +877,6 @@ cfg_if! {
             }
         }
 
-        impl fmt::Debug for ifreq {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifreq")
-                    .field("ifr_name", &self.ifr_name)
-                    .field("ifr_ifru", &self.ifr_ifru)
-                    .finish()
-            }
-        }
-
-        impl fmt::Debug for ifconf {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("ifconf")
-                    .field("ifc_len", &self.ifc_len)
-                    .field("ifc_ifcu", &self.ifc_ifcu)
-                    .finish()
-            }
-        }
-
         impl PartialEq for prop_info {
             fn eq(&self, other: &prop_info) -> bool {
                 self.__name == other.__name
@@ -1012,15 +885,6 @@ cfg_if! {
             }
         }
         impl Eq for prop_info {}
-        impl fmt::Debug for prop_info {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("prop_info")
-                    .field("__name", &self.__name)
-                    .field("__serial", &self.__serial)
-                    .field("__value", &self.__value)
-                    .finish()
-            }
-        }
     }
 }
 

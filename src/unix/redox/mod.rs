@@ -1258,14 +1258,6 @@ extern "C" {
     ) -> ssize_t;
     pub fn recvmsg(socket: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
     pub fn sendmsg(socket: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
-    pub fn sendto(
-        socket: c_int,
-        buf: *const c_void,
-        len: size_t,
-        flags: c_int,
-        addr: *const crate::sockaddr,
-        addrlen: crate::socklen_t,
-    ) -> ssize_t;
 
     // sys/stat.h
     pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
@@ -1305,18 +1297,6 @@ cfg_if! {
 
         impl Eq for dirent {}
 
-        impl fmt::Debug for dirent {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("dirent")
-                    .field("d_ino", &self.d_ino)
-                    .field("d_off", &self.d_off)
-                    .field("d_reclen", &self.d_reclen)
-                    .field("d_type", &self.d_type)
-                    // FIXME(debug): .field("d_name", &self.d_name)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for dirent {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.d_ino.hash(state);
@@ -1340,15 +1320,6 @@ cfg_if! {
 
         impl Eq for sockaddr_un {}
 
-        impl fmt::Debug for sockaddr_un {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_un")
-                    .field("sun_family", &self.sun_family)
-                    // FIXME(debug): .field("sun_path", &self.sun_path)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sockaddr_un {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.sun_family.hash(state);
@@ -1369,16 +1340,6 @@ cfg_if! {
         }
 
         impl Eq for sockaddr_storage {}
-
-        impl fmt::Debug for sockaddr_storage {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sockaddr_storage")
-                    .field("ss_family", &self.ss_family)
-                    .field("__ss_align", &self.__ss_align)
-                    // FIXME(debug): .field("__ss_padding", &self.__ss_padding)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for sockaddr_storage {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
@@ -1423,19 +1384,6 @@ cfg_if! {
         }
 
         impl Eq for utsname {}
-
-        impl fmt::Debug for utsname {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utsname")
-                    // FIXME(debug): .field("sysname", &self.sysname)
-                    // FIXME(debug): .field("nodename", &self.nodename)
-                    // FIXME(debug): .field("release", &self.release)
-                    // FIXME(debug): .field("version", &self.version)
-                    // FIXME(debug): .field("machine", &self.machine)
-                    // FIXME(debug): .field("domainname", &self.domainname)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for utsname {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
