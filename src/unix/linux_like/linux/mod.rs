@@ -4848,6 +4848,41 @@ pub const IN_ONLYDIR: u32 = 0x0100_0000;
 pub const IN_DONT_FOLLOW: u32 = 0x0200_0000;
 pub const IN_EXCL_UNLINK: u32 = 0x0400_0000;
 
+// uapi/linux/securebits.h
+const SECURE_NOROOT: c_int = 0;
+const SECURE_NOROOT_LOCKED: c_int = 1;
+
+pub const SECBIT_NOROOT: c_int = issecure_mask(SECURE_NOROOT);
+pub const SECBIT_NOROOT_LOCKED: c_int = issecure_mask(SECURE_NOROOT_LOCKED);
+
+const SECURE_NO_SETUID_FIXUP: c_int = 2;
+const SECURE_NO_SETUID_FIXUP_LOCKED: c_int = 3;
+
+pub const SECBIT_NO_SETUID_FIXUP: c_int = issecure_mask(SECURE_NO_SETUID_FIXUP);
+pub const SECBIT_NO_SETUID_FIXUP_LOCKED: c_int = issecure_mask(SECURE_NO_SETUID_FIXUP_LOCKED);
+
+const SECURE_KEEP_CAPS: c_int = 4;
+const SECURE_KEEP_CAPS_LOCKED: c_int = 5;
+
+pub const SECBIT_KEEP_CAPS: c_int = issecure_mask(SECURE_KEEP_CAPS);
+pub const SECBIT_KEEP_CAPS_LOCKED: c_int = issecure_mask(SECURE_KEEP_CAPS_LOCKED);
+
+const SECURE_NO_CAP_AMBIENT_RAISE: c_int = 6;
+const SECURE_NO_CAP_AMBIENT_RAISE_LOCKED: c_int = 7;
+
+pub const SECBIT_NO_CAP_AMBIENT_RAISE: c_int = issecure_mask(SECURE_NO_CAP_AMBIENT_RAISE);
+pub const SECBIT_NO_CAP_AMBIENT_RAISE_LOCKED: c_int =
+    issecure_mask(SECURE_NO_CAP_AMBIENT_RAISE_LOCKED);
+
+pub const SECUREBITS_DEFAULT: c_int = 0x00000000;
+pub const SECURE_ALL_BITS: c_int =
+    SECBIT_NOROOT | SECBIT_NO_SETUID_FIXUP | SECBIT_KEEP_CAPS | SECBIT_NO_CAP_AMBIENT_RAISE;
+pub const SECURE_ALL_LOCKS: c_int = SECURE_ALL_BITS << 1;
+
+const fn issecure_mask(x: c_int) -> c_int {
+    1 << x
+}
+
 // linux/keyctl.h
 pub const KEY_SPEC_THREAD_KEYRING: i32 = -1;
 pub const KEY_SPEC_PROCESS_KEYRING: i32 = -2;
