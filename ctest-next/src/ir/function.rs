@@ -5,18 +5,29 @@ use crate::ir::Parameter;
 
 #[derive(Debug)]
 pub struct Function {
+    public: bool,
     ident: Ident,
     parameters: Vec<Parameter>,
     return_value: TokenStream,
 }
 
 impl Function {
-    pub fn new(ident: Ident, parameters: Vec<Parameter>, return_value: TokenStream) -> Self {
+    pub fn new(
+        public: bool,
+        ident: Ident,
+        parameters: Vec<Parameter>,
+        return_value: TokenStream,
+    ) -> Self {
         Self {
+            public,
             ident,
             parameters,
             return_value,
         }
+    }
+
+    pub fn public(&self) -> bool {
+        self.public
     }
 
     pub fn ident(&self) -> &Ident {

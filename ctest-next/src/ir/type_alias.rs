@@ -3,13 +3,18 @@ use syn::Ident;
 
 #[derive(Debug)]
 pub struct TypeAlias {
+    public: bool,
     ident: Ident,
     ty: TokenStream,
 }
 
 impl TypeAlias {
-    pub fn new(ident: Ident, ty: TokenStream) -> Self {
-        Self { ident, ty }
+    pub fn new(public: bool, ident: Ident, ty: TokenStream) -> Self {
+        Self { public, ident, ty }
+    }
+
+    pub fn public(&self) -> bool {
+        self.public
     }
 
     pub fn ident(&self) -> &Ident {

@@ -28,16 +28,67 @@ impl SymbolTable {
             foreign_statics: HashMap::new(),
         }
     }
+
+    pub fn contains_struct(&self, ident: &str) -> bool {
+        self.structs()
+            .iter()
+            .any(|structure| structure.ident().to_string() == ident)
+    }
+
+    pub fn contains_union(&self, ident: &str) -> bool {
+        self.unions()
+            .iter()
+            .any(|structure| structure.ident().to_string() == ident)
+    }
+
+    pub fn aliases(&self) -> &Vec<TypeAlias> {
+        &self.aliases
+    }
+
+    pub fn structs(&self) -> &Vec<Struct> {
+        &self.structs
+    }
+
+    pub fn unions(&self) -> &Vec<Union> {
+        &self.unions
+    }
+
+    pub fn constants(&self) -> &Vec<Constant> {
+        &self.constants
+    }
+
+    pub fn foreign_functions(&self) -> &HashMap<Abi, Vec<Function>> {
+        &self.foreign_functions
+    }
+
+    pub fn foreign_statics(&self) -> &HashMap<Abi, Vec<Static>> {
+        &self.foreign_statics
+    }
+}
+
+fn is_visible(vis: &syn::Visibility) -> bool {
+    // Assume that if the visibility is restricted we are not meant to access it.
+    match vis {
+        syn::Visibility::Public(_) => true,
+        syn::Visibility::Inherited | syn::Visibility::Restricted(_) => false,
+    }
 }
 
 fn collect_fields(fields: &syn::punctuated::Punctuated<syn::Field, syn::Token![,]>) -> Vec<Field> {
     fields
         .iter()
-        .map(|field| Field::new(field.ident.clone(), field.ty.to_token_stream()))
+        .map(|field| {
+            Field::new(
+                is_visible(&field.vis),
+                field.ident.clone(),
+                field.ty.to_token_stream(),
+            )
+        })
         .collect()
 }
 
 fn visit_foreign_item_fn(table: &mut SymbolTable, i: &syn::ForeignItemFn, abi: &str) {
+    let public = is_visible(&i.vis);
     let ident = i.sig.ident.clone();
     let parameters = i
         .sig
@@ -61,10 +112,11 @@ fn visit_foreign_item_fn(table: &mut SymbolTable, i: &syn::ForeignItemFn, abi: &
         .foreign_functions
         .entry(abi.to_string())
         .or_default()
-        .push(Function::new(ident, parameters, return_value));
+        .push(Function::new(public, ident, parameters, return_value));
 }
 
 fn visit_foreign_item_static(table: &mut SymbolTable, i: &syn::ForeignItemStatic, abi: &str) {
+    let public = is_visible(&i.vis);
     let ident = i.ident.clone();
     let ty = i.ty.to_token_stream();
 
@@ -72,18 +124,20 @@ fn visit_foreign_item_static(table: &mut SymbolTable, i: &syn::ForeignItemStatic
         .foreign_statics
         .entry(abi.to_string())
         .or_default()
-        .push(Static::new(ident, ty));
+        .push(Static::new(public, ident, ty));
 }
 
 impl<'ast> Visit<'ast> for SymbolTable {
     fn visit_item_type(&mut self, i: &'ast syn::ItemType) {
+        let public = is_visible(&i.vis);
         let ty = i.ty.to_token_stream();
         let ident = i.ident.clone();
 
-        self.aliases.push(TypeAlias::new(ident, ty));
+        self.aliases.push(TypeAlias::new(public, ident, ty));
     }
 
     fn visit_item_struct(&mut self, i: &'ast syn::ItemStruct) {
+        let public = is_visible(&i.vis);
         let ident = i.ident.clone();
         let fields = match &i.fields {
             syn::Fields::Named(fields) => collect_fields(&fields.named),
@@ -91,22 +145,24 @@ impl<'ast> Visit<'ast> for SymbolTable {
             syn::Fields::Unit => Vec::new(),
         };
 
-        self.structs.push(Struct::new(ident, fields));
+        self.structs.push(Struct::new(public, ident, fields));
     }
 
     fn visit_item_union(&mut self, i: &'ast syn::ItemUnion) {
+        let public = is_visible(&i.vis);
         let ident = i.ident.clone();
         let fields = collect_fields(&i.fields.named);
 
-        self.unions.push(Union::new(ident, fields));
+        self.unions.push(Union::new(public, ident, fields));
     }
 
     fn visit_item_const(&mut self, i: &'ast syn::ItemConst) {
+        let public = is_visible(&i.vis);
         let ident = i.ident.clone();
         let ty = i.ty.to_token_stream();
         let value = i.expr.to_token_stream();
 
-        self.constants.push(Constant::new(ident, ty, value));
+        self.constants.push(Constant::new(public, ident, ty, value));
     }
 
     fn visit_item_foreign_mod(&mut self, i: &'ast syn::ItemForeignMod) {
