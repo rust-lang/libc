@@ -7,6 +7,9 @@ use crate::ir::{Constant, Field, Function, Parameter, Static, Struct, TypeAlias,
 
 type Abi = String;
 
+/// A `SymbolTable` represents a collected set of top-level Rust items
+/// relevant to FFI generation or analysis, including foreign functions/statics,
+/// type aliases, structs, unions, and constants.
 #[derive(Debug)]
 pub struct SymbolTable {
     aliases: Vec<TypeAlias>,

@@ -1,5 +1,6 @@
 use crate::ir::{Constant, Field, Function, Static, Struct, TypeAlias, Union};
 
+/// A boxed predicate function wrapper for filtering items of type `T`.
 pub struct Predicate<T>(Box<dyn Fn(T) -> bool>);
 
 impl<T> Predicate<T> {
@@ -24,8 +25,10 @@ where
     }
 }
 
-// To be used as SkipItem::Struct((|s: Struct| !s.public()).into())
-enum SkipItem {
+/// Specifies a filter condition for skipping specific kinds of items.
+///
+/// To be used as `SkipItem::Struct((|s: Struct| !s.public()).into())`
+pub enum SkipItem {
     Constant(Predicate<Constant>),
     Function(Predicate<Function>),
     Static(Predicate<Static>),
