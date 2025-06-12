@@ -1,7 +1,6 @@
 use crate::prelude::*;
 
 pub type wchar_t = i32;
-pub type useconds_t = u32;
 pub type dev_t = u32;
 pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
@@ -133,11 +132,6 @@ s! {
 
     pub struct cpu_set_t {
         bits: [u32; 32],
-    }
-
-    pub struct if_nameindex {
-        pub if_index: c_uint,
-        pub if_name: *mut c_char,
     }
 
     // System V IPC
@@ -312,32 +306,6 @@ s! {
         pub updated: c_ulong,
         pub ha: [c_uchar; crate::MAX_ADDR_LEN],
     }
-
-    #[allow(missing_debug_implementations)]
-    #[repr(align(4))]
-    pub struct pthread_mutex_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_MUTEX_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_rwlock_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_RWLOCK_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_mutexattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_rwlockattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_RWLOCKATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_condattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
-    }
 }
 
 s_no_extra_traits! {
@@ -374,12 +342,6 @@ s_no_extra_traits! {
         pad: [c_long; 4],
     }
 
-    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
-    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
-    pub struct pthread_cond_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
-    }
-
     #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
@@ -389,30 +351,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for dirent {}
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
         impl PartialEq for sysinfo {
             fn eq(&self, other: &sysinfo) -> bool {
                 self.uptime == other.uptime
@@ -470,18 +408,6 @@ cfg_if! {
                 self.mq_maxmsg.hash(state);
                 self.mq_msgsize.hash(state);
                 self.mq_curmsgs.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_cond_t {
-            fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_cond_t {}
-        impl hash::Hash for pthread_cond_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
             }
         }
     }
@@ -775,16 +701,6 @@ pub const RTLD_NEXT: *mut c_void = -1i64 as *mut c_void;
 pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
 pub const RTLD_NODELETE: c_int = 0x1000;
 pub const RTLD_NOW: c_int = 0x2;
-
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
-};
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    size: [0; __SIZEOF_PTHREAD_COND_T],
-};
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
-};
 
 pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
@@ -1483,8 +1399,6 @@ extern "C" {
     pub fn getloadavg(loadavg: *mut c_double, nelem: c_int) -> c_int;
 
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
-    pub fn if_nameindex() -> *mut if_nameindex;
-    pub fn if_freenameindex(ptr: *mut if_nameindex);
 
     pub fn mremap(
         addr: *mut c_void,
@@ -1549,21 +1463,6 @@ extern "C" {
     ) -> c_int;
 
     pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
-
-    pub fn getpwnam_r(
-        name: *const c_char,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-    pub fn getpwuid_r(
-        uid: crate::uid_t,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
 
     // grp.h
     pub fn getgrgid(gid: crate::gid_t) -> *mut crate::group;
