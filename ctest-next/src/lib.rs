@@ -7,9 +7,13 @@
 //! project from the main repo to generate tests which can be used to validate
 //! FFI bindings in Rust against the headers from which they come from.
 
+mod ast;
+mod ffi_items;
 mod generator;
 mod macro_expansion;
 
+pub use ast::{Const, Field, Fn, Item, Parameter, Static, Struct, Type, Union};
+pub use ffi_items::FfiItems;
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
 

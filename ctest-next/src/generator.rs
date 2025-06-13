@@ -1,6 +1,8 @@
 use std::path::Path;
 
-use crate::{expand, Result};
+use syn::visit::Visit;
+
+use crate::{expand, FfiItems, Result};
 
 /// A builder used to generate a test suite.
 #[non_exhaustive]
@@ -20,7 +22,12 @@ impl TestGenerator {
 
     /// Generate all tests for the given crate and output the Rust side to a file.
     pub fn generate<P: AsRef<Path>>(&self, crate_path: P, _output_file_path: P) -> Result<()> {
-        let _expanded = expand(crate_path)?;
+        let expanded = expand(crate_path)?;
+        let ast = syn::parse_file(&expanded)?;
+
+        let mut ffi_items = FfiItems::new();
+        ffi_items.visit_file(&ast);
+
         Ok(())
     }
 }
