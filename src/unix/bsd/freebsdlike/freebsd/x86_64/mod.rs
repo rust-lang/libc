@@ -137,7 +137,8 @@ s_no_extra_traits! {
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
         pub mc_xfpustate_len: register_t,
-        pub mc_spare: [c_long; 4],
+        pub mc_tlsbase: register_t,
+        pub mc_spare: [c_long; 3],
     }
 }
 
