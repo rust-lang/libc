@@ -221,27 +221,17 @@ macro_rules! e {
 ///
 /// See <https://github.com/rust-lang/libc/issues/4419> for more.
 macro_rules! c_enum {
-    (
-        $(#[repr($repr:ty)])?
-        $ty_name:ident {
-            $($variant:ident $(= $value:literal)?,)+
-        }
-    ) => {
-        pub type $ty_name = c_enum!(@ty $($repr)?);
-        c_enum!(@one; $ty_name; 0; $($variant $(= $value)?,)+);
-    };
-
     // Matcher for a single variant
     (@one; $_ty_name:ident; $_idx:expr;) => {};
     (
         @one; $ty_name:ident; $default_val:expr;
-        $variant:ident $(= $value:literal)?,
+        $variant:ident $(= $value:expr)*,
         $($tail:tt)*
     ) => {
         pub const $variant: $ty_name = {
             #[allow(unused_variables)]
             let r = $default_val;
-            $(let r = $value;)?
+            $(let r = $value;)*
             r
         };
 
@@ -252,7 +242,17 @@ macro_rules! c_enum {
 
     // Use a specific type if provided, otherwise default to `c_uint`
     (@ty $repr:ty) => { $repr };
-    (@ty) => { $crate::c_uint };
+    (@ty) => { crate::c_uint };
+
+    (
+        $(#[repr($repr:ty)])*
+        enum $ty_name:ident {
+            $($variant:ident $(= $value:expr)*,)+
+        }
+    ) => {
+        pub type $ty_name = c_enum!(@ty $($repr)*);
+        c_enum!(@one; $ty_name; 0; $($variant $(= $value)*,)+);
+    };
 }
 
 // This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
@@ -377,7 +377,7 @@ mod tests {
     fn c_enumbasic() {
         // By default, variants get sequential values.
         c_enum! {
-            e {
+            enum e {
                 VAR0,
                 VAR1,
                 VAR2,
@@ -394,7 +394,7 @@ mod tests {
         // By default, variants get sequential values.
         c_enum! {
             #[repr(u16)]
-            e {
+            enum e {
                 VAR0,
             }
         }
@@ -406,7 +406,7 @@ mod tests {
     fn c_enumset_value() {
         // Setting an explicit value resets the count.
         c_enum! {
-            e {
+            enum e {
                 VAR2 = 2,
                 VAR3,
                 VAR4,
@@ -423,7 +423,7 @@ mod tests {
         // C enums always take one more than the previous value, unless set to a specific
         // value. Duplicates are allowed.
         c_enum! {
-            e {
+            enum e {
                 VAR0,
                 VAR2_0 = 2,
                 VAR3_0,
