@@ -14,6 +14,8 @@ missing! {
 }
 
 s! {
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct __c_anonymous_sigev_thread {
         pub _function: Option<extern "C" fn(crate::sigval) -> *mut c_void>,
         pub _attribute: *mut crate::pthread_attr_t,
