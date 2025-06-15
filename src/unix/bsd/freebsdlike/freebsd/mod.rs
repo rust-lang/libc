@@ -237,6 +237,8 @@ impl Clone for devstat_select_mode {
 }
 
 s! {
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct __c_anonymous_sigev_thread {
         pub _function: Option<extern "C" fn(crate::sigval) -> *mut c_void>,
         //pub _function: *mut c_void, // Actually a function pointer
