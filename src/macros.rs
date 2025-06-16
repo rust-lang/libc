@@ -223,7 +223,7 @@ macro_rules! e {
 macro_rules! c_enum {
     (
         $(#[repr($repr:ty)])?
-        $ty_name:ident {
+        enum $ty_name:ident {
             $($variant:ident $(= $value:literal)?,)+
         }
     ) => {
@@ -411,7 +411,7 @@ mod tests {
     fn c_enumbasic() {
         // By default, variants get sequential values.
         c_enum! {
-            e {
+            enum e {
                 VAR0,
                 VAR1,
                 VAR2,
@@ -428,7 +428,7 @@ mod tests {
         // By default, variants get sequential values.
         c_enum! {
             #[repr(u16)]
-            e {
+            enum e {
                 VAR0,
             }
         }
@@ -440,7 +440,7 @@ mod tests {
     fn c_enumset_value() {
         // Setting an explicit value resets the count.
         c_enum! {
-            e {
+            enum e {
                 VAR2 = 2,
                 VAR3,
                 VAR4,
@@ -457,7 +457,7 @@ mod tests {
         // C enums always take one more than the previous value, unless set to a specific
         // value. Duplicates are allowed.
         c_enum! {
-            e {
+            enum e {
                 VAR0,
                 VAR2_0 = 2,
                 VAR3_0,
