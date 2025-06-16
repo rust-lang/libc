@@ -630,7 +630,7 @@ impl siginfo_t {
             _pad: [c_int; SI_PAD],
             _pid: crate::pid_t,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer))._pid
+        (*(self as *const siginfo_t).cast::<siginfo_timer>())._pid
     }
 
     pub unsafe fn si_uid(&self) -> crate::uid_t {
@@ -643,7 +643,7 @@ impl siginfo_t {
             _pid: crate::pid_t,
             _uid: crate::uid_t,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer))._uid
+        (*(self as *const siginfo_t).cast::<siginfo_timer>())._uid
     }
 
     pub unsafe fn si_value(&self) -> crate::sigval {
@@ -657,7 +657,7 @@ impl siginfo_t {
             _uid: crate::uid_t,
             value: crate::sigval,
         }
-        (*(self as *const siginfo_t as *const siginfo_timer)).value
+        (*(self as *const siginfo_t).cast::<siginfo_timer>()).value
     }
 }
 
