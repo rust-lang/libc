@@ -95,7 +95,7 @@ e! {
 }
 
 c_enum! {
-    pid_type {
+    enum pid_type {
         PIDTYPE_PID,
         PIDTYPE_TGID,
         PIDTYPE_PGID,
@@ -4559,14 +4559,14 @@ pub const RTNLGRP_STATS: c_uint = 0x24;
 
 // linux/cn_proc.h
 c_enum! {
-    proc_cn_mcast_op {
+    enum proc_cn_mcast_op {
         PROC_CN_MCAST_LISTEN = 1,
         PROC_CN_MCAST_IGNORE = 2,
     }
 }
 
 c_enum! {
-    proc_cn_event {
+    enum proc_cn_event {
         PROC_EVENT_NONE = 0x00000000,
         PROC_EVENT_FORK = 0x00000001,
         PROC_EVENT_EXEC = 0x00000002,
