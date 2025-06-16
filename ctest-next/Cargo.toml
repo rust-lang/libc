@@ -9,4 +9,4 @@ publish = false
 
 [dependencies]
 cc = "1.2.25"
-syn = { version = "2.0.101", features = ["full", "visit", "visit-mut", "fold"] }
+syn = { version = "2.0.101", features = ["full", "visit", "extra-traits"] }
