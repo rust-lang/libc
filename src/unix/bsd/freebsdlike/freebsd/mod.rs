@@ -4609,8 +4609,16 @@ pub const SCTP_ASSOC_RESET_FAILED: c_int = 0x0008;
 pub const SCTP_STREAM_CHANGE_DENIED: c_int = 0x0004;
 pub const SCTP_STREAM_CHANGE_FAILED: c_int = 0x0008;
 
+// sys/kenv.h
+pub const KENV_GET: c_int = 0;
+pub const KENV_SET: c_int = 1;
+pub const KENV_UNSET: c_int = 2;
+pub const KENV_DUMP: c_int = 3;
 pub const KENV_DUMP_LOADER: c_int = 4;
 pub const KENV_DUMP_STATIC: c_int = 5;
+
+pub const KENV_MNAMELEN: c_int = 128;
+pub const KENV_MVALLEN: c_int = 128;
 
 pub const RB_PAUSE: c_int = 0x100000;
 pub const RB_REROOT: c_int = 0x200000;
@@ -5262,6 +5270,13 @@ extern "C" {
         type_: c_int,
         idx1: c_ulong,
         idx2: c_ulong,
+    ) -> c_int;
+
+    pub fn kenv(
+        action: c_int,
+        name: *const c_char,
+        value: *mut c_char,
+        len: c_int,
     ) -> c_int;
 }
 
