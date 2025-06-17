@@ -3424,7 +3424,7 @@ const_fn! {
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
         if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
-            (*mhdr).msg_control as *mut cmsghdr
+            (*mhdr).msg_control.cast::<cmsghdr>()
         } else {
             core::ptr::null_mut::<cmsghdr>()
         }
@@ -3453,7 +3453,7 @@ f! {
         {
             core::ptr::null_mut::<cmsghdr>()
         } else {
-            next as *mut cmsghdr
+            next.cast::<cmsghdr>()
         }
     }
 
