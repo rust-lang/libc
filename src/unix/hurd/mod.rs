@@ -1594,12 +1594,12 @@ pub const SEM_VALUE_MAX: c_int = 2147483647;
 pub const MAXNAMLEN: usize = 255;
 
 // netdb.h
-pub const _PATH_HEQUIV: &'static [u8; 17usize] = b"/etc/hosts.equiv\0";
-pub const _PATH_HOSTS: &'static [u8; 11usize] = b"/etc/hosts\0";
-pub const _PATH_NETWORKS: &'static [u8; 14usize] = b"/etc/networks\0";
-pub const _PATH_NSSWITCH_CONF: &'static [u8; 19usize] = b"/etc/nsswitch.conf\0";
-pub const _PATH_PROTOCOLS: &'static [u8; 15usize] = b"/etc/protocols\0";
-pub const _PATH_SERVICES: &'static [u8; 14usize] = b"/etc/services\0";
+pub const _PATH_HEQUIV: &[u8; 17usize] = b"/etc/hosts.equiv\0";
+pub const _PATH_HOSTS: &[u8; 11usize] = b"/etc/hosts\0";
+pub const _PATH_NETWORKS: &[u8; 14usize] = b"/etc/networks\0";
+pub const _PATH_NSSWITCH_CONF: &[u8; 19usize] = b"/etc/nsswitch.conf\0";
+pub const _PATH_PROTOCOLS: &[u8; 15usize] = b"/etc/protocols\0";
+pub const _PATH_SERVICES: &[u8; 14usize] = b"/etc/services\0";
 pub const HOST_NOT_FOUND: c_int = 1;
 pub const TRY_AGAIN: c_int = 2;
 pub const NO_RECOVERY: c_int = 3;
@@ -3416,7 +3416,7 @@ const _UTSNAME_LENGTH: usize = 1024;
 
 const_fn! {
     {const} fn CMSG_ALIGN(len: usize) -> usize {
-        len + mem::size_of::<usize>() - 1 & !(mem::size_of::<usize>() - 1)
+        (len + mem::size_of::<usize>() - 1) & !(mem::size_of::<usize>() - 1)
     }
 }
 
@@ -3424,7 +3424,7 @@ const_fn! {
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
         if (*mhdr).msg_controllen as usize >= mem::size_of::<cmsghdr>() {
-            (*mhdr).msg_control as *mut cmsghdr
+            (*mhdr).msg_control.cast::<cmsghdr>()
         } else {
             core::ptr::null_mut::<cmsghdr>()
         }
@@ -3453,7 +3453,7 @@ f! {
         {
             core::ptr::null_mut::<cmsghdr>()
         } else {
-            next as *mut cmsghdr
+            next.cast::<cmsghdr>()
         }
     }
 
@@ -3473,14 +3473,12 @@ f! {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
-        ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * mem::size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
-        ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
