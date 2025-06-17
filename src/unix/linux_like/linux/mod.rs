@@ -4816,6 +4816,26 @@ pub const IN_ONLYDIR: u32 = 0x0100_0000;
 pub const IN_DONT_FOLLOW: u32 = 0x0200_0000;
 pub const IN_EXCL_UNLINK: u32 = 0x0400_0000;
 
+// uapi/linux/securebits.h
+pub const SECBIT_NOROOT: c_int = 1 << 0;
+pub const SECBIT_NOROOT_LOCKED: c_int = 1 << 1;
+
+pub const SECBIT_NO_SETUID_FIXUP: c_int = 1 << 2;
+pub const SECBIT_NO_SETUID_FIXUP_LOCKED: c_int = 1 << 3;
+
+pub const SECBIT_KEEP_CAPS: c_int = 1 << 4;
+pub const SECBIT_KEEP_CAPS_LOCKED: c_int = 1 << 5;
+
+pub const SECBIT_NO_CAP_AMBIENT_RAISE: c_int = 1 << 6;
+pub const SECBIT_NO_CAP_AMBIENT_RAISE_LOCKED: c_int = 1 << 7;
+
+pub const SECUREBITS_DEFAULT: c_int = 0x00000000;
+pub const SECURE_ALL_BITS: c_int = SECBIT_NOROOT
+    | SECBIT_NO_SETUID_FIXUP
+    | SECBIT_KEEP_CAPS
+    | SECBIT_NO_CAP_AMBIENT_RAISE;
+pub const SECURE_ALL_LOCKS: c_int = SECURE_ALL_BITS << 1;
+
 // linux/keyctl.h
 pub const KEY_SPEC_THREAD_KEYRING: i32 = -1;
 pub const KEY_SPEC_PROCESS_KEYRING: i32 = -2;
