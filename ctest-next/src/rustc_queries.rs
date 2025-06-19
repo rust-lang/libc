@@ -42,7 +42,7 @@ pub fn rustc_version() -> Result<RustcVersion> {
         return Err(error.into());
     }
 
-    // eg: rustc 1.87.0 (17067e9ac 2025-05-09)
+    // eg: rustc 1.87.0-(optionally nightly) (17067e9ac 2025-05-09)
     // Assume the format does not change.
     let [major, minor, patch] = std::str::from_utf8(&output.stdout)?
         .split_whitespace()
@@ -50,7 +50,13 @@ pub fn rustc_version() -> Result<RustcVersion> {
         .unwrap()
         .split('.')
         .take(3)
-        .map(|s| s.parse::<u8>())
+        .map(|s| {
+            s.chars()
+                .take_while(|c| c.is_ascii_digit())
+                .collect::<String>()
+                .trim()
+                .parse::<u8>()
+        })
         .collect::<Result<Vec<u8>, ParseIntError>>()?
         .try_into()
         .unwrap();
@@ -72,7 +78,7 @@ pub fn rustc_host() -> Result<String> {
         return Err(error.into());
     }
 
-    // eg: rustc 1.87.0 (17067e9ac 2025-05-09)
+    // eg: rustc 1.87.0-(optionally nightly) (17067e9ac 2025-05-09)
     // binary: rustc
     // commit-hash: 17067e9ac6d7ecb70e50f92c1944e545188d2359
     // commit-date: 2025-05-09
