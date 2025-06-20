@@ -27,10 +27,10 @@ pub fn compile_test<P: AsRef<Path>>(
     let mut file = File::create(&rust_file)?;
     writeln!(
         file,
-        "include!(\"{}\");",
+        "include!(r#\"{}\"#);",
         canonicalize(crate_path)?.display()
     )?;
-    writeln!(file, "include!(\"{}.rs\");", library_file.display())?;
+    writeln!(file, "include!(r#\"{}.rs\"#);", library_file.display())?;
 
     let output = Command::new(rustc)
         .arg(&rust_file)
