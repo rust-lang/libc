@@ -69,8 +69,16 @@ impl TestGenerator {
     pub fn generate<P: AsRef<Path>>(&mut self, crate_path: P, output_file_path: P) -> Result<()> {
         let output_file_path = self.generate_files(crate_path, output_file_path)?;
 
-        let target = env::var("TARGET").ok().or(self.target.clone()).unwrap();
-        let host = env::var("HOST").ok().or(self.host.clone()).unwrap();
+        let target = self
+            .target
+            .clone()
+            .or(Some(env::var("TARGET_PLATFORM").unwrap()))
+            .unwrap();
+        let host = self
+            .host
+            .clone()
+            .or(Some(env::var("HOST_PLATFORM").unwrap()))
+            .unwrap();
 
         let mut cfg = cc::Build::new();
         // FIXME: Cpp not supported.

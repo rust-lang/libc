@@ -1,6 +1,6 @@
 use std::env;
 
-use ctest_next::{compile_test, run_test, rustc_host, Result, TestGenerator};
+use ctest_next::{compile_test, run_test, Result, TestGenerator};
 
 // TODO: Create a unique directory within the temp_dir where all this is done
 // to prevent name collisions.
@@ -11,10 +11,7 @@ use ctest_next::{compile_test, run_test, rustc_host, Result, TestGenerator};
 /// Create a test generator configured to useful settings.
 fn default_generator(opt_level: u8) -> Result<TestGenerator> {
     env::set_var("OPT_LEVEL", opt_level.to_string());
-    let triple = rustc_host()?;
     Ok(TestGenerator::new()
-        .target(&triple)
-        .host(&triple)
         .out_dir(env::temp_dir())
         .include("tests/input")
         .clone())

@@ -31,7 +31,6 @@ pub fn compile_test<P: AsRef<Path>>(
         canonicalize(crate_path)?.display()
     )?;
     writeln!(file, "include!(r#\"{}.rs\"#);", library_file.display())?;
-
     let output = Command::new(rustc)
         .arg(&rust_file)
         .arg(format!("-Lnative={}", output_dir.display()))
@@ -39,6 +38,9 @@ pub fn compile_test<P: AsRef<Path>>(
             "-lstatic={}",
             library_file.file_stem().unwrap().to_str().unwrap()
         ))
+        .arg("--target")
+        .arg(env::var("TARGET_PLATFORM").unwrap())
+        .arg(format!("-Clinker={}", env::var("LINKER").unwrap()))
         .arg("-o")
         .arg(&binary_path)
         .arg("-Aunused")
