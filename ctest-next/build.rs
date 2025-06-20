@@ -14,7 +14,7 @@ fn main() {
     println!(
         "cargo:rustc-env={}={}",
         "LINKER",
-        env::var("CC").unwrap_or("cc".to_string())
+        env::var("CC").unwrap_or("".to_string())
     );
     println!("cargo:rerun-if-changed-env=TARGET")
 }
