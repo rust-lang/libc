@@ -3,7 +3,7 @@
 
 typedef unsigned int in6_addr;
 
-const bool ON = true;
+#define ON true
 
 extern void *malloc(size_t size);
 extern in6_addr in6addr_any;
