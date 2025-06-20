@@ -119,7 +119,7 @@ impl TestGenerator {
         let stem: &str = output_file_path.file_stem().unwrap().to_str().unwrap();
         cfg.target(&target)
             .out_dir(output_file_path.parent().unwrap())
-            .compile(&format!("lib{}.a", stem));
+            .compile(stem);
 
         Ok(())
     }
