@@ -48,6 +48,12 @@ pub fn compile_test<P: AsRef<Path>>(
     if !linker.is_empty() {
         cmd.arg(format!("-Clinker={}", linker));
     }
+
+    let flags = env::var("FLAGS").unwrap();
+    if !flags.is_empty() {
+        cmd.args(flags.split_whitespace().collect::<Vec<_>>());
+    }
+
     let output = cmd.output()?;
 
     if !output.status.success() {
@@ -58,8 +64,17 @@ pub fn compile_test<P: AsRef<Path>>(
 }
 
 /// Run the compiled test binary.
-pub fn run_test<P: AsRef<Path>>(test_binary: P) -> Result<String> {
-    let output = Command::new(test_binary.as_ref()).output()?;
+pub fn run_test(test_binary: &str) -> Result<String> {
+    let cmd = env::var("RUNNER").unwrap();
+    let output = if cmd.is_empty() {
+        Command::new(test_binary).output()?
+    } else {
+        let mut cmd = cmd.split_whitespace();
+        Command::new(cmd.next().unwrap())
+            .args(cmd.collect::<Vec<_>>())
+            .arg(test_binary)
+            .output()?
+    };
 
     if !output.status.success() {
         return Err(std::str::from_utf8(&output.stderr)?.into());

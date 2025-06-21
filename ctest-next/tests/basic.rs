@@ -34,7 +34,7 @@ fn test_entrypoint_hierarchy() {
     )
     .unwrap();
 
-    assert!(run_test(test_binary).is_ok());
+    assert!(run_test(test_binary.to_str().unwrap()).is_ok());
 }
 
 #[test]
@@ -50,7 +50,7 @@ fn test_entrypoint_simple() {
     let test_binary =
         compile_test(env::temp_dir().to_str().unwrap(), crate_path, "simple_out").unwrap();
 
-    assert!(run_test(test_binary).is_ok());
+    assert!(run_test(test_binary.to_str().unwrap()).is_ok());
 }
 
 #[test]
@@ -66,7 +66,7 @@ fn test_entrypoint_macro() {
     let test_binary =
         compile_test(env::temp_dir().to_str().unwrap(), crate_path, "macro_out").unwrap();
 
-    assert!(run_test(test_binary).is_ok());
+    assert!(run_test(test_binary.to_str().unwrap()).is_ok());
 }
 
 #[test]
