@@ -6,7 +6,6 @@ pub struct Const {
     #[expect(unused)]
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) ty: syn::Type,
     #[expect(unused)]
     pub(crate) expr: syn::Expr,

@@ -15,10 +15,16 @@ mod ast;
 mod ffi_items;
 mod generator;
 mod macro_expansion;
+mod runner;
+mod rustc_queries;
+mod template;
+mod translator;
 
 pub use ast::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
+pub use runner::{compile_test, run_test};
+pub use rustc_queries::{rustc_host, rustc_version, RustcVersion};
 
 /// A possible error that can be encountered in our library.
 pub type Error = Box<dyn std::error::Error>;

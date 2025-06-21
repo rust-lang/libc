@@ -1,4 +1,4 @@
-use crate::ffi_items::FfiItems;
+use crate::{ffi_items::FfiItems, translator::Translator};
 
 use syn::visit::Visit;
 
@@ -28,6 +28,12 @@ extern "C" {
 }
 "#;
 
+macro_rules! collect_idents {
+    ($items:expr) => {
+        $items.iter().map(|a| a.ident()).collect::<Vec<_>>()
+    };
+}
+
 #[test]
 fn test_extraction_ffi_items() {
     let ast = syn::parse_file(ALL_ITEMS).unwrap();
@@ -35,57 +41,53 @@ fn test_extraction_ffi_items() {
     let mut ffi_items = FfiItems::new();
     ffi_items.visit_file(&ast);
 
-    assert_eq!(
-        ffi_items
-            .aliases()
-            .iter()
-            .map(|a| a.ident())
-            .collect::<Vec<_>>(),
-        ["Foo"]
-    );
+    assert_eq!(collect_idents!(ffi_items.aliases()), ["Foo"]);
+    assert_eq!(collect_idents!(ffi_items.constants()), ["bar"]);
+    assert_eq!(collect_idents!(ffi_items.foreign_functions()), ["malloc"]);
+    assert_eq!(collect_idents!(ffi_items.foreign_statics()), ["baz"]);
+    assert_eq!(collect_idents!(ffi_items.structs()), ["Array"]);
+    assert_eq!(collect_idents!(ffi_items.unions()), ["Word"]);
+}
+
+#[test]
+fn test_translation_type_path() {
+    let translator = Translator {};
+    let ty: syn::Type = syn::parse_str("std::option::Option<u8>").unwrap();
+
+    assert_eq!(translator.translate_type(&ty), "uint8_t");
+}
+
+#[test]
+fn test_translation_type_ptr() {
+    let translator = Translator {};
+    let ty: syn::Type = syn::parse_str("*const *mut i32").unwrap();
+
+    assert_eq!(translator.translate_type(&ty), " int32_t* const*");
+}
+
+#[test]
+fn test_translation_type_reference() {
+    let translator = Translator {};
+    let ty: syn::Type = syn::parse_str("&u8").unwrap();
+
+    assert_eq!(translator.translate_type(&ty), "uint8_t*");
+}
+
+#[test]
+fn test_translation_type_bare_fn() {
+    let translator = Translator {};
+    let ty: syn::Type = syn::parse_str("fn(*mut u8, i16) -> &str").unwrap();
 
     assert_eq!(
-        ffi_items
-            .constants()
-            .iter()
-            .map(|a| a.ident())
-            .collect::<Vec<_>>(),
-        ["bar"]
+        translator.translate_type(&ty),
+        "char*(*)( uint8_t*, int16_t)"
     );
+}
 
-    assert_eq!(
-        ffi_items
-            .foreign_functions()
-            .iter()
-            .map(|a| a.ident())
-            .collect::<Vec<_>>(),
-        ["malloc"]
-    );
+#[test]
+fn test_translation_type_array() {
+    let translator = Translator {};
+    let ty: syn::Type = syn::parse_str("[&u8; 2 + 2]").unwrap();
 
-    assert_eq!(
-        ffi_items
-            .foreign_statics()
-            .iter()
-            .map(|a| a.ident())
-            .collect::<Vec<_>>(),
-        ["baz"]
-    );
-
-    assert_eq!(
-        ffi_items
-            .structs()
-            .iter()
-            .map(|a| a.ident())
-            .collect::<Vec<_>>(),
-        ["Array"]
-    );
-
-    assert_eq!(
-        ffi_items
-            .unions()
-            .iter()
-            .map(|a| a.ident())
-            .collect::<Vec<_>>(),
-        ["Word"]
-    );
+    assert_eq!(translator.translate_type(&ty), "uint8_t*[2 + 2]");
 }
