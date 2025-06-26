@@ -11,6 +11,9 @@ pub type fixpt_t = __fixpt_t;
 pub type __lwpid_t = i32;
 pub type lwpid_t = __lwpid_t;
 pub type blksize_t = i32;
+pub type ksize_t = u64;
+pub type inp_gen_t = u64;
+pub type so_gen_t = u64;
 pub type clockid_t = c_int;
 pub type sem_t = _sem;
 pub type timer_t = *mut __c_anonymous__timer;
@@ -1721,6 +1724,73 @@ s_no_extra_traits! {
         pub uc_stack: crate::stack_t,
         pub uc_flags: c_int,
         __spare__: [c_int; 4],
+    }
+
+    #[repr(align(8))]
+    pub struct xinpgen {
+        pub xig_len: ksize_t,
+        pub xig_count: u32,
+        _xig_spare32: u32,
+        pub xig_gen: inp_gen_t,
+        pub xig_sogen: so_gen_t,
+        _xig_spare64: [u64; 4],
+    }
+
+    pub struct in_addr_4in6 {
+        _ia46_pad32: [u32; 3],
+        pub ia46_addr4: crate::in_addr,
+    }
+
+    pub union in_dependaddr {
+        pub id46_addr: crate::in_addr_4in6,
+        pub id6_addr: crate::in6_addr,
+    }
+
+    pub struct in_endpoints {
+        pub ie_fport: u16,
+        pub ie_lport: u16,
+        pub ie_dependfaddr: crate::in_dependaddr,
+        pub ie_dependladdr: crate::in_dependaddr,
+        pub ie6_zoneid: u32,
+    }
+
+    pub struct in_conninfo {
+        pub inc_flags: u8,
+        pub inc_len: u8,
+        pub inc_fibnum: u16,
+        pub inc_ie: crate::in_endpoints,
+    }
+
+    pub struct xktls_session_onedir {
+        pub gennum: u64,
+        _rsrv1: [u64; 8],
+        _rsrv2: [u32; 8],
+        pub iv: [u8; 32],
+        pub cipher_algorithm: i32,
+        pub auth_algorithm: i32,
+        pub cipher_key_len: u16,
+        pub iv_len: u16,
+        pub auth_key_len: u16,
+        pub max_frame_len: u16,
+        pub tls_vmajor: u8,
+        pub tls_vminor: u8,
+        pub tls_hlen: u8,
+        pub tls_tlen: u8,
+        pub tls_bs: u8,
+        pub flags: u8,
+        pub drv_st_len: u16,
+        pub ifnet: [u8; 16],
+    }
+
+    pub struct xktls_session {
+        pub tsz: u32,
+        pub fsz: u32,
+        pub inp_gencnt: u64,
+        pub so_pcb: kvaddr_t,
+        pub coninf: crate::in_conninfo,
+        pub rx_vlan_id: c_ushort,
+        pub rcv: crate::xktls_session_onedir,
+        pub snd: crate::xktls_session_onedir,
     }
 }
 
@@ -4591,6 +4661,10 @@ pub const RB_REROOT: c_int = 0x200000;
 pub const RB_POWERCYCLE: c_int = 0x400000;
 pub const RB_PROBE: c_int = 0x10000000;
 pub const RB_MULTIPLE: c_int = 0x20000000;
+
+// netinet/in_pcb.h
+pub const INC_ISIPV6: c_uchar = 0x01;
+pub const INC_IPV6MINMTU: c_uchar = 0x02;
 
 // sys/time.h
 pub const CLOCK_BOOTTIME: crate::clockid_t = crate::CLOCK_UPTIME;

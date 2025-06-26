@@ -2444,6 +2444,8 @@ fn test_freebsd(target: &str) {
                 "sys/sem.h",
                 "sys/shm.h",
                 "sys/socket.h",
+                "sys/socketvar.h",
+                "netinet/in_pcb.h",	// must be after sys/socketvar.h
                 "sys/stat.h",
                 "sys/statvfs.h",
                 "sys/sysctl.h",
@@ -2845,6 +2847,10 @@ fn test_freebsd(target: &str) {
 
             // `splice` introduced in FreeBSD 14.2
             "splice" if Some(14) > freebsd_ver => true,
+
+            // Those are introduced in FreeBSD 15.
+            "xktls_session_onedir" | "xktls_session"
+                if Some(15) > freebsd_ver => true,
 
             _ => false,
         }
