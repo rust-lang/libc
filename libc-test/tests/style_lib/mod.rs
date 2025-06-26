@@ -51,6 +51,12 @@ use syn::visit::{
 use syn::Token;
 
 const ALLOWED_REPEATED_MACROS: &[&str] = &["s", "s_no_extra_traits", "s_paren"];
+const ALLOWED_POSITIVE_S_CFGS: &[&str] = &[
+    "gnu_file_offset_bits64",
+    "gnu_time_bits64",
+    "musl32_time64",
+    "musl_v1_2_3",
+];
 
 pub type Error = Box<dyn std::error::Error>;
 pub type Result<T> = std::result::Result<T, Error>;
@@ -285,6 +291,8 @@ impl StyleChecker {
                 if !meta_str.starts_with("not")
                     && !meta_str.starts_with("any")
                     && !meta_str.starts_with("all")
+                    && !meta_str.starts_with("target_endian")
+                    && !ALLOWED_POSITIVE_S_CFGS.contains(&meta_str.as_str())
                 {
                     self.error(
                         "positive #[cfg] for s! macro".to_string(),
