@@ -69,9 +69,9 @@ run() {
         --env CARGO_TERM_VERBOSE \
         --env CARGO_HOME=/cargo \
         --env CARGO_TARGET_DIR=/checkout/target \
-        --volume "$CARGO_HOME":/cargo \
-        --volume "$(rustc --print sysroot)":/rust:ro \
-        --volume "$PWD":/checkout:ro \
+        --volume "$CARGO_HOME":/cargo:Z \
+        --volume "$(rustc --print sysroot)":/rust:ro,Z \
+        --volume "$PWD":/checkout:ro,Z \
         --volume "$PWD"/target:/checkout/target \
         $kvm \
         --init \
