@@ -67,9 +67,13 @@ jobs:
         run: |
           set -eux
           [ "${{ matrix.toolchain }}" = "1.63.0" ] && echo 'RUSTFLAGS=' >> "$GITHUB_ENV" || true
-          
+
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
+
+      - name: Install semver-checks
+        uses: taiki-e/install-action@cargo-semver-checks
+        if: matrix.toolchain == 'stable'
 
       # FIXME(ci): These `du` statements are temporary for debugging cache
       - name: Target size before restoring cache

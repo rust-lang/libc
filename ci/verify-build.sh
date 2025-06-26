@@ -11,6 +11,7 @@ set -eux
 
 rust="$TOOLCHAIN"
 filter="${FILTER:-}"
+host_target=$(rustc -vV | awk '/^host/ { print $2 }')
 
 case "$(uname -s)" in
     Linux*)     os=linux ;;
@@ -25,6 +26,7 @@ esac
 echo "Testing Rust $rust on $os"
 
 if [ "$TOOLCHAIN" = "nightly" ] ; then
+    # For build-std
     rustup component add rust-src
 fi
 
@@ -107,6 +109,13 @@ test_target() {
             $cmd
             $cmd --no-default-features
         done
+    fi
+
+    # FIXME(semver): can't pass `--target` to `cargo-semver-checks`
+    if [ "$rust" = "stable" ] && [ "$target" = "$host_target" ]; then
+        # Run semver checks on the stable channel
+        cargo semver-checks --only-explicit-features \
+            --features std,extra_traits
     fi
 }
 
