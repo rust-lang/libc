@@ -71,7 +71,6 @@ test_target() {
 
     # Test with expected combinations of features
     $cmd
-    $cmd --features const-extern-fn
     $cmd --features extra_traits
 
     if [ "$os" = "linux" ]; then
