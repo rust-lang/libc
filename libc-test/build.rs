@@ -5648,6 +5648,11 @@ fn test_aix(target: &str) {
         // Skip 'sighandler_t' assignments.
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
+        // _ALL_SOURCE defines these errno values as aliases of other errno
+        // values, but POSIX requires each errno to be unique. Skip these
+        // values because non-unique values are being used which will
+        // fail the test when _ALL_SOURCE is defined.
+        "EWOULDBLOCK" | "ENOTEMPTY" => true,
         _ => false,
     });
 
