@@ -68,6 +68,7 @@ s! {
 
     // linux x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
+    #[non_exhaustive]
     #[cfg(not(target_env = "gnu"))]
     pub struct timespec {
         pub tv_sec: time_t,
