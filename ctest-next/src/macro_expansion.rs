@@ -9,6 +9,8 @@ pub fn expand<P: AsRef<Path>>(crate_path: P) -> Result<String> {
     let output = Command::new(rustc)
         .env("RUSTC_BOOTSTRAP", "1")
         .arg("-Zunpretty=expanded")
+        .arg("--edition")
+        .arg("2024") // By default, -Zunpretty=expanded uses 2015 edition.
         .arg(canonicalize(crate_path)?)
         .output()?;
 

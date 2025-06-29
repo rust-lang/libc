@@ -15,10 +15,15 @@ mod ast;
 mod ffi_items;
 mod generator;
 mod macro_expansion;
+mod runner;
+mod template;
+mod translator;
 
 pub use ast::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
+pub use runner::{__compile_test, __run_test, generate_test};
+pub use translator::TranslationError;
 
 /// A possible error that can be encountered in our library.
 pub type Error = Box<dyn std::error::Error>;
