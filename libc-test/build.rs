@@ -3689,14 +3689,22 @@ fn test_linux(target: &str) {
     let loongarch64 = target.contains("loongarch64");
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
+    let mips64 = target.contains("mips64");
+    let mips32 = target.contains("mips") && !mips64;
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let musl32_time64 = env::var("RUST_LIBC_UNSTABLE_MUSL_TIME64").is_ok();
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
-    if musl_v1_2_3 {
+    if (musl_v1_2_3 || loongarch64) && musl {
         cfg.cfg("musl_v1_2_3", None);
+        if musl32_time64 && (arm || ppc || x86_32 || mips32) {
+            cfg.cfg("musl32_time64", None);
+            cfg.cfg("linux_time_bits64", None);
+        }
     }
+
     cfg.define("_GNU_SOURCE", None);
     // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
     // deprecated since glibc >= 2.29. This allows Rust binaries to link against
@@ -4305,6 +4313,10 @@ fn test_linux(target: &str) {
             if old_musl && name == "RLIM_NLIMITS" {
                 return true;
             }
+            // Incorrectly named and renamed upstream:
+            if old_musl && name == "SIGSTKFLT" {
+                return true;
+            }
         }
         match name {
             // These constants are not available if gnu headers have been included
@@ -4878,7 +4890,9 @@ fn test_linux(target: &str) {
         // the `xsk_tx_metadata_union` field is an anonymous union
         (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
         // After musl 1.2.0, the type becomes `int` instead of `long`.
-        (old_musl && struct_ == "utmpx" && field == "ut_session")
+        (old_musl && struct_ == "utmpx" && field == "ut_session") ||
+        // FIXME(linux): this is changed to separate sec/usec fields when time64 is enabled
+        (struct_ == "input_event" && field == "time")
     });
 
     cfg.skip_roundtrip(move |s| match s {
