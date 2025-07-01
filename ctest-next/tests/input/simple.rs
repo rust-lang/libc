@@ -13,3 +13,5 @@ pub union Word {
     word: u16,
     byte: [Byte; 2],
 }
+
+const A: *const c_char = c"abc".as_ptr();
