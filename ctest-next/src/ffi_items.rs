@@ -54,7 +54,6 @@ impl FfiItems {
     }
 
     /// Return a list of all constants found.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn constants(&self) -> &Vec<Const> {
         &self.constants
     }
