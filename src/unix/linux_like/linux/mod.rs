@@ -4791,50 +4791,6 @@ const fn issecure_mask(x: c_int) -> c_int {
     1 << x
 }
 
-// linux/keyctl.h
-pub const KEY_SPEC_THREAD_KEYRING: i32 = -1;
-pub const KEY_SPEC_PROCESS_KEYRING: i32 = -2;
-pub const KEY_SPEC_SESSION_KEYRING: i32 = -3;
-pub const KEY_SPEC_USER_KEYRING: i32 = -4;
-pub const KEY_SPEC_USER_SESSION_KEYRING: i32 = -5;
-pub const KEY_SPEC_GROUP_KEYRING: i32 = -6;
-pub const KEY_SPEC_REQKEY_AUTH_KEY: i32 = -7;
-pub const KEY_SPEC_REQUESTOR_KEYRING: i32 = -8;
-
-pub const KEY_REQKEY_DEFL_NO_CHANGE: i32 = -1;
-pub const KEY_REQKEY_DEFL_DEFAULT: i32 = 0;
-pub const KEY_REQKEY_DEFL_THREAD_KEYRING: i32 = 1;
-pub const KEY_REQKEY_DEFL_PROCESS_KEYRING: i32 = 2;
-pub const KEY_REQKEY_DEFL_SESSION_KEYRING: i32 = 3;
-pub const KEY_REQKEY_DEFL_USER_KEYRING: i32 = 4;
-pub const KEY_REQKEY_DEFL_USER_SESSION_KEYRING: i32 = 5;
-pub const KEY_REQKEY_DEFL_GROUP_KEYRING: i32 = 6;
-pub const KEY_REQKEY_DEFL_REQUESTOR_KEYRING: i32 = 7;
-
-pub const KEYCTL_GET_KEYRING_ID: u32 = 0;
-pub const KEYCTL_JOIN_SESSION_KEYRING: u32 = 1;
-pub const KEYCTL_UPDATE: u32 = 2;
-pub const KEYCTL_REVOKE: u32 = 3;
-pub const KEYCTL_CHOWN: u32 = 4;
-pub const KEYCTL_SETPERM: u32 = 5;
-pub const KEYCTL_DESCRIBE: u32 = 6;
-pub const KEYCTL_CLEAR: u32 = 7;
-pub const KEYCTL_LINK: u32 = 8;
-pub const KEYCTL_UNLINK: u32 = 9;
-pub const KEYCTL_SEARCH: u32 = 10;
-pub const KEYCTL_READ: u32 = 11;
-pub const KEYCTL_INSTANTIATE: u32 = 12;
-pub const KEYCTL_NEGATE: u32 = 13;
-pub const KEYCTL_SET_REQKEY_KEYRING: u32 = 14;
-pub const KEYCTL_SET_TIMEOUT: u32 = 15;
-pub const KEYCTL_ASSUME_AUTHORITY: u32 = 16;
-pub const KEYCTL_GET_SECURITY: u32 = 17;
-pub const KEYCTL_SESSION_TO_PARENT: u32 = 18;
-pub const KEYCTL_REJECT: u32 = 19;
-pub const KEYCTL_INSTANTIATE_IOV: u32 = 20;
-pub const KEYCTL_INVALIDATE: u32 = 21;
-pub const KEYCTL_GET_PERSISTENT: u32 = 22;
-
 pub const IN_MASK_CREATE: u32 = 0x1000_0000;
 pub const IN_MASK_ADD: u32 = 0x2000_0000;
 pub const IN_ISDIR: u32 = 0x4000_0000;
