@@ -98,7 +98,6 @@ cfg_if! {
 }
 
 pub const VEOF: usize = 4;
-pub const RTLD_DEEPBIND: c_int = 0x8;
 
 pub const EUCLEAN: c_int = 117;
 pub const ENOTNAM: c_int = 118;
