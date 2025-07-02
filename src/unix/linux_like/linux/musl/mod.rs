@@ -142,6 +142,17 @@ s! {
         __dummy4: [c_char; 16],
     }
 
+    #[repr(align(8))]
+    pub struct fanotify_event_metadata {
+        pub event_len: c_uint,
+        pub vers: c_uchar,
+        pub reserved: c_uchar,
+        pub metadata_len: c_ushort,
+        pub mask: c_ulonglong,
+        pub fd: c_int,
+        pub pid: c_int,
+    }
+
     // FIXME(1.0): This should not implement `PartialEq`
     #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigaction {
