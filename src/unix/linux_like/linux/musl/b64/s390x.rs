@@ -133,7 +133,6 @@ pub const O_NOCTTY: c_int = 256;
 pub const O_SYNC: c_int = 1052672;
 pub const O_RSYNC: c_int = 1052672;
 pub const O_DSYNC: c_int = 4096;
-pub const O_FSYNC: c_int = 0x101000;
 pub const O_DIRECT: c_int = 0x4000;
 pub const O_DIRECTORY: c_int = 0x10000;
 pub const O_NOFOLLOW: c_int = 0x20000;
