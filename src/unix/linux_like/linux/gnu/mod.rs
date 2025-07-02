@@ -892,42 +892,6 @@ pub const CLONE_NEWTIME: c_int = 0x80;
 pub const CLONE_CLEAR_SIGHAND: c_int = 0x100000000;
 pub const CLONE_INTO_CGROUP: c_int = 0x200000000;
 
-// linux/keyctl.h
-pub const KEYCTL_DH_COMPUTE: u32 = 23;
-pub const KEYCTL_PKEY_QUERY: u32 = 24;
-pub const KEYCTL_PKEY_ENCRYPT: u32 = 25;
-pub const KEYCTL_PKEY_DECRYPT: u32 = 26;
-pub const KEYCTL_PKEY_SIGN: u32 = 27;
-pub const KEYCTL_PKEY_VERIFY: u32 = 28;
-pub const KEYCTL_RESTRICT_KEYRING: u32 = 29;
-
-pub const KEYCTL_SUPPORTS_ENCRYPT: u32 = 0x01;
-pub const KEYCTL_SUPPORTS_DECRYPT: u32 = 0x02;
-pub const KEYCTL_SUPPORTS_SIGN: u32 = 0x04;
-pub const KEYCTL_SUPPORTS_VERIFY: u32 = 0x08;
-cfg_if! {
-    if #[cfg(not(any(
-        target_arch = "mips",
-        target_arch = "mips32r6",
-        target_arch = "mips64",
-        target_arch = "mips64r6"
-    )))] {
-        pub const KEYCTL_MOVE: u32 = 30;
-        pub const KEYCTL_CAPABILITIES: u32 = 31;
-
-        pub const KEYCTL_CAPS0_CAPABILITIES: u32 = 0x01;
-        pub const KEYCTL_CAPS0_PERSISTENT_KEYRINGS: u32 = 0x02;
-        pub const KEYCTL_CAPS0_DIFFIE_HELLMAN: u32 = 0x04;
-        pub const KEYCTL_CAPS0_PUBLIC_KEY: u32 = 0x08;
-        pub const KEYCTL_CAPS0_BIG_KEY: u32 = 0x10;
-        pub const KEYCTL_CAPS0_INVALIDATE: u32 = 0x20;
-        pub const KEYCTL_CAPS0_RESTRICT_KEYRING: u32 = 0x40;
-        pub const KEYCTL_CAPS0_MOVE: u32 = 0x80;
-        pub const KEYCTL_CAPS1_NS_KEYRING_NAME: u32 = 0x01;
-        pub const KEYCTL_CAPS1_NS_KEY_TAG: u32 = 0x02;
-    }
-}
-
 pub const M_MXFAST: c_int = 1;
 pub const M_NLBLKS: c_int = 2;
 pub const M_GRAIN: c_int = 3;
