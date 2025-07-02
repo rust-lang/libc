@@ -68,6 +68,21 @@ s! {
         pub st_blocks: crate::blkcnt64_t,
         __unused: [c_long; 3],
     }
+
+    pub struct statfs {
+        pub f_type: c_uint,
+        pub f_bsize: c_uint,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
+        pub f_files: crate::fsfilcnt_t,
+        pub f_ffree: crate::fsfilcnt_t,
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_uint,
+        pub f_frsize: c_uint,
+        pub f_flags: c_uint,
+        pub f_spare: [c_uint; 4],
+    }
 }
 
 s_no_extra_traits! {
