@@ -1220,6 +1220,7 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_BARRIERATTR_T],
     }
 
+    #[cfg(not(target_env = "musl"))]
     #[repr(align(8))]
     pub struct fanotify_event_metadata {
         pub event_len: __u32,
