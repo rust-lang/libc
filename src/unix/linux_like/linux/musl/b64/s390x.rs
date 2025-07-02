@@ -731,3 +731,4 @@ pub const SYS_futex_waitv: c_long = 449;
 pub const SYS_set_mempolicy_home_node: c_long = 450;
 pub const SYS_cachestat: c_long = 451;
 pub const SYS_fchmodat2: c_long = 452;
+pub const SYS_mseal: c_long = 462;
