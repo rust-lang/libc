@@ -37,17 +37,6 @@ cfg_if! {
     }
 }
 
-s_no_extra_traits! {
-    #[repr(C)]
-    pub struct posix_dent {
-        pub d_ino: ino_t,
-        pub d_off: off_t,
-        pub d_reclen: c_ushort,
-        pub d_type: c_uchar,
-        pub d_name: *mut c_char,
-    }
-}
-
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut c_void {
         #[repr(C)]
@@ -983,8 +972,6 @@ extern "C" {
 }
 
 extern "C" {
-    pub fn posix_getdents(fd: c_int, buf: *mut c_void, len: usize, flags: c_int) -> isize;
-
     pub fn getdents(fd: c_int, buf: *mut crate::dirent, len: usize) -> c_int;
 }
 
