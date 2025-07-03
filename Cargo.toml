@@ -78,6 +78,7 @@ targets = [
     "powerpc64-unknown-linux-gnu",
     "powerpc64-wrs-vxworks",
     "powerpc64le-unknown-linux-gnu",
+    "powerpc64le-unknown-linux-musl",
     "riscv32gc-unknown-linux-gnu",
     "riscv32i-unknown-none-elf",
     "riscv32imac-unknown-none-elf",
