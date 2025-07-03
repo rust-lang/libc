@@ -49,8 +49,7 @@ mod generated_tests {
         let val = A;
         unsafe {
             let ptr = *__test_const_A();
-            // c_char can be i8 or u8, so just cast to i8.
-            let val = CStr::from_ptr(ptr.cast::<i8>());
+            let val = unsafe {CStr::from_ptr(ptr)};
             let val = val.to_str().expect("const A not utf8");
             let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
             let c = c.to_str().expect("const A not utf8");
