@@ -37,6 +37,15 @@ cfg_if! {
     }
 }
 
+#[repr(C)]
+pub struct posix_dent {
+    pub d_ino: ino_t,
+    pub d_off: off_t,
+    pub d_reclen: c_ushort,
+    pub d_type: c_uchar,
+    pub d_name: *mut c_char,
+}
+
 impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut c_void {
         #[repr(C)]
@@ -969,6 +978,12 @@ extern "C" {
         note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
     )]
     pub fn utmpxname(file: *const c_char) -> c_int;
+}
+
+extern "C" {
+    pub fn posix_getdents(fd: c_int, buf: *mut c_void, len: usize, flags: c_int) -> isize;
+
+    pub fn getdents(fd: c_int, buf: *mut crate::dirent, len: usize) -> c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
