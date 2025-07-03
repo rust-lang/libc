@@ -17,6 +17,8 @@ s! {
         __val: [c_ulong; 16],
     }
 
+    // PowerPC implementation is special, see the subfolder.
+    #[cfg(not(target_arch = "powerpc64"))]
     pub struct shmid_ds {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,

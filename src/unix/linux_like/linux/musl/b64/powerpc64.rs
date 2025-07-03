@@ -61,6 +61,18 @@ s! {
         __reserved: [c_long; 3],
     }
 
+    pub struct shmid_ds {
+        pub shm_perm: crate::ipc_perm,
+        pub shm_atime: crate::time_t,
+        pub shm_dtime: crate::time_t,
+        pub shm_ctime: crate::time_t,
+        pub shm_segsz: size_t,
+        pub shm_cpid: crate::pid_t,
+        pub shm_lpid: crate::pid_t,
+        pub shm_nattch: c_ulong,
+        __unused: [c_ulong; 2],
+    }
+
     pub struct ipc_perm {
         #[cfg(musl_v1_2_3)]
         pub __key: crate::key_t,
