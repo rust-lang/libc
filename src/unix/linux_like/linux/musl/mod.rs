@@ -37,13 +37,15 @@ cfg_if! {
     }
 }
 
-#[repr(C)]
-pub struct posix_dent {
-    pub d_ino: ino_t,
-    pub d_off: off_t,
-    pub d_reclen: c_ushort,
-    pub d_type: c_uchar,
-    pub d_name: *mut c_char,
+s_no_extra_traits! {
+    #[repr(C)]
+    pub struct posix_dent {
+        pub d_ino: ino_t,
+        pub d_off: off_t,
+        pub d_reclen: c_ushort,
+        pub d_type: c_uchar,
+        pub d_name: *mut c_char,
+    }
 }
 
 impl siginfo_t {
