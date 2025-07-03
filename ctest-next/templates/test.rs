@@ -56,7 +56,7 @@ mod generated_tests {
         let val = {{ ident }};
         unsafe {
             let ptr = *__test_const_{{ ident }}();
-            let val = unsafe {CStr::from_ptr(ptr)};
+            let val = CStr::from_ptr(ptr as _);
             let val = val.to_str().expect("const {{ ident }} not utf8");
             let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
             let c = c.to_str().expect("const {{ ident }} not utf8");
