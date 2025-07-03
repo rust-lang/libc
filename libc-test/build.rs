@@ -5729,6 +5729,9 @@ fn test_aix(target: &str) {
             // https://github.com/gnzlbg/ctest/issues/68.
             "lio_listio" => true,
 
+            // The function is only available under macro _KERNEL in 'proto_uipc.h'.
+            "getpeereid" => true,
+
             _ => false,
         }
     });

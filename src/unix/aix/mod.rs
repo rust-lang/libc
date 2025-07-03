@@ -2949,6 +2949,7 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
     pub fn getpagesize() -> c_int;
+    pub fn getpeereid(socket: c_int, euid: *mut crate::uid_t, egid: *mut crate::gid_t) -> c_int;
     pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
     pub fn getpwent() -> *mut crate::passwd;
     #[link_name = "_posix_getpwnam_r"]
