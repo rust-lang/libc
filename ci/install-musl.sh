@@ -68,6 +68,13 @@ case ${1} in
           ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
+    powerpc64*)
+        musl_arch=powerpc64
+        kernel_arch=powerpc
+        CC="${1}-linux-gnu-gcc" CFLAGS="-mlong-double-64" \
+          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
     *)
         echo "Unknown target arch: \"${1}\""
         exit 1

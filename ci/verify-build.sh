@@ -161,11 +161,14 @@ x86_64-unknown-linux-musl \
 x86_64-unknown-netbsd \
 "
 
+# FIXME(powerpc64le): powerpc64le-unknown-linux-musl is tier 2 since 1.85 and
+# can be moved to rust_linux_targets once MSRV is increased
 rust_nightly_linux_targets="\
 aarch64-unknown-fuchsia \
 armv5te-unknown-linux-gnueabi \
 armv5te-unknown-linux-musleabi \
 i686-pc-windows-gnu \
+powerpc64le-unknown-linux-musl \
 riscv64gc-unknown-linux-gnu \
 x86_64-fortanix-unknown-sgx \
 x86_64-pc-solaris \
