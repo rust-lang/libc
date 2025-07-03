@@ -8,6 +8,17 @@ pub type nlink_t = u64;
 pub type blksize_t = c_long;
 
 s! {
+    pub struct termios {
+        pub c_iflag: crate::tcflag_t,
+        pub c_oflag: crate::tcflag_t,
+        pub c_cflag: crate::tcflag_t,
+        pub c_lflag: crate::tcflag_t,
+        pub c_cc: [crate::cc_t; crate::NCCS],
+        pub c_line: crate::cc_t,
+        pub __c_ispeed: crate::speed_t,
+        pub __c_ospeed: crate::speed_t,
+    }
+
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
