@@ -641,8 +641,8 @@ pub const SYS_process_mrelease: c_long = 448;
 pub const SYS_futex_waitv: c_long = 449;
 pub const SYS_set_mempolicy_home_node: c_long = 450;
 
-pub const EDEADLK: c_int = 58;
-pub const EDEADLOCK: c_int = EDEADLK;
+pub const EDEADLK: c_int = 35;
+pub const EDEADLOCK: c_int = 58;
 
 pub const EXTPROC: crate::tcflag_t = 0x10000000;
 pub const VEOL: usize = 6;
