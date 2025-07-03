@@ -212,6 +212,8 @@ s! {
         __f_reserved: [c_int; 6],
     }
 
+    // PowerPC implementations are special, see the subfolders
+    #[cfg(not(any(target_arch = "powerpc", target_arch = "powerpc64")))]
     pub struct termios {
         pub c_iflag: crate::tcflag_t,
         pub c_oflag: crate::tcflag_t,
