@@ -65,6 +65,8 @@ euidaccess
 explicit_bzero
 futimes
 getauxval
+getdents
+getdents64
 getloadavg
 getutxent
 getutxid
@@ -72,6 +74,8 @@ getutxline
 lio_listio
 ntptimeval
 open_wmemstream
+posix_dent
+posix_getdents
 posix_spawn_file_actions_addchdir_np
 posix_spawn_file_actions_addfchdir_np
 preadv2

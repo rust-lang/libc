@@ -604,6 +604,7 @@ fgetpwent_r
 fgetspent_r
 futimes
 getauxval
+getdents64
 getentropy
 getgrent_r
 getloadavg
