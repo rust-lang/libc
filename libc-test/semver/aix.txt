@@ -1989,6 +1989,7 @@ getmntent
 getnameinfo
 getopt
 getpagesize
+getpeereid
 getpeername
 getpgid
 getpgrp
