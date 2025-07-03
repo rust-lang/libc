@@ -3879,6 +3879,7 @@ fn test_linux(target: &str) {
             "linux/sched.h",
             "linux/sctp.h",
             "linux/seccomp.h",
+            "linux/securebits.h",
             "linux/sock_diag.h",
             "linux/sockios.h",
             "linux/tls.h",
