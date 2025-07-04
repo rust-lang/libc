@@ -3,6 +3,8 @@ use crate::prelude::*;
 pub type regoff_t = c_long;
 
 s! {
+    // MIPS implementation is special, see the subfolder.
+    #[cfg(not(target_arch = "mips64"))]
     pub struct stack_t {
         pub ss_sp: *mut c_void,
         pub ss_flags: c_int,

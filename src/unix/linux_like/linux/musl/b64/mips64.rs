@@ -56,6 +56,12 @@ s! {
         __pad5: [c_int; 14],
     }
 
+    pub struct stack_t {
+        pub ss_sp: *mut c_void,
+        pub ss_size: size_t,
+        pub ss_flags: c_int,
+    }
+
     pub struct ipc_perm {
         #[cfg(musl_v1_2_3)]
         pub __key: crate::key_t,
