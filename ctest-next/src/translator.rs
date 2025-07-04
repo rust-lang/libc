@@ -10,8 +10,9 @@ use syn::spanned::Spanned;
 use thiserror::Error;
 
 /// An error that occurs during translation, detailing cause and location.
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub struct TranslationError {
+    #[source]
     kind: TranslationErrorKind,
     source: String,
     #[expect(unused)]

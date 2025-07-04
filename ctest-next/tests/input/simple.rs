@@ -15,3 +15,4 @@ pub union Word {
 }
 
 const A: *const c_char = c"abc".as_ptr();
+const B: *const c_char = c"bac".as_ptr();

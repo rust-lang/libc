@@ -15,3 +15,4 @@ union Word
 };
 
 #define A "abc"
+#define C_B "bac"

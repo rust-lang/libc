@@ -34,6 +34,7 @@ macro_rules! collect_idents {
     };
 }
 
+/// Translate a Rust type to C.
 fn ty(s: &str) -> Result<String, TranslationError> {
     let translator = Translator {};
     let ty: syn::Type = syn::parse_str(s).unwrap();
