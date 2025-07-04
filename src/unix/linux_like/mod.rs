@@ -1269,7 +1269,11 @@ pub const SI_USER: c_int = 0;
 pub const SI_KERNEL: c_int = 0x80;
 pub const SI_QUEUE: c_int = -1;
 cfg_if! {
-    if #[cfg(not(any(target_arch = "mips", target_arch = "mips32r6")))] {
+    if #[cfg(not(any(
+        target_arch = "mips",
+        target_arch = "mips32r6",
+        target_arch = "mips64"
+    )))] {
         pub const SI_TIMER: c_int = -2;
         pub const SI_MESGQ: c_int = -3;
         pub const SI_ASYNCIO: c_int = -4;
