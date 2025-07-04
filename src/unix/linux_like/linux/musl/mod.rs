@@ -148,10 +148,10 @@ s! {
     // FIXME(union): C implementation uses unions
     pub struct siginfo_t {
         pub si_signo: c_int,
-        #[cfg(not(target_arch = "mips"))]
+        #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
         pub si_errno: c_int,
         pub si_code: c_int,
-        #[cfg(target_arch = "mips")]
+        #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
         pub si_errno: c_int,
         #[doc(hidden)]
         #[deprecated(
