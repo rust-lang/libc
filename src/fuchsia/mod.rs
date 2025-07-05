@@ -240,11 +240,6 @@ s! {
         pub l_linger: c_int,
     }
 
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut c_void,
-    }
-
     // <sys/time.h>
     pub struct itimerval {
         pub it_interval: crate::timeval,
@@ -413,7 +408,7 @@ s! {
 
     pub struct epoll_event {
         pub events: u32,
-        pub u64: u64,
+        pub data: epoll_data,
     }
 
     pub struct lconv {
@@ -467,7 +462,7 @@ s! {
         pub ifa_flags: c_uint,
         pub ifa_addr: *mut crate::sockaddr,
         pub ifa_netmask: *mut crate::sockaddr,
-        pub ifa_ifu: *mut crate::sockaddr, // FIXME(union) This should be a union
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
         pub ifa_data: *mut c_void,
     }
 
@@ -1043,6 +1038,23 @@ s_no_extra_traits! {
     pub struct pthread_cond_t {
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
     }
+
+    pub union sigval {
+        pub sival_int: c_int,
+        pub sival_ptr: *mut c_void,
+    }
+
+    pub union epoll_data {
+        pub ptr: *mut c_void,
+        pub fd: c_int,
+        pub u32: u32,
+        pub u64: u64,
+    }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
+    }
 }
 
 cfg_if! {
@@ -1303,6 +1315,42 @@ cfg_if! {
         impl hash::Hash for pthread_rwlock_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.size.hash(state);
+            }
+        }
+
+        impl PartialEq for sigval {
+            fn eq(&self, _other: &sigval) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for sigval {}
+        impl hash::Hash for sigval {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
+            }
+        }
+
+        impl PartialEq for epoll_data {
+            fn eq(&self, _other: &epoll_data) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for epoll_data {}
+        impl hash::Hash for epoll_data {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifa_ifu {
+            fn eq(&self, _other: &__c_anonymous_ifa_ifu) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for __c_anonymous_ifa_ifu {}
+        impl hash::Hash for __c_anonymous_ifa_ifu {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
             }
         }
     }

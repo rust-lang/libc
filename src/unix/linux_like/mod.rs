@@ -168,7 +168,7 @@ s! {
         pub ifa_flags: c_uint,
         pub ifa_addr: *mut crate::sockaddr,
         pub ifa_netmask: *mut crate::sockaddr,
-        pub ifa_ifu: *mut crate::sockaddr, // FIXME(union) This should be a union
+        pub ifa_ifu: __c_anonymous_ifa_ifu,
         pub ifa_data: *mut c_void,
     }
 
@@ -293,6 +293,13 @@ s_no_extra_traits! {
     )]
     pub struct epoll_event {
         pub events: u32,
+        pub data: epoll_data,
+    }
+
+    pub union epoll_data {
+        pub ptr: *mut c_void,
+        pub fd: c_int,
+        pub u32: u32,
         pub u64: u64,
     }
 
@@ -331,22 +338,39 @@ s_no_extra_traits! {
         pub sigev_notify: c_int,
         pub _sigev_un: __c_anonymous_sigev_un,
     }
+
+    pub union __c_anonymous_ifa_ifu {
+        ifu_broadaddr: *mut sockaddr,
+        ifu_dstaddr: *mut sockaddr,
+    }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for epoll_event {
-            fn eq(&self, other: &epoll_event) -> bool {
-                self.events == other.events && self.u64 == other.u64
+            fn eq(&self, _other: &epoll_event) -> bool {
+                unimplemented!("traits")
             }
         }
         impl Eq for epoll_event {}
         impl hash::Hash for epoll_event {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let events = self.events;
-                let u64 = self.u64;
+                let data = self.data;
                 events.hash(state);
-                u64.hash(state);
+                data.hash(state);
+            }
+        }
+
+        impl PartialEq for epoll_data {
+            fn eq(&self, _other: &epoll_data) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for epoll_data {}
+        impl hash::Hash for epoll_data {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
             }
         }
 
@@ -432,6 +456,18 @@ cfg_if! {
                 self.version.hash(state);
                 self.machine.hash(state);
                 self.domainname.hash(state);
+            }
+        }
+
+        impl PartialEq for __c_anonymous_ifa_ifu {
+            fn eq(&self, _other: &__c_anonymous_ifa_ifu) -> bool {
+                unimplemented!("traits")
+            }
+        }
+        impl Eq for __c_anonymous_ifa_ifu {}
+        impl hash::Hash for __c_anonymous_ifa_ifu {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits")
             }
         }
     }
