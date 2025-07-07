@@ -1574,18 +1574,15 @@ s_no_extra_traits! {
         pub sched_period: crate::__u64,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union tpacket_req_u {
         pub req: crate::tpacket_req,
         pub req3: crate::tpacket_req3,
     }
 
-    #[allow(missing_debug_implementations)]
     pub union tpacket_bd_header_u {
         pub bh1: crate::tpacket_hdr_v1,
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct tpacket_block_desc {
         pub version: __u32,
         pub offset_to_priv: __u32,
@@ -1746,7 +1743,6 @@ s_no_extra_traits! {
     }
 
     // linux/net_tstamp.h
-    #[allow(missing_debug_implementations)]
     pub struct sock_txtime {
         pub clockid: crate::clockid_t,
         pub flags: __u32,
@@ -1754,7 +1750,6 @@ s_no_extra_traits! {
 
     // linux/can.h
     #[repr(align(8))]
-    #[allow(missing_debug_implementations)]
     pub struct can_frame {
         pub can_id: canid_t,
         // FIXME(1.0): this field was renamed to `len` in Linux 5.11
@@ -1766,7 +1761,6 @@ s_no_extra_traits! {
     }
 
     #[repr(align(8))]
-    #[allow(missing_debug_implementations)]
     pub struct canfd_frame {
         pub can_id: canid_t,
         pub len: u8,
@@ -1777,7 +1771,6 @@ s_no_extra_traits! {
     }
 
     #[repr(align(8))]
-    #[allow(missing_debug_implementations)]
     pub struct canxl_frame {
         pub prio: canid_t,
         pub flags: u8,
@@ -1787,13 +1780,11 @@ s_no_extra_traits! {
         pub data: [u8; CANXL_MAX_DLEN],
     }
 
-    #[allow(missing_debug_implementations)]
     pub union __c_anonymous_sockaddr_can_can_addr {
         pub tp: __c_anonymous_sockaddr_can_tp,
         pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct sockaddr_can {
         pub can_family: crate::sa_family_t,
         pub can_ifindex: c_int,
@@ -1848,7 +1839,6 @@ s_no_extra_traits! {
         pub rsv: [c_uint; 4],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct ptp_perout_request {
         pub anonymous_1: __c_anonymous_ptp_perout_request_1,
         pub period: ptp_clock_time,
@@ -1858,7 +1848,6 @@ s_no_extra_traits! {
     }
 
     // linux/if_xdp.h
-    #[allow(missing_debug_implementations)]
     pub struct xsk_tx_metadata {
         pub flags: crate::__u64,
         pub xsk_tx_metadata_union: __c_anonymous_xsk_tx_metadata_union,
