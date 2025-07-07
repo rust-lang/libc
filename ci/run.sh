@@ -95,7 +95,7 @@ esac
 
 # garando_errors only compiles on `cfg(any(unix, windows))`
 case "$target" in
-    *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test"
+    *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next"
 esac
 
 # # FIXME(ctest): duplicate symbol errors for statics, e.g. T1_static_mut_u8, on Unix-

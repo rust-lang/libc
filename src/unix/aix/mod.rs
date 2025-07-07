@@ -1,6 +1,5 @@
-use crate::in_addr_t;
-use crate::in_port_t;
 use crate::prelude::*;
+use crate::{in_addr_t, in_port_t};
 
 pub type caddr_t = *mut c_char;
 pub type clockid_t = c_longlong;
@@ -582,18 +581,6 @@ cfg_if! {
             }
         }
         impl Eq for poll_ctl_ext {}
-        impl fmt::Debug for poll_ctl_ext {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("poll_ctl_ext")
-                    .field("version", &self.version)
-                    .field("command", &self.command)
-                    .field("events", &self.events)
-                    .field("fd", &self.fd)
-                    .field("u", &self.u)
-                    .field("reserved64", &self.reserved64)
-                    .finish()
-            }
-        }
         impl hash::Hash for poll_ctl_ext {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.version.hash(state);
@@ -1276,12 +1263,11 @@ pub const ENOLCK: c_int = 49;
 pub const ENOCONNECT: c_int = 50;
 pub const ESTALE: c_int = 52;
 pub const EDIST: c_int = 53;
-pub const EWOULDBLOCK: c_int = EAGAIN;
+pub const EWOULDBLOCK: c_int = 54;
 pub const EINPROGRESS: c_int = 55;
 pub const EALREADY: c_int = 56;
 pub const ENOTSOCK: c_int = 57;
 pub const EDESTADDRREQ: c_int = 58;
-pub const EDESTADDREQ: c_int = EDESTADDRREQ;
 pub const EMSGSIZE: c_int = 59;
 pub const EPROTOTYPE: c_int = 60;
 pub const ENOPROTOOPT: c_int = 61;
@@ -1310,7 +1296,7 @@ pub const EPROCLIM: c_int = 83;
 pub const EUSERS: c_int = 84;
 pub const ELOOP: c_int = 85;
 pub const ENAMETOOLONG: c_int = 86;
-pub const ENOTEMPTY: c_int = EEXIST;
+pub const ENOTEMPTY: c_int = 87;
 pub const EDQUOT: c_int = 88;
 pub const ECORRUPT: c_int = 89;
 pub const ESYSERROR: c_int = 90;
@@ -1333,7 +1319,6 @@ pub const EBADMSG: c_int = 120;
 pub const EPROTO: c_int = 121;
 pub const ENODATA: c_int = 122;
 pub const ENOSTR: c_int = 123;
-pub const ECLONEME: c_int = ERESTART;
 pub const ENOTSUP: c_int = 124;
 pub const EMULTIHOP: c_int = 125;
 pub const ENOLINK: c_int = 126;
@@ -2958,6 +2943,7 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
     pub fn getpagesize() -> c_int;
+    pub fn getpeereid(socket: c_int, euid: *mut crate::uid_t, egid: *mut crate::gid_t) -> c_int;
     pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
     pub fn getpwent() -> *mut crate::passwd;
     #[link_name = "_posix_getpwnam_r"]

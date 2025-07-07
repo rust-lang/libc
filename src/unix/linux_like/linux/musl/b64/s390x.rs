@@ -88,12 +88,6 @@ cfg_if! {
 
         impl Eq for fpreg_t {}
 
-        impl fmt::Debug for fpreg_t {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("fpreg_t").field("d", &self.d).finish()
-            }
-        }
-
         impl hash::Hash for fpreg_t {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 let d: u64 = self.d.to_bits();
@@ -104,7 +98,6 @@ cfg_if! {
 }
 
 pub const VEOF: usize = 4;
-pub const RTLD_DEEPBIND: c_int = 0x8;
 
 pub const EUCLEAN: c_int = 117;
 pub const ENOTNAM: c_int = 118;
@@ -140,7 +133,6 @@ pub const O_NOCTTY: c_int = 256;
 pub const O_SYNC: c_int = 1052672;
 pub const O_RSYNC: c_int = 1052672;
 pub const O_DSYNC: c_int = 4096;
-pub const O_FSYNC: c_int = 0x101000;
 pub const O_DIRECT: c_int = 0x4000;
 pub const O_DIRECTORY: c_int = 0x10000;
 pub const O_NOFOLLOW: c_int = 0x20000;

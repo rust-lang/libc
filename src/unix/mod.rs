@@ -56,14 +56,19 @@ s! {
         pub modtime: time_t,
     }
 
-    // FIXME(time): Needs updates at least for glibc _TIME_BITS=64
     pub struct timeval {
         pub tv_sec: time_t,
+        #[cfg(not(gnu_time_bits64))]
         pub tv_usec: suseconds_t,
+        // For 64 bit time on 32 bit linux glibc, suseconds_t is still
+        // a 32 bit type.  Use __suseconds64_t instead
+        #[cfg(gnu_time_bits64)]
+        pub tv_usec: __suseconds64_t,
     }
 
     // linux x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
+    #[cfg(not(target_env = "gnu"))]
     pub struct timespec {
         pub tv_sec: time_t,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
@@ -562,7 +567,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_env = "gnu"))] {
+    if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
         missing! {
             #[cfg_attr(feature = "extra_traits", derive(Debug))]
             pub enum fpos_t {} // FIXME(unix): fill this out with a struct
@@ -804,6 +809,7 @@ extern "C" {
     pub fn getsockname(socket: c_int, address: *mut sockaddr, address_len: *mut socklen_t)
         -> c_int;
     #[cfg_attr(target_os = "espidf", link_name = "lwip_setsockopt")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__setsockopt64")]
     pub fn setsockopt(
         socket: c_int,
         level: c_int,
@@ -866,7 +872,11 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "fstat@FBSD_1.0"
     )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "fstat64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__fstat64_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "fstat64"
+    )]
     pub fn fstat(fildes: c_int, buf: *mut stat) -> c_int;
 
     pub fn mkdir(path: *const c_char, mode: mode_t) -> c_int;
@@ -880,7 +890,11 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "stat@FBSD_1.0"
     )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "stat64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__stat64_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "stat64"
+    )]
     pub fn stat(path: *const c_char, buf: *mut stat) -> c_int;
 
     pub fn pclose(stream: *mut crate::FILE) -> c_int;
@@ -907,7 +921,11 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "fcntl$UNIX2003"
     )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "__fcntl_time64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__fcntl_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "__fcntl_time64"
+    )]
     pub fn fcntl(fd: c_int, cmd: c_int, ...) -> c_int;
 
     #[cfg_attr(
@@ -964,7 +982,11 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "fstatat@FBSD_1.1"
     )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatat64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__fstatat64_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "fstatat64"
+    )]
     pub fn fstatat(dirfd: c_int, pathname: *const c_char, buf: *mut stat, flags: c_int) -> c_int;
     pub fn linkat(
         olddirfd: c_int,
@@ -1064,6 +1086,7 @@ extern "C" {
         link_name = "nanosleep$UNIX2003"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__nanosleep50")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__nanosleep64")]
     pub fn nanosleep(rqtp: *const timespec, rmtp: *mut timespec) -> c_int;
     pub fn tcgetpgrp(fd: c_int) -> pid_t;
     pub fn tcsetpgrp(fd: c_int, pgrp: crate::pid_t) -> c_int;
@@ -1108,6 +1131,7 @@ extern "C" {
     pub fn umask(mask: mode_t) -> mode_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__utime64")]
     pub fn utime(file: *const c_char, buf: *const utimbuf) -> c_int;
 
     #[cfg_attr(
@@ -1157,7 +1181,11 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd11, freebsd10)),
         link_name = "lstat@FBSD_1.0"
     )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "lstat64")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
+    #[cfg_attr(
+        all(not(gnu_time_bits64), gnu_file_offset_bits64),
+        link_name = "lstat64"
+    )]
     pub fn lstat(path: *const c_char, buf: *mut stat) -> c_int;
 
     #[cfg_attr(
@@ -1188,6 +1216,7 @@ extern "C" {
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__getrusage64")]
     pub fn getrusage(resource: c_int, usage: *mut rusage) -> c_int;
 
     #[cfg_attr(
@@ -1263,6 +1292,7 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "pthread_cond_timedwait$UNIX2003"
     )]
+    #[cfg_attr(gnu_time_bits64, link_name = "__pthread_cond_timedwait64")]
     pub fn pthread_cond_timedwait(
         cond: *mut pthread_cond_t,
         lock: *mut pthread_mutex_t,
@@ -1319,6 +1349,7 @@ extern "C" {
         link_name = "__xnet_getsockopt"
     )]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_getsockopt")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__getsockopt64")]
     pub fn getsockopt(
         sockfd: c_int,
         level: c_int,
@@ -1329,6 +1360,7 @@ extern "C" {
     pub fn raise(signum: c_int) -> c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utimes50")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__utimes64")]
     pub fn utimes(filename: *const c_char, times: *const crate::timeval) -> c_int;
     pub fn dlopen(filename: *const c_char, flag: c_int) -> *mut c_void;
     pub fn dlerror() -> *mut c_char;
@@ -1381,10 +1413,12 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__gmtime64_r")]
     pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__localtime_r50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__localtime64_r")]
     pub fn localtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -1393,27 +1427,33 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__mktime50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME: for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__mktime64")]
     pub fn mktime(tm: *mut tm) -> time_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__time50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME: for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__time64")]
     pub fn time(time: *mut time_t) -> time_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__gmtime64")]
     pub fn gmtime(time_p: *const time_t) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__locatime50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__localtime64")]
     pub fn localtime(time_p: *const time_t) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__difftime50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__difftime64")]
     pub fn difftime(time1: time_t, time0: time_t) -> c_double;
     #[cfg(not(target_os = "aix"))]
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     #[cfg_attr(any(target_env = "musl", target_env = "ohos"), allow(deprecated))]
     // FIXME(time): for `time_t`
+    #[cfg_attr(gnu_time_bits64, link_name = "__timegm64")]
     pub fn timegm(tm: *mut crate::tm) -> time_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
@@ -1472,6 +1512,7 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__select50")]
     #[cfg_attr(target_os = "aix", link_name = "__fd_select")]
+    #[cfg_attr(gnu_time_bits64, link_name = "__select64")]
     pub fn select(
         nfds: c_int,
         readfds: *mut fd_set,
@@ -1594,6 +1635,7 @@ cfg_if! {
         target_os = "aix",
     )))] {
         extern "C" {
+            #[cfg_attr(gnu_time_bits64, link_name = "__adjtime64")]
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
         }
     } else if #[cfg(target_os = "solaris")] {
@@ -1747,6 +1789,7 @@ cfg_if! {
                 link_name = "pselect$UNIX2003"
             )]
             #[cfg_attr(target_os = "netbsd", link_name = "__pselect50")]
+            #[cfg_attr(gnu_time_bits64, link_name = "__pselect64")]
             pub fn pselect(
                 nfds: c_int,
                 readfds: *mut fd_set,

@@ -875,7 +875,7 @@ impl TestGenerator {
         let name = format!("lib{stem}.a");
 
         cfg.try_compile(&name)
-            .context(format!("failed to compile `{}`", name))
+            .context(format!("failed to compile `{name}`"))
             .map(|_| out)
     }
 

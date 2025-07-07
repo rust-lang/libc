@@ -403,11 +403,14 @@ s! {
     }
 
     // kernel/image.h
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct image_info {
         pub id: image_id,
         pub image_type: c_int,
         pub sequence: i32,
         pub init_order: i32,
+        // FIXME(1.0): these should be made optional
         pub init_routine: extern "C" fn(),
         pub term_routine: extern "C" fn(),
         pub device: crate::dev_t,
@@ -520,15 +523,6 @@ cfg_if! {
         }
 
         impl Eq for cpu_topology_node_info {}
-        impl fmt::Debug for cpu_topology_node_info {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("cpu_topology_node_info")
-                    .field("id", &self.id)
-                    .field("type", &self.type_)
-                    .field("level", &self.level)
-                    .finish()
-            }
-        }
     }
 }
 

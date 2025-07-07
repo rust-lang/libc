@@ -122,6 +122,19 @@ impl siginfo_t {
 }
 
 s! {
+    #[repr(align(8))]
+    pub struct fanotify_event_metadata {
+        pub event_len: c_uint,
+        pub vers: c_uchar,
+        pub reserved: c_uchar,
+        pub metadata_len: c_ushort,
+        pub mask: c_ulonglong,
+        pub fd: c_int,
+        pub pid: c_int,
+    }
+
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigaction {
         pub sa_sigaction: crate::sighandler_t,
         pub sa_mask: crate::sigset_t,
@@ -190,6 +203,8 @@ s! {
         __f_reserved: [c_int; 6],
     }
 
+    // PowerPC implementations are special, see the subfolders
+    #[cfg(not(any(target_arch = "powerpc", target_arch = "powerpc64")))]
     pub struct termios {
         pub c_iflag: crate::tcflag_t,
         pub c_oflag: crate::tcflag_t,
@@ -393,7 +408,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    #[cfg_attr(feature = "extra_traits", derive(Debug))]
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_lio_opcode: c_int,
@@ -494,27 +508,6 @@ cfg_if! {
 
         impl Eq for sysinfo {}
 
-        impl fmt::Debug for sysinfo {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("sysinfo")
-                    .field("uptime", &self.uptime)
-                    .field("loads", &self.loads)
-                    .field("totalram", &self.totalram)
-                    .field("freeram", &self.freeram)
-                    .field("sharedram", &self.sharedram)
-                    .field("bufferram", &self.bufferram)
-                    .field("totalswap", &self.totalswap)
-                    .field("freeswap", &self.freeswap)
-                    .field("procs", &self.procs)
-                    .field("pad", &self.pad)
-                    .field("totalhigh", &self.totalhigh)
-                    .field("freehigh", &self.freehigh)
-                    .field("mem_unit", &self.mem_unit)
-                    // FIXME(debug): .field("__reserved", &self.__reserved)
-                    .finish()
-            }
-        }
-
         impl hash::Hash for sysinfo {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 self.uptime.hash(state);
@@ -558,27 +551,6 @@ cfg_if! {
         }
 
         impl Eq for utmpx {}
-
-        impl fmt::Debug for utmpx {
-            #[allow(deprecated)]
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                f.debug_struct("utmpx")
-                    .field("ut_type", &self.ut_type)
-                    //.field("__ut_pad1", &self.__ut_pad1)
-                    .field("ut_pid", &self.ut_pid)
-                    .field("ut_line", &self.ut_line)
-                    .field("ut_id", &self.ut_id)
-                    .field("ut_user", &self.ut_user)
-                    //FIXME(debug): .field("ut_host", &self.ut_host)
-                    .field("ut_exit", &self.ut_exit)
-                    .field("ut_session", &self.ut_session)
-                    //.field("__ut_pad2", &self.__ut_pad2)
-                    .field("ut_tv", &self.ut_tv)
-                    .field("ut_addr_v6", &self.ut_addr_v6)
-                    .field("__unused", &self.__unused)
-                    .finish()
-            }
-        }
 
         impl hash::Hash for utmpx {
             #[allow(deprecated)]
@@ -641,7 +613,10 @@ pub const ACCOUNTING: c_short = 9;
 
 pub const SFD_CLOEXEC: c_int = 0x080000;
 
+#[cfg(not(any(target_arch = "powerpc", target_arch = "powerpc64")))]
 pub const NCCS: usize = 32;
+#[cfg(any(target_arch = "powerpc", target_arch = "powerpc64"))]
+pub const NCCS: usize = 19;
 
 pub const O_TRUNC: c_int = 512;
 pub const O_NOATIME: c_int = 0o1000000;
@@ -712,6 +687,7 @@ pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
+// FIXME(musl): Value is 1024 for all architectures since 1.2.4
 #[cfg(not(target_arch = "loongarch64"))]
 pub const CPU_SETSIZE: c_int = 128;
 #[cfg(target_arch = "loongarch64")]

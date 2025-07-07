@@ -4,6 +4,8 @@ use crate::{off64_t, off_t};
 pub type wchar_t = i32;
 
 s! {
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigaction {
         pub sa_sigaction: crate::sighandler_t,
         pub sa_mask: crate::sigset_t,
@@ -189,7 +191,6 @@ pub const O_NDELAY: c_int = 0x800;
 pub const MADV_SOFT_OFFLINE: c_int = 101;
 pub const MAP_LOCKED: c_int = 0x02000;
 pub const MAP_NORESERVE: c_int = 0x04000;
-pub const MAP_32BIT: c_int = 0x0040;
 pub const MAP_ANON: c_int = 0x0020;
 pub const MAP_ANONYMOUS: c_int = 0x0020;
 pub const MAP_DENYWRITE: c_int = 0x0800;

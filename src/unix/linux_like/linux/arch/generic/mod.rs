@@ -40,8 +40,6 @@ pub const SO_PASSCRED: c_int = 16;
 pub const SO_PEERCRED: c_int = 17;
 pub const SO_RCVLOWAT: c_int = 18;
 pub const SO_SNDLOWAT: c_int = 19;
-const SO_RCVTIMEO_OLD: c_int = 20;
-const SO_SNDTIMEO_OLD: c_int = 21;
 pub const SO_SECURITY_AUTHENTICATION: c_int = 22;
 pub const SO_SECURITY_ENCRYPTION_TRANSPORT: c_int = 23;
 pub const SO_SECURITY_ENCRYPTION_NETWORK: c_int = 24;
@@ -50,9 +48,6 @@ pub const SO_ATTACH_FILTER: c_int = 26;
 pub const SO_DETACH_FILTER: c_int = 27;
 pub const SO_GET_FILTER: c_int = SO_ATTACH_FILTER;
 pub const SO_PEERNAME: c_int = 28;
-const SO_TIMESTAMP_OLD: c_int = 29;
-const SO_TIMESTAMPNS_OLD: c_int = 35;
-const SO_TIMESTAMPING_OLD: c_int = 37;
 
 cfg_if! {
     if #[cfg(all(
@@ -76,6 +71,12 @@ cfg_if! {
         pub const SO_RCVTIMEO: c_int = 66;
         pub const SO_SNDTIMEO: c_int = 67;
     } else {
+        const SO_TIMESTAMP_OLD: c_int = 29;
+        const SO_TIMESTAMPNS_OLD: c_int = 35;
+        const SO_TIMESTAMPING_OLD: c_int = 37;
+        const SO_RCVTIMEO_OLD: c_int = 20;
+        const SO_SNDTIMEO_OLD: c_int = 21;
+
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_OLD;
         pub const SO_TIMESTAMPNS: c_int = SO_TIMESTAMPNS_OLD;
         pub const SO_TIMESTAMPING: c_int = SO_TIMESTAMPING_OLD;

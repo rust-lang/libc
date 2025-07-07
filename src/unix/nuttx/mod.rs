@@ -32,7 +32,7 @@ s! {
         pub st_dev: dev_t,
         pub st_ino: ino_t,
         pub st_mode: mode_t,
-        pub st_nlink: u64,
+        pub st_nlink: nlink_t,
         pub st_uid: u32,
         pub st_gid: u32,
         pub st_rdev: dev_t,
@@ -591,4 +591,6 @@ extern "C" {
     pub fn pthread_setname_np(thread: pthread_t, name: *const c_char) -> i32;
     pub fn pthread_getname_np(thread: pthread_t, name: *mut c_char, len: usize) -> i32;
     pub fn getrandom(buf: *mut c_void, buflen: usize, flags: u32) -> isize;
+    pub fn arc4random() -> u32;
+    pub fn arc4random_buf(bytes: *mut c_void, nbytes: usize);
 }

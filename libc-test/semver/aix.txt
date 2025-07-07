@@ -253,13 +253,11 @@ ECHOKE
 ECHONL
 ECHOPRT
 ECHRNG
-ECLONEME
 ECONNABORTED
 ECONNREFUSED
 ECONNRESET
 ECORRUPT
 EDEADLK
-EDESTADDREQ
 EDESTADDRREQ
 EDIST
 EDOM
@@ -1989,6 +1987,7 @@ getmntent
 getnameinfo
 getopt
 getpagesize
+getpeereid
 getpeername
 getpgid
 getpgrp
