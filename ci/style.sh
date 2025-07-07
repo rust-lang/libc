@@ -58,7 +58,7 @@ rm "$tmpfile"
 
 # Run once from workspace root to get everything that wasn't handled as an
 # individual file.
-cargo fmt "$check"
+cargo fmt ${check:+"$check"}
 
 # Ensure that `sort` output is not locale-dependent
 export LC_ALL=C
