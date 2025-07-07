@@ -6,12 +6,11 @@ pub struct Field {
     #[expect(unused)]
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) ty: syn::Type,
 }
 
 impl Field {
-    /// Return the identifier of the field as a string if it exists.
+    /// Return the identifier of the field as a string.
     pub fn ident(&self) -> &str {
         &self.ident
     }

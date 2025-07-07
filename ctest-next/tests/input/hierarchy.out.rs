@@ -40,6 +40,7 @@ mod generated_tests {
             NTESTS.fetch_add(1, Ordering::Relaxed);
         }
     }
+
     // Test that the value of the constant is the same in both Rust and C.
     // This performs a byte by byte comparision of the constant value.
     pub fn const_ON() {

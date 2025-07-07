@@ -10,7 +10,7 @@ pub fn expand<P: AsRef<Path>>(crate_path: P) -> Result<String> {
         .env("RUSTC_BOOTSTRAP", "1")
         .arg("-Zunpretty=expanded")
         .arg("--edition")
-        .arg("2024") // By default, -Zunpretty=expanded uses 2015 edition.
+        .arg("2021") // By default, -Zunpretty=expanded uses 2015 edition.
         .arg(canonicalize(crate_path)?)
         .output()?;
 

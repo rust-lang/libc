@@ -11,7 +11,6 @@ pub struct Static {
     #[expect(unused)]
     pub(crate) abi: Abi,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) ty: syn::Type,
 }
 
