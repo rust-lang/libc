@@ -62,12 +62,6 @@ jobs:
       TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
       - uses: actions/checkout@v4
-      # Remove `-Dwarnings` at the MSRV since lints may be different or buffier
-      - name: Update RUSTFLAGS
-        run: |
-          set -eux
-          [ "${{ matrix.toolchain }}" = "1.63.0" ] && echo 'RUSTFLAGS=' >> "$GITHUB_ENV" || true
-
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
 
@@ -85,7 +79,11 @@ jobs:
         run: du -sh target | sort -k 2 || true
 
       - name: Execute build.sh
-        run: ./ci/verify-build.sh
+        run: |
+          set -eux
+          # Remove `-Dwarnings` at the MSRV since lints may be different
+          [ "${{ matrix.toolchain }}" = "1.63.0" ] && export RUSTFLAGS=""
+          ./ci/verify-build.sh
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
