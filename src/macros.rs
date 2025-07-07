@@ -77,6 +77,8 @@ macro_rules! prelude {
             pub(crate) use ::core::option::Option;
             #[allow(unused_imports)]
             pub(crate) use ::core::{fmt, hash, iter, mem};
+            #[allow(unused_imports)]
+            pub(crate) use mem::{align_of, align_of_val, size_of, size_of_val};
 
             // Commonly used types defined in this crate
             #[allow(unused_imports)]
