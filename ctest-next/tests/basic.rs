@@ -18,15 +18,12 @@ fn default_generator(opt_level: u8, header: &str) -> Result<(TestGenerator, temp
     env::set_var("OPT_LEVEL", opt_level.to_string());
     let temp_dir = tempfile::tempdir()?;
     let mut generator = TestGenerator::new();
+    generator
+        .out_dir(&temp_dir)
+        .include("tests/input")
+        .header(header);
 
-    Ok((
-        generator
-            .out_dir(&temp_dir)
-            .include("tests/input")
-            .header(header)
-            .to_owned(),
-        temp_dir,
-    ))
+    Ok((generator, temp_dir))
 }
 
 /// Assert whether the contents of two files match.
@@ -35,15 +32,13 @@ fn default_generator(opt_level: u8, header: &str) -> Result<(TestGenerator, temp
 /// test file with the content of the generated file.
 fn bless_equal(new_file: impl AsRef<Path>, old_file: impl AsRef<Path>) {
     let new_content = fs::read_to_string(&new_file).unwrap().replace("\r", "");
+    if env::var("LIBC_BLESS").is_ok() {
+        fs::write(&old_file, &new_content).unwrap();
+        return;
+    }
     let old_content = fs::read_to_string(&old_file).unwrap().replace("\r", "");
 
-    let equal = new_content != old_content;
-    if env::var("LIBC_BLESS").is_ok() && !equal {
-        fs::write(old_file, &new_content).unwrap();
-    } else {
-        // Use pretty_assertions for easier diffs.
-        assert_eq!(new_content, old_content);
-    }
+    assert_eq!(new_content, old_content);
 }
 
 /// Generate test files for the given header and crate path and compare with pregenerated test files.
@@ -52,12 +47,12 @@ fn bless_equal(new_file: impl AsRef<Path>, old_file: impl AsRef<Path>) {
 /// Additionally, if this test is not being ran on a cross compiled target, it will compile
 /// and run the generated tests as well.
 fn check_entrypoint(
-    header_name: &str,
+    gen: &mut TestGenerator,
+    out_dir: tempfile::TempDir,
     crate_path: impl AsRef<Path>,
     library_path: impl AsRef<Path>,
     include_path: impl AsRef<Path>,
 ) {
-    let (mut gen, out_dir) = default_generator(1, header_name).unwrap();
     let output_file = gen.generate_files(&crate_path, &library_path).unwrap();
 
     let rs = include_path
@@ -71,7 +66,7 @@ fn check_entrypoint(
     bless_equal(output_file.with_extension("c"), c);
 
     if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
-        generate_test(&mut gen, &crate_path, &library_path).unwrap();
+        generate_test(gen, &crate_path, &library_path).unwrap();
         let test_binary = __compile_test(&out_dir, crate_path, library_path).unwrap();
         let result = __run_test(test_binary);
         if let Err(err) = &result {
@@ -87,16 +82,32 @@ fn test_entrypoint_hierarchy() {
     let crate_path = include_path.join("hierarchy/lib.rs");
     let library_path = "hierarchy.out.a";
 
-    check_entrypoint("hierarchy.h", crate_path, library_path, include_path);
+    let (mut gen, out_dir) = default_generator(1, "hierarchy.h").unwrap();
+    check_entrypoint(&mut gen, out_dir, crate_path, library_path, include_path);
 }
 
 #[test]
-fn test_entrypoint_simple() {
+fn test_skip_simple() {
     let include_path = PathBuf::from("tests/input");
     let crate_path = include_path.join("simple.rs");
-    let library_path = "simple.out.a";
+    let library_path = "simple.out.with-skips.a";
 
-    check_entrypoint("simple.h", crate_path, library_path, include_path);
+    let (mut gen, out_dir) = default_generator(1, "simple.h").unwrap();
+    gen.skip_const(|c| c.ident() == "B");
+
+    check_entrypoint(&mut gen, out_dir, crate_path, library_path, include_path);
+}
+
+#[test]
+fn test_map_simple() {
+    let include_path = PathBuf::from("tests/input");
+    let crate_path = include_path.join("simple.rs");
+    let library_path = "simple.out.with-renames.a";
+
+    let (mut gen, out_dir) = default_generator(1, "simple.h").unwrap();
+    gen.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()));
+
+    check_entrypoint(&mut gen, out_dir, crate_path, library_path, include_path);
 }
 
 #[test]
@@ -105,7 +116,8 @@ fn test_entrypoint_macro() {
     let crate_path = include_path.join("macro.rs");
     let library_path = "macro.out.a";
 
-    check_entrypoint("macro.h", crate_path, library_path, include_path);
+    let (mut gen, out_dir) = default_generator(1, "macro.h").unwrap();
+    check_entrypoint(&mut gen, out_dir, crate_path, library_path, include_path);
 }
 
 #[test]
