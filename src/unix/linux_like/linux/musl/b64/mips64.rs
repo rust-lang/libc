@@ -76,6 +76,36 @@ s! {
         __unused1: c_ulong,
         __unused2: c_ulong,
     }
+
+    pub struct statfs {
+        pub f_type: c_ulong,
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_files: crate::fsfilcnt_t,
+        pub f_ffree: crate::fsfilcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_ulong,
+        pub f_flags: c_ulong,
+        pub f_spare: [c_ulong; 5],
+    }
+
+    pub struct statfs64 {
+        pub f_type: c_ulong,
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: crate::fsblkcnt64_t,
+        pub f_bfree: crate::fsblkcnt64_t,
+        pub f_files: crate::fsfilcnt64_t,
+        pub f_ffree: crate::fsfilcnt64_t,
+        pub f_bavail: crate::fsblkcnt64_t,
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_ulong,
+        pub f_flags: c_ulong,
+        pub f_spare: [c_ulong; 5],
+    }
 }
 
 pub const SIGSTKSZ: size_t = 8192;

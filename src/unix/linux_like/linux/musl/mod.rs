@@ -373,7 +373,7 @@ s! {
     }
 
     // MIPS implementation is special (see mips arch folders)
-    #[cfg(not(target_arch = "mips"))]
+    #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
     pub struct statfs {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,
@@ -390,7 +390,7 @@ s! {
     }
 
     // MIPS implementation is special (see mips arch folders)
-    #[cfg(not(target_arch = "mips"))]
+    #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
     pub struct statfs64 {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,
