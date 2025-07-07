@@ -315,7 +315,6 @@ s! {
         pub ha: [c_uchar; crate::MAX_ADDR_LEN],
     }
 
-    #[allow(missing_debug_implementations)]
     #[repr(align(4))]
     pub struct pthread_mutex_t {
         size: [u8; crate::__SIZEOF_PTHREAD_MUTEX_T],
@@ -382,7 +381,6 @@ s_no_extra_traits! {
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
     }
 
-    #[allow(missing_debug_implementations)]
     #[repr(align(8))]
     pub struct max_align_t {
         priv_: [f64; 3],

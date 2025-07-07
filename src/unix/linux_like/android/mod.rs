@@ -596,7 +596,6 @@ s_no_extra_traits! {
         pub absflat: [crate::__s32; ABS_CNT],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [c_uchar; 0],
