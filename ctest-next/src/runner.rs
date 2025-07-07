@@ -1,9 +1,10 @@
-use crate::{Result, TestGenerator};
 use std::env;
 use std::fs::{canonicalize, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+
+use crate::{Result, TestGenerator};
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]

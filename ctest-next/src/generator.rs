@@ -1,19 +1,16 @@
-use std::{
-    env,
-    fs::File,
-    io::Write,
-    path::{Path, PathBuf},
-};
+use std::env;
+use std::fs::File;
+use std::io::Write;
+use std::path::{Path, PathBuf};
 
 use askama::Template;
 use syn::visit::Visit;
 use thiserror::Error;
 
+use crate::ffi_items::FfiItems;
+use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::{
-    expand,
-    ffi_items::FfiItems,
-    template::{CTestTemplate, RustTestTemplate},
-    Const, Field, MapInput, Parameter, Result, Static, Struct, Type, VolatileItemKind,
+    expand, Const, Field, MapInput, Parameter, Result, Static, Struct, Type, VolatileItemKind,
 };
 
 /// A function that takes a mappable input and returns its mapping as Some, otherwise

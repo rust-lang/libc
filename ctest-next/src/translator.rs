@@ -2,7 +2,8 @@
 //!
 //! Simple to semi complex types are supported only.
 
-use std::{fmt, ops::Deref};
+use std::fmt;
+use std::ops::Deref;
 
 use proc_macro2::Span;
 use quote::ToTokens;

@@ -1,6 +1,8 @@
-use crate::{ffi_items::FfiItems, translator::Translator, Result, TranslationError};
-
 use syn::visit::Visit;
+
+use crate::ffi_items::FfiItems;
+use crate::translator::Translator;
+use crate::{Result, TranslationError};
 
 const ALL_ITEMS: &str = r#"
 use std::os::raw::c_void;

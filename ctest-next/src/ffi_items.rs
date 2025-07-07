@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
-use syn::{punctuated::Punctuated, visit::Visit};
+use syn::punctuated::Punctuated;
+use syn::visit::Visit;
 
 use crate::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
 

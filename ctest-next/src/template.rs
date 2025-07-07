@@ -1,10 +1,10 @@
 use askama::Template;
 use quote::ToTokens;
 
-use crate::{
-    ffi_items::FfiItems, generator::GenerationError, translator::Translator, MapInput, Result,
-    TestGenerator,
-};
+use crate::ffi_items::FfiItems;
+use crate::generator::GenerationError;
+use crate::translator::Translator;
+use crate::{MapInput, Result, TestGenerator};
 
 /// Represents the Rust side of the generated testing suite.
 #[derive(Template, Clone)]
