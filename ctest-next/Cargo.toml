@@ -9,10 +9,10 @@ publish = false
 
 [dependencies]
 askama = "0.14.0"
-cc = "1.2.25"
+cc = "1.2.29"
 proc-macro2 = { version = "1.0.95", features = ["span-locations"] }
 quote = "1.0.40"
-syn = { version = "2.0.101", features = ["full", "visit", "extra-traits"] }
+syn = { version = "2.0.104", features = ["full", "visit", "extra-traits"] }
 thiserror = "2.0.12"
 
 [dev-dependencies]
