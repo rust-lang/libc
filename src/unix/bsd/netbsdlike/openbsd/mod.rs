@@ -1633,7 +1633,7 @@ pub const NTFS_MFLAG_ALLNAMES: c_int = 0x2;
 pub const TMPFS_ARGS_VERSION: c_int = 1;
 
 const SI_MAXSZ: size_t = 128;
-const SI_PAD: size_t = (SI_MAXSZ / mem::size_of::<c_int>()) - 3;
+const SI_PAD: size_t = (SI_MAXSZ / size_of::<c_int>()) - 3;
 
 pub const MAP_STACK: c_int = 0x4000;
 pub const MAP_CONCEAL: c_int = 0x8000;
@@ -1859,19 +1859,18 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_ALIGN(mem::size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).offset(_ALIGN(size_of::<cmsghdr>()) as isize)
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        _ALIGN(mem::size_of::<cmsghdr>()) as c_uint + length
+        _ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         }
-        let next =
-            cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(mem::size_of::<cmsghdr>());
+        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
             core::ptr::null_mut::<cmsghdr>()
@@ -1881,7 +1880,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_ALIGN(mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
+        (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 }
 

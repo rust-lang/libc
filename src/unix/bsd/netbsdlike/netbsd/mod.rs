@@ -2285,19 +2285,18 @@ const_fn! {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).add(_ALIGN(mem::size_of::<cmsghdr>()))
+        (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        _ALIGN(mem::size_of::<cmsghdr>()) as c_uint + length
+        _ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         }
-        let next =
-            cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(mem::size_of::<cmsghdr>());
+        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(size_of::<cmsghdr>());
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next > max {
             core::ptr::null_mut::<cmsghdr>()
@@ -2307,7 +2306,7 @@ f! {
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_ALIGN(mem::size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
+        (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 
     // dirfd() is a macro on netbsd to access
@@ -2319,7 +2318,7 @@ f! {
 
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
-        mem::size_of::<sockcred>() + mem::size_of::<crate::gid_t>() * ngrps
+        size_of::<sockcred>() + size_of::<crate::gid_t>() * ngrps
     }
 
     pub fn PROT_MPROTECT(x: c_int) -> c_int {
