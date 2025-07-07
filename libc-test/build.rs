@@ -2921,8 +2921,7 @@ fn test_freebsd(target: &str) {
             "splice" if Some(14) > freebsd_ver => true,
 
             // Those are introduced in FreeBSD 15.
-            "xktls_session_onedir" | "xktls_session"
-                if Some(15) > freebsd_ver => true,
+            "xktls_session_onedir" | "xktls_session" if Some(15) > freebsd_ver => true,
 
             _ => false,
         }
