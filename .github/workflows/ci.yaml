@@ -4,6 +4,11 @@ on:
   merge_group:
   pull_request:
     types: [opened, synchronize, reopened]
+  schedule:
+    # Run CI on `main` daily so there is a cache available for merge queues.
+    # See <https://github.com/orgs/community/discussions/66430>
+    - cron: "0 8 * * *"
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
