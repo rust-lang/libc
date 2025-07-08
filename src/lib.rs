@@ -22,6 +22,7 @@
 
 #[macro_use]
 mod macros;
+mod new;
 
 cfg_if! {
     if #[cfg(feature = "rustc-dep-of-std")] {
@@ -30,6 +31,9 @@ cfg_if! {
 }
 
 pub use core::ffi::c_void;
+
+#[allow(unused_imports)] // needed while the module is empty on some platforms
+pub use new::*;
 
 cfg_if! {
     if #[cfg(windows)] {
