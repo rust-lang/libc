@@ -279,9 +279,6 @@ pub const MAP_STACK: c_int = 0x020000;
 pub const MAP_HUGETLB: c_int = 0x040000;
 pub const MAP_SYNC: c_int = 0x080000;
 
-pub const SOCK_STREAM: c_int = 1;
-pub const SOCK_DGRAM: c_int = 2;
-
 pub const SA_ONSTACK: c_int = 0x08000000;
 pub const SA_SIGINFO: c_int = 0x00000004;
 pub const SA_NOCLDWAIT: c_int = 0x00000002;

@@ -5710,16 +5710,20 @@ f! {
         return ((len) + NLA_ALIGNTO - 1) & !(NLA_ALIGNTO - 1);
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
-            return core::ptr::null_mut::<cmsghdr>();
+    pub fn CMSG_NXTHDR(
+        mhdr: *const crate::msghdr,
+        cmsg: *const crate::cmsghdr,
+    ) -> *mut crate::cmsghdr {
+        if ((*cmsg).cmsg_len as usize) < size_of::<crate::cmsghdr>() {
+            return core::ptr::null_mut::<crate::cmsghdr>();
         }
-        let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
+        let next =
+            (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut crate::cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if (next.wrapping_offset(1)) as usize > max
             || next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
-            core::ptr::null_mut::<cmsghdr>()
+            core::ptr::null_mut::<crate::cmsghdr>()
         } else {
             next
         }

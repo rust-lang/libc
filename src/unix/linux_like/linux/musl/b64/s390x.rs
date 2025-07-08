@@ -165,9 +165,6 @@ pub const SIGSTKSZ: size_t = 0x2000;
 pub const MINSIGSTKSZ: size_t = 2048;
 pub const SIG_SETMASK: c_int = 2;
 
-pub const SOCK_STREAM: c_int = 1;
-pub const SOCK_DGRAM: c_int = 2;
-
 pub const O_NOCTTY: c_int = 256;
 pub const O_SYNC: c_int = 1052672;
 pub const O_RSYNC: c_int = 1052672;
