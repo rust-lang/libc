@@ -150,6 +150,7 @@ cfg_if! {
         mod glibc;
         pub(crate) use glibc::*;
     } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+        // OhOS also uses the musl libc
         mod musl;
         pub(crate) use musl::*;
     } else if #[cfg(target_env = "newlib")] {
@@ -167,7 +168,7 @@ cfg_if! {
     }
 }
 
-// Headers we export
+// Per-OS headers we export
 cfg_if! {
     if #[cfg(target_os = "android")] {
         pub use sys::socket::*;
@@ -181,6 +182,13 @@ cfg_if! {
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
         pub use signal::*;
+    }
+}
+
+// Per-env headers we export
+cfg_if! {
+    if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+        pub use sys::socket::*;
     }
 }
 

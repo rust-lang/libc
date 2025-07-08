@@ -214,9 +214,6 @@ pub const MAP_SYNC: c_int = 0x080000;
 pub const PTRACE_SYSEMU: c_int = 0x1d;
 pub const PTRACE_SYSEMU_SINGLESTEP: c_int = 0x1e;
 
-pub const SOCK_STREAM: c_int = 1;
-pub const SOCK_DGRAM: c_int = 2;
-
 pub const SA_ONSTACK: c_int = 0x08000000;
 pub const SA_SIGINFO: c_int = 0x00000004;
 pub const SA_NOCLDWAIT: c_int = 0x00000002;
