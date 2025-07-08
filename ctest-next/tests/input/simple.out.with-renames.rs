@@ -6,10 +6,10 @@
 mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
-    use std::ffi::CStr;
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     use std::{mem, ptr, slice};
+    use std::mem::offset_of;
 
     use super::*;
 
@@ -44,13 +44,14 @@ mod generated_tests {
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
     pub fn const_A() {
+        use std::ffi::{CStr, c_char};
         extern "C" {
             fn __test_const_A() -> *const *const u8;
         }
         let val = A;
         unsafe {
             let ptr = *__test_const_A();
-            let val = CStr::from_ptr(ptr.cast::<c_char>());
+            let val = CStr::from_ptr(val.cast::<c_char>());
             let val = val.to_str().expect("const A not utf8");
             let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
             let c = c.to_str().expect("const A not utf8");
@@ -61,17 +62,389 @@ mod generated_tests {
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
     pub fn const_B() {
+        use std::ffi::{CStr, c_char};
         extern "C" {
             fn __test_const_B() -> *const *const u8;
         }
         let val = B;
         unsafe {
             let ptr = *__test_const_B();
-            let val = CStr::from_ptr(ptr.cast::<c_char>());
+            let val = CStr::from_ptr(val.cast::<c_char>());
             let val = val.to_str().expect("const B not utf8");
             let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
             let c = c.to_str().expect("const B not utf8");
             check_same(val, c, "B string");
+        }
+    }
+
+    /// Test that the size and alignment of the aliased type is the same in both Rust and C.
+    /// 
+    /// This can fail if a different type is used on one side, and uses the built in size and
+    /// alignment functions to check.
+    pub fn size_align_Byte() {
+        extern "C" {
+            fn __test_size_Byte() -> u64;
+            fn __test_align_Byte() -> u64;
+        }
+        unsafe {
+            check_same(mem::size_of::<Byte>() as u64,
+                __test_size_Byte(), "Byte size");
+            check_same(mem::align_of::<Byte>() as u64,
+                __test_align_Byte(), "Byte align");
+        }
+    }
+
+    /// Test that the aliased type has the same sign (signed or unsigned) in both Rust and C.
+    ///
+    /// This check can be performed because `!(0 as _)` yields either -1 or the maximum value
+    /// depending on whether a signed or unsigned type is used. This is simply checked on both
+    /// Rust and C sides to see if they are equal.
+    pub fn sign_Byte() {
+        extern "C" {
+            fn __test_signed_Byte() -> u32;
+        }
+        unsafe {
+            check_same(((!(0 as Byte)) < (0 as Byte)) as u32,
+                    __test_signed_Byte(), "Byte signed");
+        }
+    }
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `1` if the byte is padding,
+    /// and `0` if the byte is not padding.
+    ///
+    /// For type aliases, the padding map is all zeroes.
+    fn roundtrip_padding_Byte() -> Vec<u8> {
+        vec![0; mem::size_of::<Byte>()]
+    }
+
+    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place.
+    pub fn roundtrip_Byte() {
+        use std::ffi::c_int;
+
+        type U = Byte;
+        extern "C" {
+            fn __test_roundtrip_Byte(
+                size: i32, x: U, e: *mut c_int, pad: *const u8
+            ) -> U;
+        }
+        let pad = roundtrip_padding_Byte();
+        unsafe {
+            use std::mem::{MaybeUninit, size_of};
+            let mut error: c_int = 0;
+            let mut y = MaybeUninit::<U>::uninit();
+            let mut x = MaybeUninit::<U>::uninit();
+            let x_ptr = x.as_mut_ptr().cast::<u8>();
+            let y_ptr = y.as_mut_ptr().cast::<u8>();
+            let sz = size_of::<U>();
+            for i in 0..sz {
+                let c: u8 = (i % 256) as u8;
+                let c = if c == 0 { 42 } else { c };
+                let d: u8 = 255_u8 - (i % 256) as u8;
+                let d = if d == 0 { 42 } else { d };
+                x_ptr.add(i).write_volatile(c);
+                y_ptr.add(i).write_volatile(d);
+            }
+            let r: U = __test_roundtrip_Byte(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
+            if error == 1 {
+                FAILED.store(true, Ordering::Relaxed);
+                return;
+            }
+            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
+                if *elem == 1 { continue; }
+                let rust = (*y_ptr.add(i)) as usize;
+                let c = (&r as *const _ as *const u8)
+                            .add(i).read_volatile() as usize;
+                if rust != c {
+                    eprintln!(
+                        "rust [{i}] = {rust} != {c} (C): C \"Byte\" -> Rust",
+                    );
+                    FAILED.store(true, Ordering::Relaxed);
+                }
+            }
+        }
+    }
+
+    /// Test that the size and alignment of the aliased type is the same in both Rust and C.
+    /// 
+    /// This can fail if a different type is used on one side, and uses the built in size and
+    /// alignment functions to check.
+    pub fn size_align_Person() {
+        extern "C" {
+            fn __test_size_Person() -> u64;
+            fn __test_align_Person() -> u64;
+        }
+        unsafe {
+            check_same(mem::size_of::<Person>() as u64,
+                __test_size_Person(), "Person size");
+            check_same(mem::align_of::<Person>() as u64,
+                __test_align_Person(), "Person align");
+        }
+    }
+
+    /// No idea what this does.
+    pub fn field_offset_size_Person() {
+
+        extern "C" {
+            fn __test_offset_Person_name() -> u64;
+            fn __test_fsize_Person_name() -> u64;
+        }
+        unsafe {
+            let uninit_ty = std::mem::MaybeUninit::<Person>::uninit();
+            let uninit_ty = uninit_ty.as_ptr();
+            let ty_ptr = std::ptr::addr_of!((*uninit_ty).name);
+            let val = ty_ptr.read_unaligned();
+            check_same(offset_of!(Person, name),
+                    __test_offset_Person_name() as usize,
+                    "field offset name of Person");
+            check_same(mem::size_of_val(&val) as u64,
+                    __test_fsize_Person_name(),
+                    "field size name of Person");
+        }
+
+        extern "C" {
+            fn __test_field_type_Person_name(a: *mut Person) -> *mut u8;
+        }
+        unsafe {
+            let mut uninit_ty = std::mem::MaybeUninit::<Person>::uninit();
+            let uninit_ty = uninit_ty.as_mut_ptr();
+            let ty_ptr_mut = std::ptr::addr_of_mut!(*uninit_ty);
+            let field_ptr = std::ptr::addr_of!((*uninit_ty).name);
+            check_same(field_ptr as *mut _,
+                    __test_field_type_Person_name(ty_ptr_mut),
+                    "field type name of Person");
+            #[allow(unknown_lints, forgetting_copy_types)]
+            mem::forget(uninit_ty);
+        }
+    }
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `1` if the byte is padding,
+    /// and `0` if the byte is not padding.
+    ///
+    /// For type aliases, the padding map is all zeroes.
+    fn roundtrip_padding_Person() -> Vec<u8> {
+        // stores (offset, size) for each field
+        let mut v = Vec::<(usize, usize)>::new();
+        let bar = std::mem::MaybeUninit::<Person>::uninit();
+        let bar = bar.as_ptr();
+        unsafe {
+            let ty_ptr = std::ptr::addr_of!((*bar).name);
+            let val = ty_ptr.read_unaligned();
+            let size = mem::size_of_val(&val);
+            let off = offset_of!(Person, name);
+            v.push((off, size));
+        }
+        // This vector contains `1` if the byte is padding
+        // and `0` if the byte is not padding.
+        let mut pad = Vec::<u8>::new();
+        // Initialize all bytes as:
+        //  - padding if we have fields, this means that only
+        //  the fields will be checked
+        //  - no-padding if we have a type alias: if this
+        //  causes problems the type alias should be skipped
+        pad.resize(mem::size_of::<Person>(), 1);
+        for (off, size) in &v {
+            for i in 0..*size {
+                pad[off + i] = 0;
+            }
+        }
+        pad
+    }
+
+    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place.
+    pub fn roundtrip_Person() {
+        use std::ffi::c_int;
+
+        type U = Person;
+        extern "C" {
+            fn __test_roundtrip_Person(
+                size: i32, x: U, e: *mut c_int, pad: *const u8
+            ) -> U;
+        }
+        let pad = roundtrip_padding_Person();
+        unsafe {
+            use std::mem::{MaybeUninit, size_of};
+            let mut error: c_int = 0;
+            let mut y = MaybeUninit::<U>::uninit();
+            let mut x = MaybeUninit::<U>::uninit();
+            let x_ptr = x.as_mut_ptr().cast::<u8>();
+            let y_ptr = y.as_mut_ptr().cast::<u8>();
+            let sz = size_of::<U>();
+            for i in 0..sz {
+                let c: u8 = (i % 256) as u8;
+                let c = if c == 0 { 42 } else { c };
+                let d: u8 = 255_u8 - (i % 256) as u8;
+                let d = if d == 0 { 42 } else { d };
+                x_ptr.add(i).write_volatile(c);
+                y_ptr.add(i).write_volatile(d);
+            }
+            let r: U = __test_roundtrip_Person(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
+            if error == 1 {
+                FAILED.store(true, Ordering::Relaxed);
+                return;
+            }
+            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
+                if *elem == 1 { continue; }
+                let rust = (*y_ptr.add(i)) as usize;
+                let c = (&r as *const _ as *const u8)
+                            .add(i).read_volatile() as usize;
+                if rust != c {
+                    eprintln!(
+                        "rust [{i}] = {rust} != {c} (C): C \"Person\" -> Rust",
+                    );
+                    FAILED.store(true, Ordering::Relaxed);
+                }
+            }
+        }
+    }
+
+    /// Test that the size and alignment of the aliased type is the same in both Rust and C.
+    /// 
+    /// This can fail if a different type is used on one side, and uses the built in size and
+    /// alignment functions to check.
+    pub fn size_align_Word() {
+        extern "C" {
+            fn __test_size_Word() -> u64;
+            fn __test_align_Word() -> u64;
+        }
+        unsafe {
+            check_same(mem::size_of::<Word>() as u64,
+                __test_size_Word(), "Word size");
+            check_same(mem::align_of::<Word>() as u64,
+                __test_align_Word(), "Word align");
+        }
+    }
+
+    /// No idea what this does.
+    pub fn field_offset_size_Word() {
+
+        extern "C" {
+            fn __test_offset_Word_word() -> u64;
+            fn __test_fsize_Word_word() -> u64;
+        }
+        unsafe {
+            let uninit_ty = std::mem::MaybeUninit::<Word>::uninit();
+            let uninit_ty = uninit_ty.as_ptr();
+            let ty_ptr = std::ptr::addr_of!((*uninit_ty).word);
+            let val = ty_ptr.read_unaligned();
+            check_same(offset_of!(Word, word),
+                    __test_offset_Word_word() as usize,
+                    "field offset word of Word");
+            check_same(mem::size_of_val(&val) as u64,
+                    __test_fsize_Word_word(),
+                    "field size word of Word");
+        }
+
+        extern "C" {
+            fn __test_field_type_Word_word(a: *mut Word) -> *mut u8;
+        }
+        unsafe {
+            let mut uninit_ty = std::mem::MaybeUninit::<Word>::uninit();
+            let uninit_ty = uninit_ty.as_mut_ptr();
+            let ty_ptr_mut = std::ptr::addr_of_mut!(*uninit_ty);
+            let field_ptr = std::ptr::addr_of!((*uninit_ty).word);
+            check_same(field_ptr as *mut _,
+                    __test_field_type_Word_word(ty_ptr_mut),
+                    "field type word of Word");
+            #[allow(unknown_lints, forgetting_copy_types)]
+            mem::forget(uninit_ty);
+        }
+    }
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `1` if the byte is padding,
+    /// and `0` if the byte is not padding.
+    ///
+    /// For type aliases, the padding map is all zeroes.
+    fn roundtrip_padding_Word() -> Vec<u8> {
+        // stores (offset, size) for each field
+        let mut v = Vec::<(usize, usize)>::new();
+        let bar = std::mem::MaybeUninit::<Word>::uninit();
+        let bar = bar.as_ptr();
+        unsafe {
+            let ty_ptr = std::ptr::addr_of!((*bar).word);
+            let val = ty_ptr.read_unaligned();
+            let size = mem::size_of_val(&val);
+            let off = offset_of!(Word, word);
+            v.push((off, size));
+        }
+        // This vector contains `1` if the byte is padding
+        // and `0` if the byte is not padding.
+        let mut pad = Vec::<u8>::new();
+        // Initialize all bytes as:
+        //  - padding if we have fields, this means that only
+        //  the fields will be checked
+        //  - no-padding if we have a type alias: if this
+        //  causes problems the type alias should be skipped
+        pad.resize(mem::size_of::<Word>(), 1);
+        for (off, size) in &v {
+            for i in 0..*size {
+                pad[off + i] = 0;
+            }
+        }
+        pad
+    }
+
+    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place.
+    pub fn roundtrip_Word() {
+        use std::ffi::c_int;
+
+        type U = Word;
+        extern "C" {
+            fn __test_roundtrip_Word(
+                size: i32, x: U, e: *mut c_int, pad: *const u8
+            ) -> U;
+        }
+        let pad = roundtrip_padding_Word();
+        unsafe {
+            use std::mem::{MaybeUninit, size_of};
+            let mut error: c_int = 0;
+            let mut y = MaybeUninit::<U>::uninit();
+            let mut x = MaybeUninit::<U>::uninit();
+            let x_ptr = x.as_mut_ptr().cast::<u8>();
+            let y_ptr = y.as_mut_ptr().cast::<u8>();
+            let sz = size_of::<U>();
+            for i in 0..sz {
+                let c: u8 = (i % 256) as u8;
+                let c = if c == 0 { 42 } else { c };
+                let d: u8 = 255_u8 - (i % 256) as u8;
+                let d = if d == 0 { 42 } else { d };
+                x_ptr.add(i).write_volatile(c);
+                y_ptr.add(i).write_volatile(d);
+            }
+            let r: U = __test_roundtrip_Word(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
+            if error == 1 {
+                FAILED.store(true, Ordering::Relaxed);
+                return;
+            }
+            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
+                if *elem == 1 { continue; }
+                let rust = (*y_ptr.add(i)) as usize;
+                let c = (&r as *const _ as *const u8)
+                            .add(i).read_volatile() as usize;
+                if rust != c {
+                    eprintln!(
+                        "rust [{i}] = {rust} != {c} (C): C \"Word\" -> Rust",
+                    );
+                    FAILED.store(true, Ordering::Relaxed);
+                }
+            }
         }
     }
 }
@@ -95,4 +468,13 @@ fn main() {
 fn run_all() {
     const_A();
     const_B();
+    size_align_Byte();
+    sign_Byte();
+    roundtrip_Byte();
+    size_align_Person();
+    field_offset_size_Person();
+    roundtrip_Person();
+    size_align_Word();
+    field_offset_size_Word();
+    roundtrip_Word();
 }

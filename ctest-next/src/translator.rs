@@ -2,12 +2,15 @@
 //!
 //! Simple to semi complex types are supported only.
 
-use std::{fmt, ops::Deref};
+use std::fmt;
+use std::ops::Deref;
 
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 use thiserror::Error;
+
+use crate::ffi_items::FfiItems;
 
 /// An error that occurs during translation, detailing cause and location.
 #[derive(Debug, Error)]
@@ -218,7 +221,7 @@ impl Translator {
     }
 
     /// Translate a Rust primitive type into its C equivalent.
-    fn translate_primitive_type(&self, ty: &syn::Ident) -> String {
+    pub(crate) fn translate_primitive_type(&self, ty: &syn::Ident) -> String {
         match ty.to_string().as_str() {
             "usize" => "size_t".to_string(),
             "isize" => "ssize_t".to_string(),
@@ -305,12 +308,56 @@ impl Translator {
             }
         }
     }
+
+    /// Partially translate a Rust bare function type into its equivalent C type.
+    ///
+    /// It returns the translated return type, translated argument types, and whether
+    /// it is variadic as a tuple.
+    pub(crate) fn translate_signature_partial(
+        &self,
+        signature: &syn::TypeBareFn,
+    ) -> Result<(String, Vec<String>, bool), TranslationError> {
+        let args = signature
+            .inputs
+            .iter()
+            .map(|arg| self.translate_type(&arg.ty))
+            .collect::<Result<Vec<_>, TranslationError>>()?;
+        let return_type = match &signature.output {
+            syn::ReturnType::Default => "void".to_string(),
+            syn::ReturnType::Type(_, ty) => match ty.deref() {
+                syn::Type::Never(_) => "void".to_string(),
+                syn::Type::Tuple(tuple) if tuple.elems.is_empty() => "void".to_string(),
+                _ => self.translate_type(ty.deref())?,
+            },
+        };
+        Ok((return_type, args, signature.variadic.is_some()))
+    }
+
+    /// Determine whether a C type is a signed type.
+    pub(crate) fn has_sign(&self, ffi_items: &FfiItems, ty: &syn::Type) -> bool {
+        match ty {
+            syn::Type::Path(path) => {
+                let ident = path.path.segments.last().unwrap().ident.clone();
+                // The only thing other than a primitive that can be signed is an alias.
+                if let Some(aliased) = ffi_items.aliases().iter().find(|a| ident == a.ident()) {
+                    return self.has_sign(ffi_items, &aliased.ty);
+                }
+                match self.translate_primitive_type(&ident).as_str() {
+                    "char" | "short" | "int" | "long" | "long long" | "int8_t" | "int16_t"
+                    | "int32_t" | "int64_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t"
+                    | "size_t" | "ssize_t" => true,
+                    s => s.starts_with("signed ") || s.starts_with("unsigned "),
+                }
+            }
+            _ => false,
+        }
+    }
 }
 
 /// Translate a simple Rust expression to C.
 ///
 /// This function will just pass the expression as is in most cases.
-fn translate_expr(expr: &syn::Expr) -> String {
+pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
     match expr {
         syn::Expr::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
         syn::Expr::Cast(c) => translate_expr(c.expr.deref()),

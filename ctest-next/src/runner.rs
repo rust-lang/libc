@@ -1,9 +1,11 @@
-use crate::{Result, TestGenerator};
 use std::env;
 use std::fs::{canonicalize, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+
+use crate::generator::GenerationError;
+use crate::{Result, TestGenerator};
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]
@@ -11,16 +13,24 @@ pub fn generate_test(
     generator: &mut TestGenerator,
     crate_path: impl AsRef<Path>,
     output_file_path: impl AsRef<Path>,
-) -> Result<PathBuf> {
+) -> Result<PathBuf, GenerationError> {
     let output_file_path = generator.generate_files(crate_path, output_file_path)?;
 
     // Search for the target and host to build for if specified manually
     // (generator.target, generator.host),
     // via build script (TARGET, HOST), or for internal testing (TARGET_PLATFORM, HOST_PLATFORM).
-    let target = generator.target.clone().unwrap_or_else(|| {
-        env::var("TARGET").unwrap_or_else(|_| env::var("TARGET_PLATFORM").unwrap())
-    });
-    let host = env::var("HOST").unwrap_or_else(|_| env::var("HOST_PLATFORM").unwrap());
+    let target = generator
+        .target
+        .clone()
+        .or_else(|| env::var("TARGET").ok())
+        .or_else(|| env::var("TARGET_PLATFORM").ok())
+        .ok_or(GenerationError::EnvVarNotFound(
+            "TARGET, TARGET_PLATFORM".to_string(),
+        ))?;
+
+    let host = env::var("HOST")
+        .or_else(|_| env::var("HOST_PLATFORM"))
+        .map_err(|_| GenerationError::EnvVarNotFound("HOST, HOST_PLATFORM".to_string()))?;
 
     let mut cfg = cc::Build::new();
     cfg.file(output_file_path.with_extension("c"));

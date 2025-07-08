@@ -1,3 +1,5 @@
+use std::os::raw::c_char;
+
 macro_rules! vector {
     ($name:ident, $ty:ty) => {
         #[repr(C)]
@@ -10,3 +12,5 @@ macro_rules! vector {
 
 vector!(VecU8, u8);
 vector!(VecU16, u16);
+
+type string = *const c_char;

@@ -1,6 +1,8 @@
-use crate::{ffi_items::FfiItems, translator::Translator, Result, TranslationError};
-
 use syn::visit::Visit;
+
+use crate::ffi_items::FfiItems;
+use crate::translator::Translator;
+use crate::{Result, TranslationError};
 
 const ALL_ITEMS: &str = r#"
 use std::os::raw::c_void;
@@ -24,6 +26,7 @@ pub struct Array {
 extern "C" {
     static baz: u16;
 
+    #[link_name = "calloc"]
     fn malloc(size: usize) -> *mut c_void;
 }
 "#;
@@ -54,6 +57,11 @@ fn test_extraction_ffi_items() {
     assert_eq!(collect_idents!(ffi_items.foreign_statics()), ["baz"]);
     assert_eq!(collect_idents!(ffi_items.structs()), ["Array"]);
     assert_eq!(collect_idents!(ffi_items.unions()), ["Word"]);
+
+    assert_eq!(
+        ffi_items.foreign_functions()[0].link_name.as_deref(),
+        Some("calloc")
+    );
 }
 
 #[test]

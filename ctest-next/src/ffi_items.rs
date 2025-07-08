@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
-use syn::{punctuated::Punctuated, visit::Visit};
+use syn::punctuated::Punctuated;
+use syn::visit::Visit;
 
 use crate::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
 
@@ -36,7 +37,6 @@ impl FfiItems {
     }
 
     /// Return a list of all type aliases found.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn aliases(&self) -> &Vec<Type> {
         &self.aliases
     }
@@ -122,10 +122,27 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         syn::ReturnType::Type(_, ty) => Some(ty.deref().clone()),
     };
 
+    let link_name = i
+        .attrs
+        .iter()
+        .find(|attr| attr.path().is_ident("link_name"))
+        .and_then(|attr| match &attr.meta {
+            syn::Meta::NameValue(nv) => {
+                if let syn::Expr::Lit(expr_lit) = &nv.value {
+                    if let syn::Lit::Str(lit_str) = &expr_lit.lit {
+                        return Some(lit_str.value().into_boxed_str());
+                    }
+                }
+                None
+            }
+            _ => None,
+        });
+
     table.foreign_functions.push(Fn {
         public,
         abi,
         ident,
+        link_name,
         parameters,
         return_type,
     });

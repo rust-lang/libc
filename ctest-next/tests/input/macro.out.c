@@ -5,3 +5,241 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <macro.h>
+
+// Return the size of a type.
+uint64_t __test_size_string(void) { return sizeof(string); }
+
+// Return the alignment of a type.
+uint64_t __test_align_string(void) {
+    typedef struct {
+        unsigned char c;
+        string v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+string __test_roundtrip_string(
+        int32_t rust_size, string value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(string);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of string is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"string\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+
+// Return the size of a type.
+uint64_t __test_size_VecU8(void) { return sizeof(struct VecU8); }
+
+// Return the alignment of a type.
+uint64_t __test_align_VecU8(void) {
+    typedef struct {
+        unsigned char c;
+        struct VecU8 v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+uint64_t __test_offset_VecU8_x(void) {
+    return offsetof(struct VecU8, x);
+}
+
+uint64_t __test_fsize_VecU8_x(void) {
+    struct VecU8* foo = NULL;
+    return sizeof(foo->x);
+}
+
+uint8_t* __test_field_type_VecU8_x(struct VecU8* b) {
+    return &b->x;
+}
+
+uint64_t __test_offset_VecU8_y(void) {
+    return offsetof(struct VecU8, y);
+}
+
+uint64_t __test_fsize_VecU8_y(void) {
+    struct VecU8* foo = NULL;
+    return sizeof(foo->y);
+}
+
+uint8_t* __test_field_type_VecU8_y(struct VecU8* b) {
+    return &b->y;
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+struct VecU8 __test_roundtrip_VecU8(
+        int32_t rust_size, struct VecU8 value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(struct VecU8);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of struct VecU8 is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"VecU8\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+
+// Return the size of a type.
+uint64_t __test_size_VecU16(void) { return sizeof(struct VecU16); }
+
+// Return the alignment of a type.
+uint64_t __test_align_VecU16(void) {
+    typedef struct {
+        unsigned char c;
+        struct VecU16 v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+uint64_t __test_offset_VecU16_x(void) {
+    return offsetof(struct VecU16, x);
+}
+
+uint64_t __test_fsize_VecU16_x(void) {
+    struct VecU16* foo = NULL;
+    return sizeof(foo->x);
+}
+
+uint16_t* __test_field_type_VecU16_x(struct VecU16* b) {
+    return &b->x;
+}
+
+uint64_t __test_offset_VecU16_y(void) {
+    return offsetof(struct VecU16, y);
+}
+
+uint64_t __test_fsize_VecU16_y(void) {
+    struct VecU16* foo = NULL;
+    return sizeof(foo->y);
+}
+
+uint16_t* __test_field_type_VecU16_y(struct VecU16* b) {
+    return &b->y;
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+struct VecU16 __test_roundtrip_VecU16(
+        int32_t rust_size, struct VecU16 value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(struct VecU16);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of struct VecU16 is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"VecU16\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif

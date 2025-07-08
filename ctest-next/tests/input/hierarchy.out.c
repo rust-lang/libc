@@ -13,3 +13,70 @@ static bool __test_const_ON_val = ON;
 bool* __test_const_ON(void) {
     return &__test_const_ON_val;
 }
+
+// Return the size of a type.
+uint64_t __test_size_in6_addr(void) { return sizeof(in6_addr); }
+
+// Return the alignment of a type.
+uint64_t __test_align_in6_addr(void) {
+    typedef struct {
+        unsigned char c;
+        in6_addr v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+// Return `1` if the type is signed, otherwise return `0`. 
+uint32_t __test_signed_in6_addr(void) {
+    return (((in6_addr) -1) < 0);
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+in6_addr __test_roundtrip_in6_addr(
+        int32_t rust_size, in6_addr value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(in6_addr);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of in6_addr is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"in6_addr\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif

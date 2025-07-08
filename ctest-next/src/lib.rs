@@ -20,6 +20,7 @@ mod template;
 mod translator;
 
 pub use ast::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
+use either::Either;
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
 pub use runner::{__compile_test, __run_test, generate_test};
@@ -36,11 +37,13 @@ type BoxStr = Box<str>;
 ///
 /// This is necessary because `ctest` does not parse the header file, so it
 /// does not know which items are volatile.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[non_exhaustive]
 pub enum VolatileItemKind {
     /// A struct field.
     StructField(Struct, Field),
+    /// A union field.
+    UnionField(Union, Field),
     /// An extern static.
     Static(Static),
     /// A function argument.
@@ -54,9 +57,9 @@ pub enum VolatileItemKind {
 pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct identifier.
     Struct(&'a Struct),
+    Union(&'a Union),
     Fn(&'a crate::Fn),
-    #[expect(unused)]
-    Field(&'a Struct, &'a Field),
+    Field(Either<&'a Struct, &'a Union>, &'a Field),
     Alias(&'a Type),
     Const(&'a Const),
     Static(&'a Static),
@@ -64,6 +67,7 @@ pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct type.
     StructType(&'a str),
     UnionType(&'a str),
+    FieldType(Either<&'a Struct, &'a Union>, &'a Field),
 }
 
 /* The From impls make it easier to write code in the test templates. */
@@ -95,5 +99,11 @@ impl<'a> From<&'a Static> for MapInput<'a> {
 impl<'a> From<&'a Struct> for MapInput<'a> {
     fn from(s: &'a Struct) -> Self {
         MapInput::Struct(s)
+    }
+}
+
+impl<'a> From<&'a Union> for MapInput<'a> {
+    fn from(s: &'a Union) -> Self {
+        MapInput::Union(s)
     }
 }

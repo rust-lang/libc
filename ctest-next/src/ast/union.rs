@@ -6,7 +6,6 @@ pub struct Union {
     #[expect(unused)]
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) fields: Vec<Field>,
 }
 
@@ -14,5 +13,10 @@ impl Union {
     /// Return the identifier of the union as a string.
     pub fn ident(&self) -> &str {
         &self.ident
+    }
+
+    /// Return the public fields of the union.
+    pub(crate) fn public_fields(&self) -> Vec<&Field> {
+        self.fields.iter().filter(|f| f.public).collect()
     }
 }
