@@ -8,5 +8,8 @@ cfg_if! {
     if #[cfg(target_os = "linux")] {
         mod linux_uapi;
         pub use linux_uapi::*;
+    } else if #[cfg(target_os = "android")] {
+        mod bionic;
+        pub use bionic::*;
     }
 }
