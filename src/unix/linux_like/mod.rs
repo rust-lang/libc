@@ -1791,24 +1791,24 @@ const_fn! {
 }
 
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast::<cmsghdr>()
+    pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut crate::cmsghdr {
+        if (*mhdr).msg_controllen as usize >= size_of::<crate::cmsghdr>() {
+            (*mhdr).msg_control.cast::<crate::cmsghdr>()
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            core::ptr::null_mut::<crate::cmsghdr>()
         }
     }
 
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+    pub fn CMSG_DATA(cmsg: *const crate::cmsghdr) -> *mut c_uchar {
         cmsg.offset(1) as *mut c_uchar
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
+        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<crate::cmsghdr>())) as c_uint
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
+        CMSG_ALIGN(size_of::<crate::cmsghdr>()) as c_uint + length
     }
 
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {

@@ -1,6 +1,7 @@
 //! Android-specific definitions for linux-like values
 
 use crate::prelude::*;
+use crate::{cmsghdr, msghdr};
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -72,22 +73,6 @@ s! {
 
     pub struct __fsid_t {
         __val: [c_int; 2],
-    }
-
-    pub struct msghdr {
-        pub msg_name: *mut c_void,
-        pub msg_namelen: crate::socklen_t,
-        pub msg_iov: *mut crate::iovec,
-        pub msg_iovlen: size_t,
-        pub msg_control: *mut c_void,
-        pub msg_controllen: size_t,
-        pub msg_flags: c_int,
-    }
-
-    pub struct cmsghdr {
-        pub cmsg_len: size_t,
-        pub cmsg_level: c_int,
-        pub cmsg_type: c_int,
     }
 
     pub struct termios {
@@ -201,12 +186,6 @@ s! {
     pub struct itimerspec {
         pub it_interval: crate::timespec,
         pub it_value: crate::timespec,
-    }
-
-    pub struct ucred {
-        pub pid: crate::pid_t,
-        pub uid: crate::uid_t,
-        pub gid: crate::gid_t,
     }
 
     pub struct genlmsghdr {
@@ -3467,14 +3446,6 @@ extern "C" {
     pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
     pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
-    pub fn recvfrom(
-        socket: c_int,
-        buf: *mut c_void,
-        len: size_t,
-        flags: c_int,
-        addr: *mut crate::sockaddr,
-        addrlen: *mut crate::socklen_t,
-    ) -> ssize_t;
     pub fn getnameinfo(
         sa: *const crate::sockaddr,
         salen: crate::socklen_t,
@@ -3787,19 +3758,6 @@ extern "C" {
     ) -> c_int;
     pub fn __errno() -> *mut c_int;
     pub fn inotify_rm_watch(fd: c_int, wd: u32) -> c_int;
-    pub fn sendmmsg(
-        sockfd: c_int,
-        msgvec: *const crate::mmsghdr,
-        vlen: c_uint,
-        flags: c_int,
-    ) -> c_int;
-    pub fn recvmmsg(
-        sockfd: c_int,
-        msgvec: *mut crate::mmsghdr,
-        vlen: c_uint,
-        flags: c_int,
-        timeout: *const crate::timespec,
-    ) -> c_int;
     pub fn inotify_init() -> c_int;
     pub fn inotify_init1(flags: c_int) -> c_int;
     pub fn inotify_add_watch(fd: c_int, path: *const c_char, mask: u32) -> c_int;
