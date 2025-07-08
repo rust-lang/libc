@@ -48,7 +48,7 @@ test_target() {
 
     if [ "${no_dist}" != "0" ]; then
         # If we can't download a `core`, we need to build it
-        cmd="$cmd -Zbuild-std=core,alloc"
+        cmd="$cmd -Zbuild-std=core"
 
         # FIXME: With `build-std` feature, `compiler_builtins` emits a lof of lint warnings.
         RUSTFLAGS="${RUSTFLAGS:-} -Aimproper_ctypes_definitions"

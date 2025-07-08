@@ -51,7 +51,7 @@ if [ -n "${QEMU:-}" ]; then
     cargo build \
         --manifest-path libc-test/Cargo.toml \
         --target "$target" \
-        --test main ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}
+        --test main ${LIBC_CI_ZBUILD_STD+"-Zbuild-std=core"}
     rm "${CARGO_TARGET_DIR}/${target}"/debug/main-*.d
     cp "${CARGO_TARGET_DIR}/${target}"/debug/main-* "${tmpdir}"/mount/libc-test
     # shellcheck disable=SC2016

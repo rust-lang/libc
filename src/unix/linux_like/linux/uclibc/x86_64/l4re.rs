@@ -28,7 +28,7 @@ s! {
     }
 }
 
-#[allow(missing_debug_implementations)]
+#[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub struct pthread_attr_t {
     pub __detachstate: c_int,
     pub __schedpolicy: c_int,

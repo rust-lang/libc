@@ -1,5 +1,3 @@
-use core::mem::size_of;
-
 use crate::prelude::*;
 
 pub type caddr_t = *mut c_char;
@@ -2408,7 +2406,7 @@ f! {
     }
 
     pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
-        _CMSG_DATA_ALIGN(mem::size_of::<cmsghdr>()) as c_uint + length
+        _CMSG_DATA_ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
     pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut cmsghdr {
@@ -2438,20 +2436,20 @@ f! {
     }
 
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
         return;
     }
 
     pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
     }
 
     pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
-        let bits = mem::size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
         (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
         return;

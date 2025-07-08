@@ -422,7 +422,7 @@ s_no_extra_traits! {
         pub aio_offset: off_t,
         __next: *mut c_void,
         __prev: *mut c_void,
-        // FIXME(ctest): length should be `32 - 2 * core::mem::size_of::<*const ()>()`
+        // FIXME(ctest): length should be `32 - 2 * size_of::<*const ()>()`
         #[cfg(target_pointer_width = "32")]
         __dummy4: [c_char; 24],
         #[cfg(target_pointer_width = "64")]

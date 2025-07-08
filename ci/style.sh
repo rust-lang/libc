@@ -9,9 +9,6 @@ cargo test --manifest-path libc-test/Cargo.toml --test style -- --nocapture
 command -v rustfmt
 rustfmt -V
 
-# Run once to cover everything that isn't in `src/`
-cargo fmt
-
 # Save a list of all source files
 tmpfile="file-list~" # trailing tilde for gitignore
 find src -name '*.rs' > "$tmpfile"
@@ -61,7 +58,7 @@ rm "$tmpfile"
 
 # Run once from workspace root to get everything that wasn't handled as an
 # individual file.
-cargo fmt
+cargo fmt ${check:+"$check"}
 
 # Ensure that `sort` output is not locale-dependent
 export LC_ALL=C

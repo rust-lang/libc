@@ -7,13 +7,13 @@ edition = "2021"
 
 [build-dependencies]
 ctest = { path = "../ctest" }
-cc = "1.0"
+cc = "1.2"
 
 [dev-dependencies]
 ctest = { path = "../ctest" }
 
 [dependencies]
-cfg-if = "1.0.0"
+cfg-if = "1.0.1"
 libc = { path = ".." }
 
 [[bin]]

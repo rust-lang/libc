@@ -61,7 +61,10 @@ trigger_files = [
 trigger_files = ["src/unix/solarish/illumos.rs"]
 
 [autolabel."O-linux"]
-trigger_files = ["src/unix/linux_like/linux"]
+trigger_files = [
+    "src/unix/linux_like/linux",
+    "src/reorg/linux_uapi",
+]
 
 [autolabel."O-linux-like"]
 trigger_files = ["src/unix/linux_like/mod.rs"]

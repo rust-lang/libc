@@ -16,21 +16,32 @@ use std::path::Path;
 
 use style::{Result, StyleChecker};
 
+/// Relative to `src/`.
+const SKIP_PREFIXES: &[&str] = &[
+    // Don't run the style checker on the reorganized portion of the crate while we figure
+    // out what style we want.
+    "new/",
+];
+
 #[test]
 fn check_style() {
-    let root_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
-    walk(&root_dir).unwrap();
+    let src_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
+    walk(&src_root).unwrap();
     eprintln!("good style!");
 }
 
-fn walk(root_dir: &Path) -> Result<()> {
+fn walk(src_root: &Path) -> Result<()> {
     let mut style_checker = StyleChecker::new();
 
     for entry in glob::glob(&format!(
         "{}/**/*.rs",
-        root_dir.to_str().expect("dir should be valid UTF-8")
+        src_root.to_str().expect("dir should be valid UTF-8")
     ))? {
         let entry = entry?;
+        let relpath = entry.strip_prefix(src_root).expect("known path");
+        if SKIP_PREFIXES.iter().any(|pfx| relpath.starts_with(pfx)) {
+            continue;
+        }
 
         let name = entry
             .file_name()
