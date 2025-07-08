@@ -1,0 +1,24 @@
+[package]
+name = "ctest-next-test"
+version = "0.1.0"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+publish = false
+edition = "2021"
+
+[build-dependencies]
+ctest-next = { path = "../ctest-next" }
+cc = "1.0"
+
+[dev-dependencies]
+ctest-next = { path = "../ctest-next" }
+
+[dependencies]
+libc = { path = ".." }
+
+[[bin]]
+name = "t1"
+test = false
+
+[[bin]]
+name = "t2"
+test = false

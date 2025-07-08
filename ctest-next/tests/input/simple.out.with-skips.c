@@ -13,3 +13,246 @@ static char const* __test_const_A_val = A;
 char const** __test_const_A(void) {
     return &__test_const_A_val;
 }
+
+// Return the size of a type.
+uint64_t __test_size_Byte(void) { return sizeof(Byte); }
+
+// Return the alignment of a type.
+uint64_t __test_align_Byte(void) {
+    typedef struct {
+        unsigned char c;
+        Byte v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+// Return `1` if the type is signed, otherwise return `0`. 
+uint32_t __test_signed_Byte(void) {
+    return (((Byte) -1) < 0);
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+Byte __test_roundtrip_Byte(
+        int32_t rust_size, Byte value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(Byte);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of Byte is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"Byte\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+
+// Return the size of a type.
+uint64_t __test_size_Person(void) { return sizeof(struct Person); }
+
+// Return the alignment of a type.
+uint64_t __test_align_Person(void) {
+    typedef struct {
+        unsigned char c;
+        struct Person v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+uint64_t __test_offset_Person_name(void) {
+    return offsetof(struct Person, name);
+}
+
+uint64_t __test_fsize_Person_name(void) {
+    struct Person* foo = NULL;
+    return sizeof(foo->name);
+}
+
+char const** __test_field_type_Person_name(struct Person* b) {
+    return &b->name;
+}
+
+uint64_t __test_offset_Person_age(void) {
+    return offsetof(struct Person, age);
+}
+
+uint64_t __test_fsize_Person_age(void) {
+    struct Person* foo = NULL;
+    return sizeof(foo->age);
+}
+
+uint8_t* __test_field_type_Person_age(struct Person* b) {
+    return &b->age;
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+struct Person __test_roundtrip_Person(
+        int32_t rust_size, struct Person value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(struct Person);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of struct Person is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"Person\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+
+// Return the size of a type.
+uint64_t __test_size_Word(void) { return sizeof(union Word); }
+
+// Return the alignment of a type.
+uint64_t __test_align_Word(void) {
+    typedef struct {
+        unsigned char c;
+        union Word v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+uint64_t __test_offset_Word_word(void) {
+    return offsetof(union Word, word);
+}
+
+uint64_t __test_fsize_Word_word(void) {
+    union Word* foo = NULL;
+    return sizeof(foo->word);
+}
+
+uint16_t* __test_field_type_Word_word(union Word* b) {
+    return &b->word;
+}
+
+uint64_t __test_offset_Word_byte(void) {
+    return offsetof(union Word, byte);
+}
+
+uint64_t __test_fsize_Word_byte(void) {
+    union Word* foo = NULL;
+    return sizeof(foo->byte);
+}
+
+Byte(*__test_field_type_Word_byte(union Word* b))[2] {
+    return &b->byte;
+}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+union Word __test_roundtrip_Word(
+        int32_t rust_size, union Word value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof(union Word);
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of union Word is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"Word\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif

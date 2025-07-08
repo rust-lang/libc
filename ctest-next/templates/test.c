@@ -12,8 +12,8 @@
 
 {%- for constant in ffi_items.constants() +%}
 {%- let ident = constant.ident() +%}
-{%- let c_type = self.c_type(*constant)? +%}
-{%- let c_ident = self.c_ident(*constant)? +%}
+{%- let c_type = self.c_type(*constant).unwrap() +%}
+{%- let c_ident = self.c_ident(*constant) +%}
 
 static {{ c_type }} __test_const_{{ ident }}_val = {{ c_ident }};
 
@@ -22,5 +22,275 @@ static {{ c_type }} __test_const_{{ ident }}_val = {{ c_ident }};
 {{ c_type }}* __test_const_{{ ident }}(void) {
     return &__test_const_{{ ident }}_val;
 }
+{%- endfor +%}
+
+{%- for alias in ffi_items.aliases() +%}
+{%- let ident = alias.ident() +%}
+{%- let c_type = self.c_type(*alias).unwrap() +%}
+
+// Return the size of a type.
+uint64_t __test_size_{{ ident }}(void) { return sizeof({{ c_type }}); }
+
+// Return the alignment of a type.
+uint64_t __test_align_{{ ident }}(void) {
+    typedef struct {
+        unsigned char c;
+        {{ c_type }} v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+{%- if translator.has_sign(ffi_items, alias.ty) +%}
+
+// Return `1` if the type is signed, otherwise return `0`. 
+uint32_t __test_signed_{{ ident }}(void) {
+    return ((({{ c_type }}) -1) < 0);
+}
+{%- endif +%}
+
+{%- if self::should_roundtrip(generator, ident) +%}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+{{ c_type }} __test_roundtrip_{{ ident }}(
+        int32_t rust_size, {{ c_type }} value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof({{ c_type }});
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of {{ c_type }} is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"{{ ident }}\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+{%- endif +%}
+{%- endfor +%}
+
+{%- for structure in ffi_items.structs() +%}
+{%- let ident = structure.ident() +%}
+{%- let c_type = self.c_type(*structure).unwrap() +%}
+
+// Return the size of a type.
+uint64_t __test_size_{{ ident }}(void) { return sizeof({{ c_type }}); }
+
+// Return the alignment of a type.
+uint64_t __test_align_{{ ident }}(void) {
+    typedef struct {
+        unsigned char c;
+        {{ c_type }} v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+{%- for field in structure.fields +%}
+{%- if !self::should_skip_field(generator, Either::Left(structure), field) +%}
+{%- let rust_field_name = field.ident() +%}
+{%- let c_field_name = self.c_ident(MapInput::Field(Either::Left(structure), field)) +%}
+
+uint64_t __test_offset_{{ ident }}_{{ rust_field_name }}(void) {
+    return offsetof({{ c_type }}, {{ c_field_name }});
+}
+
+uint64_t __test_fsize_{{ ident }}_{{ rust_field_name }}(void) {
+    {{ c_type }}* foo = NULL;
+    return sizeof(foo->{{ c_field_name }});
+}
+
+{%- if !self::should_skip_field_type(generator, Either::Left(structure), field) +%}
+{%- let signature = self.c_signature(field.ty, &format!("__test_field_type_{ident}_{rust_field_name}({c_type}* b)")).unwrap() +%}
+{%- let volatile = self.emit_volatile(VolatileItemKind::StructField(structure.clone(), field.clone())) +%}
+
+{{ volatile }}{{ signature }} {
+    return &b->{{ c_field_name }};
+}
+{%- endif +%}
+{%- endif +%}
+{%- endfor +%}
+
+{%- if self::should_roundtrip(generator, ident) +%}
+{%- let c_type = self.c_type(*structure).unwrap() +%}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+{{ c_type }} __test_roundtrip_{{ ident }}(
+        int32_t rust_size, {{ c_type }} value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof({{ c_type }});
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of {{ c_type }} is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"{{ ident }}\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+{%- endif +%}
+{%- endfor +%}
+
+{%- for union_ in ffi_items.unions() +%}
+{%- let ident = union_.ident() +%}
+{%- let c_type = self.c_type(*union_).unwrap() +%}
+
+// Return the size of a type.
+uint64_t __test_size_{{ ident }}(void) { return sizeof({{ c_type }}); }
+
+// Return the alignment of a type.
+uint64_t __test_align_{{ ident }}(void) {
+    typedef struct {
+        unsigned char c;
+        {{ c_type }} v;
+    } type;
+    type t;
+    size_t t_addr = (size_t)(unsigned char*)(&t);
+    size_t v_addr = (size_t)(unsigned char*)(&t.v);
+    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
+}
+
+{%- for field in union_.fields +%}
+{%- if !self::should_skip_field(generator, Either::Right(union_), field) +%}
+{%- let rust_field_name = field.ident() +%}
+{%- let c_field_name = self.c_ident(MapInput::Field(Either::Right(union_), field)) +%}
+
+uint64_t __test_offset_{{ ident }}_{{ rust_field_name }}(void) {
+    return offsetof({{ c_type }}, {{ c_field_name }});
+}
+
+uint64_t __test_fsize_{{ ident }}_{{ rust_field_name }}(void) {
+    {{ c_type }}* foo = NULL;
+    return sizeof(foo->{{ c_field_name }});
+}
+
+{%- if !self::should_skip_field_type(generator, Either::Right(union_), field) +%}
+{%- let signature = self.c_signature(field.ty, &format!("__test_field_type_{ident}_{rust_field_name}({c_type}* b)")).unwrap() +%}
+{%- let volatile = self.emit_volatile(VolatileItemKind::UnionField(union_.clone(), field.clone())) +%}
+
+{{ volatile }}{{ signature }} {
+    return &b->{{ c_field_name }};
+}
+{%- endif +%}
+{%- endif +%}
+{%- endfor +%}
+
+{%- if self::should_roundtrip(generator, ident) +%}
+{%- let c_type = self.c_type(*union_).unwrap() +%}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+{{ c_type }} __test_roundtrip_{{ ident }}(
+        int32_t rust_size, {{ c_type }} value, int* error, unsigned char* pad
+) {
+    volatile unsigned char* p = (volatile unsigned char*)&value;
+    int size = (int)sizeof({{ c_type }});
+    if (size != rust_size) {
+        fprintf(
+            stderr,
+            "size of {{ c_type }} is %d in C and %d in Rust\n",
+            (int)size, (int)rust_size
+        );
+        *error = 1;
+        return value;
+    }
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        if (pad[i]) { continue; }
+        unsigned char c = (unsigned char)(i % 256);
+        c = c == 0? 42 : c;
+        if (p[i] != c) {
+            *error = 1;
+            fprintf(
+                stderr,
+                "rust[%d] = %d != %d (C): Rust \"{{ ident }}\" -> C\n",
+                i, (int)p[i], (int)c
+            );
+        }
+        unsigned char d
+            = (unsigned char)(255) - (unsigned char)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
+{%- endif +%}
 {%- endfor +%}
 
