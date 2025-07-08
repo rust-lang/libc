@@ -10,3 +10,10 @@ cfg_if! {
         pub use linux_uapi::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(all(target_os = "linux", target_env = "gnu"))] {
+        mod glibc;
+        pub use glibc::*;
+    }
+}
