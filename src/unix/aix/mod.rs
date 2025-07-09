@@ -3281,10 +3281,10 @@ extern "C" {
     pub fn srand48(seed: c_long);
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
     pub fn stat64at(dirfd: c_int, path: *const c_char, buf: *mut stat64, flags: c_int) -> c_int;
-    pub fn statfs(path: *mut c_char, buf: *mut statfs) -> c_int;
-    pub fn statfs64(path: *mut c_char, buf: *mut statfs64) -> c_int;
+    pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
     pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
-    pub fn statx(path: *mut c_char, buf: *mut stat, length: c_int, command: c_int) -> c_int;
+    pub fn statx(path: *const c_char, buf: *mut stat, length: c_int, command: c_int) -> c_int;
     pub fn strcasecmp_l(
         string1: *const c_char,
         string2: *const c_char,
