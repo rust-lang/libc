@@ -3513,7 +3513,7 @@ fn test_neutrino(target: &str) {
         )
     });
 
-    cfg.skip_static(move |name| (name == "__dso_handle"));
+    cfg.skip_static(move |name| name == "__dso_handle");
 
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
@@ -4660,6 +4660,16 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "PROC_EVENT_NONZERO_EXIT" => true,
+
+            // FIXME(linux): Requires >= 6.14 kernel headers.
+            "SECBIT_EXEC_DENY_INTERACTIVE"
+            | "SECBIT_EXEC_DENY_INTERACTIVE_LOCKED"
+            | "SECBIT_EXEC_RESTRICT_FILE"
+            | "SECBIT_EXEC_RESTRICT_FILE_LOCKED"
+            | "SECURE_ALL_UNPRIVILEGED" => true,
+
+            // FIXME(linux): Value changed in 6.14
+            "SECURE_ALL_BITS" | "SECURE_ALL_LOCKS" => true,
 
             _ => false,
         }
