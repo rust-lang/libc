@@ -95,8 +95,11 @@ s! {
 }
 
 pub const MADV_SOFT_OFFLINE: c_int = 101;
-#[deprecated(since = "0.2.175", note = "Linux does not define MAP_32BIT on any architectures \
-    other than x86 and x86_64, this constant will be removed in the future")]
+#[deprecated(
+    since = "0.2.175",
+    note = "Linux does not define MAP_32BIT on any architectures \
+    other than x86 and x86_64, this constant will be removed in the future"
+)]
 pub const MAP_32BIT: c_int = 0x0040;
 pub const O_APPEND: c_int = 1024;
 pub const O_DIRECT: c_int = 0x20000;

@@ -1,6 +1,7 @@
 //! Android-specific definitions for linux-like values
 
 use crate::prelude::*;
+use crate::{cmsghdr, msghdr};
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -72,22 +73,6 @@ s! {
 
     pub struct __fsid_t {
         __val: [c_int; 2],
-    }
-
-    pub struct msghdr {
-        pub msg_name: *mut c_void,
-        pub msg_namelen: crate::socklen_t,
-        pub msg_iov: *mut crate::iovec,
-        pub msg_iovlen: size_t,
-        pub msg_control: *mut c_void,
-        pub msg_controllen: size_t,
-        pub msg_flags: c_int,
-    }
-
-    pub struct cmsghdr {
-        pub cmsg_len: size_t,
-        pub cmsg_level: c_int,
-        pub cmsg_type: c_int,
     }
 
     pub struct termios {
@@ -201,12 +186,6 @@ s! {
     pub struct itimerspec {
         pub it_interval: crate::timespec,
         pub it_value: crate::timespec,
-    }
-
-    pub struct ucred {
-        pub pid: crate::pid_t,
-        pub uid: crate::uid_t,
-        pub gid: crate::gid_t,
     }
 
     pub struct genlmsghdr {
@@ -596,7 +575,6 @@ s_no_extra_traits! {
         pub absflat: [crate::__s32; ABS_CNT],
     }
 
-    #[allow(missing_debug_implementations)]
     pub struct af_alg_iv {
         pub ivlen: u32,
         pub iv: [c_uchar; 0],
@@ -3369,7 +3347,7 @@ f! {
 
     pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = mem::zeroed();
-        let size_in_bits = 8 * mem::size_of_val(&_dummy.__bits[0]);
+        let size_in_bits = 8 * size_of_val(&_dummy.__bits[0]);
         ((count as size_t + size_in_bits - 1) / 8) as size_t
     }
 
@@ -3380,28 +3358,28 @@ f! {
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.__bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * size_of_val(&cpuset.__bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.__bits[idx] |= 1 << offset;
         ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.__bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * size_of_val(&cpuset.__bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.__bits[idx] &= !(1 << offset);
         ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * mem::size_of_val(&cpuset.__bits[0]);
+        let size_in_bits = 8 * size_of_val(&cpuset.__bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.__bits[idx] & (1 << offset))
     }
 
     pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
-        let size_of_mask = mem::size_of_val(&cpuset.__bits[0]);
+        let size_of_mask = size_of_val(&cpuset.__bits[0]);
         for i in cpuset.__bits[..(size / size_of_mask)].iter() {
             s += i.count_ones();
         }
@@ -3409,7 +3387,7 @@ f! {
     }
 
     pub fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
-        CPU_COUNT_S(mem::size_of::<cpu_set_t>(), cpuset)
+        CPU_COUNT_S(size_of::<cpu_set_t>(), cpuset)
     }
 
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
@@ -3468,14 +3446,6 @@ extern "C" {
     pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
     pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
-    pub fn recvfrom(
-        socket: c_int,
-        buf: *mut c_void,
-        len: size_t,
-        flags: c_int,
-        addr: *mut crate::sockaddr,
-        addrlen: *mut crate::socklen_t,
-    ) -> ssize_t;
     pub fn getnameinfo(
         sa: *const crate::sockaddr,
         salen: crate::socklen_t,
@@ -3788,19 +3758,6 @@ extern "C" {
     ) -> c_int;
     pub fn __errno() -> *mut c_int;
     pub fn inotify_rm_watch(fd: c_int, wd: u32) -> c_int;
-    pub fn sendmmsg(
-        sockfd: c_int,
-        msgvec: *const crate::mmsghdr,
-        vlen: c_uint,
-        flags: c_int,
-    ) -> c_int;
-    pub fn recvmmsg(
-        sockfd: c_int,
-        msgvec: *mut crate::mmsghdr,
-        vlen: c_uint,
-        flags: c_int,
-        timeout: *const crate::timespec,
-    ) -> c_int;
     pub fn inotify_init() -> c_int;
     pub fn inotify_init1(flags: c_int) -> c_int;
     pub fn inotify_add_watch(fd: c_int, path: *const c_char, mask: u32) -> c_int;
