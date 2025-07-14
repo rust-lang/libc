@@ -5,12 +5,13 @@
 /// are not allowed at the top-level, so we hack around this by keeping it
 /// inside of a module.
 mod generated_tests {
-    #![allow(non_snake_case)]
+    #![allow(non_snake_case, unused_imports)]
     #![deny(improper_ctypes_definitions)]
+    use std::ffi::{CStr, c_char, c_int};
     use std::fmt::{Debug, LowerHex};
+    use std::mem::{MaybeUninit, offset_of, align_of};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-    use std::{mem, ptr, slice};
-    use std::mem::offset_of;
+    use std::{ptr, slice};
 
     use super::*;
 
@@ -51,7 +52,6 @@ mod generated_tests {
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
     pub fn const_{{ ident }}() {
-        use std::ffi::{CStr, c_char};
         extern "C" {
             fn __test_const_{{ ident }}() -> *const *const u8;
         }
@@ -60,12 +60,11 @@ mod generated_tests {
             let ptr = *__test_const_{{ ident }}();
             let val = CStr::from_ptr(val.cast::<c_char>());
             let val = val.to_str().expect("const {{ ident }} not utf8");
-            let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
+            let c = CStr::from_ptr(ptr as *const _);
             let c = c.to_str().expect("const {{ ident }} not utf8");
             check_same(val, c, "{{ ident }} string");
         }
     }
-
     {%- else +%}
 
     // Test that the value of the constant is the same in both Rust and C.
@@ -78,8 +77,8 @@ mod generated_tests {
         unsafe {
             let ptr1 = ptr::from_ref(&val).cast::<u8>();
             let ptr2 = __test_const_{{ ident }}().cast::<u8>();
-            let ptr1_bytes = slice::from_raw_parts(ptr1, mem::size_of::<{{ ty }}>());
-            let ptr2_bytes = slice::from_raw_parts(ptr2, mem::size_of::<{{ ty }}>());
+            let ptr1_bytes = slice::from_raw_parts(ptr1, size_of::<{{ ty }}>());
+            let ptr2_bytes = slice::from_raw_parts(ptr2, size_of::<{{ ty }}>());
             for (i, (&b1, &b2)) in ptr1_bytes.iter().zip(ptr2_bytes.iter()).enumerate() {
                 // HACK: This may read uninitialized data! We do this because
                 // there isn't a good way to recursively iterate all fields.
@@ -93,37 +92,24 @@ mod generated_tests {
     {%- for alias in ffi_items.aliases() +%}
     {%- let ident = alias.ident() +%}
 
-    /// Test that the size and alignment of the aliased type is the same in both Rust and C.
-    /// 
-    /// This can fail if a different type is used on one side, and uses the built in size and
-    /// alignment functions to check.
-    pub fn size_align_{{ ident }}() {
-        extern "C" {
-            fn __test_size_{{ ident }}() -> u64;
-            fn __test_align_{{ ident }}() -> u64;
-        }
-        unsafe {
-            check_same(mem::size_of::<{{ ident }}>() as u64,
-                __test_size_{{ ident }}(), "{{ ident }} size");
-            check_same(mem::align_of::<{{ ident }}>() as u64,
-                __test_align_{{ ident }}(), "{{ ident }} align");
-        }
-    }
+    {%- include "common/test_size_align.rs" +%}
 
-    {%- if translator.has_sign(ffi_items, alias.ty) +%}
+    {%- if translator.is_signed(ffi_items, alias.ty) +%}
 
-    /// Test that the aliased type has the same sign (signed or unsigned) in both Rust and C.
+    /// Test that the aliased type has the same signedness (signed or unsigned) in both Rust and C.
     ///
     /// This check can be performed because `!(0 as _)` yields either -1 or the maximum value
     /// depending on whether a signed or unsigned type is used. This is simply checked on both
     /// Rust and C sides to see if they are equal.
     pub fn sign_{{ ident }}() {
         extern "C" {
-            fn __test_signed_{{ ident }}() -> u32;
+            fn ctest_{{ ident }}_is_signed() -> u32;
         }
+        let all_ones = !(0 as {{ ident }});
+        let all_zeros = 0 as {{ ident }};
         unsafe {
-            check_same(((!(0 as {{ ident }})) < (0 as {{ ident }})) as u32,
-                    __test_signed_{{ ident }}(), "{{ ident }} signed");
+            check_same((all_ones < all_zeros) as u32,
+                    ctest_{{ ident }}_is_signed(), "{{ ident }} signed");
         }
     }
     {%- endif +%}
@@ -137,119 +123,53 @@ mod generated_tests {
     /// and `0` if the byte is not padding.
     ///
     /// For type aliases, the padding map is all zeroes.
-    fn roundtrip_padding_{{ ident }}() -> Vec<u8> {
-        vec![0; mem::size_of::<{{ ident }}>()]
+    fn roundtrip_padding_{{ ident }}() -> [bool; size_of::<{{ ident }}>()] {
+        [false; size_of::<{{ ident }}>()]
     }
 
-    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place.
-    pub fn roundtrip_{{ ident }}() {
-        use std::ffi::c_int;
-
-        type U = {{ ident }};
-        extern "C" {
-            fn __test_roundtrip_{{ ident }}(
-                size: i32, x: U, e: *mut c_int, pad: *const u8
-            ) -> U;
-        }
-        let pad = roundtrip_padding_{{ ident }}();
-        unsafe {
-            use std::mem::{MaybeUninit, size_of};
-            let mut error: c_int = 0;
-            let mut y = MaybeUninit::<U>::uninit();
-            let mut x = MaybeUninit::<U>::uninit();
-            let x_ptr = x.as_mut_ptr().cast::<u8>();
-            let y_ptr = y.as_mut_ptr().cast::<u8>();
-            let sz = size_of::<U>();
-            for i in 0..sz {
-                let c: u8 = (i % 256) as u8;
-                let c = if c == 0 { 42 } else { c };
-                let d: u8 = 255_u8 - (i % 256) as u8;
-                let d = if d == 0 { 42 } else { d };
-                x_ptr.add(i).write_volatile(c);
-                y_ptr.add(i).write_volatile(d);
-            }
-            let r: U = __test_roundtrip_{{ ident }}(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
-            if error == 1 {
-                FAILED.store(true, Ordering::Relaxed);
-                return;
-            }
-            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
-                if *elem == 1 { continue; }
-                let rust = (*y_ptr.add(i)) as usize;
-                let c = (&r as *const _ as *const u8)
-                            .add(i).read_volatile() as usize;
-                if rust != c {
-                    eprintln!(
-                        "rust [{i}] = {rust} != {c} (C): C \"{{ ident }}\" -> Rust",
-                    );
-                    FAILED.store(true, Ordering::Relaxed);
-                }
-            }
-        }
-    }
+    {%- include "common/test_roundtrip.rs" +%}
     {%- endif +%}
     {%- endfor +%}
 
     {%- for structure in ffi_items.structs() +%}
     {%- let ident = structure.ident() +%}
-    {%- let fields = structure.public_fields() +%}
+    {%- let fields = structure.public_fields().collect::<Vec<_>>() +%}
 
-    /// Test that the size and alignment of the aliased type is the same in both Rust and C.
-    /// 
-    /// This can fail if a different type is used on one side, and uses the built in size and
-    /// alignment functions to check.
-    pub fn size_align_{{ ident }}() {
-        extern "C" {
-            fn __test_size_{{ ident }}() -> u64;
-            fn __test_align_{{ ident }}() -> u64;
-        }
-        unsafe {
-            check_same(mem::size_of::<{{ ident }}>() as u64,
-                __test_size_{{ ident }}(), "{{ ident }} size");
-            check_same(mem::align_of::<{{ ident }}>() as u64,
-                __test_align_{{ ident }}(), "{{ ident }} align");
-        }
-    }
+    {%- include "common/test_size_align.rs" +%}
 
-    /// No idea what this does.
+    /// Check that offsets, sizes, and types of each field in a struct are the same in Rust and C.
     pub fn field_offset_size_{{ ident }}() {
         {%- for field in structure.public_fields() +%}
-        {%- if !self::should_skip_field(generator, Either::Left(structure), field) +%}
+        {%- if !self::should_skip_struct_field(generator, structure, field) +%}
 
         extern "C" {
-            fn __test_offset_{{ ident }}_{{ field.ident() }}() -> u64;
-            fn __test_fsize_{{ ident }}_{{ field.ident() }}() -> u64;
+            fn ctest_offset_of__{{ ident }}__{{ field.ident() }}() -> u64;
+            fn ctest_field_size__{{ ident }}__{{ field.ident() }}() -> u64;
         }
         unsafe {
-            let uninit_ty = std::mem::MaybeUninit::<{{ ident }}>::uninit();
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
             let uninit_ty = uninit_ty.as_ptr();
-            let ty_ptr = std::ptr::addr_of!((*uninit_ty).{{ field.ident() }});
+            let ty_ptr = &raw const ((*uninit_ty).{{ field.ident() }});
             let val = ty_ptr.read_unaligned();
             check_same(offset_of!({{ ident }}, {{ field.ident() }}),
-                    __test_offset_{{ ident }}_{{ field.ident() }}() as usize,
+                    ctest_offset_of__{{ ident }}__{{ field.ident() }}() as usize,
                     "field offset {{ field.ident() }} of {{ ident }}");
-            check_same(mem::size_of_val(&val) as u64,
-                    __test_fsize_{{ ident }}_{{ field.ident() }}(),
+            check_same(size_of_val(&val) as u64,
+                    ctest_field_size__{{ ident }}__{{ field.ident() }}(),
                     "field size {{ field.ident() }} of {{ ident }}");
         }
-        {%- if !self::should_skip_field_type(generator, Either::Left(structure), field) +%}
+        {%- if !self::should_skip_struct_field_type(generator, structure, field) +%}
 
         extern "C" {
-            fn __test_field_type_{{ ident }}_{{ field.ident() }}(a: *mut {{ ident }}) -> *mut u8;
+            fn __test_field_type_{{ ident }}_{{ field.ident() }}(a: *const {{ ident }}) -> *mut u8;
         }
         unsafe {
-            let mut uninit_ty = std::mem::MaybeUninit::<{{ ident }}>::uninit();
-            let uninit_ty = uninit_ty.as_mut_ptr();
-            let ty_ptr_mut = std::ptr::addr_of_mut!(*uninit_ty);
-            let field_ptr = std::ptr::addr_of!((*uninit_ty).{{ field.ident() }});
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
+            let ty_ptr = uninit_ty.as_ptr();
+            let field_ptr = &raw const ((*ty_ptr).{{ field.ident() }});
             check_same(field_ptr as *mut _,
-                    __test_field_type_{{ ident }}_{{ field.ident() }}(ty_ptr_mut),
+                    __test_field_type_{{ ident }}_{{ field.ident() }}(ty_ptr),
                     "field type {{ field.ident() }} of {{ ident }}");
-            #[allow(unknown_lints, forgetting_copy_types)]
-            mem::forget(uninit_ty);
         }
         {%- endif +%}
         {%- endif +%}
@@ -265,151 +185,86 @@ mod generated_tests {
     /// and `0` if the byte is not padding.
     ///
     /// For type aliases, the padding map is all zeroes.
-    fn roundtrip_padding_{{ ident }}() -> Vec<u8> {
+    fn roundtrip_padding_{{ ident }}() -> [bool; size_of::<{{ ident }}>()] {
         // stores (offset, size) for each field
         {#- If there is no public field these become unused. +#}
         {%- if fields.len() > 0 +%}
         let mut v = Vec::<(usize, usize)>::new();
-        let bar = std::mem::MaybeUninit::<{{ ident }}>::uninit();
+        let bar = MaybeUninit::<{{ ident }}>::zeroed();
         let bar = bar.as_ptr();
         {%- else +%}
         let v = Vec::<(usize, usize)>::new();
         {%- endif +%}
         {%- for field in fields +%}
         unsafe {
-            let ty_ptr = std::ptr::addr_of!((*bar).{{ field.ident() }});
+            let ty_ptr = &raw const ((*bar).{{ field.ident() }});
             let val = ty_ptr.read_unaligned();
-            let size = mem::size_of_val(&val);
+            let size = size_of_val(&val);
             let off = offset_of!({{ ident }}, {{ field.ident() }});
             v.push((off, size));
         }
         {%- endfor +%}
         // This vector contains `1` if the byte is padding
         // and `0` if the byte is not padding.
-        let mut pad = Vec::<u8>::new();
+        let mut pad = [true; size_of::<{{ ident }}>()];
         // Initialize all bytes as:
         //  - padding if we have fields, this means that only
         //  the fields will be checked
         //  - no-padding if we have a type alias: if this
         //  causes problems the type alias should be skipped
-        pad.resize(mem::size_of::<{{ ident }}>(), 1);
         for (off, size) in &v {
             for i in 0..*size {
-                pad[off + i] = 0;
+                pad[off + i] = false;
             }
         }
         pad
     }
 
-    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place.
-    pub fn roundtrip_{{ ident }}() {
-        use std::ffi::c_int;
-
-        type U = {{ ident }};
-        extern "C" {
-            fn __test_roundtrip_{{ ident }}(
-                size: i32, x: U, e: *mut c_int, pad: *const u8
-            ) -> U;
-        }
-        let pad = roundtrip_padding_{{ ident }}();
-        unsafe {
-            use std::mem::{MaybeUninit, size_of};
-            let mut error: c_int = 0;
-            let mut y = MaybeUninit::<U>::uninit();
-            let mut x = MaybeUninit::<U>::uninit();
-            let x_ptr = x.as_mut_ptr().cast::<u8>();
-            let y_ptr = y.as_mut_ptr().cast::<u8>();
-            let sz = size_of::<U>();
-            for i in 0..sz {
-                let c: u8 = (i % 256) as u8;
-                let c = if c == 0 { 42 } else { c };
-                let d: u8 = 255_u8 - (i % 256) as u8;
-                let d = if d == 0 { 42 } else { d };
-                x_ptr.add(i).write_volatile(c);
-                y_ptr.add(i).write_volatile(d);
-            }
-            let r: U = __test_roundtrip_{{ ident }}(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
-            if error == 1 {
-                FAILED.store(true, Ordering::Relaxed);
-                return;
-            }
-            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
-                if *elem == 1 { continue; }
-                let rust = (*y_ptr.add(i)) as usize;
-                let c = (&r as *const _ as *const u8)
-                            .add(i).read_volatile() as usize;
-                if rust != c {
-                    eprintln!(
-                        "rust [{i}] = {rust} != {c} (C): C \"{{ ident }}\" -> Rust",
-                    );
-                    FAILED.store(true, Ordering::Relaxed);
-                }
-            }
-        }
-    }
+    {%- include "common/test_roundtrip.rs" +%}
     {%- endif +%}
     {%- endfor +%}
 
     {%- for union_ in ffi_items.unions() +%}
     {%- let ident = union_.ident() +%}
-    {%- let fields = union_.public_fields() +%}
+    {%- let fields = union_.public_fields().collect::<Vec<_>>() +%}
 
-    /// Test that the size and alignment of the aliased type is the same in both Rust and C.
-    /// 
-    /// This can fail if a different type is used on one side, and uses the built in size and
-    /// alignment functions to check.
-    pub fn size_align_{{ ident }}() {
-        extern "C" {
-            fn __test_size_{{ ident }}() -> u64;
-            fn __test_align_{{ ident }}() -> u64;
-        }
-        unsafe {
-            check_same(mem::size_of::<{{ ident }}>() as u64,
-                __test_size_{{ ident }}(), "{{ ident }} size");
-            check_same(mem::align_of::<{{ ident }}>() as u64,
-                __test_align_{{ ident }}(), "{{ ident }} align");
-        }
-    }
+    {%- include "common/test_size_align.rs" +%}
 
-    /// No idea what this does.
+    /// Check that offsets, sizes, and types of each field in a struct are the same in Rust and C.
     pub fn field_offset_size_{{ ident }}() {
         {%- for field in union_.public_fields() +%}
-        {%- if !self::should_skip_field(generator, Either::Right(union_), field) +%}
+        {%- if !self::should_skip_union_field(generator, union_, field) +%}
 
         extern "C" {
-            fn __test_offset_{{ ident }}_{{ field.ident() }}() -> u64;
-            fn __test_fsize_{{ ident }}_{{ field.ident() }}() -> u64;
+            fn ctest_offset_of__{{ ident }}__{{ field.ident() }}() -> u64;
+            fn ctest_field_size__{{ ident }}__{{ field.ident() }}() -> u64;
         }
+        // Check that the offset and size are the same.
         unsafe {
-            let uninit_ty = std::mem::MaybeUninit::<{{ ident }}>::uninit();
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
             let uninit_ty = uninit_ty.as_ptr();
-            let ty_ptr = std::ptr::addr_of!((*uninit_ty).{{ field.ident() }});
+            let ty_ptr = &raw const ((*uninit_ty).{{ field.ident() }});
             let val = ty_ptr.read_unaligned();
             check_same(offset_of!({{ ident }}, {{ field.ident() }}),
-                    __test_offset_{{ ident }}_{{ field.ident() }}() as usize,
+                    ctest_offset_of__{{ ident }}__{{ field.ident() }}() as usize,
                     "field offset {{ field.ident() }} of {{ ident }}");
-            check_same(mem::size_of_val(&val) as u64,
-                    __test_fsize_{{ ident }}_{{ field.ident() }}(),
+            check_same(size_of_val(&val) as u64,
+                    ctest_field_size__{{ ident }}__{{ field.ident() }}(),
                     "field size {{ field.ident() }} of {{ ident }}");
         }
-        {%- if !self::should_skip_field_type(generator, Either::Right(union_), field) +%}
+        {%- if !self::should_skip_union_field_type(generator, union_, field) +%}
 
         extern "C" {
-            fn __test_field_type_{{ ident }}_{{ field.ident() }}(a: *mut {{ ident }}) -> *mut u8;
+            fn __test_field_type_{{ ident }}_{{ field.ident() }}(a: *const {{ ident }}) -> *mut u8;
         }
+        // Check that the type of the field is the same.
         unsafe {
-            let mut uninit_ty = std::mem::MaybeUninit::<{{ ident }}>::uninit();
-            let uninit_ty = uninit_ty.as_mut_ptr();
-            let ty_ptr_mut = std::ptr::addr_of_mut!(*uninit_ty);
-            let field_ptr = std::ptr::addr_of!((*uninit_ty).{{ field.ident() }});
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
+            let ty_ptr = uninit_ty.as_ptr();
+            let field_ptr = &raw const ((*ty_ptr).{{ field.ident() }});
             check_same(field_ptr as *mut _,
-                    __test_field_type_{{ ident }}_{{ field.ident() }}(ty_ptr_mut),
+                    __test_field_type_{{ ident }}_{{ field.ident() }}(ty_ptr),
                     "field type {{ field.ident() }} of {{ ident }}");
-            #[allow(unknown_lints, forgetting_copy_types)]
-            mem::forget(uninit_ty);
         }
         {%- endif +%}
         {%- endif +%}
@@ -425,91 +280,42 @@ mod generated_tests {
     /// and `0` if the byte is not padding.
     ///
     /// For type aliases, the padding map is all zeroes.
-    fn roundtrip_padding_{{ ident }}() -> Vec<u8> {
+    fn roundtrip_padding_{{ ident }}() -> [bool; size_of::<{{ ident }}>()] {
         // stores (offset, size) for each field
         {#- If there is no public field these become unused. +#}
         {%- if fields.len() > 0 +%}
         let mut v = Vec::<(usize, usize)>::new();
-        let bar = std::mem::MaybeUninit::<{{ ident }}>::uninit();
+        let bar = MaybeUninit::<{{ ident }}>::zeroed();
         let bar = bar.as_ptr();
         {%- else +%}
         let v = Vec::<(usize, usize)>::new();
         {%- endif +%}
         {%- for field in fields +%}
         unsafe {
-            let ty_ptr = std::ptr::addr_of!((*bar).{{ field.ident() }});
+            let ty_ptr = &raw const ((*bar).{{ field.ident() }});
             let val = ty_ptr.read_unaligned();
-            let size = mem::size_of_val(&val);
+            let size = size_of_val(&val);
             let off = offset_of!({{ ident }}, {{ field.ident() }});
             v.push((off, size));
         }
         {%- endfor +%}
         // This vector contains `1` if the byte is padding
         // and `0` if the byte is not padding.
-        let mut pad = Vec::<u8>::new();
+        let mut pad = [true; size_of::<{{ ident }}>()];
         // Initialize all bytes as:
         //  - padding if we have fields, this means that only
         //  the fields will be checked
         //  - no-padding if we have a type alias: if this
         //  causes problems the type alias should be skipped
-        pad.resize(mem::size_of::<{{ ident }}>(), 1);
         for (off, size) in &v {
             for i in 0..*size {
-                pad[off + i] = 0;
+                pad[off + i] = false;
             }
         }
         pad
     }
 
-    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place.
-    pub fn roundtrip_{{ ident }}() {
-        use std::ffi::c_int;
-
-        type U = {{ ident }};
-        extern "C" {
-            fn __test_roundtrip_{{ ident }}(
-                size: i32, x: U, e: *mut c_int, pad: *const u8
-            ) -> U;
-        }
-        let pad = roundtrip_padding_{{ ident }}();
-        unsafe {
-            use std::mem::{MaybeUninit, size_of};
-            let mut error: c_int = 0;
-            let mut y = MaybeUninit::<U>::uninit();
-            let mut x = MaybeUninit::<U>::uninit();
-            let x_ptr = x.as_mut_ptr().cast::<u8>();
-            let y_ptr = y.as_mut_ptr().cast::<u8>();
-            let sz = size_of::<U>();
-            for i in 0..sz {
-                let c: u8 = (i % 256) as u8;
-                let c = if c == 0 { 42 } else { c };
-                let d: u8 = 255_u8 - (i % 256) as u8;
-                let d = if d == 0 { 42 } else { d };
-                x_ptr.add(i).write_volatile(c);
-                y_ptr.add(i).write_volatile(d);
-            }
-            let r: U = __test_roundtrip_{{ ident }}(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
-            if error == 1 {
-                FAILED.store(true, Ordering::Relaxed);
-                return;
-            }
-            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
-                if *elem == 1 { continue; }
-                let rust = (*y_ptr.add(i)) as usize;
-                let c = (&r as *const _ as *const u8)
-                            .add(i).read_volatile() as usize;
-                if rust != c {
-                    eprintln!(
-                        "rust [{i}] = {rust} != {c} (C): C \"{{ ident }}\" -> Rust",
-                    );
-                    FAILED.store(true, Ordering::Relaxed);
-                }
-            }
-        }
-    }
+    {%- include "common/test_roundtrip.rs" +%}
     {%- endif +%}
     {%- endfor +%}
 }
@@ -538,7 +344,7 @@ fn run_all() {
     {%- for alias in ffi_items.aliases() +%}
     {%- let ident = alias.ident() +%}
     size_align_{{ ident }}();
-    {%- if translator.has_sign(ffi_items, alias.ty) +%}
+    {%- if translator.is_signed(ffi_items, alias.ty) +%}
     sign_{{ ident }}();
     {%- endif +%}
     {%- if self::should_roundtrip(generator, ident) +%}

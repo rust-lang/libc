@@ -7,19 +7,10 @@
 #include <macro.h>
 
 // Return the size of a type.
-uint64_t __test_size_string(void) { return sizeof(string); }
+uint64_t ctest_size_of__string(void) { return sizeof(string); }
 
 // Return the alignment of a type.
-uint64_t __test_align_string(void) {
-    typedef struct {
-        unsigned char c;
-        string v;
-    } type;
-    type t;
-    size_t t_addr = (size_t)(unsigned char*)(&t);
-    size_t v_addr = (size_t)(unsigned char*)(&t.v);
-    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
-}
+uint64_t ctest_align_of__string(void) { return _Alignof(string); }
 
 #ifdef _MSC_VER
 // Disable signed/unsigned conversion warnings on MSVC.
@@ -27,10 +18,10 @@ uint64_t __test_align_string(void) {
 #  pragma warning(disable:4365)
 #endif
 
-// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+// Tests whether the struct/union/alias `x` when passed to C and back to Rust remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
 string __test_roundtrip_string(
-        int32_t rust_size, string value, int* error, unsigned char* pad
+    int32_t rust_size, string value, int* error, unsigned char* pad
 ) {
     volatile unsigned char* p = (volatile unsigned char*)&value;
     int size = (int)sizeof(string);
@@ -69,25 +60,16 @@ string __test_roundtrip_string(
 #endif
 
 // Return the size of a type.
-uint64_t __test_size_VecU8(void) { return sizeof(struct VecU8); }
+uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
 
 // Return the alignment of a type.
-uint64_t __test_align_VecU8(void) {
-    typedef struct {
-        unsigned char c;
-        struct VecU8 v;
-    } type;
-    type t;
-    size_t t_addr = (size_t)(unsigned char*)(&t);
-    size_t v_addr = (size_t)(unsigned char*)(&t.v);
-    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
-}
+uint64_t ctest_align_of__VecU8(void) { return _Alignof(struct VecU8); }
 
-uint64_t __test_offset_VecU8_x(void) {
+uint64_t ctest_offset_of__VecU8__x(void) {
     return offsetof(struct VecU8, x);
 }
 
-uint64_t __test_fsize_VecU8_x(void) {
+uint64_t ctest_field_size__VecU8__x(void) {
     struct VecU8* foo = NULL;
     return sizeof(foo->x);
 }
@@ -96,11 +78,11 @@ uint8_t* __test_field_type_VecU8_x(struct VecU8* b) {
     return &b->x;
 }
 
-uint64_t __test_offset_VecU8_y(void) {
+uint64_t ctest_offset_of__VecU8__y(void) {
     return offsetof(struct VecU8, y);
 }
 
-uint64_t __test_fsize_VecU8_y(void) {
+uint64_t ctest_field_size__VecU8__y(void) {
     struct VecU8* foo = NULL;
     return sizeof(foo->y);
 }
@@ -115,10 +97,10 @@ uint8_t* __test_field_type_VecU8_y(struct VecU8* b) {
 #  pragma warning(disable:4365)
 #endif
 
-// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// Tests whether the struct/union/alias `x` when passed to C and back to Rust remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
 struct VecU8 __test_roundtrip_VecU8(
-        int32_t rust_size, struct VecU8 value, int* error, unsigned char* pad
+    int32_t rust_size, struct VecU8 value, int* error, unsigned char* pad
 ) {
     volatile unsigned char* p = (volatile unsigned char*)&value;
     int size = (int)sizeof(struct VecU8);
@@ -157,25 +139,16 @@ struct VecU8 __test_roundtrip_VecU8(
 #endif
 
 // Return the size of a type.
-uint64_t __test_size_VecU16(void) { return sizeof(struct VecU16); }
+uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
 
 // Return the alignment of a type.
-uint64_t __test_align_VecU16(void) {
-    typedef struct {
-        unsigned char c;
-        struct VecU16 v;
-    } type;
-    type t;
-    size_t t_addr = (size_t)(unsigned char*)(&t);
-    size_t v_addr = (size_t)(unsigned char*)(&t.v);
-    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
-}
+uint64_t ctest_align_of__VecU16(void) { return _Alignof(struct VecU16); }
 
-uint64_t __test_offset_VecU16_x(void) {
+uint64_t ctest_offset_of__VecU16__x(void) {
     return offsetof(struct VecU16, x);
 }
 
-uint64_t __test_fsize_VecU16_x(void) {
+uint64_t ctest_field_size__VecU16__x(void) {
     struct VecU16* foo = NULL;
     return sizeof(foo->x);
 }
@@ -184,11 +157,11 @@ uint16_t* __test_field_type_VecU16_x(struct VecU16* b) {
     return &b->x;
 }
 
-uint64_t __test_offset_VecU16_y(void) {
+uint64_t ctest_offset_of__VecU16__y(void) {
     return offsetof(struct VecU16, y);
 }
 
-uint64_t __test_fsize_VecU16_y(void) {
+uint64_t ctest_field_size__VecU16__y(void) {
     struct VecU16* foo = NULL;
     return sizeof(foo->y);
 }
@@ -203,10 +176,10 @@ uint16_t* __test_field_type_VecU16_y(struct VecU16* b) {
 #  pragma warning(disable:4365)
 #endif
 
-// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// Tests whether the struct/union/alias `x` when passed to C and back to Rust remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
 struct VecU16 __test_roundtrip_VecU16(
-        int32_t rust_size, struct VecU16 value, int* error, unsigned char* pad
+    int32_t rust_size, struct VecU16 value, int* error, unsigned char* pad
 ) {
     volatile unsigned char* p = (volatile unsigned char*)&value;
     int size = (int)sizeof(struct VecU16);

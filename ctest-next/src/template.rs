@@ -1,7 +1,6 @@
 use std::ops::Deref;
 
 use askama::Template;
-use either::Either;
 use quote::ToTokens;
 
 use crate::ffi_items::FfiItems;
@@ -60,7 +59,8 @@ impl<'a> CTestTemplate<'a> {
 
         let (ident, ty) = match item {
             MapInput::Const(c) => (c.ident(), self.translator.translate_type(&c.ty)?),
-            MapInput::Field(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
+            MapInput::StructField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
+            MapInput::UnionField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
             MapInput::Static(s) => (s.ident(), self.translator.translate_type(&s.ty)?),
             MapInput::Fn(_) => unimplemented!(),
             // For structs/unions/aliases, their type is the same as their identifier.
@@ -70,7 +70,8 @@ impl<'a> CTestTemplate<'a> {
 
             MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
             MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
-            MapInput::FieldType(_, _) => panic!("MapInput::FieldType is not allowed!"),
+            MapInput::StructFieldType(_, _) => panic!("MapInput::StructFieldType is not allowed!"),
+            MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
         };
 
@@ -174,19 +175,31 @@ pub(crate) fn should_roundtrip(gen: &TestGenerator, ident: &str) -> bool {
 }
 
 /// Determine whether a struct field should be skipped for tests.
-pub(crate) fn should_skip_field(
-    gen: &TestGenerator,
-    e: Either<&Struct, &Union>,
-    field: &Field,
-) -> bool {
-    gen.skips.iter().any(|f| f(&MapInput::Field(e, field)))
+pub(crate) fn should_skip_struct_field(gen: &TestGenerator, s: &Struct, field: &Field) -> bool {
+    gen.skips
+        .iter()
+        .any(|f| f(&MapInput::StructField(s, field)))
+}
+
+/// Determine whether a union field should be skipped for tests.
+pub(crate) fn should_skip_union_field(gen: &TestGenerator, u: &Union, field: &Field) -> bool {
+    gen.skips.iter().any(|f| f(&MapInput::UnionField(u, field)))
 }
 
 /// Determine whether a struct field type should be skipped for tests.
-pub(crate) fn should_skip_field_type(
+pub(crate) fn should_skip_struct_field_type(
     gen: &TestGenerator,
-    e: Either<&Struct, &Union>,
+    s: &Struct,
     field: &Field,
 ) -> bool {
-    gen.skips.iter().any(|f| f(&MapInput::FieldType(e, field)))
+    gen.skips
+        .iter()
+        .any(|f| f(&MapInput::StructFieldType(s, field)))
+}
+
+/// Determine whether a union field type should be skipped for tests.
+pub(crate) fn should_skip_union_field_type(gen: &TestGenerator, u: &Union, field: &Field) -> bool {
+    gen.skips
+        .iter()
+        .any(|f| f(&MapInput::UnionFieldType(u, field)))
 }

@@ -142,7 +142,6 @@ extra_traits = []
 members = [
     "ctest",
     "ctest-next",
-    "ctest-next-test",
     "ctest-test",
     "libc-test",
 ]

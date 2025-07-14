@@ -20,7 +20,6 @@ mod template;
 mod translator;
 
 pub use ast::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
-use either::Either;
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
 pub use runner::{__compile_test, __run_test, generate_test};
@@ -59,7 +58,8 @@ pub(crate) enum MapInput<'a> {
     Struct(&'a Struct),
     Union(&'a Union),
     Fn(&'a crate::Fn),
-    Field(Either<&'a Struct, &'a Union>, &'a Field),
+    StructField(&'a Struct, &'a Field),
+    UnionField(&'a Union, &'a Field),
     Alias(&'a Type),
     Const(&'a Const),
     Static(&'a Static),
@@ -67,7 +67,8 @@ pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct type.
     StructType(&'a str),
     UnionType(&'a str),
-    FieldType(Either<&'a Struct, &'a Union>, &'a Field),
+    StructFieldType(&'a Struct, &'a Field),
+    UnionFieldType(&'a Union, &'a Field),
 }
 
 /* The From impls make it easier to write code in the test templates. */

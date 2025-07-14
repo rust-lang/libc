@@ -15,7 +15,7 @@ impl Struct {
     }
 
     /// Return the public fields of the struct.
-    pub fn public_fields(&self) -> Vec<&Field> {
-        self.fields.iter().filter(|f| f.public).collect()
+    pub fn public_fields(&self) -> impl Iterator<Item = &Field> {
+        self.fields.iter().filter(|f| f.public)
     }
 }

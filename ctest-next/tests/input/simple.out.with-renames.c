@@ -23,23 +23,14 @@ char const** __test_const_B(void) {
 }
 
 // Return the size of a type.
-uint64_t __test_size_Byte(void) { return sizeof(Byte); }
+uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 
 // Return the alignment of a type.
-uint64_t __test_align_Byte(void) {
-    typedef struct {
-        unsigned char c;
-        Byte v;
-    } type;
-    type t;
-    size_t t_addr = (size_t)(unsigned char*)(&t);
-    size_t v_addr = (size_t)(unsigned char*)(&t.v);
-    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
-}
+uint64_t ctest_align_of__Byte(void) { return _Alignof(Byte); }
 
 // Return `1` if the type is signed, otherwise return `0`. 
-uint32_t __test_signed_Byte(void) {
-    return (((Byte) -1) < 0);
+uint32_t ctest_Byte_is_signed(void) {
+    return ((Byte) -1) < 0;
 }
 
 #ifdef _MSC_VER
@@ -48,10 +39,10 @@ uint32_t __test_signed_Byte(void) {
 #  pragma warning(disable:4365)
 #endif
 
-// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+// Tests whether the struct/union/alias `x` when passed to C and back to Rust remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
 Byte __test_roundtrip_Byte(
-        int32_t rust_size, Byte value, int* error, unsigned char* pad
+    int32_t rust_size, Byte value, int* error, unsigned char* pad
 ) {
     volatile unsigned char* p = (volatile unsigned char*)&value;
     int size = (int)sizeof(Byte);
@@ -90,25 +81,16 @@ Byte __test_roundtrip_Byte(
 #endif
 
 // Return the size of a type.
-uint64_t __test_size_Person(void) { return sizeof(struct Person); }
+uint64_t ctest_size_of__Person(void) { return sizeof(struct Person); }
 
 // Return the alignment of a type.
-uint64_t __test_align_Person(void) {
-    typedef struct {
-        unsigned char c;
-        struct Person v;
-    } type;
-    type t;
-    size_t t_addr = (size_t)(unsigned char*)(&t);
-    size_t v_addr = (size_t)(unsigned char*)(&t.v);
-    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
-}
+uint64_t ctest_align_of__Person(void) { return _Alignof(struct Person); }
 
-uint64_t __test_offset_Person_name(void) {
+uint64_t ctest_offset_of__Person__name(void) {
     return offsetof(struct Person, name);
 }
 
-uint64_t __test_fsize_Person_name(void) {
+uint64_t ctest_field_size__Person__name(void) {
     struct Person* foo = NULL;
     return sizeof(foo->name);
 }
@@ -117,11 +99,11 @@ char const** __test_field_type_Person_name(struct Person* b) {
     return &b->name;
 }
 
-uint64_t __test_offset_Person_age(void) {
+uint64_t ctest_offset_of__Person__age(void) {
     return offsetof(struct Person, age);
 }
 
-uint64_t __test_fsize_Person_age(void) {
+uint64_t ctest_field_size__Person__age(void) {
     struct Person* foo = NULL;
     return sizeof(foo->age);
 }
@@ -136,10 +118,10 @@ uint8_t* __test_field_type_Person_age(struct Person* b) {
 #  pragma warning(disable:4365)
 #endif
 
-// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// Tests whether the struct/union/alias `x` when passed to C and back to Rust remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
 struct Person __test_roundtrip_Person(
-        int32_t rust_size, struct Person value, int* error, unsigned char* pad
+    int32_t rust_size, struct Person value, int* error, unsigned char* pad
 ) {
     volatile unsigned char* p = (volatile unsigned char*)&value;
     int size = (int)sizeof(struct Person);
@@ -178,25 +160,16 @@ struct Person __test_roundtrip_Person(
 #endif
 
 // Return the size of a type.
-uint64_t __test_size_Word(void) { return sizeof(union Word); }
+uint64_t ctest_size_of__Word(void) { return sizeof(union Word); }
 
 // Return the alignment of a type.
-uint64_t __test_align_Word(void) {
-    typedef struct {
-        unsigned char c;
-        union Word v;
-    } type;
-    type t;
-    size_t t_addr = (size_t)(unsigned char*)(&t);
-    size_t v_addr = (size_t)(unsigned char*)(&t.v);
-    return t_addr >= v_addr? t_addr - v_addr : v_addr - t_addr;
-}
+uint64_t ctest_align_of__Word(void) { return _Alignof(union Word); }
 
-uint64_t __test_offset_Word_word(void) {
+uint64_t ctest_offset_of__Word__word(void) {
     return offsetof(union Word, word);
 }
 
-uint64_t __test_fsize_Word_word(void) {
+uint64_t ctest_field_size__Word__word(void) {
     union Word* foo = NULL;
     return sizeof(foo->word);
 }
@@ -205,11 +178,11 @@ uint16_t* __test_field_type_Word_word(union Word* b) {
     return &b->word;
 }
 
-uint64_t __test_offset_Word_byte(void) {
+uint64_t ctest_offset_of__Word__byte(void) {
     return offsetof(union Word, byte);
 }
 
-uint64_t __test_fsize_Word_byte(void) {
+uint64_t ctest_field_size__Word__byte(void) {
     union Word* foo = NULL;
     return sizeof(foo->byte);
 }
@@ -224,10 +197,10 @@ Byte(*__test_field_type_Word_byte(union Word* b))[2] {
 #  pragma warning(disable:4365)
 #endif
 
-// Tests whether the struct/union `x` when passed to C and back to Rust remains unchanged.
+// Tests whether the struct/union/alias `x` when passed to C and back to Rust remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
 union Word __test_roundtrip_Word(
-        int32_t rust_size, union Word value, int* error, unsigned char* pad
+    int32_t rust_size, union Word value, int* error, unsigned char* pad
 ) {
     volatile unsigned char* p = (volatile unsigned char*)&value;
     int size = (int)sizeof(union Word);

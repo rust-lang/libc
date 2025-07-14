@@ -16,7 +16,7 @@ impl Union {
     }
 
     /// Return the public fields of the union.
-    pub(crate) fn public_fields(&self) -> Vec<&Field> {
-        self.fields.iter().filter(|f| f.public).collect()
+    pub(crate) fn public_fields(&self) -> impl Iterator<Item = &Field> {
+        self.fields.iter().filter(|f| f.public)
     }
 }

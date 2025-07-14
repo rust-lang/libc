@@ -6,14 +6,13 @@ publish = false
 edition = "2021"
 
 [build-dependencies]
-ctest = { path = "../ctest" }
-cc = "1.2"
+ctest-next = { path = "../ctest-next" }
+cc = "1.0"
 
 [dev-dependencies]
-ctest = { path = "../ctest" }
+ctest-next = { path = "../ctest-next" }
 
 [dependencies]
-cfg-if = "1.0.1"
 libc = { path = ".." }
 
 [[bin]]
@@ -22,14 +21,6 @@ test = false
 
 [[bin]]
 name = "t2"
-test = false
-
-[[bin]]
-name = "t1_cxx"
-test = false
-
-[[bin]]
-name = "t2_cxx"
 test = false
 
 # FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`

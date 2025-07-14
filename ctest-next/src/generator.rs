@@ -4,7 +4,6 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use askama::Template;
-use either::Either;
 use syn::visit::Visit;
 use thiserror::Error;
 
@@ -331,7 +330,7 @@ impl TestGenerator {
         f: impl Fn(&Struct, &Field) -> bool + 'static,
     ) -> &mut Self {
         self.skips.push(Box::new(move |item| {
-            if let MapInput::Field(Either::Left(struct_), field) = item {
+            if let MapInput::StructField(struct_, field) = item {
                 f(struct_, field)
             } else {
                 false
@@ -354,7 +353,7 @@ impl TestGenerator {
     /// ```
     pub fn skip_union_field(&mut self, f: impl Fn(&Union, &Field) -> bool + 'static) -> &mut Self {
         self.skips.push(Box::new(move |item| {
-            if let MapInput::Field(Either::Right(union_), field) = item {
+            if let MapInput::UnionField(union_, field) = item {
                 f(union_, field)
             } else {
                 false
@@ -386,7 +385,7 @@ impl TestGenerator {
         f: impl Fn(&Struct, &Field) -> bool + 'static,
     ) -> &mut Self {
         self.skips.push(Box::new(move |item| {
-            if let MapInput::FieldType(Either::Left(struct_), field) = item {
+            if let MapInput::StructFieldType(struct_, field) = item {
                 f(struct_, field)
             } else {
                 false
@@ -418,7 +417,7 @@ impl TestGenerator {
         f: impl Fn(&Union, &Field) -> bool + 'static,
     ) -> &mut Self {
         self.skips.push(Box::new(move |item| {
-            if let MapInput::FieldType(Either::Right(union_), field) = item {
+            if let MapInput::UnionFieldType(union_, field) = item {
                 f(union_, field)
             } else {
                 false
@@ -597,7 +596,7 @@ impl TestGenerator {
         f: impl Fn(&Struct, &Field) -> Option<String> + 'static,
     ) -> &mut Self {
         self.mapped_names.push(Box::new(move |item| {
-            if let MapInput::Field(Either::Left(s), c) = item {
+            if let MapInput::StructField(s, c) = item {
                 f(s, c)
             } else {
                 None
@@ -623,7 +622,7 @@ impl TestGenerator {
         f: impl Fn(&Union, &Field) -> Option<String> + 'static,
     ) -> &mut Self {
         self.mapped_names.push(Box::new(move |item| {
-            if let MapInput::Field(Either::Right(u), c) = item {
+            if let MapInput::UnionField(u, c) = item {
                 f(u, c)
             } else {
                 None
@@ -733,6 +732,9 @@ impl TestGenerator {
     ///
     /// # Examples
     /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
     /// cfg.skip_roundtrip(|s| {
     ///     s.starts_with("foo_")
     /// });
@@ -841,10 +843,12 @@ impl TestGenerator {
             MapInput::Struct(s) => s.ident().to_string(),
             MapInput::Union(u) => u.ident().to_string(),
             MapInput::Alias(t) => t.ident().to_string(),
-            MapInput::Field(_, f) => f.ident().to_string(),
+            MapInput::StructField(_, f) => f.ident().to_string(),
+            MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
             MapInput::UnionType(ty) => format!("union {ty}"),
-            MapInput::FieldType(_, f) => f.ident().to_string(),
+            MapInput::StructFieldType(_, f) => f.ident().to_string(),
+            MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => ty.to_string(),
         }
     }

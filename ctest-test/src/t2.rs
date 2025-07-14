@@ -1,4 +1,4 @@
-use libc::*;
+use std::ffi::{c_char, c_int};
 
 pub type T2Foo = u32;
 pub type T2Bar = u32;
@@ -28,9 +28,10 @@ pub union T2Union {
 pub const T2C: i32 = 5;
 
 i! {
-    pub const T2S: &str = "b";
+    pub const T2S: *const c_char = c"b".as_ptr();
 }
 
-extern "C" {
-    pub fn T2a();
-}
+// FIXME(ctest): Will fail as unused function until extern functions are tested.
+// extern "C" {
+//     pub fn T2a();
+// }

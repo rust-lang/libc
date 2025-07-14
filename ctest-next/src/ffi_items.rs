@@ -122,21 +122,26 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         syn::ReturnType::Type(_, ty) => Some(ty.deref().clone()),
     };
 
-    let link_name = i
+    let mut link_name_iter = i
         .attrs
         .iter()
-        .find(|attr| attr.path().is_ident("link_name"))
-        .and_then(|attr| match &attr.meta {
-            syn::Meta::NameValue(nv) => {
-                if let syn::Expr::Lit(expr_lit) = &nv.value {
-                    if let syn::Lit::Str(lit_str) = &expr_lit.lit {
-                        return Some(lit_str.value().into_boxed_str());
-                    }
+        .filter(|attr| attr.path().is_ident("link_name"));
+
+    let link_name = link_name_iter.next().and_then(|attr| match &attr.meta {
+        syn::Meta::NameValue(nv) => {
+            if let syn::Expr::Lit(expr_lit) = &nv.value {
+                if let syn::Lit::Str(lit_str) = &expr_lit.lit {
+                    return Some(lit_str.value().into_boxed_str());
                 }
-                None
             }
-            _ => None,
-        });
+            None
+        }
+        _ => None,
+    });
+
+    if link_name_iter.next().is_some() {
+        panic!("multiple #[link_name = ...] attributes found");
+    }
 
     table.foreign_functions.push(Fn {
         public,

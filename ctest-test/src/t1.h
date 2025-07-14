@@ -5,7 +5,8 @@ typedef int32_t T1Foo;
 #define T1N 5
 #define T1S "foo"
 
-struct T1Bar {
+struct T1Bar
+{
   int32_t a;
   uint32_t b;
   T1Foo c;
@@ -14,49 +15,53 @@ struct T1Bar {
   int64_t f[T1N][2];
 };
 
-struct T1Baz {
+struct T1Baz
+{
   uint64_t a;
   struct T1Bar b;
 };
 
-typedef union {
+typedef union
+{
   uint64_t a;
   uint32_t b;
 } T1Union;
 
-union T1NoTypedefUnion {
-    uint64_t a;
-    uint32_t b;
+union T1NoTypedefUnion
+{
+  uint64_t a;
+  uint32_t b;
 };
 
-struct T1StructWithUnion {
-    union T1NoTypedefUnion u;
+struct T1StructWithUnion
+{
+  union T1NoTypedefUnion u;
 };
 
 typedef double T1TypedefDouble;
-typedef int* T1TypedefPtr;
+typedef int *T1TypedefPtr;
 typedef struct T1Bar T1TypedefStruct;
 
 void T1a(void);
-void* T1b(void);
-void* T1c(void*);
+void *T1b(void);
+void *T1c(void *);
 int32_t T1d(unsigned);
-void T1e(unsigned, const struct T1Bar*);
+void T1e(unsigned, const struct T1Bar *);
 void T1f(void);
-void T1g(int32_t* a);
-void T1h(const int32_t* b);
+void T1g(int32_t *a);
+void T1h(const int32_t *b);
 void T1i(int32_t a[4]);
 void T1j(const int32_t b[4]);
 void T1o(int32_t (*a)[4]);
 void T1p(int32_t (*const a)[4]);
 
-typedef int32_t (Arr)[4];
+typedef int32_t(Arr)[4];
 typedef int32_t Transparent;
 
 void T1r(Arr a);
 void T1s(const Arr a);
-void T1t(Arr* a);
-void T1v(const Arr* a);
+void T1t(Arr *a);
+void T1v(const Arr *a);
 
 #define T1C 4
 
@@ -95,31 +100,22 @@ extern int32_t T1_arr5[1][2][3];
 
 extern int32_t T1_arr42[1][2][3];
 
-extern const int16_t* T1_sref;
+extern const int16_t *T1_sref;
 
-extern const int32_t* T1_mut_opt_ref;
-extern int32_t* T1_mut_opt_mut_ref;
-extern const int32_t* T1_const_opt_const_ref;
-
-extern void (*const T1_opt_fn1)(void);
-/* FIXME(#4365): duplicate symbol errors when enabled
-// uint32_t (*(*T1_opt_fn2)(uint8_t))(uint16_t);
-// uint32_t (*(*T1_opt_fn3)(uint8_t(*)(uint8_t), uint16_t(*)(uint16_t)))(uint16_t);
-*/
-
-
-struct Q {
-  uint8_t* q0;
-  uint8_t** q1;
+struct Q
+{
+  uint8_t *q0;
+  uint8_t **q1;
   uint8_t q2;
 };
 
-
-struct T1_conflict_foo {
+struct T1_conflict_foo
+{
   int a;
 };
 
-struct T1_conflict{
+struct T1_conflict
+{
   int foo;
 };
 
@@ -128,36 +124,39 @@ struct T1_conflict{
 // on msvc there is only pragma pack
 // on clang and gcc there is a packed attribute
 
-# pragma pack(push,1)
+#pragma pack(push, 1)
 
-struct Pack {
+struct Pack
+{
   uint8_t a;
   uint16_t b;
 };
 
-# pragma pack(pop)
+#pragma pack(pop)
 
-# pragma pack(push,4)
+#pragma pack(push, 4)
 
-struct Pack4 {
+struct Pack4
+{
   uint8_t a;
   uint32_t b;
 };
 
-# pragma pack(pop)
+#pragma pack(pop)
 
 // volatile pointers in struct fields:
-struct V {
-  volatile uint8_t* v;
+struct V
+{
+  volatile uint8_t *v;
 };
 
 // volatile pointers in externs:
-extern volatile uint8_t* vol_ptr;
+extern volatile uint8_t *vol_ptr;
 
 // volatile pointers in function arguments:
-void* T1_vol0(volatile void*, void*);
-volatile void* T1_vol1(void*, void*);
-volatile void* T1_vol2(void*, volatile void*);
+void *T1_vol0(volatile void *, void *);
+volatile void *T1_vol1(void *, void *);
+volatile void *T1_vol2(void *, volatile void *);
 
 /* FIXME(#4365): duplicate symbol errors when enabled
 // volatile function pointers:
@@ -166,7 +165,8 @@ uint8_t (*volatile T1_fn_ptr_vol)(uint8_t, uint8_t);
 
 #define LOG_MAX_LINE_LENGTH (1400)
 
-typedef struct {
+typedef struct
+{
   long tv_sec;
   int tv_usec;
 } timeval;

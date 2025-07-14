@@ -4,12 +4,13 @@
 /// are not allowed at the top-level, so we hack around this by keeping it
 /// inside of a module.
 mod generated_tests {
-    #![allow(non_snake_case)]
+    #![allow(non_snake_case, unused_imports)]
     #![deny(improper_ctypes_definitions)]
+    use std::ffi::{CStr, c_char, c_int};
     use std::fmt::{Debug, LowerHex};
+    use std::mem::{MaybeUninit, offset_of, align_of};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-    use std::{mem, ptr, slice};
-    use std::mem::offset_of;
+    use std::{ptr, slice};
 
     use super::*;
 
@@ -51,8 +52,8 @@ mod generated_tests {
         unsafe {
             let ptr1 = ptr::from_ref(&val).cast::<u8>();
             let ptr2 = __test_const_ON().cast::<u8>();
-            let ptr1_bytes = slice::from_raw_parts(ptr1, mem::size_of::<bool>());
-            let ptr2_bytes = slice::from_raw_parts(ptr2, mem::size_of::<bool>());
+            let ptr1_bytes = slice::from_raw_parts(ptr1, size_of::<bool>());
+            let ptr2_bytes = slice::from_raw_parts(ptr2, size_of::<bool>());
             for (i, (&b1, &b2)) in ptr1_bytes.iter().zip(ptr2_bytes.iter()).enumerate() {
                 // HACK: This may read uninitialized data! We do this because
                 // there isn't a good way to recursively iterate all fields.
@@ -67,29 +68,31 @@ mod generated_tests {
     /// alignment functions to check.
     pub fn size_align_in6_addr() {
         extern "C" {
-            fn __test_size_in6_addr() -> u64;
-            fn __test_align_in6_addr() -> u64;
+            fn ctest_size_of__in6_addr() -> u64;
+            fn ctest_align_of__in6_addr() -> u64;
         }
         unsafe {
-            check_same(mem::size_of::<in6_addr>() as u64,
-                __test_size_in6_addr(), "in6_addr size");
-            check_same(mem::align_of::<in6_addr>() as u64,
-                __test_align_in6_addr(), "in6_addr align");
+            check_same(size_of::<in6_addr>() as u64,
+                    ctest_size_of__in6_addr(), "in6_addr size");
+            check_same(align_of::<in6_addr>() as u64,
+                    ctest_align_of__in6_addr(), "in6_addr align");
         }
     }
 
-    /// Test that the aliased type has the same sign (signed or unsigned) in both Rust and C.
+    /// Test that the aliased type has the same signedness (signed or unsigned) in both Rust and C.
     ///
     /// This check can be performed because `!(0 as _)` yields either -1 or the maximum value
     /// depending on whether a signed or unsigned type is used. This is simply checked on both
     /// Rust and C sides to see if they are equal.
     pub fn sign_in6_addr() {
         extern "C" {
-            fn __test_signed_in6_addr() -> u32;
+            fn ctest_in6_addr_is_signed() -> u32;
         }
+        let all_ones = !(0 as in6_addr);
+        let all_zeros = 0 as in6_addr;
         unsafe {
-            check_same(((!(0 as in6_addr)) < (0 as in6_addr)) as u32,
-                    __test_signed_in6_addr(), "in6_addr signed");
+            check_same((all_ones < all_zeros) as u32,
+                    ctest_in6_addr_is_signed(), "in6_addr signed");
         }
     }
 
@@ -100,29 +103,31 @@ mod generated_tests {
     /// and `0` if the byte is not padding.
     ///
     /// For type aliases, the padding map is all zeroes.
-    fn roundtrip_padding_in6_addr() -> Vec<u8> {
-        vec![0; mem::size_of::<in6_addr>()]
+    fn roundtrip_padding_in6_addr() -> [bool; size_of::<in6_addr>()] {
+        [false; size_of::<in6_addr>()]
     }
 
-    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+    /// Tests whether the alias/struct/union `x` when passed to C and back to Rust remains unchanged.
     ///
     /// It checks if the size is the same as well as if the padding bytes are all in the
     /// correct place.
     pub fn roundtrip_in6_addr() {
-        use std::ffi::c_int;
-
         type U = in6_addr;
         extern "C" {
             fn __test_roundtrip_in6_addr(
-                size: i32, x: U, e: *mut c_int, pad: *const u8
+                size: i32, x: MaybeUninit<U>, e: *mut c_int, pad: *const bool
             ) -> U;
         }
         let pad = roundtrip_padding_in6_addr();
+        assert_eq!(pad.len(), size_of::<U>());
         unsafe {
-            use std::mem::{MaybeUninit, size_of};
             let mut error: c_int = 0;
-            let mut y = MaybeUninit::<U>::uninit();
-            let mut x = MaybeUninit::<U>::uninit();
+            // Fill both x and y with non-zero, deterministic test patterns
+            // Here the pattern is every byte that is a multiple of 256 is set to 42,
+            // and the rest are filled incrementally for c, decrementally for d.
+            // We use volatile writes to prevent compiler optimization.
+            let mut y = MaybeUninit::<U>::zeroed();
+            let mut x = MaybeUninit::<U>::zeroed();
             let x_ptr = x.as_mut_ptr().cast::<u8>();
             let y_ptr = y.as_mut_ptr().cast::<u8>();
             let sz = size_of::<U>();
@@ -134,16 +139,17 @@ mod generated_tests {
                 x_ptr.add(i).write_volatile(c);
                 y_ptr.add(i).write_volatile(d);
             }
-            let r: U = __test_roundtrip_in6_addr(sz as i32, x.assume_init(), &mut error, pad.as_ptr());
-            if error == 1 {
+            // Now we test that the data sent from Rust to C is the same, and from C to Rust is
+            // also the same.
+            let r: U = __test_roundtrip_in6_addr(sz as i32, x, &mut error, pad.as_ptr());
+            if error != 0 {
                 FAILED.store(true, Ordering::Relaxed);
                 return;
             }
-            for (i, elem) in pad.iter().enumerate().take(size_of::<U>()) {
-                if *elem == 1 { continue; }
+            for (i, elem) in pad.iter().enumerate() {
+                if *elem { continue; }
                 let rust = (*y_ptr.add(i)) as usize;
-                let c = (&r as *const _ as *const u8)
-                            .add(i).read_volatile() as usize;
+                let c = (&raw const r).cast::<u8>().add(i).read_volatile() as usize;
                 if rust != c {
                     eprintln!(
                         "rust [{i}] = {rust} != {c} (C): C \"in6_addr\" -> Rust",

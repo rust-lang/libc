@@ -334,13 +334,13 @@ impl Translator {
     }
 
     /// Determine whether a C type is a signed type.
-    pub(crate) fn has_sign(&self, ffi_items: &FfiItems, ty: &syn::Type) -> bool {
+    pub(crate) fn is_signed(&self, ffi_items: &FfiItems, ty: &syn::Type) -> bool {
         match ty {
             syn::Type::Path(path) => {
                 let ident = path.path.segments.last().unwrap().ident.clone();
                 // The only thing other than a primitive that can be signed is an alias.
                 if let Some(aliased) = ffi_items.aliases().iter().find(|a| ident == a.ident()) {
-                    return self.has_sign(ffi_items, &aliased.ty);
+                    return self.is_signed(ffi_items, &aliased.ty);
                 }
                 match self.translate_primitive_type(&ident).as_str() {
                     "char" | "short" | "int" | "long" | "long long" | "int8_t" | "int16_t"
