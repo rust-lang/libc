@@ -67,7 +67,9 @@ pub(crate) enum TranslationErrorKind {
     HasLifetimes,
 
     /// A type that is not ffi compatible was found.
-    #[error("this type is not guaranteed to have a C compatible layout. See improper_ctypes_definitions lint")]
+    #[error(
+        "this type is not guaranteed to have a C compatible layout. See improper_ctypes_definitions lint"
+    )]
     NotFfiCompatible,
 }
 

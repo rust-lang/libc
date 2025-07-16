@@ -1,8 +1,8 @@
 [package]
 name = "ctest-next"
 version = "0.1.0"
-edition = "2021"
-rust-version = "1.87"
+edition = "2024"
+rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-lang/libc"
 publish = false
