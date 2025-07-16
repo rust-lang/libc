@@ -71,22 +71,18 @@ impl TestTemplate {
         let mut const_tests = vec![];
         let mut const_cstr_tests = vec![];
         for constant in ffi_items.constants() {
-            if let syn::Type::Ptr(ptr) = &constant.ty {
-                let is_const_c_char_ptr = matches!(
-                    &*ptr.elem,
-                    syn::Type::Path(path)
-                        if path.path.segments.last().unwrap().ident == "c_char"
-                        && ptr.mutability.is_none()
-                );
-                if is_const_c_char_ptr {
-                    let item = TestCstr {
-                        test_ident: cstr_test_ident(constant.ident()),
-                        rust_ident: constant.ident().into(),
-                        c_ident: helper.c_ident(constant).into(),
-                        c_type: helper.c_type(constant)?.into(),
-                    };
-                    const_cstr_tests.push(item)
-                }
+            if let syn::Type::Ptr(ptr) = &constant.ty
+                && let syn::Type::Path(path) = &*ptr.elem
+                && path.path.segments.last().unwrap().ident == "c_char"
+                && ptr.mutability.is_none()
+            {
+                let item = TestCstr {
+                    test_ident: cstr_test_ident(constant.ident()),
+                    rust_ident: constant.ident().into(),
+                    c_ident: helper.c_ident(constant).into(),
+                    c_type: helper.c_type(constant)?.into(),
+                };
+                const_cstr_tests.push(item)
             } else {
                 let item = TestConst {
                     test_ident: const_test_ident(constant.ident()),
