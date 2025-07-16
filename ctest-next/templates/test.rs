@@ -44,7 +44,7 @@ mod generated_tests {
         }
     }
 
-    {%- for const_cstr in ctx.const_cstr_tests +%}
+{%- for const_cstr in ctx.const_cstr_tests +%}
 
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
@@ -62,9 +62,9 @@ mod generated_tests {
             check_same(val, c, "{{ const_cstr.rust_ident }} string");
         }
     }
-    {%- endfor +%}
+{%- endfor +%}
 
-    {%- for constant in ctx.const_tests +%}
+{%- for constant in ctx.const_tests +%}
 
     // Test that the value of the constant is the same in both Rust and C.
     // This performs a byte by byte comparision of the constant value.
@@ -85,7 +85,7 @@ mod generated_tests {
             }
         }
     }
-    {%- endfor +%}
+{%- endfor +%}
 }
 
 use generated_tests::*;
@@ -109,4 +109,3 @@ fn run_all() {
     {{ test }}();
     {%- endfor +%}
 }
-

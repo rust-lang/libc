@@ -10,7 +10,7 @@ use thiserror::Error;
 use crate::ffi_items::FfiItems;
 use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::{
-    expand, Const, Field, MapInput, Parameter, Result, Static, Struct, Type, VolatileItemKind,
+    Const, Field, MapInput, Parameter, Result, Static, Struct, Type, VolatileItemKind, expand,
 };
 
 /// A function that takes a mappable input and returns its mapping as Some, otherwise
@@ -600,33 +600,34 @@ impl TestGenerator {
             .unwrap_or_else(|| env::var("OUT_DIR").unwrap().into());
         let output_file_path = output_directory.join(output_file_path);
 
+        let ensure_trailing_newline = |s: &mut String| {
+            s.truncate(s.trim_end().len());
+            s.push('\n');
+        };
+
+        let mut rust_file = RustTestTemplate::new(&ffi_items, self)
+            .map_err(|e| GenerationError::TemplateRender("Rust".to_string(), e.to_string()))?
+            .render()
+            .map_err(|e| GenerationError::TemplateRender("Rust".to_string(), e.to_string()))?;
+        ensure_trailing_newline(&mut rust_file);
+
         // Generate the Rust side of the tests.
         File::create(output_file_path.with_extension("rs"))
             .map_err(GenerationError::OsError)?
-            .write_all(
-                RustTestTemplate::new(&ffi_items, self)
-                    .map_err(|e| {
-                        GenerationError::TemplateRender("Rust".to_string(), e.to_string())
-                    })?
-                    .render()
-                    .map_err(|e| {
-                        GenerationError::TemplateRender("Rust".to_string(), e.to_string())
-                    })?
-                    .as_bytes(),
-            )
+            .write_all(rust_file.as_bytes())
             .map_err(GenerationError::OsError)?;
+
+        let mut c_file = CTestTemplate::new(&ffi_items, self)
+            .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?
+            .render()
+            .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?;
+        ensure_trailing_newline(&mut c_file);
 
         // Generate the C/Cxx side of the tests.
         let c_output_path = output_file_path.with_extension("c");
         File::create(&c_output_path)
             .map_err(GenerationError::OsError)?
-            .write_all(
-                CTestTemplate::new(&ffi_items, self)
-                    .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?
-                    .render()
-                    .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?
-                    .as_bytes(),
-            )
+            .write_all(c_file.as_bytes())
             .map_err(GenerationError::OsError)?;
 
         Ok(output_file_path)
