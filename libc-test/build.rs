@@ -3513,7 +3513,7 @@ fn test_neutrino(target: &str) {
         )
     });
 
-    cfg.skip_static(move |name| (name == "__dso_handle"));
+    cfg.skip_static(move |name| name == "__dso_handle");
 
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
 }
