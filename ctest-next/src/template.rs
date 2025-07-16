@@ -9,7 +9,7 @@ use crate::{BoxStr, MapInput, Result, TestGenerator, TranslationError};
 #[derive(Template, Clone)]
 #[template(path = "test.rs")]
 pub(crate) struct RustTestTemplate {
-    pub(crate) template: TestTemplate,
+    pub template: TestTemplate,
 }
 
 impl RustTestTemplate {
@@ -27,8 +27,8 @@ impl RustTestTemplate {
 #[derive(Template, Clone)]
 #[template(path = "test.c")]
 pub(crate) struct CTestTemplate {
-    pub(crate) template: TestTemplate,
-    pub(crate) headers: Vec<String>,
+    pub template: TestTemplate,
+    pub headers: Vec<String>,
 }
 
 impl CTestTemplate {
@@ -46,9 +46,9 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
-    pub(crate) const_cstr_tests: Vec<TestCstr>,
-    pub(crate) const_tests: Vec<TestConst>,
-    pub(crate) test_idents: Vec<BoxStr>,
+    pub const_cstr_tests: Vec<TestCstr>,
+    pub const_tests: Vec<TestConst>,
+    pub test_idents: Vec<BoxStr>,
 }
 
 impl TestTemplate {
