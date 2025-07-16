@@ -2392,7 +2392,8 @@ fn test_freebsd(target: &str) {
                 "sys/shm.h",
                 "sys/socket.h",
                 "sys/socketvar.h",
-                "netinet/in_pcb.h",	// must be after sys/socketvar.h
+                [freebsd15]:"sys/ktls.h",
+                "netinet/in_pcb.h",	// must be after sys/socketvar.h, sys/ktls.h
                 "sys/stat.h",
                 "sys/statvfs.h",
                 "sys/sysctl.h",
