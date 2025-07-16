@@ -37,7 +37,6 @@ impl FfiItems {
     }
 
     /// Return a list of all type aliases found.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn aliases(&self) -> &Vec<Type> {
         &self.aliases
     }
@@ -123,10 +122,32 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         syn::ReturnType::Type(_, ty) => Some(ty.deref().clone()),
     };
 
+    let mut link_name_iter = i
+        .attrs
+        .iter()
+        .filter(|attr| attr.path().is_ident("link_name"));
+
+    let link_name = link_name_iter.next().and_then(|attr| match &attr.meta {
+        syn::Meta::NameValue(nv) => {
+            if let syn::Expr::Lit(expr_lit) = &nv.value {
+                if let syn::Lit::Str(lit_str) = &expr_lit.lit {
+                    return Some(lit_str.value().into_boxed_str());
+                }
+            }
+            None
+        }
+        _ => None,
+    });
+
+    if let Some(attr) = link_name_iter.next() {
+        panic!("multiple `#[link_name = ...]` attributes found: {attr:?}");
+    }
+
     table.foreign_functions.push(Fn {
         public,
         abi,
         ident,
+        link_name,
         parameters,
         return_type,
     });

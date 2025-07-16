@@ -4,13 +4,13 @@ pub type Byte = u8;
 
 #[repr(C)]
 pub struct Person {
-    name: *const c_char,
+    pub name: *const c_char,
     age: u8,
 }
 
 #[repr(C)]
 pub union Word {
-    word: u16,
+    pub word: u16,
     byte: [Byte; 2],
 }
 

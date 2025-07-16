@@ -26,6 +26,7 @@ pub struct Array {
 extern "C" {
     static baz: u16;
 
+    #[link_name = "calloc"]
     fn malloc(size: usize) -> *mut c_void;
 }
 "#;
@@ -56,6 +57,11 @@ fn test_extraction_ffi_items() {
     assert_eq!(collect_idents!(ffi_items.foreign_statics()), ["baz"]);
     assert_eq!(collect_idents!(ffi_items.structs()), ["Array"]);
     assert_eq!(collect_idents!(ffi_items.unions()), ["Word"]);
+
+    assert_eq!(
+        ffi_items.foreign_functions()[0].link_name.as_deref(),
+        Some("calloc")
+    );
 }
 
 #[test]

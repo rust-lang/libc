@@ -12,8 +12,8 @@
 
 {%- for constant in ffi_items.constants() +%}
 {%- let ident = constant.ident() +%}
-{%- let c_type = self.c_type(*constant)? +%}
-{%- let c_ident = self.c_ident(*constant)? +%}
+{%- let c_type = self.c_type(*constant).unwrap() +%}
+{%- let c_ident = self.c_ident(*constant) +%}
 
 static {{ c_type }} __test_const_{{ ident }}_val = {{ c_ident }};
 
@@ -22,5 +22,99 @@ static {{ c_type }} __test_const_{{ ident }}_val = {{ c_ident }};
 {{ c_type }}* __test_const_{{ ident }}(void) {
     return &__test_const_{{ ident }}_val;
 }
+{%- endfor +%}
+
+{%- for alias in ffi_items.aliases() +%}
+{%- let ident = alias.ident() +%}
+{%- let c_type = self.c_type(*alias).unwrap() +%}
+
+{%- include "common/test_size_align.c" +%}
+
+{%- if translator.is_signed(ffi_items, alias.ty) +%}
+
+// Return `1` if the type is signed, otherwise return `0`. 
+uint32_t ctest_{{ ident }}_is_signed(void) {
+    return (({{ c_type }}) -1) < 0;
+}
+{%- endif +%}
+
+{%- if self::should_roundtrip(generator, ident) +%}
+
+{%- include "common/test_roundtrip.c" +%}
+{%- endif +%}
+{%- endfor +%}
+
+{%- for structure in ffi_items.structs() +%}
+{%- let ident = structure.ident() +%}
+{%- let c_type = self.c_type(*structure).unwrap() +%}
+
+{%- include "common/test_size_align.c" +%}
+
+{%- for field in structure.fields +%}
+{%- if !self::should_skip_struct_field(generator, structure, field) +%}
+{%- let rust_field_name = field.ident() +%}
+{%- let c_field_name = self.c_ident(MapInput::StructField(structure, field)) +%}
+
+uint64_t ctest_offset_of__{{ ident }}__{{ rust_field_name }}(void) {
+    return offsetof({{ c_type }}, {{ c_field_name }});
+}
+
+uint64_t ctest_field_size__{{ ident }}__{{ rust_field_name }}(void) {
+    {{ c_type }}* foo = NULL;
+    return sizeof(foo->{{ c_field_name }});
+}
+
+{%- if !self::should_skip_struct_field_type(generator, structure, field) +%}
+{%- let signature = self.c_signature(field.ty, &format!("__test_field_type_{ident}_{rust_field_name}({c_type}* b)")).unwrap() +%}
+{%- let volatile = self.emit_volatile(VolatileItemKind::StructField(structure.clone(), field.clone())) +%}
+
+{{ volatile }}{{ signature }} {
+    return &b->{{ c_field_name }};
+}
+{%- endif +%}
+{%- endif +%}
+{%- endfor +%}
+
+{%- if self::should_roundtrip(generator, ident) +%}
+
+{%- include "common/test_roundtrip.c" +%}
+{%- endif +%}
+{%- endfor +%}
+
+{%- for union_ in ffi_items.unions() +%}
+{%- let ident = union_.ident() +%}
+{%- let c_type = self.c_type(*union_).unwrap() +%}
+
+{%- include "common/test_size_align.c" +%}
+
+{%- for field in union_.fields +%}
+{%- if !self::should_skip_union_field(generator, union_, field) +%}
+{%- let rust_field_name = field.ident() +%}
+{%- let c_field_name = self.c_ident(MapInput::UnionField(union_, field)) +%}
+
+uint64_t ctest_offset_of__{{ ident }}__{{ rust_field_name }}(void) {
+    return offsetof({{ c_type }}, {{ c_field_name }});
+}
+
+uint64_t ctest_field_size__{{ ident }}__{{ rust_field_name }}(void) {
+    {{ c_type }}* foo = NULL;
+    return sizeof(foo->{{ c_field_name }});
+}
+
+{%- if !self::should_skip_union_field_type(generator, union_, field) +%}
+{%- let signature = self.c_signature(field.ty, &format!("__test_field_type_{ident}_{rust_field_name}({c_type}* b)")).unwrap() +%}
+{%- let volatile = self.emit_volatile(VolatileItemKind::UnionField(union_.clone(), field.clone())) +%}
+
+{{ volatile }}{{ signature }} {
+    return &b->{{ c_field_name }};
+}
+{%- endif +%}
+{%- endif +%}
+{%- endfor +%}
+
+{%- if self::should_roundtrip(generator, ident) +%}
+
+{%- include "common/test_roundtrip.c" +%}
+{%- endif +%}
 {%- endfor +%}
 

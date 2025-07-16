@@ -5,12 +5,13 @@
 /// are not allowed at the top-level, so we hack around this by keeping it
 /// inside of a module.
 mod generated_tests {
-    #![allow(non_snake_case)]
+    #![allow(non_snake_case, unused_imports)]
     #![deny(improper_ctypes_definitions)]
-    use std::ffi::CStr;
+    use std::ffi::{CStr, c_char, c_int};
     use std::fmt::{Debug, LowerHex};
+    use std::mem::{MaybeUninit, offset_of, align_of};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-    use std::{mem, ptr, slice};
+    use std::{ptr, slice};
 
     use super::*;
 
@@ -57,14 +58,13 @@ mod generated_tests {
         let val = {{ ident }};
         unsafe {
             let ptr = *__test_const_{{ ident }}();
-            let val = CStr::from_ptr(ptr.cast::<c_char>());
+            let val = CStr::from_ptr(val.cast::<c_char>());
             let val = val.to_str().expect("const {{ ident }} not utf8");
-            let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
+            let c = CStr::from_ptr(ptr as *const _);
             let c = c.to_str().expect("const {{ ident }} not utf8");
             check_same(val, c, "{{ ident }} string");
         }
     }
-
     {%- else +%}
 
     // Test that the value of the constant is the same in both Rust and C.
@@ -77,15 +77,245 @@ mod generated_tests {
         unsafe {
             let ptr1 = ptr::from_ref(&val).cast::<u8>();
             let ptr2 = __test_const_{{ ident }}().cast::<u8>();
-            let ptr1_bytes = slice::from_raw_parts(ptr1, mem::size_of::<{{ ty }}>());
-            let ptr2_bytes = slice::from_raw_parts(ptr2, mem::size_of::<{{ ty }}>());
+            let ptr1_bytes = slice::from_raw_parts(ptr1, size_of::<{{ ty }}>());
+            let ptr2_bytes = slice::from_raw_parts(ptr2, size_of::<{{ ty }}>());
             for (i, (&b1, &b2)) in ptr1_bytes.iter().zip(ptr2_bytes.iter()).enumerate() {
                 // HACK: This may read uninitialized data! We do this because
                 // there isn't a good way to recursively iterate all fields.
-                check_same_hex(b1, b2, &format!("{{ ident }} value at byte {}", i));
+                check_same_hex(b1, b2, &format!("{{ ident }} value at byte {i}"));
             }
         }
     }
+    {%- endif +%}
+    {%- endfor +%}
+
+    {%- for alias in ffi_items.aliases() +%}
+    {%- let ident = alias.ident() +%}
+
+    {%- include "common/test_size_align.rs" +%}
+
+    {%- if translator.is_signed(ffi_items, alias.ty) +%}
+
+    /// Test that the aliased type has the same signedness (signed or unsigned) in both Rust and C.
+    ///
+    /// This check can be performed because `!(0 as _)` yields either -1 or the maximum value
+    /// depending on whether a signed or unsigned type is used. This is simply checked on both
+    /// Rust and C sides to see if they are equal.
+    pub fn sign_{{ ident }}() {
+        extern "C" {
+            fn ctest_{{ ident }}_is_signed() -> u32;
+        }
+        let all_ones = !(0 as {{ ident }});
+        let all_zeros = 0 as {{ ident }};
+        unsafe {
+            check_same((all_ones < all_zeros) as u32,
+                    ctest_{{ ident }}_is_signed(), "{{ ident }} signed");
+        }
+    }
+    {%- endif +%}
+
+    {%- if self::should_roundtrip(generator, ident) +%}
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `1` if the byte is padding,
+    /// and `0` if the byte is not padding.
+    ///
+    /// For type aliases, the padding map is all zeroes.
+    fn roundtrip_padding_{{ ident }}() -> [bool; size_of::<{{ ident }}>()] {
+        [false; size_of::<{{ ident }}>()]
+    }
+
+    {%- include "common/test_roundtrip.rs" +%}
+    {%- endif +%}
+    {%- endfor +%}
+
+    {%- for structure in ffi_items.structs() +%}
+    {%- let ident = structure.ident() +%}
+    {%- let fields = structure.public_fields().collect::<Vec<_>>() +%}
+
+    {%- include "common/test_size_align.rs" +%}
+
+    /// Check that offsets, sizes, and types of each field in a struct are the same in Rust and C.
+    pub fn field_offset_size_{{ ident }}() {
+        {%- for field in structure.public_fields() +%}
+        {%- if !self::should_skip_struct_field(generator, structure, field) +%}
+
+        extern "C" {
+            fn ctest_offset_of__{{ ident }}__{{ field.ident() }}() -> u64;
+            fn ctest_field_size__{{ ident }}__{{ field.ident() }}() -> u64;
+        }
+        unsafe {
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
+            let uninit_ty = uninit_ty.as_ptr();
+            let ty_ptr = &raw const ((*uninit_ty).{{ field.ident() }});
+            let val = ty_ptr.read_unaligned();
+            check_same(offset_of!({{ ident }}, {{ field.ident() }}),
+                    ctest_offset_of__{{ ident }}__{{ field.ident() }}() as usize,
+                    "field offset {{ field.ident() }} of {{ ident }}");
+            check_same(size_of_val(&val) as u64,
+                    ctest_field_size__{{ ident }}__{{ field.ident() }}(),
+                    "field size {{ field.ident() }} of {{ ident }}");
+        }
+        {%- if !self::should_skip_struct_field_type(generator, structure, field) +%}
+
+        extern "C" {
+            fn __test_field_type_{{ ident }}_{{ field.ident() }}(a: *const {{ ident }}) -> *mut u8;
+        }
+        unsafe {
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
+            let ty_ptr = uninit_ty.as_ptr();
+            let field_ptr = &raw const ((*ty_ptr).{{ field.ident() }});
+            check_same(field_ptr as *mut _,
+                    __test_field_type_{{ ident }}_{{ field.ident() }}(ty_ptr),
+                    "field type {{ field.ident() }} of {{ ident }}");
+        }
+        {%- endif +%}
+        {%- endif +%}
+        {%- endfor +%}
+    }
+
+    {%- if self::should_roundtrip(generator, ident) +%}
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `1` if the byte is padding,
+    /// and `0` if the byte is not padding.
+    ///
+    /// For type aliases, the padding map is all zeroes.
+    fn roundtrip_padding_{{ ident }}() -> [bool; size_of::<{{ ident }}>()] {
+        // stores (offset, size) for each field
+        {#- If there is no public field these become unused. +#}
+        {%- if fields.len() > 0 +%}
+        let mut v = Vec::<(usize, usize)>::new();
+        let bar = MaybeUninit::<{{ ident }}>::zeroed();
+        let bar = bar.as_ptr();
+        {%- else +%}
+        let v = Vec::<(usize, usize)>::new();
+        {%- endif +%}
+        {%- for field in fields +%}
+        unsafe {
+            let ty_ptr = &raw const ((*bar).{{ field.ident() }});
+            let val = ty_ptr.read_unaligned();
+            let size = size_of_val(&val);
+            let off = offset_of!({{ ident }}, {{ field.ident() }});
+            v.push((off, size));
+        }
+        {%- endfor +%}
+        // This vector contains `1` if the byte is padding
+        // and `0` if the byte is not padding.
+        let mut pad = [true; size_of::<{{ ident }}>()];
+        // Initialize all bytes as:
+        //  - padding if we have fields, this means that only
+        //  the fields will be checked
+        //  - no-padding if we have a type alias: if this
+        //  causes problems the type alias should be skipped
+        for (off, size) in &v {
+            for i in 0..*size {
+                pad[off + i] = false;
+            }
+        }
+        pad
+    }
+
+    {%- include "common/test_roundtrip.rs" +%}
+    {%- endif +%}
+    {%- endfor +%}
+
+    {%- for union_ in ffi_items.unions() +%}
+    {%- let ident = union_.ident() +%}
+    {%- let fields = union_.public_fields().collect::<Vec<_>>() +%}
+
+    {%- include "common/test_size_align.rs" +%}
+
+    /// Check that offsets, sizes, and types of each field in a struct are the same in Rust and C.
+    pub fn field_offset_size_{{ ident }}() {
+        {%- for field in union_.public_fields() +%}
+        {%- if !self::should_skip_union_field(generator, union_, field) +%}
+
+        extern "C" {
+            fn ctest_offset_of__{{ ident }}__{{ field.ident() }}() -> u64;
+            fn ctest_field_size__{{ ident }}__{{ field.ident() }}() -> u64;
+        }
+        // Check that the offset and size are the same.
+        unsafe {
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
+            let uninit_ty = uninit_ty.as_ptr();
+            let ty_ptr = &raw const ((*uninit_ty).{{ field.ident() }});
+            let val = ty_ptr.read_unaligned();
+            check_same(offset_of!({{ ident }}, {{ field.ident() }}),
+                    ctest_offset_of__{{ ident }}__{{ field.ident() }}() as usize,
+                    "field offset {{ field.ident() }} of {{ ident }}");
+            check_same(size_of_val(&val) as u64,
+                    ctest_field_size__{{ ident }}__{{ field.ident() }}(),
+                    "field size {{ field.ident() }} of {{ ident }}");
+        }
+        {%- if !self::should_skip_union_field_type(generator, union_, field) +%}
+
+        extern "C" {
+            fn __test_field_type_{{ ident }}_{{ field.ident() }}(a: *const {{ ident }}) -> *mut u8;
+        }
+        // Check that the type of the field is the same.
+        unsafe {
+            let uninit_ty = MaybeUninit::<{{ ident }}>::zeroed();
+            let ty_ptr = uninit_ty.as_ptr();
+            let field_ptr = &raw const ((*ty_ptr).{{ field.ident() }});
+            check_same(field_ptr as *mut _,
+                    __test_field_type_{{ ident }}_{{ field.ident() }}(ty_ptr),
+                    "field type {{ field.ident() }} of {{ ident }}");
+        }
+        {%- endif +%}
+        {%- endif +%}
+        {%- endfor +%}
+    }
+
+    {%- if self::should_roundtrip(generator, ident) +%}
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `1` if the byte is padding,
+    /// and `0` if the byte is not padding.
+    ///
+    /// For type aliases, the padding map is all zeroes.
+    fn roundtrip_padding_{{ ident }}() -> [bool; size_of::<{{ ident }}>()] {
+        // stores (offset, size) for each field
+        {#- If there is no public field these become unused. +#}
+        {%- if fields.len() > 0 +%}
+        let mut v = Vec::<(usize, usize)>::new();
+        let bar = MaybeUninit::<{{ ident }}>::zeroed();
+        let bar = bar.as_ptr();
+        {%- else +%}
+        let v = Vec::<(usize, usize)>::new();
+        {%- endif +%}
+        {%- for field in fields +%}
+        unsafe {
+            let ty_ptr = &raw const ((*bar).{{ field.ident() }});
+            let val = ty_ptr.read_unaligned();
+            let size = size_of_val(&val);
+            let off = offset_of!({{ ident }}, {{ field.ident() }});
+            v.push((off, size));
+        }
+        {%- endfor +%}
+        // This vector contains `1` if the byte is padding
+        // and `0` if the byte is not padding.
+        let mut pad = [true; size_of::<{{ ident }}>()];
+        // Initialize all bytes as:
+        //  - padding if we have fields, this means that only
+        //  the fields will be checked
+        //  - no-padding if we have a type alias: if this
+        //  causes problems the type alias should be skipped
+        for (off, size) in &v {
+            for i in 0..*size {
+                pad[off + i] = false;
+            }
+        }
+        pad
+    }
+
+    {%- include "common/test_roundtrip.rs" +%}
     {%- endif +%}
     {%- endfor +%}
 }
@@ -109,6 +339,35 @@ fn main() {
 fn run_all() {
     {%- for constant in ffi_items.constants() +%}
     const_{{ constant.ident() }}();
+    {%- endfor +%}
+
+    {%- for alias in ffi_items.aliases() +%}
+    {%- let ident = alias.ident() +%}
+    size_align_{{ ident }}();
+    {%- if translator.is_signed(ffi_items, alias.ty) +%}
+    sign_{{ ident }}();
+    {%- endif +%}
+    {%- if self::should_roundtrip(generator, ident) +%}
+    roundtrip_{{ ident }}();
+    {%- endif +%}
+    {%- endfor +%}
+
+    {%- for structure in ffi_items.structs() +%}
+    {%- let ident = structure.ident() +%}
+    size_align_{{ ident }}();
+    field_offset_size_{{ ident }}();
+    {%- if self::should_roundtrip(generator, structure.ident()) +%}
+    roundtrip_{{ ident }}();
+    {%- endif +%}
+    {%- endfor +%}
+
+    {%- for union_ in ffi_items.unions() +%}
+    {%- let ident = union_.ident() +%}
+    size_align_{{ ident }}();
+    field_offset_size_{{ ident }}();
+    {%- if self::should_roundtrip(generator, union_.ident()) +%}
+    roundtrip_{{ ident }}();
+    {%- endif +%}
     {%- endfor +%}
 }
 
