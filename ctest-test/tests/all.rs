@@ -27,18 +27,18 @@ fn output(cmd: &mut Command) -> (String, ExitStatus) {
 }
 
 #[test]
-fn t1_next() {
+fn t1() {
     // t1 must run to completion without any errors.
-    let (output, status) = output(&mut cmd("t1-next"));
+    let (output, status) = output(&mut cmd("t1"));
     assert!(status.success(), "output: {output}");
     assert!(!output.contains("bad "), "{output}");
     eprintln!("output: {output}");
 }
 
 #[test]
-fn t2_next() {
+fn t2() {
     // t2 must fail to run to completion, and only have the errors we expect it to have.
-    let (output, status) = output(&mut cmd("t2-next"));
+    let (output, status) = output(&mut cmd("t2"));
     assert!(!status.success(), "output: {output}");
 
     // FIXME(ctest): Errors currently commented out are not tested.

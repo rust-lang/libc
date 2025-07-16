@@ -90,6 +90,19 @@ impl<'a> CTestTemplate<'a> {
     ///
     /// Arrays and Function types in C have different rules for placement, such as array lengths
     /// being placed after the parameter list.
+    ///
+    /// For example, consider the C function:
+    /// ```c
+    /// void *(*__test_fn_malloc(void))(size_t) {
+    ///     return malloc;
+    /// }
+    /// ```
+    /// Because the signature of the function `__test_fn_malloc(void)` is inside the function
+    /// pointer return type, it has a different syntax that must be accounted for. This would be
+    /// done using: `self.c_signature(return_type, "__test_fn_malloc(void)")` where return_type
+    /// is the type of the function pointer `malloc` (extern "C" fn(usize) -> * c_void).
+    ///
+    /// This method can handle bare function types and arrays, and fall back for other types.
     pub(crate) fn c_signature(
         &self,
         ty: &syn::Type,

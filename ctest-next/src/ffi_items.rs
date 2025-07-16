@@ -139,8 +139,8 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         _ => None,
     });
 
-    if link_name_iter.next().is_some() {
-        panic!("multiple #[link_name = ...] attributes found");
+    if let Some(attr) = link_name_iter.next() {
+        panic!("multiple `#[link_name = ...]` attributes found: {attr:?}");
     }
 
     table.foreign_functions.push(Fn {
