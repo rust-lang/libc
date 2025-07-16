@@ -11,6 +11,6 @@ static bool ctest_const_ON_val_static = ON;
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-bool* __ctest_const_ON(void) {
+bool *ctest_const__ON(void) {
     return &ctest_const_ON_val_static;
 }

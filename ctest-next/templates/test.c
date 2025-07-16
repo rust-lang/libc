@@ -15,23 +15,22 @@
 
 {%- for const_cstr in ctx.const_cstr_tests +%}
 
-static {{ const_cstr.c_type }} ctest_const_{{ const_cstr.rust_ident }}_val_static = {{ const_cstr.c_ident }};
+static char *ctest_const_{{ const_cstr.id }}_val_static = {{ const_cstr.c_val }};
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-{{ const_cstr.c_type }}* __{{ const_cstr.test_ident }}(void) {
-    return &ctest_const_{{ const_cstr.rust_ident }}_val_static;
+char *ctest_const_cstr__{{ const_cstr.id }}(void) {
+    return ctest_const_{{ const_cstr.id }}_val_static;
 }
 {%- endfor +%}
 
 {%- for constant in ctx.const_tests +%}
 
-static {{ constant.c_type }} ctest_const_{{ constant.rust_ident }}_val_static = {{ constant.c_ident }};
+static {{ constant.c_ty }} ctest_const_{{ constant.id }}_val_static = {{ constant.c_val }};
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-{{ constant.c_type }}* __{{ constant.test_ident }}(void) {
-    return &ctest_const_{{ constant.rust_ident }}_val_static;
+{{ constant.c_ty }} *ctest_const__{{ constant.id }}(void) {
+    return &ctest_const_{{ constant.id }}_val_static;
 }
 {%- endfor +%}
-
