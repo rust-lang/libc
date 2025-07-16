@@ -43,14 +43,14 @@ mod generated_tests {
 
     // Test that the value of the constant is the same in both Rust and C.
     // This performs a byte by byte comparision of the constant value.
-    pub fn const_ON() {
+    pub fn ctest_const_ON() {
         extern "C" {
-            fn __test_const_ON() -> *const bool;
+            fn __ctest_const_ON() -> *const bool;
         }
         let val = ON;
         unsafe {
             let ptr1 = ptr::from_ref(&val).cast::<u8>();
-            let ptr2 = __test_const_ON().cast::<u8>();
+            let ptr2 = __ctest_const_ON().cast::<u8>();
             let ptr1_bytes = slice::from_raw_parts(ptr1, mem::size_of::<bool>());
             let ptr2_bytes = slice::from_raw_parts(ptr2, mem::size_of::<bool>());
             for (i, (&b1, &b2)) in ptr1_bytes.iter().zip(ptr2_bytes.iter()).enumerate() {
@@ -79,5 +79,5 @@ fn main() {
 
 // Run all tests by calling the functions that define them.
 fn run_all() {
-    const_ON();
+    ctest_const_ON();
 }

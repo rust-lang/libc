@@ -4,20 +4,21 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+
 #include <simple.h>
 
-static char const* __test_const_A_val = A;
+static char const* ctest_const_A_val_static = A;
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-char const** __test_const_A(void) {
-    return &__test_const_A_val;
+char const** __ctest_const_cstr_A(void) {
+    return &ctest_const_A_val_static;
 }
 
-static char const* __test_const_B_val = C_B;
+static char const* ctest_const_B_val_static = C_B;
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-char const** __test_const_B(void) {
-    return &__test_const_B_val;
+char const** __ctest_const_cstr_B(void) {
+    return &ctest_const_B_val_static;
 }

@@ -43,13 +43,13 @@ mod generated_tests {
 
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
-    pub fn const_A() {
+    pub fn ctest_const_cstr_A() {
         extern "C" {
-            fn __test_const_A() -> *const *const u8;
+            fn __ctest_const_cstr_A() -> *const *const u8;
         }
         let val = A;
         unsafe {
-            let ptr = *__test_const_A();
+            let ptr = *__ctest_const_cstr_A();
             let val = CStr::from_ptr(ptr.cast::<c_char>());
             let val = val.to_str().expect("const A not utf8");
             let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
@@ -76,5 +76,5 @@ fn main() {
 
 // Run all tests by calling the functions that define them.
 fn run_all() {
-    const_A();
+    ctest_const_cstr_A();
 }

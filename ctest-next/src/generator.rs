@@ -605,6 +605,9 @@ impl TestGenerator {
             .map_err(GenerationError::OsError)?
             .write_all(
                 RustTestTemplate::new(&ffi_items, self)
+                    .map_err(|e| {
+                        GenerationError::TemplateRender("Rust".to_string(), e.to_string())
+                    })?
                     .render()
                     .map_err(|e| {
                         GenerationError::TemplateRender("Rust".to_string(), e.to_string())
@@ -619,6 +622,7 @@ impl TestGenerator {
             .map_err(GenerationError::OsError)?
             .write_all(
                 CTestTemplate::new(&ffi_items, self)
+                    .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?
                     .render()
                     .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?
                     .as_bytes(),
@@ -657,12 +661,12 @@ impl TestGenerator {
     }
 
     /// Maps Rust identifiers or types to C counterparts, or defaults to the original name.
-    pub(crate) fn map<'a>(&self, item: impl Into<MapInput<'a>>) -> Result<String, GenerationError> {
+    pub(crate) fn map<'a>(&self, item: impl Into<MapInput<'a>>) -> String {
         let item = item.into();
         if let Some(mapped) = self.mapped_names.iter().find_map(|f| f(&item)) {
-            return Ok(mapped);
+            return mapped;
         }
-        Ok(match item {
+        match item {
             MapInput::Const(c) => c.ident().to_string(),
             MapInput::Fn(f) => f.ident().to_string(),
             MapInput::Static(s) => s.ident().to_string(),
@@ -672,6 +676,6 @@ impl TestGenerator {
             MapInput::StructType(ty) => format!("struct {ty}"),
             MapInput::UnionType(ty) => format!("union {ty}"),
             MapInput::Type(ty) => ty.to_string(),
-        })
+        }
     }
 }
