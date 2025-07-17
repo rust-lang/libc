@@ -10,7 +10,8 @@ use thiserror::Error;
 use crate::ffi_items::FfiItems;
 use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::{
-    Const, Field, MapInput, Parameter, Result, Static, Struct, Type, VolatileItemKind, expand,
+    Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type,
+    VolatileItemKind, expand,
 };
 
 /// A function that takes a mappable input and returns its mapping as Some, otherwise
@@ -46,6 +47,12 @@ pub enum GenerationError {
     MacroExpansion(PathBuf, String),
     #[error("unable to parse expanded crate {0}: {1}")]
     RustSyntax(String, String),
+    #[error("unable to prepare template input: {0}")]
+    Translation(#[from] TranslationError),
+    #[error("unable to render Rust template: {0}")]
+    RustTemplateRender(askama::Error),
+    #[error("unable to render C template: {0}")]
+    CTemplateRender(askama::Error),
     #[error("unable to render {0} template: {1}")]
     TemplateRender(String, String),
     #[error("unable to create or write template file: {0}")]
@@ -605,10 +612,9 @@ impl TestGenerator {
             s.push('\n');
         };
 
-        let mut rust_file = RustTestTemplate::new(&ffi_items, self)
-            .map_err(|e| GenerationError::TemplateRender("Rust".to_string(), e.to_string()))?
+        let mut rust_file = RustTestTemplate::new(&ffi_items, self)?
             .render()
-            .map_err(|e| GenerationError::TemplateRender("Rust".to_string(), e.to_string()))?;
+            .map_err(GenerationError::RustTemplateRender)?;
         ensure_trailing_newline(&mut rust_file);
 
         // Generate the Rust side of the tests.
@@ -617,10 +623,9 @@ impl TestGenerator {
             .write_all(rust_file.as_bytes())
             .map_err(GenerationError::OsError)?;
 
-        let mut c_file = CTestTemplate::new(&ffi_items, self)
-            .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?
+        let mut c_file = CTestTemplate::new(&ffi_items, self)?
             .render()
-            .map_err(|e| GenerationError::TemplateRender("C".to_string(), e.to_string()))?;
+            .map_err(GenerationError::CTemplateRender)?;
         ensure_trailing_newline(&mut c_file);
 
         // Generate the C/Cxx side of the tests.
