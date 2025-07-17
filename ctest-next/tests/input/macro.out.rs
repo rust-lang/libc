@@ -40,6 +40,40 @@ mod generated_tests {
             NTESTS.fetch_add(1, Ordering::Relaxed);
         }
     }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_VecU8() {
+        extern "C" {
+            fn ctest_size_of__VecU8() -> u64;
+            fn ctest_align_of__VecU8() -> u64;
+        }
+
+        let rust_size = size_of::<VecU8>() as u64;
+        let c_size = unsafe { ctest_size_of__VecU8() };
+
+        let rust_align = align_of::<VecU8>() as u64;
+        let c_align = unsafe { ctest_align_of__VecU8() };
+
+        check_same(rust_size, c_size, "VecU8 size");
+        check_same(rust_align, c_align, "VecU8 align");
+    }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_VecU16() {
+        extern "C" {
+            fn ctest_size_of__VecU16() -> u64;
+            fn ctest_align_of__VecU16() -> u64;
+        }
+
+        let rust_size = size_of::<VecU16>() as u64;
+        let c_size = unsafe { ctest_size_of__VecU16() };
+
+        let rust_align = align_of::<VecU16>() as u64;
+        let c_align = unsafe { ctest_align_of__VecU16() };
+
+        check_same(rust_size, c_size, "VecU16 size");
+        check_same(rust_align, c_align, "VecU16 align");
+    }
 }
 
 use generated_tests::*;
@@ -59,4 +93,6 @@ fn main() {
 
 // Run all tests by calling the functions that define them.
 fn run_all() {
+    ctest_size_align_VecU8();
+    ctest_size_align_VecU16();
 }
