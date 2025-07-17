@@ -3,7 +3,6 @@ use crate::BoxStr;
 /// Represents a constant variable defined in Rust.
 #[derive(Debug, Clone)]
 pub struct Const {
-    #[expect(unused)]
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
     pub(crate) ty: syn::Type,

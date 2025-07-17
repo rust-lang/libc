@@ -172,13 +172,21 @@ impl<'a> TranslateHelper<'a> {
 
         let (ident, ty) = match item {
             MapInput::Const(c) => (c.ident(), self.translator.translate_type(&c.ty)?),
-            MapInput::Alias(a) => (a.ident(), self.translator.translate_type(&a.ty)?),
-            MapInput::Field(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
+            MapInput::StructField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
+            MapInput::UnionField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
             MapInput::Static(s) => (s.ident(), self.translator.translate_type(&s.ty)?),
+            // For functions, their type would be a bare fn signature, which would need to be saved
+            // inside of `Fn` when parsed.
             MapInput::Fn(_) => unimplemented!(),
-            MapInput::Struct(_) => unimplemented!(),
+            // For structs/unions/aliases, their type is the same as their identifier.
+            MapInput::Alias(a) => (a.ident(), a.ident().to_string()),
+            MapInput::Struct(s) => (s.ident(), s.ident().to_string()),
+            MapInput::Union(u) => (u.ident(), u.ident().to_string()),
+
             MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
             MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
+            MapInput::StructFieldType(_, _) => panic!("MapInput::StructFieldType is not allowed!"),
+            MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
         };
 

@@ -5,7 +5,6 @@ use crate::{Abi, BoxStr, Parameter};
 /// This structure is only used for parsing functions in extern blocks.
 #[derive(Debug, Clone)]
 pub struct Fn {
-    #[expect(unused)]
     pub(crate) public: bool,
     #[expect(unused)]
     pub(crate) abi: Abi,
