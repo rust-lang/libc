@@ -45,34 +45,46 @@ mod generated_tests {
     // While fat pointers can't be translated, we instead use * const c_char.
     pub fn ctest_const_cstr_A() {
         extern "C" {
-            fn __ctest_const_cstr_A() -> *const *const u8;
+            fn ctest_const_cstr__A() -> *const c_char;
         }
-        let val = A;
-        unsafe {
-            let ptr = *__ctest_const_cstr_A();
-            let val = CStr::from_ptr(ptr.cast::<c_char>());
-            let val = val.to_str().expect("const A not utf8");
-            let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
-            let c = c.to_str().expect("const A not utf8");
-            check_same(val, c, "A string");
-        }
+
+        // SAFETY: we assume that `c_char` pointer consts are for C strings.
+        let r_val = unsafe {
+            let r_ptr: *const c_char = A;
+            assert!(!r_ptr.is_null(), "const A is null");
+            CStr::from_ptr(r_ptr)
+        };
+
+        // SAFETY: FFI call returns a valid C string.
+        let c_val = unsafe {
+            let c_ptr: *const c_char = unsafe { ctest_const_cstr__A()  };
+            CStr::from_ptr(c_ptr)
+        };
+
+        check_same(r_val, c_val, "const A string");
     }
 
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
     pub fn ctest_const_cstr_B() {
         extern "C" {
-            fn __ctest_const_cstr_B() -> *const *const u8;
+            fn ctest_const_cstr__B() -> *const c_char;
         }
-        let val = B;
-        unsafe {
-            let ptr = *__ctest_const_cstr_B();
-            let val = CStr::from_ptr(ptr.cast::<c_char>());
-            let val = val.to_str().expect("const B not utf8");
-            let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
-            let c = c.to_str().expect("const B not utf8");
-            check_same(val, c, "B string");
-        }
+
+        // SAFETY: we assume that `c_char` pointer consts are for C strings.
+        let r_val = unsafe {
+            let r_ptr: *const c_char = B;
+            assert!(!r_ptr.is_null(), "const B is null");
+            CStr::from_ptr(r_ptr)
+        };
+
+        // SAFETY: FFI call returns a valid C string.
+        let c_val = unsafe {
+            let c_ptr: *const c_char = unsafe { ctest_const_cstr__B()  };
+            CStr::from_ptr(c_ptr)
+        };
+
+        check_same(r_val, c_val, "const B string");
     }
 }
 

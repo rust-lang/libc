@@ -7,18 +7,18 @@
 
 #include <simple.h>
 
-static char const* ctest_const_A_val_static = A;
+static char *ctest_const_A_val_static = A;
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-char const** __ctest_const_cstr_A(void) {
-    return &ctest_const_A_val_static;
+char *ctest_const_cstr__A(void) {
+    return ctest_const_A_val_static;
 }
 
-static char const* ctest_const_B_val_static = C_B;
+static char *ctest_const_B_val_static = C_B;
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-char const** __ctest_const_cstr_B(void) {
-    return &ctest_const_B_val_static;
+char *ctest_const_cstr__B(void) {
+    return ctest_const_B_val_static;
 }

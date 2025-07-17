@@ -85,8 +85,13 @@ jobs:
       - name: Execute build.sh
         run: |
           set -eux
-          # Remove `-Dwarnings` at the MSRV since lints may be different
-          [ "${{ matrix.toolchain }}" = "1.63.0" ] && export RUSTFLAGS=""
+          if [ "${{ matrix.toolchain }}" = "1.63.0" ]; then
+              # Remove `-Dwarnings` at the MSRV since lints may be different
+              export RUSTFLAGS=""
+              # Remove `ctest-next` which uses the 2024 edition
+              perl -i -ne 'print unless /"ctest-next",/' Cargo.toml
+          fi
+
           ./ci/verify-build.sh
       - name: Target size after job completion
         run: du -sh target | sort -k 2
@@ -314,6 +319,8 @@ jobs:
         echo "MSRV=$msrv" >> "$GITHUB_ENV"
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
+    - name: Remove edition 2024 crates
+      run: perl -i -ne 'print unless /"ctest-next",/' Cargo.toml
     - uses: Swatinem/rust-cache@v2
     - run: cargo build -p ctest
 

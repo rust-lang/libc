@@ -44,48 +44,60 @@ mod generated_tests {
         }
     }
 
-    {%- for const_cstr in ctx.const_cstr_tests +%}
+{%- for const_cstr in ctx.const_cstr_tests +%}
 
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
-    pub fn {{ const_cstr.test_ident }}() {
+    pub fn {{ const_cstr.test_name }}() {
         extern "C" {
-            fn __{{ const_cstr.test_ident }}() -> *const *const u8;
+            fn ctest_const_cstr__{{ const_cstr.id }}() -> *const c_char;
         }
-        let val = {{ const_cstr.rust_ident }};
-        unsafe {
-            let ptr = *__{{ const_cstr.test_ident }}();
-            let val = CStr::from_ptr(ptr.cast::<c_char>());
-            let val = val.to_str().expect("const {{ const_cstr.rust_ident }} not utf8");
-            let c = ::std::ffi::CStr::from_ptr(ptr as *const _);
-            let c = c.to_str().expect("const {{ const_cstr.rust_ident }} not utf8");
-            check_same(val, c, "{{ const_cstr.rust_ident }} string");
-        }
-    }
-    {%- endfor +%}
 
-    {%- for constant in ctx.const_tests +%}
+        // SAFETY: we assume that `c_char` pointer consts are for C strings.
+        let r_val = unsafe {
+            let r_ptr: *const c_char = {{ const_cstr.rust_val }};
+            assert!(!r_ptr.is_null(), "const {{ const_cstr.rust_val }} is null");
+            CStr::from_ptr(r_ptr)
+        };
+
+        // SAFETY: FFI call returns a valid C string.
+        let c_val = unsafe {
+            let c_ptr: *const c_char = unsafe { ctest_const_cstr__{{ const_cstr.id }}()  };
+            CStr::from_ptr(c_ptr)
+        };
+
+        check_same(r_val, c_val, "const {{ const_cstr.rust_val }} string");
+    }
+{%- endfor +%}
+
+{%- for constant in ctx.const_tests +%}
 
     // Test that the value of the constant is the same in both Rust and C.
     // This performs a byte by byte comparision of the constant value.
-    pub fn {{ constant.test_ident }}() {
+    pub fn {{ constant.test_name }}() {
+        type T = {{ constant.rust_ty }};
         extern "C" {
-            fn __{{ constant.test_ident }}() -> *const {{ constant.rust_type }};
+            fn ctest_const__{{ constant.id }}() -> *const T;
         }
-        let val = {{ constant.rust_ident }};
-        unsafe {
-            let ptr1 = ptr::from_ref(&val).cast::<u8>();
-            let ptr2 = __{{ constant.test_ident }}().cast::<u8>();
-            let ptr1_bytes = slice::from_raw_parts(ptr1, mem::size_of::<{{ constant.rust_type }}>());
-            let ptr2_bytes = slice::from_raw_parts(ptr2, mem::size_of::<{{ constant.rust_type }}>());
-            for (i, (&b1, &b2)) in ptr1_bytes.iter().zip(ptr2_bytes.iter()).enumerate() {
-                // HACK: This may read uninitialized data! We do this because
-                // there isn't a good way to recursively iterate all fields.
-                check_same_hex(b1, b2, &format!("{{ constant.rust_ident }} value at byte {}", i));
-            }
+
+        /* HACK: The slices may contian uninitialized data! We do this because
+         * there isn't a good way to recursively iterate all fields. */
+
+        let r_val: T = {{ constant.rust_val }};
+        let r_bytes = unsafe {
+            slice::from_raw_parts(ptr::from_ref(&r_val).cast::<u8>(), size_of::<T>())
+        };
+
+        let c_bytes = unsafe {
+            let c_ptr: *const T = unsafe { ctest_const__{{ constant.id }}() };
+            slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
+        };
+
+        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
+            check_same_hex(b1, b2, &format!("{{ constant.rust_val }} value at byte {}", i));
         }
     }
-    {%- endfor +%}
+{%- endfor +%}
 }
 
 use generated_tests::*;
@@ -109,4 +121,3 @@ fn run_all() {
     {{ test }}();
     {%- endfor +%}
 }
-

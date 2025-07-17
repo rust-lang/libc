@@ -9,7 +9,7 @@ use crate::{BoxStr, MapInput, Result, TestGenerator, TranslationError};
 #[derive(Template, Clone)]
 #[template(path = "test.rs")]
 pub(crate) struct RustTestTemplate {
-    pub(crate) template: TestTemplate,
+    pub template: TestTemplate,
 }
 
 impl RustTestTemplate {
@@ -27,8 +27,8 @@ impl RustTestTemplate {
 #[derive(Template, Clone)]
 #[template(path = "test.c")]
 pub(crate) struct CTestTemplate {
-    pub(crate) template: TestTemplate,
-    pub(crate) headers: Vec<String>,
+    pub template: TestTemplate,
+    pub headers: Vec<String>,
 }
 
 impl CTestTemplate {
@@ -46,9 +46,9 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
-    pub(crate) const_cstr_tests: Vec<TestCstr>,
-    pub(crate) const_tests: Vec<TestConst>,
-    pub(crate) test_idents: Vec<BoxStr>,
+    pub const_cstr_tests: Vec<TestCStr>,
+    pub const_tests: Vec<TestConst>,
+    pub test_idents: Vec<BoxStr>,
 }
 
 impl TestTemplate {
@@ -71,37 +71,34 @@ impl TestTemplate {
         let mut const_tests = vec![];
         let mut const_cstr_tests = vec![];
         for constant in ffi_items.constants() {
-            if let syn::Type::Ptr(ptr) = &constant.ty {
-                let is_const_c_char_ptr = matches!(
-                    &*ptr.elem,
-                    syn::Type::Path(path)
-                        if path.path.segments.last().unwrap().ident == "c_char"
-                        && ptr.mutability.is_none()
-                );
-                if is_const_c_char_ptr {
-                    let item = TestCstr {
-                        test_ident: cstr_test_ident(constant.ident()),
-                        rust_ident: constant.ident().into(),
-                        c_ident: helper.c_ident(constant).into(),
-                        c_type: helper.c_type(constant)?.into(),
-                    };
-                    const_cstr_tests.push(item)
-                }
+            if let syn::Type::Ptr(ptr) = &constant.ty
+                && let syn::Type::Path(path) = &*ptr.elem
+                && path.path.segments.last().unwrap().ident == "c_char"
+                && ptr.mutability.is_none()
+            {
+                let item = TestCStr {
+                    id: constant.ident().into(),
+                    test_name: cstr_test_ident(constant.ident()),
+                    rust_val: constant.ident().into(),
+                    c_val: helper.c_ident(constant).into(),
+                };
+                const_cstr_tests.push(item)
             } else {
                 let item = TestConst {
-                    test_ident: const_test_ident(constant.ident()),
-                    rust_ident: constant.ident.clone(),
-                    rust_type: constant.ty.to_token_stream().to_string().into_boxed_str(),
-                    c_ident: helper.c_ident(constant).into(),
-                    c_type: helper.c_type(constant)?.into(),
+                    id: constant.ident().into(),
+                    test_name: const_test_ident(constant.ident()),
+                    rust_val: constant.ident.clone(),
+                    rust_ty: constant.ty.to_token_stream().to_string().into_boxed_str(),
+                    c_val: helper.c_ident(constant).into(),
+                    c_ty: helper.c_type(constant)?.into(),
                 };
                 const_tests.push(item)
             }
         }
 
         let mut test_idents = vec![];
-        test_idents.extend(const_cstr_tests.iter().map(|test| test.test_ident.clone()));
-        test_idents.extend(const_tests.iter().map(|test| test.test_ident.clone()));
+        test_idents.extend(const_cstr_tests.iter().map(|test| test.test_name.clone()));
+        test_idents.extend(const_tests.iter().map(|test| test.test_name.clone()));
 
         Ok(Self {
             const_cstr_tests,
@@ -111,23 +108,35 @@ impl TestTemplate {
     }
 }
 
+/* Many test structures have the following fields:
+ *
+ * - `test_name`: The function name.
+ * - `id`: An identifier that can be used to create functions related to this type without conflict,
+ *    usually also part of `test_name`.
+ * - `rust_val`: Identifier for a Rust value, with path qualifications if needed.
+ * - `rust_ty`: The Rust type of the relevant item, with path qualifications if needed.
+ * - `c_val`: Identifier for a C value (e.g. `#define`)
+ * - `c_ty`: The C type of the constant, qualified with `struct` or `union` if needed.
+ */
+
 /// Information required to test a constant CStr.
 #[derive(Clone, Debug)]
-pub(crate) struct TestCstr {
-    pub(crate) test_ident: BoxStr,
-    pub(crate) rust_ident: BoxStr,
-    pub(crate) c_ident: BoxStr,
-    pub(crate) c_type: BoxStr,
+pub(crate) struct TestCStr {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub rust_val: BoxStr,
+    pub c_val: BoxStr,
 }
 
 /// Information required to test a constant.
 #[derive(Clone, Debug)]
 pub(crate) struct TestConst {
-    pub(crate) test_ident: BoxStr,
-    pub(crate) rust_ident: BoxStr,
-    pub(crate) rust_type: BoxStr,
-    pub(crate) c_ident: BoxStr,
-    pub(crate) c_type: BoxStr,
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub rust_val: BoxStr,
+    pub c_val: BoxStr,
+    pub rust_ty: BoxStr,
+    pub c_ty: BoxStr,
 }
 
 /// The Rust name of the cstr test.

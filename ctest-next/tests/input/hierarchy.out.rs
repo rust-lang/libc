@@ -44,20 +44,26 @@ mod generated_tests {
     // Test that the value of the constant is the same in both Rust and C.
     // This performs a byte by byte comparision of the constant value.
     pub fn ctest_const_ON() {
+        type T = bool;
         extern "C" {
-            fn __ctest_const_ON() -> *const bool;
+            fn ctest_const__ON() -> *const T;
         }
-        let val = ON;
-        unsafe {
-            let ptr1 = ptr::from_ref(&val).cast::<u8>();
-            let ptr2 = __ctest_const_ON().cast::<u8>();
-            let ptr1_bytes = slice::from_raw_parts(ptr1, mem::size_of::<bool>());
-            let ptr2_bytes = slice::from_raw_parts(ptr2, mem::size_of::<bool>());
-            for (i, (&b1, &b2)) in ptr1_bytes.iter().zip(ptr2_bytes.iter()).enumerate() {
-                // HACK: This may read uninitialized data! We do this because
-                // there isn't a good way to recursively iterate all fields.
-                check_same_hex(b1, b2, &format!("ON value at byte {}", i));
-            }
+
+        /* HACK: The slices may contian uninitialized data! We do this because
+         * there isn't a good way to recursively iterate all fields. */
+
+        let r_val: T = ON;
+        let r_bytes = unsafe {
+            slice::from_raw_parts(ptr::from_ref(&r_val).cast::<u8>(), size_of::<T>())
+        };
+
+        let c_bytes = unsafe {
+            let c_ptr: *const T = unsafe { ctest_const__ON() };
+            slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
+        };
+
+        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
+            check_same_hex(b1, b2, &format!("ON value at byte {}", i));
         }
     }
 }
