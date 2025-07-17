@@ -10,7 +10,7 @@ use thiserror::Error;
 use crate::ffi_items::FfiItems;
 use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::{
-    Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type,
+    Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type, Union,
     VolatileItemKind, expand,
 };
 
@@ -23,6 +23,8 @@ type Skip = Box<dyn Fn(&MapInput) -> bool>;
 type VolatileItem = Box<dyn Fn(VolatileItemKind) -> bool>;
 /// A function that determines whether a function arument is an array.
 type ArrayArg = Box<dyn Fn(crate::Fn, Parameter) -> bool>;
+/// A function that determines whether to skip a test, taking in the identifier name.
+type SkipTest = Box<dyn Fn(&str) -> bool>;
 
 /// A builder used to generate a test suite.
 #[derive(Default)]
@@ -32,13 +34,16 @@ pub struct TestGenerator {
     pub(crate) target: Option<String>,
     pub(crate) includes: Vec<PathBuf>,
     out_dir: Option<PathBuf>,
-    flags: Vec<String>,
-    defines: Vec<(String, Option<String>)>,
+    pub(crate) flags: Vec<String>,
+    pub(crate) defines: Vec<(String, Option<String>)>,
+    cfg: Vec<(String, Option<String>)>,
     mapped_names: Vec<MappedName>,
     skips: Vec<Skip>,
     verbose_skip: bool,
     volatile_items: Vec<VolatileItem>,
     array_arg: Option<ArrayArg>,
+    skip_private: bool,
+    skip_roundtrip: Option<SkipTest>,
 }
 
 #[derive(Debug, Error)]
@@ -53,12 +58,10 @@ pub enum GenerationError {
     RustTemplateRender(askama::Error),
     #[error("unable to render C template: {0}")]
     CTemplateRender(askama::Error),
-    #[error("unable to render {0} template: {1}")]
-    TemplateRender(String, String),
     #[error("unable to create or write template file: {0}")]
     OsError(std::io::Error),
-    #[error("unable to map Rust identifier or type")]
-    ItemMap,
+    #[error("one of {0} environment variable(s) not set")]
+    EnvVarNotFound(String),
 }
 
 impl TestGenerator {
@@ -105,6 +108,34 @@ impl TestGenerator {
         self
     }
 
+    /// Set a `--cfg` option with which to expand the Rust FFI crate.
+    ///
+    /// By default the Rust code is run through expansion to determine what C
+    /// APIs are exposed (to allow differences across platforms).
+    ///
+    /// The `k` argument is the `#[cfg]` value to define, while `v` is the
+    /// optional value of `v`:
+    ///
+    /// * `k == "foo"` and `v == None` makes `#[cfg(foo)]` expand. That is,
+    ///   `cfg!(foo)` expands to `true`.
+    ///
+    /// * `k == "bar"` and `v == Some("baz")` makes `#[cfg(bar = "baz")]`
+    ///   expand. That is, `cfg!(bar = "baz")` expands to `true`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.cfg("foo", None) // cfg!(foo)
+    ///    .cfg("bar", Some("baz")); // cfg!(bar = "baz")
+    /// ```
+    pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut Self {
+        self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
+        self
+    }
+
     /// Add a path to the C compiler header lookup path.
     ///
     /// This is useful for if the C library is installed to a nonstandard
@@ -142,6 +173,21 @@ impl TestGenerator {
         self
     }
 
+    /// Non public items are not tested if `skip` is `true`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_private(true);
+    /// ```
+    pub fn skip_private(&mut self, skip: bool) -> &mut Self {
+        self.skip_private = skip;
+        self
+    }
+
     /// Skipped item names are printed to `stderr` if `skip` is `true`.
     ///
     /// # Examples
@@ -165,11 +211,14 @@ impl TestGenerator {
     /// use ctest_next::{TestGenerator, VolatileItemKind};
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.volatile_field(|s, f| {
+    /// cfg.volatile_struct_field(|s, f| {
     ///     s.ident() == "foo_t" && f.ident() == "inner_t"
     /// });
     /// ```
-    pub fn volatile_field(&mut self, f: impl Fn(Struct, Field) -> bool + 'static) -> &mut Self {
+    pub fn volatile_struct_field(
+        &mut self,
+        f: impl Fn(Struct, Field) -> bool + 'static,
+    ) -> &mut Self {
         self.volatile_items.push(Box::new(move |item| {
             if let VolatileItemKind::StructField(s, f_) = item {
                 f(s, f_)
@@ -300,7 +349,7 @@ impl TestGenerator {
         self
     }
 
-    /// Configures whether all tests for a field are skipped or not.
+    /// Configures whether the tests for a union are emitted.
     ///
     /// # Examples
     ///
@@ -308,14 +357,63 @@ impl TestGenerator {
     /// use ctest_next::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_field(|s, f| {
+    /// cfg.skip_union(|u| {
+    ///     u.ident().starts_with("foo_")
+    /// });
+    /// ```
+    pub fn skip_union(&mut self, f: impl Fn(&Union) -> bool + 'static) -> &mut Self {
+        self.skips.push(Box::new(move |item| {
+            if let MapInput::Union(union_) = item {
+                f(union_)
+            } else {
+                false
+            }
+        }));
+        self
+    }
+
+    /// Configures whether all tests for a struct field are skipped or not.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_struct_field(|s, f| {
     ///     s.ident() == "foo_t" || (s.ident() == "bar_t" && f.ident() == "bar")
     /// });
     /// ```
-    pub fn skip_field(&mut self, f: impl Fn(&Struct, &Field) -> bool + 'static) -> &mut Self {
+    pub fn skip_struct_field(
+        &mut self,
+        f: impl Fn(&Struct, &Field) -> bool + 'static,
+    ) -> &mut Self {
         self.skips.push(Box::new(move |item| {
-            if let MapInput::Field(struct_, field) = item {
+            if let MapInput::StructField(struct_, field) = item {
                 f(struct_, field)
+            } else {
+                false
+            }
+        }));
+        self
+    }
+
+    /// Configures whether all tests for a union field are skipped or not.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_union_field(|s, f| {
+    ///     s.ident() == "foo_t" || (s.ident() == "bar_t" && f.ident() == "bar")
+    /// });
+    /// ```
+    pub fn skip_union_field(&mut self, f: impl Fn(&Union, &Field) -> bool + 'static) -> &mut Self {
+        self.skips.push(Box::new(move |item| {
+            if let MapInput::UnionField(union_, field) = item {
+                f(union_, field)
             } else {
                 false
             }
@@ -453,7 +551,88 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether tests for the type of a field is skipped or not.
+    ///
+    /// The closure is given a Rust struct as well as a field within that
+    /// struct. A flag indicating whether the field's type should be tested is
+    /// returned.
+    ///
+    /// This is useful when, for some reason, a field type is intentionally not
+    /// the same in C and Rust.
+    ///
+    /// By default all field properties are tested.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_struct_field_type(|s, field| {
+    ///     s.ident() == "foo_t" || (s.ident() == "bar_t" && field.ident() == "bar")
+    /// });
+    /// ```
+    pub fn skip_struct_field_type(
+        &mut self,
+        f: impl Fn(&Struct, &Field) -> bool + 'static,
+    ) -> &mut Self {
+        self.skips.push(Box::new(move |item| {
+            if let MapInput::StructFieldType(struct_, field) = item {
+                f(struct_, field)
+            } else {
+                false
+            }
+        }));
+        self
+    }
+
+    /// Configures whether tests for the type of a field is skipped or not.
+    ///
+    /// The closure is given a Rust union as well as a field within that
+    /// union. A flag indicating whether the field's type should be tested is
+    /// returned.
+    ///
+    /// This is useful when, for some reason, a field type is intentionally not
+    /// the same in C and Rust.
+    ///
+    /// By default all field properties are tested.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_union_field_type(|s, field| {
+    ///     s.ident() == "foo_t" || (s.ident() == "bar_t" && field.ident() == "bar")
+    /// });
+    /// ```
+    pub fn skip_union_field_type(
+        &mut self,
+        f: impl Fn(&Union, &Field) -> bool + 'static,
+    ) -> &mut Self {
+        self.skips.push(Box::new(move |item| {
+            if let MapInput::UnionFieldType(union_, field) = item {
+                f(union_, field)
+            } else {
+                false
+            }
+        }));
+        self
+    }
+
     /// Configures how Rust `const`s names are translated to C.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.rename_constant(|c| {
+    ///     (c.ident() == "FOO").then_some("BAR".to_string())
+    /// });
+    /// ```
     pub fn rename_constant(&mut self, f: impl Fn(&Const) -> Option<String> + 'static) -> &mut Self {
         self.mapped_names.push(Box::new(move |item| {
             if let MapInput::Const(c) = item {
@@ -473,17 +652,43 @@ impl TestGenerator {
     /// use ctest_next::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.rename_field(|_s, field| {
+    /// cfg.rename_struct_field(|_s, field| {
     ///     Some(field.ident().replace("foo", "bar"))
     /// });
     /// ```
-    pub fn rename_field(
+    pub fn rename_struct_field(
         &mut self,
         f: impl Fn(&Struct, &Field) -> Option<String> + 'static,
     ) -> &mut Self {
         self.mapped_names.push(Box::new(move |item| {
-            if let MapInput::Field(s, c) = item {
+            if let MapInput::StructField(s, c) = item {
                 f(s, c)
+            } else {
+                None
+            }
+        }));
+        self
+    }
+
+    /// Configures how a Rust union field is translated to a C union field.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.rename_union_field(|_u, field| {
+    ///     Some(field.ident().replace("foo", "bar"))
+    /// });
+    /// ```
+    pub fn rename_union_field(
+        &mut self,
+        f: impl Fn(&Union, &Field) -> Option<String> + 'static,
+    ) -> &mut Self {
+        self.mapped_names.push(Box::new(move |item| {
+            if let MapInput::UnionField(u, c) = item {
+                f(u, c)
             } else {
                 None
             }
@@ -505,6 +710,27 @@ impl TestGenerator {
         self.mapped_names.push(Box::new(move |item| {
             if let MapInput::Fn(func) = item {
                 f(func)
+            } else {
+                None
+            }
+        }));
+        self
+    }
+
+    /// Configures the name of a static in the generated C code.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.rename_static(|f| Some(format!("{}_c", f.ident())));
+    /// ```
+    pub fn rename_static(&mut self, f: impl Fn(&Static) -> Option<String> + 'static) -> &mut Self {
+        self.mapped_names.push(Box::new(move |item| {
+            if let MapInput::Static(s) = item {
+                f(s)
             } else {
                 None
             }
@@ -581,6 +807,31 @@ impl TestGenerator {
         self
     }
 
+    // FIXME(ctest): should arrays be handled differently?
+
+    /// Configures whether the ABI roundtrip tests for a type are emitted.
+    ///
+    /// The closure is passed the name of a Rust type and returns whether the
+    /// tests are generated.
+    ///
+    /// By default all types undergo ABI roundtrip tests. Arrays cannot undergo
+    /// an ABI roundtrip because they cannot be returned by C functions, and
+    /// have to be manually skipped here.
+    ///
+    /// # Examples
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_roundtrip(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
+    pub fn skip_roundtrip(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.skip_roundtrip = Some(Box::new(f));
+        self
+    }
+
     /// Generate the Rust and C testing files.
     ///
     /// Returns the path to the generated file.
@@ -589,7 +840,7 @@ impl TestGenerator {
         crate_path: impl AsRef<Path>,
         output_file_path: impl AsRef<Path>,
     ) -> Result<PathBuf, GenerationError> {
-        let expanded = expand(&crate_path).map_err(|e| {
+        let expanded = expand(&crate_path, &self.cfg).map_err(|e| {
             GenerationError::MacroExpansion(crate_path.as_ref().to_path_buf(), e.to_string())
         })?;
         let ast = syn::parse_file(&expanded)
@@ -604,7 +855,8 @@ impl TestGenerator {
         let output_directory = self
             .out_dir
             .clone()
-            .unwrap_or_else(|| env::var("OUT_DIR").unwrap().into());
+            .or_else(|| env::var("OUT_DIR").ok().map(Into::into))
+            .ok_or(GenerationError::EnvVarNotFound("OUT_DIR".to_string()))?;
         let output_file_path = output_directory.join(output_file_path);
 
         let ensure_trailing_newline = |s: &mut String| {
@@ -639,7 +891,9 @@ impl TestGenerator {
     }
 
     /// Skips entire items such as structs, constants, and aliases from being tested.
-    /// Does not skip specific tests or specific fields.
+    ///
+    /// Does not skip specific tests or specific fields. If `skip_private` is true,
+    /// it will skip tests for all private items.
     fn filter_ffi_items(&self, ffi_items: &mut FfiItems) {
         let verbose = self.verbose_skip;
 
@@ -649,6 +903,7 @@ impl TestGenerator {
                     .$field
                     .extract_if(.., |item| {
                         self.skips.iter().any(|f| f(&MapInput::$variant(item)))
+                            || (self.skip_private && !item.public)
                     })
                     .collect();
                 if verbose {
@@ -677,10 +932,14 @@ impl TestGenerator {
             MapInput::Fn(f) => f.ident().to_string(),
             MapInput::Static(s) => s.ident().to_string(),
             MapInput::Struct(s) => s.ident().to_string(),
+            MapInput::Union(u) => u.ident().to_string(),
             MapInput::Alias(t) => t.ident().to_string(),
-            MapInput::Field(_, f) => f.ident().to_string(),
+            MapInput::StructField(_, f) => f.ident().to_string(),
+            MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
             MapInput::UnionType(ty) => format!("union {ty}"),
+            MapInput::StructFieldType(_, f) => f.ident().to_string(),
+            MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => ty.to_string(),
         }
     }

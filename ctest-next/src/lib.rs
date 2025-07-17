@@ -54,9 +54,12 @@ pub enum VolatileItemKind {
 pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct identifier.
     Struct(&'a Struct),
+    Union(&'a Union),
     Fn(&'a crate::Fn),
     #[expect(unused)]
-    Field(&'a Struct, &'a Field),
+    StructField(&'a Struct, &'a Field),
+    #[expect(unused)]
+    UnionField(&'a Union, &'a Field),
     Alias(&'a Type),
     Const(&'a Const),
     Static(&'a Static),
@@ -64,6 +67,10 @@ pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct type.
     StructType(&'a str),
     UnionType(&'a str),
+    #[expect(unused)]
+    StructFieldType(&'a Struct, &'a Field),
+    #[expect(unused)]
+    UnionFieldType(&'a Union, &'a Field),
 }
 
 /* The From impls make it easier to write code in the test templates. */
@@ -95,5 +102,11 @@ impl<'a> From<&'a Static> for MapInput<'a> {
 impl<'a> From<&'a Struct> for MapInput<'a> {
     fn from(s: &'a Struct) -> Self {
         MapInput::Struct(s)
+    }
+}
+
+impl<'a> From<&'a Union> for MapInput<'a> {
+    fn from(u: &'a Union) -> Self {
+        MapInput::Union(u)
     }
 }

@@ -10,14 +10,15 @@ use quote::ToTokens;
 use syn::spanned::Spanned;
 use thiserror::Error;
 
+use crate::BoxStr;
+
 /// An error that occurs during translation, detailing cause and location.
 #[derive(Debug, Error)]
 pub struct TranslationError {
     #[source]
     kind: TranslationErrorKind,
     source: String,
-    #[expect(unused)]
-    span: Span,
+    span: BoxStr,
 }
 
 impl TranslationError {
@@ -26,24 +27,29 @@ impl TranslationError {
         Self {
             kind,
             source: source.to_string(),
-            span,
+            span: format!(
+                "{fname}:{line}:{col}",
+                // FIXME(ctest): Not yet stable, see:
+                // https://github.com/dtolnay/proc-macro2/issues/503
+                // fname = span.file(),
+                fname = "<unknown file>",
+                line = span.start().line,
+                col = span.start().column,
+            )
+            .into(),
         }
+    }
+}
+
+impl From<TranslationError> for askama::Error {
+    fn from(err: TranslationError) -> Self {
+        askama::Error::Custom(err.into())
     }
 }
 
 impl fmt::Display for TranslationError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}: `{}`",
-            self.kind,
-            self.source,
-            // FIXME(ctest): Not yet stable, see:
-            // https://github.com/dtolnay/proc-macro2/issues/503
-            // self.span.file(),
-            // self.span.start().line,
-            // self.span.start().column,
-        )
+        write!(f, "{}: `{}` at {}", self.kind, self.source, self.span)
     }
 }
 
