@@ -372,8 +372,8 @@ s! {
         pub tcpi_snd_wnd: u32,
     }
 
-    // MIPS implementation is special (see mips arch folders)
-    #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
+    // MIPS/s390x implementation is special (see arch folders)
+    #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
     pub struct statfs {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,
@@ -389,8 +389,8 @@ s! {
         pub f_spare: [c_ulong; 4],
     }
 
-    // MIPS implementation is special (see mips arch folders)
-    #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
+    // MIPS/s390x implementation is special (see arch folders)
+    #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
     pub struct statfs64 {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,

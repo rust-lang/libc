@@ -68,6 +68,36 @@ s! {
         pub st_blocks: crate::blkcnt64_t,
         __unused: [c_long; 3],
     }
+
+    pub struct statfs {
+        pub f_type: c_uint,
+        pub f_bsize: c_uint,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
+        pub f_files: crate::fsfilcnt_t,
+        pub f_ffree: crate::fsfilcnt_t,
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_uint,
+        pub f_frsize: c_uint,
+        pub f_flags: c_uint,
+        pub f_spare: [c_uint; 4],
+    }
+
+    pub struct statfs64 {
+        pub f_type: c_uint,
+        pub f_bsize: c_uint,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
+        pub f_files: crate::fsfilcnt_t,
+        pub f_ffree: crate::fsfilcnt_t,
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_uint,
+        pub f_frsize: c_uint,
+        pub f_flags: c_uint,
+        pub f_spare: [c_uint; 4],
+    }
 }
 
 s_no_extra_traits! {
@@ -715,3 +745,4 @@ pub const SYS_futex_waitv: c_long = 449;
 pub const SYS_set_mempolicy_home_node: c_long = 450;
 pub const SYS_cachestat: c_long = 451;
 pub const SYS_fchmodat2: c_long = 452;
+pub const SYS_mseal: c_long = 462;
