@@ -1762,7 +1762,7 @@ s_no_extra_traits! {
     }
 
     pub struct xktls_session_onedir {
-        pub gennum: u64,
+        pub gen: u64,
         _rsrv1: [u64; 8],
         _rsrv2: [u32; 8],
         pub iv: [u8; 32],
@@ -1779,7 +1779,7 @@ s_no_extra_traits! {
         pub tls_bs: u8,
         pub flags: u8,
         pub drv_st_len: u16,
-        pub ifnet: [u8; 16],
+        pub ifnet: [c_char; 16],
     }
 
     pub struct xktls_session {
