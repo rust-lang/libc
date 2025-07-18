@@ -6,9 +6,10 @@
 mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
-    use std::ffi::CStr;
+    use std::ffi::{CStr, c_char};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+    #[allow(unused_imports)]
     use std::{mem, ptr, slice};
 
     use super::*;
@@ -58,7 +59,7 @@ mod generated_tests {
         };
 
         let c_bytes = unsafe {
-            let c_ptr: *const T = unsafe { ctest_const__ON() };
+            let c_ptr: *const T = ctest_const__ON();
             slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
         };
 
