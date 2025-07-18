@@ -1968,6 +1968,7 @@ fn test_android(target: &str) {
                 "linux/netfilter_ipv6.h",
                 "linux/netfilter_ipv6/ip6_tables.h",
                 "linux/netlink.h",
+                "linux/nl80211.h",
                 "linux/quota.h",
                 "linux/reboot.h",
                 "linux/seccomp.h",
@@ -3868,6 +3869,7 @@ fn test_linux(target: &str) {
             "linux/netfilter_ipv6.h",
             "linux/netfilter_ipv6/ip6_tables.h",
             "linux/netlink.h",
+            "linux/nl80211.h",
             "linux/nsfs.h",
             "linux/openat2.h",
             // FIXME(linux): some items require Linux >= 5.6:
@@ -4197,6 +4199,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("KEXEC_")
                 || name.starts_with("MS_")
                 || name.starts_with("MSG_")
+                || name.starts_with("NL80211_")
                 || name.starts_with("OPEN_TREE_")
                 || name.starts_with("P_")
                 || name.starts_with("PF_")
@@ -4660,6 +4663,33 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "PROC_EVENT_NONZERO_EXIT" => true,
+
+            // FIXME(linux): Requires >= 6.8 kernel headers
+            "NL80211_CMD_SET_TID_TO_LINK_MAPPING"
+            | "NL80211_ATTR_BSS_DUMP_INCLUDE_USE_DATA"
+            | "NL80211_ATTR_MLO_TTLM_DLINK"
+            | "NL80211_ATTR_MLO_TTLM_ULINK"
+            | "NL80211_BSS_USE_FOR"
+            | "NL80211_BSS_CANNOT_USE_REASONS"
+            // FIXME(linux): Requires >= 6.9 kernel headers
+            | "NL80211_ATTR_ASSOC_SPP_AMSDU"
+            // FIXME(linux): Requires >= 6.11 kernel headers
+            | "NL80211_ATTR_WIPHY_RADIOS"
+            | "NL80211_ATTR_WIPHY_INTERFACE_COMBINATIONS"
+            // FIXME(linux): Requires >= 6.13 kernel headers
+            | "NL80211_ATTR_VIF_RADIO_MASK"
+            // FIXME(linux): Requires >= 6.14 kernel headers
+            | "NL80211_ATTR_SUPPORTED_SELECTORS"
+            | "NL80211_ATTR_MLO_RECONF_REM_LINKS"
+            | "NL80211_ATTR_EPCS"
+            // FIXME(linux): Requires >= 6.15 kernel headers
+            | "NL80211_ATTR_ASSOC_MLD_EXT_CAPA_OPS"
+            | "NL80211_ATTR_WIPHY_RADIO_INDEX"
+            // FIXME(linux): Requires >= 6.16 kernel headers
+            | "NL80211_MAX_SUPP_SELECTORS"
+            // FIXME(linux): Requires >= 6.14 kernel headers
+            | "NL80211_CMD_ASSOC_MLO_RECONF"
+            | "NL80211_CMD_EPCS_CFG" => true,
 
             _ => false,
         }
