@@ -1,9 +1,9 @@
 #![allow(dead_code)]
 
-use libc::*;
+use std::ffi::{c_char, c_double, c_int, c_long, c_uint, c_void};
 
 pub type T1Foo = i32;
-pub const T1S: &str = "foo";
+pub const T1S: *const c_char = b"foo\0".as_ptr().cast();
 
 pub const T1N: i32 = 5;
 
@@ -61,7 +61,7 @@ const NOT_PRESENT: u32 = 5;
 
 pub type Arr = [i32; 4];
 
-extern "C" {
+unsafe extern "C" {
     pub fn T1a();
     pub fn T1b() -> *mut c_void;
     pub fn T1c(a: *mut c_void) -> *mut c_void;
@@ -91,7 +91,7 @@ pub fn foo() {
     assert_eq!(1, 1);
 }
 
-extern "C" {
+unsafe extern "C" {
     pub static T1_static_u8: u8;
     /* FIXME(#4365): duplicate symbol errors when enabled
     // pub static mut T1_static_mut_u8: u8;
@@ -177,7 +177,7 @@ pub struct V {
     pub v: *mut u8,
 }
 
-extern "C" {
+unsafe extern "C" {
     pub static mut vol_ptr: *mut u8;
     pub fn T1_vol0(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
     pub fn T1_vol1(arg0: *mut c_void, arg1: *mut c_void) -> *mut c_void;
