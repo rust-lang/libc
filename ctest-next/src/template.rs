@@ -46,12 +46,15 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
+    pub signededness_tests: Vec<TestSignededness>,
+    pub size_align_tests: Vec<TestSizeAlign>,
     pub const_cstr_tests: Vec<TestCStr>,
     pub const_tests: Vec<TestConst>,
     pub test_idents: Vec<BoxStr>,
 }
 
 impl TestTemplate {
+    /// Populate all tests for all items depending on the configuration provided.
     pub(crate) fn new(
         ffi_items: &FfiItems,
         generator: &TestGenerator,
@@ -62,15 +65,20 @@ impl TestTemplate {
             translator: Translator::new(),
         };
 
-        /* Figure out which tests are to be generated. */
-        // FIXME(ctest): Populate more test information, maybe extract into separate methods.
-        // The workflow would be to create a struct that stores information for the new test,
-        // and populating that struct here, so that the also things that have to be added to
-        // the test templates are the new tests parameterized by that struct.
+        let mut template = Self::default();
+        template.populate_const_and_cstr_tests(&helper)?;
+        template.populate_size_align_tests(&helper)?;
+        template.populate_signededness_tests(&helper)?;
 
-        let mut const_tests = vec![];
-        let mut const_cstr_tests = vec![];
-        for constant in ffi_items.constants() {
+        Ok(template)
+    }
+
+    /// Populates tests for constants and C-str constants, keeping track of the names of each test.
+    fn populate_const_and_cstr_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for constant in helper.ffi_items.constants() {
             if let syn::Type::Ptr(ptr) = &constant.ty
                 && let syn::Type::Path(path) = &*ptr.elem
                 && path.path.segments.last().unwrap().ident == "c_char"
@@ -82,29 +90,95 @@ impl TestTemplate {
                     rust_val: constant.ident().into(),
                     c_val: helper.c_ident(constant).into(),
                 };
-                const_cstr_tests.push(item)
+                self.const_cstr_tests.push(item.clone());
+                self.test_idents.push(item.test_name);
             } else {
                 let item = TestConst {
                     id: constant.ident().into(),
                     test_name: const_test_ident(constant.ident()),
-                    rust_val: constant.ident.clone(),
+                    rust_val: constant.ident().into(),
                     rust_ty: constant.ty.to_token_stream().to_string().into_boxed_str(),
                     c_val: helper.c_ident(constant).into(),
                     c_ty: helper.c_type(constant)?.into(),
                 };
-                const_tests.push(item)
+                self.const_tests.push(item.clone());
+                self.test_idents.push(item.test_name);
             }
         }
 
-        let mut test_idents = vec![];
-        test_idents.extend(const_cstr_tests.iter().map(|test| test.test_name.clone()));
-        test_idents.extend(const_tests.iter().map(|test| test.test_name.clone()));
+        Ok(())
+    }
 
-        Ok(Self {
-            const_cstr_tests,
-            const_tests,
-            test_idents,
-        })
+    /// Populates size and alignment tests for aliases, structs, and unions.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_size_align_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for alias in helper.ffi_items.aliases() {
+            let item = TestSizeAlign {
+                test_name: size_align_test_ident(alias.ident()),
+                id: alias.ident().into(),
+                rust_ty: alias.ident().into(),
+                c_ty: helper.c_type(alias)?.into(),
+            };
+            self.size_align_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+        for struct_ in helper.ffi_items.structs() {
+            let item = TestSizeAlign {
+                test_name: size_align_test_ident(struct_.ident()),
+                id: struct_.ident().into(),
+                rust_ty: struct_.ident().into(),
+                c_ty: helper.c_type(struct_)?.into(),
+            };
+            self.size_align_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+        for union_ in helper.ffi_items.unions() {
+            let item = TestSizeAlign {
+                test_name: size_align_test_ident(union_.ident()),
+                id: union_.ident().into(),
+                rust_ty: union_.ident().into(),
+                c_ty: helper.c_type(union_)?.into(),
+            };
+            self.size_align_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
+
+    /// Populates signededness tests for aliases.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_signededness_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for alias in helper.ffi_items.aliases() {
+            let should_skip_signededness_test = helper
+                .generator
+                .skip_signededness
+                .as_ref()
+                .is_some_and(|skip| skip(alias.ident()));
+
+            if !helper.translator.is_signed(helper.ffi_items, &alias.ty)
+                || should_skip_signededness_test
+            {
+                continue;
+            }
+            let item = TestSignededness {
+                test_name: signededness_test_ident(alias.ident()),
+                id: alias.ident().into(),
+                c_ty: helper.c_type(alias)?.into(),
+            };
+            self.signededness_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
     }
 }
 
@@ -118,6 +192,21 @@ impl TestTemplate {
  * - `c_val`: Identifier for a C value (e.g. `#define`)
  * - `c_ty`: The C type of the constant, qualified with `struct` or `union` if needed.
  */
+
+#[derive(Clone, Debug)]
+pub(crate) struct TestSignededness {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub c_ty: BoxStr,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct TestSizeAlign {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub rust_ty: BoxStr,
+    pub c_ty: BoxStr,
+}
 
 /// Information required to test a constant CStr.
 #[derive(Clone, Debug)]
@@ -139,16 +228,18 @@ pub(crate) struct TestConst {
     pub c_ty: BoxStr,
 }
 
-/// The Rust name of the cstr test.
-///
-/// The C name of this same test is the same with `__` prepended.
+fn signededness_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_signededness_{ident}").into()
+}
+
+fn size_align_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_size_align_{ident}").into()
+}
+
 fn cstr_test_ident(ident: &str) -> BoxStr {
     format!("ctest_const_cstr_{ident}").into()
 }
 
-/// The Rust name of the const test.
-///
-/// The C name of this test is the same with `__` prepended.
 fn const_test_ident(ident: &str) -> BoxStr {
     format!("ctest_const_{ident}").into()
 }

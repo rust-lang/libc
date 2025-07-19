@@ -98,6 +98,45 @@ mod generated_tests {
         }
     }
 {%- endfor +%}
+
+{%- for item in ctx.size_align_tests +%}
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn {{ item.test_name }}() {
+        extern "C" {
+            fn ctest_size_of__{{ item.id }}() -> u64;
+            fn ctest_align_of__{{ item.id }}() -> u64;
+        }
+
+        let rust_size = size_of::<{{ item.rust_ty }}>() as u64;
+        let c_size = unsafe { ctest_size_of__{{ item.id }}() };
+
+        let rust_align = align_of::<{{ item.rust_ty }}>() as u64;
+        let c_align = unsafe { ctest_align_of__{{ item.id }}() };
+
+        check_same(rust_size, c_size, "{{ item.id }} size");
+        check_same(rust_align, c_align, "{{ item.id }} align");
+    }
+{%- endfor +%}
+
+{%- for alias in ctx.signededness_tests +%}
+
+    /// Make sure that the signededness of a type alias in Rust and C is the same.
+    ///
+    /// This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
+    /// this would result in a value larger than zero. For signed types, this results in a value
+    /// smaller than 0.
+    pub fn {{ alias.test_name }}() {
+         extern "C" {
+            fn ctest_signededness_of__{{ alias.id }}() -> u32;
+        }
+        let all_ones = !(0 as {{ alias.id }});
+        let all_zeros = 0 as {{ alias.id }};
+        let c_is_signed = unsafe { ctest_signededness_of__{{ alias.id }}() };
+
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "{{ alias.id }} signed");
+    }
+{%- endfor +%}
 }
 
 use generated_tests::*;

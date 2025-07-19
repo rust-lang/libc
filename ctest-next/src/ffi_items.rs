@@ -37,7 +37,6 @@ impl FfiItems {
     }
 
     /// Return a list of all type aliases found.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn aliases(&self) -> &Vec<Type> {
         &self.aliases
     }

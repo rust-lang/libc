@@ -44,6 +44,7 @@ pub struct TestGenerator {
     array_arg: Option<ArrayArg>,
     skip_private: bool,
     skip_roundtrip: Option<SkipTest>,
+    pub(crate) skip_signededness: Option<SkipTest>,
 }
 
 #[derive(Debug, Error)]
@@ -829,6 +830,28 @@ impl TestGenerator {
     /// ```
     pub fn skip_roundtrip(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
         self.skip_roundtrip = Some(Box::new(f));
+        self
+    }
+
+    /// Configures whether a type's signededness is tested or not.
+    ///
+    /// The closure is given the name of a Rust type, and returns whether the
+    /// type should be tested as having the right sign (positive or negative).
+    ///
+    /// By default all signededness checks are performed.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_signededness(|s| {
+    ///     s.starts_with("foo_")
+    /// });
+    /// ```
+    pub fn skip_signededness(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.skip_signededness = Some(Box::new(f));
         self
     }
 

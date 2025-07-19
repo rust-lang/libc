@@ -6,3 +6,15 @@
 #include <stdio.h>
 
 #include <macro.h>
+
+// Return the size of a type.
+uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
+
+// Return the alignment of a type.
+uint64_t ctest_align_of__VecU8(void) { return _Alignof(struct VecU8); }
+
+// Return the size of a type.
+uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
+
+// Return the alignment of a type.
+uint64_t ctest_align_of__VecU16(void) { return _Alignof(struct VecU16); }

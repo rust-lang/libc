@@ -14,3 +14,28 @@ static char *ctest_const_A_val_static = A;
 char *ctest_const_cstr__A(void) {
     return ctest_const_A_val_static;
 }
+
+// Return the size of a type.
+uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
+
+// Return the alignment of a type.
+uint64_t ctest_align_of__Byte(void) { return _Alignof(Byte); }
+
+// Return the size of a type.
+uint64_t ctest_size_of__Person(void) { return sizeof(struct Person); }
+
+// Return the alignment of a type.
+uint64_t ctest_align_of__Person(void) { return _Alignof(struct Person); }
+
+// Return the size of a type.
+uint64_t ctest_size_of__Word(void) { return sizeof(union Word); }
+
+// Return the alignment of a type.
+uint64_t ctest_align_of__Word(void) { return _Alignof(union Word); }
+
+// Return `1` if the type is signed, otherwise return `0`.
+// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+uint32_t ctest_signededness_of__Byte(void) {
+    Byte all_ones = (Byte) -1;
+    return all_ones < 0;
+}
