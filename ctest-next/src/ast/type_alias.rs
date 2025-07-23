@@ -5,7 +5,6 @@ use crate::BoxStr;
 pub struct Type {
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) ty: syn::Type,
 }
 

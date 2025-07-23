@@ -11,6 +11,7 @@ use syn::spanned::Spanned;
 use thiserror::Error;
 
 use crate::BoxStr;
+use crate::ffi_items::FfiItems;
 
 /// An error that occurs during translation, detailing cause and location.
 #[derive(Debug, Error)]
@@ -312,6 +313,31 @@ impl Translator {
                 let inner_type = self.translate_type(inner)?;
                 Ok(format!("{inner_type} {modifier}*"))
             }
+        }
+    }
+
+    /// Determine whether a C type is a signed type.
+    ///
+    /// For primitive types it checks against a known list of signed types, but for aliases
+    /// which are the only thing other than primitives that can be signed, it recursively checks
+    /// the underlying type of the alias.
+    pub(crate) fn is_signed(&self, ffi_items: &FfiItems, ty: &syn::Type) -> bool {
+        match ty {
+            syn::Type::Path(path) => {
+                let ident = path.path.segments.last().unwrap().ident.clone();
+                if let Some(aliased) = ffi_items.aliases().iter().find(|a| ident == a.ident()) {
+                    return self.is_signed(ffi_items, &aliased.ty);
+                }
+                match self.translate_primitive_type(&ident).as_str() {
+                    "char" | "short" | "long" | "long long" | "size_t" | "ssize_t" => true,
+                    s => {
+                        s.starts_with("int")
+                            || s.starts_with("uint") | s.starts_with("signed ")
+                            || s.starts_with("unsigned ")
+                    }
+                }
+            }
+            _ => false,
         }
     }
 }

@@ -86,6 +86,73 @@ mod generated_tests {
 
         check_same(r_val, c_val, "const B string");
     }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_Byte() {
+        extern "C" {
+            fn ctest_size_of__Byte() -> u64;
+            fn ctest_align_of__Byte() -> u64;
+        }
+
+        let rust_size = size_of::<Byte>() as u64;
+        let c_size = unsafe { ctest_size_of__Byte() };
+
+        let rust_align = align_of::<Byte>() as u64;
+        let c_align = unsafe { ctest_align_of__Byte() };
+
+        check_same(rust_size, c_size, "Byte size");
+        check_same(rust_align, c_align, "Byte align");
+    }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_Person() {
+        extern "C" {
+            fn ctest_size_of__Person() -> u64;
+            fn ctest_align_of__Person() -> u64;
+        }
+
+        let rust_size = size_of::<Person>() as u64;
+        let c_size = unsafe { ctest_size_of__Person() };
+
+        let rust_align = align_of::<Person>() as u64;
+        let c_align = unsafe { ctest_align_of__Person() };
+
+        check_same(rust_size, c_size, "Person size");
+        check_same(rust_align, c_align, "Person align");
+    }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_Word() {
+        extern "C" {
+            fn ctest_size_of__Word() -> u64;
+            fn ctest_align_of__Word() -> u64;
+        }
+
+        let rust_size = size_of::<Word>() as u64;
+        let c_size = unsafe { ctest_size_of__Word() };
+
+        let rust_align = align_of::<Word>() as u64;
+        let c_align = unsafe { ctest_align_of__Word() };
+
+        check_same(rust_size, c_size, "Word size");
+        check_same(rust_align, c_align, "Word align");
+    }
+
+    /// Make sure that the signededness of a type alias in Rust and C is the same.
+    ///
+    /// This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
+    /// this would result in a value larger than zero. For signed types, this results in a value
+    /// smaller than 0.
+    pub fn ctest_signededness_Byte() {
+         extern "C" {
+            fn ctest_signededness_of__Byte() -> u32;
+        }
+        let all_ones = !(0 as Byte);
+        let all_zeros = 0 as Byte;
+        let c_is_signed = unsafe { ctest_signededness_of__Byte() };
+
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "Byte signed");
+    }
 }
 
 use generated_tests::*;
@@ -107,4 +174,8 @@ fn main() {
 fn run_all() {
     ctest_const_cstr_A();
     ctest_const_cstr_B();
+    ctest_size_align_Byte();
+    ctest_size_align_Person();
+    ctest_size_align_Word();
+    ctest_signededness_Byte();
 }

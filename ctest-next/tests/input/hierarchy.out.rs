@@ -66,6 +66,39 @@ mod generated_tests {
             check_same_hex(b1, b2, &format!("ON value at byte {}", i));
         }
     }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_in6_addr() {
+        extern "C" {
+            fn ctest_size_of__in6_addr() -> u64;
+            fn ctest_align_of__in6_addr() -> u64;
+        }
+
+        let rust_size = size_of::<in6_addr>() as u64;
+        let c_size = unsafe { ctest_size_of__in6_addr() };
+
+        let rust_align = align_of::<in6_addr>() as u64;
+        let c_align = unsafe { ctest_align_of__in6_addr() };
+
+        check_same(rust_size, c_size, "in6_addr size");
+        check_same(rust_align, c_align, "in6_addr align");
+    }
+
+    /// Make sure that the signededness of a type alias in Rust and C is the same.
+    ///
+    /// This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
+    /// this would result in a value larger than zero. For signed types, this results in a value
+    /// smaller than 0.
+    pub fn ctest_signededness_in6_addr() {
+         extern "C" {
+            fn ctest_signededness_of__in6_addr() -> u32;
+        }
+        let all_ones = !(0 as in6_addr);
+        let all_zeros = 0 as in6_addr;
+        let c_is_signed = unsafe { ctest_signededness_of__in6_addr() };
+
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "in6_addr signed");
+    }
 }
 
 use generated_tests::*;
@@ -86,4 +119,6 @@ fn main() {
 // Run all tests by calling the functions that define them.
 fn run_all() {
     ctest_const_ON();
+    ctest_size_align_in6_addr();
+    ctest_signededness_in6_addr();
 }
