@@ -3250,15 +3250,15 @@ extern "C" {
     #[link_name = "nsendmsg"]
     pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
     pub fn setcontext(ucp: *const ucontext_t) -> c_int;
-    pub fn setdomainname(name: *mut c_char, len: c_int) -> c_int;
-    pub fn setgroups(ngroups: c_int, ptr: *mut crate::gid_t) -> c_int;
+    pub fn setdomainname(name: *const c_char, len: c_int) -> c_int;
+    pub fn setgroups(ngroups: c_int, ptr: *const crate::gid_t) -> c_int;
     pub fn setgrent();
     pub fn setmntent(filename: *const c_char, ty: *const c_char) -> *mut crate::FILE;
     pub fn setpriority(which: c_int, who: id_t, priority: c_int) -> c_int;
     pub fn setpwent();
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
     pub fn setrlimit64(resource: c_int, rlim: *const rlimit64) -> c_int;
-    pub fn settimeofday(tv: *mut crate::timeval, tz: *mut crate::timezone) -> c_int;
+    pub fn settimeofday(tv: *const crate::timeval, tz: *const crate::timezone) -> c_int;
     pub fn setitimer(
         which: c_int,
         new_value: *const crate::itimerval,
@@ -3285,10 +3285,10 @@ extern "C" {
     pub fn srand48(seed: c_long);
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
     pub fn stat64at(dirfd: c_int, path: *const c_char, buf: *mut stat64, flags: c_int) -> c_int;
-    pub fn statfs(path: *mut c_char, buf: *mut statfs) -> c_int;
-    pub fn statfs64(path: *mut c_char, buf: *mut statfs64) -> c_int;
+    pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
     pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
-    pub fn statx(path: *mut c_char, buf: *mut stat, length: c_int, command: c_int) -> c_int;
+    pub fn statx(path: *const c_char, buf: *mut stat, length: c_int, command: c_int) -> c_int;
     pub fn strcasecmp_l(
         string1: *const c_char,
         string2: *const c_char,
@@ -3310,8 +3310,8 @@ extern "C" {
     pub fn strptime(s: *const c_char, format: *const c_char, tm: *mut crate::tm) -> *mut c_char;
     pub fn strsep(string: *mut *mut c_char, delim: *const c_char) -> *mut c_char;
     pub fn swapcontext(uocp: *mut ucontext_t, ucp: *const ucontext_t) -> c_int;
-    pub fn swapoff(puath: *mut c_char) -> c_int;
-    pub fn swapon(path: *mut c_char) -> c_int;
+    pub fn swapoff(path: *const c_char) -> c_int;
+    pub fn swapon(path: *const c_char) -> c_int;
     pub fn sync();
     pub fn telldir(dirp: *mut crate::DIR) -> c_long;
     pub fn timer_create(
@@ -3332,7 +3332,7 @@ extern "C" {
     pub fn uname(buf: *mut crate::utsname) -> c_int;
     pub fn updwtmp(file: *const c_char, u: *const utmp);
     pub fn uselocale(loc: crate::locale_t) -> crate::locale_t;
-    pub fn utmpname(file: *mut c_char) -> c_int;
+    pub fn utmpname(file: *const c_char) -> c_int;
     pub fn utimensat(
         dirfd: c_int,
         path: *const c_char,
