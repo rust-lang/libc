@@ -11,12 +11,8 @@ apt-get install -y --no-install-recommends \
 
 # Wasmtime is used to execute tests and wasi-sdk is used to compile tests.
 # Download appropriate versions here and configure various flags below.
-#
-# At the time of this writing wasmtime 24.0.0 is the latest release and
-# wasi-sdk-24 is the latest release, that these numbers match is just
-# coincidence.
-wasmtime=24.0.0
-wasi_sdk=24
+wasmtime=35.0.0
+wasi_sdk=25
 
 curl -L https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtime/wasmtime-v$wasmtime-x86_64-linux.tar.xz |
     tar xJf -
