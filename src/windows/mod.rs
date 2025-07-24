@@ -243,6 +243,9 @@ pub const SIG_GET: crate::sighandler_t = 2;
 pub const SIG_SGE: crate::sighandler_t = 3;
 pub const SIG_ACK: crate::sighandler_t = 4;
 
+pub const L_tmpnam: c_uint = 260;
+pub const TMP_MAX: c_uint = 0x7fff_ffff;
+
 #[derive(Debug)]
 pub enum FILE {}
 impl Copy for FILE {}

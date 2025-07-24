@@ -859,8 +859,6 @@ fn test_windows(target: &str) {
             "SIG_DFL" | "SIG_IGN" | "SIG_GET" | "SIG_SGE" | "SIG_ACK" => true,
             // FIXME(windows): newer windows-gnu environment on CI?
             "_O_OBTAIN_DIR" if gnu => true,
-            // FIXME: These constants have been changed since windows-2022 20251014.68.1:
-            "L_tmpnam" | "TMP_MAX" => true,
             _ => false,
         }
     });
