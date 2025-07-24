@@ -30,53 +30,35 @@ extra_traits = ["libc/extra_traits"]
 
 [[test]]
 name = "ctest"
-path = "test/ctest.rs"
 harness = false
 
 [[test]]
-name = "linux-fcntl"
-path = "test/linux_fcntl.rs"
+name = "linux_fcntl"
 harness = false
 
 [[test]]
-name = "linux-if-arp"
-path = "test/linux_if_arp.rs"
+name = "linux_if_arp"
 harness = false
 
 [[test]]
-name = "linux-ipv6"
-path = "test/linux_ipv6.rs"
+name = "linux_ipv6"
 harness = false
 
 [[test]]
-name = "linux-elf"
-path = "test/linux_elf.rs"
+name = "linux_elf"
 harness = false
 
 [[test]]
-name = "linux-strerror_r"
-path = "test/linux_strerror_r.rs"
+name = "linux_strerror_r"
 harness = false
 
 [[test]]
-name = "linux-termios"
-path = "test/linux_termios.rs"
+name = "linux_termios"
 harness = false
 
 [[test]]
 name = "semver"
-path = "test/semver.rs"
 harness = false
-
-[[test]]
-name = "style"
-path = "test/check_style.rs"
-harness = true
-
-[[test]]
-name = "style_tests"
-path = "test/style_tests.rs"
-harness = true
 
 # FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`
 #              once MSRV is above 1.64 and replaced with `[lints] workspace=true`

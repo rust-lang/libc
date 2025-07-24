@@ -1,8 +1,8 @@
 //! Verifies the implementation of the style checker in [style].
 
-use style::StyleChecker;
+use style_lib::StyleChecker;
 
-pub mod style;
+pub mod style_lib;
 
 #[test]
 fn check_style_accept_correct_module_layout() {
