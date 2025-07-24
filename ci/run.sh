@@ -17,7 +17,7 @@ echo "RUSTFLAGS: '$RUSTFLAGS'"
 uname -a
 
 cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
-test_flags="--skip check_style"
+test_flags="--skip style"
 
 # Run tests in the `libc` crate
 case "$target" in
