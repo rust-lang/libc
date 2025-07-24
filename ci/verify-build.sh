@@ -14,9 +14,9 @@ filter="${FILTER:-}"
 host_target=$(rustc -vV | awk '/^host/ { print $2 }')
 
 case "$(uname -s)" in
-    Linux*)     os=linux ;;
-    Darwin*)    os=macos ;;
-    MINGW*)     os=windows ;;
+    Linux*) os=linux ;;
+    Darwin*) os=macos ;;
+    MINGW*) os=windows ;;
     *)
         echo "Unknown system $(uname -s)"
         exit 1
@@ -25,7 +25,7 @@ esac
 
 echo "Testing Rust $rust on $os"
 
-if [ "$TOOLCHAIN" = "nightly" ] ; then
+if [ "$TOOLCHAIN" = "nightly" ]; then
     # For build-std
     rustup component add rust-src
 fi
@@ -61,10 +61,10 @@ test_target() {
         N=5
         n=0
         until [ $n -ge $N ]; do
-            if rustup target add "$target" --toolchain "$rust" ; then
+            if rustup target add "$target" --toolchain "$rust"; then
                 break
             fi
-            n=$((n+1))
+            n=$((n + 1))
             sleep 1
         done
     fi
@@ -77,7 +77,7 @@ test_target() {
         # Test with the equivalent of __USE_TIME_BITS64
         RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64=1 $cmd
         case "$target" in
-            arm*-gnu*|i*86*-gnu|powerpc-*-gnu*|mips*-gnu|sparc-*-gnu|thumb-*gnu*)
+            arm*-gnu* | i*86*-gnu | powerpc-*-gnu* | mips*-gnu | sparc-*-gnu | thumb-*gnu*)
                 # Test with the equivalent of _FILE_OFFSET_BITS=64
                 RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS=64 $cmd
                 # Test with the equivalent of _TIME_BITS=64

@@ -21,7 +21,7 @@ echo "${HOME}"
 pwd
 
 # Avoid "no space left on device" failure if running in CI
-if [ "${CI:-0}" != "0" ] && [ "$target" = "aarch64-linux-android" ] ; then
+if [ "${CI:-0}" != "0" ] && [ "$target" = "aarch64-linux-android" ]; then
     docker system prune -af
     docker system df
 fi
@@ -58,48 +58,11 @@ run() {
         sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh $target"
 }
 
-build_switch() {
-    echo "Building docker container for target switch"
-
-    # use -f so we can use ci/ as build context
-    docker build -t libc-switch -f "ci/docker/switch/Dockerfile" ci/
-    mkdir -p target
-    if [ -w /dev/kvm ]; then
-        kvm="--volume /dev/kvm:/dev/kvm"
-    else
-        kvm=""
-    fi
-
-    cp "$(command -v rustup)" "$(rustc --print sysroot)/bin"
-
-    docker run \
-        --rm \
-        --user "$(id -u)":"$(id -g)" \
-        --env LIBC_CI \
-        --env CARGO_HOME=/cargo \
-        --env CARGO_TARGET_DIR=/checkout/target \
-        --volume "$CARGO_HOME":/cargo \
-        --volume "$(rustc --print sysroot)":/rust:ro \
-        --volume "$(pwd)":/checkout:ro \
-        --volume "$(pwd)"/target:/checkout/target \
-        --volume ~/.rustup:/.rustup:Z \
-        $kvm \
-        --init \
-        --workdir /checkout \
-        libc-switch \
-        sh -c "HOME=/tmp RUSTUP_HOME=/tmp PATH=\$PATH:/rust/bin rustup default nightly \
-            && rustup component add rust-src --target ci/switch.json \
-            && cargo build -Z build-std=core,alloc --target ci/switch.json"
-}
-
 if [ -z "$target" ]; then
+    # Run all docker targets
     for d in ci/docker/*; do
         run "${d}"
     done
 else
-    if [ "$target" != "switch" ]; then
-        run "$target"
-    else
-        build_switch
-    fi
+    run "$target"
 fi
