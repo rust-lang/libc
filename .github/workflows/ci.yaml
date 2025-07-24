@@ -38,7 +38,7 @@ jobs:
     name: Clippy on ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-15, windows-2022]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -56,7 +56,7 @@ jobs:
     strategy:
       matrix:
         toolchain: [stable, nightly, 1.63.0]
-        os: [ubuntu-24.04, macos-14, windows-2022]
+        os: [ubuntu-24.04, macos-15, windows-2022]
         include:
           - toolchain: beta
             os: ubuntu-24.04
@@ -120,7 +120,7 @@ jobs:
             docker: true
             os: ubuntu-24.04
           - target: aarch64-apple-darwin
-            os: macos-14
+            os: macos-15
           - target: x86_64-pc-windows-gnu
             os: windows-2022
             env:
