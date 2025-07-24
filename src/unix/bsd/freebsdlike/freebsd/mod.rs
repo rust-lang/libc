@@ -1762,6 +1762,8 @@ s_no_extra_traits! {
     }
 
     pub struct xktls_session_onedir {
+        // Note: this field is called `gen` in upstream FreeBSD, but `gen` is
+        // reserved keyword in Rust since the 2024 Edition, hence `gennum`.
         pub gennum: u64,
         _rsrv1: [u64; 8],
         _rsrv2: [u32; 8],
