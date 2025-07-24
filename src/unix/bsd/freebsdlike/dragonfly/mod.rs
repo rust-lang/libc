@@ -54,7 +54,7 @@ impl Clone for sem {
     }
 }
 
-e! {
+c_enum! {
     #[repr(u32)]
     pub enum lwpstat {
         LSRUN = 1,
