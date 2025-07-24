@@ -25,14 +25,14 @@ case ${1} in
         musl_arch=aarch64
         kernel_arch=arm64
         CC=aarch64-linux-gnu-gcc \
-          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
     arm)
         musl_arch=arm
         kernel_arch=arm
         CC=arm-linux-gnueabihf-gcc CFLAGS="-march=armv6 -marm -mfpu=vfp" \
-          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
     i686)
@@ -43,7 +43,7 @@ case ${1} in
         # Specifically pass -m32 in CFLAGS and override CC when running
         # ./configure, since otherwise the script will fail to find a compiler.
         CC=gcc CFLAGS="-m32" \
-          ./configure --prefix="/musl-${musl_arch}" --disable-shared --target=i686
+            ./configure --prefix="/musl-${musl_arch}" --disable-shared --target=i686
         # unset CROSS_COMPILE when running make; otherwise the makefile will
         # call the non-existent binary 'i686-ar'.
         make CROSS_COMPILE= install -j4
@@ -58,21 +58,21 @@ case ${1} in
         musl_arch=s390x
         kernel_arch=s390
         CC=s390x-linux-gnu-gcc \
-          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
     loongarch64)
         musl_arch=loongarch64
         kernel_arch=loongarch
         CC=loongarch64-linux-gnu-gcc-14 \
-          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
     powerpc64*)
         musl_arch=powerpc64
         kernel_arch=powerpc
         CC="${1}-linux-gnu-gcc" CFLAGS="-mlong-double-64" \
-          ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
     *)
@@ -80,7 +80,6 @@ case ${1} in
         exit 1
         ;;
 esac
-
 
 # shellcheck disable=SC2103
 cd ..
@@ -123,8 +122,8 @@ EOF
         base=$(basename "$url")
         curl --retry 5 -L "$url" > "$base"
         case $base in
-            linux-*) kernel=$base;;
-            patch-*) patch=$base;;
+            linux-*) kernel=$base ;;
+            patch-*) patch=$base ;;
         esac
         # Check if file is known
         grep -o "$base" alpine-sha512sums

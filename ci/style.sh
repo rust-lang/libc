@@ -65,7 +65,7 @@ export LC_ALL=C
 
 for file in libc-test/semver/*.txt; do
     case "$file" in
-      *TODO*) continue ;;
+        *TODO*) continue ;;
     esac
 
     if ! sort -C "$file"; then
@@ -82,7 +82,7 @@ for file in libc-test/semver/*.txt; do
     fi
 done
 
-if shellcheck --version ; then
+if shellcheck --version; then
     find . -name '*.sh' -print0 | xargs -0 shellcheck
 else
     echo "shellcheck not found"

@@ -21,7 +21,7 @@ echo "${HOME}"
 pwd
 
 # Avoid "no space left on device" failure if running in CI
-if [ "${CI:-0}" != "0" ] && [ "$target" = "aarch64-linux-android" ] ; then
+if [ "${CI:-0}" != "0" ] && [ "$target" = "aarch64-linux-android" ]; then
     docker system prune -af
     docker system df
 fi
