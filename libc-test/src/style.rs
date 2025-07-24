@@ -37,6 +37,9 @@ use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
 use syn::Token;
 
+#[cfg(test)]
+mod tests;
+
 const ALLOWED_REPEATED_MACROS: &[&str] = &["s", "s_no_extra_traits", "s_paren"];
 
 pub type Error = Box<dyn std::error::Error>;

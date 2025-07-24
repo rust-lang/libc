@@ -9,12 +9,10 @@
 //! cargo test --test style
 //! ```
 
-pub mod style;
-
 use std::env;
 use std::path::Path;
 
-use style::{Result, StyleChecker};
+use libc_test::style::{Result, StyleChecker};
 
 /// Relative to `src/`.
 const SKIP_PREFIXES: &[&str] = &[
