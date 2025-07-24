@@ -5702,6 +5702,18 @@ fn test_aix(target: &str) {
             // allow type 'double' to be used in signal contexts.
             "fpreg_t" => true,
 
+            // This type is defined for a union used within `struct ld_info`.
+            // The AIX header does not declare a separate standalone union
+            // type for it.
+            "__ld_info_file" => true,
+
+            // This is a simplified version of the AIX union `_simple_lock`.
+            "_kernel_simple_lock" => true,
+
+            // These structures are guarded by the `_KERNEL` macro in the AIX
+            // header.
+            "fileops_t" | "file" => true,
+
             _ => false,
         }
     });
@@ -5718,6 +5730,11 @@ fn test_aix(target: &str) {
 
             // The _ALL_SOURCE type of 'f_fsid' differs from POSIX's on AIX.
             ("statvfs", "f_fsid") => true,
+
+            // The type of `_file` is `__ld_info_file`, which is defined
+            // specifically for the union inside `struct ld_info`. The AIX
+            // header does not define a separate standalone union type for it.
+            ("ld_info", "_file") => true,
 
             _ => false,
         }
