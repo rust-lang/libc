@@ -9,9 +9,9 @@ toolchain="${TOOLCHAIN:-nightly}"
 os="${OS:-}"
 
 case "$(uname -s)" in
-    Linux*)     os=linux ;;
-    Darwin*)    os=macos ;;
-    MINGW*)     os=windows ;;
+    Linux*) os=linux ;;
+    Darwin*) os=macos ;;
+    MINGW*) os=windows ;;
     *)
         echo "Unknown system $(uname -s)"
         exit 1
@@ -51,7 +51,7 @@ if [ "$os" = "windows" ]; then
 
     if [ -n "${ARCH_BITS:-}" ]; then
         echo "Fix MinGW"
-        for i in crt2.o dllcrt2.o libmingwex.a libmsvcrt.a ; do
+        for i in crt2.o dllcrt2.o libmingwex.a libmsvcrt.a; do
             cp -f "/C/ProgramData/Chocolatey/lib/mingw/tools/install/mingw$ARCH_BITS/$ARCH-w64-mingw32/lib/$i" "$(rustc --print sysroot)/lib/rustlib/$TARGET/lib"
         done
     fi
@@ -71,6 +71,6 @@ until [ $n -ge $N ]; do
         break
     fi
 
-    n=$((n+1))
+    n=$((n + 1))
     sleep 1
 done

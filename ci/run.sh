@@ -19,7 +19,7 @@ case "$target" in
     *android*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
     *s390x*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
     # For all other platforms, test everything in the workspace
-    *) cmd="$cmd --workspace"
+    *) cmd="$cmd --workspace" ;;
 esac
 
 if [ "$target" = "s390x-unknown-linux-gnu" ]; then
@@ -32,13 +32,13 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
         if [ "$passed" = "0" ]; then
             # shellcheck disable=SC2086
             if $cmd --no-default-features -- $test_flags; then
-                passed=$((passed+1))
+                passed=$((passed + 1))
                 continue
             fi
         elif [ "$passed" = "1" ]; then
             # shellcheck disable=SC2086
             if $cmd -- $test_flags; then
-                passed=$((passed+1))
+                passed=$((passed + 1))
                 continue
             fi
         elif [ "$passed" = "2" ]; then
@@ -47,7 +47,7 @@ if [ "$target" = "s390x-unknown-linux-gnu" ]; then
                 break
             fi
         fi
-        n=$((n+1))
+        n=$((n + 1))
         sleep 1
     done
 else
