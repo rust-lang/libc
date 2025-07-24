@@ -243,6 +243,9 @@ pub const SIG_GET: crate::sighandler_t = 2;
 pub const SIG_SGE: crate::sighandler_t = 3;
 pub const SIG_ACK: crate::sighandler_t = 4;
 
+pub const L_tmpnam: c_uint = 260;
+pub const TMP_MAX: c_uint = 0x7fff_ffff;
+
 // DIFF(main): removed in 458c58f409
 // FIXME(msrv): done by `std` starting in 1.79.0
 // inline comment below appeases style checker
