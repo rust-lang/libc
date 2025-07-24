@@ -1791,12 +1791,14 @@ _W_STOPPED
 _W_STRC
 __context64
 __extctx_t
+__ld_info_file
 __pollfd_ext_u
 __tm_context_t
 __vmx_context_t
 __vmxreg_t
 __vsx_context_t
 _exit
+_kernel_simple_lock
 abort
 accept
 access
@@ -1915,7 +1917,9 @@ fgetpos
 fgetpos64
 fgetpwent
 fgets
+file
 fileno
+fileops_t
 flock
 flock64
 fnmatch
@@ -2079,6 +2083,7 @@ kill
 lchown
 lcong48
 lconv
+ld_info
 lfind
 linger
 link
@@ -2090,6 +2095,7 @@ locale_t
 localeconv
 localtime
 localtime_r
+lock_data_instrumented
 lpar_get_info
 lpar_set_resources
 lrand48
