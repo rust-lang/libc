@@ -66,11 +66,6 @@ path = "test/linux_termios.rs"
 harness = false
 
 [[test]]
-name = "cmsg"
-path = "test/cmsg.rs"
-harness = true
-
-[[test]]
 name = "makedev"
 path = "test/makedev.rs"
 harness = true

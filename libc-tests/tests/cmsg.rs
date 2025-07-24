@@ -55,7 +55,6 @@ mod t {
     #[cfg(not(target_arch = "sparc64"))]
     #[test]
     fn test_cmsg_nxthdr() {
-        use std::ptr;
         // Helps to align the buffer on the stack.
         #[repr(align(8))]
         struct Align8<T>(T);
@@ -65,7 +64,7 @@ mod t {
         let mut mhdr: msghdr = unsafe { mem::zeroed() };
         for start_ofs in 0..64 {
             let pcmsghdr = buffer.0.as_mut_ptr().cast::<cmsghdr>();
-            mhdr.msg_control = pcmsghdr as *mut c_void;
+            mhdr.msg_control = pcmsghdr.cast::<c_void>();
             mhdr.msg_controllen = (160 - start_ofs) as _;
             for cmsg_len in 0..64 {
                 // Address must be a multiple of 0x4 for testing on AIX.
@@ -80,7 +79,7 @@ mod t {
                         let next = cmsg_nxthdr(&mhdr, pcmsghdr);
                         assert_eq!(libc_next, next);
 
-                        if libc_next != ptr::null_mut() {
+                        if !libc_next.is_null() {
                             (*libc_next).cmsg_len = next_cmsg_len;
                             let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
                             let next = cmsg_nxthdr(&mhdr, pcmsghdr);
