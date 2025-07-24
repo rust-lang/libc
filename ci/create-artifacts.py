@@ -42,23 +42,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # FIXME(ci): remove after the bump to windoes-2025 GHA images
-    # Python <= 3.9 does not support the very helpful `root_dir` argument,
-    # and that is the version used by the Windows GHA images. Rather than
-    # using setup-python or doing something in the CI script, just find
-    # the newer version and relaunch if this happens to be run with an old
-    # version.
-    try:
-        glob("", root_dir="")
-    except TypeError:
-        if os.environ.get("CI") is None:
-            sys.exit(1)
-
-        # Find the next 3.1x Python version
-        dirs = sorted(list(Path(r"C:\hostedtoolcache\windows\Python").iterdir()))
-        usepy = next(x for x in dirs if r"\3.1" in str(x))
-        py = usepy.joinpath(r"x64\python.exe")
-        print(f"relaunching with {py}")
-        os.execvp(py, [__file__] + sys.argv)
-
     main()
