@@ -64,29 +64,9 @@ path = "test/linux_termios.rs"
 harness = false
 
 [[test]]
-name = "makedev"
-path = "test/makedev.rs"
-harness = true
-
-[[test]]
-name = "errqueue"
-path = "test/errqueue.rs"
-harness = true
-
-[[test]]
-name = "sigrt"
-path = "test/sigrt.rs"
-harness = true
-
-[[test]]
 name = "semver"
 path = "test/semver.rs"
 harness = false
-
-[[test]]
-name = "primitive_types"
-path = "test/primitive_types.rs"
-harness = true
 
 [[test]]
 name = "style"
