@@ -9,14 +9,14 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-lang/libc"
 
 [dependencies]
+annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 cfg-if = "1.0.1"
 libc = { path = "..", version = "1.0.0-alpha.1", default-features = false }
+proc-macro2 = { version = "1.0.95", features = ["span-locations"] }
+syn = { version = "2.0.104", features = ["full", "visit"] }
 
 [dev-dependencies]
-syn = { version = "2.0.104", features = ["full", "visit"] }
-proc-macro2 = { version = "1.0.95", features = ["span-locations"] }
 glob = "0.3.2"
-annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 
 [build-dependencies]
 cc = "1.2.29"
@@ -30,78 +30,43 @@ extra_traits = ["libc/extra_traits"]
 
 [[test]]
 name = "main"
-path = "test/main.rs"
+path = "tests/main.rs"
 harness = false
 
 [[test]]
 name = "linux-fcntl"
-path = "test/linux_fcntl.rs"
+path = "tests/linux_fcntl.rs"
 harness = false
 
 [[test]]
 name = "linux-if-arp"
-path = "test/linux_if_arp.rs"
+path = "tests/linux_if_arp.rs"
 harness = false
 
 [[test]]
 name = "linux-ipv6"
-path = "test/linux_ipv6.rs"
+path = "tests/linux_ipv6.rs"
 harness = false
 
 [[test]]
 name = "linux-elf"
-path = "test/linux_elf.rs"
+path = "tests/linux_elf.rs"
 harness = false
 
 [[test]]
 name = "linux-strerror_r"
-path = "test/linux_strerror_r.rs"
+path = "tests/linux_strerror_r.rs"
 harness = false
 
 [[test]]
 name = "linux-termios"
-path = "test/linux_termios.rs"
+path = "tests/linux_termios.rs"
 harness = false
-
-[[test]]
-name = "cmsg"
-path = "test/cmsg.rs"
-harness = true
-
-[[test]]
-name = "makedev"
-path = "test/makedev.rs"
-harness = true
-
-[[test]]
-name = "errqueue"
-path = "test/errqueue.rs"
-harness = true
-
-[[test]]
-name = "sigrt"
-path = "test/sigrt.rs"
-harness = true
 
 [[test]]
 name = "semver"
-path = "test/semver.rs"
+path = "tests/semver.rs"
 harness = false
-
-[[test]]
-name = "primitive_types"
-path = "test/primitive_types.rs"
-harness = true
-
-[[test]]
-name = "style"
-path = "test/check_style.rs"
-harness = true
-
-[[test]]
-name = "style_tests"
-path = "test/style_tests.rs"
-harness = true
 
 # FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`
 #              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
