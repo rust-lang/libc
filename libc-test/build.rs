@@ -5623,6 +5623,9 @@ fn test_aix(target: &str) {
             ("__context64", "fpr") => true,
             ("__tm_context_t", "fpr") => true,
 
+            // The _ALL_SOURCE type of 'f_fsid' differs from POSIX's on AIX.
+            ("statvfs", "f_fsid") => true,
+
             _ => false,
         }
     });
