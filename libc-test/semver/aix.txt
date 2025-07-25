@@ -2601,6 +2601,7 @@ waitpid
 wchar_t
 wcslen
 wcstombs
+winsize
 wmemchr
 write
 writev
