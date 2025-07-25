@@ -101,21 +101,25 @@ macro_rules! prelude {
 /// Implement `Clone` and `Copy` for a struct, as well as `Debug`, `Eq`, `Hash`, and
 /// `PartialEq` if the `extra_traits` feature is enabled.
 ///
+/// By default, it will mark a struct as `non_exhaustive`. To opt out, use the attribute
+/// `#[@not_non_exhaustive]` as the first attribute of the struct.
+///
 /// Use [`s_no_extra_traits`] for structs where the `extra_traits` feature does not
 /// make sense, and for unions.
 macro_rules! s {
     ($(
+        $(#[@$not_non_exhaustive:ident])*
         $(#[$attr:meta])*
         pub $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s!(it: $(#[$attr])* pub $t $i { $($field)* });
+        s!(it: $(#[@$not_non_exhaustive])* $(#[$attr])* pub $t $i { $($field)* });
     )*);
 
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
         compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
     );
 
-    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
+    (it: #[@not_non_exhaustive] $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             #[cfg_attr(
@@ -128,10 +132,28 @@ macro_rules! s {
             pub struct $i { $($field)* }
         }
     );
+
+    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
+        __item! {
+            #[repr(C)]
+            #[cfg_attr(
+                feature = "extra_traits",
+                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+            )]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+            #[allow(deprecated)]
+            #[non_exhaustive]
+            $(#[$attr])*
+            pub struct $i { $($field)* }
+        }
+    );
 }
 
 /// Implement `Clone` and `Copy` for a tuple struct, as well as `Debug`, `Eq`, `Hash`,
 /// and `PartialEq` if the `extra_traits` feature is enabled.
+///
+/// By default, it will mark a struct as `non_exhaustive`. To opt out, use the attribute
+/// `#[@not_non_exhaustive]` as the first attribute of the struct.
 ///
 /// This is the same as [`s`] but works for tuple structs.
 macro_rules! s_paren {
@@ -157,10 +179,11 @@ macro_rules! s_paren {
 /// Most items will prefer to use [`s`].
 macro_rules! s_no_extra_traits {
     ($(
+        $(#[@$not_non_exhaustive:ident])*
         $(#[$attr:meta])*
         pub $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
+        s_no_extra_traits!(it: $(#[@$not_non_exhaustive])* $(#[$attr])* pub $t $i { $($field)* });
     )*);
 
     (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
@@ -179,11 +202,22 @@ macro_rules! s_no_extra_traits {
         }
     );
 
+    (it: #[@not_non_exhaustive] $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
+        __item! {
+            #[repr(C)]
+            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+            #[cfg_attr(feature = "extra_traits", ::core::prelude::v1::derive(Debug))]
+            $(#[$attr])*
+            pub struct $i { $($field)* }
+        }
+    );
+
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             #[cfg_attr(feature = "extra_traits", ::core::prelude::v1::derive(Debug))]
+            #[non_exhaustive]
             $(#[$attr])*
             pub struct $i { $($field)* }
         }
