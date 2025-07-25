@@ -1,9 +1,7 @@
 //! Provides the [StyleChecker] visitor to verify the coding style of
 //! this library.
 //!
-//! This is split out so that the implementation itself can be tested
-//! separately, see test/check_style.rs for how it's used and
-//! test/style_tests.rs for the implementation tests.
+//! See `tests/style.rs` for the invocation that gets run on CI.
 //!
 //! ## Guidelines
 //!
@@ -36,6 +34,9 @@ use syn::parse::{Parse, ParseStream};
 use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
 use syn::Token;
+
+#[cfg(test)]
+mod tests;
 
 const ALLOWED_REPEATED_MACROS: &[&str] = &["s", "s_no_extra_traits", "s_paren"];
 

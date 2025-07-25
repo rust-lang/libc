@@ -10,7 +10,7 @@ target="$1"
 export RUST_BACKTRACE="${RUST_BACKTRACE:-1}"
 
 cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
-test_flags="--skip check_style"
+test_flags="--skip style"
 
 # Run tests in the `libc` crate
 case "$target" in
