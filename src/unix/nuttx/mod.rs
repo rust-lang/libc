@@ -566,6 +566,7 @@ pub const IP_ADD_MEMBERSHIP: i32 = 0x14;
 pub const IP_DROP_MEMBERSHIP: i32 = 0x15;
 
 extern "C" {
+    pub fn strerror_r(errnum: i32, buf: *mut c_char, buflen: usize) -> i32;
     pub fn bind(sockfd: i32, addr: *const sockaddr, addrlen: socklen_t) -> i32;
     pub fn ioctl(fd: i32, request: i32, ...) -> i32;
     pub fn dirfd(dirp: *mut DIR) -> i32;
