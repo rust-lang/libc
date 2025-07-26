@@ -9,7 +9,8 @@
 mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
-    use std::ffi::{CStr, c_char};
+    #[allow(unused_imports)]
+    use std::ffi::{CStr, c_int, c_char};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
@@ -188,6 +189,129 @@ mod generated_tests {
         let ctest_field_ptr = unsafe { ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
             "field type {{ item.field.ident() }} of {{ item.id }}");
+    }
+
+{%- endfor +%}
+
+{%- for item in ctx.roundtrip_tests +%}
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
+    /// and `false` if the byte is not padding.
+    ///
+    /// For aliases we assume that there are no padding bytes, for structs and unions,
+    /// if there are no fields, then everything is padding, if there are fields, then we have to
+    /// go through each field and figure out the padding.
+    fn roundtrip_padding__{{ item.id }}() -> Vec<bool> {
+        if {{ item.fields.len() }} == 0 {
+            // FIXME(ctest): What if it's an alias to a struct/union?
+            return vec![!{{ item.is_alias }}; size_of::<{{ item.id }}>()]
+        }
+
+        // If there are no fields, v and bar become unused.
+        #[allow(unused_mut)]
+        let mut v = Vec::<(usize, usize)>::new();
+        #[allow(unused_variables)]
+        let bar = MaybeUninit::<{{ item.id }}>::zeroed();
+        #[allow(unused_variables)]
+        let bar = bar.as_ptr();
+        {%- for field in item.fields +%}
+
+        let ty_ptr = unsafe { &raw const ((*bar).{{ field.ident() }}) };
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        let size = size_of_val(&val);
+        let off = offset_of!({{ item.id }}, {{ field.ident() }});
+        v.push((off, size));
+        {%- endfor +%}
+        // This vector contains `true` if the byte is padding and `false` if the byte is not
+        // padding. Initialize all bytes as:
+        //  - padding if we have fields, this means that only the fields will be checked
+        //  - no-padding if we have a type alias: if this causes problems the type alias should
+        //    be skipped
+        let mut is_padding_byte = vec![true; size_of::<{{ item.id }}>()];
+        for (off, size) in &v {
+            for i in 0..*size {
+                is_padding_byte[off + i] = false;
+            }
+        }
+        is_padding_byte
+    }
+
+    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    pub fn {{ item.test_name }}() {
+        type U = {{ item.id }};
+        extern "C" {
+            fn ctest_size_of__{{ item.id }}() -> u64;
+            fn ctest_roundtrip__{{ item.id }}(
+                input: MaybeUninit<U>, is_padding_byte: *const bool, value_bytes: *mut u8
+            ) -> U;
+        }
+
+        const SIZE: usize = size_of::<U>();
+
+        let is_padding_byte = roundtrip_padding__{{ item.id }}();
+        let mut expected = vec![0u8; SIZE];
+        let mut input = MaybeUninit::<U>::zeroed();
+
+        let input_ptr = input.as_mut_ptr().cast::<u8>();
+
+        // Fill the unitialized memory with a deterministic pattern.
+        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
+        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        for i in 0..SIZE {
+            let c: u8 = (i % 256) as u8;
+            let c = if c == 0 { 42 } else { c };
+            let d: u8 = 255_u8 - (i % 256) as u8;
+            let d = if d == 0 { 42 } else { d };
+            unsafe {
+                input_ptr.add(i).write_volatile(c);
+                expected[i] = d;
+            }
+        }
+
+        let c_size = unsafe { ctest_size_of__{{ item.id }}() } as usize;
+        if SIZE != c_size {
+            FAILED.store(true, Ordering::Relaxed);
+            eprintln!(
+                "size of {{ item.c_ty }} is {c_size} in C and {SIZE} in Rust\n",
+            );
+            return;
+        }
+
+        let mut c_value_bytes = vec![0; size_of::<{{ item.id }}>()];
+        let r: U = unsafe {
+            ctest_roundtrip__{{ item.id }}(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
+        };
+
+        // Check that the value bytes as read from C match the byte we sent from Rust.
+        for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
+            if *is_padding_byte { continue; }
+            let rust = unsafe { *input_ptr.add(i) };
+            let c = c_value_bytes[i];
+            if rust != c {
+                eprintln!("rust[{}] = {} != {} (C): Rust \"{{ item.id }}\" -> C", i, rust, c);
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+
+        // Check that value returned from C contains the bytes we expect.
+        for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
+            if *is_padding_byte { continue; }
+            let rust = expected[i] as usize;
+            let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
+            if rust != c {
+                eprintln!(
+                    "rust [{i}] = {rust} != {c} (C): C \"{{ item.id }}\" -> Rust",
+                );
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
     }
 {%- endfor +%}
 }

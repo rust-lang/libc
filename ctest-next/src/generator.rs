@@ -43,7 +43,7 @@ pub struct TestGenerator {
     pub(crate) volatile_items: Vec<VolatileItem>,
     array_arg: Option<ArrayArg>,
     skip_private: bool,
-    skip_roundtrip: Option<SkipTest>,
+    pub(crate) skip_roundtrip: Option<SkipTest>,
     pub(crate) skip_signededness: Option<SkipTest>,
 }
 
