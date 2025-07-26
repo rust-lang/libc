@@ -3,7 +3,7 @@ use quote::ToTokens;
 
 use crate::ffi_items::FfiItems;
 use crate::translator::Translator;
-use crate::{BoxStr, MapInput, Result, TestGenerator, TranslationError};
+use crate::{BoxStr, Field, MapInput, Result, TestGenerator, TranslationError};
 
 /// Represents the Rust side of the generated testing suite.
 #[derive(Template, Clone)]
@@ -46,6 +46,7 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
+    pub roundtrip_tests: Vec<TestRoundtrip>,
     pub signededness_tests: Vec<TestSignededness>,
     pub size_align_tests: Vec<TestSizeAlign>,
     pub const_cstr_tests: Vec<TestCStr>,
@@ -69,6 +70,7 @@ impl TestTemplate {
         template.populate_const_and_cstr_tests(&helper)?;
         template.populate_size_align_tests(&helper)?;
         template.populate_signededness_tests(&helper)?;
+        template.populate_roundtrip_tests(&helper)?;
 
         Ok(template)
     }
@@ -180,6 +182,55 @@ impl TestTemplate {
 
         Ok(())
     }
+
+    /// Populates roundtrip tests for aliases/structs/unions.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_roundtrip_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for alias in helper.ffi_items.aliases() {
+            let c_ty = helper.c_type(alias)?;
+            self._add_roundtrip_test(helper, alias.ident(), &[], &c_ty, true);
+        }
+        for struct_ in helper.ffi_items.structs() {
+            let c_ty = helper.c_type(struct_)?;
+            self._add_roundtrip_test(helper, struct_.ident(), &struct_.fields, &c_ty, false);
+        }
+        for union_ in helper.ffi_items.unions() {
+            let c_ty = helper.c_type(union_)?;
+            self._add_roundtrip_test(helper, union_.ident(), &union_.fields, &c_ty, false);
+        }
+
+        Ok(())
+    }
+
+    fn _add_roundtrip_test(
+        &mut self,
+        helper: &TranslateHelper,
+        ident: &str,
+        fields: &[Field],
+        c_ty: &str,
+        is_alias: bool,
+    ) {
+        let should_skip_roundtrip_test = helper
+            .generator
+            .skip_roundtrip
+            .as_ref()
+            .is_some_and(|skip| skip(ident));
+        if !should_skip_roundtrip_test {
+            let item = TestRoundtrip {
+                test_name: roundtrip_test_ident(ident),
+                id: ident.into(),
+                fields: fields.iter().filter(|f| f.public).cloned().collect(),
+                c_ty: c_ty.into(),
+                is_alias,
+            };
+            self.roundtrip_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+    }
 }
 
 /* Many test structures have the following fields:
@@ -228,6 +279,15 @@ pub(crate) struct TestConst {
     pub c_ty: BoxStr,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestRoundtrip {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub fields: Vec<Field>,
+    pub c_ty: BoxStr,
+    pub is_alias: bool,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -242,6 +302,10 @@ fn cstr_test_ident(ident: &str) -> BoxStr {
 
 fn const_test_ident(ident: &str) -> BoxStr {
     format!("ctest_const_{ident}").into()
+}
+
+fn roundtrip_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_roundtrip_{ident}").into()
 }
 
 /// Wrap methods that depend on both ffi items and the generator.
