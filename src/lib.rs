@@ -4,9 +4,8 @@
 #![allow(
     renamed_and_removed_lints, // Keep this order.
     unknown_lints, // Keep this order.
-    bad_style,
+    nonstandard_style,
     overflowing_literals,
-    improper_ctypes,
     unused_macros,
     unused_macro_rules,
 )]
