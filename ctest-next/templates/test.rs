@@ -14,6 +14,8 @@ mod generated_tests {
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
+    #[allow(unused_imports)]
+    use std::mem::{MaybeUninit, offset_of};
 
     use super::*;
 
@@ -136,6 +138,56 @@ mod generated_tests {
         let c_is_signed = unsafe { ctest_signededness_of__{{ alias.id }}() };
 
         check_same((all_ones < all_zeros) as u32, c_is_signed, "{{ alias.id }} signed");
+    }
+{%- endfor +%}
+
+{%- for item in ctx.field_size_offset_tests +%}
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn {{ item.test_name }}() {
+        extern "C" {
+            fn ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
+            fn ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<{{ item.id }}>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).{{ item.field.ident() }}   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() };
+        check_same(offset_of!({{ item.id }}, {{ item.field.ident() }}) as u64, ctest_field_offset,
+            "field offset {{ item.field.ident() }} of {{ item.id }}");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size {{ item.field.ident() }} of {{ item.id }}");
+    }
+{%- endfor +%}
+
+{%- for item in ctx.field_ptr_tests +%}
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn {{ item.test_name }}() {
+        extern "C" {
+            fn ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(a: *const {{ item.id }}) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<{{ item.id }}>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).{{ item.field.ident() }}) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type {{ item.field.ident() }} of {{ item.id }}");
     }
 {%- endfor +%}
 }

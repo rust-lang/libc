@@ -6,7 +6,6 @@ pub struct Union {
     #[expect(unused)]
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) fields: Vec<Field>,
 }
 
