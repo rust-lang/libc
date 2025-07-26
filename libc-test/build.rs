@@ -2445,7 +2445,8 @@ fn test_freebsd(target: &str) {
                 "sys/shm.h",
                 "sys/socket.h",
                 "sys/socketvar.h",
-                "netinet/in_pcb.h",	// must be after sys/socketvar.h
+                [freebsd15]:"sys/ktls.h",
+                "netinet/in_pcb.h",	// must be after sys/socketvar.h, sys/ktls.h
                 "sys/stat.h",
                 "sys/statvfs.h",
                 "sys/sysctl.h",
@@ -2527,6 +2528,8 @@ fn test_freebsd(target: &str) {
             "type_" if struct_ == "sockstat" => "type".to_string(),
             "type_" if struct_ == "devstat_match_table" => "type".to_string(),
             "type_" if struct_ == "input_event" => "type".to_string(),
+            // Field is named `gennum` in Rust because `gen` is a keyword
+            "gennum" if struct_ == "xktls_session_onedir" => "gen".to_string(),
             s => s.to_string(),
         }
     });
