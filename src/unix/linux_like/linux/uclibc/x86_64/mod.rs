@@ -334,6 +334,7 @@ pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
 cfg_if! {
     if #[cfg(target_os = "l4re")] {
+        #[allow(improper_ctypes)] // FIXME(l4re): this shouldn't be needed
         mod l4re;
         pub use self::l4re::*;
     } else {

@@ -48,6 +48,7 @@ pub type image_id = i32;
 
 e! {
     // kernel/OS.h
+    #[repr(C)]
     pub enum thread_state {
         B_THREAD_RUNNING = 1,
         B_THREAD_READY,
@@ -58,6 +59,7 @@ e! {
     }
 
     // kernel/image.h
+    #[repr(C)]
     pub enum image_type {
         B_APP_IMAGE = 1,
         B_LIBRARY_IMAGE,
@@ -67,6 +69,7 @@ e! {
 
     // kernel/scheduler.h
 
+    #[repr(C)]
     pub enum be_task_flags {
         B_DEFAULT_MEDIA_PRIORITY = 0x000,
         B_OFFLINE_PROCESSING = 0x001,
@@ -83,12 +86,14 @@ e! {
         B_MIDI_PROCESSING = 0x800,
     }
 
+    #[repr(C)]
     pub enum schduler_mode {
         SCHEDULER_MODE_LOW_LATENCY,
         SCHEDULER_MODE_POWER_SAVING,
     }
 
     // FindDirectory.h
+    #[repr(C)]
     pub enum path_base_directory {
         B_FIND_PATH_INSTALLATION_LOCATION_DIRECTORY,
         B_FIND_PATH_ADD_ONS_DIRECTORY,
@@ -118,6 +123,7 @@ e! {
         B_FIND_PATH_PACKAGE_PATH,
     }
 
+    #[repr(C)]
     pub enum directory_which {
         B_DESKTOP_DIRECTORY = 0,
         B_TRASH_DIRECTORY,
@@ -203,6 +209,7 @@ e! {
 
     // kernel/OS.h
 
+    #[repr(C)]
     pub enum topology_level_type {
         B_TOPOLOGY_UNKNOWN,
         B_TOPOLOGY_ROOT,
@@ -211,6 +218,7 @@ e! {
         B_TOPOLOGY_PACKAGE,
     }
 
+    #[repr(C)]
     pub enum cpu_platform {
         B_CPU_UNKNOWN,
         B_CPU_x86,
@@ -227,6 +235,7 @@ e! {
         B_CPU_RISC_V,
     }
 
+    #[repr(C)]
     pub enum cpu_vendor {
         B_CPU_VENDOR_UNKNOWN,
         B_CPU_VENDOR_AMD,
