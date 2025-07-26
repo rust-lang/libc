@@ -6,11 +6,14 @@
 mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
-    use std::ffi::{CStr, c_char};
+    #[allow(unused_imports)]
+    use std::ffi::{CStr, c_int, c_char};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
+    #[allow(unused_imports)]
+    use std::mem::{MaybeUninit, offset_of};
 
     use super::*;
 
@@ -75,6 +78,178 @@ mod generated_tests {
         check_same(rust_size, c_size, "VecU16 size");
         check_same(rust_align, c_align, "VecU16 align");
     }
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
+    /// and `false` if the byte is not padding.
+    ///
+    /// For aliases we assume that there are no padding bytes, for structs and unions,
+    /// if there are no fields, then everything is padding, if there are fields, then we have to
+    /// go through each field and figure out the padding.
+    fn roundtrip_padding__VecU8() -> Vec<bool> {
+        // FIXME(ctest): What if it's an alias to a struct/union?
+        vec![!false; size_of::<VecU8>()]
+    }
+
+    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place.
+    pub fn ctest_roundtrip_VecU8() {
+        type U = VecU8;
+        extern "C" {
+            fn ctest_size_of__VecU8() -> u64;
+            fn ctest_roundtrip__VecU8(
+                x: MaybeUninit<U>, e: *mut c_int, pad: *const bool, expected: *mut u8
+            ) -> U;
+        }
+        let pad = roundtrip_padding__VecU8();
+        let mut error: c_int = 0;
+        let mut y = MaybeUninit::<U>::zeroed();
+        let mut x = MaybeUninit::<U>::zeroed();
+
+        let x_ptr = x.as_mut_ptr().cast::<u8>();
+        let y_ptr = y.as_mut_ptr().cast::<u8>();
+        let size = size_of::<U>();
+
+        // Fill the unitialized memory with a deterministic pattern.
+        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
+        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        for i in 0..size {
+            let c: u8 = (i % 256) as u8;
+            let c = if c == 0 { 42 } else { c };
+            let d: u8 = 255_u8 - (i % 256) as u8;
+            let d = if d == 0 { 42 } else { d };
+            unsafe {
+                x_ptr.add(i).write_volatile(c);
+                y_ptr.add(i).write_volatile(d);
+            }
+        }
+
+        let c_size = unsafe { ctest_size_of__VecU8() } as usize;
+        if size != c_size {
+            FAILED.store(true, Ordering::Relaxed);
+            eprintln!(
+                "size of struct VecU8 is {c_size} in C and {size} in Rust\n",
+            );
+            return;
+        }
+
+        let mut expected = vec![0; size_of::<VecU8>()];
+        let r: U = unsafe {
+            ctest_roundtrip__VecU8(x, &mut error, pad.as_ptr(), expected.as_mut_ptr())
+        };
+
+        for (i, elem) in pad.iter().enumerate().take(size) {
+            if *elem { continue; }
+            let rust = unsafe { *x_ptr.add(i) };
+            let c = expected[i];
+            if rust != c {
+                eprintln!("rust[{}] = {} != {} (C): Rust \"VecU8\" -> C", i, rust, c);
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+
+        for (i, elem) in pad.iter().enumerate().take(size) {
+            if *elem { continue; }
+            let rust = unsafe { (*y_ptr.add(i)) as usize };
+            let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
+            if rust != c {
+                eprintln!(
+                    "rust [{i}] = {rust} != {c} (C): C \"VecU8\" -> Rust",
+                );
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+    }
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
+    /// and `false` if the byte is not padding.
+    ///
+    /// For aliases we assume that there are no padding bytes, for structs and unions,
+    /// if there are no fields, then everything is padding, if there are fields, then we have to
+    /// go through each field and figure out the padding.
+    fn roundtrip_padding__VecU16() -> Vec<bool> {
+        // FIXME(ctest): What if it's an alias to a struct/union?
+        vec![!false; size_of::<VecU16>()]
+    }
+
+    /// Tests whether the type alias `x` when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place.
+    pub fn ctest_roundtrip_VecU16() {
+        type U = VecU16;
+        extern "C" {
+            fn ctest_size_of__VecU16() -> u64;
+            fn ctest_roundtrip__VecU16(
+                x: MaybeUninit<U>, e: *mut c_int, pad: *const bool, expected: *mut u8
+            ) -> U;
+        }
+        let pad = roundtrip_padding__VecU16();
+        let mut error: c_int = 0;
+        let mut y = MaybeUninit::<U>::zeroed();
+        let mut x = MaybeUninit::<U>::zeroed();
+
+        let x_ptr = x.as_mut_ptr().cast::<u8>();
+        let y_ptr = y.as_mut_ptr().cast::<u8>();
+        let size = size_of::<U>();
+
+        // Fill the unitialized memory with a deterministic pattern.
+        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
+        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        for i in 0..size {
+            let c: u8 = (i % 256) as u8;
+            let c = if c == 0 { 42 } else { c };
+            let d: u8 = 255_u8 - (i % 256) as u8;
+            let d = if d == 0 { 42 } else { d };
+            unsafe {
+                x_ptr.add(i).write_volatile(c);
+                y_ptr.add(i).write_volatile(d);
+            }
+        }
+
+        let c_size = unsafe { ctest_size_of__VecU16() } as usize;
+        if size != c_size {
+            FAILED.store(true, Ordering::Relaxed);
+            eprintln!(
+                "size of struct VecU16 is {c_size} in C and {size} in Rust\n",
+            );
+            return;
+        }
+
+        let mut expected = vec![0; size_of::<VecU16>()];
+        let r: U = unsafe {
+            ctest_roundtrip__VecU16(x, &mut error, pad.as_ptr(), expected.as_mut_ptr())
+        };
+
+        for (i, elem) in pad.iter().enumerate().take(size) {
+            if *elem { continue; }
+            let rust = unsafe { *x_ptr.add(i) };
+            let c = expected[i];
+            if rust != c {
+                eprintln!("rust[{}] = {} != {} (C): Rust \"VecU16\" -> C", i, rust, c);
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+
+        for (i, elem) in pad.iter().enumerate().take(size) {
+            if *elem { continue; }
+            let rust = unsafe { (*y_ptr.add(i)) as usize };
+            let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
+            if rust != c {
+                eprintln!(
+                    "rust [{i}] = {rust} != {c} (C): C \"VecU16\" -> Rust",
+                );
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+    }
 }
 
 use generated_tests::*;
@@ -96,4 +271,6 @@ fn main() {
 fn run_all() {
     ctest_size_align_VecU8();
     ctest_size_align_VecU16();
+    ctest_roundtrip_VecU8();
+    ctest_roundtrip_VecU16();
 }

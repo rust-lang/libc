@@ -3,7 +3,6 @@ use crate::BoxStr;
 /// Represents a field in a struct or union defined in Rust.
 #[derive(Debug, Clone)]
 pub struct Field {
-    #[expect(unused)]
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
     pub(crate) ty: syn::Type,

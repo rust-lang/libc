@@ -18,3 +18,75 @@ uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
 
 // Return the alignment of a type.
 uint64_t ctest_align_of__VecU16(void) { return _Alignof(struct VecU16); }
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+struct VecU8 ctest_roundtrip__VecU8(
+    struct VecU8 value,
+    int* error,
+    uint8_t pad[sizeof(struct VecU8)],
+    uint8_t expected_pad[sizeof(struct VecU8)]
+) {
+    int size = (int)sizeof(struct VecU8);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (pad[i]) { continue; }
+        uint8_t expected = (uint8_t)(i % 256);
+        expected = expected == 0? 42 : expected;
+        expected_pad[i] = expected;
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d
+            = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+struct VecU16 ctest_roundtrip__VecU16(
+    struct VecU16 value,
+    int* error,
+    uint8_t pad[sizeof(struct VecU16)],
+    uint8_t expected_pad[sizeof(struct VecU16)]
+) {
+    int size = (int)sizeof(struct VecU16);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (pad[i]) { continue; }
+        uint8_t expected = (uint8_t)(i % 256);
+        expected = expected == 0? 42 : expected;
+        expected_pad[i] = expected;
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d
+            = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
