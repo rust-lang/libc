@@ -58,7 +58,7 @@ pub type pthread_barrierattr_t = *mut c_void;
 pub type posix_spawn_file_actions_t = *mut c_char;
 pub type iconv_t = *mut c_void;
 
-e! {
+c_enum! {
     #[repr(u32)]
     pub enum uio_rw {
         UIO_READ = 0,
@@ -67,6 +67,7 @@ e! {
         UIO_WRITE_NO_MOVE,
         UIO_PWRITE,
     }
+
     #[repr(u32)]
     pub enum ACTION {
         FIND = 0,

@@ -53,189 +53,134 @@ pub type sctp_assoc_t = u32;
 
 pub type eventfd_t = u64;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_support_flags {
-    DEVSTAT_ALL_SUPPORTED = 0x00,
-    DEVSTAT_NO_BLOCKSIZE = 0x01,
-    DEVSTAT_NO_ORDERED_TAGS = 0x02,
-    DEVSTAT_BS_UNAVAILABLE = 0x04,
-}
-impl Copy for devstat_support_flags {}
-impl Clone for devstat_support_flags {
-    fn clone(&self) -> devstat_support_flags {
-        *self
+c_enum! {
+    #[repr(u32)]
+    pub enum devstat_support_flags {
+        DEVSTAT_ALL_SUPPORTED = 0x00,
+        DEVSTAT_NO_BLOCKSIZE = 0x01,
+        DEVSTAT_NO_ORDERED_TAGS = 0x02,
+        DEVSTAT_BS_UNAVAILABLE = 0x04,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_trans_flags {
-    DEVSTAT_NO_DATA = 0x00,
-    DEVSTAT_READ = 0x01,
-    DEVSTAT_WRITE = 0x02,
-    DEVSTAT_FREE = 0x03,
-}
-
-impl Copy for devstat_trans_flags {}
-impl Clone for devstat_trans_flags {
-    fn clone(&self) -> devstat_trans_flags {
-        *self
+    #[repr(u32)]
+    pub enum devstat_trans_flags {
+        DEVSTAT_NO_DATA = 0x00,
+        DEVSTAT_READ = 0x01,
+        DEVSTAT_WRITE = 0x02,
+        DEVSTAT_FREE = 0x03,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_tag_type {
-    DEVSTAT_TAG_SIMPLE = 0x00,
-    DEVSTAT_TAG_HEAD = 0x01,
-    DEVSTAT_TAG_ORDERED = 0x02,
-    DEVSTAT_TAG_NONE = 0x03,
-}
-impl Copy for devstat_tag_type {}
-impl Clone for devstat_tag_type {
-    fn clone(&self) -> devstat_tag_type {
-        *self
+    #[repr(u32)]
+    pub enum devstat_tag_type {
+        DEVSTAT_TAG_SIMPLE = 0x00,
+        DEVSTAT_TAG_HEAD = 0x01,
+        DEVSTAT_TAG_ORDERED = 0x02,
+        DEVSTAT_TAG_NONE = 0x03,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_match_flags {
-    DEVSTAT_MATCH_NONE = 0x00,
-    DEVSTAT_MATCH_TYPE = 0x01,
-    DEVSTAT_MATCH_IF = 0x02,
-    DEVSTAT_MATCH_PASS = 0x04,
-}
-impl Copy for devstat_match_flags {}
-impl Clone for devstat_match_flags {
-    fn clone(&self) -> devstat_match_flags {
-        *self
+    #[repr(u32)]
+    pub enum devstat_match_flags {
+        DEVSTAT_MATCH_NONE = 0x00,
+        DEVSTAT_MATCH_TYPE = 0x01,
+        DEVSTAT_MATCH_IF = 0x02,
+        DEVSTAT_MATCH_PASS = 0x04,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_priority {
-    DEVSTAT_PRIORITY_MIN = 0x000,
-    DEVSTAT_PRIORITY_OTHER = 0x020,
-    DEVSTAT_PRIORITY_PASS = 0x030,
-    DEVSTAT_PRIORITY_FD = 0x040,
-    DEVSTAT_PRIORITY_WFD = 0x050,
-    DEVSTAT_PRIORITY_TAPE = 0x060,
-    DEVSTAT_PRIORITY_CD = 0x090,
-    DEVSTAT_PRIORITY_DISK = 0x110,
-    DEVSTAT_PRIORITY_ARRAY = 0x120,
-    DEVSTAT_PRIORITY_MAX = 0xfff,
-}
-impl Copy for devstat_priority {}
-impl Clone for devstat_priority {
-    fn clone(&self) -> devstat_priority {
-        *self
+    #[repr(u32)]
+    pub enum devstat_priority {
+        DEVSTAT_PRIORITY_MIN = 0x000,
+        DEVSTAT_PRIORITY_OTHER = 0x020,
+        DEVSTAT_PRIORITY_PASS = 0x030,
+        DEVSTAT_PRIORITY_FD = 0x040,
+        DEVSTAT_PRIORITY_WFD = 0x050,
+        DEVSTAT_PRIORITY_TAPE = 0x060,
+        DEVSTAT_PRIORITY_CD = 0x090,
+        DEVSTAT_PRIORITY_DISK = 0x110,
+        DEVSTAT_PRIORITY_ARRAY = 0x120,
+        DEVSTAT_PRIORITY_MAX = 0xfff,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_type_flags {
-    DEVSTAT_TYPE_DIRECT = 0x000,
-    DEVSTAT_TYPE_SEQUENTIAL = 0x001,
-    DEVSTAT_TYPE_PRINTER = 0x002,
-    DEVSTAT_TYPE_PROCESSOR = 0x003,
-    DEVSTAT_TYPE_WORM = 0x004,
-    DEVSTAT_TYPE_CDROM = 0x005,
-    DEVSTAT_TYPE_SCANNER = 0x006,
-    DEVSTAT_TYPE_OPTICAL = 0x007,
-    DEVSTAT_TYPE_CHANGER = 0x008,
-    DEVSTAT_TYPE_COMM = 0x009,
-    DEVSTAT_TYPE_ASC0 = 0x00a,
-    DEVSTAT_TYPE_ASC1 = 0x00b,
-    DEVSTAT_TYPE_STORARRAY = 0x00c,
-    DEVSTAT_TYPE_ENCLOSURE = 0x00d,
-    DEVSTAT_TYPE_FLOPPY = 0x00e,
-    DEVSTAT_TYPE_MASK = 0x00f,
-    DEVSTAT_TYPE_IF_SCSI = 0x010,
-    DEVSTAT_TYPE_IF_IDE = 0x020,
-    DEVSTAT_TYPE_IF_OTHER = 0x030,
-    DEVSTAT_TYPE_IF_MASK = 0x0f0,
-    DEVSTAT_TYPE_PASS = 0x100,
-}
-impl Copy for devstat_type_flags {}
-impl Clone for devstat_type_flags {
-    fn clone(&self) -> devstat_type_flags {
-        *self
+    #[repr(u32)]
+    pub enum devstat_type_flags {
+        DEVSTAT_TYPE_DIRECT = 0x000,
+        DEVSTAT_TYPE_SEQUENTIAL = 0x001,
+        DEVSTAT_TYPE_PRINTER = 0x002,
+        DEVSTAT_TYPE_PROCESSOR = 0x003,
+        DEVSTAT_TYPE_WORM = 0x004,
+        DEVSTAT_TYPE_CDROM = 0x005,
+        DEVSTAT_TYPE_SCANNER = 0x006,
+        DEVSTAT_TYPE_OPTICAL = 0x007,
+        DEVSTAT_TYPE_CHANGER = 0x008,
+        DEVSTAT_TYPE_COMM = 0x009,
+        DEVSTAT_TYPE_ASC0 = 0x00a,
+        DEVSTAT_TYPE_ASC1 = 0x00b,
+        DEVSTAT_TYPE_STORARRAY = 0x00c,
+        DEVSTAT_TYPE_ENCLOSURE = 0x00d,
+        DEVSTAT_TYPE_FLOPPY = 0x00e,
+        DEVSTAT_TYPE_MASK = 0x00f,
+        DEVSTAT_TYPE_IF_SCSI = 0x010,
+        DEVSTAT_TYPE_IF_IDE = 0x020,
+        DEVSTAT_TYPE_IF_OTHER = 0x030,
+        DEVSTAT_TYPE_IF_MASK = 0x0f0,
+        DEVSTAT_TYPE_PASS = 0x100,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_metric {
-    DSM_NONE,
-    DSM_TOTAL_BYTES,
-    DSM_TOTAL_BYTES_READ,
-    DSM_TOTAL_BYTES_WRITE,
-    DSM_TOTAL_TRANSFERS,
-    DSM_TOTAL_TRANSFERS_READ,
-    DSM_TOTAL_TRANSFERS_WRITE,
-    DSM_TOTAL_TRANSFERS_OTHER,
-    DSM_TOTAL_BLOCKS,
-    DSM_TOTAL_BLOCKS_READ,
-    DSM_TOTAL_BLOCKS_WRITE,
-    DSM_KB_PER_TRANSFER,
-    DSM_KB_PER_TRANSFER_READ,
-    DSM_KB_PER_TRANSFER_WRITE,
-    DSM_TRANSFERS_PER_SECOND,
-    DSM_TRANSFERS_PER_SECOND_READ,
-    DSM_TRANSFERS_PER_SECOND_WRITE,
-    DSM_TRANSFERS_PER_SECOND_OTHER,
-    DSM_MB_PER_SECOND,
-    DSM_MB_PER_SECOND_READ,
-    DSM_MB_PER_SECOND_WRITE,
-    DSM_BLOCKS_PER_SECOND,
-    DSM_BLOCKS_PER_SECOND_READ,
-    DSM_BLOCKS_PER_SECOND_WRITE,
-    DSM_MS_PER_TRANSACTION,
-    DSM_MS_PER_TRANSACTION_READ,
-    DSM_MS_PER_TRANSACTION_WRITE,
-    DSM_SKIP,
-    DSM_TOTAL_BYTES_FREE,
-    DSM_TOTAL_TRANSFERS_FREE,
-    DSM_TOTAL_BLOCKS_FREE,
-    DSM_KB_PER_TRANSFER_FREE,
-    DSM_MB_PER_SECOND_FREE,
-    DSM_TRANSFERS_PER_SECOND_FREE,
-    DSM_BLOCKS_PER_SECOND_FREE,
-    DSM_MS_PER_TRANSACTION_OTHER,
-    DSM_MS_PER_TRANSACTION_FREE,
-    DSM_BUSY_PCT,
-    DSM_QUEUE_LENGTH,
-    DSM_TOTAL_DURATION,
-    DSM_TOTAL_DURATION_READ,
-    DSM_TOTAL_DURATION_WRITE,
-    DSM_TOTAL_DURATION_FREE,
-    DSM_TOTAL_DURATION_OTHER,
-    DSM_TOTAL_BUSY_TIME,
-    DSM_MAX,
-}
-impl Copy for devstat_metric {}
-impl Clone for devstat_metric {
-    fn clone(&self) -> devstat_metric {
-        *self
+    #[repr(u32)]
+    pub enum devstat_metric {
+        DSM_NONE,
+        DSM_TOTAL_BYTES,
+        DSM_TOTAL_BYTES_READ,
+        DSM_TOTAL_BYTES_WRITE,
+        DSM_TOTAL_TRANSFERS,
+        DSM_TOTAL_TRANSFERS_READ,
+        DSM_TOTAL_TRANSFERS_WRITE,
+        DSM_TOTAL_TRANSFERS_OTHER,
+        DSM_TOTAL_BLOCKS,
+        DSM_TOTAL_BLOCKS_READ,
+        DSM_TOTAL_BLOCKS_WRITE,
+        DSM_KB_PER_TRANSFER,
+        DSM_KB_PER_TRANSFER_READ,
+        DSM_KB_PER_TRANSFER_WRITE,
+        DSM_TRANSFERS_PER_SECOND,
+        DSM_TRANSFERS_PER_SECOND_READ,
+        DSM_TRANSFERS_PER_SECOND_WRITE,
+        DSM_TRANSFERS_PER_SECOND_OTHER,
+        DSM_MB_PER_SECOND,
+        DSM_MB_PER_SECOND_READ,
+        DSM_MB_PER_SECOND_WRITE,
+        DSM_BLOCKS_PER_SECOND,
+        DSM_BLOCKS_PER_SECOND_READ,
+        DSM_BLOCKS_PER_SECOND_WRITE,
+        DSM_MS_PER_TRANSACTION,
+        DSM_MS_PER_TRANSACTION_READ,
+        DSM_MS_PER_TRANSACTION_WRITE,
+        DSM_SKIP,
+        DSM_TOTAL_BYTES_FREE,
+        DSM_TOTAL_TRANSFERS_FREE,
+        DSM_TOTAL_BLOCKS_FREE,
+        DSM_KB_PER_TRANSFER_FREE,
+        DSM_MB_PER_SECOND_FREE,
+        DSM_TRANSFERS_PER_SECOND_FREE,
+        DSM_BLOCKS_PER_SECOND_FREE,
+        DSM_MS_PER_TRANSACTION_OTHER,
+        DSM_MS_PER_TRANSACTION_FREE,
+        DSM_BUSY_PCT,
+        DSM_QUEUE_LENGTH,
+        DSM_TOTAL_DURATION,
+        DSM_TOTAL_DURATION_READ,
+        DSM_TOTAL_DURATION_WRITE,
+        DSM_TOTAL_DURATION_FREE,
+        DSM_TOTAL_DURATION_OTHER,
+        DSM_TOTAL_BUSY_TIME,
+        DSM_MAX,
     }
-}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
-#[repr(u32)]
-pub enum devstat_select_mode {
-    DS_SELECT_ADD,
-    DS_SELECT_ONLY,
-    DS_SELECT_REMOVE,
-    DS_SELECT_ADDONLY,
-}
-impl Copy for devstat_select_mode {}
-impl Clone for devstat_select_mode {
-    fn clone(&self) -> devstat_select_mode {
-        *self
+    #[repr(u32)]
+    pub enum devstat_select_mode {
+        DS_SELECT_ADD,
+        DS_SELECT_ONLY,
+        DS_SELECT_REMOVE,
+        DS_SELECT_ADDONLY,
     }
 }
 
@@ -2388,20 +2333,15 @@ cfg_if! {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
-#[repr(u32)]
-pub enum dot3Vendors {
-    dot3VendorAMD = 1,
-    dot3VendorIntel = 2,
-    dot3VendorNational = 4,
-    dot3VendorFujitsu = 5,
-    dot3VendorDigital = 6,
-    dot3VendorWesternDigital = 7,
-}
-impl Copy for dot3Vendors {}
-impl Clone for dot3Vendors {
-    fn clone(&self) -> dot3Vendors {
-        *self
+c_enum! {
+    #[repr(u32)]
+    pub enum dot3Vendors {
+        dot3VendorAMD = 1,
+        dot3VendorIntel = 2,
+        dot3VendorNational = 4,
+        dot3VendorFujitsu = 5,
+        dot3VendorDigital = 6,
+        dot3VendorWesternDigital = 7,
     }
 }
 

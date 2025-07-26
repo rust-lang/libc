@@ -8,7 +8,7 @@ pub type door_attr_t = c_uint;
 pub type door_id_t = c_ulonglong;
 pub type lgrp_affinity_t = c_uint;
 
-e! {
+c_enum! {
     #[repr(u32)]
     pub enum lgrp_rsrc_t {
         LGRP_RSRC_CPU = 0,
