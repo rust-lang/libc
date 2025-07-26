@@ -78,3 +78,43 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
     return &b->{{ item.c_field }};
 }
 {%- endfor +%}
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+{%- for item in ctx.roundtrip_tests +%}
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+{{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
+    {{ item.c_ty }} value,
+    const uint8_t is_padding_byte[sizeof({{ item.c_ty }})],
+    uint8_t value_bytes[sizeof({{ item.c_ty }})]
+) {
+    int size = (int)sizeof({{ item.c_ty }});
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+{%- endfor +%}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif

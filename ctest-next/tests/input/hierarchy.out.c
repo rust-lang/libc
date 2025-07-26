@@ -27,3 +27,40 @@ uint32_t ctest_signededness_of__in6_addr(void) {
     in6_addr all_ones = (in6_addr) -1;
     return all_ones < 0;
 }
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+in6_addr ctest_roundtrip__in6_addr(
+    in6_addr value,
+    const uint8_t is_padding_byte[sizeof(in6_addr)],
+    uint8_t value_bytes[sizeof(in6_addr)]
+) {
+    int size = (int)sizeof(in6_addr);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif

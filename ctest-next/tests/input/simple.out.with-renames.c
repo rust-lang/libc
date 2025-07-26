@@ -142,3 +142,94 @@ ctest_field_ty__Word__byte
 ctest_field_ptr__Word__byte(union Word *b) {
     return &b->byte;
 }
+
+#ifdef _MSC_VER
+// Disable signed/unsigned conversion warnings on MSVC.
+// These trigger even if the conversion is explicit.
+#  pragma warning(disable:4365)
+#endif
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+Byte ctest_roundtrip__Byte(
+    Byte value,
+    const uint8_t is_padding_byte[sizeof(Byte)],
+    uint8_t value_bytes[sizeof(Byte)]
+) {
+    int size = (int)sizeof(Byte);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+struct Person ctest_roundtrip__Person(
+    struct Person value,
+    const uint8_t is_padding_byte[sizeof(struct Person)],
+    uint8_t value_bytes[sizeof(struct Person)]
+) {
+    int size = (int)sizeof(struct Person);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+union Word ctest_roundtrip__Word(
+    union Word value,
+    const uint8_t is_padding_byte[sizeof(union Word)],
+    uint8_t value_bytes[sizeof(union Word)]
+) {
+    int size = (int)sizeof(union Word);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4365)
+#endif
