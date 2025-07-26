@@ -345,7 +345,7 @@ impl Translator {
 /// Translate a simple Rust expression to C.
 ///
 /// This function will just pass the expression as is in most cases.
-fn translate_expr(expr: &syn::Expr) -> String {
+pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
     match expr {
         syn::Expr::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
         syn::Expr::Cast(c) => translate_expr(c.expr.deref()),
@@ -360,4 +360,16 @@ fn is_rust_primitive(ty: &str) -> bool {
         "f32", "f64",
     ];
     ty.starts_with("c_") || rustc_types.contains(&ty)
+}
+
+/// Translate ABI of a rust extern function to its C equivalent.
+pub(crate) fn translate_abi(abi: &syn::Abi, target: &str) -> &'static str {
+    let abi_name = abi.name.as_ref().map(|lit| lit.value());
+
+    match abi_name.as_deref() {
+        Some("stdcall") => "__stdcall ",
+        Some("system") if target.contains("i686-pc-windows") => "__stdcall ",
+        Some("C") | Some("system") | None => "",
+        Some(a) => panic!("unknown ABI: {a}"),
+    }
 }

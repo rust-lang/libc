@@ -6,6 +6,7 @@ struct Person
 {
     const char *name;
     uint8_t age;
+    void (*job)(uint8_t, const char *);
 };
 
 union Word

@@ -38,9 +38,9 @@ pub struct TestGenerator {
     pub(crate) defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     mapped_names: Vec<MappedName>,
-    skips: Vec<Skip>,
+    pub(crate) skips: Vec<Skip>,
     verbose_skip: bool,
-    volatile_items: Vec<VolatileItem>,
+    pub(crate) volatile_items: Vec<VolatileItem>,
     array_arg: Option<ArrayArg>,
     skip_private: bool,
     skip_roundtrip: Option<SkipTest>,
@@ -872,7 +872,6 @@ impl TestGenerator {
         let mut ffi_items = FfiItems::new();
         ffi_items.visit_file(&ast);
 
-        // FIXME(ctest): Does not filter out tests for fields.
         self.filter_ffi_items(&mut ffi_items);
 
         let output_directory = self
@@ -945,7 +944,7 @@ impl TestGenerator {
     }
 
     /// Maps Rust identifiers or types to C counterparts, or defaults to the original name.
-    pub(crate) fn map<'a>(&self, item: impl Into<MapInput<'a>>) -> String {
+    pub(crate) fn rty_to_cty<'a>(&self, item: impl Into<MapInput<'a>>) -> String {
         let item = item.into();
         if let Some(mapped) = self.mapped_names.iter().find_map(|f| f(&item)) {
             return mapped;

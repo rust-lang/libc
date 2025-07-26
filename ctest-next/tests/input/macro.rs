@@ -2,8 +2,8 @@ macro_rules! vector {
     ($name:ident, $ty:ty) => {
         #[repr(C)]
         struct $name {
-            x: $ty,
-            y: $ty,
+            pub x: $ty,
+            pub y: $ty,
         }
     };
 }

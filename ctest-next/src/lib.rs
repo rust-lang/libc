@@ -56,9 +56,7 @@ pub(crate) enum MapInput<'a> {
     Struct(&'a Struct),
     Union(&'a Union),
     Fn(&'a crate::Fn),
-    #[expect(unused)]
     StructField(&'a Struct, &'a Field),
-    #[expect(unused)]
     UnionField(&'a Union, &'a Field),
     Alias(&'a Type),
     Const(&'a Const),
@@ -67,9 +65,7 @@ pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct type.
     StructType(&'a str),
     UnionType(&'a str),
-    #[expect(unused)]
     StructFieldType(&'a Struct, &'a Field),
-    #[expect(unused)]
     UnionFieldType(&'a Union, &'a Field),
 }
 

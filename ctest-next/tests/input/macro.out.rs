@@ -11,6 +11,8 @@ mod generated_tests {
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
+    #[allow(unused_imports)]
+    use std::mem::{MaybeUninit, offset_of};
 
     use super::*;
 
@@ -75,6 +77,182 @@ mod generated_tests {
         check_same(rust_size, c_size, "VecU16 size");
         check_same(rust_align, c_align, "VecU16 align");
     }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_VecU8_x() {
+        extern "C" {
+            fn ctest_offset_of__VecU8__x() -> u64;
+            fn ctest_size_of__VecU8__x() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU8>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).x   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__VecU8__x() };
+        check_same(offset_of!(VecU8, x) as u64, ctest_field_offset,
+            "field offset x of VecU8");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__VecU8__x() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size x of VecU8");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_VecU8_y() {
+        extern "C" {
+            fn ctest_offset_of__VecU8__y() -> u64;
+            fn ctest_size_of__VecU8__y() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU8>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).y   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__VecU8__y() };
+        check_same(offset_of!(VecU8, y) as u64, ctest_field_offset,
+            "field offset y of VecU8");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__VecU8__y() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size y of VecU8");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_VecU16_x() {
+        extern "C" {
+            fn ctest_offset_of__VecU16__x() -> u64;
+            fn ctest_size_of__VecU16__x() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU16>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).x   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__VecU16__x() };
+        check_same(offset_of!(VecU16, x) as u64, ctest_field_offset,
+            "field offset x of VecU16");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__VecU16__x() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size x of VecU16");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_VecU16_y() {
+        extern "C" {
+            fn ctest_offset_of__VecU16__y() -> u64;
+            fn ctest_size_of__VecU16__y() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU16>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).y   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__VecU16__y() };
+        check_same(offset_of!(VecU16, y) as u64, ctest_field_offset,
+            "field offset y of VecU16");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__VecU16__y() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size y of VecU16");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_VecU8_x() {
+        extern "C" {
+            fn ctest_field_ptr__VecU8__x(a: *const VecU8) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU8>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).x) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VecU8__x(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type x of VecU8");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_VecU8_y() {
+        extern "C" {
+            fn ctest_field_ptr__VecU8__y(a: *const VecU8) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU8>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).y) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VecU8__y(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type y of VecU8");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_VecU16_x() {
+        extern "C" {
+            fn ctest_field_ptr__VecU16__x(a: *const VecU16) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU16>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).x) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VecU16__x(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type x of VecU16");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_VecU16_y() {
+        extern "C" {
+            fn ctest_field_ptr__VecU16__y(a: *const VecU16) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VecU16>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).y) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VecU16__y(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type y of VecU16");
+    }
 }
 
 use generated_tests::*;
@@ -96,4 +274,12 @@ fn main() {
 fn run_all() {
     ctest_size_align_VecU8();
     ctest_size_align_VecU16();
+    ctest_field_size_offset_VecU8_x();
+    ctest_field_size_offset_VecU8_y();
+    ctest_field_size_offset_VecU16_x();
+    ctest_field_size_offset_VecU16_y();
+    ctest_field_ptr_VecU8_x();
+    ctest_field_ptr_VecU8_y();
+    ctest_field_ptr_VecU16_x();
+    ctest_field_ptr_VecU16_y();
 }

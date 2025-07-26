@@ -53,3 +53,28 @@ uint32_t ctest_signededness_of__{{ alias.id }}(void) {
     return all_ones < 0;
 }
 {%- endfor +%}
+
+{%- for item in ctx.field_size_offset_tests +%}
+
+// Return the offset of a struct/union field.
+uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(void) {
+    return offsetof({{ item.c_ty }}, {{ item.c_field }});
+}
+
+// Return the size of a struct/union field.
+uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
+    return sizeof((({{ item.c_ty }}){}).{{ item.c_field }});
+}
+{%- endfor +%}
+
+{%- for item in ctx.field_ptr_tests +%}
+
+// Return a pointer to a struct/union field.
+// This field can have a normal data type, or it could be a function pointer or an array, which
+// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+typedef {{ item.volatile_keyword }}{{ item.field_return_type }};
+ctest_field_ty__{{ item.id }}__{{ item.field.ident() }}
+ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
+    return &b->{{ item.c_field }};
+}
+{%- endfor +%}

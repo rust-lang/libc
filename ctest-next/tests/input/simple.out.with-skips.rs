@@ -11,6 +11,8 @@ mod generated_tests {
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
+    #[allow(unused_imports)]
+    use std::mem::{MaybeUninit, offset_of};
 
     use super::*;
 
@@ -131,6 +133,226 @@ mod generated_tests {
 
         check_same((all_ones < all_zeros) as u32, c_is_signed, "Byte signed");
     }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_Person_name() {
+        extern "C" {
+            fn ctest_offset_of__Person__name() -> u64;
+            fn ctest_size_of__Person__name() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).name   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__Person__name() };
+        check_same(offset_of!(Person, name) as u64, ctest_field_offset,
+            "field offset name of Person");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__Person__name() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size name of Person");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_Person_age() {
+        extern "C" {
+            fn ctest_offset_of__Person__age() -> u64;
+            fn ctest_size_of__Person__age() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).age   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__Person__age() };
+        check_same(offset_of!(Person, age) as u64, ctest_field_offset,
+            "field offset age of Person");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__Person__age() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size age of Person");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_Person_job() {
+        extern "C" {
+            fn ctest_offset_of__Person__job() -> u64;
+            fn ctest_size_of__Person__job() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).job   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__Person__job() };
+        check_same(offset_of!(Person, job) as u64, ctest_field_offset,
+            "field offset job of Person");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__Person__job() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size job of Person");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_Word_word() {
+        extern "C" {
+            fn ctest_offset_of__Word__word() -> u64;
+            fn ctest_size_of__Word__word() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<Word>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).word   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__Word__word() };
+        check_same(offset_of!(Word, word) as u64, ctest_field_offset,
+            "field offset word of Word");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__Word__word() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size word of Word");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_Word_byte() {
+        extern "C" {
+            fn ctest_offset_of__Word__byte() -> u64;
+            fn ctest_size_of__Word__byte() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<Word>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).byte   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__Word__byte() };
+        check_same(offset_of!(Word, byte) as u64, ctest_field_offset,
+            "field offset byte of Word");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__Word__byte() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size byte of Word");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_Person_name() {
+        extern "C" {
+            fn ctest_field_ptr__Person__name(a: *const Person) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).name) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__Person__name(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type name of Person");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_Person_age() {
+        extern "C" {
+            fn ctest_field_ptr__Person__age(a: *const Person) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).age) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__Person__age(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type age of Person");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_Person_job() {
+        extern "C" {
+            fn ctest_field_ptr__Person__job(a: *const Person) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).job) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__Person__job(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type job of Person");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_Word_word() {
+        extern "C" {
+            fn ctest_field_ptr__Word__word(a: *const Word) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<Word>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).word) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__Word__word(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type word of Word");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_Word_byte() {
+        extern "C" {
+            fn ctest_field_ptr__Word__byte(a: *const Word) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<Word>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).byte) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__Word__byte(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type byte of Word");
+    }
 }
 
 use generated_tests::*;
@@ -155,4 +377,14 @@ fn run_all() {
     ctest_size_align_Person();
     ctest_size_align_Word();
     ctest_signededness_Byte();
+    ctest_field_size_offset_Person_name();
+    ctest_field_size_offset_Person_age();
+    ctest_field_size_offset_Person_job();
+    ctest_field_size_offset_Word_word();
+    ctest_field_size_offset_Word_byte();
+    ctest_field_ptr_Person_name();
+    ctest_field_ptr_Person_age();
+    ctest_field_ptr_Person_job();
+    ctest_field_ptr_Word_word();
+    ctest_field_ptr_Word_byte();
 }
