@@ -1653,7 +1653,7 @@ impl siginfo_t {
             si_value: crate::sigval,
         }
 
-        (*(self as *const siginfo_t).cast::<siginfo_timer>()).si_value
+        unsafe { (*(self as *const siginfo_t).cast::<siginfo_timer>()).si_value }
     }
 
     pub unsafe fn si_pid(&self) -> crate::pid_t {
@@ -5025,11 +5025,11 @@ pub const MAX_KCTL_NAME: usize = 96;
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
-            return crate::CMSG_FIRSTHDR(mhdr);
+            return unsafe { crate::CMSG_FIRSTHDR(mhdr) };
         }
-        let cmsg_len = (*cmsg).cmsg_len as usize;
+        let cmsg_len = unsafe { (*cmsg).cmsg_len as usize };
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+        let max = unsafe { (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize };
         if next + __DARWIN_ALIGN32(size_of::<cmsghdr>()) > max {
             core::ptr::null_mut()
         } else {
@@ -5038,7 +5038,7 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).add(__DARWIN_ALIGN32(size_of::<cmsghdr>()))
+        (cmsg as *mut c_uchar).wrapping_add(__DARWIN_ALIGN32(size_of::<cmsghdr>()))
     }
 
     pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
