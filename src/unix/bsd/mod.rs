@@ -1,3 +1,5 @@
+#![warn(unsafe_op_in_unsafe_fn)]
+
 use crate::prelude::*;
 
 pub type off_t = i64;
@@ -573,35 +575,40 @@ pub const RTAX_BRD: c_int = 7;
 
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast::<cmsghdr>()
+        let ctrl_len = unsafe { (*mhdr).msg_controllen } as usize;
+        if ctrl_len >= size_of::<cmsghdr>() {
+            let ptr = unsafe { (*mhdr).msg_control };
+            ptr.cast::<cmsghdr>()
         } else {
             core::ptr::null_mut()
         }
     }
 
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
-        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = unsafe { size_of_val( &(*set).fds_bits[0] ) * 8 };
         let fd = fd as usize;
-        (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
+        let mask = !(1 << (fd % bits));
+        unsafe { (*set).fds_bits[fd / bits] &= mask };
         return;
     }
 
     pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
-        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = unsafe { size_of_val(&(*set).fds_bits[0]) * 8 };
         let fd = fd as usize;
-        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
+        let bit = unsafe { (*set).fds_bits[fd / bits] };
+        return (bit & (1 << (fd % bits))) != 0;
     }
 
     pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
-        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
+        let bits = unsafe { size_of_val(&(*set).fds_bits[0]) * 8 };
         let fd = fd as usize;
-        (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
+        unsafe { (*set).fds_bits[fd / bits] |= 1 << (fd % bits) };
         return;
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in &mut (*set).fds_bits {
+        let mut bits = unsafe { (*set).fds_bits };
+        for slot in &mut bits {
             *slot = 0;
         }
     }
