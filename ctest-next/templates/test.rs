@@ -9,9 +9,10 @@
 mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
-    use std::ffi::CStr;
+    use std::ffi::{CStr, c_char};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+    #[allow(unused_imports)]
     use std::{mem, ptr, slice};
 
     use super::*;
@@ -62,7 +63,7 @@ mod generated_tests {
 
         // SAFETY: FFI call returns a valid C string.
         let c_val = unsafe {
-            let c_ptr: *const c_char = unsafe { ctest_const_cstr__{{ const_cstr.id }}()  };
+            let c_ptr: *const c_char = ctest_const_cstr__{{ const_cstr.id }}();
             CStr::from_ptr(c_ptr)
         };
 
@@ -89,7 +90,7 @@ mod generated_tests {
         };
 
         let c_bytes = unsafe {
-            let c_ptr: *const T = unsafe { ctest_const__{{ constant.id }}() };
+            let c_ptr: *const T = ctest_const__{{ constant.id }}();
             slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
         };
 

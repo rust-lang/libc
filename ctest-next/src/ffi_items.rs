@@ -3,7 +3,7 @@ use std::ops::Deref;
 use syn::punctuated::Punctuated;
 use syn::visit::Visit;
 
-use crate::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
+use crate::{Abi, BoxStr, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
 
 /// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
 ///
@@ -94,6 +94,26 @@ fn collect_fields(fields: &Punctuated<syn::Field, syn::Token![,]>) -> Vec<Field>
         .collect()
 }
 
+fn extract_single_link_name(attrs: &[syn::Attribute]) -> Option<BoxStr> {
+    let mut link_name_iter = attrs
+        .iter()
+        .filter(|attr| attr.path().is_ident("link_name"));
+
+    let link_name = link_name_iter.next()?;
+    if let Some(attr) = link_name_iter.next() {
+        panic!("multiple `#[link_name = ...]` attributes found: {attr:?}");
+    }
+
+    if let syn::Meta::NameValue(nv) = &link_name.meta
+        && let syn::Expr::Lit(expr_lit) = &nv.value
+        && let syn::Lit::Str(lit_str) = &expr_lit.lit
+    {
+        return Some(lit_str.value().into_boxed_str());
+    }
+
+    panic!("unrecognized `link_name` syntax: {link_name:?}");
+}
+
 fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi) {
     let public = is_visible(&i.vis);
     let abi = abi.clone();
@@ -121,11 +141,13 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         syn::ReturnType::Default => None,
         syn::ReturnType::Type(_, ty) => Some(ty.deref().clone()),
     };
+    let link_name = extract_single_link_name(&i.attrs);
 
     table.foreign_functions.push(Fn {
         public,
         abi,
         ident,
+        link_name,
         parameters,
         return_type,
     });
@@ -136,11 +158,13 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
     let abi = abi.clone();
     let ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
+    let link_name = extract_single_link_name(&i.attrs);
 
     table.foreign_statics.push(Static {
         public,
         abi,
         ident,
+        link_name,
         ty,
     });
 }

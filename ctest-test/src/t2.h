@@ -17,7 +17,8 @@ typedef struct {
   int64_t b;
 } T2Union;
 
-static void T2a(void) {}
+// FIXME(ctest): Cannot be uncommented until tests for functions are implemented in ctest-next.
+// static void T2a(void) {}
 
 #define T2C 4
 #define T2S "a"
