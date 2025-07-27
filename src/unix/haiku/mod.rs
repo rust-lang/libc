@@ -1261,6 +1261,8 @@ pub const SOCK_STREAM: c_int = 1;
 pub const SOCK_DGRAM: c_int = 2;
 pub const SOCK_RAW: c_int = 3;
 pub const SOCK_SEQPACKET: c_int = 5;
+pub const SOCK_NONBLOCK: c_int = 0x00040000;
+pub const SOCK_CLOEXEC: c_int = 0x00080000;
 
 pub const SOL_SOCKET: c_int = -1;
 pub const SO_ACCEPTCONN: c_int = 0x00000001;
@@ -1787,6 +1789,13 @@ extern "C" {
         socket: c_int,
         address: *const crate::sockaddr,
         address_len: crate::socklen_t,
+    ) -> c_int;
+
+    pub fn accept4(
+        socket: c_int,
+        address: *mut crate::sockaddr,
+        addressLength: *mut crate::socklen_t,
+        flags: c_int,
     ) -> c_int;
 
     pub fn writev(fd: c_int, iov: *const crate::iovec, count: c_int) -> ssize_t;
