@@ -46,7 +46,7 @@ pub type thread_func = extern "C" fn(*mut c_void) -> status_t;
 // kernel/image.h
 pub type image_id = i32;
 
-e! {
+c_enum! {
     // kernel/OS.h
     pub enum thread_state {
         B_THREAD_RUNNING = 1,
