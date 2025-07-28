@@ -5,7 +5,6 @@ use crate::{BoxStr, Field};
 pub struct Struct {
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) fields: Vec<Field>,
 }
 

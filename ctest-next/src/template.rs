@@ -1,9 +1,12 @@
+use std::ops::Deref;
+
 use askama::Template;
 use quote::ToTokens;
+use syn::spanned::Spanned;
 
 use crate::ffi_items::FfiItems;
-use crate::translator::Translator;
-use crate::{BoxStr, MapInput, Result, TestGenerator, TranslationError};
+use crate::translator::{TranslationErrorKind, Translator, translate_abi, translate_expr};
+use crate::{BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind};
 
 /// Represents the Rust side of the generated testing suite.
 #[derive(Template, Clone)]
@@ -46,6 +49,8 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
+    pub field_ptr_tests: Vec<TestFieldPtr>,
+    pub field_size_offset_tests: Vec<TestFieldSizeOffset>,
     pub signededness_tests: Vec<TestSignededness>,
     pub size_align_tests: Vec<TestSizeAlign>,
     pub const_cstr_tests: Vec<TestCStr>,
@@ -69,6 +74,8 @@ impl TestTemplate {
         template.populate_const_and_cstr_tests(&helper)?;
         template.populate_size_align_tests(&helper)?;
         template.populate_signededness_tests(&helper)?;
+        template.populate_field_size_offset_tests(&helper)?;
+        template.populate_field_ptr_tests(&helper)?;
 
         Ok(template)
     }
@@ -180,6 +187,144 @@ impl TestTemplate {
 
         Ok(())
     }
+
+    /// Populates field size and offset tests for structs/unions.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_field_size_offset_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
+
+        let struct_fields = helper
+            .ffi_items
+            .structs()
+            .iter()
+            .flat_map(|struct_| struct_.fields.iter().map(move |field| (struct_, field)))
+            .filter(|(struct_, field)| {
+                !should_skip(MapInput::StructField(struct_, field)) && field.public
+            })
+            .map(|(struct_, field)| {
+                (
+                    struct_.ident(),
+                    field,
+                    helper.c_type(struct_),
+                    helper.c_ident(MapInput::StructField(struct_, field)),
+                )
+            });
+        let union_fields = helper
+            .ffi_items
+            .unions()
+            .iter()
+            .flat_map(|union_| union_.fields.iter().map(move |field| (union_, field)))
+            .filter(|(union_, field)| {
+                !should_skip(MapInput::UnionField(union_, field)) && field.public
+            })
+            .map(|(union_, field)| {
+                (
+                    union_.ident(),
+                    field,
+                    helper.c_type(union_),
+                    helper.c_ident(MapInput::UnionField(union_, field)),
+                )
+            });
+
+        for (id, field, c_ty, c_field) in struct_fields.chain(union_fields) {
+            let item = TestFieldSizeOffset {
+                test_name: field_size_offset_test_ident(id, field.ident()),
+                id: id.into(),
+                c_ty: c_ty?.into(),
+                field: field.clone(),
+                c_field: c_field.into_boxed_str(),
+            };
+            self.field_size_offset_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
+
+    /// Populates field tests for structs/unions.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_field_ptr_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
+
+        let struct_fields = helper
+            .ffi_items
+            .structs()
+            .iter()
+            .flat_map(|s| s.fields.iter().map(move |f| (s, f)))
+            .filter(|(s, f)| {
+                !should_skip(MapInput::StructField(s, f))
+                    && !should_skip(MapInput::StructFieldType(s, f))
+                    && f.public
+            })
+            .map(|(s, f)| {
+                (
+                    s.ident(),
+                    f,
+                    helper.c_type(s),
+                    helper.c_ident(MapInput::StructField(s, f)),
+                    if !helper.generator.volatile_items.is_empty()
+                        && helper
+                            .generator
+                            .volatile_items
+                            .iter()
+                            .any(|vf| vf(VolatileItemKind::StructField(s.clone(), f.clone())))
+                    {
+                        "volatile "
+                    } else {
+                        ""
+                    },
+                )
+            });
+        let union_fields = helper
+            .ffi_items
+            .unions()
+            .iter()
+            .flat_map(|u| u.fields.iter().map(move |f| (u, f)))
+            .filter(|(u, f)| {
+                !should_skip(MapInput::UnionField(u, f))
+                    && !should_skip(MapInput::UnionFieldType(u, f))
+                    && f.public
+            })
+            .map(|(u, f)| {
+                (
+                    u.ident(),
+                    f,
+                    helper.c_type(u),
+                    helper.c_ident(MapInput::UnionField(u, f)),
+                    "",
+                )
+            });
+
+        for (id, field, c_ty, c_field, volatile_keyword) in struct_fields.chain(union_fields) {
+            let field_return_type = helper
+                .make_cdecl(
+                    &format!("ctest_field_ty__{}__{}", id, field.ident()),
+                    &field.ty,
+                )?
+                .into_boxed_str();
+            let item = TestFieldPtr {
+                test_name: field_ptr_test_ident(id, field.ident()),
+                id: id.into(),
+                c_ty: c_ty?.into(),
+                field: field.clone(),
+                c_field: c_field.into_boxed_str(),
+                volatile_keyword: volatile_keyword.into(),
+                field_return_type,
+            };
+            self.field_ptr_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
 }
 
 /* Many test structures have the following fields:
@@ -228,6 +373,26 @@ pub(crate) struct TestConst {
     pub c_ty: BoxStr,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestFieldPtr {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub field: Field,
+    pub c_field: BoxStr,
+    pub c_ty: BoxStr,
+    pub volatile_keyword: BoxStr,
+    pub field_return_type: BoxStr,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct TestFieldSizeOffset {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub field: Field,
+    pub c_field: BoxStr,
+    pub c_ty: BoxStr,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -244,17 +409,35 @@ fn const_test_ident(ident: &str) -> BoxStr {
     format!("ctest_const_{ident}").into()
 }
 
+fn field_ptr_test_ident(ident: &str, field_ident: &str) -> BoxStr {
+    format!("ctest_field_ptr_{ident}_{field_ident}").into()
+}
+
+fn field_size_offset_test_ident(ident: &str, field_ident: &str) -> BoxStr {
+    format!("ctest_field_size_offset_{ident}_{field_ident}").into()
+}
+
 /// Wrap methods that depend on both ffi items and the generator.
-struct TranslateHelper<'a> {
+pub(crate) struct TranslateHelper<'a> {
     ffi_items: &'a FfiItems,
     generator: &'a TestGenerator,
     translator: Translator,
 }
 
 impl<'a> TranslateHelper<'a> {
+    /// Create a new translation helper.
+    #[cfg_attr(not(test), expect(unused))]
+    pub(crate) fn new(ffi_items: &'a FfiItems, generator: &'a TestGenerator) -> Self {
+        Self {
+            ffi_items,
+            generator,
+            translator: Translator::new(),
+        }
+    }
+
     /// Returns the equivalent C/Cpp identifier of the Rust item.
     pub(crate) fn c_ident(&self, item: impl Into<MapInput<'a>>) -> String {
-        self.generator.map(item)
+        self.generator.rty_to_cty(item)
     }
 
     /// Returns the equivalent C/Cpp type of the Rust item.
@@ -289,6 +472,136 @@ impl<'a> TranslateHelper<'a> {
             MapInput::Type(&ty)
         };
 
-        Ok(self.generator.map(item))
+        Ok(self.generator.rty_to_cty(item))
+    }
+
+    /// Get the properly mapped type for some `syn::Type`, recursing for pointer types as needed.
+    ///
+    /// This method is meant to only be used to translate simpler types, such as primitives or
+    /// pointers/references to primitives. It will also add struct/union keywords as needed.
+    fn basic_c_type(&self, ty: &syn::Type) -> Result<String, TranslationError> {
+        let type_name = match ty {
+            syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
+            syn::Type::Ptr(p) => self.basic_c_type(&p.elem)?,
+            syn::Type::Reference(r) => self.basic_c_type(&r.elem)?,
+            _ => ty.to_token_stream().to_string(),
+        };
+
+        let unmapped_c_type = self.translator.translate_type(ty)?;
+        let item = if self.ffi_items.contains_struct(&type_name) {
+            MapInput::StructType(&unmapped_c_type)
+        } else if self.ffi_items.contains_union(&type_name) {
+            MapInput::UnionType(&unmapped_c_type)
+        } else {
+            MapInput::Type(&unmapped_c_type)
+        };
+
+        Ok(self.generator.rty_to_cty(item))
+    }
+
+    /// Partially translate a Rust bare function type into its equivalent C type.
+    ///
+    /// It returns the translated return type, translated argument types, and whether
+    /// it is variadic as a tuple.
+    fn translate_signature_partial(
+        &self,
+        signature: &syn::TypeBareFn,
+    ) -> Result<(String, Vec<String>, bool), TranslationError> {
+        let args = signature
+            .inputs
+            .iter()
+            .map(|arg| self.basic_c_type(&arg.ty))
+            .collect::<Result<Vec<_>, TranslationError>>()?;
+        let return_type = match &signature.output {
+            syn::ReturnType::Default => "void".to_string(),
+            syn::ReturnType::Type(_, ty) => match ty.deref() {
+                syn::Type::Never(_) => "void".to_string(),
+                syn::Type::Tuple(tuple) if tuple.elems.is_empty() => "void".to_string(),
+                _ => self.basic_c_type(ty.deref())?,
+            },
+        };
+        Ok((return_type, args, signature.variadic.is_some()))
+    }
+
+    /// Modify function signatures to properly return pointer types in C.
+    ///
+    /// In C, function pointers and arrays have a different syntax to return them,
+    /// and this translation is done by this method.
+    pub(crate) fn make_cdecl(
+        &self,
+        name: &str,
+        ty: &syn::Type,
+    ) -> Result<String, TranslationError> {
+        match ty {
+            syn::Type::Path(p) => {
+                let last = p.path.segments.last().unwrap();
+                let ident = last.ident.to_string();
+                if ident != "Option" {
+                    let mapped_type = self.basic_c_type(ty)?;
+                    return Ok(format!("{mapped_type}* {name}"));
+                }
+                if let syn::PathArguments::AngleBracketed(args) = &last.arguments {
+                    if let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap() {
+                        // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
+                        match inner_ty {
+                            syn::Type::Reference(_) | syn::Type::BareFn(_) => {
+                                return self.make_cdecl(name, inner_ty);
+                            }
+                            _ => {
+                                return Err(TranslationError::new(
+                                    TranslationErrorKind::NotFfiCompatible,
+                                    &p.to_token_stream().to_string(),
+                                    inner_ty.span(),
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+            syn::Type::BareFn(f) => {
+                let (ret, mut args, variadic) = self.translate_signature_partial(f)?;
+                let abi = if let Some(abi) = &f.abi {
+                    let target = self
+                        .generator
+                        .target
+                        .clone()
+                        .or_else(|| std::env::var("TARGET").ok())
+                        .or_else(|| std::env::var("TARGET_PLATFORM").ok())
+                        .unwrap();
+                    translate_abi(abi, &target)
+                } else {
+                    ""
+                };
+
+                if variadic {
+                    args.push("...".to_string());
+                } else if args.is_empty() {
+                    args.push("void".to_string());
+                }
+
+                return Ok(format!("{} ({}**{})({})", ret, abi, name, args.join(", ")));
+            }
+            // Arrays are supported only up to 2D arrays.
+            syn::Type::Array(outer) => {
+                let elem = outer.elem.deref();
+                let len_outer = translate_expr(&outer.len);
+
+                if let syn::Type::Array(inner) = elem {
+                    let inner_type = self.basic_c_type(inner.elem.deref())?;
+                    let len_inner = translate_expr(&inner.len);
+                    return Ok(format!("{inner_type} (*{name})[{len_outer}][{len_inner}]",));
+                } else {
+                    let elem_type = self.basic_c_type(elem)?;
+                    return Ok(format!("{elem_type} (*{name})[{len_outer}]"));
+                }
+            }
+            _ => {
+                let elem_type = self.basic_c_type(ty)?;
+                return Ok(format!("{elem_type} *{name}"));
+            }
+        }
+
+        let mapped_type = self.basic_c_type(ty)?;
+        Ok(format!("{mapped_type}* {name}"))
     }
 }

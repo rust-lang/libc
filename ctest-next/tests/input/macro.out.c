@@ -18,3 +18,79 @@ uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
 
 // Return the alignment of a type.
 uint64_t ctest_align_of__VecU16(void) { return _Alignof(struct VecU16); }
+
+// Return the offset of a struct/union field.
+uint64_t ctest_offset_of__VecU8__x(void) {
+    return offsetof(struct VecU8, x);
+}
+
+// Return the size of a struct/union field.
+uint64_t ctest_size_of__VecU8__x(void) {
+    return sizeof(((struct VecU8){}).x);
+}
+
+// Return the offset of a struct/union field.
+uint64_t ctest_offset_of__VecU8__y(void) {
+    return offsetof(struct VecU8, y);
+}
+
+// Return the size of a struct/union field.
+uint64_t ctest_size_of__VecU8__y(void) {
+    return sizeof(((struct VecU8){}).y);
+}
+
+// Return the offset of a struct/union field.
+uint64_t ctest_offset_of__VecU16__x(void) {
+    return offsetof(struct VecU16, x);
+}
+
+// Return the size of a struct/union field.
+uint64_t ctest_size_of__VecU16__x(void) {
+    return sizeof(((struct VecU16){}).x);
+}
+
+// Return the offset of a struct/union field.
+uint64_t ctest_offset_of__VecU16__y(void) {
+    return offsetof(struct VecU16, y);
+}
+
+// Return the size of a struct/union field.
+uint64_t ctest_size_of__VecU16__y(void) {
+    return sizeof(((struct VecU16){}).y);
+}
+
+// Return a pointer to a struct/union field.
+// This field can have a normal data type, or it could be a function pointer or an array, which
+// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+typedef uint8_t* ctest_field_ty__VecU8__x;
+ctest_field_ty__VecU8__x
+ctest_field_ptr__VecU8__x(struct VecU8 *b) {
+    return &b->x;
+}
+
+// Return a pointer to a struct/union field.
+// This field can have a normal data type, or it could be a function pointer or an array, which
+// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+typedef uint8_t* ctest_field_ty__VecU8__y;
+ctest_field_ty__VecU8__y
+ctest_field_ptr__VecU8__y(struct VecU8 *b) {
+    return &b->y;
+}
+
+// Return a pointer to a struct/union field.
+// This field can have a normal data type, or it could be a function pointer or an array, which
+// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+typedef uint16_t* ctest_field_ty__VecU16__x;
+ctest_field_ty__VecU16__x
+ctest_field_ptr__VecU16__x(struct VecU16 *b) {
+    return &b->x;
+}
+
+// Return a pointer to a struct/union field.
+// This field can have a normal data type, or it could be a function pointer or an array, which
+// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+typedef uint16_t* ctest_field_ty__VecU16__y;
+ctest_field_ty__VecU16__y
+ctest_field_ptr__VecU16__y(struct VecU16 *b) {
+    return &b->y;
+}

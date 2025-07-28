@@ -155,16 +155,16 @@ fn t2_next() {
         "bad T2Bar align",
         "bad T2Bar signed",
         "bad T2Baz size",
-        // "bad field offset a of T2Baz",
-        // "bad field type a of T2Baz",
-        // "bad field offset b of T2Baz",
-        // "bad field type b of T2Baz",
+        "bad field offset a of T2Baz",
+        "bad field type a of T2Baz",
+        "bad field offset b of T2Baz",
+        "bad field type b of T2Baz",
         // "bad T2a function pointer",
         "bad T2C value at byte 0",
         "bad const T2S string",
         "bad T2Union size",
-        // "bad field type b of T2Union",
-        // "bad field offset b of T2Union",
+        "bad field type b of T2Union",
+        "bad field offset b of T2Union",
     ];
     let mut errors = errors.iter().cloned().collect::<HashSet<_>>();
 

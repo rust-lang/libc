@@ -1,8 +1,9 @@
 use syn::visit::Visit;
 
 use crate::ffi_items::FfiItems;
+use crate::template::TranslateHelper;
 use crate::translator::Translator;
-use crate::{Result, TranslationError};
+use crate::{Result, TestGenerator, TranslationError};
 
 const ALL_ITEMS: &str = r#"
 use std::os::raw::c_void;
@@ -41,6 +42,16 @@ fn ty(s: &str) -> Result<String, TranslationError> {
     let translator = Translator {};
     let ty: syn::Type = syn::parse_str(s).unwrap();
     translator.translate_type(&ty)
+}
+
+/// Translate a Rust type into a c typedef declaration.
+fn cdecl(s: &str) -> Result<String, TranslationError> {
+    let ty: syn::Type = syn::parse_str(s).unwrap();
+    let ffi_items = FfiItems::new();
+    let generator = TestGenerator::new();
+    let helper = TranslateHelper::new(&ffi_items, &generator);
+
+    helper.make_cdecl("test_make_cdecl", &ty)
 }
 
 #[test]
@@ -108,4 +119,25 @@ fn test_translation_type_array() {
 fn test_translation_fails_for_unsupported() {
     assert!(ty("[&str; 2 + 2]").is_err());
     assert!(ty("fn(*mut [u8], i16) -> *const char").is_err());
+}
+
+#[test]
+fn test_translate_helper_function_pointer() {
+    assert_eq!(
+        cdecl("extern \"C\" fn(c_int) -> *const c_void").unwrap(),
+        "void const* (**test_make_cdecl)(int)"
+    );
+    assert_eq!(
+        cdecl("Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>").unwrap(),
+        "uint8_t (__stdcall **test_make_cdecl)(char const*, uint32_t[16])"
+    );
+}
+
+#[test]
+fn test_translate_helper_array_1d_2d() {
+    assert_eq!(cdecl("[u8; 10]").unwrap(), "uint8_t (*test_make_cdecl)[10]");
+    assert_eq!(
+        cdecl("[[u8; 64]; 32]").unwrap(),
+        "uint8_t (*test_make_cdecl)[32][64]"
+    );
 }
