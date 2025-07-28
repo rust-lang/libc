@@ -3017,7 +3017,9 @@ extern "C" {
     ) -> *mut c_void;
     pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
     pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
-    pub fn madvise(addr: caddr_t, len: size_t, advice: c_int) -> c_int;
+    // Map madvise() to posix_madvise(), which takes 'void *' as the type of the 'addr' argument.
+    #[link_name = "posix_madvise"]
+    pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
     pub fn makecontext(ucp: *mut crate::ucontext_t, func: extern "C" fn(), argc: c_int, ...);
     pub fn mallinfo() -> crate::mallinfo;
     pub fn mallopt(param: c_int, value: c_int) -> c_int;

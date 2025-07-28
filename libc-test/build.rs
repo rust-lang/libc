@@ -5711,6 +5711,10 @@ fn test_aix(target: &str) {
             "setdomainname" | "settimeofday" | "statfs" | "statfs64" | "statx" | "swapoff"
             | "swapon" | "utmpname" | "setgroups" => true,
 
+            // The AIX signature of 'madvise' differs from the POSIX version.
+            // It is mapped to 'posix_madvise' in 'src/unix/aix.rs'.
+            "madvise" => true,
+
             _ => false,
         }
     });
