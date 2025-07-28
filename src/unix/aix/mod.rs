@@ -1159,10 +1159,6 @@ pub const NFSMNT_ACDIRMAX: c_int = 0x0800;
 // rpcsvc/rstat.h
 pub const CPUSTATES: c_int = 4;
 
-// search.h
-pub const FIND: c_int = 0;
-pub const ENTER: c_int = 1;
-
 // semaphore.h
 pub const SEM_FAILED: *mut sem_t = -1isize as *mut crate::sem_t;
 
