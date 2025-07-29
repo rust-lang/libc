@@ -39,6 +39,7 @@ pub type Elf64_Xword = u64;
 pub type iconv_t = *mut c_void;
 
 e! {
+    #[repr(C)]
     pub enum fae_action {
         FAE_OPEN,
         FAE_DUP2,
