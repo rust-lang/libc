@@ -248,7 +248,7 @@ jobs:
           #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           #   artifact-tag: time-bits64
     timeout-minutes: 25
-    runs-on: ${{ matrix.os || ubuntu-24.04 }}
+    runs-on: ${{ matrix.os || "ubuntu-24.04" }}
     env:
       TARGET: ${{ matrix.target }}
     steps:
