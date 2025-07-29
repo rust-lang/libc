@@ -116,7 +116,9 @@ s_no_extra_traits! {
         pub tp: __c_anonymous_sockaddr_can_tp,
         pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
+}
 
+s! {
     pub struct __c_anonymous_sockaddr_can_tp {
         pub rx_id: canid_t,
         pub tx_id: canid_t,
