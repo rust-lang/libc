@@ -175,7 +175,6 @@ jobs:
   test_tier2:
     name: Test tier2
     needs: [test_tier1, style_check]
-    runs-on: ubuntu-24.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -198,7 +197,6 @@ jobs:
           - powerpc64le-unknown-linux-gnu
           - powerpc64le-unknown-linux-musl
           - riscv64gc-unknown-linux-gnu
-          - s390x-unknown-linux-gnu
           - wasm32-unknown-emscripten
           - wasm32-wasip1
           - wasm32-wasip2
@@ -234,6 +232,10 @@ jobs:
           - target: powerpc64le-unknown-linux-musl
             env:
               RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: s390x-unknown-linux-gnu
+            os: ubuntu-24.04-s390x
+            native: true
+
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
@@ -246,6 +248,7 @@ jobs:
           #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           #   artifact-tag: time-bits64
     timeout-minutes: 25
+    runs-on: ${{ matrix.os || ubuntu-24.04 }}
     env:
       TARGET: ${{ matrix.target }}
     steps:
@@ -263,7 +266,11 @@ jobs:
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
-      - name: Execute run-docker.sh
+      - name: Run natively
+        if: "matrix.native"
+        run: ./ci/run.sh ${{ matrix.target }}
+      - name: Run in Docker
+        if: "!matrix.native"
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
