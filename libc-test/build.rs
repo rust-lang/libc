@@ -5659,6 +5659,16 @@ fn test_aix(target: &str) {
             // header does not define a separate standalone union type for it.
             ("ld_info", "_file") => true,
 
+            // On AIX, when _ALL_SOURCE is defined, the types of the following fields
+            // differ from those used when _XOPEN_SOURCE is defined. The former uses
+            // 'struct st_timespec', while the latter uses 'struct timespec'.
+            ("stat", "st_atim") => true,
+            ("stat", "st_mtim") => true,
+            ("stat", "st_ctim") => true,
+            ("stat64", "st_atim") => true,
+            ("stat64", "st_mtim") => true,
+            ("stat64", "st_ctim") => true,
+
             _ => false,
         }
     });
