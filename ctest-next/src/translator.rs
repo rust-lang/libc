@@ -155,18 +155,18 @@ impl Translator {
             syn::Type::Array(arr) => {
                 let len = translate_expr(&arr.len);
                 let ty = self.translate_type(arr.elem.deref())?;
-                let inner_type = format!("{ty} (*) [{len}]");
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
+                Ok(format!("{ty} (*{modifier})[{len}]").trim().to_string())
             }
             syn::Type::BareFn(_) => {
                 let inner_type = self.translate_type(reference.elem.deref())?;
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
+                if inner_type.contains("(*)") {
+                    Ok(inner_type
+                        .replacen("(*)", &format!("(*{modifier})"), 1)
+                        .trim()
+                        .to_string())
+                } else {
+                    Ok(format!("{inner_type} {modifier}").trim().to_string())
+                }
             }
             syn::Type::Reference(_) | syn::Type::Ptr(_) => {
                 let inner_type = self.translate_type(reference.elem.deref())?;
@@ -282,36 +282,19 @@ impl Translator {
         let inner = ptr.elem.deref();
 
         match inner {
-            syn::Type::BareFn(_) => {
-                let inner_type = self.translate_type(ptr.elem.deref())?;
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
-            }
+            syn::Type::BareFn(_) => self.translate_type(ptr.elem.deref()),
             syn::Type::Array(arr) => {
                 let len = translate_expr(&arr.len);
                 let ty = self.translate_type(arr.elem.deref())?;
-                let inner_type = format!("{ty} (*) [{len}]");
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
+                Ok(format!("{modifier} {ty} [{len}]").trim().to_string())
             }
             syn::Type::Reference(_) | syn::Type::Ptr(_) => {
                 let inner_type = self.translate_type(ptr.elem.deref())?;
-                if inner_type.contains("(*)") {
-                    Ok(inner_type
-                        .replacen("(*)", &format!("(*{modifier} *)"), 1)
-                        .trim()
-                        .to_string())
-                } else {
-                    Ok(format!("{inner_type} {modifier}*").trim().to_string())
-                }
+                Ok(format!("{inner_type} {modifier}*").trim().to_string())
             }
             _ => {
                 let inner_type = self.translate_type(inner)?;
-                Ok(format!("{inner_type} {modifier}*"))
+                Ok(format!("{modifier} {inner_type}*").trim().to_string())
             }
         }
     }

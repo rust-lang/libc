@@ -93,7 +93,7 @@ uint64_t ctest_size_of__Word__byte(void) {
 // Return a pointer to a struct/union field.
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
-typedef char const* *ctest_field_ty__Person__name;
+typedef const char* *ctest_field_ty__Person__name;
 ctest_field_ty__Person__name
 ctest_field_ptr__Person__name(struct Person *b) {
     return &b->name;
@@ -111,7 +111,7 @@ ctest_field_ptr__Person__age(struct Person *b) {
 // Return a pointer to a struct/union field.
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
-typedef void (**ctest_field_ty__Person__job)(uint8_t, char const*);
+typedef void (**ctest_field_ty__Person__job)(uint8_t, const char*);
 ctest_field_ty__Person__job
 ctest_field_ptr__Person__job(struct Person *b) {
     return &b->job;

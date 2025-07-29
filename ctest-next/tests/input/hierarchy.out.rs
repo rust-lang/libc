@@ -213,6 +213,17 @@ mod generated_tests {
             }
         }
     }
+
+    pub fn ctest_foreign_fn_malloc() {
+        extern "C" {
+            fn ctest_foreign_fn__malloc() -> *const *mut u32;
+        }
+        unsafe {
+            check_same(malloc as usize,
+                    ctest_foreign_fn__malloc() as usize,
+                    "malloc function pointer");
+        }
+    }
 }
 
 use generated_tests::*;
@@ -236,4 +247,5 @@ fn run_all() {
     ctest_size_align_in6_addr();
     ctest_signededness_in6_addr();
     ctest_roundtrip_in6_addr();
+    ctest_foreign_fn_malloc();
 }
