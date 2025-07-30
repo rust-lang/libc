@@ -10,7 +10,7 @@ mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
-    use std::ffi::{CStr, c_int, c_char};
+    use std::ffi::{CStr, c_int, c_char, c_uint};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
@@ -325,6 +325,21 @@ mod generated_tests {
         let actual = unsafe { ctest_foreign_fn__{{ item.id }}() } as u64;
         let expected = {{ item.id }} as u64;
         check_same(actual, expected, "{{ item.id }} function pointer");
+    }
+{%- endfor +%}
+
+{%- for static_ in ctx.foreign_static_tests +%}
+
+    // Tests if the pointer to the static variable matches in both Rust and C.
+    pub fn {{ static_.test_name }}() {
+        extern "C" {
+            fn ctest_static__{{ static_.id }}() -> *const {{ static_.rust_ty }};
+        }
+        let actual = (&raw const {{ static_.id }}).addr();
+        let expected = unsafe {
+            ctest_static__{{ static_.id }}().addr()
+        };
+        check_same(actual, expected, "{{ static_.id }} static");
     }
 {%- endfor +%}
 }

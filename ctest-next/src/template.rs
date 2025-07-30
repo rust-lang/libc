@@ -50,6 +50,7 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
+    pub foreign_static_tests: Vec<TestForeignStatic>,
     pub field_ptr_tests: Vec<TestFieldPtr>,
     pub field_size_offset_tests: Vec<TestFieldSizeOffset>,
     pub roundtrip_tests: Vec<TestRoundtrip>,
@@ -77,6 +78,7 @@ impl TestTemplate {
         template.populate_field_ptr_tests(&helper)?;
         template.populate_roundtrip_tests(&helper)?;
         template.populate_foreign_fn_tests(&helper)?;
+        template.populate_foreign_static_tests(&helper)?;
 
         Ok(template)
     }
@@ -414,6 +416,28 @@ impl TestTemplate {
 
         Ok(())
     }
+
+    /// Populates tests for foreign statics, keeping track of the names of each test.
+    fn populate_foreign_static_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for static_ in helper.ffi_items.foreign_statics() {
+            let rust_ty = static_.ty.to_token_stream().to_string().into_boxed_str();
+
+            let item = TestForeignStatic {
+                test_name: static_test_ident(static_.ident()),
+                id: static_.ident().into(),
+                c_val: helper.c_ident(static_).into_boxed_str(),
+                rust_ty,
+            };
+
+            self.foreign_static_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
 }
 
 /* Many test structures have the following fields:
@@ -498,6 +522,14 @@ pub(crate) struct TestForeignFn {
     pub id: BoxStr,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestForeignStatic {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub c_val: BoxStr,
+    pub rust_ty: BoxStr,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -528,6 +560,10 @@ fn roundtrip_test_ident(ident: &str) -> BoxStr {
 
 fn foreign_fn_test_ident(ident: &str) -> BoxStr {
     format!("ctest_foreign_fn_{ident}").into()
+}
+
+fn static_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_static_{ident}").into()
 }
 
 /// Wrap methods that depend on both ffi items and the generator.

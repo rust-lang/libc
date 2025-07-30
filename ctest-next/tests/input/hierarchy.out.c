@@ -80,3 +80,9 @@ ctest_void_func ctest_foreign_fn__malloc(void) {
 #ifdef _MSC_VER
 #  pragma warning(default:4191)
 #endif
+
+// Return a pointer to the static variable content.
+void *ctest_static__in6addr_any(void) {
+    // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    return (void *)&in6addr_any;
+}

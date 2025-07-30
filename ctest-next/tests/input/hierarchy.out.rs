@@ -7,7 +7,7 @@ mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
-    use std::ffi::{CStr, c_int, c_char};
+    use std::ffi::{CStr, c_int, c_char, c_uint};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
@@ -223,6 +223,18 @@ mod generated_tests {
         let expected = malloc as u64;
         check_same(actual, expected, "malloc function pointer");
     }
+
+    // Tests if the pointer to the static variable matches in both Rust and C.
+    pub fn ctest_static_in6addr_any() {
+        extern "C" {
+            fn ctest_static__in6addr_any() -> *const in6_addr;
+        }
+        let actual = (&raw const in6addr_any).addr();
+        let expected = unsafe {
+            ctest_static__in6addr_any().addr()
+        };
+        check_same(actual, expected, "in6addr_any static");
+    }
 }
 
 use generated_tests::*;
@@ -247,4 +259,5 @@ fn run_all() {
     ctest_signededness_in6_addr();
     ctest_roundtrip_in6_addr();
     ctest_foreign_fn_malloc();
+    ctest_static_in6addr_any();
 }
