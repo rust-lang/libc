@@ -118,3 +118,19 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
 #endif
+
+{%- for static_ in ctx.foreign_static_tests +%}
+
+// Return a pointer to the static variable content.
+{%- if static_.rust_ty.contains("extern") +%}
+typedef {{ static_.return_type }};
+ctest_static_ty__{{ static_.id }} ctest_static__{{ static_.id }}(void) {
+    return {{ static_.c_val }};
+}
+{%- else +%}
+typedef {{ static_.volatile_keyword }}{{ static_.c_mutable }}{{ static_.return_type }};
+ctest_static_ty__{{ static_.id }} ctest_static__{{ static_.id }}(void) {
+    return &{{ static_.c_val }};
+}
+{%- endif +%}
+{%- endfor +%}

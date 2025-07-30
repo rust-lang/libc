@@ -2,10 +2,9 @@ use std::ops::Deref;
 
 use askama::Template;
 use quote::ToTokens;
-use syn::spanned::Spanned;
 
 use crate::ffi_items::FfiItems;
-use crate::translator::{TranslationErrorKind, Translator, translate_abi, translate_expr};
+use crate::translator::{Translator, extract_ffi_safe_option, translate_abi, translate_expr};
 use crate::{BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind};
 
 /// Represents the Rust side of the generated testing suite.
@@ -49,6 +48,7 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
+    pub foreign_static_tests: Vec<TestForeignStatic>,
     pub field_ptr_tests: Vec<TestFieldPtr>,
     pub field_size_offset_tests: Vec<TestFieldSizeOffset>,
     pub roundtrip_tests: Vec<TestRoundtrip>,
@@ -78,6 +78,7 @@ impl TestTemplate {
         template.populate_field_size_offset_tests(&helper)?;
         template.populate_field_ptr_tests(&helper)?;
         template.populate_roundtrip_tests(&helper)?;
+        template.populate_foreign_static_tests(&helper)?;
 
         Ok(template)
     }
@@ -376,6 +377,48 @@ impl TestTemplate {
 
         Ok(())
     }
+
+    /// Populates tests for foreign statics, keeping track of the names of each test.
+    fn populate_foreign_static_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for static_ in helper.ffi_items.foreign_statics() {
+            let is_volatile = helper
+                .generator
+                .volatile_items
+                .iter()
+                .any(|is_volatile| is_volatile(VolatileItemKind::Static(static_.clone())));
+            let c_ty = helper.c_type(static_)?.into_boxed_str();
+
+            let item = TestForeignStatic {
+                test_name: static_test_ident(static_.ident()),
+                id: static_.ident().into(),
+                c_val: helper.c_ident(static_).into_boxed_str(),
+                rust_ty: static_.ty.to_token_stream().to_string().into_boxed_str(),
+                mutable: if static_.mutable { "mut" } else { "const" }.into(),
+                volatile_keyword: { if is_volatile { "volatile " } else { "" }.into() },
+                c_mutable: if c_ty.contains("const") || static_.mutable {
+                    ""
+                } else {
+                    "const "
+                }
+                .into(),
+                return_type: helper
+                    .make_cdecl(
+                        &format!("ctest_static_ty__{}", static_.ident()),
+                        &static_.ty,
+                    )?
+                    .replacen("**ctest_", "*ctest_", 1)
+                    .into(),
+            };
+
+            self.foreign_static_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
 }
 
 /* Many test structures have the following fields:
@@ -453,6 +496,18 @@ pub(crate) struct TestRoundtrip {
     pub is_alias: bool,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestForeignStatic {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub c_val: BoxStr,
+    pub rust_ty: BoxStr,
+    pub mutable: BoxStr,
+    pub c_mutable: BoxStr,
+    pub return_type: BoxStr,
+    pub volatile_keyword: BoxStr,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -479,6 +534,10 @@ fn field_size_offset_test_ident(ident: &str, field_ident: &str) -> BoxStr {
 
 fn roundtrip_test_ident(ident: &str) -> BoxStr {
     format!("ctest_roundtrip_{ident}").into()
+}
+
+fn static_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_static_{ident}").into()
 }
 
 /// Wrap methods that depend on both ffi items and the generator.
@@ -600,26 +659,11 @@ impl<'a> TranslateHelper<'a> {
             syn::Type::Path(p) => {
                 let last = p.path.segments.last().unwrap();
                 let ident = last.ident.to_string();
-                if ident != "Option" {
+                if ident == "Option" {
+                    self.make_cdecl(name, &extract_ffi_safe_option(p)?)
+                } else {
                     let mapped_type = self.basic_c_type(ty)?;
-                    return Ok(format!("{mapped_type}* {name}"));
-                }
-                if let syn::PathArguments::AngleBracketed(args) = &last.arguments {
-                    if let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap() {
-                        // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
-                        match inner_ty {
-                            syn::Type::Reference(_) | syn::Type::BareFn(_) => {
-                                return self.make_cdecl(name, inner_ty);
-                            }
-                            _ => {
-                                return Err(TranslationError::new(
-                                    TranslationErrorKind::NotFfiCompatible,
-                                    &p.to_token_stream().to_string(),
-                                    inner_ty.span(),
-                                ));
-                            }
-                        }
-                    }
+                    Ok(format!("{mapped_type}* {name}"))
                 }
             }
             syn::Type::BareFn(f) => {
@@ -643,29 +687,28 @@ impl<'a> TranslateHelper<'a> {
                     args.push("void".to_string());
                 }
 
-                return Ok(format!("{} ({}**{})({})", ret, abi, name, args.join(", ")));
+                Ok(format!("{} ({}**{})({})", ret, abi, name, args.join(", ")))
             }
-            // Arrays are supported only up to 2D arrays.
-            syn::Type::Array(outer) => {
-                let elem = outer.elem.deref();
-                let len_outer = translate_expr(&outer.len);
+            syn::Type::Array(_) => {
+                let mut lens = Vec::new();
+                let mut elem = ty;
 
-                if let syn::Type::Array(inner) = elem {
-                    let inner_type = self.basic_c_type(inner.elem.deref())?;
-                    let len_inner = translate_expr(&inner.len);
-                    return Ok(format!("{inner_type} (*{name})[{len_outer}][{len_inner}]",));
-                } else {
-                    let elem_type = self.basic_c_type(elem)?;
-                    return Ok(format!("{elem_type} (*{name})[{len_outer}]"));
+                while let syn::Type::Array(array) = elem {
+                    lens.push(translate_expr(&array.len));
+                    elem = array.elem.deref();
                 }
+
+                let elem_type = self.basic_c_type(elem)?;
+                let dims = lens
+                    .into_iter()
+                    .map(|len| format!("[{len}]"))
+                    .collect::<String>();
+                Ok(format!("{elem_type} (*{name}){dims}"))
             }
             _ => {
                 let elem_type = self.basic_c_type(ty)?;
-                return Ok(format!("{elem_type} *{name}"));
+                Ok(format!("{elem_type} *{name}"))
             }
         }
-
-        let mapped_type = self.basic_c_type(ty)?;
-        Ok(format!("{mapped_type}* {name}"))
     }
 }

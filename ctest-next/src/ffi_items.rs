@@ -63,7 +63,6 @@ impl FfiItems {
     }
 
     /// Return a list of all foreign statics found mapped by their ABI.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn foreign_statics(&self) -> &Vec<Static> {
         &self.foreign_statics
     }
@@ -159,6 +158,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
     let ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
     let link_name = extract_single_link_name(&i.attrs);
+    let mutable = matches!(i.mutability, syn::StaticMutability::Mut(_));
 
     table.foreign_statics.push(Static {
         public,
@@ -166,6 +166,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
         ident,
         link_name,
         ty,
+        mutable,
     });
 }
 

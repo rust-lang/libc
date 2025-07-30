@@ -111,7 +111,7 @@ fn test_translation_type_bare_fn() {
 fn test_translation_type_array() {
     assert_eq!(
         ty("[&u8; 2 + 2]").unwrap(),
-        "const uint8_t*[2 + 2]".to_string()
+        "const uint8_t* [2 + 2]".to_string()
     );
 }
 
@@ -129,7 +129,7 @@ fn test_translate_helper_function_pointer() {
     );
     assert_eq!(
         cdecl("Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>").unwrap(),
-        "uint8_t (__stdcall **test_make_cdecl)(char const*, uint32_t[16])"
+        "uint8_t (__stdcall **test_make_cdecl)(char const*, uint32_t [16])"
     );
 }
 
