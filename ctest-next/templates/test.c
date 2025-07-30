@@ -137,3 +137,12 @@ ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
 #ifdef _MSC_VER
 #  pragma warning(default:4191)
 #endif
+
+{%- for static_ in ctx.foreign_static_tests +%}
+
+// Return a pointer to the static variable content.
+void *ctest_static__{{ static_.id }}(void) {
+    // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    return (void *)&{{ static_.c_val }};
+}
+{%- endfor +%}

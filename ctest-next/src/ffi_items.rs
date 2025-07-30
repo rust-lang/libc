@@ -62,7 +62,6 @@ impl FfiItems {
     }
 
     /// Return a list of all foreign statics found mapped by their ABI.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn foreign_statics(&self) -> &Vec<Static> {
         &self.foreign_statics
     }

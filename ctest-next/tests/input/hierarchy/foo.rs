@@ -6,5 +6,5 @@ pub const ON: bool = true;
 unsafe extern "C" {
     pub fn malloc(size: usize) -> *mut c_void;
 
-    static in6addr_any: in6_addr;
+    pub static in6addr_any: in6_addr;
 }

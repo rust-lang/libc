@@ -7,7 +7,7 @@ mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
-    use std::ffi::{CStr, c_int, c_char};
+    use std::ffi::{CStr, c_int, c_char, c_uint};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
