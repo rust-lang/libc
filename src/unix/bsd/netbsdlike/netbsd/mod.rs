@@ -2496,6 +2496,8 @@ extern "C" {
         winp: *mut crate::winsize,
     ) -> crate::pid_t;
 
+    pub fn ptsname_r(fd: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
+
     #[link_name = "__lutimes50"]
     pub fn lutimes(file: *const c_char, times: *const crate::timeval) -> c_int;
     #[link_name = "__gettimeofday50"]
