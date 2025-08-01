@@ -5411,6 +5411,7 @@ fn test_aix(target: &str) {
                "net/if_dl.h",
                "netdb.h",
                "netinet/tcp.h",
+               "netinet/sctp.h",
                "pthread.h",
                "pwd.h",
                "rpcsvc/mount.h",
@@ -5643,6 +5644,13 @@ fn test_aix(target: &str) {
             // header signatures. Skipping.
             "setdomainname" | "settimeofday" | "statfs" | "statfs64" | "statx" | "swapoff"
             | "swapon" | "utmpname" | "setgroups" => true,
+
+            // These non-POSIX functions are guarded by the _KERNEL macro in the AIX headers.
+            "recvmmsg" | "sendmmsg" | "sethostid" | "sethostname" | "splice" => true,
+
+            // 'mount' is available in the system's libc.a and has a man page, but it is
+            // not declared in the AIX headers."
+            "mount" => true,
 
             _ => false,
         }
