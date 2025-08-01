@@ -2133,6 +2133,7 @@ mmap
 mmsghdr
 mntent
 mode_t
+mount
 mprotect
 mq_attr
 mq_close
@@ -2363,6 +2364,7 @@ realloc
 realpath
 recv
 recvfrom
+recvmmsg
 recvmsg
 regcomp
 regerror
@@ -2393,6 +2395,9 @@ sched_rr_get_interval
 sched_setparam
 sched_setscheduler
 sched_yield
+sctp_assoc_t
+sctp_opt_info
+sctp_peeloff
 seed48
 seekdir
 select
@@ -2413,6 +2418,7 @@ semget
 semop
 send
 send_file
+sendmmsg
 sendmsg
 sendto
 servent
@@ -2425,6 +2431,8 @@ seteuid
 setgid
 setgrent
 setgroups
+sethostid
+sethostname
 setitimer
 setlocale
 setlogmask
@@ -2484,6 +2492,7 @@ socket
 socketpair
 socklen_t
 speed_t
+splice
 sprintf
 srand
 srand48
