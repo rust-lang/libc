@@ -10,7 +10,7 @@ mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
-    use std::ffi::{CStr, c_int, c_char};
+    use std::ffi::{CStr, c_int, c_char, c_uint};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
@@ -312,6 +312,37 @@ mod generated_tests {
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
+    }
+{%- endfor +%}
+
+{%- for static_ in ctx.foreign_static_tests +%}
+
+    // Tests if the pointer to the static variable matches in both Rust and C.
+    pub fn {{ static_.test_name }}() {
+    {%- if static_.rust_ty.contains("extern") +%}
+        extern "C" {
+            fn ctest_static__{{ static_.id }}() -> {{ static_.rust_ty }};
+        }
+        unsafe {
+            // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+            let actual = std::mem::transmute_copy::<_, usize>(&*std::ptr::addr_of!({{ static_.id }}));
+            let expected = {
+                let val = ctest_static__{{ static_.id }}();
+                std::mem::transmute_copy::<_, usize>(&val)
+            };
+            check_same(actual, expected, "{{ static_.id }} static");
+        }
+    {%- else +%}
+        extern "C" {
+            fn ctest_static__{{ static_.id }}() -> *{{ static_.mutable }} {{ static_.rust_ty }};
+        }
+        unsafe {
+            // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+            check_same(std::ptr::addr_of!({{ static_.id }}) as usize,
+                    ctest_static__{{ static_.id }}() as usize,
+                    "{{ static_.id }} static");
+        }
+    {%- endif +%}
     }
 {%- endfor +%}
 }

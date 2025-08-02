@@ -7,7 +7,7 @@ mod generated_tests {
     #![allow(non_snake_case)]
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
-    use std::ffi::{CStr, c_int, c_char};
+    use std::ffi::{CStr, c_int, c_char, c_uint};
     use std::fmt::{Debug, LowerHex};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
@@ -213,6 +213,19 @@ mod generated_tests {
             }
         }
     }
+
+    // Tests if the pointer to the static variable matches in both Rust and C.
+    pub fn ctest_static_in6addr_any() {
+        extern "C" {
+            fn ctest_static__in6addr_any() -> *const in6_addr;
+        }
+        unsafe {
+            // We must use addr_of! here because of https://github.com/rust-lang/rust/issues/114447
+            check_same(std::ptr::addr_of!(in6addr_any) as usize,
+                    ctest_static__in6addr_any() as usize,
+                    "in6addr_any static");
+        }
+    }
 }
 
 use generated_tests::*;
@@ -236,4 +249,5 @@ fn run_all() {
     ctest_size_align_in6_addr();
     ctest_signededness_in6_addr();
     ctest_roundtrip_in6_addr();
+    ctest_static_in6addr_any();
 }

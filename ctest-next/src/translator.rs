@@ -264,13 +264,17 @@ impl Translator {
     /// Translate a Rust path into its C equivalent.
     fn translate_path(&self, path: &syn::TypePath) -> Result<String, TranslationError> {
         let last = path.path.segments.last().unwrap();
-        Ok(self.translate_primitive_type(&last.ident))
+        if last.ident == "Option" {
+            self.translate_type(&extract_ffi_safe_option(path)?)
+        } else {
+            Ok(self.translate_primitive_type(&last.ident))
+        }
     }
 
     /// Translate a Rust array declaration into its C equivalent.
     fn translate_array(&self, array: &syn::TypeArray) -> Result<String, TranslationError> {
         Ok(format!(
-            "{}[{}]",
+            "{} [{}]",
             self.translate_type(array.elem.deref())?,
             translate_expr(&array.len)
         ))
@@ -372,4 +376,35 @@ pub(crate) fn translate_abi(abi: &syn::Abi, target: &str) -> &'static str {
         Some("C") | Some("system") | None => "",
         Some(a) => panic!("unknown ABI: {a}"),
     }
+}
+
+pub(crate) fn extract_ffi_safe_option(p: &syn::TypePath) -> Result<syn::Type, TranslationError> {
+    let last = p.path.segments.last().unwrap();
+    let ident = last.ident.to_string();
+
+    if ident != "Option" {
+        return Err(TranslationError::new(
+            TranslationErrorKind::NotFfiCompatible,
+            &p.to_token_stream().to_string(),
+            p.span(),
+        ));
+    }
+
+    if let syn::PathArguments::AngleBracketed(args) = &last.arguments {
+        if let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap() {
+            // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
+            match inner_ty {
+                syn::Type::Reference(_) | syn::Type::BareFn(_) => {
+                    return Ok(inner_ty.clone());
+                }
+                _ => (),
+            }
+        }
+    }
+
+    Err(TranslationError::new(
+        TranslationErrorKind::NotFfiCompatible,
+        &p.to_token_stream().to_string(),
+        p.span(),
+    ))
 }
