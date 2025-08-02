@@ -43,6 +43,9 @@ pub use core::ffi::c_void;
 #[allow(unused_imports)] // needed while the module is empty on some platforms
 pub use new::*;
 
+mod types;
+pub use types::*;
+
 cfg_if! {
     if #[cfg(windows)] {
         mod primitives;
