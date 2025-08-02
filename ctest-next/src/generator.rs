@@ -42,7 +42,7 @@ pub struct TestGenerator {
     verbose_skip: bool,
     pub(crate) volatile_items: Vec<VolatileItem>,
     array_arg: Option<ArrayArg>,
-    skip_private: bool,
+    pub(crate) skip_private: bool,
     pub(crate) skip_roundtrip: Option<SkipTest>,
     pub(crate) skip_signededness: Option<SkipTest>,
 }
@@ -872,8 +872,6 @@ impl TestGenerator {
         let mut ffi_items = FfiItems::new();
         ffi_items.visit_file(&ast);
 
-        self.filter_ffi_items(&mut ffi_items);
-
         let output_directory = self
             .out_dir
             .clone()
@@ -912,36 +910,37 @@ impl TestGenerator {
         Ok(output_file_path)
     }
 
-    /// Skips entire items such as structs, constants, and aliases from being tested.
-    ///
-    /// Does not skip specific tests or specific fields. If `skip_private` is true,
-    /// it will skip tests for all private items.
-    fn filter_ffi_items(&self, ffi_items: &mut FfiItems) {
-        let verbose = self.verbose_skip;
+    // /// Skips entire items such as structs, constants, and aliases from being tested.
+    // ///
+    // /// Does not skip specific tests or specific fields. If `skip_private` is true,
+    // /// it will skip tests for all private items.
+    // fn filter_ffi_items(&self, ffi_items: &mut FfiItems) {
+    //     let verbose = self.verbose_skip;
 
-        macro_rules! filter {
-            ($field:ident, $variant:ident, $label:literal) => {{
-                let skipped: Vec<_> = ffi_items
-                    .$field
-                    .extract_if(.., |item| {
-                        self.skips.iter().any(|f| f(&MapInput::$variant(item)))
-                            || (self.skip_private && !item.public)
-                    })
-                    .collect();
-                if verbose {
-                    skipped
-                        .iter()
-                        .for_each(|item| eprintln!("Skipping {} \"{}\"", $label, item.ident()));
-                }
-            }};
-        }
+    //     macro_rules! filter {
+    //         ($field:ident, $variant:ident, $label:literal) => {{
+    //             let skipped: Vec<_> = ffi_items
+    //                 .$field
+    //                 .extract_if(.., |item| {
+    //                     self.skips.iter().any(|f| f(&MapInput::$variant(item)))
+    //                         || (self.skip_private && !item.public)
+    //                 })
+    //                 .collect();
+    //             if verbose {
+    //                 skipped
+    //                     .iter()
+    //                     .for_each(|item| eprintln!("Skipping {} \"{}\"", $label, item.ident()));
+    //             }
+    //         }};
+    //     }
 
-        filter!(aliases, Alias, "alias");
-        filter!(constants, Const, "const");
-        filter!(structs, Struct, "struct");
-        filter!(foreign_functions, Fn, "fn");
-        filter!(foreign_statics, Static, "static");
-    }
+    //     filter!(aliases, Alias, "alias");
+    //     filter!(constants, Const, "const");
+    //     filter!(structs, Struct, "struct");
+    //     filter!(unions, Union, "union");
+    //     filter!(foreign_functions, Fn, "fn");
+    //     filter!(foreign_statics, Static, "static");
+    // }
 
     /// Maps Rust identifiers or types to C counterparts, or defaults to the original name.
     pub(crate) fn rty_to_cty<'a>(&self, item: impl Into<MapInput<'a>>) -> String {

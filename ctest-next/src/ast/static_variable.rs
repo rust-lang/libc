@@ -6,6 +6,7 @@ use crate::{Abi, BoxStr};
 /// as a result it does not have a field for storing the expression.
 #[derive(Debug, Clone)]
 pub struct Static {
+    #[expect(unused)]
     pub(crate) public: bool,
     #[expect(unused)]
     pub(crate) abi: Abi,

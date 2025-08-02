@@ -88,7 +88,11 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for constant in helper.ffi_items.constants() {
+        let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
+
+        for constant in helper.ffi_items.constants().iter().filter(|c| {
+            !should_skip(MapInput::Const(c)) || !(helper.generator.skip_private && !c.public)
+        }) {
             if let syn::Type::Ptr(ptr) = &constant.ty
                 && let syn::Type::Path(path) = &*ptr.elem
                 && path.path.segments.last().unwrap().ident == "c_char"
@@ -126,7 +130,11 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for alias in helper.ffi_items.aliases() {
+        let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
+
+        for alias in helper.ffi_items.aliases().iter().filter(|a| {
+            !should_skip(MapInput::Alias(a)) || !(helper.generator.skip_private && !a.public)
+        }) {
             let item = TestSizeAlign {
                 test_name: size_align_test_ident(alias.ident()),
                 id: alias.ident().into(),
@@ -136,7 +144,9 @@ impl TestTemplate {
             self.size_align_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
-        for struct_ in helper.ffi_items.structs() {
+        for struct_ in helper.ffi_items.structs().iter().filter(|s| {
+            !should_skip(MapInput::Struct(s)) || !(helper.generator.skip_private && !s.public)
+        }) {
             let item = TestSizeAlign {
                 test_name: size_align_test_ident(struct_.ident()),
                 id: struct_.ident().into(),
@@ -146,7 +156,9 @@ impl TestTemplate {
             self.size_align_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
-        for union_ in helper.ffi_items.unions() {
+        for union_ in helper.ffi_items.unions().iter().filter(|u| {
+            !should_skip(MapInput::Union(u)) || !(helper.generator.skip_private && !u.public)
+        }) {
             let item = TestSizeAlign {
                 test_name: size_align_test_ident(union_.ident()),
                 id: union_.ident().into(),
@@ -167,7 +179,11 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for alias in helper.ffi_items.aliases() {
+        let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
+
+        for alias in helper.ffi_items.aliases().iter().filter(|a| {
+            !should_skip(MapInput::Alias(a)) || !(helper.generator.skip_private && !a.public)
+        }) {
             let should_skip_signededness_test = helper
                 .generator
                 .skip_signededness
@@ -206,7 +222,10 @@ impl TestTemplate {
             .iter()
             .flat_map(|struct_| struct_.fields.iter().map(move |field| (struct_, field)))
             .filter(|(struct_, field)| {
-                !should_skip(MapInput::StructField(struct_, field)) && field.public
+                !should_skip(MapInput::StructField(struct_, field))
+                    && !should_skip(MapInput::Struct(struct_))
+                    && field.public
+                    || !(helper.generator.skip_private && !struct_.public)
             })
             .map(|(struct_, field)| {
                 (
@@ -222,7 +241,10 @@ impl TestTemplate {
             .iter()
             .flat_map(|union_| union_.fields.iter().map(move |field| (union_, field)))
             .filter(|(union_, field)| {
-                !should_skip(MapInput::UnionField(union_, field)) && field.public
+                !should_skip(MapInput::UnionField(union_, field))
+                    && !should_skip(MapInput::Union(union_))
+                    && field.public
+                    || !(helper.generator.skip_private && !union_.public)
             })
             .map(|(union_, field)| {
                 (
@@ -255,15 +277,23 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for alias in helper.ffi_items.aliases() {
+        let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
+
+        for alias in helper.ffi_items.aliases().iter().filter(|a| {
+            !should_skip(MapInput::Alias(a)) || !(helper.generator.skip_private && !a.public)
+        }) {
             let c_ty = helper.c_type(alias)?;
             self.add_roundtrip_test(helper, alias.ident(), &[], &c_ty, true);
         }
-        for struct_ in helper.ffi_items.structs() {
+        for struct_ in helper.ffi_items.structs().iter().filter(|s| {
+            !should_skip(MapInput::Struct(s)) || !(helper.generator.skip_private && !s.public)
+        }) {
             let c_ty = helper.c_type(struct_)?;
             self.add_roundtrip_test(helper, struct_.ident(), &struct_.fields, &c_ty, false);
         }
-        for union_ in helper.ffi_items.unions() {
+        for union_ in helper.ffi_items.unions().iter().filter(|u| {
+            !should_skip(MapInput::Union(u)) || !(helper.generator.skip_private && !u.public)
+        }) {
             let c_ty = helper.c_type(union_)?;
             self.add_roundtrip_test(helper, union_.ident(), &union_.fields, &c_ty, false);
         }
@@ -314,7 +344,9 @@ impl TestTemplate {
             .filter(|(s, f)| {
                 !should_skip(MapInput::StructField(s, f))
                     && !should_skip(MapInput::StructFieldType(s, f))
+                    && !should_skip(MapInput::Struct(s))
                     && f.public
+                    || !(helper.generator.skip_private && !s.public)
             })
             .map(|(s, f)| {
                 (
@@ -343,7 +375,9 @@ impl TestTemplate {
             .filter(|(u, f)| {
                 !should_skip(MapInput::UnionField(u, f))
                     && !should_skip(MapInput::UnionFieldType(u, f))
+                    && !should_skip(MapInput::Union(u))
                     && f.public
+                    || !(helper.generator.skip_private && !u.public)
             })
             .map(|(u, f)| {
                 (
@@ -536,7 +570,7 @@ impl<'a> TranslateHelper<'a> {
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
         };
 
-        let item = if self.ffi_items.contains_struct(ident) {
+        let item = if self.ffi_items.contains_struct(&ty) {
             MapInput::StructType(&ty)
         } else if self.ffi_items.contains_union(ident) {
             MapInput::UnionType(&ty)
@@ -554,21 +588,30 @@ impl<'a> TranslateHelper<'a> {
     fn basic_c_type(&self, ty: &syn::Type) -> Result<String, TranslationError> {
         let type_name = match ty {
             syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
-            syn::Type::Ptr(p) => self.basic_c_type(&p.elem)?,
-            syn::Type::Reference(r) => self.basic_c_type(&r.elem)?,
+            // Using recursion here causes breakage.
+            // FIXME(ctest): Might be possible to extract this part into a function.
+            syn::Type::Ptr(p) => match p.elem.deref() {
+                syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
+                _ => p.to_token_stream().to_string(),
+            },
+            syn::Type::Reference(r) => match r.elem.deref() {
+                syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
+                _ => r.to_token_stream().to_string(),
+            },
             _ => ty.to_token_stream().to_string(),
         };
 
         let unmapped_c_type = self.translator.translate_type(ty)?;
         let item = if self.ffi_items.contains_struct(&type_name) {
-            MapInput::StructType(&unmapped_c_type)
+            MapInput::StructType(&type_name)
         } else if self.ffi_items.contains_union(&type_name) {
-            MapInput::UnionType(&unmapped_c_type)
+            MapInput::UnionType(&type_name)
         } else {
-            MapInput::Type(&unmapped_c_type)
+            MapInput::Type(&type_name)
         };
 
-        Ok(self.generator.rty_to_cty(item))
+        let mapped_type = self.generator.rty_to_cty(item.clone());
+        Ok(unmapped_c_type.replace(&type_name, &mapped_type))
     }
 
     /// Partially translate a Rust bare function type into its equivalent C type.
