@@ -51,7 +51,7 @@ fn cdecl(s: &str) -> Result<String, TranslationError> {
     let generator = TestGenerator::new();
     let helper = TranslateHelper::new(&ffi_items, &generator);
 
-    helper.make_cdecl("test_make_cdecl", &ty)
+    helper.make_cdecl("test_make_cdecl", &ty, None, None)
 }
 
 #[test]
@@ -73,18 +73,23 @@ fn test_extraction_ffi_items() {
 fn test_translation_type_ptr() {
     assert_eq!(
         ty("*const *mut i32").unwrap(),
-        "int32_t * const*".to_string()
+        "int32_t* const*".to_string()
     );
     assert_eq!(
         ty("*const [u128; 2 + 3]").unwrap(),
-        "unsigned __int128 (*const) [2 + 3]".to_string()
+        "const unsigned __int128 [2 + 3]".to_string()
     );
+
     // FIXME(ctest): While not a valid C type, it will be used to
     // generate a valid test in the future.
-    // assert_eq!(
-    //     ty("*const *mut [u8; 5]").unwrap(),
-    //     "uint8_t (*const *) [5]".to_string()
-    // );
+    assert_eq!(
+        ty("*const *mut [u8; 5]").unwrap(),
+        "uint8_t [5] const*".to_string()
+    );
+    assert_eq!(
+        ty("*const *const [i32; 4]").unwrap(),
+        "const int32_t [4] const*".to_string()
+    )
 }
 
 #[test]
@@ -99,11 +104,11 @@ fn test_translation_type_reference() {
 fn test_translation_type_bare_fn() {
     assert_eq!(
         ty("fn(*mut u8, i16) -> *const char").unwrap(),
-        "char const*(*)(uint8_t *, int16_t)".to_string()
+        "const char*(*)(uint8_t*, int16_t)".to_string()
     );
     assert_eq!(
         ty("*const fn(*mut u8, &mut [u8; 16]) -> &mut *mut u8").unwrap(),
-        "uint8_t * *(*const)(uint8_t *, uint8_t (*) [16])".to_string()
+        "uint8_t* *(*)(uint8_t*, uint8_t (*)[16])".to_string()
     );
 }
 
@@ -125,11 +130,11 @@ fn test_translation_fails_for_unsupported() {
 fn test_translate_helper_function_pointer() {
     assert_eq!(
         cdecl("extern \"C\" fn(c_int) -> *const c_void").unwrap(),
-        "void const* (**test_make_cdecl)(int)"
+        "const void* (**test_make_cdecl)(int)"
     );
     assert_eq!(
         cdecl("Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>").unwrap(),
-        "uint8_t (__stdcall **test_make_cdecl)(char const*, uint32_t[16])"
+        "uint8_t (__stdcall **test_make_cdecl)(const char*, uint32_t[16])"
     );
 }
 

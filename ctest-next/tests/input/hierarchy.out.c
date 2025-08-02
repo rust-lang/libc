@@ -64,3 +64,8 @@ in6_addr ctest_roundtrip__in6_addr(
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
 #endif
+
+typedef void* (*ctest_foreign_fn_type__malloc)(size_t);
+ctest_foreign_fn_type__malloc ctest_foreign_fn__malloc(void) {
+    return malloc;
+}

@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
 use askama::Template;
+use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
@@ -52,6 +53,7 @@ pub(crate) struct TestTemplate {
     pub field_ptr_tests: Vec<TestFieldPtr>,
     pub field_size_offset_tests: Vec<TestFieldSizeOffset>,
     pub roundtrip_tests: Vec<TestRoundtrip>,
+    pub foreign_fn_tests: Vec<TestForeignFn>,
     pub signededness_tests: Vec<TestSignededness>,
     pub size_align_tests: Vec<TestSizeAlign>,
     pub const_cstr_tests: Vec<TestCStr>,
@@ -78,6 +80,7 @@ impl TestTemplate {
         template.populate_field_size_offset_tests(&helper)?;
         template.populate_field_ptr_tests(&helper)?;
         template.populate_roundtrip_tests(&helper)?;
+        template.populate_foreign_fn_tests(&helper)?;
 
         Ok(template)
     }
@@ -359,6 +362,8 @@ impl TestTemplate {
                 .make_cdecl(
                     &format!("ctest_field_ty__{}__{}", id, field.ident()),
                     &field.ty,
+                    None,
+                    None,
                 )?
                 .into_boxed_str();
             let item = TestFieldPtr {
@@ -371,6 +376,89 @@ impl TestTemplate {
                 field_return_type,
             };
             self.field_ptr_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
+
+    /// Populates tests for extern functions.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_foreign_fn_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        let should_skip_fn_test = |ident| {
+            helper
+                .generator
+                .skip_fn_ptrcheck
+                .as_ref()
+                .is_some_and(|skip| skip(ident))
+        };
+        for func in helper.ffi_items.foreign_functions() {
+            if should_skip_fn_test(func.ident()) {
+                continue;
+            }
+
+            let is_volatile = |kind: VolatileItemKind| {
+                !helper.generator.volatile_items.is_empty()
+                    && helper
+                        .generator
+                        .volatile_items
+                        .iter()
+                        .any(|vf| vf(kind.clone()))
+            };
+
+            let volatile_keyword = if is_volatile(VolatileItemKind::FnReturnType(func.clone())) {
+                "volatile "
+            } else {
+                ""
+            };
+
+            // Figure out which arguments are arrays and volatile.
+            let volatile_args: Vec<bool> = func
+                .parameters
+                .iter()
+                .map(|arg| {
+                    is_volatile(VolatileItemKind::FnArgument(
+                        func.clone(),
+                        arg.clone().into(),
+                    ))
+                })
+                .collect();
+            let array_args: Vec<bool> = func
+                .parameters
+                .iter()
+                .map(|arg| {
+                    helper
+                        .generator
+                        .array_arg
+                        .as_ref()
+                        .is_some_and(|f| f(func.clone(), arg.clone()))
+                })
+                .collect();
+
+            let item = TestForeignFn {
+                test_name: foreign_fn_test_ident(func.ident()),
+                id: func.ident().into(),
+                c_val: helper.c_ident(func).into_boxed_str(),
+                return_type: helper
+                    .make_cdecl(
+                        &format!("ctest_foreign_fn_type__{}", func.ident()),
+                        &helper.parse_signature_to_type(
+                            &func.bare_fn_signature,
+                            &func.abi.to_string(),
+                        )?,
+                        Some(&volatile_args),
+                        Some(&array_args),
+                    )?
+                    .replace("**ctest_", "*ctest_")
+                    .into(),
+                volatile_keyword: volatile_keyword.into(),
+            };
+
+            self.foreign_fn_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
 
@@ -453,6 +541,15 @@ pub(crate) struct TestRoundtrip {
     pub is_alias: bool,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestForeignFn {
+    pub test_name: BoxStr,
+    pub c_val: BoxStr,
+    pub id: BoxStr,
+    pub return_type: BoxStr,
+    pub volatile_keyword: BoxStr,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -479,6 +576,10 @@ fn field_size_offset_test_ident(ident: &str, field_ident: &str) -> BoxStr {
 
 fn roundtrip_test_ident(ident: &str) -> BoxStr {
     format!("ctest_roundtrip_{ident}").into()
+}
+
+fn foreign_fn_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_foreign_fn_{ident}").into()
 }
 
 /// Wrap methods that depend on both ffi items and the generator.
@@ -546,36 +647,97 @@ impl<'a> TranslateHelper<'a> {
     fn basic_c_type(&self, ty: &syn::Type) -> Result<String, TranslationError> {
         let type_name = match ty {
             syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
-            syn::Type::Ptr(p) => self.basic_c_type(&p.elem)?,
-            syn::Type::Reference(r) => self.basic_c_type(&r.elem)?,
+            // Using recursion here causes breakage.
+            // FIXME(ctest): Might be possible to extract this part into a function.
+            syn::Type::Ptr(p) => match p.elem.deref() {
+                syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
+                _ => p.to_token_stream().to_string(),
+            },
+            syn::Type::Reference(r) => match r.elem.deref() {
+                syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
+                _ => r.to_token_stream().to_string(),
+            },
             _ => ty.to_token_stream().to_string(),
         };
 
         let unmapped_c_type = self.translator.translate_type(ty)?;
         let item = if self.ffi_items.contains_struct(&type_name) {
-            MapInput::StructType(&unmapped_c_type)
+            MapInput::StructType(&type_name)
         } else if self.ffi_items.contains_union(&type_name) {
-            MapInput::UnionType(&unmapped_c_type)
+            MapInput::UnionType(&type_name)
         } else {
-            MapInput::Type(&unmapped_c_type)
+            MapInput::Type(&type_name)
         };
 
-        Ok(self.generator.rty_to_cty(item))
+        let mapped_type = self.generator.rty_to_cty(item.clone());
+        Ok(unmapped_c_type.replace(&type_name, &mapped_type))
     }
 
     /// Partially translate a Rust bare function type into its equivalent C type.
     ///
     /// It returns the translated return type, translated argument types, and whether
-    /// it is variadic as a tuple.
+    /// it is variadic as a tuple. When translating, it applies the volatile keyword as needed
+    /// and transforms pointers to arrays if specified.
     fn translate_signature_partial(
         &self,
         signature: &syn::TypeBareFn,
+        volatile_args: Option<&[bool]>,
+        array_args: Option<&[bool]>,
     ) -> Result<(String, Vec<String>, bool), TranslationError> {
+        let num_args = signature.inputs.clone().iter().count();
+        let a = vec![false; num_args];
+        let volatile_args = volatile_args.unwrap_or(&a);
+        let array_args = array_args.unwrap_or(&a);
+
+        // Extremely long pipeline to fix everything that's broken.
+        // FIXME(ctest): It would be better to add volatile for the return type here instead
+        // of relying on the tests to do it.
         let args = signature
             .inputs
             .iter()
             .map(|arg| self.basic_c_type(&arg.ty))
-            .collect::<Result<Vec<_>, TranslationError>>()?;
+            .collect::<Result<Vec<_>, TranslationError>>()?
+            .iter()
+            .zip(volatile_args)
+            .map(|(arg, is_volatile)| {
+                format!("{}{}", if *is_volatile { "volatile " } else { "" }, arg)
+            })
+            .zip(array_args)
+            .map(|(arg, is_array_arg)| {
+                if *is_array_arg {
+                    if let Some(last_ptr) = arg.rfind('*') {
+                        arg[..last_ptr].to_string()
+                    } else {
+                        panic!("C FFI decl `{arg}` contains array argument");
+                    }
+                } else {
+                    arg
+                }
+            })
+            // Transform the broken syntax of the translator into something that works.
+            // FIXME(ctest): If possible, it would be nice to move this to the translator.
+            .map(|s| {
+                if let Some(i) = s.rfind(']') {
+                    let c = s.chars().filter(|&c| c == '*').count();
+                    if c == 0 {
+                        return s;
+                    }
+                    let postfix_idx = s.find('[').unwrap();
+                    let postfix = &s[postfix_idx..=i];
+                    let prefix = &s[..postfix_idx];
+                    let pointers = &s[i + 1..];
+                    let has_const = pointers.contains("const");
+                    let pointers = pointers.replace("const*", "* const");
+                    let prefix = prefix.replacen("const", "", if has_const { 1 } else { 0 });
+
+                    let result = format!("{prefix} ({pointers}) {postfix}");
+
+                    return result;
+                }
+                s
+            })
+            .collect();
+
         let return_type = match &signature.output {
             syn::ReturnType::Default => "void".to_string(),
             syn::ReturnType::Type(_, ty) => match ty.deref() {
@@ -595,6 +757,8 @@ impl<'a> TranslateHelper<'a> {
         &self,
         name: &str,
         ty: &syn::Type,
+        volatile_args: Option<&[bool]>,
+        array_args: Option<&[bool]>,
     ) -> Result<String, TranslationError> {
         match ty {
             syn::Type::Path(p) => {
@@ -609,7 +773,7 @@ impl<'a> TranslateHelper<'a> {
                         // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
                         match inner_ty {
                             syn::Type::Reference(_) | syn::Type::BareFn(_) => {
-                                return self.make_cdecl(name, inner_ty);
+                                return self.make_cdecl(name, inner_ty, volatile_args, array_args);
                             }
                             _ => {
                                 return Err(TranslationError::new(
@@ -623,7 +787,8 @@ impl<'a> TranslateHelper<'a> {
                 }
             }
             syn::Type::BareFn(f) => {
-                let (ret, mut args, variadic) = self.translate_signature_partial(f)?;
+                let (ret, mut args, variadic) =
+                    self.translate_signature_partial(f, volatile_args, array_args)?;
                 let abi = if let Some(abi) = &f.abi {
                     let target = self
                         .generator
@@ -667,5 +832,27 @@ impl<'a> TranslateHelper<'a> {
 
         let mapped_type = self.basic_c_type(ty)?;
         Ok(format!("{mapped_type}* {name}"))
+    }
+
+    /// Translate a proper function into a bare function type.
+    ///
+    /// Actual functions foreign or not do not have a type to use, however they can be
+    /// modelled as a bare function type. This method converts them into that bare function
+    /// type so that it can be used later for translation.
+    pub(crate) fn parse_signature_to_type(
+        &self,
+        signature: &str,
+        abi: &str,
+    ) -> Result<syn::Type, TranslationError> {
+        let (_, s) = signature.split_once('(').unwrap();
+        let type_str = format!("type T = unsafe extern \"{abi}\" fn({s};");
+        let item: syn::ItemType = syn::parse_str(&type_str).map_err(|_| {
+            TranslationError::new(
+                TranslationErrorKind::UnsupportedType,
+                signature,
+                Span::call_site(),
+            )
+        })?;
+        Ok(*item.ty)
     }
 }
