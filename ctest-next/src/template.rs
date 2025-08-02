@@ -1,6 +1,7 @@
 use std::ops::Deref;
 
 use askama::Template;
+use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
@@ -517,7 +518,14 @@ impl<'a> TranslateHelper<'a> {
             // inside of `Fn` when parsed.
             MapInput::Fn(_) => unimplemented!(),
             // For structs/unions/aliases, their type is the same as their identifier.
-            MapInput::Alias(a) => (a.ident(), a.ident().to_string()),
+            // FIXME(ctest): For some specific primitives such as c_uint, they don't exist on the
+            // C side and have to be manually translated. If they are removed to use `std::ffi`,
+            // then this becomes unneeded (although it won't break).
+            MapInput::Alias(a) => (
+                a.ident(),
+                self.translator
+                    .translate_primitive_type(&syn::Ident::new(a.ident(), Span::call_site())),
+            ),
             MapInput::Struct(s) => (s.ident(), s.ident().to_string()),
             MapInput::Union(u) => (u.ident(), u.ident().to_string()),
 

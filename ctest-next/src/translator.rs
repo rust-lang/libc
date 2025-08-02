@@ -228,7 +228,7 @@ impl Translator {
     }
 
     /// Translate a Rust primitive type into its C equivalent.
-    fn translate_primitive_type(&self, ty: &syn::Ident) -> String {
+    pub(crate) fn translate_primitive_type(&self, ty: &syn::Ident) -> String {
         match ty.to_string().as_str() {
             "usize" => "size_t".to_string(),
             "isize" => "ssize_t".to_string(),

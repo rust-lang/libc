@@ -295,6 +295,7 @@ dependencies = [
  "cc",
  "cfg-if 1.0.1",
  "ctest",
+ "ctest-next",
  "glob",
  "libc 1.0.0-alpha.1",
  "proc-macro2",
