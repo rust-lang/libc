@@ -65,7 +65,10 @@ fn do_ctest() {
         t if t.contains("solaris") => test_solarish(t),
         t if t.contains("illumos") => test_solarish(t),
         t if t.contains("wasi") => test_wasi(t),
-        t if t.contains("windows") => test_windows(t),
+        t if t.contains("windows") => {
+            test_windows_next(t);
+            test_windows(t);
+        }
         t if t.contains("vxworks") => test_vxworks(t),
         t if t.contains("nto-qnx") => test_neutrino(t),
         t if t.contains("aix") => return test_aix(t),
@@ -77,7 +80,6 @@ fn ctest_cfg() -> ctest::TestGenerator {
     ctest::TestGenerator::new()
 }
 
-#[expect(unused)]
 fn ctest_next_cfg() -> ctest_next::TestGenerator {
     ctest_next::TestGenerator::new()
 }
@@ -955,6 +957,124 @@ fn test_windows(target: &str) {
     cfg.skip_fn(|_| false);
 
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+}
+
+fn test_windows_next(target: &str) {
+    assert!(target.contains("windows"));
+    let gnu = target.contains("gnu");
+    let i686 = target.contains("i686");
+
+    let mut cfg = ctest_next_cfg();
+    cfg.skip_private(true);
+    if target.contains("msvc") {
+        cfg.flag("/wd4324");
+    }
+    cfg.define("_WIN32_WINNT", Some("0x8000"));
+
+    headers! { cfg:
+        "direct.h",
+        "errno.h",
+        "fcntl.h",
+        "io.h",
+        "limits.h",
+        "locale.h",
+        "process.h",
+        "signal.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "sys/stat.h",
+        "sys/types.h",
+        "sys/utime.h",
+        "time.h",
+        "wchar.h",
+        [gnu]: "ws2tcpip.h",
+        [!gnu]: "Winsock2.h",
+    }
+
+    cfg.rename_struct_ty(|ty| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" => ty.to_string().into(),
+            t if t.ends_with("_t") => t.to_string().into(),
+            // Windows uppercase structs don't have `struct` in fr.into()ont:
+            t if ty.chars().next().unwrap().is_uppercase() => t.to_string().into(),
+            "stat" => "struct __stat64".to_string().into(),
+            "utimbuf" => "struct __utimbuf64".to_string().into(),
+            _ => None,
+        }
+    });
+    cfg.rename_type(move |ty| {
+        match ty {
+            // FIXME(windows): these don't exist:
+            "time64_t" => "__time64_t".to_string().into(),
+            "ssize_t" => "SSIZE_T".to_string().into(),
+
+            "sighandler_t" if !gnu => "_crt_signal_t".to_string().into(),
+            "sighandler_t" if gnu => "__p_sig_fn_t".to_string().into(),
+            _ => None,
+        }
+    });
+
+    cfg.rename_fn(move |func| {
+        func.link_name()
+            .map(|l| l.to_string())
+            .or(func.ident().to_string().into())
+    });
+
+    cfg.skip_alias(move |alias| match alias.ident() {
+        "SSIZE_T" if !gnu => true,
+        "ssize_t" if !gnu => true,
+        // FIXME(windows): The size and alignment of this type are incorrect
+        "time_t" if gnu && i686 => true,
+        _ => false,
+    });
+
+    cfg.skip_struct(move |struct_| {
+        let ty = struct_.ident();
+        if ty.starts_with("__c_anonymous_") {
+            return true;
+        }
+        match ty {
+            // FIXME(windows): The size and alignment of this struct are incorrect
+            "timespec" if gnu && i686 => true,
+            _ => false,
+        }
+    });
+    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
+
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
+            // FIXME(windows): API error:
+            // SIG_ERR type is "void (*)(int)", not "int"
+            "SIG_ERR" |
+            // Similar for SIG_DFL/IGN/GET/SGE/ACK
+            "SIG_DFL" | "SIG_IGN" | "SIG_GET" | "SIG_SGE" | "SIG_ACK" => true,
+            // FIXME(windows): newer windows-gnu environment on CI?
+            "_O_OBTAIN_DIR" if gnu => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct_field(move |s, field| s.ident() == "CONTEXT" && field.ident() == "Fp");
+    // FIXME(windows): All functions point to the wrong addresses?
+    // cfg.skip_fn_ptr_check(|_| true);
+
+    cfg.skip_signededness(move |c| {
+        match c {
+            // windows-isms
+            n if n.starts_with("P") => true,
+            n if n.starts_with("H") => true,
+            n if n.starts_with("LP") => true,
+            "sighandler_t" if gnu => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(|_| false);
+
+    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "main_next.rs").unwrap();
 }
 
 fn test_redox(target: &str) {
