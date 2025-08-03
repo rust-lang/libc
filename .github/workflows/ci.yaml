@@ -89,7 +89,7 @@ jobs:
               # Remove `-Dwarnings` at the MSRV since lints may be different
               export RUSTFLAGS=""
               # Remove `ctest-next` which uses the 2024 edition
-              perl -i -ne 'print unless /"ctest-(next|test)",/' Cargo.toml
+              perl -i -ne 'print unless /"ctest-(next|test)",/ || /"libc-test",/' Cargo.toml
           fi
 
           ./ci/verify-build.sh
@@ -320,7 +320,7 @@ jobs:
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
     - name: Remove edition 2024 crates
-      run: perl -i -ne 'print unless /"ctest-(next|test)",/' Cargo.toml
+      run: perl -i -ne 'print unless /"ctest-(next|test)",/ || /"libc-test",/' Cargo.toml
     - uses: Swatinem/rust-cache@v2
     - run: cargo build -p ctest
 

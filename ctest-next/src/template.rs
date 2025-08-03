@@ -3,6 +3,7 @@ use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
+use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
 use crate::translator::{TranslationErrorKind, Translator};
 use crate::{
@@ -86,7 +87,7 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for constant in helper.ffi_items.constants() {
+        for constant in helper.filtered_ffi_items.constants() {
             if let syn::Type::Ptr(ptr) = &constant.ty
                 && let syn::Type::Path(path) = &*ptr.elem
                 && path.path.segments.last().unwrap().ident == "c_char"
@@ -124,7 +125,7 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for alias in helper.ffi_items.aliases() {
+        for alias in helper.filtered_ffi_items.aliases() {
             let item = TestSizeAlign {
                 test_name: size_align_test_ident(alias.ident()),
                 id: alias.ident().into(),
@@ -134,7 +135,7 @@ impl TestTemplate {
             self.size_align_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
-        for struct_ in helper.ffi_items.structs() {
+        for struct_ in helper.filtered_ffi_items.structs() {
             let item = TestSizeAlign {
                 test_name: size_align_test_ident(struct_.ident()),
                 id: struct_.ident().into(),
@@ -144,7 +145,7 @@ impl TestTemplate {
             self.size_align_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
-        for union_ in helper.ffi_items.unions() {
+        for union_ in helper.filtered_ffi_items.unions() {
             let item = TestSizeAlign {
                 test_name: size_align_test_ident(union_.ident()),
                 id: union_.ident().into(),
@@ -165,7 +166,7 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for alias in helper.ffi_items.aliases() {
+        for alias in helper.filtered_ffi_items.aliases() {
             let should_skip_signededness_test = helper
                 .generator
                 .skip_signededness
@@ -197,7 +198,7 @@ impl TestTemplate {
         let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
 
         let struct_fields = helper
-            .ffi_items
+            .filtered_ffi_items
             .structs()
             .iter()
             .flat_map(|struct_| struct_.fields.iter().map(move |field| (struct_, field)))
@@ -213,7 +214,7 @@ impl TestTemplate {
                 )
             });
         let union_fields = helper
-            .ffi_items
+            .filtered_ffi_items
             .unions()
             .iter()
             .flat_map(|union_| union_.fields.iter().map(move |field| (union_, field)))
@@ -251,15 +252,15 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for alias in helper.ffi_items.aliases() {
+        for alias in helper.filtered_ffi_items.aliases() {
             let c_ty = helper.c_type(alias)?;
             self.add_roundtrip_test(helper, alias.ident(), &[], &c_ty, true);
         }
-        for struct_ in helper.ffi_items.structs() {
+        for struct_ in helper.filtered_ffi_items.structs() {
             let c_ty = helper.c_type(struct_)?;
             self.add_roundtrip_test(helper, struct_.ident(), &struct_.fields, &c_ty, false);
         }
-        for union_ in helper.ffi_items.unions() {
+        for union_ in helper.filtered_ffi_items.unions() {
             let c_ty = helper.c_type(union_)?;
             self.add_roundtrip_test(helper, union_.ident(), &union_.fields, &c_ty, false);
         }
@@ -303,14 +304,14 @@ impl TestTemplate {
         let should_skip = |map_input| helper.generator.skips.iter().any(|f| f(&map_input));
 
         let struct_fields = helper
-            .ffi_items
+            .filtered_ffi_items
             .structs()
             .iter()
             .flat_map(|s| s.fields.iter().map(move |f| (s, f)))
             .filter(|(s, f)| {
-                !should_skip(MapInput::StructField(s, f))
-                    && !should_skip(MapInput::StructFieldType(s, f))
-                    && f.public
+                !(should_skip(MapInput::StructField(s, f))
+                    || should_skip(MapInput::StructFieldType(s, f))
+                    || !f.public)
             })
             .map(|(s, f)| {
                 (
@@ -332,14 +333,14 @@ impl TestTemplate {
                 )
             });
         let union_fields = helper
-            .ffi_items
+            .filtered_ffi_items
             .unions()
             .iter()
             .flat_map(|u| u.fields.iter().map(move |f| (u, f)))
             .filter(|(u, f)| {
-                !should_skip(MapInput::UnionField(u, f))
-                    && !should_skip(MapInput::UnionFieldType(u, f))
-                    && f.public
+                !(should_skip(MapInput::UnionField(u, f))
+                    || should_skip(MapInput::UnionFieldType(u, f))
+                    || !f.public)
             })
             .map(|(u, f)| {
                 (
@@ -532,6 +533,7 @@ fn foreign_fn_test_ident(ident: &str) -> BoxStr {
 
 /// Wrap methods that depend on both ffi items and the generator.
 pub(crate) struct TranslateHelper<'a> {
+    filtered_ffi_items: FfiItems,
     ffi_items: &'a FfiItems,
     generator: &'a TestGenerator,
     translator: Translator<'a>,
@@ -540,11 +542,49 @@ pub(crate) struct TranslateHelper<'a> {
 impl<'a> TranslateHelper<'a> {
     /// Create a new translation helper.
     pub(crate) fn new(ffi_items: &'a FfiItems, generator: &'a TestGenerator) -> Self {
-        Self {
+        let filtered_ffi_items = ffi_items.clone();
+        let mut helper = Self {
+            filtered_ffi_items,
             ffi_items,
             generator,
             translator: Translator::new(ffi_items, generator),
+        };
+        helper.filter_ffi_items();
+
+        helper
+    }
+
+    /// Skips entire items such as structs, constants, and aliases from being tested.
+    ///
+    /// Does not skip specific tests or specific fields. If `skip_private` is true,
+    /// it will skip tests for all private items.
+    fn filter_ffi_items(&mut self) {
+        let verbose = self.generator.verbose_skip;
+
+        macro_rules! filter {
+            ($field:ident, $variant:ident, $label:literal) => {{
+                let skipped = self.filtered_ffi_items.$field.extract_if(.., |item| {
+                    (self.generator.skip_private && !item.public)
+                        || self
+                            .generator
+                            .skips
+                            .iter()
+                            .any(|f| f(&MapInput::$variant(item)))
+                });
+                for item in skipped {
+                    if verbose {
+                        eprintln!("Skipping {} \"{}\"", $label, item.ident())
+                    }
+                }
+            }};
         }
+
+        filter!(aliases, Alias, "alias");
+        filter!(constants, Const, "const");
+        filter!(structs, Struct, "struct");
+        filter!(unions, Union, "union");
+        filter!(foreign_functions, Fn, "fn");
+        filter!(foreign_statics, Static, "static");
     }
 
     /// Returns the equivalent C/Cpp identifier of the Rust item.
@@ -565,9 +605,9 @@ impl<'a> TranslateHelper<'a> {
             // inside of `Fn` when parsed.
             MapInput::Fn(_) => unimplemented!(),
             // For structs/unions/aliases, their type is the same as their identifier.
-            MapInput::Alias(a) => (a.ident(), cdecl::named(a.ident(), cdecl::Constness::Mut)),
-            MapInput::Struct(s) => (s.ident(), cdecl::named(s.ident(), cdecl::Constness::Mut)),
-            MapInput::Union(u) => (u.ident(), cdecl::named(u.ident(), cdecl::Constness::Mut)),
+            MapInput::Alias(a) => (a.ident(), cdecl::named(a.ident(), Constness::Mut)),
+            MapInput::Struct(s) => (s.ident(), cdecl::named(s.ident(), Constness::Mut)),
+            MapInput::Union(u) => (u.ident(), cdecl::named(u.ident(), Constness::Mut)),
 
             MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
             MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
@@ -584,7 +624,7 @@ impl<'a> TranslateHelper<'a> {
             )
         })?;
 
-        let item = if self.ffi_items.contains_struct(ident) {
+        let item = if self.ffi_items.contains_struct(&ty) {
             MapInput::StructType(&ty)
         } else if self.ffi_items.contains_union(ident) {
             MapInput::UnionType(&ty)

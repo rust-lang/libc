@@ -127,3 +127,11 @@ fn test_translate_helper_array_1d_2d() {
     assert_r2cdecl("[u8; 10]", "uint8_t foo[10]");
     assert_r2cdecl("[[u8; 64]; 32]", "uint8_t foo[32][64]");
 }
+
+#[test]
+fn test_translate_expr_literal_types() {
+    assert_eq!(
+        r2cdecl("[u8; 10usize]", "foo").unwrap(),
+        "uint8_t foo[(size_t)10]"
+    );
+}
