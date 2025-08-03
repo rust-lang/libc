@@ -52,7 +52,10 @@ fn do_cc() {
 fn do_ctest() {
     match &env::var("TARGET").unwrap() {
         t if t.contains("android") => test_android(t),
-        t if t.contains("apple") => test_apple(t),
+        t if t.contains("apple") => {
+            test_apple_next(t);
+            test_apple(t);
+        }
         t if t.contains("dragonfly") => test_dragonflybsd(t),
         t if t.contains("emscripten") => test_emscripten(t),
         t if t.contains("freebsd") => test_freebsd(t),
@@ -77,7 +80,6 @@ fn ctest_cfg() -> ctest::TestGenerator {
     ctest::TestGenerator::new()
 }
 
-#[expect(unused)]
 fn ctest_next_cfg() -> ctest_next::TestGenerator {
     ctest_next::TestGenerator::new()
 }
@@ -493,6 +495,263 @@ fn test_apple(target: &str) {
         _ => false,
     });
     cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+}
+
+fn test_apple_next(target: &str) {
+    assert!(target.contains("apple"));
+    let x86_64 = target.contains("x86_64");
+    let i686 = target.contains("i686");
+
+    let mut cfg = ctest_next_cfg();
+    cfg.skip_private(true);
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("__APPLE_USE_RFC_3542", None);
+
+    headers! { cfg:
+        "aio.h",
+        "CommonCrypto/CommonCrypto.h",
+        "CommonCrypto/CommonRandom.h",
+        "copyfile.h",
+        "crt_externs.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "fnmatch.h",
+        "getopt.h",
+        "glob.h",
+        "grp.h",
+        "iconv.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "libgen.h",
+        "libproc.h",
+        "limits.h",
+        "locale.h",
+        "malloc/malloc.h",
+        "net/bpf.h",
+        "net/dlil.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_dl.h",
+        "net/if_mib.h",
+        "net/if_utun.h",
+        "net/if_var.h",
+        "net/ndrv.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/if_ether.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "netinet6/in6_var.h",
+        "os/clock.h",
+        "os/lock.h",
+        "os/signpost.h",
+        // FIXME(macos): Requires the macOS 14.4 SDK.
+        //"os/os_sync_wait_on_address.h",
+        "poll.h",
+        "pthread.h",
+        "pthread_spis.h",
+        "pthread/introspection.h",
+        "pthread/spawn.h",
+        "pthread/stack_np.h",
+        "pwd.h",
+        "regex.h",
+        "resolv.h",
+        "sched.h",
+        "semaphore.h",
+        "signal.h",
+        "spawn.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "sysdir.h",
+        "sys/appleapiopts.h",
+        "sys/attr.h",
+        "sys/clonefile.h",
+        "sys/event.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/ipc.h",
+        "sys/kern_control.h",
+        "sys/mman.h",
+        "sys/mount.h",
+        "sys/proc_info.h",
+        "sys/ptrace.h",
+        "sys/quota.h",
+        "sys/random.h",
+        "sys/resource.h",
+        "sys/sem.h",
+        "sys/shm.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/sys_domain.h",
+        "sys/sysctl.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/timex.h",
+        "sys/types.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/vsock.h",
+        "sys/wait.h",
+        "sys/xattr.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "unistd.h",
+        "util.h",
+        "utime.h",
+        "utmpx.h",
+        "wchar.h",
+        "xlocale.h",
+        [x86_64]: "crt_externs.h",
+    }
+
+    // Skip anonymous unions/structs.
+    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(|s| s.ident().starts_with("__c_anonymous_"));
+
+    cfg.skip_struct(|s| {
+        match s.ident() {
+            // FIXME(union): actually a union
+            "sigval" => true,
+            // FIXME(macos): The size is changed in recent macOSes.
+            "malloc_zone_t" => true,
+            // it is a moving target, changing through versions
+            // also contains bitfields members
+            "tcp_connection_info" => true,
+            // FIXME(macos): The size is changed in recent macOSes.
+            "malloc_introspection_t" => true,
+            // sonoma changes the padding `rmx_filler` field.
+            "rt_metrics" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(|ty| ty.ident().starts_with("__c_anonymous_"));
+    cfg.skip_alias(|ty| {
+        match ty.ident() {
+            // FIXME(macos): Requires the macOS 14.4 SDK.
+            "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
+
+            // FIXME(macos): "'__uint128' undeclared" in C
+            "__uint128" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
+            // These OSX constants are removed in Sierra.
+            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
+            "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
+            // FIXME(macos): the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
+            "SF_SETTABLE" => true,
+
+            // FIXME(macos): XCode 13.1 doesn't have it.
+            "TIOCREMOTE" => true,
+
+            // FIXME(macos): Requires the macOS 14.4 SDK.
+            "OS_SYNC_WAKE_BY_ADDRESS_NONE"
+            | "OS_SYNC_WAKE_BY_ADDRESS_SHARED"
+            | "OS_SYNC_WAIT_ON_ADDRESS_NONE"
+            | "OS_SYNC_WAIT_ON_ADDRESS_SHARED" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |func| {
+        // skip those that are manually verified
+        match func.ident() {
+            // close calls the close_nocancel system call
+            "close" => true,
+
+            // FIXME(1.0): std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
+            "res_init" => true,
+
+            // FIXME(macos): remove once the target in CI is updated
+            "pthread_jit_write_freeze_callbacks_np" => true,
+
+            // FIXME(macos): ABI has been changed on recent macOSes.
+            "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
+
+            // FIXME(macos): Once the SDK get updated to Ventura's level
+            "freadlink" | "mknodat" | "mkfifoat" => true,
+
+            // FIXME(macos): Requires the macOS 14.4 SDK.
+            "os_sync_wake_by_address_any"
+            | "os_sync_wake_by_address_all"
+            | "os_sync_wake_by_address_flags_t"
+            | "os_sync_wait_on_address"
+            | "os_sync_wait_on_address_flags_t"
+            | "os_sync_wait_on_address_with_deadline"
+            | "os_sync_wait_on_address_with_timeout" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
+            // FIXME(union): actually a union
+            ("sigevent", "sigev_value") => true,
+            // FIXME(macos): the array size has been changed since macOS 10.15 ([8] -> [7]).
+            ("statfs", "f_reserved") => true,
+            ("__darwin_arm_neon_state64", "__v") => true,
+
+            ("ifreq", "ifr_ifru") => true,
+            ("in6_ifreq", "ifr_ifru") => true,
+            ("ifkpi", "ifk_data") => true,
+            ("ifconf", "ifc_ifcu") => true,
+            _ => false,
+        }
+    });
+
+    cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
+
+    cfg.rename_struct_ty(move |ty| {
+        // Just pass all these through, no need for a "struct" prefix
+        ["FILE", "DIR", "Dl_info"]
+            .contains(&ty)
+            .then_some(ty.to_string())
+    });
+    cfg.rename_type(|ty| (ty == "sighandler_t").then_some("sig_t".to_string()));
+    cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+    cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+
+    cfg.rename_struct_field(|s, f| {
+        match f.ident() {
+            n if n.ends_with("_nsec") && s.ident().starts_with("stat") => {
+                n.replace("e_nsec", "espec.tv_nsec").into()
+            }
+            // FIXME(macos): sigaction actually contains a union with two variants:
+            // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
+            // a sa_handler with type sig_t
+            "sa_sigaction" if s.ident() == "sigaction" => "sa_handler".to_string().into(),
+            _ => None,
+        }
+    });
+
+    cfg.skip_roundtrip(move |s| match s {
+        // FIXME(macos): this type has the wrong ABI
+        "max_align_t" if i686 => true,
+        // Can't return an array from a C function.
+        "uuid_t" | "vol_capabilities_set_t" => true,
+        _ => false,
+    });
+
+    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "main_next.rs").unwrap();
 }
 
 fn test_openbsd(target: &str) {
