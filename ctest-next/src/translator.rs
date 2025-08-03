@@ -364,6 +364,24 @@ pub(crate) fn ptr_with_inner(
 /// This function will just pass the expression as is in most cases.
 pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
     match expr {
+        syn::Expr::Index(i) => {
+            let base = translate_expr(&i.expr);
+            let index = translate_expr(&i.index);
+            format!("{base}[{index}]")
+        }
+        // This is done to deal with things like 3usize.
+        syn::Expr::Lit(l) => match &l.lit {
+            syn::Lit::Int(i) => {
+                let suffix = translate_primitive_type(i.suffix());
+                let val = i.base10_digits().to_string();
+                if suffix.is_empty() {
+                    val
+                } else {
+                    format!("({suffix}){val}")
+                }
+            }
+            _ => l.to_token_stream().to_string(),
+        },
         syn::Expr::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
         syn::Expr::Cast(c) => translate_expr(c.expr.deref()),
         expr => expr.to_token_stream().to_string(),
