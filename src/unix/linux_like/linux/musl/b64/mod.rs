@@ -34,6 +34,22 @@ s! {
         __pad2: c_ulong,
     }
 
+    pub struct semid_ds {
+        pub sem_perm: crate::ipc_perm,
+        pub sem_otime: crate::time_t,
+        pub sem_ctime: crate::time_t,
+        #[cfg(target_endian = "little")]
+        pub sem_nsems: crate::c_ushort,
+        #[cfg(target_endian = "little")]
+        __sem_nsems_pad: crate::c_char,
+        #[cfg(target_endian = "big")]
+        __sem_nsems_pad: crate::c_char,
+        #[cfg(target_endian = "big")]
+        pub sem_nsems: crate::c_ushort,
+        __unused3: crate::c_long,
+        __unused4: crate::c_long,
+    }
+
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
         pub msg_stime: crate::time_t,
