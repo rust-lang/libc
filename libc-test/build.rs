@@ -4481,6 +4481,13 @@ fn test_linux(target: &str) {
             | "CANXL_XLF"
              => true,
 
+            "STATX_MNT_ID_UNIQUE" // Added in Linux 6.8
+            | "STATX_SUBVOL" // Added in Linux 6.10
+            | "STATX_WRITE_ATOMIC" // Added in Linux 6.11
+            | "STATX_ATTR_WRITE_ATOMIC" // Added in Linux 6.11
+            | "STATX_DIO_READ_ALIGN" // Added in Linux 6.14
+            => true,
+
             // FIXME(linux): Parts of netfilter/nfnetlink*.h require more recent kernel headers:
             | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
             | "RTNLGRP_TUNNEL" // linux v5.18+
