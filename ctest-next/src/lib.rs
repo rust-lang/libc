@@ -12,6 +12,7 @@
 mod tests;
 
 mod ast;
+mod cdecl;
 mod ffi_items;
 mod generator;
 mod macro_expansion;
