@@ -10,6 +10,8 @@ pub(crate) enum Constness {
     Const,
     Mut,
 }
+
+#[cfg_attr(not(test), expect(unused_imports))]
 use Constness::{Const, Mut};
 
 /// A basic representation of C's types.
@@ -19,13 +21,15 @@ pub(crate) enum CTy {
     /// `int`, `struct foo`, etc. There is only ever one basic type per decl.
     Named {
         name: BoxStr,
-        constness: Constness,
+        qual: Qual,
     },
     Ptr {
         ty: Box<Self>,
-        constness: Constness,
+        qual: Qual,
     },
     Array {
+        // C99 also supports type qualifiers in arrays, e.g. `[const volatile restrict]`. MSVC does
+        // not though, so we ignore these for now.
         ty: Box<Self>,
         len: Option<BoxStr>,
     },
@@ -98,17 +102,20 @@ fn cdecl_impl(cty: &CTy, s: &mut String, prev: Option<&CTy>) -> Result<(), Inval
     cty.check_ret_ty()?;
     cty.parens_if_needed(s, prev);
     match cty {
-        CTy::Named { name, constness } => {
-            let sp = if s.is_empty() { "" } else { " " };
-            let c = if *constness == Const { "const " } else { "" };
-            let to_insert = format!("{c}{name}{sp}");
+        CTy::Named { name, qual } => {
+            assert!(!qual.restrict, "restrict is not allowed for named types");
+            let mut to_insert = String::new();
+            qual.write_to(&mut to_insert);
+            space_if(!to_insert.is_empty() && !name.is_empty(), &mut to_insert);
+            to_insert.push_str(name);
+            space_if(!to_insert.is_empty() && !s.is_empty(), &mut to_insert);
             s.insert_str(0, &to_insert);
         }
-        CTy::Ptr { ty, constness } => {
-            match constness {
-                Const => s.insert_str(0, "*const "),
-                Mut => s.insert(0, '*'),
-            }
+        CTy::Ptr { ty, qual } => {
+            let mut to_insert = "*".to_owned();
+            qual.write_to(&mut to_insert);
+            space_if(to_insert.len() > 1 && !s.is_empty(), &mut to_insert);
+            s.insert_str(0, &to_insert);
             cdecl_impl(ty, s, Some(cty))?;
         }
         CTy::Array { ty, len } => {
@@ -136,6 +143,41 @@ fn cdecl_impl(cty: &CTy, s: &mut String, prev: Option<&CTy>) -> Result<(), Inval
     Ok(())
 }
 
+/// Keyword qualifiers.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct Qual {
+    // C11 also supports _Atomic, but it doesn't really come up for `ctest`.
+    pub constness: Constness,
+    pub volatile: bool,
+    pub restrict: bool,
+}
+
+impl Qual {
+    fn write_to(self, s: &mut String) {
+        let mut need_sp = false;
+        if self.constness == Const {
+            s.push_str("const");
+            need_sp = true;
+        }
+        if self.volatile {
+            space_if(need_sp, s);
+            s.push_str("volatile");
+            need_sp = true;
+        }
+        if self.restrict {
+            space_if(need_sp, s);
+            s.push_str("restrict");
+        }
+    }
+}
+
+// We do this a surprising number of times.
+fn space_if(yes: bool, s: &mut String) {
+    if yes {
+        s.push(' ');
+    }
+}
+
 /// Checked with <https://cdecl.org/>.
 #[cfg(test)]
 mod tests {
@@ -149,6 +191,17 @@ mod tests {
 
     /* Helpful constructors */
 
+    const RESTRICT: Qual = Qual {
+        constness: Mut,
+        volatile: false,
+        restrict: true,
+    };
+    const VOLATILE: Qual = Qual {
+        constness: Mut,
+        volatile: true,
+        restrict: false,
+    };
+
     fn mut_int() -> CTy {
         named("int", Mut)
     }
@@ -160,14 +213,36 @@ mod tests {
     fn named(name: &str, constness: Constness) -> CTy {
         CTy::Named {
             name: name.into(),
-            constness,
+            qual: Qual {
+                constness,
+                volatile: false,
+                restrict: false,
+            },
+        }
+    }
+
+    fn named_qual(name: &str, qual: Qual) -> CTy {
+        CTy::Named {
+            name: name.into(),
+            qual,
         }
     }
 
     fn ptr(inner: CTy, constness: Constness) -> CTy {
+        ptr_qual(
+            inner,
+            Qual {
+                constness,
+                volatile: false,
+                restrict: false,
+            },
+        )
+    }
+
+    fn ptr_qual(inner: CTy, qual: Qual) -> CTy {
         CTy::Ptr {
             ty: Box::new(inner),
-            constness,
+            qual,
         }
     }
 
@@ -217,6 +292,19 @@ mod tests {
             &ptr(ptr(const_int(), Const), Const),
             "const int *const *const foo",
         );
+        assert_decl(&ptr_qual(mut_int(), RESTRICT), "int *restrict foo");
+        assert_decl(&ptr_qual(mut_int(), VOLATILE), "int *volatile foo");
+        assert_decl(
+            &ptr_qual(
+                mut_int(),
+                Qual {
+                    constness: Const,
+                    volatile: true,
+                    restrict: true,
+                },
+            ),
+            "int *const volatile restrict foo",
+        );
     }
 
     #[test]
@@ -250,6 +338,10 @@ mod tests {
         assert_decl(
             &func(vec![const_int(), mut_int()], mut_int()),
             "int foo(const int, int)",
+        );
+        assert_decl(
+            &func(vec![], named_qual("int", VOLATILE)),
+            "volatile int foo()",
         );
     }
 
@@ -310,12 +402,39 @@ mod tests {
         // Function args are usually unnamed
         assert_eq!(cdecl(&mut_int(), String::new()).unwrap(), "int");
         assert_eq!(
-            cdecl(&ptr(array(mut_int(), None), Mut), String::new()).unwrap(),
-            "int (*)[]"
+            cdecl(&array(mut_int(), None), String::new()).unwrap(),
+            "int []"
+        );
+        assert_eq!(
+            cdecl(&array(const_int(), None), String::new()).unwrap(),
+            "const int []"
         );
         assert_eq!(
             cdecl(&array(ptr(mut_int(), Mut), None), String::new()).unwrap(),
             "int *[]"
+        );
+        assert_eq!(
+            cdecl(&ptr(array(mut_int(), None), Mut), String::new()).unwrap(),
+            "int (*)[]"
+        );
+        assert_eq!(
+            cdecl(&ptr(array(mut_int(), None), Const), String::new()).unwrap(),
+            "int (*const)[]"
+        );
+        assert_eq!(
+            cdecl(
+                &ptr_qual(
+                    mut_int(),
+                    Qual {
+                        constness: Const,
+                        volatile: true,
+                        restrict: true,
+                    },
+                ),
+                String::new(),
+            )
+            .unwrap(),
+            "int *const volatile restrict",
         );
     }
 
