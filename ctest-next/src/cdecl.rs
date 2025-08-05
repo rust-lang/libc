@@ -4,7 +4,6 @@ use std::fmt::Write;
 
 type BoxStr = Box<str>;
 
-#[cfg_attr(not(test), expect(dead_code))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Constness {
     Const,
@@ -15,7 +14,6 @@ pub(crate) enum Constness {
 use Constness::{Const, Mut};
 
 /// A basic representation of C's types.
-#[cfg_attr(not(test), expect(dead_code))]
 #[derive(Clone, Debug)]
 pub(crate) enum CTy {
     /// `int`, `struct foo`, etc. There is only ever one basic type per decl.
@@ -85,7 +83,6 @@ pub(crate) struct InvalidReturn;
 /// value to allow reusing allocations.
 ///
 /// If needed, `name` can be empty (e.g. for function arguments).
-#[cfg_attr(not(test), expect(dead_code))]
 pub(crate) fn cdecl(cty: &CTy, mut name: String) -> Result<String, InvalidReturn> {
     cdecl_impl(cty, &mut name, None)?;
     Ok(name)
@@ -178,6 +175,74 @@ fn space_if(yes: bool, s: &mut String) {
     }
 }
 
+pub(crate) fn named(name: &str, constness: Constness) -> CTy {
+    CTy::Named {
+        name: name.into(),
+        qual: Qual {
+            constness,
+            volatile: false,
+            restrict: false,
+        },
+    }
+}
+
+#[cfg_attr(not(test), expect(unused))]
+pub(crate) fn named_qual(name: &str, qual: Qual) -> CTy {
+    CTy::Named {
+        name: name.into(),
+        qual,
+    }
+}
+
+pub(crate) fn ptr(inner: CTy, constness: Constness) -> CTy {
+    ptr_qual(
+        inner,
+        Qual {
+            constness,
+            volatile: false,
+            restrict: false,
+        },
+    )
+}
+
+pub(crate) fn ptr_qual(inner: CTy, qual: Qual) -> CTy {
+    CTy::Ptr {
+        ty: Box::new(inner),
+        qual,
+    }
+}
+
+pub(crate) fn array(inner: CTy, len: Option<&str>) -> CTy {
+    CTy::Array {
+        ty: Box::new(inner),
+        len: len.map(Into::into),
+    }
+}
+
+/// Function type (not a pointer)
+#[cfg_attr(not(test), expect(unused))]
+pub(crate) fn func(args: Vec<CTy>, ret: CTy) -> CTy {
+    CTy::Fn {
+        args,
+        ret: Box::new(ret),
+    }
+}
+
+/// Function pointer
+pub(crate) fn func_ptr(args: Vec<CTy>, ret: CTy) -> CTy {
+    CTy::Ptr {
+        ty: Box::new(CTy::Fn {
+            args,
+            ret: Box::new(ret),
+        }),
+        qual: Qual {
+            constness: Constness::Mut,
+            volatile: false,
+            restrict: false,
+        },
+    }
+}
+
 /// Checked with <https://cdecl.org/>.
 #[cfg(test)]
 mod tests {
@@ -208,68 +273,6 @@ mod tests {
 
     fn const_int() -> CTy {
         named("int", Const)
-    }
-
-    fn named(name: &str, constness: Constness) -> CTy {
-        CTy::Named {
-            name: name.into(),
-            qual: Qual {
-                constness,
-                volatile: false,
-                restrict: false,
-            },
-        }
-    }
-
-    fn named_qual(name: &str, qual: Qual) -> CTy {
-        CTy::Named {
-            name: name.into(),
-            qual,
-        }
-    }
-
-    fn ptr(inner: CTy, constness: Constness) -> CTy {
-        ptr_qual(
-            inner,
-            Qual {
-                constness,
-                volatile: false,
-                restrict: false,
-            },
-        )
-    }
-
-    fn ptr_qual(inner: CTy, qual: Qual) -> CTy {
-        CTy::Ptr {
-            ty: Box::new(inner),
-            qual,
-        }
-    }
-
-    fn array(inner: CTy, len: Option<&str>) -> CTy {
-        CTy::Array {
-            ty: Box::new(inner),
-            len: len.map(Into::into),
-        }
-    }
-
-    /// Function type (not a pointer)
-    fn func(args: Vec<CTy>, ret: CTy) -> CTy {
-        CTy::Fn {
-            args,
-            ret: Box::new(ret),
-        }
-    }
-
-    /// Function pointer
-    fn func_ptr(args: Vec<CTy>, ret: CTy) -> CTy {
-        ptr(
-            CTy::Fn {
-                args,
-                ret: Box::new(ret),
-            },
-            Mut,
-        )
     }
 
     #[test]
@@ -350,7 +353,7 @@ mod tests {
         // Can't return an array
         assert!(cdecl(&func(vec![], array(mut_int(), None)), "foo".to_owned(),).is_err(),);
         // Can't return a function
-        assert!(cdecl(&func(vec![], func(vec![], mut_int()),), "foo".to_owned(),).is_err(),);
+        assert!(cdecl(&func(vec![], func(vec![], mut_int())), "foo".to_owned(),).is_err(),);
     }
 
     #[test]

@@ -1,12 +1,13 @@
-use std::ops::Deref;
-
 use askama::Template;
+use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
 use crate::ffi_items::FfiItems;
-use crate::translator::{TranslationErrorKind, Translator, translate_abi, translate_expr};
-use crate::{BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind};
+use crate::translator::Translator;
+use crate::{
+    BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind, cdecl,
+};
 
 /// Represents the Rust side of the generated testing suite.
 #[derive(Template, Clone)]
@@ -65,11 +66,7 @@ impl TestTemplate {
         ffi_items: &FfiItems,
         generator: &TestGenerator,
     ) -> Result<Self, TranslationError> {
-        let helper = TranslateHelper {
-            ffi_items,
-            generator,
-            translator: Translator::new(),
-        };
+        let helper = TranslateHelper::new(ffi_items, generator);
 
         let mut template = Self::default();
         template.populate_const_and_cstr_tests(&helper)?;
@@ -173,9 +170,7 @@ impl TestTemplate {
                 .as_ref()
                 .is_some_and(|skip| skip(alias.ident()));
 
-            if !helper.translator.is_signed(helper.ffi_items, &alias.ty)
-                || should_skip_signededness_test
-            {
+            if !helper.translator.is_signed(&alias.ty) || should_skip_signededness_test {
                 continue;
             }
             let item = TestSignededness {
@@ -355,12 +350,21 @@ impl TestTemplate {
             });
 
         for (id, field, c_ty, c_field, volatile_keyword) in struct_fields.chain(union_fields) {
-            let field_return_type = helper
-                .make_cdecl(
-                    &format!("ctest_field_ty__{}__{}", id, field.ident()),
-                    &field.ty,
-                )?
-                .into_boxed_str();
+            let field_return_type = cdecl::cdecl(
+                &cdecl::ptr(
+                    helper.translator.translate_type(&field.ty)?,
+                    cdecl::Constness::Mut,
+                ),
+                format!("ctest_field_ty__{}__{}", id, field.ident()),
+            )
+            .map_err(|_| {
+                TranslationError::new(
+                    crate::translator::TranslationErrorKind::InvalidReturn,
+                    &field.ty.to_token_stream().to_string(),
+                    field.ty.span(),
+                )
+            })?
+            .into_boxed_str();
             let item = TestFieldPtr {
                 test_name: field_ptr_test_ident(id, field.ident()),
                 id: id.into(),
@@ -485,17 +489,16 @@ fn roundtrip_test_ident(ident: &str) -> BoxStr {
 pub(crate) struct TranslateHelper<'a> {
     ffi_items: &'a FfiItems,
     generator: &'a TestGenerator,
-    translator: Translator,
+    translator: Translator<'a>,
 }
 
 impl<'a> TranslateHelper<'a> {
     /// Create a new translation helper.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn new(ffi_items: &'a FfiItems, generator: &'a TestGenerator) -> Self {
         Self {
             ffi_items,
             generator,
-            translator: Translator::new(),
+            translator: Translator::new(ffi_items, generator),
         }
     }
 
@@ -517,9 +520,9 @@ impl<'a> TranslateHelper<'a> {
             // inside of `Fn` when parsed.
             MapInput::Fn(_) => unimplemented!(),
             // For structs/unions/aliases, their type is the same as their identifier.
-            MapInput::Alias(a) => (a.ident(), a.ident().to_string()),
-            MapInput::Struct(s) => (s.ident(), s.ident().to_string()),
-            MapInput::Union(u) => (u.ident(), u.ident().to_string()),
+            MapInput::Alias(a) => (a.ident(), cdecl::named(a.ident(), cdecl::Constness::Mut)),
+            MapInput::Struct(s) => (s.ident(), cdecl::named(s.ident(), cdecl::Constness::Mut)),
+            MapInput::Union(u) => (u.ident(), cdecl::named(u.ident(), cdecl::Constness::Mut)),
 
             MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
             MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
@@ -527,6 +530,14 @@ impl<'a> TranslateHelper<'a> {
             MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
         };
+
+        let ty = cdecl::cdecl(&ty, "".to_string()).map_err(|_| {
+            TranslationError::new(
+                crate::translator::TranslationErrorKind::InvalidReturn,
+                ident,
+                Span::call_site(),
+            )
+        })?;
 
         let item = if self.ffi_items.contains_struct(ident) {
             MapInput::StructType(&ty)
@@ -537,135 +548,5 @@ impl<'a> TranslateHelper<'a> {
         };
 
         Ok(self.generator.rty_to_cty(item))
-    }
-
-    /// Get the properly mapped type for some `syn::Type`, recursing for pointer types as needed.
-    ///
-    /// This method is meant to only be used to translate simpler types, such as primitives or
-    /// pointers/references to primitives. It will also add struct/union keywords as needed.
-    fn basic_c_type(&self, ty: &syn::Type) -> Result<String, TranslationError> {
-        let type_name = match ty {
-            syn::Type::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
-            syn::Type::Ptr(p) => self.basic_c_type(&p.elem)?,
-            syn::Type::Reference(r) => self.basic_c_type(&r.elem)?,
-            _ => ty.to_token_stream().to_string(),
-        };
-
-        let unmapped_c_type = self.translator.translate_type(ty)?;
-        let item = if self.ffi_items.contains_struct(&type_name) {
-            MapInput::StructType(&unmapped_c_type)
-        } else if self.ffi_items.contains_union(&type_name) {
-            MapInput::UnionType(&unmapped_c_type)
-        } else {
-            MapInput::Type(&unmapped_c_type)
-        };
-
-        Ok(self.generator.rty_to_cty(item))
-    }
-
-    /// Partially translate a Rust bare function type into its equivalent C type.
-    ///
-    /// It returns the translated return type, translated argument types, and whether
-    /// it is variadic as a tuple.
-    fn translate_signature_partial(
-        &self,
-        signature: &syn::TypeBareFn,
-    ) -> Result<(String, Vec<String>, bool), TranslationError> {
-        let args = signature
-            .inputs
-            .iter()
-            .map(|arg| self.basic_c_type(&arg.ty))
-            .collect::<Result<Vec<_>, TranslationError>>()?;
-        let return_type = match &signature.output {
-            syn::ReturnType::Default => "void".to_string(),
-            syn::ReturnType::Type(_, ty) => match ty.deref() {
-                syn::Type::Never(_) => "void".to_string(),
-                syn::Type::Tuple(tuple) if tuple.elems.is_empty() => "void".to_string(),
-                _ => self.basic_c_type(ty.deref())?,
-            },
-        };
-        Ok((return_type, args, signature.variadic.is_some()))
-    }
-
-    /// Modify function signatures to properly return pointer types in C.
-    ///
-    /// In C, function pointers and arrays have a different syntax to return them,
-    /// and this translation is done by this method.
-    pub(crate) fn make_cdecl(
-        &self,
-        name: &str,
-        ty: &syn::Type,
-    ) -> Result<String, TranslationError> {
-        match ty {
-            syn::Type::Path(p) => {
-                let last = p.path.segments.last().unwrap();
-                let ident = last.ident.to_string();
-                if ident != "Option" {
-                    let mapped_type = self.basic_c_type(ty)?;
-                    return Ok(format!("{mapped_type}* {name}"));
-                }
-                if let syn::PathArguments::AngleBracketed(args) = &last.arguments {
-                    if let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap() {
-                        // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
-                        match inner_ty {
-                            syn::Type::Reference(_) | syn::Type::BareFn(_) => {
-                                return self.make_cdecl(name, inner_ty);
-                            }
-                            _ => {
-                                return Err(TranslationError::new(
-                                    TranslationErrorKind::NotFfiCompatible,
-                                    &p.to_token_stream().to_string(),
-                                    inner_ty.span(),
-                                ));
-                            }
-                        }
-                    }
-                }
-            }
-            syn::Type::BareFn(f) => {
-                let (ret, mut args, variadic) = self.translate_signature_partial(f)?;
-                let abi = if let Some(abi) = &f.abi {
-                    let target = self
-                        .generator
-                        .target
-                        .clone()
-                        .or_else(|| std::env::var("TARGET").ok())
-                        .or_else(|| std::env::var("TARGET_PLATFORM").ok())
-                        .unwrap();
-                    translate_abi(abi, &target)
-                } else {
-                    ""
-                };
-
-                if variadic {
-                    args.push("...".to_string());
-                } else if args.is_empty() {
-                    args.push("void".to_string());
-                }
-
-                return Ok(format!("{} ({}**{})({})", ret, abi, name, args.join(", ")));
-            }
-            // Arrays are supported only up to 2D arrays.
-            syn::Type::Array(outer) => {
-                let elem = outer.elem.deref();
-                let len_outer = translate_expr(&outer.len);
-
-                if let syn::Type::Array(inner) = elem {
-                    let inner_type = self.basic_c_type(inner.elem.deref())?;
-                    let len_inner = translate_expr(&inner.len);
-                    return Ok(format!("{inner_type} (*{name})[{len_outer}][{len_inner}]",));
-                } else {
-                    let elem_type = self.basic_c_type(elem)?;
-                    return Ok(format!("{elem_type} (*{name})[{len_outer}]"));
-                }
-            }
-            _ => {
-                let elem_type = self.basic_c_type(ty)?;
-                return Ok(format!("{elem_type} *{name}"));
-            }
-        }
-
-        let mapped_type = self.basic_c_type(ty)?;
-        Ok(format!("{mapped_type}* {name}"))
     }
 }

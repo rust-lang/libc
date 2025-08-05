@@ -62,7 +62,7 @@ uint64_t ctest_size_of__VecU16__y(void) {
 // Return a pointer to a struct/union field.
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
-typedef uint8_t* ctest_field_ty__VecU8__x;
+typedef uint8_t *ctest_field_ty__VecU8__x;
 ctest_field_ty__VecU8__x
 ctest_field_ptr__VecU8__x(struct VecU8 *b) {
     return &b->x;
@@ -71,7 +71,7 @@ ctest_field_ptr__VecU8__x(struct VecU8 *b) {
 // Return a pointer to a struct/union field.
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
-typedef uint8_t* ctest_field_ty__VecU8__y;
+typedef uint8_t *ctest_field_ty__VecU8__y;
 ctest_field_ty__VecU8__y
 ctest_field_ptr__VecU8__y(struct VecU8 *b) {
     return &b->y;
@@ -80,7 +80,7 @@ ctest_field_ptr__VecU8__y(struct VecU8 *b) {
 // Return a pointer to a struct/union field.
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
-typedef uint16_t* ctest_field_ty__VecU16__x;
+typedef uint16_t *ctest_field_ty__VecU16__x;
 ctest_field_ty__VecU16__x
 ctest_field_ptr__VecU16__x(struct VecU16 *b) {
     return &b->x;
@@ -89,7 +89,7 @@ ctest_field_ptr__VecU16__x(struct VecU16 *b) {
 // Return a pointer to a struct/union field.
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
-typedef uint16_t* ctest_field_ty__VecU16__y;
+typedef uint16_t *ctest_field_ty__VecU16__y;
 ctest_field_ty__VecU16__y
 ctest_field_ptr__VecU16__y(struct VecU16 *b) {
     return &b->y;
