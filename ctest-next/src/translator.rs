@@ -3,15 +3,16 @@
 //! Simple to semi complex types are supported only.
 
 use std::fmt;
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 use thiserror::Error;
 
-use crate::BoxStr;
+use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
+use crate::{BoxStr, MapInput, TestGenerator, cdecl};
 
 /// An error that occurs during translation, detailing cause and location.
 #[derive(Debug, Error)]
@@ -78,33 +79,40 @@ pub(crate) enum TranslationErrorKind {
         "this type is not guaranteed to have a C compatible layout. See improper_ctypes_definitions lint"
     )]
     NotFfiCompatible,
+
+    /// An array or function was attempted to be returned by a function.
+    #[error("invalid return type")]
+    InvalidReturn,
 }
 
-#[derive(Clone, Debug, Default)]
+#[derive(Clone)]
 /// A Rust to C/Cxx translator.
-pub(crate) struct Translator {}
+pub(crate) struct Translator<'a> {
+    ffi_items: &'a FfiItems,
+    generator: &'a TestGenerator,
+}
 
-impl Translator {
+impl<'a> Translator<'a> {
     /// Create a new translator.
-    pub(crate) fn new() -> Self {
-        Self::default()
-    }
-
-    /// Translate mutability from Rust to C.
-    fn translate_mut(&self, mutability: Option<syn::Token![mut]>) -> String {
-        mutability.map(|_| "").unwrap_or("const").to_string()
+    pub(crate) fn new(ffi_items: &'a FfiItems, generator: &'a TestGenerator) -> Self {
+        Self {
+            ffi_items,
+            generator,
+        }
     }
 
     /// Translate a Rust type into its equivalent C type.
-    pub(crate) fn translate_type(&self, ty: &syn::Type) -> Result<String, TranslationError> {
+    pub(crate) fn translate_type(&self, ty: &syn::Type) -> Result<cdecl::CTy, TranslationError> {
         match ty {
             syn::Type::Ptr(ptr) => self.translate_ptr(ptr),
             syn::Type::Path(path) => self.translate_path(path),
-            syn::Type::Tuple(tuple) if tuple.elems.is_empty() => Ok("void".to_string()),
+            syn::Type::Tuple(tuple) if tuple.elems.is_empty() => {
+                Ok(cdecl::named("void", Constness::Mut))
+            }
             syn::Type::Array(array) => self.translate_array(array),
             syn::Type::Reference(reference) => self.translate_reference(reference),
             syn::Type::BareFn(function) => self.translate_bare_fn(function),
-            syn::Type::Never(_) => Ok("void".to_string()),
+            syn::Type::Never(_) => Ok(cdecl::named("void", Constness::Mut)),
             syn::Type::Slice(slice) => Err(TranslationError::new(
                 TranslationErrorKind::NotFfiCompatible,
                 &slice.to_token_stream().to_string(),
@@ -124,9 +132,7 @@ impl Translator {
     fn translate_reference(
         &self,
         reference: &syn::TypeReference,
-    ) -> Result<String, TranslationError> {
-        let modifier = self.translate_mut(reference.mutability);
-
+    ) -> Result<cdecl::CTy, TranslationError> {
         match reference.elem.deref() {
             syn::Type::Path(path) => {
                 let last_segment = path.path.segments.last().unwrap();
@@ -142,8 +148,11 @@ impl Translator {
                         ))
                     }
                     c if is_rust_primitive(c) => {
-                        let base_type = self.translate_primitive_type(&last_segment.ident);
-                        Ok(format!("{modifier} {base_type}*").trim().to_string())
+                        let type_name = translate_primitive_type(&last_segment.ident.to_string());
+                        Ok(ptr_with_inner(
+                            cdecl::named(&type_name, Constness::Mut),
+                            reference.mutability,
+                        ))
                     }
                     _ => Err(TranslationError::new(
                         TranslationErrorKind::NonPrimitiveReference,
@@ -152,33 +161,14 @@ impl Translator {
                     )),
                 }
             }
-            syn::Type::Array(arr) => {
-                let len = translate_expr(&arr.len);
-                let ty = self.translate_type(arr.elem.deref())?;
-                let inner_type = format!("{ty} (*) [{len}]");
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
+            syn::Type::Reference(_)
+            | syn::Type::Ptr(_)
+            | syn::Type::Array(_)
+            | syn::Type::BareFn(_) => {
+                let ty = self.translate_type(reference.elem.deref())?;
+                Ok(ptr_with_inner(ty, reference.mutability))
             }
-            syn::Type::BareFn(_) => {
-                let inner_type = self.translate_type(reference.elem.deref())?;
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
-            }
-            syn::Type::Reference(_) | syn::Type::Ptr(_) => {
-                let inner_type = self.translate_type(reference.elem.deref())?;
-                if inner_type.contains("(*)") {
-                    Ok(inner_type
-                        .replacen("(*)", &format!("(*{modifier})"), 1)
-                        .trim()
-                        .to_string())
-                } else {
-                    Ok(format!("{inner_type} {modifier}*").trim().to_string())
-                }
-            }
+
             _ => Err(TranslationError::new(
                 TranslationErrorKind::UnsupportedType,
                 &reference.elem.to_token_stream().to_string(),
@@ -188,7 +178,10 @@ impl Translator {
     }
 
     /// Translate a Rust function pointer type to its C equivalent.
-    fn translate_bare_fn(&self, function: &syn::TypeBareFn) -> Result<String, TranslationError> {
+    fn translate_bare_fn(
+        &self,
+        function: &syn::TypeBareFn,
+    ) -> Result<cdecl::CTy, TranslationError> {
         if function.lifetimes.is_some() {
             return Err(TranslationError::new(
                 TranslationErrorKind::HasLifetimes,
@@ -211,109 +204,64 @@ impl Translator {
             .collect::<Result<Vec<_>, TranslationError>>()?;
 
         let return_type = match &function.output {
-            syn::ReturnType::Default => "void".to_string(),
+            syn::ReturnType::Default => cdecl::named("void", Constness::Mut),
             syn::ReturnType::Type(_, ty) => self.translate_type(ty)?,
         };
 
         if parameters.is_empty() {
-            parameters.push("void".to_string());
+            parameters.push(cdecl::named("void", Constness::Mut));
         }
 
-        if return_type.contains("(*)") {
-            let params = parameters.join(", ");
-            Ok(return_type.replacen("(*)", &format!("(*(*)({params}))"), 1))
-        } else {
-            Ok(format!("{return_type}(*)({})", parameters.join(", ")))
-        }
-    }
-
-    /// Translate a Rust primitive type into its C equivalent.
-    fn translate_primitive_type(&self, ty: &syn::Ident) -> String {
-        match ty.to_string().as_str() {
-            "usize" => "size_t".to_string(),
-            "isize" => "ssize_t".to_string(),
-            "u8" => "uint8_t".to_string(),
-            "u16" => "uint16_t".to_string(),
-            "u32" => "uint32_t".to_string(),
-            "u64" => "uint64_t".to_string(),
-            "u128" => "unsigned __int128".to_string(),
-            "i8" => "int8_t".to_string(),
-            "i16" => "int16_t".to_string(),
-            "i32" => "int32_t".to_string(),
-            "i64" => "int64_t".to_string(),
-            "i128" => "__int128".to_string(),
-            "f32" => "float".to_string(),
-            "f64" => "double".to_string(),
-            "()" => "void".to_string(),
-
-            "c_longdouble" | "c_long_double" => "long double".to_string(),
-            ty if ty.starts_with("c_") => {
-                let ty = &ty[2..].replace("long", " long");
-                match ty.as_str() {
-                    "short" => "short".to_string(),
-                    s if s.starts_with('u') => format!("unsigned {}", &s[1..]),
-                    s if s.starts_with('s') => format!("signed {}", &s[1..]),
-                    s => s.to_string(),
-                }
-            }
-            // Pass typedefs as is.
-            s => s.to_string(),
-        }
+        Ok(cdecl::func_ptr(parameters, return_type))
     }
 
     /// Translate a Rust path into its C equivalent.
-    fn translate_path(&self, path: &syn::TypePath) -> Result<String, TranslationError> {
+    fn translate_path(&self, path: &syn::TypePath) -> Result<cdecl::CTy, TranslationError> {
         let last = path.path.segments.last().unwrap();
-        Ok(self.translate_primitive_type(&last.ident))
+        if let syn::PathArguments::AngleBracketed(args) = &last.arguments {
+            if let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap() {
+                // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
+                match inner_ty {
+                    syn::Type::Reference(_) | syn::Type::BareFn(_) => {
+                        return self.translate_type(inner_ty);
+                    }
+                    _ => {
+                        return Err(TranslationError::new(
+                            TranslationErrorKind::NotFfiCompatible,
+                            &path.to_token_stream().to_string(),
+                            inner_ty.span(),
+                        ));
+                    }
+                }
+            }
+        }
+        let name = last.ident.to_string();
+        let item = if self.ffi_items.contains_struct(&name) {
+            MapInput::StructType(&name)
+        } else if self.ffi_items.contains_union(&name) {
+            MapInput::UnionType(&name)
+        } else {
+            MapInput::Type(&name)
+        };
+
+        Ok(cdecl::named(
+            &self.generator.rty_to_cty(item),
+            Constness::Mut,
+        ))
     }
 
     /// Translate a Rust array declaration into its C equivalent.
-    fn translate_array(&self, array: &syn::TypeArray) -> Result<String, TranslationError> {
-        Ok(format!(
-            "{}[{}]",
+    fn translate_array(&self, array: &syn::TypeArray) -> Result<cdecl::CTy, TranslationError> {
+        Ok(cdecl::array(
             self.translate_type(array.elem.deref())?,
-            translate_expr(&array.len)
+            Some(&translate_expr(&array.len)),
         ))
     }
 
     /// Translate a Rust pointer into its equivalent C pointer.
-    fn translate_ptr(&self, ptr: &syn::TypePtr) -> Result<String, TranslationError> {
-        let modifier = self.translate_mut(ptr.mutability);
-        let inner = ptr.elem.deref();
-
-        match inner {
-            syn::Type::BareFn(_) => {
-                let inner_type = self.translate_type(ptr.elem.deref())?;
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
-            }
-            syn::Type::Array(arr) => {
-                let len = translate_expr(&arr.len);
-                let ty = self.translate_type(arr.elem.deref())?;
-                let inner_type = format!("{ty} (*) [{len}]");
-                Ok(inner_type
-                    .replacen("(*)", &format!("(*{modifier})"), 1)
-                    .trim()
-                    .to_string())
-            }
-            syn::Type::Reference(_) | syn::Type::Ptr(_) => {
-                let inner_type = self.translate_type(ptr.elem.deref())?;
-                if inner_type.contains("(*)") {
-                    Ok(inner_type
-                        .replacen("(*)", &format!("(*{modifier} *)"), 1)
-                        .trim()
-                        .to_string())
-                } else {
-                    Ok(format!("{inner_type} {modifier}*").trim().to_string())
-                }
-            }
-            _ => {
-                let inner_type = self.translate_type(inner)?;
-                Ok(format!("{inner_type} {modifier}*"))
-            }
-        }
+    fn translate_ptr(&self, ptr: &syn::TypePtr) -> Result<cdecl::CTy, TranslationError> {
+        let inner_type = self.translate_type(ptr.elem.deref())?;
+        Ok(ptr_with_inner(inner_type, ptr.mutability))
     }
 
     /// Determine whether a C type is a signed type.
@@ -321,14 +269,15 @@ impl Translator {
     /// For primitive types it checks against a known list of signed types, but for aliases
     /// which are the only thing other than primitives that can be signed, it recursively checks
     /// the underlying type of the alias.
-    pub(crate) fn is_signed(&self, ffi_items: &FfiItems, ty: &syn::Type) -> bool {
+    pub(crate) fn is_signed(&self, ty: &syn::Type) -> bool {
         match ty {
             syn::Type::Path(path) => {
                 let ident = path.path.segments.last().unwrap().ident.clone();
-                if let Some(aliased) = ffi_items.aliases().iter().find(|a| ident == a.ident()) {
-                    return self.is_signed(ffi_items, &aliased.ty);
+                if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.ident())
+                {
+                    return self.is_signed(&aliased.ty);
                 }
-                match self.translate_primitive_type(&ident).as_str() {
+                match translate_primitive_type(&ident.to_string()).as_str() {
                     "char" | "short" | "long" | "long long" | "size_t" | "ssize_t" => true,
                     s => {
                         s.starts_with("int")
@@ -339,6 +288,73 @@ impl Translator {
             }
             _ => false,
         }
+    }
+}
+
+/// Translate mutability from Rust to C.
+fn translate_mut(mutability: Option<syn::Token![mut]>) -> Constness {
+    mutability
+        .map(|_| Constness::Mut)
+        .unwrap_or(Constness::Const)
+}
+
+/// Translate a Rust primitive type into its C equivalent.
+pub(crate) fn translate_primitive_type(ty: &str) -> String {
+    match ty {
+        "usize" => "size_t".to_string(),
+        "isize" => "ssize_t".to_string(),
+        "u8" => "uint8_t".to_string(),
+        "u16" => "uint16_t".to_string(),
+        "u32" => "uint32_t".to_string(),
+        "u64" => "uint64_t".to_string(),
+        "u128" => "unsigned __int128".to_string(),
+        "i8" => "int8_t".to_string(),
+        "i16" => "int16_t".to_string(),
+        "i32" => "int32_t".to_string(),
+        "i64" => "int64_t".to_string(),
+        "i128" => "__int128".to_string(),
+        "f32" => "float".to_string(),
+        "f64" => "double".to_string(),
+        "()" => "void".to_string(),
+
+        "c_longdouble" | "c_long_double" => "long double".to_string(),
+        ty if ty.starts_with("c_") => {
+            let ty = &ty[2..].replace("long", " long");
+            match ty.as_str() {
+                "short" => "short".to_string(),
+                s if s.starts_with('u') => format!("unsigned {}", &s[1..]),
+                s if s.starts_with('s') => format!("signed {}", &s[1..]),
+                s => s.to_string(),
+            }
+        }
+        // Pass typedefs as is.
+        s => s.to_string(),
+    }
+}
+
+/// Construct a CTy and modify the constness of the inner type.
+///
+/// Basically, `syn` always gives us the `constness` of the inner type of a pointer.
+/// However `cdecl::ptr` wants the `constness` of the pointer. So we just modify
+/// the way it is built so that `cdecl::ptr` takes the `constness` of the inner type.
+pub(crate) fn ptr_with_inner(
+    inner: cdecl::CTy,
+    mutability: Option<syn::Token![mut]>,
+) -> cdecl::CTy {
+    let constness = translate_mut(mutability);
+    let mut ty = Box::new(inner);
+    match ty.deref_mut() {
+        cdecl::CTy::Named { name: _, qual } => qual.constness = constness,
+        cdecl::CTy::Ptr { ty: _, qual } => qual.constness = constness,
+        _ => (),
+    }
+    cdecl::CTy::Ptr {
+        ty,
+        qual: cdecl::Qual {
+            constness: Constness::Mut,
+            volatile: false,
+            restrict: false,
+        },
     }
 }
 
@@ -363,13 +379,14 @@ fn is_rust_primitive(ty: &str) -> bool {
 }
 
 /// Translate ABI of a rust extern function to its C equivalent.
-pub(crate) fn translate_abi(abi: &syn::Abi, target: &str) -> &'static str {
+#[expect(unused)]
+pub(crate) fn translate_abi(abi: &syn::Abi, target: &str) -> Option<&'static str> {
     let abi_name = abi.name.as_ref().map(|lit| lit.value());
 
     match abi_name.as_deref() {
-        Some("stdcall") => "__stdcall ",
-        Some("system") if target.contains("i686-pc-windows") => "__stdcall ",
-        Some("C") | Some("system") | None => "",
+        Some("stdcall") => "__stdcall ".into(),
+        Some("system") if target.contains("i686-pc-windows") => "__stdcall ".into(),
+        Some("C") | Some("system") | None => None,
         Some(a) => panic!("unknown ABI: {a}"),
     }
 }

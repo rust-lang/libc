@@ -9,6 +9,7 @@ use thiserror::Error;
 
 use crate::ffi_items::FfiItems;
 use crate::template::{CTestTemplate, RustTestTemplate};
+use crate::translator::translate_primitive_type;
 use crate::{
     Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type, Union,
     VolatileItemKind, expand,
@@ -962,7 +963,7 @@ impl TestGenerator {
             MapInput::UnionType(ty) => format!("union {ty}"),
             MapInput::StructFieldType(_, f) => f.ident().to_string(),
             MapInput::UnionFieldType(_, f) => f.ident().to_string(),
-            MapInput::Type(ty) => ty.to_string(),
+            MapInput::Type(ty) => translate_primitive_type(ty),
         }
     }
 }
