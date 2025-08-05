@@ -1263,6 +1263,11 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: c_uint = 16;
 
+// arpa/nameser.h
+pub const T_A: c_int = 1;
+pub const T_CNAME: c_int = 5;
+pub const C_IN: c_int = 1;
+
 // si_code values
 pub const SI_USER: c_int = 0;
 pub const SI_KERNEL: c_int = 0x80;
@@ -2062,6 +2067,45 @@ extern "C" {
 
     pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
     pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
+
+    // <resolv.h>
+    #[allow(dead_code)]
+    pub fn res_init() -> c_int;
+    pub fn res_query(
+        dname: *const c_char,
+        class: c_int,
+        kind: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
+    ) -> c_int;
+    pub fn res_search(
+        dname: *const c_char,
+        class: c_int,
+        kind: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
+    ) -> c_int;
+    pub fn res_querydomain(
+        name: *const c_char,
+        domain: *const c_char,
+        class: c_int,
+        kind: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
+    ) -> c_int;
+    pub fn res_mkquery(
+        op: c_int,
+        dname: *const c_char,
+        class: c_int,
+        kind: c_int,
+        data: *mut c_char,
+        newrr: *const c_void,
+        datalen: c_int,
+        buf: *mut c_char,
+        buflen: c_int,
+    ) -> c_int;
+    pub fn res_send(msg: *const c_char, msglen: c_int, answer: *mut c_char, anslen: c_int)
+        -> c_int;
 }
 
 // LFS64 extensions
