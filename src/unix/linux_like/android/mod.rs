@@ -1323,6 +1323,15 @@ pub const SOL_ATALK: c_int = 258;
 pub const SOL_NETROM: c_int = 259;
 pub const SOL_ROSE: c_int = 260;
 
+/* UDP socket options */
+// include/uapi/linux/udp.h
+pub const UDP_CORK: c_int = 1;
+pub const UDP_ENCAP: c_int = 100;
+pub const UDP_NO_CHECK6_TX: c_int = 101;
+pub const UDP_NO_CHECK6_RX: c_int = 102;
+pub const UDP_SEGMENT: c_int = 103;
+pub const UDP_GRO: c_int = 104;
+
 /* DCCP socket options */
 pub const DCCP_SOCKOPT_PACKET_SIZE: c_int = 1;
 pub const DCCP_SOCKOPT_SERVICE: c_int = 2;
