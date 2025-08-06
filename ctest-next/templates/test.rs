@@ -314,6 +314,19 @@ mod generated_tests {
         }
     }
 {%- endfor +%}
+
+{%- for item in ctx.foreign_fn_tests +%}
+
+    /// Check if the Rust and C side function pointers point to the same underlying function.
+    pub fn {{ item.test_name }}() {
+        extern "C" {
+            fn ctest_foreign_fn__{{ item.id }}() -> unsafe extern "C" fn();
+        }
+        let actual = unsafe { ctest_foreign_fn__{{ item.id }}() } as u64;
+        let expected = {{ item.id }} as u64;
+        check_same(actual, expected, "{{ item.id }} function pointer");
+    }
+{%- endfor +%}
 }
 
 use generated_tests::*;

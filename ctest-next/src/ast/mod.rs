@@ -7,6 +7,8 @@ mod structure;
 mod type_alias;
 mod union;
 
+use std::fmt;
+
 pub use constant::Const;
 pub use field::Field;
 pub use function::Fn;
@@ -37,6 +39,16 @@ impl From<&str> for Abi {
     }
 }
 
+impl fmt::Display for Abi {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Abi::C => write!(f, "C"),
+            Abi::Rust => write!(f, "Rust"),
+            Abi::Other(s) => write!(f, "{s}"),
+        }
+    }
+}
+
 /// Things that can appear directly inside of a module or scope.
 ///
 /// This is not an exhaustive list and only contains variants directly useful
@@ -47,7 +59,7 @@ pub(crate) enum Item {
     /// Represents a constant defined in Rust.
     Const(Const),
     /// Represents a function defined in Rust.
-    Fn(Fn),
+    Fn(Box<Fn>),
     /// Represents a static variable defined in Rust.
     Static(Static),
     /// Represents a type alias defined in Rust.

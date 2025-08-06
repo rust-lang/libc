@@ -57,7 +57,6 @@ impl FfiItems {
     }
 
     /// Return a list of all foreign functions found mapped by their ABI.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn foreign_functions(&self) -> &Vec<Fn> {
         &self.foreign_functions
     }

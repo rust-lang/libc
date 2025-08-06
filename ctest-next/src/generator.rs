@@ -42,10 +42,11 @@ pub struct TestGenerator {
     pub(crate) skips: Vec<Skip>,
     verbose_skip: bool,
     pub(crate) volatile_items: Vec<VolatileItem>,
-    array_arg: Option<ArrayArg>,
+    pub(crate) array_arg: Option<ArrayArg>,
     skip_private: bool,
     pub(crate) skip_roundtrip: Option<SkipTest>,
     pub(crate) skip_signededness: Option<SkipTest>,
+    pub(crate) skip_fn_ptrcheck: Option<SkipTest>,
 }
 
 #[derive(Debug, Error)]
@@ -853,6 +854,30 @@ impl TestGenerator {
     /// ```
     pub fn skip_signededness(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
         self.skip_signededness = Some(Box::new(f));
+        self
+    }
+
+    /// Configures whether tests for a function pointer's value are generated.
+    ///
+    /// The closure is given a Rust FFI function and returns whether
+    /// the test will be generated.
+    ///
+    /// By default generated tests will ensure that the function pointer in C
+    /// corresponds to the same function pointer in Rust. This can often
+    /// uncover subtle symbol naming issues where a header file is referenced
+    /// through the C identifier `foo` but the underlying symbol is mapped to
+    /// something like `__foo_compat`.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_fn_ptrcheck(|name| name == "T1p");
+    /// ```
+    pub fn skip_fn_ptrcheck(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.skip_fn_ptrcheck = Some(Box::new(f));
         self
     }
 

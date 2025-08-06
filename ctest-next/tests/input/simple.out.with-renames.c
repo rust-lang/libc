@@ -7,6 +7,8 @@
 
 #include <simple.h>
 
+typedef void (*ctest_void_func)(void);
+
 static char *ctest_const_A_val_static = A;
 
 // Define a function that returns a pointer to the value of the constant to test.
@@ -232,4 +234,14 @@ union Word ctest_roundtrip__Word(
 
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
+#endif
+
+#ifdef _MSC_VER
+// Disable function pointer type conversion warnings on MSVC.
+// The conversion may fail only if we call that function, however we only check its address.
+#  pragma warning(disable:4191)
+#endif
+
+#ifdef _MSC_VER
+#  pragma warning(default:4191)
 #endif

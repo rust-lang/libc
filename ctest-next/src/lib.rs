@@ -37,7 +37,7 @@ type BoxStr = Box<str>;
 ///
 /// This is necessary because `ctest` does not parse the header file, so it
 /// does not know which items are volatile.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[non_exhaustive]
 pub enum VolatileItemKind {
     /// A struct field.

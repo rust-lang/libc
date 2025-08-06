@@ -178,7 +178,7 @@ impl<'a> Translator<'a> {
     }
 
     /// Translate a Rust function pointer type to its C equivalent.
-    fn translate_bare_fn(
+    pub(crate) fn translate_bare_fn(
         &self,
         function: &syn::TypeBareFn,
     ) -> Result<cdecl::CTy, TranslationError> {

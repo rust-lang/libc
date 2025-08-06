@@ -213,6 +213,16 @@ mod generated_tests {
             }
         }
     }
+
+    /// Check if the Rust and C side function pointers point to the same underlying function.
+    pub fn ctest_foreign_fn_malloc() {
+        extern "C" {
+            fn ctest_foreign_fn__malloc() -> unsafe extern "C" fn();
+        }
+        let actual = unsafe { ctest_foreign_fn__malloc() } as u64;
+        let expected = malloc as u64;
+        check_same(actual, expected, "malloc function pointer");
+    }
 }
 
 use generated_tests::*;
@@ -236,4 +246,5 @@ fn run_all() {
     ctest_size_align_in6_addr();
     ctest_signededness_in6_addr();
     ctest_roundtrip_in6_addr();
+    ctest_foreign_fn_malloc();
 }
