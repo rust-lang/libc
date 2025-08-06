@@ -1,8 +1,5 @@
 use crate::prelude::*;
 
-pub type wchar_t = u32;
-pub type time_t = i64;
-
 s! {
     pub struct aarch64_qreg_t {
         pub qlo: u64,
