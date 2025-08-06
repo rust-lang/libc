@@ -5738,6 +5738,14 @@ fn test_aix(target: &str) {
             "setdomainname" | "settimeofday" | "statfs" | "statfs64" | "statx" | "swapoff"
             | "swapon" | "utmpname" | "setgroups" => true,
 
+            // These non-POSIX functions are guarded by the _KERNEL macro in the AIX headers.
+            "recvmmsg" | "sendmmsg" | "sctp_opt_info" | "sctp_peeloff" | "sethostid"
+            | "sethostname" | "splice" => true,
+
+            // 'mount' is available in the system's libc.a and has a man page, but it is
+            // not declared in the AIX headers."
+            "mount" => true,
+
             _ => false,
         }
     });
