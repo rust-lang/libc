@@ -2,7 +2,7 @@ use syn::spanned::Spanned;
 use syn::visit::Visit;
 
 use crate::ffi_items::FfiItems;
-use crate::translator::Translator;
+use crate::translator::{TranslationErrorKind, Translator};
 use crate::{Result, TestGenerator, TranslationError, cdecl};
 
 const ALL_ITEMS: &str = r#"
@@ -44,13 +44,13 @@ fn r2cdecl(s: &str, name: &str) -> Result<String, TranslationError> {
     let translator = Translator::new(&ffi_items, &generator);
     let ty: syn::Type = syn::parse_str(s).unwrap();
     let translated = translator.translate_type(&ty)?;
-    cdecl::cdecl(&translated, name.to_string()).map_err(|_| {
-        TranslationError::new(
-            crate::translator::TranslationErrorKind::InvalidReturn,
-            s,
-            ty.span(),
-        )
-    })
+    cdecl::cdecl(&translated, name.to_string())
+        .map_err(|_| TranslationError::new(TranslationErrorKind::InvalidReturn, s, ty.span()))
+}
+
+#[track_caller]
+fn assert_r2cdecl(rust: &str, expected: &str) {
+    assert_eq!(r2cdecl(rust, "foo").unwrap(), expected)
 }
 
 #[test]
@@ -70,55 +70,37 @@ fn test_extraction_ffi_items() {
 
 #[test]
 fn test_translation_type_ptr() {
-    assert_eq!(
-        r2cdecl("*const *mut i32", "").unwrap(),
-        "int32_t *const *".to_string()
-    );
-    assert_eq!(
-        r2cdecl("*const [u128; 2 + 3]", "").unwrap(),
-        "unsigned __int128 (*)[2 + 3]".to_string()
-    );
-    assert_eq!(
-        r2cdecl("*const *mut [u8; 5]", "").unwrap(),
-        "uint8_t (*const *)[5]".to_string()
-    );
+    assert_r2cdecl("*const *mut i32", "int32_t *const *foo");
+    assert_r2cdecl("*const [u128; 2 + 3]", "unsigned __int128 (*foo)[2 + 3]");
+    assert_r2cdecl("*const *mut [u8; 5]", "uint8_t (*const *foo)[5]");
+    assert_r2cdecl("*mut *const [u8; 5]", "uint8_t (**foo)[5]");
+    assert_r2cdecl("*const *const [u8; 5]", "uint8_t (*const *foo)[5]");
+    assert_r2cdecl("*mut *mut [u8; 5]", "uint8_t (**foo)[5]");
 }
 
 #[test]
 fn test_translation_type_reference() {
-    assert_eq!(r2cdecl("&u8", "").unwrap(), "const uint8_t *".to_string());
-    assert_eq!(
-        r2cdecl("&&u8", "").unwrap(),
-        "const uint8_t *const *".to_string()
-    );
-    assert_eq!(
-        r2cdecl("*mut &u8", "").unwrap(),
-        "const uint8_t **".to_string()
-    );
-    assert_eq!(
-        r2cdecl("& &mut u8", "").unwrap(),
-        "uint8_t *const *".to_string()
-    );
+    assert_r2cdecl("&u8", "const uint8_t *foo");
+    assert_r2cdecl("&&u8", "const uint8_t *const *foo");
+    assert_r2cdecl("*mut &u8", "const uint8_t **foo");
+    assert_r2cdecl("& &mut u8", "uint8_t *const *foo");
 }
 
 #[test]
 fn test_translation_type_bare_fn() {
-    assert_eq!(
-        r2cdecl("fn(*mut u8, i16) -> *const char", "").unwrap(),
-        "const char *(*)(uint8_t *, int16_t)".to_string()
+    assert_r2cdecl(
+        "fn(*mut u8, i16) -> *const char",
+        "const char *(*foo)(uint8_t *, int16_t)",
     );
-    assert_eq!(
-        r2cdecl("*const fn(*mut u8, &mut [u8; 16]) -> &mut *mut u8", "").unwrap(),
-        "uint8_t **(*const *)(uint8_t *, uint8_t (*)[16])".to_string()
+    assert_r2cdecl(
+        "*const fn(*mut u8, &mut [u8; 16]) -> &mut *mut u8",
+        "uint8_t **(*const *foo)(uint8_t *, uint8_t (*)[16])",
     );
 }
 
 #[test]
 fn test_translation_type_array() {
-    assert_eq!(
-        r2cdecl("[&u8; 2 + 2]", "").unwrap(),
-        "const uint8_t *[2 + 2]".to_string()
-    );
+    assert_r2cdecl("[&u8; 2 + 2]", "const uint8_t *foo[2 + 2]");
 }
 
 #[test]
@@ -129,25 +111,19 @@ fn test_translation_fails_for_unsupported() {
 
 #[test]
 fn test_translate_helper_function_pointer() {
-    assert_eq!(
-        r2cdecl("extern \"C\" fn(c_int) -> *const c_void", "test_make_cdecl").unwrap(),
-        "const void *(*test_make_cdecl)(int)"
+    assert_r2cdecl(
+        "extern \"C\" fn(c_int) -> *const c_void",
+        "const void *(*foo)(int)",
     );
     // FIXME(ctest): Reimplement support for ABI in a more robust way.
-    // assert_eq!(
-    //     cdecl("Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>").unwrap(),
-    //     "uint8_t (__stdcall **test_make_cdecl)(const char *, uint32_t [16])"
+    // assert_r2cdecl(
+    //     "Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>",
+    //     "uint8_t (__stdcall **foo)(const char *, uint32_t [16])"
     // );
 }
 
 #[test]
 fn test_translate_helper_array_1d_2d() {
-    assert_eq!(
-        r2cdecl("[u8; 10]", "test_make_cdecl").unwrap(),
-        "uint8_t test_make_cdecl[10]",
-    );
-    assert_eq!(
-        r2cdecl("[[u8; 64]; 32]", "test_make_cdecl").unwrap(),
-        "uint8_t test_make_cdecl[32][64]"
-    );
+    assert_r2cdecl("[u8; 10]", "uint8_t foo[10]");
+    assert_r2cdecl("[[u8; 64]; 32]", "uint8_t foo[32][64]");
 }

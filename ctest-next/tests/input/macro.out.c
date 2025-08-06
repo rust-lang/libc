@@ -7,6 +7,8 @@
 
 #include <macro.h>
 
+typedef void (*ctest_void_func)(void);
+
 // Return the size of a type.
 uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
 
@@ -157,4 +159,14 @@ struct VecU16 ctest_roundtrip__VecU16(
 
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
+#endif
+
+#ifdef _MSC_VER
+// Disable function pointer type conversion warnings on MSVC.
+// The conversion may fail only if we call that function, however we only check its address.
+#  pragma warning(disable:4191)
+#endif
+
+#ifdef _MSC_VER
+#  pragma warning(default:4191)
 #endif

@@ -13,6 +13,8 @@
 #include <{{ header }}>
 {%- endfor +%}
 
+typedef void (*ctest_void_func)(void);
+
 {%- for const_cstr in ctx.const_cstr_tests +%}
 
 static char *ctest_const_{{ const_cstr.id }}_val_static = {{ const_cstr.c_val }};
@@ -117,4 +119,21 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
+#endif
+
+#ifdef _MSC_VER
+// Disable function pointer type conversion warnings on MSVC.
+// The conversion may fail only if we call that function, however we only check its address.
+#  pragma warning(disable:4191)
+#endif
+
+{%- for item in ctx.foreign_fn_tests +%}
+
+ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
+    return (ctest_void_func){{ item.c_val }};
+}
+{%- endfor +%}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4191)
 #endif

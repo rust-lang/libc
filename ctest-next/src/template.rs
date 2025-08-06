@@ -4,7 +4,7 @@ use quote::ToTokens;
 use syn::spanned::Spanned;
 
 use crate::ffi_items::FfiItems;
-use crate::translator::Translator;
+use crate::translator::{TranslationErrorKind, Translator};
 use crate::{
     BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind, cdecl,
 };
@@ -53,6 +53,7 @@ pub(crate) struct TestTemplate {
     pub field_ptr_tests: Vec<TestFieldPtr>,
     pub field_size_offset_tests: Vec<TestFieldSizeOffset>,
     pub roundtrip_tests: Vec<TestRoundtrip>,
+    pub foreign_fn_tests: Vec<TestForeignFn>,
     pub signededness_tests: Vec<TestSignededness>,
     pub size_align_tests: Vec<TestSizeAlign>,
     pub const_cstr_tests: Vec<TestCStr>,
@@ -75,6 +76,7 @@ impl TestTemplate {
         template.populate_field_size_offset_tests(&helper)?;
         template.populate_field_ptr_tests(&helper)?;
         template.populate_roundtrip_tests(&helper)?;
+        template.populate_foreign_fn_tests(&helper)?;
 
         Ok(template)
     }
@@ -359,7 +361,7 @@ impl TestTemplate {
             )
             .map_err(|_| {
                 TranslationError::new(
-                    crate::translator::TranslationErrorKind::InvalidReturn,
+                    TranslationErrorKind::InvalidReturn,
                     &field.ty.to_token_stream().to_string(),
                     field.ty.span(),
                 )
@@ -375,6 +377,38 @@ impl TestTemplate {
                 field_return_type,
             };
             self.field_ptr_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
+
+    /// Populates tests for extern functions.
+    ///
+    /// It also keeps track of the names of each test.
+    fn populate_foreign_fn_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        let should_skip_fn_test = |ident| {
+            helper
+                .generator
+                .skip_fn_ptrcheck
+                .as_ref()
+                .is_some_and(|skip| skip(ident))
+        };
+        for func in helper.ffi_items.foreign_functions() {
+            if should_skip_fn_test(func.ident()) {
+                continue;
+            }
+
+            let item = TestForeignFn {
+                test_name: foreign_fn_test_ident(func.ident()),
+                id: func.ident().into(),
+                c_val: helper.c_ident(func).into_boxed_str(),
+            };
+
+            self.foreign_fn_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
 
@@ -457,6 +491,13 @@ pub(crate) struct TestRoundtrip {
     pub is_alias: bool,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestForeignFn {
+    pub test_name: BoxStr,
+    pub c_val: BoxStr,
+    pub id: BoxStr,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -483,6 +524,10 @@ fn field_size_offset_test_ident(ident: &str, field_ident: &str) -> BoxStr {
 
 fn roundtrip_test_ident(ident: &str) -> BoxStr {
     format!("ctest_roundtrip_{ident}").into()
+}
+
+fn foreign_fn_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_foreign_fn_{ident}").into()
 }
 
 /// Wrap methods that depend on both ffi items and the generator.
@@ -533,7 +578,7 @@ impl<'a> TranslateHelper<'a> {
 
         let ty = cdecl::cdecl(&ty, "".to_string()).map_err(|_| {
             TranslationError::new(
-                crate::translator::TranslationErrorKind::InvalidReturn,
+                TranslationErrorKind::InvalidReturn,
                 ident,
                 Span::call_site(),
             )

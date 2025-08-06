@@ -7,6 +7,8 @@
 
 #include <hierarchy.h>
 
+typedef void (*ctest_void_func)(void);
+
 static bool ctest_const_ON_val_static = ON;
 
 // Define a function that returns a pointer to the value of the constant to test.
@@ -63,4 +65,18 @@ in6_addr ctest_roundtrip__in6_addr(
 
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
+#endif
+
+#ifdef _MSC_VER
+// Disable function pointer type conversion warnings on MSVC.
+// The conversion may fail only if we call that function, however we only check its address.
+#  pragma warning(disable:4191)
+#endif
+
+ctest_void_func ctest_foreign_fn__malloc(void) {
+    return (ctest_void_func)malloc;
+}
+
+#ifdef _MSC_VER
+#  pragma warning(default:4191)
 #endif
