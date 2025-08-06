@@ -314,6 +314,20 @@ mod generated_tests {
         }
     }
 {%- endfor +%}
+
+{%- for item in ctx.foreign_fn_tests +%}
+
+    pub fn {{ item.test_name }}() {
+        extern "C" {
+            fn ctest_foreign_fn__{{ item.id }}() -> *const *mut u32;
+        }
+        unsafe {
+            check_same({{ item.id }} as usize,
+                    ctest_foreign_fn__{{ item.id }}() as usize,
+                    "{{ item.id }} function pointer");
+        }
+    }
+{%- endfor +%}
 }
 
 use generated_tests::*;
