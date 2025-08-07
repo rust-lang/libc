@@ -2465,6 +2465,7 @@ sigismember
 signal
 sigpending
 sigprocmask
+sigqueue
 sigset_t
 sigsuspend
 sigtimedwait

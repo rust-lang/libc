@@ -4284,6 +4284,7 @@ sigevent
 siginfo_t
 signalfd
 signalfd_siginfo
+sigqueue
 sigsuspend
 sigtimedwait
 sigwait
