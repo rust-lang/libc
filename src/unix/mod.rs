@@ -1675,6 +1675,17 @@ cfg_if! {
 }
 
 cfg_if! {
+    if #[cfg(not(any(
+        target_os = "emscripten",
+        target_os = "macos",
+    )))] {
+        extern "C" {
+            pub fn sigqueue(pid: pid_t, sig: c_int, value: crate::sigval) -> c_int;
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(not(target_os = "android"))] {
         extern "C" {
             #[cfg_attr(

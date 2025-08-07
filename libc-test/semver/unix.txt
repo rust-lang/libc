@@ -795,6 +795,7 @@ sigismember
 signal
 sigpending
 sigprocmask
+sigqueue
 sigset_t
 sigval
 size_t
