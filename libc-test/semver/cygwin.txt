@@ -844,6 +844,7 @@ settimeofday
 sigaltstack
 sigevent
 siginfo_t
+sigqueue
 sigsuspend
 sigtimedwait
 sigwait
