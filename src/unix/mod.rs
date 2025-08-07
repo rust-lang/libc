@@ -43,6 +43,27 @@ missing! {
 }
 pub type locale_t = *mut c_void;
 
+s_no_extra_traits! {
+    pub union sigval {
+        pub sival_ptr: *mut c_void,
+        pub sival_int: c_int,
+    }
+}
+
+impl hash::Hash for sigval {
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        state.write_usize(unsafe { self.sival_ptr } as usize);
+    }
+}
+
+impl ::core::cmp::PartialEq for sigval {
+    fn eq(&self, other: &Self) -> bool {
+        unsafe { self.sival_ptr == other.sival_ptr }
+    }
+}
+
+impl ::core::cmp::Eq for sigval {}
+
 s! {
     pub struct group {
         pub gr_name: *mut c_char,
@@ -171,11 +192,6 @@ s! {
     pub struct linger {
         pub l_onoff: c_int,
         pub l_linger: c_int,
-    }
-
-    pub struct sigval {
-        // Actually a union of an int and a void*
-        pub sival_ptr: *mut c_void,
     }
 
     // <sys/time.h>
