@@ -1599,6 +1599,7 @@ shmid_ds
 sigaltstack
 sigevent
 siginfo_t
+sigqueue
 sigsuspend
 sigtimedwait
 sigwait

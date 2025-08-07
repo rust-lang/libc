@@ -75,5 +75,6 @@ posix_spawnattr_setsigmask
 posix_spawnp
 recvmsg
 sendmsg
+sigqueue
 strftime
 strftime_l
