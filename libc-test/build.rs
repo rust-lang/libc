@@ -5386,6 +5386,17 @@ fn test_linux(target: &str) {
             ("file_handle", "f_handle") if musl || uclibc => true,
             // FIXME(ctest): ctest does not translate the rust code which computes the padding size
             ("pthread_cond_t", "__padding") if l4re => true,
+            (
+                "statx",
+                "stx_subvol"
+                | "stx_atomic_write_unit_min"
+                | "stx_atomic_write_unit_max"
+                | "stx_atomic_write_segments_max"
+                | "stx_dio_read_offset_align"
+                | "stx_atomic_write_unit_max_opt"
+                | "__statx_pad2"
+                | "__statx_pad3",
+            ) if gnu && versions.glibc.unwrap() < (2, 43) => true,
             _ => false,
         }
     });
