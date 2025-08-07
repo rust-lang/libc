@@ -292,7 +292,14 @@ cfg_if! {
                 pub stx_mnt_id: crate::__u64,
                 pub stx_dio_mem_align: crate::__u32,
                 pub stx_dio_offset_align: crate::__u32,
-                __statx_pad3: Padding<[crate::__u64; 12]>,
+                pub stx_subvol: crate::__u64,
+                pub stx_atomic_write_unit_min: crate::__u32,
+                pub stx_atomic_write_unit_max: crate::__u32,
+                pub stx_atomic_write_segments_max: crate::__u32,
+                pub stx_dio_read_offset_align: crate::__u32,
+                pub stx_atomic_write_unit_max_opt: crate::__u32,
+                __statx_pad2: [crate::__u32; 1],
+                __statx_pad3: [crate::__u64; 8],
             }
 
             pub struct statx_timestamp {
