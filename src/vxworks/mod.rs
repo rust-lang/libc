@@ -4,7 +4,7 @@ use core::ptr::null_mut;
 
 use crate::prelude::*;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum DIR {}
 impl Copy for DIR {}
 impl Clone for DIR {
@@ -95,7 +95,7 @@ pub type sa_family_t = c_uchar;
 // mqueue.h
 pub type mqd_t = c_int;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum _Vx_semaphore {}
 impl Copy for _Vx_semaphore {}
 impl Clone for _Vx_semaphore {
@@ -1065,7 +1065,7 @@ pub const MAP_CONTIG: c_int = 0x0020;
 
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum FILE {}
 impl Copy for FILE {}
 impl Clone for FILE {
@@ -1073,7 +1073,7 @@ impl Clone for FILE {
         *self
     }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
 impl Copy for fpos_t {}
 impl Clone for fpos_t {

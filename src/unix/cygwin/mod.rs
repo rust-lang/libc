@@ -28,7 +28,7 @@ pub type nlink_t = c_ushort;
 pub type suseconds_t = c_long;
 pub type useconds_t = c_ulong;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -75,7 +75,7 @@ pub type nfds_t = c_uint;
 
 pub type sem_t = *mut sem;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum sem {}
 impl Copy for sem {}
 impl Clone for sem {

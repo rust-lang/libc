@@ -29,7 +29,7 @@ cfg_if! {
 pub type off_t = i32;
 pub type dev_t = u32;
 pub type ino_t = u16;
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -243,7 +243,7 @@ pub const SIG_GET: crate::sighandler_t = 2;
 pub const SIG_SGE: crate::sighandler_t = 3;
 pub const SIG_ACK: crate::sighandler_t = 4;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum FILE {}
 impl Copy for FILE {}
 impl Clone for FILE {
@@ -251,7 +251,7 @@ impl Clone for FILE {
         *self
     }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum fpos_t {} // FIXME(windows): fill this out with a struct
 impl Copy for fpos_t {}
 impl Clone for fpos_t {
