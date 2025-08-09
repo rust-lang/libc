@@ -16,7 +16,7 @@ pub type id_t = u32;
 pub type sem_t = *mut sem;
 pub type key_t = c_long;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -24,7 +24,7 @@ impl Clone for timezone {
         *self
     }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum sem {}
 impl Copy for sem {}
 impl Clone for sem {

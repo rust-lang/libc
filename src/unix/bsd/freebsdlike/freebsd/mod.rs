@@ -53,7 +53,8 @@ pub type sctp_assoc_t = u32;
 
 pub type eventfd_t = u64;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_support_flags {
     DEVSTAT_ALL_SUPPORTED = 0x00,
@@ -68,7 +69,8 @@ impl Clone for devstat_support_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_trans_flags {
     DEVSTAT_NO_DATA = 0x00,
@@ -84,7 +86,8 @@ impl Clone for devstat_trans_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_tag_type {
     DEVSTAT_TAG_SIMPLE = 0x00,
@@ -99,7 +102,8 @@ impl Clone for devstat_tag_type {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_match_flags {
     DEVSTAT_MATCH_NONE = 0x00,
@@ -114,7 +118,8 @@ impl Clone for devstat_match_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_priority {
     DEVSTAT_PRIORITY_MIN = 0x000,
@@ -135,7 +140,8 @@ impl Clone for devstat_priority {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_type_flags {
     DEVSTAT_TYPE_DIRECT = 0x000,
@@ -167,7 +173,8 @@ impl Clone for devstat_type_flags {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_metric {
     DSM_NONE,
@@ -224,7 +231,8 @@ impl Clone for devstat_metric {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug, Hash, PartialEq, Eq))]
+#[derive(Debug)]
+#[cfg_attr(feature = "extra_traits", derive(Hash, PartialEq, Eq))]
 #[repr(u32)]
 pub enum devstat_select_mode {
     DS_SELECT_ADD,
@@ -2387,7 +2395,7 @@ cfg_if! {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 #[repr(u32)]
 pub enum dot3Vendors {
     dot3VendorAMD = 1,

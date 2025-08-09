@@ -25,8 +25,6 @@
 #![cfg_attr(feature = "rustc-dep-of-std", allow(internal_features))]
 // DIFF(1.0): The thread local references that raise this lint were removed in 1.0
 #![cfg_attr(feature = "rustc-dep-of-std", allow(static_mut_refs))]
-// Enable extra lints:
-#![cfg_attr(feature = "extra_traits", warn(missing_debug_implementations))]
 #![warn(missing_copy_implementations, safe_packed_borrows)]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]

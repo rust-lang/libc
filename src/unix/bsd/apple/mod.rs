@@ -179,7 +179,7 @@ deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -188,7 +188,7 @@ impl Clone for timezone {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 #[repr(u32)]
 pub enum qos_class_t {
     QOS_CLASS_USER_INTERACTIVE = 0x21,
@@ -205,7 +205,7 @@ impl Clone for qos_class_t {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 #[repr(u32)]
 pub enum sysdir_search_path_directory_t {
     SYSDIR_DIRECTORY_APPLICATION = 1,
@@ -240,7 +240,7 @@ impl Clone for sysdir_search_path_directory_t {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 #[repr(u32)]
 pub enum sysdir_search_path_domain_mask_t {
     SYSDIR_DOMAIN_MASK_USER = (1 << 0),
