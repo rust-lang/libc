@@ -292,14 +292,26 @@ cfg_if! {
                 pub stx_mnt_id: crate::__u64,
                 pub stx_dio_mem_align: crate::__u32,
                 pub stx_dio_offset_align: crate::__u32,
+                // The following fields are not available on Android as of
+                // August 6th 2025.
+                #[cfg(target_os = "linux")]
                 pub stx_subvol: crate::__u64,
+                #[cfg(target_os = "linux")]
                 pub stx_atomic_write_unit_min: crate::__u32,
+                #[cfg(target_os = "linux")]
                 pub stx_atomic_write_unit_max: crate::__u32,
+                #[cfg(target_os = "linux")]
                 pub stx_atomic_write_segments_max: crate::__u32,
+                #[cfg(target_os = "linux")]
                 pub stx_dio_read_offset_align: crate::__u32,
+                #[cfg(target_os = "linux")]
                 pub stx_atomic_write_unit_max_opt: crate::__u32,
+                #[cfg(target_os = "linux")]
                 __statx_pad2: [crate::__u32; 1],
+                #[cfg(target_os = "linux")]
                 __statx_pad3: [crate::__u64; 8],
+                #[cfg(not(target_os = "linux"))]
+                __statx_pad3: [crate::__u64; 12],
             }
 
             pub struct statx_timestamp {
