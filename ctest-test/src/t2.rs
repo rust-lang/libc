@@ -31,7 +31,6 @@ i! {
     pub const T2S: *const c_char = b"b\0".as_ptr().cast();
 }
 
-// FIXME(ctest): Cannot be uncommented until tests for functions are implemented in ctest-next.
-// extern "C" {
-//     pub fn T2a();
-// }
+extern "C" {
+    pub fn T2a();
+}

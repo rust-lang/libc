@@ -12,7 +12,7 @@ use thiserror::Error;
 
 use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
-use crate::{BoxStr, MapInput, TestGenerator, cdecl};
+use crate::{BoxStr, MapInput, TestGenerator, VolatileItemKind, cdecl};
 
 /// An error that occurs during translation, detailing cause and location.
 #[derive(Debug, Error)]
@@ -111,7 +111,7 @@ impl<'a> Translator<'a> {
             }
             syn::Type::Array(array) => self.translate_array(array),
             syn::Type::Reference(reference) => self.translate_reference(reference),
-            syn::Type::BareFn(function) => self.translate_bare_fn(function),
+            syn::Type::BareFn(function) => self.translate_bare_fn(function, ""),
             syn::Type::Never(_) => Ok(cdecl::named("void", Constness::Mut)),
             syn::Type::Slice(slice) => Err(TranslationError::new(
                 TranslationErrorKind::NotFfiCompatible,
@@ -178,9 +178,10 @@ impl<'a> Translator<'a> {
     }
 
     /// Translate a Rust function pointer type to its C equivalent.
-    fn translate_bare_fn(
+    pub(crate) fn translate_bare_fn(
         &self,
         function: &syn::TypeBareFn,
+        name: &str,
     ) -> Result<cdecl::CTy, TranslationError> {
         if function.lifetimes.is_some() {
             return Err(TranslationError::new(
@@ -197,16 +198,78 @@ impl<'a> Translator<'a> {
             ));
         }
 
+        // Checking for volatility and array arguments requires knowing the name of the function.
+        let func = self
+            .ffi_items
+            .foreign_functions
+            .iter()
+            .find(|f| f.ident == name.into());
+
         let mut parameters = function
             .inputs
             .iter()
-            .map(|arg| self.translate_type(&arg.ty))
+            .enumerate()
+            .map(|(i, arg)| {
+                // Apply array arg transformation.
+                let is_array_arg = func
+                    .and_then(|func| {
+                        self.generator
+                            .array_arg
+                            .as_ref()
+                            .map(|f| f(func.clone(), func.parameters[i].clone()))
+                    })
+                    .unwrap_or(false);
+
+                // Remove the right most pointer type on the C side to reduce indirection.
+                let mut cty = self.translate_type(&arg.ty)?;
+                if is_array_arg {
+                    if let cdecl::CTy::Ptr { ty, .. } = cty {
+                        cty = ty.deref().clone();
+                    }
+                }
+
+                // Apply volatile parameter transformation.
+                let is_volatile = func.is_some_and(|func| {
+                    let param = Box::new(func.parameters[i].clone());
+                    self.generator
+                        .volatile_items
+                        .iter()
+                        .any(|f| f(VolatileItemKind::FnArgument(func.clone(), param.clone())))
+                });
+
+                // The volatile keyword is only applied to the inner most named type.
+                let mut current = &mut cty;
+                while let cdecl::CTy::Ptr { ty, .. } = current {
+                    current = ty;
+                }
+                if let cdecl::CTy::Named { qual, .. } = current {
+                    qual.volatile = is_volatile;
+                }
+
+                Ok(cty)
+            })
             .collect::<Result<Vec<_>, TranslationError>>()?;
 
-        let return_type = match &function.output {
+        let mut return_type = match &function.output {
             syn::ReturnType::Default => cdecl::named("void", Constness::Mut),
             syn::ReturnType::Type(_, ty) => self.translate_type(ty)?,
         };
+
+        // Apply volatile return type transformation.
+        let is_volatile = func.is_some_and(|func| {
+            self.generator
+                .volatile_items
+                .iter()
+                .any(|f| f(VolatileItemKind::FnReturnType(func.clone())))
+        });
+        // The volatile return type must be applied to the inner most type (left most).
+        let mut current = &mut return_type;
+        while let cdecl::CTy::Ptr { ty, .. } = current {
+            current = ty;
+        }
+        if let cdecl::CTy::Named { qual, .. } = current {
+            qual.volatile = is_volatile;
+        }
 
         if parameters.is_empty() {
             parameters.push(cdecl::named("void", Constness::Mut));
@@ -261,8 +324,50 @@ impl<'a> Translator<'a> {
 
     /// Translate a Rust pointer into its equivalent C pointer.
     fn translate_ptr(&self, ptr: &syn::TypePtr) -> Result<cdecl::CTy, TranslationError> {
-        let inner_type = self.translate_type(ptr.elem.deref())?;
-        Ok(ptr_with_inner(inner_type, ptr.mutability))
+        let modifier = translate_mut(ptr.mutability);
+
+        match ptr.elem.deref() {
+            // A pointer to an array in Rust gets translated into an array in C.
+            syn::Type::Array(array_ty) => {
+                let mut array = self.translate_array(array_ty)?;
+                // We assume that *const array means that the const applies to the inner element.
+                // Here we try to get a mutable reference to the array element itself (if it can
+                // have a qualifier)
+                if let cdecl::CTy::Array { ty, .. } = &mut array
+                    && let cdecl::CTy::Named { qual, .. } | cdecl::CTy::Ptr { qual, .. } =
+                        ty.deref_mut()
+                {
+                    qual.constness = translate_mut(ptr.mutability);
+                }
+                Ok(array)
+            }
+
+            inner_ty => {
+                let ty = self.translate_type(inner_ty)?;
+                // Translate a pointer with inner constness as is.
+                let mut ptr_ty = ptr_with_inner(ty.clone(), ptr.mutability);
+
+                // FIXME(ctest): Handling of double pointer arrays by ctest is strange.
+                // This is probably a bad idea.
+                // A C array is made from a ptr to an array, so this actually matches a double ptr
+                // to an array.
+                if matches!(ty, cdecl::CTy::Array { .. }) {
+                    // In this special case, change the constness for no reason at all.
+                    if let cdecl::CTy::Ptr { qual, ty } = &mut ptr_ty {
+                        qual.constness = modifier;
+
+                        if let cdecl::CTy::Array { ty, .. } = ty.deref_mut()
+                            && let cdecl::CTy::Named { qual, .. } | cdecl::CTy::Ptr { qual, .. } =
+                                ty.deref_mut()
+                        {
+                            qual.constness = Constness::Mut;
+                        }
+                    }
+                }
+
+                Ok(ptr_ty)
+            }
+        }
     }
 
     /// Determine whether a C type is a signed type.

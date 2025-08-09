@@ -57,7 +57,6 @@ impl FfiItems {
     }
 
     /// Return a list of all foreign functions found mapped by their ABI.
-    #[cfg_attr(not(test), expect(unused))]
     pub(crate) fn foreign_functions(&self) -> &Vec<Fn> {
         &self.foreign_functions
     }
@@ -142,6 +141,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         syn::ReturnType::Type(_, ty) => Some(ty.deref().clone()),
     };
     let link_name = extract_single_link_name(&i.attrs);
+    let bare_fn_signature = i.sig.clone();
 
     table.foreign_functions.push(Fn {
         public,
@@ -150,6 +150,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         link_name,
         parameters,
         return_type,
+        bare_fn_signature,
     });
 }
 

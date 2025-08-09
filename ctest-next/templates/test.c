@@ -118,3 +118,11 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
 #endif
+
+{%- for item in ctx.foreign_fn_tests +%}
+
+typedef {{ item.return_type }};
+ctest_foreign_fn_type__{{ item.id }} ctest_foreign_fn__{{ item.id }}(void) {
+    return {{ item.c_val }};
+}
+{%- endfor +%}
