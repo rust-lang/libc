@@ -72,17 +72,20 @@ macro_rules! prelude {
         mod prelude {
             // Exports from `core`
             #[allow(unused_imports)]
-            pub(crate) use ::core::clone::Clone;
+            pub(crate) use core::clone::Clone;
             #[allow(unused_imports)]
-            pub(crate) use ::core::default::Default;
+            pub(crate) use core::default::Default;
             #[allow(unused_imports)]
-            pub(crate) use ::core::marker::{Copy, Send, Sync};
+            pub(crate) use core::marker::{Copy, Send, Sync};
             #[allow(unused_imports)]
-            pub(crate) use ::core::option::Option;
+            pub(crate) use core::option::Option;
             #[allow(unused_imports)]
-            pub(crate) use ::core::prelude::v1::derive;
+            pub(crate) use core::prelude::v1::derive;
             #[allow(unused_imports)]
-            pub(crate) use ::core::{fmt, hash, iter, mem, ptr};
+            pub(crate) use core::{fmt, hash, iter, mem, ptr};
+
+            #[allow(unused_imports)]
+            pub(crate) use fmt::Debug;
             #[allow(unused_imports)]
             pub(crate) use mem::{align_of, align_of_val, size_of, size_of_val};
 
@@ -120,9 +123,13 @@ macro_rules! s {
             #[repr(C)]
             #[cfg_attr(
                 feature = "extra_traits",
-                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
             )]
-            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+            #[::core::prelude::v1::derive(
+                ::core::clone::Clone,
+                ::core::marker::Copy,
+                ::core::fmt::Debug,
+            )]
             #[allow(deprecated)]
             $(#[$attr])*
             pub struct $i { $($field)* }
@@ -142,17 +149,21 @@ macro_rules! s_paren {
         __item! {
             #[cfg_attr(
                 feature = "extra_traits",
-                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
             )]
-            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+            #[::core::prelude::v1::derive(
+                ::core::clone::Clone,
+                ::core::marker::Copy,
+                ::core::fmt::Debug,
+            )]
             $(#[$attr])*
             pub struct $i ( $($field)* );
         }
     )*);
 }
 
-/// Implement `Clone` and `Copy` for a struct with no `extra_traits` feature, as well as `Debug`
-/// with `extra_traits` since that can always be derived.
+/// Implement `Clone`, `Copy`, and `Debug` since those can be derived, but exclude `PartialEq`,
+/// `Eq`, and `Hash`.
 ///
 /// Most items will prefer to use [`s`].
 macro_rules! s_no_extra_traits {
@@ -171,7 +182,6 @@ macro_rules! s_no_extra_traits {
             pub union $i { $($field)* }
         }
 
-        #[cfg(feature = "extra_traits")]
         impl ::core::fmt::Debug for $i {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
                 f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
@@ -182,8 +192,11 @@ macro_rules! s_no_extra_traits {
     (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
-            #[cfg_attr(feature = "extra_traits", ::core::prelude::v1::derive(Debug))]
+            #[::core::prelude::v1::derive(
+                ::core::clone::Clone,
+                ::core::marker::Copy,
+                ::core::fmt::Debug,
+            )]
             $(#[$attr])*
             pub struct $i { $($field)* }
         }
@@ -214,9 +227,13 @@ macro_rules! e {
         __item! {
             #[cfg_attr(
                 feature = "extra_traits",
-                ::core::prelude::v1::derive(Debug, Eq, Hash, PartialEq)
+                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
             )]
-            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+            #[::core::prelude::v1::derive(
+                ::core::clone::Clone,
+                ::core::marker::Copy,
+                ::core::fmt::Debug,
+            )]
             $(#[$attr])*
             pub enum $i { $($field)* }
         }

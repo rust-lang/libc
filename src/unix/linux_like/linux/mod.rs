@@ -68,7 +68,7 @@ pub type eventfd_t = u64;
 cfg_if! {
     if #[cfg(not(target_env = "gnu"))] {
         missing! {
-            #[cfg_attr(feature = "extra_traits", derive(Debug))]
+            #[derive(Debug)]
             pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
         }
     }
