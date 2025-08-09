@@ -45,7 +45,7 @@ pub type vm_map_entry_t = *mut vm_map_entry;
 
 pub type pmap = __c_anonymous_pmap;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum sem {}
 impl Copy for sem {}
 impl Clone for sem {
