@@ -80,7 +80,7 @@ pub type rlim_t = c_ulonglong;
 
 // FIXME(fuchsia): why are these uninhabited types? that seems... wrong?
 // Presumably these should be `()` or an `extern type` (when that stabilizes).
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -88,7 +88,7 @@ impl Clone for timezone {
         *self
     }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum DIR {}
 impl Copy for DIR {}
 impl Clone for DIR {
@@ -97,7 +97,7 @@ impl Clone for DIR {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum fpos64_t {} // FIXME(fuchsia): fill this out with a struct
 impl Copy for fpos64_t {}
 impl Clone for fpos64_t {
@@ -3469,7 +3469,7 @@ fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
 #[link(name = "fdio")]
 extern "C" {}
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum FILE {}
 impl Copy for FILE {}
 impl Clone for FILE {
@@ -3477,7 +3477,7 @@ impl Clone for FILE {
         *self
     }
 }
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum fpos_t {} // FIXME(fuchsia): fill this out with a struct
 impl Copy for fpos_t {}
 impl Clone for fpos_t {
