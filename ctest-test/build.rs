@@ -99,6 +99,7 @@ fn test_ctest_next() {
         .include("src")
         .skip_private(true)
         .rename_fn(|f| f.link_name().unwrap_or(f.ident()).to_string().into())
+        .rename_static(|s| s.link_name().unwrap_or(s.ident()).to_string().into())
         .rename_union_ty(|ty| (ty == "T1Union").then_some(ty.to_string()))
         .rename_struct_ty(|ty| (ty == "Transparent").then_some(ty.to_string()))
         .volatile_struct_field(|s, f| s.ident() == "V" && f.ident() == "v")

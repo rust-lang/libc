@@ -4,7 +4,7 @@ use quote::ToTokens;
 use syn::spanned::Spanned;
 
 use crate::ffi_items::FfiItems;
-use crate::translator::Translator;
+use crate::translator::{TranslationErrorKind, Translator};
 use crate::{
     BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind, cdecl,
 };
@@ -50,6 +50,7 @@ impl CTestTemplate {
 /// Stores all information necessary for generation of tests for all items.
 #[derive(Clone, Debug, Default)]
 pub(crate) struct TestTemplate {
+    pub foreign_static_tests: Vec<TestForeignStatic>,
     pub field_ptr_tests: Vec<TestFieldPtr>,
     pub field_size_offset_tests: Vec<TestFieldSizeOffset>,
     pub roundtrip_tests: Vec<TestRoundtrip>,
@@ -75,6 +76,7 @@ impl TestTemplate {
         template.populate_field_size_offset_tests(&helper)?;
         template.populate_field_ptr_tests(&helper)?;
         template.populate_roundtrip_tests(&helper)?;
+        template.populate_foreign_static_tests(&helper)?;
 
         Ok(template)
     }
@@ -380,6 +382,64 @@ impl TestTemplate {
 
         Ok(())
     }
+
+    /// Populates tests for foreign statics, keeping track of the names of each test.
+    fn populate_foreign_static_tests(
+        &mut self,
+        helper: &TranslateHelper,
+    ) -> Result<(), TranslationError> {
+        for static_ in helper.ffi_items.foreign_statics() {
+            let is_volatile = helper
+                .generator
+                .volatile_items
+                .iter()
+                .any(|is_volatile| is_volatile(VolatileItemKind::Static(static_.clone())));
+
+            let c_ty = helper.c_type(static_)?.into_boxed_str();
+            let rust_ty = static_.ty.to_token_stream().to_string().into_boxed_str();
+
+            let return_type = if rust_ty.contains("extern") {
+                helper.translator.translate_type(&static_.ty)?
+            } else {
+                cdecl::ptr(
+                    helper.translator.translate_type(&static_.ty)?,
+                    cdecl::Constness::Mut,
+                )
+            };
+            let return_type = cdecl::cdecl(
+                &return_type,
+                format!("ctest_static_ty__{}", static_.ident()),
+            )
+            .map_err(|_| {
+                TranslationError::new(
+                    TranslationErrorKind::InvalidReturn,
+                    &static_.ty.to_token_stream().to_string(),
+                    static_.ty.span(),
+                )
+            })?;
+
+            let item = TestForeignStatic {
+                test_name: static_test_ident(static_.ident()),
+                id: static_.ident().into(),
+                c_val: helper.c_ident(static_).into_boxed_str(),
+                rust_ty,
+                mutable: if static_.mutable { "mut" } else { "const" }.into(),
+                volatile_keyword: { if is_volatile { "volatile " } else { "" }.into() },
+                c_mutable: if c_ty.contains("const") || static_.mutable {
+                    ""
+                } else {
+                    "const "
+                }
+                .into(),
+                return_type: return_type.into(),
+            };
+
+            self.foreign_static_tests.push(item.clone());
+            self.test_idents.push(item.test_name);
+        }
+
+        Ok(())
+    }
 }
 
 /* Many test structures have the following fields:
@@ -457,6 +517,18 @@ pub(crate) struct TestRoundtrip {
     pub is_alias: bool,
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct TestForeignStatic {
+    pub test_name: BoxStr,
+    pub id: BoxStr,
+    pub c_val: BoxStr,
+    pub rust_ty: BoxStr,
+    pub mutable: BoxStr,
+    pub c_mutable: BoxStr,
+    pub return_type: BoxStr,
+    pub volatile_keyword: BoxStr,
+}
+
 fn signededness_test_ident(ident: &str) -> BoxStr {
     format!("ctest_signededness_{ident}").into()
 }
@@ -483,6 +555,10 @@ fn field_size_offset_test_ident(ident: &str, field_ident: &str) -> BoxStr {
 
 fn roundtrip_test_ident(ident: &str) -> BoxStr {
     format!("ctest_roundtrip_{ident}").into()
+}
+
+fn static_test_ident(ident: &str) -> BoxStr {
+    format!("ctest_static_{ident}").into()
 }
 
 /// Wrap methods that depend on both ffi items and the generator.

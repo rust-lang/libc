@@ -12,6 +12,7 @@ pub struct Static {
     pub(crate) ident: BoxStr,
     pub(crate) link_name: Option<BoxStr>,
     pub(crate) ty: syn::Type,
+    pub(crate) mutable: bool,
 }
 
 impl Static {

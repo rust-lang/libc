@@ -64,3 +64,9 @@ in6_addr ctest_roundtrip__in6_addr(
 #ifdef _MSC_VER
 #  pragma warning(default:4365)
 #endif
+
+// Return a pointer to the static variable content.
+typedef const in6_addr *ctest_static_ty__in6addr_any;
+ctest_static_ty__in6addr_any ctest_static__in6addr_any(void) {
+    return &in6addr_any;
+}
