@@ -218,23 +218,24 @@ impl<'a> Translator<'a> {
     /// Translate a Rust path into its C equivalent.
     fn translate_path(&self, path: &syn::TypePath) -> Result<cdecl::CTy, TranslationError> {
         let last = path.path.segments.last().unwrap();
-        if let syn::PathArguments::AngleBracketed(args) = &last.arguments {
-            if let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap() {
-                // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
-                match inner_ty {
-                    syn::Type::Reference(_) | syn::Type::BareFn(_) => {
-                        return self.translate_type(inner_ty);
-                    }
-                    _ => {
-                        return Err(TranslationError::new(
-                            TranslationErrorKind::NotFfiCompatible,
-                            &path.to_token_stream().to_string(),
-                            inner_ty.span(),
-                        ));
-                    }
+        if let syn::PathArguments::AngleBracketed(args) = &last.arguments
+            && let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap()
+        {
+            // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
+            match inner_ty {
+                syn::Type::Reference(_) | syn::Type::BareFn(_) => {
+                    return self.translate_type(inner_ty);
+                }
+                _ => {
+                    return Err(TranslationError::new(
+                        TranslationErrorKind::NotFfiCompatible,
+                        &path.to_token_stream().to_string(),
+                        inner_ty.span(),
+                    ));
                 }
             }
         }
+
         let name = last.ident.to_string();
         let item = if self.ffi_items.contains_struct(&name) {
             MapInput::StructType(&name)
