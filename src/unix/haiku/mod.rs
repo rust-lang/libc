@@ -58,7 +58,7 @@ pub type posix_spawn_file_actions_t = *mut c_void;
 
 pub type StringList = _stringlist;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {

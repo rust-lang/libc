@@ -55,7 +55,7 @@ pub type lgrp_view_t = c_uint;
 pub type posix_spawnattr_t = *mut c_void;
 pub type posix_spawn_file_actions_t = *mut c_void;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -64,7 +64,7 @@ impl Clone for timezone {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum ucred_t {}
 impl Copy for ucred_t {}
 impl Clone for ucred_t {

@@ -32,7 +32,7 @@ pub type pid_t = usize;
 pub type uid_t = u32;
 pub type gid_t = u32;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {

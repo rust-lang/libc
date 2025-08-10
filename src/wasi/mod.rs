@@ -42,13 +42,13 @@ s_no_extra_traits! {
 }
 
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum FILE {}
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum DIR {}
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum __locale_struct {}
 
 s_paren! {
@@ -176,7 +176,7 @@ s! {
 // etc., since it contains a flexible array member with a dynamic size.
 #[repr(C)]
 #[allow(missing_copy_implementations)]
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub struct dirent {
     pub d_ino: ino_t,
     pub d_type: c_uchar,

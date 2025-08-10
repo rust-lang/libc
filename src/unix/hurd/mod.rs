@@ -225,7 +225,7 @@ pub type nl_item = c_int;
 
 pub type iconv_t = *mut c_void;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum fpos64_t {} // FIXME(hurd): fill this out with a struct
 impl Copy for fpos64_t {}
 impl Clone for fpos64_t {
@@ -234,7 +234,7 @@ impl Clone for fpos64_t {
     }
 }
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
