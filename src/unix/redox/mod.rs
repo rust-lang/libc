@@ -1207,6 +1207,8 @@ extern "C" {
         tokens: *const *mut c_char,
         valuep: *mut *mut c_char,
     ) -> c_int;
+    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
+    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
     pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
 
     // string.h
@@ -1276,6 +1278,12 @@ extern "C" {
     // time.h
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut crate::timezone) -> c_int;
     pub fn clock_gettime(clk_id: crate::clockid_t, tp: *mut crate::timespec) -> c_int;
+    pub fn strftime(
+        s: *mut c_char,
+        max: size_t,
+        format: *const c_char,
+        tm: *const crate::tm,
+    ) -> size_t;
 
     // utmp.h
     pub fn login_tty(fd: c_int) -> c_int;
