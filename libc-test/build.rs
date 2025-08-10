@@ -504,7 +504,7 @@ fn test_apple(target: &str) {
         "uuid_t" | "vol_capabilities_set_t" => true,
         _ => false,
     });
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_openbsd(target: &str) {
@@ -694,7 +694,7 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_cygwin(target: &str) {
@@ -866,7 +866,7 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_windows(target: &str) {
@@ -995,7 +995,7 @@ fn test_windows(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_redox(target: &str) {
@@ -1045,7 +1045,7 @@ fn test_redox(target: &str) {
         "wchar.h",
     }
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_solarish(target: &str) {
@@ -1335,7 +1335,7 @@ fn test_solarish(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_netbsd(target: &str) {
@@ -1551,7 +1551,7 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_dragonflybsd(target: &str) {
@@ -1776,7 +1776,7 @@ fn test_dragonflybsd(target: &str) {
         (struct_ == "sigevent" && field == "sigev_notify_thread_id")
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_wasi(target: &str) {
@@ -1883,7 +1883,7 @@ fn test_wasi(target: &str) {
     // doesn't support sizeof.
     cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_android(target: &str) {
@@ -2390,7 +2390,7 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 
     test_linux_like_apis(target);
 }
@@ -3079,7 +3079,7 @@ fn test_freebsd(target: &str) {
         });
     }
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_emscripten(target: &str) {
@@ -3319,7 +3319,7 @@ fn test_emscripten(target: &str) {
         ].contains(&field))
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_neutrino(target: &str) {
@@ -3592,7 +3592,7 @@ fn test_neutrino(target: &str) {
 
     cfg.skip_static(move |name| name == "__dso_handle");
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_vxworks(target: &str) {
@@ -3698,7 +3698,7 @@ fn test_vxworks(target: &str) {
         _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
@@ -5019,7 +5019,7 @@ fn test_linux(target: &str) {
         _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 
     test_linux_like_apis(target);
 }
@@ -5537,7 +5537,7 @@ fn test_haiku(target: &str) {
             s => s.to_string(),
         }
     });
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
 fn test_aix(target: &str) {
@@ -5834,5 +5834,5 @@ fn test_aix(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "main.rs");
+    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
