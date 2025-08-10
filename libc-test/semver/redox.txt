@@ -224,6 +224,8 @@ lockf
 login_tty
 madvise
 memalign
+mkostemp
+mkostemps
 nice
 open_memstream
 open_wmemstream
@@ -240,6 +242,7 @@ sigtimedwait
 sigwait
 strcasecmp
 strcasestr
+strftime
 strlcat
 strlcpy
 strncasecmp
