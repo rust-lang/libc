@@ -2,4 +2,4 @@
 
 use libc::*;
 
-include!(concat!(env!("OUT_DIR"), "/main.rs"));
+include!(concat!(env!("OUT_DIR"), "/ctest_output.rs"));
