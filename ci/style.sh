@@ -11,7 +11,7 @@ rustfmt -V
 
 # Save a list of all source files
 tmpfile="file-list~" # trailing tilde for gitignore
-find src -name '*.rs' > "$tmpfile"
+find src ci -name '*.rs' > "$tmpfile"
 
 # Before formatting, replace all macro identifiers with a function signature.
 # This allows `rustfmt` to format it.
