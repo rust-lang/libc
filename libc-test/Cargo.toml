@@ -29,8 +29,8 @@ std = ["libc/std"]
 extra_traits = ["libc/extra_traits"]
 
 [[test]]
-name = "main"
-path = "test/main.rs"
+name = "ctest"
+path = "test/ctest.rs"
 harness = false
 
 [[test]]
