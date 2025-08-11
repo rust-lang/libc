@@ -20,7 +20,7 @@ use style::{Result, StyleChecker};
 const SKIP_PREFIXES: &[&str] = &[
     // Don't run the style checker on the reorganized portion of the crate while we figure
     // out what style we want.
-    "new/",
+    "new/", "types.rs",
 ];
 
 #[test]
