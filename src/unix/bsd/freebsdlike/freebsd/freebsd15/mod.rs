@@ -50,6 +50,7 @@ s! {
         _priv: [c_ulong; 8],
     }
 
+    #[non_exhaustive]
     pub struct kinfo_proc {
         /// Size of this structure.
         pub ki_structsize: c_int,
