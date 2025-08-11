@@ -4241,6 +4241,7 @@ pub const P_CONTROLT: c_int = 0x00000002;
 pub const P_KPROC: c_int = 0x00000004;
 #[deprecated(since = "1.0", note = "Replaced in FreeBSD 15 by P_IDLEPROC")]
 pub const P_UNUSED3: c_int = 0x00000008;
+#[cfg(freebsd15)]
 pub const P_IDLEPROC: c_int = 0x00000008;
 pub const P_PPWAIT: c_int = 0x00000010;
 pub const P_PROFIL: c_int = 0x00000020;
