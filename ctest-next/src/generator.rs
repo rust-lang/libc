@@ -22,7 +22,7 @@ type MappedName = Box<dyn Fn(&MapInput) -> Option<String>>;
 type Skip = Box<dyn Fn(&MapInput) -> bool>;
 /// A function that determines whether a variable or field is volatile.
 type VolatileItem = Box<dyn Fn(VolatileItemKind) -> bool>;
-/// A function that determines whether a function arument is an array.
+/// A function that determines whether a function argument is an array.
 type ArrayArg = Box<dyn Fn(crate::Fn, Parameter) -> bool>;
 /// A function that determines whether to skip a test, taking in the identifier name.
 type SkipTest = Box<dyn Fn(&str) -> bool>;

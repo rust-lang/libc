@@ -435,7 +435,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the unitialized memory with a deterministic pattern.
+        // Fill the uninitialized memory with a deterministic pattern.
         // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
         // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
         for i in 0..SIZE {
@@ -566,7 +566,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the unitialized memory with a deterministic pattern.
+        // Fill the uninitialized memory with a deterministic pattern.
         // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
         // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
         for i in 0..SIZE {
@@ -690,7 +690,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the unitialized memory with a deterministic pattern.
+        // Fill the uninitialized memory with a deterministic pattern.
         // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
         // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
         for i in 0..SIZE {

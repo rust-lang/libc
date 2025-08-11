@@ -46,14 +46,14 @@ mod generated_tests {
     }
 
     // Test that the value of the constant is the same in both Rust and C.
-    // This performs a byte by byte comparision of the constant value.
+    // This performs a byte by byte comparison of the constant value.
     pub fn ctest_const_ON() {
         type T = bool;
         extern "C" {
             fn ctest_const__ON() -> *const T;
         }
 
-        /* HACK: The slices may contian uninitialized data! We do this because
+        /* HACK: The slices may contain uninitialized data! We do this because
          * there isn't a good way to recursively iterate all fields. */
 
         let r_val: T = ON;
@@ -161,7 +161,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the unitialized memory with a deterministic pattern.
+        // Fill the uninitialized memory with a deterministic pattern.
         // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
         // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
         for i in 0..SIZE {

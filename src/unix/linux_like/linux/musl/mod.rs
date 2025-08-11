@@ -926,7 +926,7 @@ extern "C" {
     pub fn dirname(path: *mut c_char) -> *mut c_char;
     pub fn basename(path: *mut c_char) -> *mut c_char;
 
-    // Addded in `musl` 1.1.20
+    // Added in `musl` 1.1.20
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
 
     // Added in `musl` 1.1.24
