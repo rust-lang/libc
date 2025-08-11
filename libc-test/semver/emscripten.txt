@@ -1,4 +1,5 @@
 AT_EACCESS
+SIGEV_THREAD_ID
 getentropy
 getgrgid
 getgrgid_r

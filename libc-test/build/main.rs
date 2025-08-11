@@ -4715,6 +4715,9 @@ fn test_linux(target: &str) {
                 // FIXME(musl): Values changed in newer musl versions on these arches
                 "O_LARGEFILE" if riscv64 || x86_64 => return true,
 
+                // musl 1.2.2 was the first version where this appeared at.
+                "SIGEV_THREAD_ID" if old_musl => return true,
+
                 _ => (),
             }
         }
