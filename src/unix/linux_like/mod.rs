@@ -285,14 +285,7 @@ cfg_if! {
 
 s_no_extra_traits! {
     #[cfg_attr(
-        any(
-            all(
-                target_arch = "x86",
-                not(target_env = "musl"),
-                not(target_os = "android")
-            ),
-            target_arch = "x86_64"
-        ),
+        any(target_arch = "x86_64", all(target_arch = "x86", target_env = "gnu")),
         repr(packed)
     )]
     pub struct epoll_event {
