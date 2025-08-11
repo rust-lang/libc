@@ -22,9 +22,11 @@ case "$target" in
     *) cmd="$cmd --workspace" ;;
 esac
 
-# garando_errors only compiles on `cfg(any(unix, windows))`
 case "$target" in
+    # garando_errors only compiles on `cfg(any(unix, windows))`
     *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
+    # https://github.com/bytecodealliance/rustix/issues/1496
+    *loongarch*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
 esac
 
 if [ "$target" = "s390x-unknown-linux-gnu" ]; then
