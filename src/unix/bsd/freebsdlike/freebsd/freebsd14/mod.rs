@@ -234,6 +234,7 @@ s! {
         pub ki_tdflags: c_long,
     }
 
+    #[non_exhaustive]
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -265,7 +266,8 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: crate::fflags_t,
         pub st_gen: u64,
-        pub st_spare: [u64; 10],
+        pub st_filerev: u64,
+        pub st_spare: [u64; 9],
     }
 }
 
