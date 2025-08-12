@@ -742,6 +742,28 @@ mod generated_tests {
             }
         }
     }
+
+    /// Check if the Rust and C side function pointers point to the same underlying function.
+    pub fn ctest_foreign_fn_calloc() {
+        extern "C" {
+            fn ctest_foreign_fn__calloc() -> unsafe extern "C" fn();
+        }
+        let actual = unsafe { ctest_foreign_fn__calloc() } as u64;
+        let expected = calloc as u64;
+        check_same(actual, expected, "calloc function pointer");
+    }
+
+    // Tests if the pointer to the static variable matches in both Rust and C.
+    pub fn ctest_static_byte() {
+        extern "C" {
+            fn ctest_static__byte() -> *const Byte;
+        }
+        let actual = (&raw const byte).addr();
+        let expected = unsafe {
+            ctest_static__byte().addr()
+        };
+        check_same(actual, expected, "byte static");
+    }
 }
 
 use generated_tests::*;
@@ -780,4 +802,6 @@ fn run_all() {
     ctest_roundtrip_Byte();
     ctest_roundtrip_Person();
     ctest_roundtrip_Word();
+    ctest_foreign_fn_calloc();
+    ctest_static_byte();
 }
