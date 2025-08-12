@@ -12,10 +12,10 @@ task:
       env:
         TARGET: i686-unknown-freebsd
       freebsd_instance:
-        image_family: freebsd-13-4
+        image_family: freebsd-13-3
     - name: nightly freebsd-13 x86_64
       freebsd_instance:
-        image_family: freebsd-13-4
+        image_family: freebsd-13-3
     - name: nightly freebsd-14 x86_64
       freebsd_instance:
         image: freebsd-14-3-release-amd64-ufs
