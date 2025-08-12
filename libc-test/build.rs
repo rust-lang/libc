@@ -77,7 +77,6 @@ fn ctest_cfg() -> ctest::TestGenerator {
     ctest::TestGenerator::new()
 }
 
-#[expect(unused)]
 fn ctest_next_cfg() -> ctest_next::TestGenerator {
     ctest_next::TestGenerator::new()
 }
@@ -168,14 +167,6 @@ fn main() {
     // FIXME(ctest): ctest cannot parse `crate::` in paths, so replace them with `::`
     let re = regex::bytes::Regex::new(r"(?-u:\b)crate::").unwrap();
     copy_dir_hotfix(Path::new("../src"), &hotfix_dir, &re, b"::");
-
-    // FIXME(ctest): Only needed until ctest-next supports all tests.
-    // Provide a default for targets that don't yet use `ctest-next`.
-    std::fs::write(
-        format!("{}/main_next.rs", std::env::var("OUT_DIR").unwrap()),
-        "\nfn main() { println!(\"test result: ok\"); }\n",
-    )
-    .unwrap();
 
     do_cc();
     do_ctest();
@@ -812,7 +803,8 @@ fn test_windows(target: &str) {
     let gnu = target.contains("gnu");
     let i686 = target.contains("i686");
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_next_cfg();
+    cfg.skip_private(true);
     if target.contains("msvc") {
         cfg.flag("/wd4324");
     }
@@ -840,41 +832,37 @@ fn test_windows(target: &str) {
         [!gnu]: "Winsock2.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_struct_ty(|ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
-
+            "FILE" | "DIR" | "Dl_info" => ty.to_string().into(),
+            t if t.ends_with("_t") => t.to_string().into(),
+            // Windows uppercase structs don't have `struct` in fr.into()ont:
+            t if ty.chars().next().unwrap().is_uppercase() => t.to_string().into(),
+            "stat" => "struct __stat64".to_string().into(),
+            "utimbuf" => "struct __utimbuf64".to_string().into(),
+            _ => None,
+        }
+    });
+    cfg.rename_type(move |ty| {
+        match ty {
             // FIXME(windows): these don't exist:
-            "time64_t" => "__time64_t".to_string(),
-            "ssize_t" => "SSIZE_T".to_string(),
+            "time64_t" => "__time64_t".to_string().into(),
+            "ssize_t" => "SSIZE_T".to_string().into(),
 
-            "sighandler_t" if !gnu => "_crt_signal_t".to_string(),
-            "sighandler_t" if gnu => "__p_sig_fn_t".to_string(),
-
-            t if is_union => format!("union {t}"),
-            t if t.ends_with("_t") => t.to_string(),
-
-            // Windows uppercase structs don't have `struct` in front:
-            t if is_struct => {
-                if ty.chars().next().unwrap().is_uppercase() {
-                    t.to_string()
-                } else if t == "stat" {
-                    "struct __stat64".to_string()
-                } else if t == "utimbuf" {
-                    "struct __utimbuf64".to_string()
-                } else {
-                    // put `struct` in front of all structs:
-                    format!("struct {t}")
-                }
-            }
-            t => t.to_string(),
+            "sighandler_t" if !gnu => "_crt_signal_t".to_string().into(),
+            "sighandler_t" if gnu => "__p_sig_fn_t".to_string().into(),
+            _ => None,
         }
     });
 
-    cfg.fn_cname(move |name, cname| cname.unwrap_or(name).to_string());
+    cfg.rename_fn(move |func| {
+        func.link_name()
+            .map(|l| l.to_string())
+            .or(func.ident().to_string().into())
+    });
 
-    cfg.skip_type(move |name| match name {
+    cfg.skip_alias(move |alias| match alias.ident() {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
         // FIXME(windows): The size and alignment of this type are incorrect
@@ -882,7 +870,8 @@ fn test_windows(target: &str) {
         _ => false,
     });
 
-    cfg.skip_struct(move |ty| {
+    cfg.skip_struct(move |struct_| {
+        let ty = struct_.ident();
         if ty.starts_with("__c_anonymous_") {
             return true;
         }
@@ -892,9 +881,10 @@ fn test_windows(target: &str) {
             _ => false,
         }
     });
+    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // FIXME(windows): API error:
             // SIG_ERR type is "void (*)(int)", not "int"
             "SIG_ERR" |
@@ -906,10 +896,7 @@ fn test_windows(target: &str) {
         }
     });
 
-    cfg.skip_field(move |s, field| match s {
-        "CONTEXT" if field == "Fp" => true,
-        _ => false,
-    });
+    cfg.skip_struct_field(move |s, field| s.ident() == "CONTEXT" && field.ident() == "Fp");
     // FIXME(windows): All functions point to the wrong addresses?
     cfg.skip_fn_ptrcheck(|_| true);
 
@@ -926,7 +913,7 @@ fn test_windows(target: &str) {
 
     cfg.skip_fn(|_| false);
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_redox(target: &str) {
