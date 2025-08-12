@@ -146,7 +146,8 @@ pub fn __compile_test(
 
     let output = cmd.output()?;
     if !output.status.success() {
-        return Err(std::str::from_utf8(&output.stderr)?.into());
+        let stderr = std::str::from_utf8(&output.stderr)?;
+        return Err(format!("compile test failed with {}: {}", output.status, stderr).into());
     }
 
     Ok(binary_path)
@@ -171,7 +172,8 @@ pub fn __run_test<P: AsRef<Path>>(test_binary: P) -> Result<String> {
     let output = cmd.output()?;
 
     if !output.status.success() {
-        return Err(std::str::from_utf8(&output.stderr)?.into());
+        let stderr = std::str::from_utf8(&output.stderr)?;
+        return Err(format!("run test failed with {}: {}", output.status, stderr).into());
     }
 
     Ok(std::str::from_utf8(&output.stdout)?.to_string())
