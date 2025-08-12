@@ -226,7 +226,8 @@ fn test_apple(target: &str) {
     let x86_64 = target.contains("x86_64");
     let i686 = target.contains("i686");
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_next_cfg();
+
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__APPLE_USE_RFC_3542", None);
 
@@ -347,14 +348,14 @@ fn test_apple(target: &str) {
         [x86_64]: "crt_externs.h",
     }
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        match ty {
+    // Skip anonymous unions/structs.
+    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(|s| s.ident().starts_with("__c_anonymous_"));
+
+    cfg.skip_struct(|s| {
+        match s.ident() {
             // FIXME(union): actually a union
             "sigval" => true,
-
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_zone_t" => true,
             // it is a moving target, changing through versions
@@ -362,16 +363,13 @@ fn test_apple(target: &str) {
             "tcp_connection_info" => true,
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_introspection_t" => true,
-
             _ => false,
         }
     });
 
-    cfg.skip_type(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        match ty {
+    cfg.skip_alias(|ty| ty.ident().starts_with("__c_anonymous_"));
+    cfg.skip_alias(|ty| {
+        match ty.ident() {
             // FIXME(macos): Requires the macOS 14.4 SDK.
             "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
 
@@ -382,12 +380,10 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        // They're declared via `deprecated_mach` and we don't support it anymore.
-        if name.starts_with("VM_FLAGS_") {
-            return true;
-        }
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
+            // They're declared via `deprecated_mach` and we don't support it anymore.
+            x if x.starts_with("VM_FLAGS_") => true,
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
@@ -407,12 +403,11 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" => true,
-
             // close calls the close_nocancel system call
             "close" => true,
 
@@ -441,8 +436,8 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_field(move |struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // FIXME(macos): the array size has been changed since macOS 10.15 ([8] -> [7]).
             ("statfs", "f_reserved") => true,
             ("__darwin_arm_neon_state64", "__v") => true,
@@ -459,47 +454,39 @@ fn test_apple(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field_type(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // FIXME(union): actually a union
             ("sigevent", "sigev_value") => true,
             _ => false,
         }
     });
 
-    cfg.volatile_item(|i| {
-        use ctest::VolatileItemKind::*;
-        match i {
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
-            _ => false,
-        }
+    cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
+
+    cfg.rename_struct_ty(move |ty| {
+        // Just pass all these through, no need for a "struct" prefix
+        ["FILE", "DIR", "Dl_info"]
+            .contains(&ty)
+            .then_some(ty.to_string())
     });
 
-    cfg.type_name(move |ty, is_struct, is_union| {
-        match ty {
-            // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" => ty.to_string(),
+    // OSX calls this something else
+    cfg.rename_type(|ty| (ty == "sighandler_t").then_some("sig_t".to_string()));
 
-            // OSX calls this something else
-            "sighandler_t" => "sig_t".to_string(),
+    cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+    cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
 
-            t if is_union => format!("union {t}"),
-            t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {t}"),
-            t => t.to_string(),
-        }
-    });
-
-    cfg.field_name(move |struct_, field| {
-        match field {
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", "espec.tv_nsec")
+    cfg.rename_struct_field(|s, f| {
+        match f.ident() {
+            n if n.ends_with("_nsec") && s.ident().starts_with("stat") => {
+                Some(n.replace("e_nsec", "espec.tv_nsec"))
             }
             // FIXME(macos): sigaction actually contains a union with two variants:
             // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
             // a sa_handler with type sig_t
-            "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
-            s => s.to_string(),
+            "sa_sigaction" if s.ident() == "sigaction" => Some("sa_handler".to_string()),
+            _ => None,
         }
     });
 
@@ -510,7 +497,8 @@ fn test_apple(target: &str) {
         "uuid_t" | "vol_capabilities_set_t" => true,
         _ => false,
     });
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+
+    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_openbsd(target: &str) {
@@ -881,7 +869,7 @@ fn test_windows(target: &str) {
     let i686 = target.contains("i686");
 
     let mut cfg = ctest_next_cfg();
-    cfg.skip_private(true);
+
     if target.contains("msvc") {
         cfg.flag("/wd4324");
     }
