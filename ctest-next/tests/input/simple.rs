@@ -1,4 +1,4 @@
-use std::os::raw::c_char;
+use std::ffi::{c_char, c_void};
 
 pub type Byte = u8;
 
@@ -17,3 +17,9 @@ pub union Word {
 
 const A: *const c_char = c"abc".as_ptr();
 const B: *const c_char = c"bac".as_ptr();
+
+unsafe extern "C" {
+    pub fn calloc(num: usize, size: usize) -> *mut c_void;
+
+    pub static byte: Byte;
+}

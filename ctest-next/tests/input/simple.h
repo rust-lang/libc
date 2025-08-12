@@ -2,6 +2,8 @@
 
 typedef uint8_t Byte;
 
+Byte byte = 0x42;
+
 struct Person
 {
     const char *name;
@@ -17,3 +19,6 @@ union Word
 
 #define A "abc"
 #define C_B "bac"
+
+extern void *calloc(size_t num, size_t size);
+extern Byte byte;

@@ -242,6 +242,16 @@ union Word ctest_roundtrip__Word(
 #  pragma warning(disable:4191)
 #endif
 
+ctest_void_func ctest_foreign_fn__calloc(void) {
+    return (ctest_void_func)calloc;
+}
+
 #ifdef _MSC_VER
 #  pragma warning(default:4191)
 #endif
+
+// Return a pointer to the static variable content.
+void *ctest_static__byte(void) {
+    // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    return (void *)&byte;
+}

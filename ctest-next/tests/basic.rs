@@ -91,7 +91,12 @@ fn test_skip_simple() {
     let library_path = "simple.out.with-skips.a";
 
     let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
-    gen_.skip_const(|c| c.ident() == "B");
+    gen_.skip_const(|c| c.ident() == "B" || c.ident() == "A")
+        .skip_alias(|a| a.ident() == "Byte")
+        .skip_struct(|s| s.ident() == "Person")
+        .skip_union(|u| u.ident() == "Word")
+        .skip_fn(|f| f.ident() == "calloc")
+        .skip_static(|s| s.ident() == "byte");
 
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }

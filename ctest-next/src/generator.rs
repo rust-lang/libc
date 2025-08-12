@@ -647,6 +647,29 @@ impl TestGenerator {
         self
     }
 
+    /// Configures how Rust type alias names are translated to C.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest_next::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.rename_alias(|c| {
+    ///     (c.ident() == "sighandler_t").then_some("sig_t".to_string())
+    /// });
+    /// ```
+    pub fn rename_alias(&mut self, f: impl Fn(&Type) -> Option<String> + 'static) -> &mut Self {
+        self.mapped_names.push(Box::new(move |item| {
+            if let MapInput::Alias(t) = item {
+                f(t)
+            } else {
+                None
+            }
+        }));
+        self
+    }
+
     /// Configures how a Rust struct field is translated to a C struct field.
     ///
     /// # Examples

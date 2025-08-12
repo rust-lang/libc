@@ -400,7 +400,7 @@ impl TestTemplate {
                 .as_ref()
                 .is_some_and(|skip| skip(ident))
         };
-        for func in helper.ffi_items.foreign_functions() {
+        for func in helper.filtered_ffi_items.foreign_functions() {
             if should_skip_fn_test(func.ident()) {
                 continue;
             }
@@ -423,7 +423,7 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        for static_ in helper.ffi_items.foreign_statics() {
+        for static_ in helper.filtered_ffi_items.foreign_statics() {
             let rust_ty = static_.ty.to_token_stream().to_string().into_boxed_str();
 
             let item = TestForeignStatic {
