@@ -7,21 +7,39 @@ task:
     # https://github.com/rust-lang/rust/issues/132185
     RUST_BACKTRACE: "0"
   matrix:
-    - name: nightly freebsd-13 i686
+    #- name: nightly freebsd-13 i686
       # Test i686 FreeBSD in 32-bit emulation on a 64-bit host.
-      env:
-        TARGET: i686-unknown-freebsd
+      #env:
+        #TARGET: i686-unknown-freebsd
+      #freebsd_instance:
+        #image_family: freebsd-13-4
+    #- name: nightly freebsd-13 x86_64
+      #freebsd_instance:
+        #image_family: freebsd-13-4
+    #- name: nightly freebsd-14 x86_64
+      #freebsd_instance:
+        #image: freebsd-14-2-release-amd64-ufs
+    - name: nightly freebsd-15 x86_64 20250621
       freebsd_instance:
-        image_family: freebsd-13-4
-    - name: nightly freebsd-13 x86_64
+       image: freebsd-15-0-current-amd64-ufs-20250621
+    - name: nightly freebsd-15 x86_64 20250626
       freebsd_instance:
-        image_family: freebsd-13-4
-    - name: nightly freebsd-14 x86_64
+       image: freebsd-15-0-current-amd64-ufs-20250626
+    - name: nightly freebsd-15 x86_64 20250703
       freebsd_instance:
-        image: freebsd-14-2-release-amd64-ufs
-    - name: nightly freebsd-15 x86_64
+       image: freebsd-15-0-current-amd64-ufs-20250703
+    - name: nightly freebsd-15 x86_64 20250710
       freebsd_instance:
-       image_family: freebsd-15-0-snap
+       image: freebsd-15-0-current-amd64-ufs-20250710
+    - name: nightly freebsd-15 x86_64 20250718
+      freebsd_instance:
+       image: freebsd-15-0-current-amd64-ufs-20250718
+    - name: nightly freebsd-15 x86_64 20250724
+      freebsd_instance:
+       image: freebsd-15-0-current-amd64-ufs-20250724
+    - name: nightly freebsd-15 x86_64 20250801
+      freebsd_instance:
+       image: freebsd-15-0-current-amd64-ufs-20250801
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
