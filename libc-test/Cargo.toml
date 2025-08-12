@@ -35,11 +35,6 @@ path = "test/ctest.rs"
 harness = false
 
 [[test]]
-name = "ctest_next"
-path = "test/ctest_next.rs"
-harness = false
-
-[[test]]
 name = "linux-fcntl"
 path = "test/linux_fcntl.rs"
 harness = false
