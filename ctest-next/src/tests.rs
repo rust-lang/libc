@@ -100,7 +100,10 @@ fn test_translation_type_bare_fn() {
 
 #[test]
 fn test_translation_type_array() {
-    assert_r2cdecl("[&u8; 2 + 2]", "const uint8_t *foo[2 + 2]");
+    assert_r2cdecl(
+        "[&u8; crate::ERRNO as usize + 2]",
+        "const uint8_t *foo[(size_t)ERRNO + 2]",
+    );
 }
 
 #[test]
