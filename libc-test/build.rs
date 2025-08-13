@@ -78,7 +78,9 @@ fn ctest_cfg() -> ctest::TestGenerator {
 }
 
 fn ctest_next_cfg() -> ctest_next::TestGenerator {
-    ctest_next::TestGenerator::new()
+    let mut cfg = ctest_next::TestGenerator::new();
+    cfg.skip_private(true);
+    cfg
 }
 
 fn do_semver() {
@@ -2286,7 +2288,7 @@ fn test_android(target: &str) {
 
 fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_next_cfg();
 
     let freebsd_ver = which_freebsd();
 
@@ -2428,7 +2430,13 @@ fn test_freebsd(target: &str) {
                 "wchar.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_type(|ty| match ty {
+        // FIXME(freebsd): https://github.com/rust-lang/libc/issues/1273
+        "sighandler_t" => Some("sig_t".to_string()),
+        _ => None,
+    });
+
+    cfg.rename_struct_ty(|ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE"
@@ -2443,24 +2451,16 @@ fn test_freebsd(target: &str) {
             | "devstat_support_flags"
             | "devstat_type_flags"
             | "devstat_match_flags"
-            | "devstat_priority" => ty.to_string(),
+            | "devstat_priority" => Some(ty.to_string()),
 
-            // FIXME(freebsd): https://github.com/rust-lang/libc/issues/1273
-            "sighandler_t" => "sig_t".to_string(),
-
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
-
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            t => t.to_string(),
+            t if t.ends_with("_t") => Some(t.to_string()),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_field(|struct_, field_| {
+        let struct_ = struct_.ident();
+        let replacement = match field_.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
@@ -2474,12 +2474,13 @@ fn test_freebsd(target: &str) {
             "type_" if struct_ == "input_event" => "type".to_string(),
             // Field is named `gennum` in Rust because `gen` is a keyword
             "gennum" if struct_ == "xktls_session_onedir" => "gen".to_string(),
-            s => s.to_string(),
-        }
+            _ => return None,
+        };
+        Some(replacement)
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
@@ -2745,8 +2746,8 @@ fn test_freebsd(target: &str) {
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // the struct "__kvm" is quite tricky to bind so since we only use a pointer to it
             // for now, it doesn't matter too much...
             "kvm_t" => true,
@@ -2757,7 +2758,9 @@ fn test_freebsd(target: &str) {
         }
     });
 
-    cfg.skip_struct(move |ty| {
+    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(move |struct_| {
+        let ty = struct_.ident();
         if ty.starts_with("__c_anonymous_") {
             return true;
         }
@@ -2802,9 +2805,9 @@ fn test_freebsd(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // This is introduced in FreeBSD 14.1
             "execvpe" => true,
 
@@ -2864,18 +2867,12 @@ fn test_freebsd(target: &str) {
         }
     });
 
-    cfg.volatile_item(|i| {
-        use ctest::VolatileItemKind::*;
-        match i {
-            // aio_buf is a volatile void* but since we cannot express that in
-            // Rust types, we have to explicitly tell the checker about it here:
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
-            _ => false,
-        }
-    });
+    // aio_buf is a volatile void* but since we cannot express that in
+    // Rust types, we have to explicitly tell the checker about it here:
+    cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
 
-    cfg.skip_field(move |struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // FIXME(freebsd): `sa_sigaction` has type `sighandler_t` but that type is
             // incorrect, see: https://github.com/rust-lang/libc/issues/1359
             ("sigaction", "sa_sigaction") => true,
@@ -2947,7 +2944,10 @@ fn test_freebsd(target: &str) {
         });
     }
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    // FIXME(ctest): The original ctest bypassed this requirement somehow.
+    cfg.rename_type(move |ty| (ty == "dot3Vendors").then_some(format!("enum {ty}")));
+
+    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_emscripten(target: &str) {

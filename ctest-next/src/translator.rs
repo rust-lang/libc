@@ -369,7 +369,6 @@ pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
             let index = translate_expr(&i.index);
             format!("{base}[{index}]")
         }
-        // This is done to deal with things like 3usize.
         syn::Expr::Lit(l) => match &l.lit {
             syn::Lit::Int(i) => {
                 let suffix = translate_primitive_type(i.suffix());
@@ -383,7 +382,17 @@ pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
             _ => l.to_token_stream().to_string(),
         },
         syn::Expr::Path(p) => p.path.segments.last().unwrap().ident.to_string(),
-        syn::Expr::Cast(c) => translate_expr(c.expr.deref()),
+        syn::Expr::Cast(c) => {
+            let val = translate_expr(&c.expr);
+            let ty = translate_primitive_type(&c.ty.to_token_stream().to_string());
+            format!("({ty}){val}")
+        }
+        syn::Expr::Binary(b) => {
+            let left = translate_expr(&b.left);
+            let op = b.op.to_token_stream().to_string();
+            let right = translate_expr(&b.right);
+            format!("{left} {op} {right}")
+        }
         expr => expr.to_token_stream().to_string(),
     }
 }
