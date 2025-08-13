@@ -532,6 +532,7 @@ pub const O_SYMLINK: c_int = 0x4000_0000;
 // Negative to allow it to be used as int
 // FIXME(redox): Fix negative values missing from includes
 pub const O_NOFOLLOW: c_int = -0x8000_0000;
+pub const O_NOCTTY: c_int = 0x00000200;
 
 // locale.h
 pub const LC_ALL: c_int = 0;
@@ -625,6 +626,15 @@ pub const PTHREAD_RWLOCK_INITIALIZER: crate::pthread_rwlock_t = crate::pthread_r
     bytes: [0; _PTHREAD_RWLOCK_SIZE],
 };
 pub const PTHREAD_STACK_MIN: size_t = 4096;
+
+// sys/resource.h
+pub const RLIM_INFINITY: u64 = !0;
+pub const RLIM_SAVED_CUR: u64 = RLIM_INFINITY;
+pub const RLIM_SAVED_MAX: u64 = RLIM_INFINITY;
+pub const RUSAGE_SELF: c_int = 0;
+pub const RUSAGE_CHILDREN: c_int = -1;
+pub const RUSAGE_BOTH: c_int = -2;
+pub const RUSAGE_THREAD: c_int = 1;
 
 // signal.h
 pub const SIG_BLOCK: c_int = 0;
@@ -935,6 +945,8 @@ pub const TCSANOW: c_int = 0;
 pub const TCSADRAIN: c_int = 1;
 pub const TCSAFLUSH: c_int = 2;
 
+pub const _POSIX_VDISABLE: crate::cc_t = 0;
+
 // sys/wait.h
 pub const WNOHANG: c_int = 1;
 pub const WUNTRACED: c_int = 2;
@@ -984,6 +996,11 @@ pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
 pub const X_OK: c_int = 1;
 
+// stdio.h
+pub const BUFSIZ: c_uint = 1024;
+pub const _IOFBF: c_int = 0;
+pub const _IOLBF: c_int = 1;
+pub const _IONBF: c_int = 2;
 pub const SEEK_SET: c_int = 0;
 pub const SEEK_CUR: c_int = 1;
 pub const SEEK_END: c_int = 2;
@@ -1095,6 +1112,9 @@ extern "C" {
     // errno.h
     pub fn __errno_location() -> *mut c_int;
     pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
+
+    // dirent.h
+    pub fn dirfd(dirp: *mut crate::DIR) -> c_int;
 
     // unistd.h
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
