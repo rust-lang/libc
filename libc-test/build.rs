@@ -508,7 +508,7 @@ fn test_apple(target: &str) {
 fn test_openbsd(target: &str) {
     assert!(target.contains("openbsd"));
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_next_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     let x86_64 = target.contains("x86_64");
@@ -598,20 +598,42 @@ fn test_openbsd(target: &str) {
         "sys/param.h",
     }
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        match ty {
-            // FIXME(union): actually a union
-            "sigval" => true,
+    cfg.rename_type(|ty| match ty {
+        // FIXME(openbsd): https://github.com/rust-lang/libc/issues/1273
+        "sighandler_t" => Some("sig_t".to_string()),
+        _ => None,
+    });
 
-            _ => false,
+    cfg.rename_struct_ty(move |ty| {
+        match ty {
+            // Just pass all these through, no need for a "struct" prefix
+            "FILE" | "DIR" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => Some(ty.to_string()),
+
+            _ => None,
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.rename_struct_field(|struct_, field_| {
+        let struct_ = struct_.ident();
+        let replacement = match field_.ident() {
+            "st_birthtime" if struct_.starts_with("stat") => "__st_birthtime".to_string(),
+            "st_birthtime_nsec" if struct_.starts_with("stat") => "__st_birthtimensec".to_string(),
+
+            // Our stat *_nsec fields normally don't actually exist but are part
+            // of a timeval struct
+            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
+                s.replace("e_nsec", ".tv_nsec")
+            }
+
+            "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
+
+            _ => return None,
+        };
+        Some(replacement)
+    });
+
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // Removed in OpenBSD 6.0
             "KERN_USERMOUNT" | "KERN_ARND" => true,
             // Removed in OpenBSD 7.2
@@ -620,7 +642,7 @@ fn test_openbsd(target: &str) {
             "KERN_MAXID" | "NET_RT_MAXID" => true,
             "EV_SYSFLAGS" => true,
 
-            // Removed in OpenBSD 7.7
+            // Removed in OpenBSD 7.7 (unused since 1991)
             "ATF_COM" | "ATF_PERM" | "ATF_PUBL" | "ATF_USETRAILERS" => true,
 
             // Removed in OpenBSD 7.8
@@ -630,17 +652,14 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
-        match name {
+    cfg.skip_fn(move |func| {
+        match func.ident() {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
             // Removed in OpenBSD 6.5
             // https://marc.info/?l=openbsd-cvs&m=154723400730318
             "mincore" => true,
-
-            // futex() has volatile arguments, but that doesn't exist in Rust.
-            "futex" => true,
 
             // Available for openBSD 7.3
             "mimmutable" => true,
@@ -653,46 +672,38 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    cfg.type_name(move |ty, is_struct, is_union| {
-        match ty {
-            // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
+    // Skip anonymous unions/structs.
+    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(|s| s.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(move |ty| {
+        match ty.ident() {
+            // FIXME(union): actually a union
+            "sigval" => true,
 
-            // OSX calls this something else
-            "sighandler_t" => "sig_t".to_string(),
-
-            t if is_union => format!("union {t}"),
-            t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {t}"),
-            t => t.to_string(),
-        }
-    });
-
-    cfg.field_name(move |struct_, field| match field {
-        "st_birthtime" if struct_.starts_with("stat") => "__st_birthtime".to_string(),
-        "st_birthtime_nsec" if struct_.starts_with("stat") => "__st_birthtimensec".to_string(),
-        s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.replace("e_nsec", ".tv_nsec"),
-        "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
-        s => s.to_string(),
-    });
-
-    cfg.skip_field_type(move |struct_, field| {
-        // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
-        struct_ == "siginfo_t" && field == "si_addr"
-    });
-
-    cfg.skip_field(|struct_, field| {
-        match (struct_, field) {
-            // conflicting with `p_type` macro from <resolve.h>.
-            ("Elf32_Phdr", "p_type") => true,
-            ("Elf64_Phdr", "p_type") => true,
-            // ifr_ifru is defined is an union
-            ("ifreq", "ifr_ifru") => true,
             _ => false,
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+    cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") => true,
+            ("Elf64_Phdr", "p_type") => true,
+
+            // type siginfo_t.si_addr changed from OpenBSD 6.0 to 6.1
+            ("siginfo_t", "si_addr") => true,
+
+            // ifr_ifru is an union
+            ("ifreq", "ifr_ifru") => true,
+
+            _ => false,
+        }
+    });
+
+    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_cygwin(target: &str) {
