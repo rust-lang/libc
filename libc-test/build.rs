@@ -73,12 +73,12 @@ fn do_ctest() {
     }
 }
 
-fn ctest_cfg() -> ctest_old::TestGenerator {
+fn ctest_old_cfg() -> ctest_old::TestGenerator {
     ctest_old::TestGenerator::new()
 }
 
-fn ctest_next_cfg() -> ctest_next::TestGenerator {
-    let mut cfg = ctest_next::TestGenerator::new();
+fn ctest_cfg() -> ctest::TestGenerator {
+    let mut cfg = ctest::TestGenerator::new();
     cfg.skip_private(true);
     cfg
 }
@@ -219,7 +219,7 @@ fn test_apple(target: &str) {
     let x86_64 = target.contains("x86_64");
     let i686 = target.contains("i686");
 
-    let mut cfg = ctest_next_cfg();
+    let mut cfg = ctest_cfg();
 
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__APPLE_USE_RFC_3542", None);
@@ -467,13 +467,13 @@ fn test_apple(target: &str) {
         _ => false,
     });
 
-    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_openbsd(target: &str) {
     assert!(target.contains("openbsd"));
 
-    let mut cfg = ctest_next_cfg();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     let x86_64 = target.contains("x86_64");
@@ -632,13 +632,13 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_cygwin(target: &str) {
     assert!(target.contains("cygwin"));
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -809,7 +809,7 @@ fn test_windows(target: &str) {
     let gnu = target.contains("gnu");
     let i686 = target.contains("i686");
 
-    let mut cfg = ctest_next_cfg();
+    let mut cfg = ctest_cfg();
 
     if target.contains("msvc") {
         cfg.flag("/wd4324");
@@ -919,13 +919,13 @@ fn test_windows(target: &str) {
 
     cfg.skip_fn(|_| false);
 
-    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_redox(target: &str) {
     assert!(target.contains("redox"));
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -979,7 +979,7 @@ fn test_solarish(target: &str) {
 
     // ctest generates arguments supported only by clang, so make sure to run with CC=clang.
     // While debugging, "CFLAGS=-ferror-limit=<large num>" is useful to get more error output.
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     cfg.define("_XOPEN_SOURCE", Some("700"));
@@ -1255,7 +1255,7 @@ fn test_solarish(target: &str) {
 
 fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
 
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -1464,7 +1464,7 @@ fn test_netbsd(target: &str) {
 
 fn test_dragonflybsd(target: &str) {
     assert!(target.contains("dragonfly"));
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -1682,7 +1682,7 @@ fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
     let p2 = target.contains("wasip2");
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1795,7 +1795,7 @@ fn test_android(target: &str) {
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -2292,7 +2292,7 @@ fn test_android(target: &str) {
 
 fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
-    let mut cfg = ctest_next_cfg();
+    let mut cfg = ctest_cfg();
 
     let freebsd_ver = which_freebsd();
 
@@ -2951,13 +2951,13 @@ fn test_freebsd(target: &str) {
     // FIXME(ctest): The original ctest bypassed this requirement somehow.
     cfg.rename_type(move |ty| (ty == "dot3Vendors").then_some(format!("enum {ty}")));
 
-    ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.define("_GNU_SOURCE", None); // FIXME(emscripten): ??
 
     headers! { cfg:
@@ -3199,7 +3199,7 @@ fn test_emscripten(target: &str) {
 fn test_neutrino(target: &str) {
     assert!(target.contains("nto-qnx"));
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     if target.ends_with("_iosock") {
         let qnx_target_val = env::var("QNX_TARGET")
             .unwrap_or_else(|_| "QNX_TARGET_not_set_please_source_qnxsdp".into());
@@ -3633,7 +3633,7 @@ fn test_linux(target: &str) {
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     let old_musl = musl && !musl_v1_2_3;
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     if musl_v1_2_3 {
         cfg.cfg("musl_v1_2_3", None);
     }
@@ -4881,7 +4881,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android || emscripten {
         // test strerror_r from the `string.h` header
-        let mut cfg = ctest_cfg();
+        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
         cfg.skip_type(|_| true).skip_static(|_| true);
 
@@ -4898,7 +4898,7 @@ fn test_linux_like_apis(target: &str) {
     if linux || android || emscripten {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
-        let mut cfg = ctest_cfg();
+        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
 
         if musl {
@@ -4928,7 +4928,7 @@ fn test_linux_like_apis(target: &str) {
 
     if (linux && !wali) || android {
         // test termios
-        let mut cfg = ctest_cfg();
+        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
         cfg.header("asm/termbits.h");
         cfg.header("linux/termios.h");
@@ -4953,7 +4953,7 @@ fn test_linux_like_apis(target: &str) {
 
     if linux || android {
         // test IPV6_ constants:
-        let mut cfg = ctest_cfg();
+        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
         headers! {
             cfg:
@@ -4985,7 +4985,7 @@ fn test_linux_like_apis(target: &str) {
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
         // making the tests for these fails when both are included.
-        let mut cfg = ctest_cfg();
+        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
         cfg.header("elf.h");
         cfg.skip_fn(|_| true)
@@ -5005,7 +5005,7 @@ fn test_linux_like_apis(target: &str) {
 
     if (linux && !wali) || android {
         // Test `ARPHRD_CAN`.
-        let mut cfg = ctest_cfg();
+        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
         cfg.header("linux/if_arp.h");
         cfg.skip_fn(|_| true)
@@ -5051,7 +5051,7 @@ fn which_freebsd() -> Option<i32> {
 fn test_haiku(target: &str) {
     assert!(target.contains("haiku"));
 
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__USE_GNU", Some("1"));
     cfg.define("_GNU_SOURCE", None);
@@ -5382,7 +5382,7 @@ fn test_aix(target: &str) {
     // ctest generates arguments supported only by clang, so make sure to
     // run with CC=clang. While debugging, "CFLAGS=-ferror-limit=<large num>"
     // is useful to get more error output.
-    let mut cfg = ctest_cfg();
+    let mut cfg = ctest_old_cfg();
     cfg.define("_THREAD_SAFE", None);
 
     // Avoid the error for definitions such as '{0, 0, 0, 1}' for

@@ -88,8 +88,8 @@ jobs:
           if [ "${{ matrix.toolchain }}" = "1.63.0" ]; then
               # Remove `-Dwarnings` at the MSRV since lints may be different
               export RUSTFLAGS=""
-              # Remove `ctest-next` which uses the 2024 edition
-              perl -i -ne 'print unless /"ctest-(next|test)",/ || /"libc-test",/' Cargo.toml
+              # Remove `ctest` which uses the 2024 edition
+              perl -i -ne 'print unless /"ctest(-test)?",/ || /"libc-test",/' Cargo.toml
           fi
 
           ./ci/verify-build.sh
@@ -306,7 +306,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
   ctest_msrv:
-    name: Check MSRV
+    name: Check ctest MSRV
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
@@ -314,13 +314,14 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: |
-        msrv="$(cargo metadata --format-version 1 | jq -r --arg CRATE_NAME ctest  '.packages | map(select(.name == $CRATE_NAME)) | first | .rust_version')"
+        msrv="$(
+          cargo metadata --format-version 1 |
+          jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
+        )"
         echo "MSRV: $msrv"
         echo "MSRV=$msrv" >> "$GITHUB_ENV"
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-    - name: Remove edition 2024 crates
-      run: perl -i -ne 'print unless /"ctest-(next|test)",/ || /"libc-test",/' Cargo.toml
     - uses: Swatinem/rust-cache@v2
     - run: cargo build -p ctest
 
