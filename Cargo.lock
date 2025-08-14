@@ -117,6 +117,18 @@ version = "0.1.0"
 
 [[package]]
 name = "ctest"
+version = "0.4.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2f18c94d081f9a0355affbeee3f8e677ce206e9aea89b952421f0be6bc588dde"
+dependencies = [
+ "cc",
+ "garando_syntax",
+ "indoc",
+ "rustc_version",
+]
+
+[[package]]
+name = "ctest"
 version = "0.5.0-beta.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af3dc06650f831a3845f2493213c01ebe1dc1cd7bea271d26766a38dc6e72a3f"
@@ -127,21 +139,6 @@ dependencies = [
  "quote",
  "syn",
  "thiserror 2.0.16",
-]
-
-[[package]]
-name = "ctest-next"
-version = "0.1.0"
-
-[[package]]
-name = "ctest2"
-version = "0.4.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7cf53ed2a9e25d98cd444fd6e73eae7de0a26a8cb9e3f998170c6901a1afa0e5"
-dependencies = [
- "cc",
- "garando_syntax",
- "rustc_version",
 ]
 
 [[package]]
@@ -220,6 +217,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8d1add55171497b4705a648c6b583acafb01d58050a51727785f0b2c8e0a2b2"
 
 [[package]]
+name = "indoc"
+version = "2.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4c7245a08504955605670dbf141fceab975f15ca21570696aebe9d2e71576bd"
+
+[[package]]
 name = "itoa"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -245,8 +248,8 @@ dependencies = [
  "annotate-snippets",
  "cc",
  "cfg-if 1.0.1",
+ "ctest 0.4.11",
  "ctest 0.5.0-beta.0",
- "ctest2",
  "glob",
  "libc 0.2.175",
  "proc-macro2",
