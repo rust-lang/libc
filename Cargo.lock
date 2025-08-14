@@ -129,6 +129,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "ctest"
+version = "0.4.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2f18c94d081f9a0355affbeee3f8e677ce206e9aea89b952421f0be6bc588dde"
+dependencies = [
+ "cc",
+ "garando_syntax",
+ "indoc",
+ "rustc_version",
+]
+
+[[package]]
 name = "ctest-next"
 version = "0.1.0"
 dependencies = [
@@ -148,7 +160,7 @@ version = "0.1.0"
 dependencies = [
  "cc",
  "cfg-if 1.0.1",
- "ctest",
+ "ctest 0.4.11",
  "ctest-next",
  "libc 1.0.0-alpha.1",
 ]
@@ -294,7 +306,7 @@ dependencies = [
  "annotate-snippets",
  "cc",
  "cfg-if 1.0.1",
- "ctest",
+ "ctest 0.4.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "ctest-next",
  "glob",
  "libc 1.0.0-alpha.1",
