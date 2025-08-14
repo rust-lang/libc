@@ -1,8 +1,6 @@
 #![deny(warnings)]
 #![allow(clippy::match_like_matches_macro)]
 
-extern crate ctest2 as ctest;
-
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
@@ -75,8 +73,8 @@ fn do_ctest() {
     }
 }
 
-fn ctest_cfg() -> ctest::TestGenerator {
-    let mut cfg = ctest::TestGenerator::new();
+fn ctest_cfg() -> ctest_old::TestGenerator {
+    let mut cfg = ctest_old::TestGenerator::new();
     let libc_cfgs = ["libc_thread_local"];
     for f in &libc_cfgs {
         cfg.cfg(f, None);
@@ -3479,7 +3477,7 @@ fn test_neutrino(target: &str) {
     });
 
     cfg.volatile_item(|i| {
-        use ctest::VolatileItemKind::*;
+        use ctest_old::VolatileItemKind::*;
         match i {
             // The following fields are volatie but since we cannot express that in
             // Rust types, we have to explicitly tell the checker about it here:
@@ -3602,7 +3600,7 @@ fn test_neutrino(target: &str) {
 fn test_vxworks(target: &str) {
     assert!(target.contains("vxworks"));
 
-    let mut cfg = ctest::TestGenerator::new();
+    let mut cfg = ctest_old::TestGenerator::new();
     headers! { cfg:
                "vxWorks.h",
                "yvals.h",
@@ -3705,7 +3703,7 @@ fn test_vxworks(target: &str) {
     cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
 }
 
-fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
+fn config_gnu_bits(target: &str, cfg: &mut ctest_old::TestGenerator) {
     let pointer_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
     if target.contains("gnu")
         && target.contains("linux")
@@ -4894,7 +4892,7 @@ fn test_linux(target: &str) {
     });
 
     cfg.volatile_item(|i| {
-        use ctest::VolatileItemKind::*;
+        use ctest_old::VolatileItemKind::*;
         match i {
             // aio_buf is a volatile void** but since we cannot express that in
             // Rust types, we have to explicitly tell the checker about it here:
@@ -5215,7 +5213,7 @@ fn test_haiku(target: &str) {
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__USE_GNU", Some("1"));
     cfg.define("_GNU_SOURCE", None);
-    cfg.language(ctest::Lang::CXX);
+    cfg.language(ctest_old::Lang::CXX);
 
     // POSIX API
     headers! { cfg:
@@ -5835,7 +5833,7 @@ fn test_aix(target: &str) {
     });
 
     cfg.volatile_item(|i| {
-        use ctest::VolatileItemKind::*;
+        use ctest_old::VolatileItemKind::*;
         match i {
             // 'aio_buf' is of type 'volatile void**' but since we cannot
             // express that in Rust types, we have to explicitly tell the

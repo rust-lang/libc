@@ -21,9 +21,9 @@ annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 [build-dependencies]
 cc = "1.2.29"
 # FIXME: Use fork ctest until the maintainer gets back.
-ctest2 = "0.4.3"
+ctest-old = { version = "0.4.3", package = "ctest2" }
 # Use the in-tree `ctest` from the `main` branch via crates.io
-ctest_next = { version = "0.5.0-beta.0", package = "ctest" }
+ctest-next = { version = "0.5.0-beta.0", package = "ctest" }
 regex = "1.11.1"
 
 [features]
