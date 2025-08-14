@@ -2927,7 +2927,7 @@ extern "C" {
         name: *const c_char,
         grp: *mut crate::group,
         buf: *mut c_char,
-        buflen: c_int,
+        buflen: size_t,
         result: *mut *mut crate::group,
     ) -> c_int;
     pub fn getgrset(user: *const c_char) -> *mut c_char;
