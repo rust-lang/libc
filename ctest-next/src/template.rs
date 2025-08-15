@@ -597,6 +597,36 @@ impl<'a> TranslateHelper<'a> {
     fn filter_ffi_items(&mut self) {
         let verbose = self.generator.verbose_skip;
 
+        let skipped = self.filtered_ffi_items.aliases.extract_if(.., |alias| {
+            self.generator
+                .skips
+                .iter()
+                .any(|f| f(&MapInput::CEnumType(alias.ident())))
+        });
+
+        for item in skipped {
+            if verbose {
+                eprintln!("Skipping C enum type {}", item.ident());
+            }
+        }
+
+        let skipped = self
+            .filtered_ffi_items
+            .constants
+            .extract_if(.., |constant| {
+                self.generator.skips.iter().any(|f| {
+                    f(&MapInput::CEnumType(
+                        &constant.ty.to_token_stream().to_string(),
+                    ))
+                })
+            });
+
+        for item in skipped {
+            if verbose {
+                eprintln!("Skipping C enum constant {}", item.ident());
+            }
+        }
+
         macro_rules! filter {
             ($field:ident, $variant:ident, $label:literal) => {{
                 let skipped = self.filtered_ffi_items.$field.extract_if(.., |item| {
@@ -647,6 +677,7 @@ impl<'a> TranslateHelper<'a> {
 
             MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
             MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
+            MapInput::CEnumType(_) => panic!("MapInput::CEnumType is not allowed!"),
             MapInput::StructFieldType(_, _) => panic!("MapInput::StructFieldType is not allowed!"),
             MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
@@ -664,6 +695,8 @@ impl<'a> TranslateHelper<'a> {
             MapInput::StructType(&ty)
         } else if self.ffi_items.contains_union(ident) {
             MapInput::UnionType(&ty)
+        } else if self.generator.c_enums.iter().any(|f| f(&ty)) {
+            MapInput::CEnumType(&ty)
         } else {
             MapInput::Type(&ty)
         };

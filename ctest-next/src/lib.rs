@@ -66,6 +66,7 @@ pub(crate) enum MapInput<'a> {
     /// This variant is used for renaming the struct type.
     StructType(&'a str),
     UnionType(&'a str),
+    CEnumType(&'a str),
     StructFieldType(&'a Struct, &'a Field),
     UnionFieldType(&'a Union, &'a Field),
 }

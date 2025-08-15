@@ -2948,8 +2948,7 @@ fn test_freebsd(target: &str) {
         });
     }
 
-    // FIXME(ctest): The original ctest bypassed this requirement somehow.
-    cfg.rename_type(move |ty| (ty == "dot3Vendors").then_some(format!("enum {ty}")));
+    cfg.c_enum(|ty| ty == "dot3Vendors");
 
     ctest_next::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
