@@ -3548,7 +3548,7 @@ fn test_vxworks(target: &str) {
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
-fn config_gnu_bits(target: &str, cfg: &mut ctest_old::TestGenerator) {
+fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
     let pointer_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
     if target.contains("gnu")
         && target.contains("linux")
@@ -3618,15 +3618,15 @@ fn test_linux(target: &str) {
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     let old_musl = musl && !musl_v1_2_3;
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     if musl_v1_2_3 {
         cfg.cfg("musl_v1_2_3", None);
     }
-    cfg.define("_GNU_SOURCE", None);
-    // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
-    // deprecated since glibc >= 2.29. This allows Rust binaries to link against
-    // glibc versions older than 2.29.
-    cfg.define("__GLIBC_USE_DEPRECATED_SCANF", None);
+    cfg.define("_GNU_SOURCE", None)
+        // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
+        // deprecated since glibc >= 2.29. This allows Rust binaries to link against
+        // glibc versions older than 2.29.
+        .define("__GLIBC_USE_DEPRECATED_SCANF", None);
 
     config_gnu_bits(target, &mut cfg);
 
@@ -3828,37 +3828,50 @@ fn test_linux(target: &str) {
         [!uclibc]: "aio.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    // Just pass all these through, no need for a "struct" prefix
+    let typedef_structs = [
+        "FILE",
+        "fd_set",
+        "Dl_info",
+        "DIR",
+        "Elf32_Phdr",
+        "Elf64_Phdr",
+        "Elf32_Shdr",
+        "Elf64_Shdr",
+        "Elf32_Sym",
+        "Elf64_Sym",
+        "Elf32_Ehdr",
+        "Elf64_Ehdr",
+        "Elf32_Chdr",
+        "Elf64_Chdr",
+    ];
+    // typedefs don't need any keywords
+    cfg.rename_struct_ty(move |ty| typedef_structs.contains(&ty).then_some(ty.to_string()))
+        .rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()))
+        .rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+
+    cfg.rename_type(move |ty| {
         match ty {
-            // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
-            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
-            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
-
-            "Ioctl" if gnu => "unsigned long".to_string(),
-            "Ioctl" => "int".to_string(),
-
+            "Ioctl" if gnu => Some("unsigned long".to_string()),
+            "Ioctl" => Some("int".to_string()),
             // LFS64 types have been removed in musl 1.2.4+
-            "off64_t" if musl => "off_t".to_string(),
-
-            // typedefs don't need any keywords
-            t if t.ends_with("_t") => t.to_string(),
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-            // put `union` in front of all unions:
-            t if is_union => format!("union {t}"),
-
-            t => t.to_string(),
+            "off64_t" if musl => Some("off_t".to_string()),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_field(|struct_, field| {
+        let struct_ = struct_.ident();
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
+                Some(s.replace("e_nsec", ".tv_nsec"))
             }
+            // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
+            // it is only a u64 because we only expose one field
+            // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
+            "u64" if struct_ == "epoll_event" => Some("data.u64".to_string()),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
@@ -3867,14 +3880,15 @@ fn test_linux(target: &str) {
                     || struct_ == "input_mask"
                     || struct_ == "ff_effect" =>
             {
-                "type".to_string()
+                Some("type".to_string())
             }
 
-            s => s.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_type(move |ty| {
+    cfg.skip_alias(move |alias| {
+        let ty = alias.ident();
         // FIXME(musl): very recent additions to musl, not yet released.
         // also apparently some glibc versions
         if ty == "Elf32_Relr" || ty == "Elf64_Relr" {
@@ -3917,10 +3931,12 @@ fn test_linux(target: &str) {
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
+    // Skip structs and enums that are unnamed in C.
+    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(move |struct_| struct_.ident().starts_with("__c_anonymous_"));
+
+    cfg.skip_struct(move |struct_| {
+        let ty = struct_.ident();
 
         // FIXME(linux): CI has old headers
         if ty == "ptp_sys_offset_extended" {
@@ -4093,7 +4109,8 @@ fn test_linux(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
+    cfg.skip_const(move |constant| {
+        let name = constant.ident();
         if !gnu {
             // Skip definitions from the kernel on non-glibc Linux targets.
             // They're libc-independent, so we only need to check them on one
@@ -4592,7 +4609,19 @@ fn test_linux(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    let c_enums = [
+        "tpacket_versions",
+        "proc_cn_mcast_op",
+        "proc_cn_event",
+        "pid_type",
+    ];
+    cfg.alias_is_c_enum(move |e| c_enums.contains(&e));
+
+    // FIXME(libc): `pid_type` and `proc_cn_event` is hidden.
+    cfg.skip_c_enum(|e| e == "pid_type" || e == "proc_cn_event");
+
+    cfg.skip_fn(move |function| {
+        let name = function.ident();
         // skip those that are manually verified
         match name {
             // There are two versions of the sterror_r function, see
@@ -4695,40 +4724,38 @@ fn test_linux(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |union_, field| {
+        let union_ = union_.ident();
+        let field = field.ident();
         // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        (union_ == "ifaddrs" && field == "ifa_ifu") ||
         // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        (union_ == "sigaction" && field == "sa_sigaction") ||
         // __timeval type is a patch which doesn't exist in glibc
-        (struct_ == "utmpx" && field == "ut_tv") ||
+        (union_ == "utmpx" && field == "ut_tv") ||
+        // sigval is actually a union, but we pretend it's a struct
+        (union_ == "sigevent" && field == "sigev_value") ||
         // this one is an anonymous union
-        (struct_ == "ff_effect" && field == "u") ||
+        (union_ == "ff_effect" && field == "u") ||
         // `__exit_status` type is a patch which is absent in musl
-        (struct_ == "utmpx" && field == "ut_exit" && musl) ||
+        (union_ == "utmpx" && field == "ut_exit" && musl) ||
         // `can_addr` is an anonymous union
-        (struct_ == "sockaddr_can" && field == "can_addr") ||
+        (union_ == "sockaddr_can" && field == "can_addr") ||
         // `anonymous_1` is an anonymous union
-        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
+        (union_ == "ptp_perout_request" && field == "anonymous_1") ||
         // `anonymous_2` is an anonymous union
-        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
+        (union_ == "ptp_perout_request" && field == "anonymous_2") ||
         // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
         // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
         // the rsv field shrunk when those fields got added, so is omitted too
-        (struct_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field)))
+        (union_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field)))
     });
 
-    cfg.volatile_item(|i| {
-        use ctest_old::VolatileItemKind::*;
-        match i {
-            // aio_buf is a volatile void** but since we cannot express that in
-            // Rust types, we have to explicitly tell the checker about it here:
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
-            _ => false,
-        }
-    });
+    cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
 
-    cfg.skip_field(move |struct_, field| {
+    cfg.skip_struct_field(move |struct_, field| {
+        let struct_ = struct_.ident();
+        let field = field.ident();
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
         (struct_ == "siginfo_t" && field == "_pad") ||
@@ -4848,7 +4875,7 @@ fn test_linux(target: &str) {
         _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 
     test_linux_like_apis(target);
 }
@@ -4864,144 +4891,138 @@ fn test_linux_like_apis(target: &str) {
     let android = target.contains("android");
     assert!(linux || android || emscripten);
 
+    let mut cfg = ctest_cfg();
     if linux || android || emscripten {
         // test strerror_r from the `string.h` header
-        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
-        cfg.skip_type(|_| true).skip_static(|_| true);
-
         headers! { cfg: "string.h" }
-        cfg.skip_fn(|f| match f {
-            "strerror_r" => false,
-            _ => true,
-        })
-        .skip_const(|_| true)
-        .skip_struct(|_| true);
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_strerror_r.rs");
+
+        cfg.skip_alias(|_| true)
+            .skip_static(|_| true)
+            .skip_const(|_| true)
+            .skip_struct(|_| true)
+            .skip_union(|_| true)
+            .skip_fn(|function| function.ident() != "strerror_r");
+
+        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_strerror_r.rs").unwrap();
     }
 
+    let mut cfg = ctest_cfg();
     if linux || android || emscripten {
         // test fcntl - see:
         // http://man7.org/linux/man-pages/man2/fcntl.2.html
-        let mut cfg = ctest_old_cfg();
-        config_gnu_bits(target, &mut cfg);
+        let fnctl_constants = [
+            "F_CANCELLK",
+            "F_ADD_SEALS",
+            "F_GET_SEALS",
+            "F_SEAL_SEAL",
+            "F_SEAL_SHRINK",
+            "F_SEAL_GROW",
+            "F_SEAL_WRITE",
+        ];
+        cfg.skip_alias(|_| true)
+            .skip_static(|_| true)
+            .skip_struct(|_| true)
+            .skip_union(|_| true)
+            .skip_fn(|_| true)
+            .skip_const(move |constant| !fnctl_constants.contains(&constant.ident()));
 
+        config_gnu_bits(target, &mut cfg);
         if musl {
             cfg.header("fcntl.h");
         } else {
             cfg.header("linux/fcntl.h");
         }
 
-        cfg.skip_type(|_| true)
-            .skip_static(|_| true)
-            .skip_struct(|_| true)
-            .skip_fn(|_| true)
-            .skip_const(move |name| match name {
-                // test fcntl constants:
-                "F_CANCELLK" | "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK"
-                | "F_SEAL_GROW" | "F_SEAL_WRITE" => false,
-                _ => true,
-            })
-            .type_name(move |ty, is_struct, is_union| match ty {
-                t if is_struct => format!("struct {t}"),
-                t if is_union => format!("union {t}"),
-                t => t.to_string(),
-            });
-
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_fcntl.rs");
+        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_fcntl.rs").unwrap();
     }
 
+    let mut cfg = ctest_cfg();
     if (linux && !wali) || android {
         // test termios
-        let mut cfg = ctest_old_cfg();
         config_gnu_bits(target, &mut cfg);
-        cfg.header("asm/termbits.h");
-        cfg.header("linux/termios.h");
-        cfg.skip_type(|_| true)
+
+        let termios_constants = [
+            "BOTHER", "IBSHIFT", "TCGETS2", "TCSETS2", "TCSETSW2", "TCSETSF2",
+        ];
+        cfg.header("asm/termbits.h")
+            .header("linux/termios.h")
+            .skip_alias(|_| true)
             .skip_static(|_| true)
             .skip_fn(|_| true)
-            .skip_const(|c| match c {
-                "BOTHER" | "IBSHIFT" => false,
-                "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => false,
-                _ => true,
-            })
-            .skip_struct(|s| s != "termios2")
-            .type_name(move |ty, is_struct, is_union| match ty {
-                "Ioctl" if gnu => "unsigned long".to_string(),
-                "Ioctl" => "int".to_string(),
-                t if is_struct => format!("struct {t}"),
-                t if is_union => format!("union {t}"),
-                t => t.to_string(),
+            .skip_const(move |constant| !termios_constants.contains(&constant.ident()))
+            .skip_union(|_| true)
+            .skip_struct(|s| s.ident() != "termios2")
+            .rename_type(move |ty| match ty {
+                "Ioctl" if gnu => Some("unsigned long".to_string()),
+                "Ioctl" => Some("int".to_string()),
+                _ => None,
             });
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_termios.rs");
+
+        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_termios.rs").unwrap();
     }
 
+    let mut cfg = ctest_cfg();
     if linux || android {
         // test IPV6_ constants:
-        let mut cfg = ctest_old_cfg();
+        let ipv6_constants = [
+            "IPV6_FLOWINFO",
+            "IPV6_FLOWLABEL_MGR",
+            "IPV6_FLOWINFO_SEND",
+            "IPV6_FLOWINFO_FLOWLABEL",
+            "IPV6_FLOWINFO_PRIORITY",
+        ];
+        cfg.skip_alias(|_| true)
+            .skip_static(|_| true)
+            .skip_fn(|_| true)
+            .skip_struct(|_| true)
+            .skip_union(|_| true)
+            .skip_const(move |constant| !ipv6_constants.contains(&constant.ident()));
+
         config_gnu_bits(target, &mut cfg);
         headers! {
             cfg:
             "linux/in6.h"
         }
-        cfg.skip_type(|_| true)
-            .skip_static(|_| true)
-            .skip_fn(|_| true)
-            .skip_const(|_| true)
-            .skip_struct(|_| true)
-            .skip_const(move |name| match name {
-                "IPV6_FLOWINFO"
-                | "IPV6_FLOWLABEL_MGR"
-                | "IPV6_FLOWINFO_SEND"
-                | "IPV6_FLOWINFO_FLOWLABEL"
-                | "IPV6_FLOWINFO_PRIORITY" => false,
-                _ => true,
-            })
-            .type_name(move |ty, is_struct, is_union| match ty {
-                t if is_struct => format!("struct {t}"),
-                t if is_union => format!("union {t}"),
-                t => t.to_string(),
-            });
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_ipv6.rs");
+
+        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_ipv6.rs").unwrap();
     }
 
+    let mut cfg = ctest_cfg();
     if (linux && !wali) || android {
         // Test Elf64_Phdr and Elf32_Phdr
         // These types have a field called `p_type`, but including
         // "resolve.h" defines a `p_type` macro that expands to `__p_type`
         // making the tests for these fails when both are included.
-        let mut cfg = ctest_old_cfg();
-        config_gnu_bits(target, &mut cfg);
-        cfg.header("elf.h");
-        cfg.skip_fn(|_| true)
+        let elf_structs = ["Elf64_Phdr", "Elf32_Phdr"];
+        cfg.header("elf.h")
+            .skip_fn(|_| true)
             .skip_static(|_| true)
             .skip_const(|_| true)
-            .type_name(move |ty, _is_struct, _is_union| ty.to_string())
-            .skip_struct(move |ty| match ty {
-                "Elf64_Phdr" | "Elf32_Phdr" => false,
-                _ => true,
-            })
-            .skip_type(move |ty| match ty {
-                "Elf64_Phdr" | "Elf32_Phdr" => false,
-                _ => true,
-            });
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_elf.rs");
+            .skip_union(|_| true)
+            .rename_struct_ty(move |ty| Some(ty.to_string()))
+            .skip_struct(move |struct_| !elf_structs.contains(&struct_.ident()))
+            .skip_alias(move |alias| !elf_structs.contains(&alias.ident()));
+
+        config_gnu_bits(target, &mut cfg);
+
+        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_elf.rs").unwrap();
     }
 
     if (linux && !wali) || android {
         // Test `ARPHRD_CAN`.
-        let mut cfg = ctest_old_cfg();
+        let mut cfg = ctest_cfg();
         config_gnu_bits(target, &mut cfg);
-        cfg.header("linux/if_arp.h");
-        cfg.skip_fn(|_| true)
+        cfg.header("linux/if_arp.h")
+            .skip_fn(|_| true)
             .skip_static(|_| true)
-            .skip_const(move |name| match name {
-                "ARPHRD_CAN" => false,
-                _ => true,
-            })
+            .skip_union(|_| true)
             .skip_struct(|_| true)
-            .skip_type(|_| true);
-        cfg.generate(src_hotfix_dir().join("lib.rs"), "linux_if_arp.rs");
+            .skip_union(|_| true)
+            .skip_alias(|_| true)
+            .skip_const(move |constant| constant.ident() != "ARPHRD_CAN");
+
+        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_if_arp.rs").unwrap();
     }
 }
 
