@@ -2482,6 +2482,7 @@ pub const EM_XTENSA: u16 = 94;
 pub const EM_AARCH64: u16 = 183;
 pub const EM_TILEPRO: u16 = 188;
 pub const EM_TILEGX: u16 = 191;
+pub const EM_RISCV: u16 = 243;
 pub const EM_ALPHA: u16 = 0x9026;
 
 // elf.h - Legal values for e_version (version).
