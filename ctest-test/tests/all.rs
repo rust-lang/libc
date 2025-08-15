@@ -58,6 +58,9 @@ fn t2() {
         "bad T2Union size",
         "bad field type b of T2Union",
         "bad field offset b of T2Union",
+        "bad enum_wrong_signedness signed",
+        "bad enum_repr_too_small size",
+        "bad enum_repr_too_small align",
     ];
     let mut errors = errors.iter().cloned().collect::<HashSet<_>>();
 

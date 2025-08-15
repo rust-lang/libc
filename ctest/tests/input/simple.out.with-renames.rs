@@ -91,6 +91,84 @@ mod generated_tests {
         check_same(r_val, c_val, "const B string");
     }
 
+    // Test that the value of the constant is the same in both Rust and C.
+    // This performs a byte by byte comparison of the constant value.
+    pub fn ctest_const_RED() {
+        type T = Color;
+        extern "C" {
+            fn ctest_const__RED() -> *const T;
+        }
+
+        /* HACK: The slices may contain uninitialized data! We do this because
+         * there isn't a good way to recursively iterate all fields. */
+
+        let r_val: T = RED;
+        let r_bytes = unsafe {
+            slice::from_raw_parts(ptr::from_ref(&r_val).cast::<u8>(), size_of::<T>())
+        };
+
+        let c_bytes = unsafe {
+            let c_ptr: *const T = ctest_const__RED();
+            slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
+        };
+
+        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
+            check_same_hex(b1, b2, &format!("RED value at byte {}", i));
+        }
+    }
+
+    // Test that the value of the constant is the same in both Rust and C.
+    // This performs a byte by byte comparison of the constant value.
+    pub fn ctest_const_BLUE() {
+        type T = Color;
+        extern "C" {
+            fn ctest_const__BLUE() -> *const T;
+        }
+
+        /* HACK: The slices may contain uninitialized data! We do this because
+         * there isn't a good way to recursively iterate all fields. */
+
+        let r_val: T = BLUE;
+        let r_bytes = unsafe {
+            slice::from_raw_parts(ptr::from_ref(&r_val).cast::<u8>(), size_of::<T>())
+        };
+
+        let c_bytes = unsafe {
+            let c_ptr: *const T = ctest_const__BLUE();
+            slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
+        };
+
+        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
+            check_same_hex(b1, b2, &format!("BLUE value at byte {}", i));
+        }
+    }
+
+    // Test that the value of the constant is the same in both Rust and C.
+    // This performs a byte by byte comparison of the constant value.
+    pub fn ctest_const_GREEN() {
+        type T = Color;
+        extern "C" {
+            fn ctest_const__GREEN() -> *const T;
+        }
+
+        /* HACK: The slices may contain uninitialized data! We do this because
+         * there isn't a good way to recursively iterate all fields. */
+
+        let r_val: T = GREEN;
+        let r_bytes = unsafe {
+            slice::from_raw_parts(ptr::from_ref(&r_val).cast::<u8>(), size_of::<T>())
+        };
+
+        let c_bytes = unsafe {
+            let c_ptr: *const T = ctest_const__GREEN();
+            slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
+        };
+
+        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
+            check_same_hex(b1, b2, &format!("GREEN value at byte {}", i));
+        }
+    }
+
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_Byte() {
         extern "C" {
@@ -106,6 +184,23 @@ mod generated_tests {
 
         check_same(rust_size, c_size, "Byte size");
         check_same(rust_align, c_align, "Byte align");
+    }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_Color() {
+        extern "C" {
+            fn ctest_size_of__Color() -> u64;
+            fn ctest_align_of__Color() -> u64;
+        }
+
+        let rust_size = size_of::<Color>() as u64;
+        let c_size = unsafe { ctest_size_of__Color() };
+
+        let rust_align = align_of::<Color>() as u64;
+        let c_align = unsafe { ctest_align_of__Color() };
+
+        check_same(rust_size, c_size, "Color size");
+        check_same(rust_align, c_align, "Color align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -497,6 +592,116 @@ mod generated_tests {
     /// For aliases we assume that there are no padding bytes, for structs and unions,
     /// if there are no fields, then everything is padding, if there are fields, then we have to
     /// go through each field and figure out the padding.
+    fn roundtrip_padding__Color() -> Vec<bool> {
+        if 0 == 0 {
+            // FIXME(ctest): What if it's an alias to a struct/union?
+            return vec![!true; size_of::<Color>()]
+        }
+
+        // If there are no fields, v and bar become unused.
+        #[allow(unused_mut)]
+        let mut v = Vec::<(usize, usize)>::new();
+        #[allow(unused_variables)]
+        let bar = MaybeUninit::<Color>::zeroed();
+        #[allow(unused_variables)]
+        let bar = bar.as_ptr();
+        // This vector contains `true` if the byte is padding and `false` if the byte is not
+        // padding. Initialize all bytes as:
+        //  - padding if we have fields, this means that only the fields will be checked
+        //  - no-padding if we have a type alias: if this causes problems the type alias should
+        //    be skipped
+        let mut is_padding_byte = vec![true; size_of::<Color>()];
+        for (off, size) in &v {
+            for i in 0..*size {
+                is_padding_byte[off + i] = false;
+            }
+        }
+        is_padding_byte
+    }
+
+    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
+    ///
+    /// It checks if the size is the same as well as if the padding bytes are all in the
+    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    pub fn ctest_roundtrip_Color() {
+        type U = Color;
+        extern "C" {
+            fn ctest_size_of__Color() -> u64;
+            fn ctest_roundtrip__Color(
+                input: MaybeUninit<U>, is_padding_byte: *const bool, value_bytes: *mut u8
+            ) -> U;
+        }
+
+        const SIZE: usize = size_of::<U>();
+
+        let is_padding_byte = roundtrip_padding__Color();
+        let mut expected = vec![0u8; SIZE];
+        let mut input = MaybeUninit::<U>::zeroed();
+
+        let input_ptr = input.as_mut_ptr().cast::<u8>();
+
+        // Fill the uninitialized memory with a deterministic pattern.
+        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
+        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        for i in 0..SIZE {
+            let c: u8 = (i % 256) as u8;
+            let c = if c == 0 { 42 } else { c };
+            let d: u8 = 255_u8 - (i % 256) as u8;
+            let d = if d == 0 { 42 } else { d };
+            unsafe {
+                input_ptr.add(i).write_volatile(c);
+                expected[i] = d;
+            }
+        }
+
+        let c_size = unsafe { ctest_size_of__Color() } as usize;
+        if SIZE != c_size {
+            FAILED.store(true, Ordering::Relaxed);
+            eprintln!(
+                "size of enum Color is {c_size} in C and {SIZE} in Rust\n",
+            );
+            return;
+        }
+
+        let mut c_value_bytes = vec![0; size_of::<Color>()];
+        let r: U = unsafe {
+            ctest_roundtrip__Color(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
+        };
+
+        // Check that the value bytes as read from C match the byte we sent from Rust.
+        for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
+            if *is_padding_byte { continue; }
+            let rust = unsafe { *input_ptr.add(i) };
+            let c = c_value_bytes[i];
+            if rust != c {
+                eprintln!("rust[{}] = {} != {} (C): Rust \"Color\" -> C", i, rust, c);
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+
+        // Check that value returned from C contains the bytes we expect.
+        for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
+            if *is_padding_byte { continue; }
+            let rust = expected[i] as usize;
+            let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
+            if rust != c {
+                eprintln!(
+                    "rust [{i}] = {rust} != {c} (C): C \"Color\" -> Rust",
+                );
+                FAILED.store(true, Ordering::Relaxed);
+            }
+        }
+    }
+
+    /// Generates a padding map for a specific type.
+    ///
+    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
+    /// and `false` if the byte is not padding.
+    ///
+    /// For aliases we assume that there are no padding bytes, for structs and unions,
+    /// if there are no fields, then everything is padding, if there are fields, then we have to
+    /// go through each field and figure out the padding.
     fn roundtrip_padding__Person() -> Vec<bool> {
         if 3 == 0 {
             // FIXME(ctest): What if it's an alias to a struct/union?
@@ -785,7 +990,11 @@ fn main() {
 fn run_all() {
     ctest_const_cstr_A();
     ctest_const_cstr_B();
+    ctest_const_RED();
+    ctest_const_BLUE();
+    ctest_const_GREEN();
     ctest_size_align_Byte();
+    ctest_size_align_Color();
     ctest_size_align_Person();
     ctest_size_align_Word();
     ctest_signededness_Byte();
@@ -800,6 +1009,7 @@ fn run_all() {
     ctest_field_ptr_Word_word();
     ctest_field_ptr_Word_byte();
     ctest_roundtrip_Byte();
+    ctest_roundtrip_Color();
     ctest_roundtrip_Person();
     ctest_roundtrip_Word();
     ctest_foreign_fn_calloc();

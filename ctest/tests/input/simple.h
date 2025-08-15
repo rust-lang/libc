@@ -20,5 +20,12 @@ union Word
 #define A "abc"
 #define C_B "bac"
 
+enum Color
+{
+    RED,
+    BLUE,
+    GREEN
+};
+
 extern void *calloc(size_t num, size_t size);
 extern Byte byte;
