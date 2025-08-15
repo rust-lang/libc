@@ -92,6 +92,7 @@ fn test_skip_simple() {
 
     let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
     gen_.skip_const(|c| c.ident() == "B" || c.ident() == "A")
+        .skip_c_enum(|e| e == "Color")
         .skip_alias(|a| a.ident() == "Byte")
         .skip_struct(|s| s.ident() == "Person")
         .skip_union(|u| u.ident() == "Word")
@@ -108,7 +109,9 @@ fn test_map_simple() {
     let library_path = "simple.out.with-renames.a";
 
     let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
-    gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()));
+    gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()))
+        .alias_is_c_enum(|e| e == "Color")
+        .skip_signededness(|ty| ty == "Color");
 
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }

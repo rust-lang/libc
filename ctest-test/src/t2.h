@@ -21,3 +21,11 @@ static void T2a(void) {}
 
 #define T2C 4
 #define T2S "a"
+
+enum enum_repr_too_small {
+    ENUM_REPR_TOO_SMALL_A
+};
+
+enum enum_wrong_signedness {
+    ENUM_WRONG_SIGNEDNESS_A
+};

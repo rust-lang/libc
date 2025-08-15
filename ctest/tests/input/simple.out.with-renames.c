@@ -25,11 +25,41 @@ char *ctest_const_cstr__B(void) {
     return ctest_const_B_val_static;
 }
 
+static enum Color ctest_const_RED_val_static = RED;
+
+// Define a function that returns a pointer to the value of the constant to test.
+// This will later be called on the Rust side via FFI.
+enum Color *ctest_const__RED(void) {
+    return &ctest_const_RED_val_static;
+}
+
+static enum Color ctest_const_BLUE_val_static = BLUE;
+
+// Define a function that returns a pointer to the value of the constant to test.
+// This will later be called on the Rust side via FFI.
+enum Color *ctest_const__BLUE(void) {
+    return &ctest_const_BLUE_val_static;
+}
+
+static enum Color ctest_const_GREEN_val_static = GREEN;
+
+// Define a function that returns a pointer to the value of the constant to test.
+// This will later be called on the Rust side via FFI.
+enum Color *ctest_const__GREEN(void) {
+    return &ctest_const_GREEN_val_static;
+}
+
 // Return the size of a type.
 uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 
 // Return the alignment of a type.
 uint64_t ctest_align_of__Byte(void) { return _Alignof(Byte); }
+
+// Return the size of a type.
+uint64_t ctest_size_of__Color(void) { return sizeof(enum Color); }
+
+// Return the alignment of a type.
+uint64_t ctest_align_of__Color(void) { return _Alignof(enum Color); }
 
 // Return the size of a type.
 uint64_t ctest_size_of__Person(void) { return sizeof(struct Person); }
@@ -160,6 +190,33 @@ Byte ctest_roundtrip__Byte(
     uint8_t value_bytes[sizeof(Byte)]
 ) {
     int size = (int)sizeof(Byte);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+enum Color ctest_roundtrip__Color(
+    enum Color value,
+    const uint8_t is_padding_byte[sizeof(enum Color)],
+    uint8_t value_bytes[sizeof(enum Color)]
+) {
+    int size = (int)sizeof(enum Color);
     // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
     // Otherwise the Rust side would not be able to see it.
     volatile uint8_t* p = (volatile uint8_t*)&value;

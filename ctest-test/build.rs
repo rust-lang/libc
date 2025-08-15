@@ -42,6 +42,7 @@ fn test_ctest() {
         // public C typedefs have to manually be specified because they are identical to normal
         // structs on the Rust side.
         .rename_union_ty(|ty| (ty == "T2Union").then_some(ty.to_string()))
+        .alias_is_c_enum(|e| e == "enum_repr_too_small" || e == "enum_wrong_signedness")
         .skip_roundtrip(|_| true);
     ctest::generate_test(&mut t2gen, "src/t2.rs", "t2gen.rs").unwrap();
 }

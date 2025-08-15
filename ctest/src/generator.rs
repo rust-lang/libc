@@ -26,6 +26,8 @@ type VolatileItem = Box<dyn Fn(VolatileItemKind) -> bool>;
 type ArrayArg = Box<dyn Fn(crate::Fn, Parameter) -> bool>;
 /// A function that determines whether to skip a test, taking in the identifier name.
 type SkipTest = Box<dyn Fn(&str) -> bool>;
+/// A function that determines whether a type alias is a c enum.
+type CEnum = Box<dyn Fn(&str) -> bool>;
 
 /// A builder used to generate a test suite.
 #[derive(Default)]
@@ -42,6 +44,7 @@ pub struct TestGenerator {
     pub(crate) skips: Vec<Skip>,
     pub(crate) verbose_skip: bool,
     pub(crate) volatile_items: Vec<VolatileItem>,
+    pub(crate) c_enums: Vec<CEnum>,
     pub(crate) array_arg: Option<ArrayArg>,
     pub(crate) skip_private: bool,
     pub(crate) skip_roundtrip: Option<SkipTest>,
@@ -203,6 +206,20 @@ impl TestGenerator {
     /// ```
     pub fn verbose_skip(&mut self, skip: bool) -> &mut Self {
         self.verbose_skip = skip;
+        self
+    }
+
+    /// Indicate that a type alias is actually a C enum.
+    ///
+    /// # Examples
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.alias_is_c_enum(|e| e == "pid_type");
+    /// ```
+    pub fn alias_is_c_enum(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.c_enums.push(Box::new(f));
         self
     }
 
@@ -509,6 +526,30 @@ impl TestGenerator {
         self.skips.push(Box::new(move |item| {
             if let MapInput::Fn(func) = item {
                 f(func)
+            } else {
+                false
+            }
+        }));
+        self
+    }
+
+    /// Configures whether tests for a C enum are generated.
+    ///
+    /// A C enum consists of a type alias, as well as constants that have the same type. Tests
+    /// for both the alias as well as the constants are skipped.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_c_enum(|e| e == "pid_type");
+    /// ```
+    pub fn skip_c_enum(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.skips.push(Box::new(move |item| {
+            if let MapInput::CEnumType(e) = item {
+                f(e)
             } else {
                 false
             }
@@ -976,6 +1017,7 @@ impl TestGenerator {
             MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
             MapInput::UnionType(ty) => format!("union {ty}"),
+            MapInput::CEnumType(ty) => format!("enum {ty}"),
             MapInput::StructFieldType(_, f) => f.ident().to_string(),
             MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => translate_primitive_type(ty),
