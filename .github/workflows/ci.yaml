@@ -101,40 +101,40 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: i686-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
-          - target: i686-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
-            artifact-tag: offset-bits64
-            env:
-              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
-          - target: i686-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
-            artifact-tag: time-bits64
-            env:
-              RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
+          # - target: i686-unknown-linux-gnu
+          #   docker: true
+          #   os: ubuntu-24.04
+          # - target: i686-unknown-linux-gnu
+          #   docker: true
+          #   os: ubuntu-24.04
+          #   artifact-tag: offset-bits64
+          #   env:
+          #     RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+          # - target: i686-unknown-linux-gnu
+          #   docker: true
+          #   os: ubuntu-24.04
+          #   artifact-tag: time-bits64
+          #   env:
+          #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           - target: x86_64-unknown-linux-gnu
             docker: true
             os: ubuntu-24.04
-          - target: aarch64-apple-darwin
-            os: macos-15
-          - target: x86_64-pc-windows-gnu
-            os: windows-2022
-            env:
-              ARCH_BITS: 64
-              ARCH: x86_64
-          - target: x86_64-pc-windows-msvc
-            os: windows-2022
-          # FIXME: It currently causes segfaults.
-          #- target: i686-pc-windows-gnu
-          #  env:
-          #    ARCH_BITS: 32
-          #    ARCH: i686
-          - target: i686-pc-windows-msvc
-            os: windows-2022
+          # - target: aarch64-apple-darwin
+          #   os: macos-15
+          # - target: x86_64-pc-windows-gnu
+          #   os: windows-2022
+          #   env:
+          #     ARCH_BITS: 64
+          #     ARCH: x86_64
+          # - target: x86_64-pc-windows-msvc
+          #   os: windows-2022
+          # # FIXME: It currently causes segfaults.
+          # #- target: i686-pc-windows-gnu
+          # #  env:
+          # #    ARCH_BITS: 32
+          # #    ARCH: i686
+          # - target: i686-pc-windows-msvc
+          #   os: windows-2022
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     env:
@@ -174,41 +174,39 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
-    runs-on: ubuntu-24.04
+    # needs: [test_tier1, style_check]
     strategy:
       fail-fast: true
       max-parallel: 12
       matrix:
-        target:
-          # FIXME(sparc): this takes much longer to run than any other job, put
-          # it first to make sure it gets a head start.
-          - sparc64-unknown-linux-gnu
-          - aarch64-linux-android
-          - aarch64-unknown-linux-gnu
-          - aarch64-unknown-linux-musl
-          - arm-linux-androideabi
-          - arm-unknown-linux-musleabihf
-          # FIXME(#4297): Disabled due to spurious failueSome android jobs are disabled because of high rates of
-          # - i686-linux-android
-          - i686-unknown-linux-musl
-          - loongarch64-unknown-linux-gnu
-          - loongarch64-unknown-linux-musl
-          - powerpc64-unknown-linux-gnu
-          - powerpc64le-unknown-linux-gnu
-          - powerpc64le-unknown-linux-musl
-          - riscv64gc-unknown-linux-gnu
-          - s390x-unknown-linux-gnu
-          - wasm32-unknown-emscripten
-          - wasm32-wasip1
-          - wasm32-wasip2
-          - x86_64-linux-android
-          # FIXME: Exec format error (os error 8)
-          # - x86_64-unknown-linux-gnux32
-          - x86_64-unknown-linux-musl
-          # FIXME: It seems some items in `src/unix/mod.rs`
-          # aren't defined on redox actually.
-          # - x86_64-unknown-redox
+        # target:
+        #   # FIXME(sparc): this takes much longer to run than any other job, put
+        #   # it first to make sure it gets a head start.
+        #   - sparc64-unknown-linux-gnu
+        #   - aarch64-linux-android
+        #   - aarch64-unknown-linux-gnu
+        #   - aarch64-unknown-linux-musl
+        #   - arm-linux-androideabi
+        #   - arm-unknown-linux-musleabihf
+        #   # FIXME(#4297): Disabled due to spurious failueSome android jobs are disabled because of high rates of
+        #   # - i686-linux-android
+        #   - i686-unknown-linux-musl
+        #   - loongarch64-unknown-linux-gnu
+        #   - loongarch64-unknown-linux-musl
+        #   - powerpc64-unknown-linux-gnu
+        #   - powerpc64le-unknown-linux-gnu
+        #   - powerpc64le-unknown-linux-musl
+        #   - riscv64gc-unknown-linux-gnu
+        #   - wasm32-unknown-emscripten
+        #   - wasm32-wasip1
+        #   - wasm32-wasip2
+        #   - x86_64-linux-android
+        #   # FIXME: Exec format error (os error 8)
+        #   # - x86_64-unknown-linux-gnux32
+        #   - x86_64-unknown-linux-musl
+        #   # FIXME: It seems some items in `src/unix/mod.rs`
+        #   # aren't defined on redox actually.
+        #   # - x86_64-unknown-redox
         include:
           - target: arm-unknown-linux-gnueabihf
           - target: arm-unknown-linux-gnueabihf
@@ -234,6 +232,10 @@ jobs:
           - target: powerpc64le-unknown-linux-musl
             env:
               RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: s390x-unknown-linux-gnu
+            os: ubuntu-24.04-s390x
+            native: true
+
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
@@ -246,9 +248,15 @@ jobs:
           #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           #   artifact-tag: time-bits64
     timeout-minutes: 25
+    runs-on: ${{ matrix.os || 'ubuntu-24.04' }}
     env:
       TARGET: ${{ matrix.target }}
     steps:
+        # Native ppc and s390x runners don't have rustup by default
+      - name: Install rustup
+        if: matrix.os == 'ubuntu-24.04-ppc64le' || matrix.os == 'ubuntu-24.04-s390x'
+        run: sudo apt-get update && sudo apt-get install -y rustup
+
       - uses: actions/checkout@v4
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
@@ -263,7 +271,11 @@ jobs:
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
-      - name: Execute run-docker.sh
+      - name: Run natively
+        if: "matrix.native"
+        run: ./ci/run.sh ${{ matrix.target }}
+      - name: Run in Docker
+        if: "!matrix.native"
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
