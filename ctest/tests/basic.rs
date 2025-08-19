@@ -36,7 +36,10 @@ fn bless_equal(new_file: impl AsRef<Path>, old_file: impl AsRef<Path>) {
     }
     let old_content = fs::read_to_string(&old_file).unwrap().replace("\r", "");
 
-    assert_eq!(new_content, old_content);
+    assert_eq!(
+        new_content, old_content,
+        "the template file has changed. Please run the tests with `LIBCBLESS=1`."
+    );
 }
 
 /// Generate test files for the given header and crate path and compare with pregenerated test files.
@@ -74,6 +77,7 @@ fn check_entrypoint(
     }
 }
 
+/// Test if a hierarchy of modules generates tests properly.
 #[test]
 fn test_entrypoint_hierarchy() {
     let include_path = PathBuf::from("tests/input");
@@ -84,6 +88,7 @@ fn test_entrypoint_hierarchy() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if every type can be skipped.
 #[test]
 fn test_skip_simple() {
     let include_path = PathBuf::from("tests/input");
@@ -102,6 +107,7 @@ fn test_skip_simple() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if a type can be renamed.
 #[test]
 fn test_map_simple() {
     let include_path = PathBuf::from("tests/input");
@@ -116,6 +122,7 @@ fn test_map_simple() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if macros are expanded properly.
 #[test]
 fn test_entrypoint_macro() {
     let include_path = PathBuf::from("tests/input");
@@ -126,6 +133,7 @@ fn test_entrypoint_macro() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if a file with invalid syntax fails to generate tests.
 #[test]
 fn test_entrypoint_invalid_syntax() {
     let crate_path = "tests/input/invalid_syntax.rs";

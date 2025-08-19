@@ -2,8 +2,7 @@
 
 use std::fmt::Write;
 
-type BoxStr = Box<str>;
-
+/// The constness of a C type.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Constness {
     Const,
@@ -12,6 +11,8 @@ pub(crate) enum Constness {
 
 #[cfg_attr(not(test), expect(unused_imports))]
 use Constness::{Const, Mut};
+
+use crate::BoxStr;
 
 /// A basic representation of C's types.
 #[derive(Clone, Debug)]
@@ -175,6 +176,7 @@ fn space_if(yes: bool, s: &mut String) {
     }
 }
 
+/// Create a named type with a certain constness.
 pub(crate) fn named(name: &str, constness: Constness) -> CTy {
     CTy::Named {
         name: name.into(),
@@ -186,6 +188,7 @@ pub(crate) fn named(name: &str, constness: Constness) -> CTy {
     }
 }
 
+/// Create a named type with certain qualifiers.
 #[cfg_attr(not(test), expect(unused))]
 pub(crate) fn named_qual(name: &str, qual: Qual) -> CTy {
     CTy::Named {
@@ -194,6 +197,7 @@ pub(crate) fn named_qual(name: &str, qual: Qual) -> CTy {
     }
 }
 
+/// Create a pointer to a type, specifying constness of the pointer.
 pub(crate) fn ptr(inner: CTy, constness: Constness) -> CTy {
     ptr_qual(
         inner,
@@ -205,6 +209,7 @@ pub(crate) fn ptr(inner: CTy, constness: Constness) -> CTy {
     )
 }
 
+/// Create a pointer to a type, specifying the qualifiers of the pointer.
 pub(crate) fn ptr_qual(inner: CTy, qual: Qual) -> CTy {
     CTy::Ptr {
         ty: Box::new(inner),
@@ -212,6 +217,7 @@ pub(crate) fn ptr_qual(inner: CTy, qual: Qual) -> CTy {
     }
 }
 
+/// Create an array of some type and optional length.
 pub(crate) fn array(inner: CTy, len: Option<&str>) -> CTy {
     CTy::Array {
         ty: Box::new(inner),
@@ -219,7 +225,7 @@ pub(crate) fn array(inner: CTy, len: Option<&str>) -> CTy {
     }
 }
 
-/// Function type (not a pointer)
+/// Create a function type (not a pointer) with the given arguments and return type.
 #[cfg_attr(not(test), expect(unused))]
 pub(crate) fn func(args: Vec<CTy>, ret: CTy) -> CTy {
     CTy::Fn {
@@ -228,7 +234,9 @@ pub(crate) fn func(args: Vec<CTy>, ret: CTy) -> CTy {
     }
 }
 
-/// Function pointer
+/// Create a function pointer with the given arguments and return type.
+///
+/// By default the function pointer is mutable, with `volatile` and `restrict` keywords not applied.
 pub(crate) fn func_ptr(args: Vec<CTy>, ret: CTy) -> CTy {
     CTy::Ptr {
         ty: Box::new(CTy::Fn {

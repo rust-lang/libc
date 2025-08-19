@@ -1,3 +1,5 @@
+//! Configuration of the test generator.
+
 use std::env;
 use std::fs::File;
 use std::io::Write;
@@ -15,8 +17,8 @@ use crate::{
     VolatileItemKind, expand,
 };
 
-/// A function that takes a mappable input and returns its mapping as Some, otherwise
-/// use the default name if None.
+/// A function that takes a mappable input and returns its mapping as `Some`, otherwise
+/// use the default name if `None`.
 type MappedName = Box<dyn Fn(&MapInput) -> Option<String>>;
 /// A function that determines whether to skip an item or not.
 type Skip = Box<dyn Fn(&MapInput) -> bool>;
@@ -52,16 +54,22 @@ pub struct TestGenerator {
     pub(crate) skip_fn_ptrcheck: Option<SkipTest>,
 }
 
+/// An error that occurs when generating the test files.
 #[derive(Debug, Error)]
 pub enum GenerationError {
+    /// An error that occurs when `rustc -Zunpretty=expand` fails to expand the crate.
     #[error("unable to expand crate {0}: {1}")]
     MacroExpansion(PathBuf, String),
+    /// An error that occurs when `syn` is unable to parse the expanded crate due to invalid syntax.
     #[error("unable to parse expanded crate {0}: {1}")]
     RustSyntax(String, String),
+    /// An error that occurs when the Rust to C translation fails.
     #[error("unable to prepare template input: {0}")]
     Translation(#[from] TranslationError),
+    /// An error that occurs when there are errors in the Rust side of the test template.
     #[error("unable to render Rust template: {0}")]
     RustTemplateRender(askama::Error),
+    /// An error that occurs when there are errors in the C side of the test template.
     #[error("unable to render C template: {0}")]
     CTemplateRender(askama::Error),
     #[error("unable to create or write template file: {0}")]
@@ -78,7 +86,7 @@ impl TestGenerator {
 
     /// Add a header to be included as part of the generated C file.
     ///
-    /// The generate C test will be compiled by a C compiler, and this can be
+    /// The generated C test will be compiled by a C compiler, and this can be
     /// used to ensure that all the necessary header files are included to test
     /// all FFI definitions.
     ///

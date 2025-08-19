@@ -31,10 +31,7 @@ impl TranslationError {
             source: source.to_string(),
             span: format!(
                 "{fname}:{line}:{col}",
-                // FIXME(ctest): Not yet stable, see:
-                // https://github.com/dtolnay/proc-macro2/issues/503
-                // fname = span.file(),
-                fname = "<unknown file>",
+                fname = span.file(),
                 line = span.start().line,
                 col = span.start().column,
             )
@@ -361,7 +358,8 @@ pub(crate) fn ptr_with_inner(
 
 /// Translate a simple Rust expression to C.
 ///
-/// This function will just pass the expression as is in most cases.
+/// This function will just pass the expression as is in most cases. In more complex cases it can
+/// convert `Type as u8 + 5` to `(uint8_t)CType + 5`.
 pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
     match expr {
         syn::Expr::Index(i) => {

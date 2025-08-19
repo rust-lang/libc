@@ -1,3 +1,5 @@
+//! Generation, compilation, and running of tests.
+
 use std::env;
 use std::fs::{File, canonicalize};
 use std::io::Write;
@@ -5,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::generator::GenerationError;
-use crate::{Result, TestGenerator};
+use crate::{EDITION, Result, TestGenerator};
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]
@@ -122,10 +124,9 @@ pub fn __compile_test(
         .arg(format!("-Lnative={}", output_dir.display()))
         .arg(format!("-lstatic={}", library_file.to_str().unwrap()))
         .arg("--edition")
-        .arg("2021") // Defaults to 2015.
+        .arg(EDITION) // Defaults to 2015.
         .arg("-o")
-        .arg(&binary_path)
-        .arg("-Aunused");
+        .arg(&binary_path);
 
     // Pass in a different target, linker or flags if set, useful for cross compilation.
 
