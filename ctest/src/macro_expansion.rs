@@ -3,7 +3,7 @@ use std::fs::canonicalize;
 use std::path::Path;
 use std::process::Command;
 
-use crate::Result;
+use crate::{EDITION, Result};
 
 /// Use rustc to expand all macros and pretty print the crate into a single file.
 pub fn expand<P: AsRef<Path>>(crate_path: P, cfg: &[(String, Option<String>)]) -> Result<String> {
@@ -13,7 +13,7 @@ pub fn expand<P: AsRef<Path>>(crate_path: P, cfg: &[(String, Option<String>)]) -
     cmd.env("RUSTC_BOOTSTRAP", "1")
         .arg("-Zunpretty=expanded")
         .arg("--edition")
-        .arg("2021") // By default, -Zunpretty=expanded uses 2015 edition.
+        .arg(EDITION) // By default, -Zunpretty=expanded uses 2015 edition.
         .arg(canonicalize(crate_path)?);
 
     // `libc` uses non standard cfg flags as well, which have to be manually expanded.

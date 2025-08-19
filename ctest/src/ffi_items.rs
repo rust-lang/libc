@@ -1,3 +1,5 @@
+//! Conversion of Rust code to a simplified abstract syntax tree.
+
 use std::ops::Deref;
 
 use syn::punctuated::Punctuated;
@@ -208,14 +210,8 @@ impl<'ast> Visit<'ast> for FfiItems {
         let public = is_visible(&i.vis);
         let ident = i.ident.to_string().into_boxed_str();
         let ty = i.ty.deref().clone();
-        let expr = i.expr.deref().clone();
 
-        self.constants.push(Const {
-            public,
-            ident,
-            ty,
-            expr,
-        });
+        self.constants.push(Const { public, ident, ty });
     }
 
     fn visit_item_foreign_mod(&mut self, i: &'ast syn::ItemForeignMod) {

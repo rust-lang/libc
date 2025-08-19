@@ -2,7 +2,7 @@
 #![warn(unreachable_pub)]
 #![warn(missing_debug_implementations)]
 
-//! # ctest2 - an FFI binding validator
+//! # ctest - an FFI binding validator
 //!
 //! This library is intended to be used as a build dependency in a separate
 //! project from the main repo to generate tests which can be used to validate
@@ -32,6 +32,9 @@ pub type Error = Box<dyn std::error::Error>;
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 /// A boxed string for representing identifiers.
 type BoxStr = Box<str>;
+
+/// The edition used by rustc when expanding macros and compiling tests.
+pub(crate) const EDITION: &str = "2021";
 
 /// A kind of item to which the C volatile qualifier could apply.
 ///

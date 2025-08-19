@@ -360,6 +360,8 @@ fn main() {
 }
 
 // Run all tests by calling the functions that define them.
+// FIXME(ctest): Maybe consider running the tests in parallel, since everything is independent
+// and we already use atomics.
 fn run_all() {
     {%- for test in ctx.test_idents +%}
     {{ test }}();

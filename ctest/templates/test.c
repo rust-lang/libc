@@ -86,6 +86,7 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 // These trigger even if the conversion is explicit.
 #  pragma warning(disable:4365)
 #endif
+
 {%- for item in ctx.roundtrip_tests +%}
 
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust

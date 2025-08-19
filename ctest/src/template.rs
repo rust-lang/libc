@@ -1,3 +1,5 @@
+//! Generation of tests from templates for both Rust and C.
+
 use askama::Template;
 use proc_macro2::Span;
 use quote::ToTokens;
