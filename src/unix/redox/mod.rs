@@ -352,6 +352,8 @@ pub const F_LOCK: c_int = 1;
 pub const F_TLOCK: c_int = 2;
 pub const F_TEST: c_int = 3;
 
+pub const AT_FDCWD: c_int = -100;
+
 // FIXME(redox): relibc {
 pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
 // }
@@ -517,6 +519,7 @@ pub const O_WRONLY: c_int = 0x0002_0000;
 pub const O_RDWR: c_int = 0x0003_0000;
 pub const O_ACCMODE: c_int = 0x0003_0000;
 pub const O_NONBLOCK: c_int = 0x0004_0000;
+pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const O_APPEND: c_int = 0x0008_0000;
 pub const O_SHLOCK: c_int = 0x0010_0000;
 pub const O_EXLOCK: c_int = 0x0020_0000;
@@ -626,15 +629,6 @@ pub const PTHREAD_RWLOCK_INITIALIZER: crate::pthread_rwlock_t = crate::pthread_r
     bytes: [0; _PTHREAD_RWLOCK_SIZE],
 };
 pub const PTHREAD_STACK_MIN: size_t = 4096;
-
-// sys/resource.h
-pub const RLIM_INFINITY: u64 = !0;
-pub const RLIM_SAVED_CUR: u64 = RLIM_INFINITY;
-pub const RLIM_SAVED_MAX: u64 = RLIM_INFINITY;
-pub const RUSAGE_SELF: c_int = 0;
-pub const RUSAGE_CHILDREN: c_int = -1;
-pub const RUSAGE_BOTH: c_int = -2;
-pub const RUSAGE_THREAD: c_int = 1;
 
 // signal.h
 pub const SIG_BLOCK: c_int = 0;
@@ -773,6 +767,32 @@ pub const MAP_FAILED: *mut c_void = !0 as _;
 pub const MS_ASYNC: c_int = 0x0001;
 pub const MS_INVALIDATE: c_int = 0x0002;
 pub const MS_SYNC: c_int = 0x0004;
+
+// sys/resource.h
+pub const RLIM_INFINITY: rlim_t = !0;
+pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
+pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;
+pub const RLIMIT_CPU: c_int = 0;
+pub const RLIMIT_FSIZE: c_int = 1;
+pub const RLIMIT_DATA: c_int = 2;
+pub const RLIMIT_STACK: c_int = 3;
+pub const RLIMIT_CORE: c_int = 4;
+pub const RLIMIT_RSS: c_int = 5;
+pub const RLIMIT_NPROC: c_int = 6;
+pub const RLIMIT_NOFILE: c_int = 7;
+pub const RLIMIT_MEMLOCK: c_int = 8;
+pub const RLIMIT_AS: c_int = 9;
+pub const RLIMIT_LOCKS: c_int = 10;
+pub const RLIMIT_SIGPENDING: c_int = 11;
+pub const RLIMIT_MSGQUEUE: c_int = 12;
+pub const RLIMIT_NICE: c_int = 13;
+pub const RLIMIT_RTPRIO: c_int = 14;
+pub const RLIMIT_NLIMITS: c_int = 15;
+
+pub const RUSAGE_SELF: c_int = 0;
+pub const RUSAGE_CHILDREN: c_int = -1;
+pub const RUSAGE_BOTH: c_int = -2;
+pub const RUSAGE_THREAD: c_int = 1;
 
 // sys/select.h
 pub const FD_SETSIZE: c_int = 1024;
@@ -990,6 +1010,44 @@ pub const _SC_SYMLOOP_MAX: c_int = 173;
 // ...
 pub const _SC_HOST_NAME_MAX: c_int = 180;
 // } POSIX.1
+
+// confstr
+pub const _CS_PATH: c_int = 0;
+pub const _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS: c_int = 1;
+pub const _CS_POSIX_V5_WIDTH_RESTRICTED_ENVS: c_int = 4;
+pub const _CS_POSIX_V7_WIDTH_RESTRICTED_ENVS: c_int = 5;
+pub const _CS_POSIX_V6_ILP32_OFF32_CFLAGS: c_int = 1116;
+pub const _CS_POSIX_V6_ILP32_OFF32_LDFLAGS: c_int = 1117;
+pub const _CS_POSIX_V6_ILP32_OFF32_LIBS: c_int = 1118;
+pub const _CS_POSIX_V6_ILP32_OFF32_LINTFLAGS: c_int = 1119;
+pub const _CS_POSIX_V6_ILP32_OFFBIG_CFLAGS: c_int = 1120;
+pub const _CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS: c_int = 1121;
+pub const _CS_POSIX_V6_ILP32_OFFBIG_LIBS: c_int = 1122;
+pub const _CS_POSIX_V6_ILP32_OFFBIG_LINTFLAGS: c_int = 1123;
+pub const _CS_POSIX_V6_LP64_OFF64_CFLAGS: c_int = 1124;
+pub const _CS_POSIX_V6_LP64_OFF64_LDFLAGS: c_int = 1125;
+pub const _CS_POSIX_V6_LP64_OFF64_LIBS: c_int = 1126;
+pub const _CS_POSIX_V6_LP64_OFF64_LINTFLAGS: c_int = 1127;
+pub const _CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS: c_int = 1128;
+pub const _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS: c_int = 1129;
+pub const _CS_POSIX_V6_LPBIG_OFFBIG_LIBS: c_int = 1130;
+pub const _CS_POSIX_V6_LPBIG_OFFBIG_LINTFLAGS: c_int = 1131;
+pub const _CS_POSIX_V7_ILP32_OFF32_CFLAGS: c_int = 1132;
+pub const _CS_POSIX_V7_ILP32_OFF32_LDFLAGS: c_int = 1133;
+pub const _CS_POSIX_V7_ILP32_OFF32_LIBS: c_int = 1134;
+pub const _CS_POSIX_V7_ILP32_OFF32_LINTFLAGS: c_int = 1135;
+pub const _CS_POSIX_V7_ILP32_OFFBIG_CFLAGS: c_int = 1136;
+pub const _CS_POSIX_V7_ILP32_OFFBIG_LDFLAGS: c_int = 1137;
+pub const _CS_POSIX_V7_ILP32_OFFBIG_LIBS: c_int = 1138;
+pub const _CS_POSIX_V7_ILP32_OFFBIG_LINTFLAGS: c_int = 1139;
+pub const _CS_POSIX_V7_LP64_OFF64_CFLAGS: c_int = 1140;
+pub const _CS_POSIX_V7_LP64_OFF64_LDFLAGS: c_int = 1141;
+pub const _CS_POSIX_V7_LP64_OFF64_LIBS: c_int = 1142;
+pub const _CS_POSIX_V7_LP64_OFF64_LINTFLAGS: c_int = 1143;
+pub const _CS_POSIX_V7_LPBIG_OFFBIG_CFLAGS: c_int = 1144;
+pub const _CS_POSIX_V7_LPBIG_OFFBIG_LDFLAGS: c_int = 1145;
+pub const _CS_POSIX_V7_LPBIG_OFFBIG_LIBS: c_int = 1146;
+pub const _CS_POSIX_V7_LPBIG_OFFBIG_LINTFLAGS: c_int = 1147;
 
 pub const F_OK: c_int = 0;
 pub const R_OK: c_int = 4;
