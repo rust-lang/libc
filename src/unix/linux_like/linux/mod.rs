@@ -3597,17 +3597,27 @@ pub const PACKET_KERNEL: c_uchar = 7;
 
 pub const PACKET_ADD_MEMBERSHIP: c_int = 1;
 pub const PACKET_DROP_MEMBERSHIP: c_int = 2;
+pub const PACKET_RECV_OUTPUT: c_int = 3;
 pub const PACKET_RX_RING: c_int = 5;
 pub const PACKET_STATISTICS: c_int = 6;
+pub const PACKET_COPY_THRESH: c_int = 7;
 pub const PACKET_AUXDATA: c_int = 8;
+pub const PACKET_ORIGDEV: c_int = 9;
 pub const PACKET_VERSION: c_int = 10;
+pub const PACKET_HDRLEN: c_int = 11;
 pub const PACKET_RESERVE: c_int = 12;
 pub const PACKET_TX_RING: c_int = 13;
 pub const PACKET_LOSS: c_int = 14;
+pub const PACKET_VNET_HDR: c_int = 15;
+pub const PACKET_TX_TIMESTAMP: c_int = 16;
 pub const PACKET_TIMESTAMP: c_int = 17;
 pub const PACKET_FANOUT: c_int = 18;
+pub const PACKET_TX_HAS_OFF: c_int = 19;
 pub const PACKET_QDISC_BYPASS: c_int = 20;
+pub const PACKET_ROLLOVER_STATS: c_int = 21;
+pub const PACKET_FANOUT_DATA: c_int = 22;
 pub const PACKET_IGNORE_OUTGOING: c_int = 23;
+pub const PACKET_VNET_HDR_SZ: c_int = 24;
 
 pub const PACKET_FANOUT_HASH: c_uint = 0;
 pub const PACKET_FANOUT_LB: c_uint = 1;
@@ -3619,6 +3629,7 @@ pub const PACKET_FANOUT_CBPF: c_uint = 6;
 pub const PACKET_FANOUT_EBPF: c_uint = 7;
 pub const PACKET_FANOUT_FLAG_ROLLOVER: c_uint = 0x1000;
 pub const PACKET_FANOUT_FLAG_UNIQUEID: c_uint = 0x2000;
+pub const PACKET_FANOUT_FLAG_IGNORE_OUTGOING: c_uint = 0x4000;
 pub const PACKET_FANOUT_FLAG_DEFRAG: c_uint = 0x8000;
 
 pub const PACKET_MR_MULTICAST: c_int = 0;
