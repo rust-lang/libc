@@ -706,7 +706,7 @@ fn test_openbsd(target: &str) {
 fn test_cygwin(target: &str) {
     assert!(target.contains("cygwin"));
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -761,29 +761,27 @@ fn test_cygwin(target: &str) {
         "wchar.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_type(|ty| match ty {
+        "Ioctl" => Some("int".to_string()),
+        _ => None,
+    });
+
+    cfg.rename_struct_ty(move |ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "DIR" | "Dl_info" | "fd_set" => ty.to_string(),
-
-            "Ioctl" => "int".to_string(),
-
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
+            "FILE" | "DIR" | "Dl_info" | "fd_set" => Some(ty.to_string()),
 
             // sigval is a struct in Rust, but a union in C:
-            "sigval" => "union sigval".to_string(),
+            "sigval" => Some("union sigval".to_string()),
 
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
+            t if t.ends_with("_t") => Some(t.to_string()),
 
-            t => t.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // FIXME(cygwin): these constants do not exist on Cygwin
             "ARPOP_REQUEST" | "ARPOP_REPLY" | "ATF_COM" | "ATF_PERM" | "ATF_PUBL"
             | "ATF_USETRAILERS" => true,
@@ -809,33 +807,33 @@ fn test_cygwin(target: &str) {
         _ => false,
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
 
         false
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_field(move |struct_, field| {
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
+            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
+                Some(s.replace("e_nsec", ".tv_nsec"))
             }
 
             // FIXME(cygwin): sigaction actually contains a union with two variants:
             // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
             // a sa_handler with type sig_t
-            "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
+            "sa_sigaction" if struct_.ident() == "sigaction" => Some("sa_handler".to_string()),
 
-            s => s.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_field(|struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(|struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // this is actually a union on linux, so we can't represent it well and
             // just insert some padding.
             ("ifreq", "ifr_ifru") => true,
@@ -845,9 +843,9 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // There are two versions of the sterror_r function, see
             //
             // https://linux.die.net/man/3/strerror_r
@@ -872,7 +870,7 @@ fn test_cygwin(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_windows(target: &str) {
@@ -1003,7 +1001,7 @@ fn test_windows(target: &str) {
 fn test_redox(target: &str) {
     assert!(target.contains("redox"));
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -1047,7 +1045,7 @@ fn test_redox(target: &str) {
         "wchar.h",
     }
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_solarish(target: &str) {
@@ -1558,7 +1556,7 @@ fn test_netbsd(target: &str) {
 
 fn test_dragonflybsd(target: &str) {
     assert!(target.contains("dragonfly"));
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     headers! {
@@ -1652,58 +1650,58 @@ fn test_dragonflybsd(target: &str) {
         "iconv.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_struct_ty(move |ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
             | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
-            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
+            | "Elf32_Chdr" | "Elf64_Chdr" => Some(ty.to_string()),
 
-            // FIXME(dragonflybsd): OSX calls this something else
-            "sighandler_t" => "sig_t".to_string(),
-
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
+            t if t.ends_with("_t") => Some(t.to_string()),
 
             // sigval is a struct in Rust, but a union in C:
-            "sigval" => "union sigval".to_string(),
+            "sigval" => Some("union sigval".to_string()),
 
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            t => t.to_string(),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_type(|ty| {
+        match ty {
+            // FIXME(dragonflybsd): OSX calls this something else
+            "sighandler_t" => Some("sig_t".to_string()),
+            _ => None,
+        }
+    });
+
+    cfg.rename_struct_field(move |struct_, field| {
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
+            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
+                Some(s.replace("e_nsec", ".tv_nsec"))
             }
-            "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
+            "u64" if struct_.ident() == "epoll_event" => Some("data.u64".to_string()),
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
-            "type_" if struct_ == "rtprio" => "type".to_string(),
-            s => s.to_string(),
+            "type_" if struct_.ident() == "rtprio" => Some("type".to_string()),
+            _ => None,
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
             _ => false,
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+        match struct_.ident() {
             // FIXME(dragonflybsd): These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other
             // structs.
@@ -1728,8 +1726,8 @@ fn test_dragonflybsd(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
 
             // weird signed extension or something like that?
@@ -1744,12 +1742,11 @@ fn test_dragonflybsd(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "fexecve" => true,
-
             "getrlimit" | "getrlimit64" |    // non-int in 1st arg
             "setrlimit" | "setrlimit64" |    // non-int in 1st arg
             "prlimit" | "prlimit64"        // non-int in 2nd arg
@@ -1759,26 +1756,26 @@ fn test_dragonflybsd(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
         // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        (struct_.ident() == "sigaction" && field.ident() == "sa_sigaction") ||
         // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
+        (struct_.ident() == "sigevent" && field.ident() == "sigev_value") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf")
+        (struct_.ident() == "aiocb" && field.ident() == "aio_buf")
     });
 
-    cfg.skip_field(move |struct_, field| {
+    cfg.skip_struct_field(move |struct_, field| {
         // this is actually a union on linux, so we can't represent it well and
         // just insert some padding.
-        (struct_ == "siginfo_t" && field == "_pad") ||
+        (struct_.ident() == "siginfo_t" && field.ident() == "_pad") ||
         // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id")
+        (struct_.ident() == "sigevent" && field.ident() == "sigev_notify_thread_id")
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_wasi(target: &str) {
@@ -3326,7 +3323,7 @@ fn test_emscripten(target: &str) {
 fn test_neutrino(target: &str) {
     assert!(target.contains("nto-qnx"));
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     if target.ends_with("_iosock") {
         let qnx_target_val = env::var("QNX_TARGET")
             .unwrap_or_else(|_| "QNX_TARGET_not_set_please_source_qnxsdp".into());
@@ -3448,49 +3445,40 @@ fn test_neutrino(target: &str) {
     )
     .unwrap();
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_struct_ty(move |ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
             | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
             | "Elf32_Chdr" | "Elf64_Chdr" | "aarch64_qreg_t" | "syspage_entry_info"
-            | "syspage_array_info" => ty.to_string(),
+            | "syspage_array_info" => Some(ty.to_string()),
 
-            "Ioctl" => "int".to_string(),
-
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
-
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            t => t.to_string(),
+            t if t.ends_with("_t") => Some(t.to_string()),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |_struct_, field| match field {
-        "type_" => "type".to_string(),
-
-        s => s.to_string(),
+    cfg.rename_type(|ty| match ty {
+        "Ioctl" => Some("int".to_string()),
+        _ => None,
     });
 
-    cfg.volatile_item(|i| {
-        use ctest_old::VolatileItemKind::*;
-        match i {
-            // The following fields are volatie but since we cannot express that in
-            // Rust types, we have to explicitly tell the checker about it here:
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
-            StructField(ref n, ref f) if n == "qtime_entry" && f == "nsec_tod_adjust" => true,
-            StructField(ref n, ref f) if n == "qtime_entry" && f == "nsec" => true,
-            StructField(ref n, ref f) if n == "qtime_entry" && f == "nsec_stable" => true,
-            StructField(ref n, ref f) if n == "intrspin" && f == "value" => true,
-            _ => false,
-        }
+    cfg.rename_struct_field(move |_struct_, field| match field.ident() {
+        "type_" => Some("type".to_string()),
+        _ => None,
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.volatile_struct_field(|s, f| match (s.ident(), f.ident()) {
+        ("aiocb", "aio_buf") => true,
+        ("qtime_entry", "nsec_tod_adjust") => true,
+        ("qtime_entry", "nsec") => true,
+        ("qtime_entry", "nsec_stable") => true,
+        ("intrspin", "value") => true,
+        _ => false,
+    });
+
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // FIXME(sighandler): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
@@ -3505,11 +3493,11 @@ fn test_neutrino(target: &str) {
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+        match struct_.ident() {
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
             // FIXME(union): This is actually a union, not a struct
@@ -3522,8 +3510,8 @@ fn test_neutrino(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // These signal "functions" are actually integer values that are casted to a fn ptr
             // This causes the compiler to err because of "illegal cast of int to ptr".
             "SIG_DFL" => true,
@@ -3534,9 +3522,9 @@ fn test_neutrino(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" | "execvpe" => true,
 
@@ -3571,16 +3559,16 @@ fn test_neutrino(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
         // sigval is actually a union, but we pretend it's a struct
-        struct_ == "sigevent" && field == "sigev_value" ||
+        struct_.ident() == "sigevent" && field.ident() == "sigev_value" ||
         // Anonymous structures
-        struct_ == "_idle_hook" && field == "time"
+        struct_.ident() == "_idle_hook" && field.ident() == "time"
     });
 
-    cfg.skip_field(|struct_, field| {
+    cfg.skip_struct_field(|struct_, field| {
         matches!(
-            (struct_, field),
+            (struct_.ident(), field.ident()),
             ("__sched_param", "reserved")
             | ("sched_param", "reserved")
             | ("sigevent", "__padding1") // ensure alignment
@@ -3591,15 +3579,15 @@ fn test_neutrino(target: &str) {
         )
     });
 
-    cfg.skip_static(move |name| name == "__dso_handle");
+    cfg.skip_static(move |static_| static_.ident() == "__dso_handle");
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_vxworks(target: &str) {
     assert!(target.contains("vxworks"));
 
-    let mut cfg = ctest_old::TestGenerator::new();
+    let mut cfg = ctest_cfg();
     headers! { cfg:
                "vxWorks.h",
                "yvals.h",
@@ -3660,7 +3648,7 @@ fn test_vxworks(target: &str) {
                "mqueue.h",
     }
     // FIXME(vxworks)
-    cfg.skip_const(move |name| match name {
+    cfg.skip_const(move |constant| match constant.ident() {
         // sighandler_t weirdness
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN"
         // This is not defined in vxWorks
@@ -3668,28 +3656,28 @@ fn test_vxworks(target: &str) {
         _ => false,
     });
     // FIXME(vxworks)
-    cfg.skip_type(move |ty| match ty {
+    cfg.skip_alias(move |ty| match ty.ident() {
         "stat64" | "sighandler_t" | "off64_t" => true,
         _ => false,
     });
 
-    cfg.skip_field_type(move |struct_, field| match (struct_, field) {
-        ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u") => true,
-        _ => false,
-    });
+    cfg.skip_struct_field_type(
+        move |struct_, field| match (struct_.ident(), field.ident()) {
+            ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u") => true,
+            _ => false,
+        },
+    );
 
     cfg.skip_roundtrip(|_| false);
 
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "DIR" | "FILE" | "Dl_info" | "RTP_DESC" => ty.to_string(),
-        t if is_union => format!("union {t}"),
-        t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {t}"),
-        t => t.to_string(),
+    cfg.rename_struct_ty(move |ty| match ty {
+        "DIR" | "FILE" | "Dl_info" | "RTP_DESC" => Some(ty.to_string()),
+        t if t.ends_with("_t") => Some(t.to_string()),
+        _ => None,
     });
 
     // FIXME(vxworks)
-    cfg.skip_fn(move |name| match name {
+    cfg.skip_fn(move |func| match func.ident() {
         // sigval
         "sigqueue" | "_sigqueue"
         // sighandler_t
@@ -3699,7 +3687,7 @@ fn test_vxworks(target: &str) {
         _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn config_gnu_bits(target: &str, cfg: &mut ctest_old::TestGenerator) {
@@ -5547,7 +5535,7 @@ fn test_aix(target: &str) {
     // ctest generates arguments supported only by clang, so make sure to
     // run with CC=clang. While debugging, "CFLAGS=-ferror-limit=<large num>"
     // is useful to get more error output.
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.define("_THREAD_SAFE", None);
 
     // Avoid the error for definitions such as '{0, 0, 0, 1}' for
@@ -5641,7 +5629,7 @@ fn test_aix(target: &str) {
                "wchar.h",
     }
 
-    cfg.skip_type(move |ty| match ty {
+    cfg.skip_alias(move |ty| match ty.ident() {
         // AIX does not define type 'sighandler_t'.
         "sighandler_t" => true,
 
@@ -5652,21 +5640,18 @@ fn test_aix(target: &str) {
         _ => false,
     });
 
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "DIR" => ty.to_string(),
-        "FILE" => ty.to_string(),
-        "ACTION" => ty.to_string(),
+    cfg.rename_struct_ty(move |ty| match ty {
+        "DIR" | "FILE" | "ACTION" => Some(ty.to_string()),
 
         // 'sigval' is a struct in Rust, but a union in C.
-        "sigval" => format!("union sigval"),
+        "sigval" => Some(format!("union sigval")),
 
-        t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {}", t),
-        t if is_union => format!("union {}", t),
-        t => t.to_string(),
+        t if t.ends_with("_t") => Some(t.to_string()),
+
+        _ => None,
     });
 
-    cfg.skip_const(move |name| match name {
+    cfg.skip_const(move |constant| match constant.ident() {
         // Skip 'sighandler_t' assignments.
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
@@ -5694,8 +5679,8 @@ fn test_aix(target: &str) {
         _ => false,
     });
 
-    cfg.skip_struct(move |ty| {
-        match ty {
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
             // FIXME(union): actually a union.
             "sigval" => true,
 
@@ -5723,8 +5708,8 @@ fn test_aix(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field_type(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // AIX does not define 'sighandler_t'.
             ("sigaction", "sa_sigaction") => true,
 
@@ -5755,20 +5740,20 @@ fn test_aix(target: &str) {
         }
     });
 
-    cfg.skip_field(move |s, field| {
-        match s {
+    cfg.skip_struct_field(move |s, field| {
+        match s.ident() {
             // The field 'u' is actually a unnamed union in the AIX header.
-            "poll_ctl_ext" if field == "u" => true,
+            "poll_ctl_ext" if field.ident() == "u" => true,
 
             // The field 'data' is actually a unnamed union in the AIX header.
-            "pollfd_ext" if field == "data" => true,
+            "pollfd_ext" if field.ident() == "data" => true,
 
             _ => false,
         }
     });
 
-    cfg.skip_fn(move |name| {
-        match name {
+    cfg.skip_fn(move |func| {
+        match func.ident() {
             // 'sighandler_t' is not defined on AIX.
             "signal" => true,
 
@@ -5831,17 +5816,13 @@ fn test_aix(target: &str) {
         }
     });
 
-    cfg.volatile_item(|i| {
-        use ctest_old::VolatileItemKind::*;
-        match i {
-            // 'aio_buf' is of type 'volatile void**' but since we cannot
-            // express that in Rust types, we have to explicitly tell the
-            // checker about it here.
-            StructField(ref n, ref f) if n == "aiocb" && f == "aio_buf" => true,
-
-            _ => false,
-        }
+    cfg.volatile_struct_field(|s, f| match (s.ident(), f.ident()) {
+        // 'aio_buf' is of type 'volatile void**' but since we cannot
+        // express that in Rust types, we have to explicitly tell the
+        // checker about it here.
+        ("aiocb", "aio_buf") => true,
+        _ => false,
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
