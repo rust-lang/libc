@@ -1285,6 +1285,11 @@ extern "C" {
         extra_info: *mut *mut c_void,
         flags: c_int,
     ) -> c_int;
+    pub fn dlvsym(
+        handle: *mut c_void,
+        symbol: *const c_char,
+        version: *const c_char,
+    ) -> *mut c_void;
     pub fn malloc_trim(__pad: size_t) -> c_int;
     pub fn gnu_get_libc_release() -> *const c_char;
     pub fn gnu_get_libc_version() -> *const c_char;
