@@ -2687,6 +2687,11 @@ extern "C" {
         new_value: *const crate::itimerspec,
         old_value: *mut crate::itimerspec,
     ) -> c_int;
+    pub fn dlvsym(
+        handle: *mut c_void,
+        symbol: *const c_char,
+        version: *const c_char,
+    ) -> *mut c_void;
 
     // Added in `NetBSD` 7.0
     pub fn explicit_memset(b: *mut c_void, c: c_int, len: size_t);
