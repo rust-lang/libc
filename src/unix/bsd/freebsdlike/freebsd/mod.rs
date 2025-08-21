@@ -5275,6 +5275,11 @@ extern "C" {
         idx1: c_ulong,
         idx2: c_ulong,
     ) -> c_int;
+    pub fn dlvsym(
+        handle: *mut c_void,
+        symbol: *const c_char,
+        version: *const c_char,
+    ) -> *mut c_void;
 }
 
 #[link(name = "memstat")]

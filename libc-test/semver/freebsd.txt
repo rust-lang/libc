@@ -1928,6 +1928,7 @@ dirfd
 dirname
 dl_iterate_phdr
 dl_phdr_info
+dlvsym
 drand48
 dup3
 duplocale
