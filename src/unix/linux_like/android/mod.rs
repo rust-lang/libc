@@ -2849,7 +2849,6 @@ pub const SCHED_DEADLINE: c_int = 6;
 
 pub const SCHED_RESET_ON_FORK: c_int = 0x40000000;
 
-pub const CLONE_PIDFD: c_int = 0x1000;
 pub const CLONE_CLEAR_SIGHAND: c_ulonglong = 0x100000000;
 pub const CLONE_INTO_CGROUP: c_ulonglong = 0x200000000;
 

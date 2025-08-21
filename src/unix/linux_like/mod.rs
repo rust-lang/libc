@@ -1199,10 +1199,12 @@ pub const ONLRET: crate::tcflag_t = 0o000040;
 pub const OFILL: crate::tcflag_t = 0o000100;
 pub const OFDEL: crate::tcflag_t = 0o000200;
 
+pub const CLONE_NEWTIME: c_int = 0x80;
 pub const CLONE_VM: c_int = 0x100;
 pub const CLONE_FS: c_int = 0x200;
 pub const CLONE_FILES: c_int = 0x400;
 pub const CLONE_SIGHAND: c_int = 0x800;
+pub const CLONE_PIDFD: c_int = 0x1000;
 pub const CLONE_PTRACE: c_int = 0x2000;
 pub const CLONE_VFORK: c_int = 0x4000;
 pub const CLONE_PARENT: c_int = 0x8000;
