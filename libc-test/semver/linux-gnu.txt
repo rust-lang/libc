@@ -592,6 +592,7 @@ ctime_r
 dirname
 dlinfo
 dlmopen
+dlvsym
 eaccess
 endutxent
 epoll_pwait2
