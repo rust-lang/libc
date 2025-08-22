@@ -4,8 +4,13 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-
 #include <simple.h>
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+#endif
 
 typedef void (*ctest_void_func)(void);
 

@@ -4,8 +4,13 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-
 #include <hierarchy.h>
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+#endif
 
 typedef void (*ctest_void_func)(void);
 
@@ -21,7 +26,7 @@ bool *ctest_const__ON(void) {
 uint64_t ctest_size_of__in6_addr(void) { return sizeof(in6_addr); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__in6_addr(void) { return _Alignof(in6_addr); }
+uint64_t ctest_align_of__in6_addr(void) { return CTEST_ALIGNOF(in6_addr); }
 
 // Return `1` if the type is signed, otherwise return `0`.
 // Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
@@ -73,6 +78,7 @@ in6_addr ctest_roundtrip__in6_addr(
 #  pragma warning(disable:4191)
 #endif
 
+// Return a function pointer.
 ctest_void_func ctest_foreign_fn__malloc(void) {
     return (ctest_void_func)malloc;
 }

@@ -4,8 +4,13 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-
 #include <simple.h>
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+#endif
 
 typedef void (*ctest_void_func)(void);
 
@@ -53,25 +58,25 @@ enum Color *ctest_const__GREEN(void) {
 uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__Byte(void) { return _Alignof(Byte); }
+uint64_t ctest_align_of__Byte(void) { return CTEST_ALIGNOF(Byte); }
 
 // Return the size of a type.
 uint64_t ctest_size_of__Color(void) { return sizeof(enum Color); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__Color(void) { return _Alignof(enum Color); }
+uint64_t ctest_align_of__Color(void) { return CTEST_ALIGNOF(enum Color); }
 
 // Return the size of a type.
 uint64_t ctest_size_of__Person(void) { return sizeof(struct Person); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__Person(void) { return _Alignof(struct Person); }
+uint64_t ctest_align_of__Person(void) { return CTEST_ALIGNOF(struct Person); }
 
 // Return the size of a type.
 uint64_t ctest_size_of__Word(void) { return sizeof(union Word); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__Word(void) { return _Alignof(union Word); }
+uint64_t ctest_align_of__Word(void) { return CTEST_ALIGNOF(union Word); }
 
 // Return `1` if the type is signed, otherwise return `0`.
 // Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
@@ -299,6 +304,7 @@ union Word ctest_roundtrip__Word(
 #  pragma warning(disable:4191)
 #endif
 
+// Return a function pointer.
 ctest_void_func ctest_foreign_fn__calloc(void) {
     return (ctest_void_func)calloc;
 }
