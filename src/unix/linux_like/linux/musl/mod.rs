@@ -835,8 +835,6 @@ pub const MAXTC: c_long = 6;
 pub const _CS_V6_ENV: c_int = 1148;
 pub const _CS_V7_ENV: c_int = 1149;
 
-pub const CLONE_NEWTIME: c_int = 0x80;
-
 pub const UT_HOSTSIZE: usize = 256;
 pub const UT_LINESIZE: usize = 32;
 pub const UT_NAMESIZE: usize = 32;
