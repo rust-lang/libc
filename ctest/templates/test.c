@@ -9,9 +9,21 @@
 #include <stdio.h>
 
 {%- for header in self.headers +%}
+{%- for define in self.defines(header) +%}
 
-#include <{{ header }}>
+#define {{ define }}
 {%- endfor +%}
+#include <{{ header }}>
+{%- for define in self.defines(header) +%}
+#undef {{ define }}
+{%- endfor +%}
+{%- endfor +%}
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+#endif
 
 typedef void (*ctest_void_func)(void);
 
@@ -21,7 +33,7 @@ static char *ctest_const_{{ const_cstr.id }}_val_static = {{ const_cstr.c_val }}
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-char *ctest_const_cstr__{{ const_cstr.id }}(void) {
+{{ self.linkage }}char *ctest_const_cstr__{{ const_cstr.id }}(void) {
     return ctest_const_{{ const_cstr.id }}_val_static;
 }
 {%- endfor +%}
@@ -32,7 +44,7 @@ static {{ constant.c_ty }} ctest_const_{{ constant.id }}_val_static = {{ constan
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-{{ constant.c_ty }} *ctest_const__{{ constant.id }}(void) {
+{{ self.linkage }}{{ constant.c_ty }} *ctest_const__{{ constant.id }}(void) {
     return &ctest_const_{{ constant.id }}_val_static;
 }
 {%- endfor +%}
@@ -40,17 +52,17 @@ static {{ constant.c_ty }} ctest_const_{{ constant.id }}_val_static = {{ constan
 {%- for item in ctx.size_align_tests +%}
 
 // Return the size of a type.
-uint64_t ctest_size_of__{{ item.id }}(void) { return sizeof({{ item.c_ty }}); }
+{{ self.linkage }}uint64_t ctest_size_of__{{ item.id }}(void) { return sizeof({{ item.c_ty }}); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__{{ item.id }}(void) { return _Alignof({{ item.c_ty }}); }
+{{ self.linkage }}uint64_t ctest_align_of__{{ item.id }}(void) { return CTEST_ALIGNOF({{ item.c_ty }}); }
 {%- endfor +%}
 
 {%- for alias in ctx.signededness_tests +%}
 
 // Return `1` if the type is signed, otherwise return `0`.
 // Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
-uint32_t ctest_signededness_of__{{ alias.id }}(void) {
+{{ self.linkage }}uint32_t ctest_signededness_of__{{ alias.id }}(void) {
     {{ alias.c_ty }} all_ones = ({{ alias.c_ty }}) -1;
     return all_ones < 0;
 }
@@ -59,12 +71,12 @@ uint32_t ctest_signededness_of__{{ alias.id }}(void) {
 {%- for item in ctx.field_size_offset_tests +%}
 
 // Return the offset of a struct/union field.
-uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(void) {
+{{ self.linkage }}uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(void) {
     return offsetof({{ item.c_ty }}, {{ item.c_field }});
 }
 
 // Return the size of a struct/union field.
-uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
+{{ self.linkage }}uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
     return sizeof((({{ item.c_ty }}){}).{{ item.c_field }});
 }
 {%- endfor +%}
@@ -75,7 +87,7 @@ uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
 typedef {{ item.volatile_keyword }}{{ item.field_return_type }};
-ctest_field_ty__{{ item.id }}__{{ item.field.ident() }}
+{{ self.linkage }}ctest_field_ty__{{ item.id }}__{{ item.field.ident() }}
 ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
     return &b->{{ item.c_field }};
 }
@@ -92,7 +104,7 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
 // remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
-{{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
+{{ self.linkage }}{{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
     {{ item.c_ty }} value,
     const uint8_t is_padding_byte[sizeof({{ item.c_ty }})],
     uint8_t value_bytes[sizeof({{ item.c_ty }})]
@@ -130,7 +142,8 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 
 {%- for item in ctx.foreign_fn_tests +%}
 
-ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
+// Return a function pointer.
+{{ self.linkage }}ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
     return (ctest_void_func){{ item.c_val }};
 }
 {%- endfor +%}
@@ -142,7 +155,7 @@ ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
 {%- for static_ in ctx.foreign_static_tests +%}
 
 // Return a pointer to the static variable content.
-void *ctest_static__{{ static_.id }}(void) {
+{{ self.linkage }}void *ctest_static__{{ static_.id }}(void) {
     // FIXME(ctest): Not correct due to casting the function to a data pointer.
     return (void *)&{{ static_.c_val }};
 }

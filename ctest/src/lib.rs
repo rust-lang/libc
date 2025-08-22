@@ -74,6 +74,35 @@ pub(crate) enum MapInput<'a> {
     UnionFieldType(&'a Union, &'a Field),
 }
 
+/// The language used to generate the tests.
+#[derive(Debug, Default, Clone)]
+#[non_exhaustive]
+pub enum Language {
+    /// The C Programming Language.
+    #[default]
+    C,
+    /// The C++ Programming Language.
+    CXX,
+}
+
+impl Language {
+    /// Return the file extension of the programming language.
+    pub fn extension(&self) -> &str {
+        match self {
+            Self::C => "c",
+            Self::CXX => "cpp",
+        }
+    }
+
+    /// Return the linkage to use for each language.
+    pub fn linkage(&self) -> &str {
+        match self {
+            Self::C => "",
+            Self::CXX => r#"extern "C" "#,
+        }
+    }
+}
+
 /* The From impls make it easier to write code in the test templates. */
 
 impl<'a> From<&'a Const> for MapInput<'a> {

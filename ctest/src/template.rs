@@ -1,5 +1,7 @@
 //! Generation of tests from templates for both Rust and C.
 
+use std::collections::HashMap;
+
 use askama::Template;
 use proc_macro2::Span;
 use quote::ToTokens;
@@ -36,6 +38,8 @@ impl RustTestTemplate {
 pub(crate) struct CTestTemplate {
     pub template: TestTemplate,
     pub headers: Vec<String>,
+    pub header_defines: HashMap<String, Vec<String>>,
+    pub linkage: String,
 }
 
 impl CTestTemplate {
@@ -46,7 +50,13 @@ impl CTestTemplate {
         Ok(Self {
             template: TestTemplate::new(ffi_items, generator)?,
             headers: generator.headers.clone(),
+            header_defines: generator.header_defines.clone(),
+            linkage: generator.language.linkage().to_string(),
         })
+    }
+
+    pub(crate) fn defines(&self, header: &str) -> Vec<String> {
+        self.header_defines.get(header).cloned().unwrap_or_default()
     }
 }
 

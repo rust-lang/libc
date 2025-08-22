@@ -5,7 +5,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define UNSIGNED
 #include <macro.h>
+#undef UNSIGNED
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+#endif
 
 typedef void (*ctest_void_func)(void);
 
@@ -13,13 +21,13 @@ typedef void (*ctest_void_func)(void);
 uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__VecU8(void) { return _Alignof(struct VecU8); }
+uint64_t ctest_align_of__VecU8(void) { return CTEST_ALIGNOF(struct VecU8); }
 
 // Return the size of a type.
 uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__VecU16(void) { return _Alignof(struct VecU16); }
+uint64_t ctest_align_of__VecU16(void) { return CTEST_ALIGNOF(struct VecU16); }
 
 // Return the offset of a struct/union field.
 uint64_t ctest_offset_of__VecU8__x(void) {
