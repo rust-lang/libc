@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::generator::GenerationError;
-use crate::{EDITION, Result, TestGenerator, get_build_target};
+use crate::{EDITION, Language, Result, TestGenerator, get_build_target};
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]
@@ -24,7 +24,7 @@ pub fn generate_test(
         .map_err(|_| GenerationError::EnvVarNotFound("HOST, HOST_PLATFORM".to_string()))?;
 
     let mut cfg = cc::Build::new();
-    cfg.file(output_file_path.with_extension("c"));
+    cfg.file(output_file_path.with_extension(generator.language.extension()));
     cfg.host(&host);
 
     if target.contains("msvc") {
@@ -64,9 +64,11 @@ pub fn generate_test(
         cfg.flag(flag);
     }
 
-    for (k, v) in &generator.defines {
+    for (k, v) in &generator.global_defines {
         cfg.define(k, v.as_ref().map(|s| &s[..]));
     }
+
+    cfg.cpp(matches!(generator.language, Language::CXX));
 
     let stem: &str = output_file_path.file_stem().unwrap().to_str().unwrap();
     cfg.target(&target)
