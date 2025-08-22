@@ -13,8 +13,8 @@ use crate::ffi_items::FfiItems;
 use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::translator::translate_primitive_type;
 use crate::{
-    Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type, Union,
-    VolatileItemKind, expand, get_build_target,
+    BoxStr, Const, Field, Language, MapInput, Parameter, Result, Static, Struct, TranslationError,
+    Type, Union, VolatileItemKind, expand, get_build_target,
 };
 
 /// A function that takes a mappable input and returns its mapping as `Some`, otherwise
@@ -35,14 +35,16 @@ type CEnum = Box<dyn Fn(&str) -> bool>;
 #[derive(Default)]
 #[expect(missing_debug_implementations)]
 pub struct TestGenerator {
-    pub(crate) headers: Vec<String>,
+    pub(crate) headers: Vec<(BoxStr, Vec<BoxStr>)>,
     pub(crate) target: Option<String>,
     pub(crate) includes: Vec<PathBuf>,
     out_dir: Option<PathBuf>,
     pub(crate) flags: Vec<String>,
-    pub(crate) defines: Vec<(String, Option<String>)>,
+    pub(crate) global_defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     mapped_names: Vec<MappedName>,
+    /// The programming language to generate tests in.
+    pub(crate) language: Language,
     pub(crate) skips: Vec<Skip>,
     pub(crate) verbose_skip: bool,
     pub(crate) volatile_items: Vec<VolatileItem>,
@@ -100,7 +102,53 @@ impl TestGenerator {
     ///    .header("bar.h");
     /// ```
     pub fn header(&mut self, header: &str) -> &mut Self {
-        self.headers.push(header.to_string());
+        self.headers.push((header.into(), vec![]));
+        self
+    }
+
+    /// Add a header to be included as part of the generated C file, as well as defines for it.
+    ///
+    /// The generated C test will be compiled by a C compiler, and this can be
+    /// used to ensure that all the necessary header files are included to test
+    /// all FFI definitions. The defines are only set for the inclusion of that header file, and are
+    /// undefined immediately after.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.header_with_defines("foo.h", Vec::<String>::new())
+    ///    .header_with_defines("bar.h", vec!["DEBUG", "DEPRECATED"]);
+    /// ```
+    pub fn header_with_defines(
+        &mut self,
+        header: &str,
+        defines: impl IntoIterator<Item = impl AsRef<str>>,
+    ) -> &mut Self {
+        self.headers.push((
+            header.into(),
+            defines.into_iter().map(|d| d.as_ref().into()).collect(),
+        ));
+        self
+    }
+
+    /// Sets the programming language, by default it is C.
+    ///
+    /// This determines what compiler is chosen to compile the C/C++ tests, as well as adding
+    /// external linkage to the tests if set to C++, so that they can be used in Rust.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::{TestGenerator, Language};
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.language(Language::CXX);
+    /// ```
+    pub fn language(&mut self, language: Language) -> &mut Self {
+        self.language = language;
         self
     }
 
@@ -585,7 +633,7 @@ impl TestGenerator {
 
     /// Set a `-D` flag for the C compiler being called.
     ///
-    /// This can be used to define various variables to configure how header
+    /// This can be used to define various global variables to configure how header
     /// files are included or what APIs are exposed from header files.
     ///
     /// # Examples
@@ -598,7 +646,7 @@ impl TestGenerator {
     ///    .define("_WIN32_WINNT", Some("0x8000"));
     /// ```
     pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut Self {
-        self.defines
+        self.global_defines
             .push((k.to_string(), v.map(std::string::ToString::to_string)));
         self
     }
@@ -999,7 +1047,7 @@ impl TestGenerator {
         ensure_trailing_newline(&mut c_file);
 
         // Generate the C/Cxx side of the tests.
-        let c_output_path = output_file_path.with_extension("c");
+        let c_output_path = output_file_path.with_extension(self.language.extension());
         File::create(&c_output_path)
             .map_err(GenerationError::OsError)?
             .write_all(c_file.as_bytes())
