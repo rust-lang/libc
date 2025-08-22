@@ -332,21 +332,18 @@ s! {
     }
 
     pub struct input_event {
-        // FIXME(1.0): Change to the commented variant, see https://github.com/rust-lang/libc/pull/4148#discussion_r1857511742
         #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
-        pub time: crate::timeval,
-        // #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
-        // pub input_event_sec: time_t,
-        // #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
-        // pub input_event_usec: suseconds_t,
-        // #[cfg(target_arch = "sparc64")]
-        // _pad1: c_int,
+        pub input_event_sec: crate::time_t,
         #[cfg(all(target_pointer_width = "32", linux_time_bits64))]
         pub input_event_sec: c_ulong,
 
+        #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
+        pub input_event_usec: crate::suseconds_t,
         #[cfg(all(target_pointer_width = "32", linux_time_bits64))]
         pub input_event_usec: c_ulong,
 
+        #[cfg(target_arch = "sparc64")]
+        _pad1: c_int,
         pub type_: __u16,
         pub code: __u16,
         pub value: __s32,
