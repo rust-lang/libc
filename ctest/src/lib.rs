@@ -20,11 +20,15 @@ mod runner;
 mod template;
 mod translator;
 
+use std::env;
+
 pub use ast::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
 pub use runner::{__compile_test, __run_test, generate_test};
 pub use translator::TranslationError;
+
+use crate::generator::GenerationError;
 
 /// A possible error that can be encountered in our library.
 pub type Error = Box<dyn std::error::Error>;
@@ -72,6 +76,23 @@ pub(crate) enum MapInput<'a> {
     CEnumType(&'a str),
     StructFieldType(&'a Struct, &'a Field),
     UnionFieldType(&'a Union, &'a Field),
+}
+
+/// Search for the target to build for, specified manually or through an environment variable.
+///
+/// This function will check the following places for the target name:
+/// - TestGenerator.target
+/// - TARGET environment variable.
+/// - TARGET_PLATFORM environment variable.
+fn get_build_target(generator: &TestGenerator) -> Result<String, GenerationError> {
+    generator
+        .target
+        .clone()
+        .or_else(|| env::var("TARGET").ok())
+        .or_else(|| env::var("TARGET_PLATFORM").ok())
+        .ok_or(GenerationError::EnvVarNotFound(
+            "TARGET, TARGET_PLATFORM".to_string(),
+        ))
 }
 
 /* The From impls make it easier to write code in the test templates. */
