@@ -3,10 +3,15 @@ use std::fs::canonicalize;
 use std::path::Path;
 use std::process::Command;
 
+use crate::generator::GenerationError;
 use crate::{EDITION, Result};
 
 /// Use rustc to expand all macros and pretty print the crate into a single file.
-pub fn expand<P: AsRef<Path>>(crate_path: P, cfg: &[(String, Option<String>)]) -> Result<String> {
+pub fn expand<P: AsRef<Path>>(
+    crate_path: P,
+    cfg: &[(String, Option<String>)],
+    target: Option<String>,
+) -> Result<String> {
     let rustc = env::var("RUSTC").unwrap_or_else(|_| String::from("rustc"));
 
     let mut cmd = Command::new(rustc);
@@ -15,6 +20,16 @@ pub fn expand<P: AsRef<Path>>(crate_path: P, cfg: &[(String, Option<String>)]) -
         .arg("--edition")
         .arg(EDITION) // By default, -Zunpretty=expanded uses 2015 edition.
         .arg(canonicalize(crate_path)?);
+
+    let target = target
+        .or_else(|| env::var("TARGET").ok())
+        .or_else(|| env::var("TARGET_PLATFORM").ok())
+        .ok_or(GenerationError::EnvVarNotFound(
+            "TARGET, TARGET_PLATFORM".to_string(),
+        ))?;
+    if !target.is_empty() {
+        cmd.arg("--target").arg(target);
+    }
 
     // `libc` uses non standard cfg flags as well, which have to be manually expanded.
     for (k, v) in cfg {

@@ -961,7 +961,7 @@ impl TestGenerator {
         crate_path: impl AsRef<Path>,
         output_file_path: impl AsRef<Path>,
     ) -> Result<PathBuf, GenerationError> {
-        let expanded = expand(&crate_path, &self.cfg).map_err(|e| {
+        let expanded = expand(&crate_path, &self.cfg, self.target.clone()).map_err(|e| {
             GenerationError::MacroExpansion(crate_path.as_ref().to_path_buf(), e.to_string())
         })?;
         let ast = syn::parse_file(&expanded)
