@@ -14,7 +14,7 @@ use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::translator::translate_primitive_type;
 use crate::{
     Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type, Union,
-    VolatileItemKind, expand,
+    VolatileItemKind, expand, get_build_target,
 };
 
 /// A function that takes a mappable input and returns its mapping as `Some`, otherwise
@@ -961,7 +961,7 @@ impl TestGenerator {
         crate_path: impl AsRef<Path>,
         output_file_path: impl AsRef<Path>,
     ) -> Result<PathBuf, GenerationError> {
-        let expanded = expand(&crate_path, &self.cfg).map_err(|e| {
+        let expanded = expand(&crate_path, &self.cfg, get_build_target(self)?).map_err(|e| {
             GenerationError::MacroExpansion(crate_path.as_ref().to_path_buf(), e.to_string())
         })?;
         let ast = syn::parse_file(&expanded)
