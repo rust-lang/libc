@@ -1795,7 +1795,7 @@ fn test_android(target: &str) {
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1944,46 +1944,37 @@ fn test_android(target: &str) {
                 "android/set_abort_message.h"
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_type(move |ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
-
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
-
-            "Ioctl" => "int".to_string(),
-
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            t => t.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => Some(ty.to_string()),
+            t if t.ends_with("_t") => Some(t.to_string()),
+            "Ioctl" => Some("int".to_string()),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_field(move |struct_, field| {
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.to_string(),
+            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => Some(s.to_string()),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
             "type_"
-                if struct_ == "input_event"
-                    || struct_ == "input_mask"
-                    || struct_ == "ff_effect" =>
+                if struct_.ident() == "input_event"
+                    || struct_.ident() == "input_mask"
+                    || struct_.ident() == "ff_effect" =>
             {
-                "type".to_string()
+                Some("type".to_string())
             }
-
-            s => s.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // FIXME(android): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
@@ -2004,11 +1995,11 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+        match struct_.ident() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
@@ -2032,8 +2023,8 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
             | "IPV6_FLOWINFO"
             | "IPV6_FLOWLABEL_MGR"
@@ -2183,9 +2174,9 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // FIXME(android): for unknown reasons linker unable to find "fexecve"
             "fexecve" => true,
 
@@ -2252,7 +2243,9 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
+        let struct_ = struct_.ident();
+        let field = field.ident();
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // this one is an anonymous union
@@ -2266,8 +2259,8 @@ fn test_android(target: &str) {
         (struct_ == "flock64" && (field == "l_start" || field == "l_len"))
     });
 
-    cfg.skip_field(|struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(|struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // conflicting with `p_type` macro from <resolve.h>.
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
@@ -2285,7 +2278,7 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 
     test_linux_like_apis(target);
 }
