@@ -104,7 +104,7 @@ fn do_semver() {
     // maintain a file for Android.
     // NOTE: AIX doesn't include the unix file because there are definitions
     // missing on AIX. It is easier to maintain a file for AIX.
-    if family != os && !matches!(os.as_str(), "android" | "aix") {
+    if family != os && !matches!(os.as_str(), "android" | "aix") && os != "vxworks" {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
     // We don't do semver for unknown targets.
@@ -3450,6 +3450,7 @@ fn test_vxworks(target: &str) {
     let mut cfg = ctest_cfg();
     headers! { cfg:
                "vxWorks.h",
+               "semLibCommon.h",
                "yvals.h",
                "nfs/nfsCommon.h",
                "rtpLibCommon.h",
@@ -3466,13 +3467,11 @@ fn test_vxworks(target: &str) {
                "elf.h",
                "fcntl.h",
                "grp.h",
-               "sys/poll.h",
                "ifaddrs.h",
                "langinfo.h",
                "limits.h",
                "link.h",
                "locale.h",
-               "sys/stat.h",
                "netdb.h",
                "pthread.h",
                "pwd.h",
@@ -3484,6 +3483,9 @@ fn test_vxworks(target: &str) {
                "stdio.h",
                "stdlib.h",
                "string.h",
+               "sys/select.h",
+               "sys/stat.h",
+               "sys/poll.h",
                "sys/file.h",
                "sys/ioctl.h",
                "sys/socket.h",
@@ -3494,7 +3496,14 @@ fn test_vxworks(target: &str) {
                "sys/un.h",
                "sys/utsname.h",
                "sys/wait.h",
+               "sys/ttycom.h",
+               "sys/utsname.h",
+               "sys/resource.h",
+               "sys/mman.h",
                "netinet/tcp.h",
+               "netinet/udp.h",
+               "netinet/in.h",
+               "netinet6/in6.h",
                "syslog.h",
                "termios.h",
                "time.h",
@@ -3503,21 +3512,24 @@ fn test_vxworks(target: &str) {
                "utime.h",
                "wchar.h",
                "errno.h",
-               "sys/mman.h",
                "pathLib.h",
                "mqueue.h",
+               "fnmatch.h",
+               "sioLibCommon.h",
+               "net/if.h",
     }
     // FIXME(vxworks)
     cfg.skip_const(move |constant| match constant.ident() {
         // sighandler_t weirdness
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN"
         // This is not defined in vxWorks
-        | "RTLD_DEFAULT"   => true,
+        | "RTLD_DEFAULT" | "S_ISVTX" | "SIGIO" | "SIGWINCH" | "SIGLOST" | "PRIO_PROCESS"  => true,
         _ => false,
     });
     // FIXME(vxworks)
     cfg.skip_alias(move |ty| match ty.ident() {
         "stat64" | "sighandler_t" | "off64_t" => true,
+        "__uint128" => true,
         _ => false,
     });
 
@@ -3539,7 +3551,7 @@ fn test_vxworks(target: &str) {
     // FIXME(vxworks)
     cfg.skip_fn(move |func| match func.ident() {
         // sighandler_t
-        "signal"
+        | "signal"
         // not used in static linking by default
         | "dlerror" => true,
         _ => false,
