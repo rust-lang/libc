@@ -3535,7 +3535,7 @@ fn test_vxworks(target: &str) {
 
     cfg.skip_struct_field_type(
         move |struct_, field| match (struct_.ident(), field.ident()) {
-            ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u") => true,
+            ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_sigaction") => true,
             _ => false,
         },
     );
