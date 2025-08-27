@@ -3551,7 +3551,7 @@ fn test_vxworks(target: &str) {
     // FIXME(vxworks)
     cfg.skip_fn(move |func| match func.ident() {
         // sighandler_t
-        | "signal"
+        "signal"
         // not used in static linking by default
         | "dlerror" => true,
         _ => false,
