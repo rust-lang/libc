@@ -2121,6 +2121,7 @@ ptrace
 pututxline
 pwritev
 qsort
+qsort_r
 querylocale
 quotactl
 radvisory
