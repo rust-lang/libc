@@ -275,6 +275,8 @@ putchar
 putenv
 putenv_s
 puts
+qsort
+qsort_s
 raise
 rand
 read
