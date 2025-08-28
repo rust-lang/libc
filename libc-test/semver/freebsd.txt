@@ -2238,6 +2238,7 @@ ptsname_r
 pututxline
 pwritev
 qsort
+qsort_r
 querylocale
 rallocx
 rand
