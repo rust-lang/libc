@@ -6157,6 +6157,14 @@ extern "C" {
         search_path: *const c_char,
         argv: *const *mut c_char,
     ) -> c_int;
+
+    pub fn qsort_r(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        arg: *mut c_void,
+        compar: Option<unsafe extern "C" fn(*mut c_void, *const c_void, *const c_void) -> c_int>,
+    );
 }
 
 #[allow(deprecated)]
