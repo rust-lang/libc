@@ -975,7 +975,7 @@ fn test_solarish(target: &str) {
 
     // ctest generates arguments supported only by clang, so make sure to run with CC=clang.
     // While debugging, "CFLAGS=-ferror-limit=<large num>" is useful to get more error output.
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
     cfg.define("_XOPEN_SOURCE", Some("700"));
@@ -1084,33 +1084,36 @@ fn test_solarish(target: &str) {
         }
     }
 
-    cfg.skip_type(move |ty| match ty {
+    cfg.skip_alias(move |ty| match ty.ident() {
         "sighandler_t" => true,
         _ => false,
     });
 
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "FILE" => "__FILE".to_string(),
-        "DIR" | "Dl_info" => ty.to_string(),
-        t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {t}"),
-        t if is_union => format!("union {t}"),
-        t => t.to_string(),
+    cfg.rename_union_ty(|ty| match ty {
+        t if t.ends_with("_t") => Some(t.to_string()),
+        _ => None,
     });
 
-    cfg.field_name(move |struct_, field| {
-        match struct_ {
+    cfg.rename_struct_ty(move |ty| match ty {
+        "FILE" => Some("__FILE".to_string()),
+        "DIR" | "Dl_info" => Some(ty.to_string()),
+        t if t.ends_with("_t") => Some(t.to_string()),
+        _ => None,
+    });
+
+    cfg.rename_struct_field(move |struct_, field| {
+        match struct_.ident() {
             // rust struct was committed with typo for Solaris
-            "door_arg_t" if field == "dec_num" => "desc_num".to_string(),
-            "stat" if field.ends_with("_nsec") => {
+            "door_arg_t" if field.ident() == "dec_num" => Some("desc_num".to_string()),
+            "stat" if field.ident().ends_with("_nsec") => {
                 // expose stat.Xtim.tv_nsec fields
-                field.trim_end_matches("e_nsec").to_string() + ".tv_nsec"
+                Some(field.ident().trim_end_matches("e_nsec").to_string() + ".tv_nsec")
             }
-            _ => field.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_const(move |name| match name {
+    cfg.skip_const(move |constant| match constant.ident() {
         "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK"
         | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => true,
 
@@ -1136,28 +1139,36 @@ fn test_solarish(target: &str) {
         _ => false,
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_union(|union_| {
+        // the union handling is a mess
+        if union_.ident().starts_with("__c_anonymous_") || union_.ident().contains("door_desc_t_") {
+            return true;
+        }
+        false
+    });
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
         // the union handling is a mess
-        if ty.contains("door_desc_t_") {
+        if struct_.ident().contains("door_desc_t_") {
             return true;
         }
-        match ty {
+        match struct_.ident() {
             // a bunch of solaris-only fields
             "utmpx" if is_illumos => true,
             _ => false,
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
         // aio_buf is "volatile void*"
-        struct_ == "aiocb" && field == "aio_buf"
+        struct_.ident() == "aiocb" && field.ident() == "aio_buf"
     });
 
-    cfg.skip_field(move |s, field| {
-        match s {
+    cfg.skip_struct_field(move |s, field| {
+        let field = field.ident();
+        match s.ident() {
             // C99 sizing on this is tough
             "dirent" if field == "d_name" => true,
             // the union/macro makes this rough
@@ -1186,9 +1197,9 @@ fn test_solarish(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // const-ness only added recently
             "dladdr" => true,
 
@@ -1246,12 +1257,12 @@ fn test_solarish(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
 
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -1344,51 +1355,51 @@ fn test_netbsd(target: &str) {
         "iconv.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_type(move |ty| {
         match ty {
-            // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
-            | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr"
-            | "Elf32_Chdr" | "Elf64_Chdr" => ty.to_string(),
-
             // OSX calls this something else
-            "sighandler_t" => "sig_t".to_string(),
+            "sighandler_t" => Some("sig_t".to_string()),
 
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
-
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            t => t.to_string(),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_ty(|ty| match ty {
+        // Just pass all these through, no need for a "struct" prefix
+        "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
+        | "Elf64_Shdr" | "Elf32_Sym" | "Elf64_Sym" | "Elf32_Ehdr" | "Elf64_Ehdr" | "Elf32_Chdr"
+        | "Elf64_Chdr" => Some(ty.to_string()),
+        t if t.ends_with("_t") => Some(t.to_string()),
+        _ => None,
+    });
+
+    cfg.rename_struct_field(move |struct_, field| {
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
+            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
+                Some(s.replace("e_nsec", ".tv_nsec"))
             }
-            s => s.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_type(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_struct(|ty| ty.ident().starts_with("__c_anonymous_"));
+    cfg.skip_union(|ty| ty.ident().starts_with("__c_anonymous_"));
+
+    cfg.skip_alias(move |ty| {
+        if ty.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+        match ty.ident() {
             // FIXME(netbsd): sighandler_t is crazy across platforms
             "sighandler_t" => true,
             _ => false,
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        match ty {
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
@@ -1406,8 +1417,8 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true,                       // removed in glibc 2.26
 
@@ -1421,9 +1432,9 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         #[expect(clippy::wildcard_in_or_patterns)]
-        match name {
+        match func.ident() {
             // FIXME(netbsd): netbsd 10 minimum
             "getentropy" | "getrandom" => true,
 
@@ -1435,17 +1446,17 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
         // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
+        (struct_.ident() == "sigaction" && field.ident() == "sa_sigaction") ||
         // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_ == "aiocb" && field == "aio_buf")
+        (struct_.ident() == "aiocb" && field.ident() == "aio_buf")
     });
 
-    cfg.skip_field(|struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(|struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // conflicting with `p_type` macro from <resolve.h>.
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
@@ -1455,7 +1466,7 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_dragonflybsd(target: &str) {
@@ -1677,7 +1688,7 @@ fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
     let p2 = target.contains("wasip2");
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1724,35 +1735,25 @@ fn test_wasi(target: &str) {
     // to omit them.
     cfg.cfg("libc_ctest", None);
 
-    // `ctest` has a hard-coded list of default cfgs which doesn't include
-    // wasip2, which is why it has to be set here manually.
-    if p2 {
-        cfg.cfg("target_env", Some("p2"));
-    }
-
-    cfg.type_name(move |ty, is_struct, is_union| match ty {
-        "FILE" | "fd_set" | "DIR" => ty.to_string(),
-        t if is_union => format!("union {t}"),
-        t if t.starts_with("__wasi") && t.ends_with("_u") => format!("union {t}"),
-        t if t.starts_with("__wasi") && is_struct => format!("struct {t}"),
-        t if t.ends_with("_t") => t.to_string(),
-        t if is_struct => format!("struct {t}"),
-        t => t.to_string(),
+    cfg.rename_struct_ty(move |ty| match ty {
+        "FILE" | "fd_set" | "DIR" => Some(ty.to_string()),
+        t if t.ends_with("_t") => Some(t.to_string()),
+        _ => None,
     });
 
-    cfg.field_name(move |_struct, field| {
-        match field {
+    cfg.rename_struct_field(move |_struct, field| {
+        match field.ident() {
             // deal with fields as rust keywords
-            "type_" => "type".to_string(),
-            s => s.to_string(),
+            "type_" => Some("type".to_string()),
+            _ => None,
         }
     });
 
     // These have a different and internal type in header files and are only
     // used here to generate a pointer to them in bindings so skip these tests.
-    cfg.skip_static(|c| c.starts_with("_CLOCK_"));
+    cfg.skip_static(|s| s.ident().starts_with("_CLOCK_"));
 
-    cfg.skip_const(|c| match c {
+    cfg.skip_const(|c| match c.ident() {
         // These constants aren't yet defined in wasi-libc.
         // Exposing them is being tracked by https://github.com/WebAssembly/wasi-libc/issues/531.
         "SO_BROADCAST" | "SO_LINGER" => true,
@@ -1760,7 +1761,7 @@ fn test_wasi(target: &str) {
         _ => false,
     });
 
-    cfg.skip_fn(|f| match f {
+    cfg.skip_fn(|f| match f.ident() {
         // This function doesn't actually exist in libc's header files
         "__errno_location" => true,
 
@@ -1775,9 +1776,9 @@ fn test_wasi(target: &str) {
 
     // d_name is declared as a flexible array in WASI libc, so it
     // doesn't support sizeof.
-    cfg.skip_field(|s, field| s == "dirent" && field == "d_name");
+    cfg.skip_struct_field(|s, field| s.ident() == "dirent" && field.ident() == "d_name");
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_android(target: &str) {
@@ -1790,7 +1791,7 @@ fn test_android(target: &str) {
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
     headers! { cfg:
@@ -1939,46 +1940,39 @@ fn test_android(target: &str) {
                 "android/set_abort_message.h"
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
-        match ty {
-            // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
-
-            t if is_union => format!("union {t}"),
-
-            t if t.ends_with("_t") => t.to_string(),
-
-            "Ioctl" => "int".to_string(),
-
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            t => t.to_string(),
-        }
+    cfg.rename_type(move |ty| match ty {
+        "Ioctl" => Some("int".to_string()),
+        _ => None,
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_ty(|ty| match ty {
+        // Just pass all these through, no need for a "struct" prefix
+        "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => Some(ty.to_string()),
+        t if t.ends_with("_t") => Some(t.to_string()),
+        _ => None,
+    });
+
+    cfg.rename_struct_field(move |struct_, field| {
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => s.to_string(),
+            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => Some(s.to_string()),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
             "type_"
-                if struct_ == "input_event"
-                    || struct_ == "input_mask"
-                    || struct_ == "ff_effect" =>
+                if struct_.ident() == "input_event"
+                    || struct_.ident() == "input_mask"
+                    || struct_.ident() == "ff_effect" =>
             {
-                "type".to_string()
+                Some("type".to_string())
             }
-
-            s => s.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // FIXME(android): `sighandler_t` type is incorrect, see:
             // https://github.com/rust-lang/libc/issues/1359
             "sighandler_t" => true,
@@ -1999,11 +1993,13 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
+
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+        match struct_.ident() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
@@ -2027,8 +2023,8 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
             | "IPV6_FLOWINFO"
             | "IPV6_FLOWLABEL_MGR"
@@ -2178,9 +2174,9 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // FIXME(android): for unknown reasons linker unable to find "fexecve"
             "fexecve" => true,
 
@@ -2243,11 +2239,17 @@ fn test_android(target: &str) {
             // Added in API level 24
             "if_nameindex" | "if_freenameindex" => true,
 
+            // FIXME(ctest): In our current method of testing, we cast the function to a `void *`,
+            // which is not possible for functions that have been overloaded.
+            "ioctl" => true,
+
             _ => false,
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
+        let struct_ = struct_.ident();
+        let field = field.ident();
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // this one is an anonymous union
@@ -2261,8 +2263,8 @@ fn test_android(target: &str) {
         (struct_ == "flock64" && (field == "l_start" || field == "l_len"))
     });
 
-    cfg.skip_field(|struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(|struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // conflicting with `p_type` macro from <resolve.h>.
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
@@ -2280,7 +2282,7 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 
     test_linux_like_apis(target);
 }
@@ -2951,7 +2953,7 @@ fn test_freebsd(target: &str) {
 fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None); // FIXME(emscripten): ??
 
     headers! { cfg:
@@ -3030,48 +3032,37 @@ fn test_emscripten(target: &str) {
                "wchar.h",
     }
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    cfg.rename_struct_ty(move |ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "DIR" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" | "DIR" => Some(ty.to_string()),
 
             // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
-            "off64_t" => "off_t".to_string(),
+            "off64_t" => Some("off_t".to_string()),
 
             // typedefs don't need any keywords
-            t if t.ends_with("_t") => t.to_string(),
-
-            // put `struct` in front of all structs:.
-            t if is_struct => format!("struct {t}"),
-
-            // put `union` in front of all unions:
-            t if is_union => format!("union {t}"),
-
-            t => t.to_string(),
+            t if t.ends_with("_t") => Some(t.to_string()),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_field(move |struct_, field| {
+        match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
+            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
+                Some(s.replace("e_nsec", ".tv_nsec"))
             }
-            s => s.to_string(),
+            _ => None,
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // sighandler_t is crazy across platforms
             // FIXME(emscripten): is this necessary?
             "sighandler_t" => true,
-
-            // No epoll support
-            // https://github.com/emscripten-core/emscripten/issues/5033
-            ty if ty.starts_with("epoll") => true,
 
             // LFS64 types have been removed in Emscripten 3.1.44
             // https://github.com/emscripten-core/emscripten/pull/19812
@@ -3079,15 +3070,37 @@ fn test_emscripten(target: &str) {
         }
     });
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_union(|union_| {
+        if union_.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+
+        match union_.ident() {
             // FIXME(emscripten): Investigate why the test fails.
             // Skip for now to unblock CI.
             "sigval" => true,
 
+            // No epoll support
+            // https://github.com/emscripten-core/emscripten/issues/5033
+            ty if ty.starts_with("epoll") => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(|ty| {
+        match ty.ident() {
+            // LFS64 types have been removed in Emscripten 3.1.44
+            // https://github.com/emscripten-core/emscripten/pull/19812
+            ty => ty.ends_with("64") || ty.ends_with("64_t"),
+        }
+    });
+
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
+            return true;
+        }
+        match struct_.ident() {
             // FIXME(emscripten): Investigate why the test fails.
             // Skip for now to unblock CI.
             "pthread_condattr_t" => true,
@@ -3096,16 +3109,14 @@ fn test_emscripten(target: &str) {
             // No epoll support
             // https://github.com/emscripten-core/emscripten/issues/5033
             ty if ty.starts_with("epoll") => true,
-            ty if ty.starts_with("signalfd") => true,
 
-            // LFS64 types have been removed in Emscripten 3.1.44
-            // https://github.com/emscripten-core/emscripten/pull/19812
-            ty => ty.ends_with("64") || ty.ends_with("64_t"),
+            ty if ty.starts_with("signalfd") => true,
+            _ => false,
         }
     });
 
-    cfg.skip_fn(move |name| {
-        match name {
+    cfg.skip_fn(move |func| {
+        match func.ident() {
             // Emscripten does not support fork/exec/wait or any kind of multi-process support
             // https://github.com/emscripten-core/emscripten/blob/3.1.68/tools/system_libs.py#L1100
             "execv" | "execve" | "execvp" | "execvpe" | "fexecve" | "wait4" => true,
@@ -3114,8 +3125,8 @@ fn test_emscripten(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // FIXME(deprecated): deprecated - SIGNUNUSED was removed in glibc 2.26
             // users should use SIGSYS instead
             "SIGUNUSED" => true,
@@ -3162,14 +3173,16 @@ fn test_emscripten(target: &str) {
         }
     });
 
-    cfg.skip_field_type(move |struct_, field| {
+    cfg.skip_struct_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
+        (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
         // sighandler_t type is super weird
-        (struct_ == "sigaction" && field == "sa_sigaction")
+        (struct_.ident() == "sigaction" && field.ident() == "sa_sigaction")
     });
 
-    cfg.skip_field(move |struct_, field| {
+    cfg.skip_struct_field(move |struct_, field| {
+        let struct_ = struct_.ident();
+        let field = field.ident();
         // _sigev_un is an anonymous union
         (struct_ == "sigevent" && field == "_sigev_un") ||
         // this is actually a union on linux, so we can't represent it well and
@@ -3187,7 +3200,7 @@ fn test_emscripten(target: &str) {
         ].contains(&field))
     });
 
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_neutrino(target: &str) {
