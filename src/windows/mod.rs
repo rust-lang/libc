@@ -289,6 +289,19 @@ extern "C" {
     pub fn isblank(c: c_int) -> c_int;
     pub fn tolower(c: c_int) -> c_int;
     pub fn toupper(c: c_int) -> c_int;
+    pub fn qsort(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        compar: Option<unsafe extern "C" fn(*const c_void, *const c_void) -> c_int>,
+    );
+    pub fn qsort_s(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        compar: Option<unsafe extern "C" fn(*mut c_void, *const c_void, *const c_void) -> c_int>,
+        arg: *mut c_void,
+    );
     pub fn fopen(filename: *const c_char, mode: *const c_char) -> *mut FILE;
     pub fn freopen(filename: *const c_char, mode: *const c_char, file: *mut FILE) -> *mut FILE;
     pub fn fflush(file: *mut FILE) -> c_int;
