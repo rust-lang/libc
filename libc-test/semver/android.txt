@@ -3985,6 +3985,7 @@ signalfd
 signalfd_siginfo
 sigpending
 sigprocmask
+sigqueue
 sigset64_t
 sigset_t
 sigsuspend

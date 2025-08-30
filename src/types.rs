@@ -16,3 +16,11 @@ impl<T: Copy> Default for Padding<T> {
         Self(MaybeUninit::zeroed())
     }
 }
+
+/// The default repr type used for C style enums in Rust.
+#[cfg(target_env = "msvc")]
+#[allow(unused)]
+pub(crate) type CEnumRepr = c_int;
+#[cfg(not(target_env = "msvc"))]
+#[allow(unused)]
+pub(crate) type CEnumRepr = c_uint;

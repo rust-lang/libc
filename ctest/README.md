@@ -10,7 +10,7 @@ APIs in Rust match the APIs defined in C.
 
 ## MSRV (Minimum Supported Rust Version)
 
-The MSRV is 1.63.0 because of the transitive dependencies.
+The MSRV is 1.88.0 because of the transitive dependencies.
 Note that MSRV may be changed anytime by dependencies.
 
 ## Example
@@ -34,7 +34,7 @@ mylib-sys = { path = "../mylib-sys" }
 libc = "0.2"
 
 [build-dependencies]
-ctest = "0.4"
+ctest = "0.5.0-beta.0"
 ```
 
 Next, add a build script to `systest/build.rs`:
@@ -52,7 +52,7 @@ fn main() {
 
     // Generate the tests, passing the path to the `*-sys` library as well as
     // the module to generate.
-    cfg.generate("../mylib-sys/lib.rs", "all.rs");
+    ctest::generate_test(&mut cfg, "../mylib-sys/lib.rs", "all.rs");
 }
 ```
 
@@ -72,10 +72,10 @@ directory, and everything should be kicked into action!
 
 ## How it works
 
-This library will parse the `*-sys` crate to learn about all extern fn
-definitions within. It will then generate a test suite to ensure that all
-function function signatures, constant values, struct layout/alignment, type
-size/alignment, etc, all match their C equivalent.
+This library will parse the `*-sys` crate to learn about all definitions within.
+It will then generate a test suite to ensure that all function signatures,
+constant values, struct layout/alignment, type size/alignment, etc,
+all match their C equivalent.
 
 The generated tests come in two forms. One is a Rust file which contains the
 `main` function (hence the `include!` above), and another is a C file which is
@@ -100,6 +100,14 @@ This project is licensed under either of
   https://opensource.org/licenses/MIT)
 
 at your option.
+
+## Modifying test templates
+If you modify the test templates for either Rust or C in any way, then before
+contributing you must run the following command to update the pre-generated test
+files we check against:
+```rust
+$ LIBC_BLESS=1 cargo test
+```
 
 ## Contribution
 

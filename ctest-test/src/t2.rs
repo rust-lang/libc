@@ -1,3 +1,5 @@
+#![allow(non_camel_case_types)]
+
 use std::ffi::{c_char, c_int};
 
 pub type T2Foo = u32;
@@ -34,3 +36,15 @@ i! {
 extern "C" {
     pub fn T2a();
 }
+
+#[cfg(target_env = "msvc")]
+pub type enum_repr_too_small = i16;
+#[cfg(not(target_env = "msvc"))]
+pub type enum_repr_too_small = u16;
+pub const ENUM_REPR_TOO_SMALL_A: enum_repr_too_small = 0;
+
+#[cfg(target_env = "msvc")]
+pub type enum_wrong_signedness = u32;
+#[cfg(not(target_env = "msvc"))]
+pub type enum_wrong_signedness = i32;
+pub const ENUM_WRONG_SIGNEDNESS_A: enum_wrong_signedness = 0;

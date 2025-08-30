@@ -96,24 +96,6 @@ fn test_translation_type_bare_fn() {
         "*const fn(*mut u8, &mut [u8; 16]) -> &mut *mut u8",
         "uint8_t **(*const *foo)(uint8_t *, uint8_t (*)[16])",
     );
-}
-
-#[test]
-fn test_translation_type_array() {
-    assert_r2cdecl(
-        "[&u8; crate::ERRNO as usize + 2]",
-        "const uint8_t *foo[(size_t)ERRNO + 2]",
-    );
-}
-
-#[test]
-fn test_translation_fails_for_unsupported() {
-    assert!(r2cdecl("[&str; 2 + 2]", "").is_err());
-    assert!(r2cdecl("fn(*mut [u8], i16) -> *const char", "").is_err());
-}
-
-#[test]
-fn test_translate_helper_function_pointer() {
     assert_r2cdecl(
         "extern \"C\" fn(c_int) -> *const c_void",
         "const void *(*foo)(int)",
@@ -126,15 +108,21 @@ fn test_translate_helper_function_pointer() {
 }
 
 #[test]
-fn test_translate_helper_array_1d_2d() {
+fn test_translation_type_array() {
+    assert_r2cdecl(
+        "[&u8; crate::ERRNO as usize + 2]",
+        "const uint8_t *foo[(size_t)ERRNO + 2]",
+    );
+    assert_eq!(
+        r2cdecl("[u8; 10usize]", "foo").unwrap(),
+        "uint8_t foo[(size_t)10]"
+    );
     assert_r2cdecl("[u8; 10]", "uint8_t foo[10]");
     assert_r2cdecl("[[u8; 64]; 32]", "uint8_t foo[32][64]");
 }
 
 #[test]
-fn test_translate_expr_literal_types() {
-    assert_eq!(
-        r2cdecl("[u8; 10usize]", "foo").unwrap(),
-        "uint8_t foo[(size_t)10]"
-    );
+fn test_translation_fails_for_unsupported() {
+    assert!(r2cdecl("[&str; 2 + 2]", "").is_err());
+    assert!(r2cdecl("fn(*mut [u8], i16) -> *const char", "").is_err());
 }

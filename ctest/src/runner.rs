@@ -1,3 +1,5 @@
+//! Generation, compilation, and running of tests.
+
 use std::env;
 use std::fs::{File, canonicalize};
 use std::io::Write;
@@ -5,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::generator::GenerationError;
-use crate::{Result, TestGenerator};
+use crate::{EDITION, Result, TestGenerator, get_build_target};
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]
@@ -16,17 +18,7 @@ pub fn generate_test(
 ) -> Result<PathBuf, GenerationError> {
     let output_file_path = generator.generate_files(crate_path, output_file_path)?;
 
-    // Search for the target and host to build for if specified manually
-    // (generator.target, generator.host),
-    // via build script (TARGET, HOST), or for internal testing (TARGET_PLATFORM, HOST_PLATFORM).
-    let target = generator
-        .target
-        .clone()
-        .or_else(|| env::var("TARGET").ok())
-        .or_else(|| env::var("TARGET_PLATFORM").ok())
-        .ok_or(GenerationError::EnvVarNotFound(
-            "TARGET, TARGET_PLATFORM".to_string(),
-        ))?;
+    let target = get_build_target(generator)?;
     let host = env::var("HOST")
         .or_else(|_| env::var("HOST_PLATFORM"))
         .map_err(|_| GenerationError::EnvVarNotFound("HOST, HOST_PLATFORM".to_string()))?;
@@ -122,10 +114,9 @@ pub fn __compile_test(
         .arg(format!("-Lnative={}", output_dir.display()))
         .arg(format!("-lstatic={}", library_file.to_str().unwrap()))
         .arg("--edition")
-        .arg("2021") // Defaults to 2015.
+        .arg(EDITION) // Defaults to 2015.
         .arg("-o")
-        .arg(&binary_path)
-        .arg("-Aunused");
+        .arg(&binary_path);
 
     // Pass in a different target, linker or flags if set, useful for cross compilation.
 

@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
-use ctest_next::{__compile_test, __run_test, Result, TestGenerator, generate_test};
+use ctest::{__compile_test, __run_test, Result, TestGenerator, generate_test};
 use pretty_assertions::assert_eq;
 
 // Headers are found relevative to the include directory, all files are generated
@@ -36,7 +36,10 @@ fn bless_equal(new_file: impl AsRef<Path>, old_file: impl AsRef<Path>) {
     }
     let old_content = fs::read_to_string(&old_file).unwrap().replace("\r", "");
 
-    assert_eq!(new_content, old_content);
+    assert_eq!(
+        new_content, old_content,
+        "the template file has changed. Please run the tests with `LIBCBLESS=1`."
+    );
 }
 
 /// Generate test files for the given header and crate path and compare with pregenerated test files.
@@ -74,6 +77,7 @@ fn check_entrypoint(
     }
 }
 
+/// Test if a hierarchy of modules generates tests properly.
 #[test]
 fn test_entrypoint_hierarchy() {
     let include_path = PathBuf::from("tests/input");
@@ -84,6 +88,7 @@ fn test_entrypoint_hierarchy() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if every type can be skipped.
 #[test]
 fn test_skip_simple() {
     let include_path = PathBuf::from("tests/input");
@@ -92,6 +97,7 @@ fn test_skip_simple() {
 
     let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
     gen_.skip_const(|c| c.ident() == "B" || c.ident() == "A")
+        .skip_c_enum(|e| e == "Color")
         .skip_alias(|a| a.ident() == "Byte")
         .skip_struct(|s| s.ident() == "Person")
         .skip_union(|u| u.ident() == "Word")
@@ -101,6 +107,7 @@ fn test_skip_simple() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if a type can be renamed.
 #[test]
 fn test_map_simple() {
     let include_path = PathBuf::from("tests/input");
@@ -108,11 +115,14 @@ fn test_map_simple() {
     let library_path = "simple.out.with-renames.a";
 
     let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
-    gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()));
+    gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()))
+        .alias_is_c_enum(|e| e == "Color")
+        .skip_signededness(|ty| ty == "Color");
 
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if macros are expanded properly.
 #[test]
 fn test_entrypoint_macro() {
     let include_path = PathBuf::from("tests/input");
@@ -123,6 +133,7 @@ fn test_entrypoint_macro() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if a file with invalid syntax fails to generate tests.
 #[test]
 fn test_entrypoint_invalid_syntax() {
     let crate_path = "tests/input/invalid_syntax.rs";

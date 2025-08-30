@@ -1,3 +1,5 @@
+//! Configuration of the test generator.
+
 use std::env;
 use std::fs::File;
 use std::io::Write;
@@ -12,11 +14,11 @@ use crate::template::{CTestTemplate, RustTestTemplate};
 use crate::translator::translate_primitive_type;
 use crate::{
     Const, Field, MapInput, Parameter, Result, Static, Struct, TranslationError, Type, Union,
-    VolatileItemKind, expand,
+    VolatileItemKind, expand, get_build_target,
 };
 
-/// A function that takes a mappable input and returns its mapping as Some, otherwise
-/// use the default name if None.
+/// A function that takes a mappable input and returns its mapping as `Some`, otherwise
+/// use the default name if `None`.
 type MappedName = Box<dyn Fn(&MapInput) -> Option<String>>;
 /// A function that determines whether to skip an item or not.
 type Skip = Box<dyn Fn(&MapInput) -> bool>;
@@ -26,6 +28,8 @@ type VolatileItem = Box<dyn Fn(VolatileItemKind) -> bool>;
 type ArrayArg = Box<dyn Fn(crate::Fn, Parameter) -> bool>;
 /// A function that determines whether to skip a test, taking in the identifier name.
 type SkipTest = Box<dyn Fn(&str) -> bool>;
+/// A function that determines whether a type alias is a c enum.
+type CEnum = Box<dyn Fn(&str) -> bool>;
 
 /// A builder used to generate a test suite.
 #[derive(Default)]
@@ -42,6 +46,7 @@ pub struct TestGenerator {
     pub(crate) skips: Vec<Skip>,
     pub(crate) verbose_skip: bool,
     pub(crate) volatile_items: Vec<VolatileItem>,
+    pub(crate) c_enums: Vec<CEnum>,
     pub(crate) array_arg: Option<ArrayArg>,
     pub(crate) skip_private: bool,
     pub(crate) skip_roundtrip: Option<SkipTest>,
@@ -49,16 +54,22 @@ pub struct TestGenerator {
     pub(crate) skip_fn_ptrcheck: Option<SkipTest>,
 }
 
+/// An error that occurs when generating the test files.
 #[derive(Debug, Error)]
 pub enum GenerationError {
+    /// An error that occurs when `rustc -Zunpretty=expand` fails to expand the crate.
     #[error("unable to expand crate {0}: {1}")]
     MacroExpansion(PathBuf, String),
+    /// An error that occurs when `syn` is unable to parse the expanded crate due to invalid syntax.
     #[error("unable to parse expanded crate {0}: {1}")]
     RustSyntax(String, String),
+    /// An error that occurs when the Rust to C translation fails.
     #[error("unable to prepare template input: {0}")]
     Translation(#[from] TranslationError),
+    /// An error that occurs when there are errors in the Rust side of the test template.
     #[error("unable to render Rust template: {0}")]
     RustTemplateRender(askama::Error),
+    /// An error that occurs when there are errors in the C side of the test template.
     #[error("unable to render C template: {0}")]
     CTemplateRender(askama::Error),
     #[error("unable to create or write template file: {0}")]
@@ -75,14 +86,14 @@ impl TestGenerator {
 
     /// Add a header to be included as part of the generated C file.
     ///
-    /// The generate C test will be compiled by a C compiler, and this can be
+    /// The generated C test will be compiled by a C compiler, and this can be
     /// used to ensure that all the necessary header files are included to test
     /// all FFI definitions.
     ///
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.header("foo.h")
@@ -101,7 +112,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.target("x86_64-unknown-linux-gnu");
@@ -128,7 +139,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.cfg("foo", None) // cfg!(foo)
@@ -150,7 +161,7 @@ impl TestGenerator {
     /// use std::env;
     /// use std::path::PathBuf;
     ///
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// let out_dir = PathBuf::from(env::var_os("OUT_DIR").unwrap());
@@ -166,7 +177,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.out_dir("path/to/output");
@@ -181,7 +192,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_private(true);
@@ -196,7 +207,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.verbose_skip(true);
@@ -206,12 +217,26 @@ impl TestGenerator {
         self
     }
 
+    /// Indicate that a type alias is actually a C enum.
+    ///
+    /// # Examples
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.alias_is_c_enum(|e| e == "pid_type");
+    /// ```
+    pub fn alias_is_c_enum(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.c_enums.push(Box::new(f));
+        self
+    }
+
     /// Indicate that a struct field should be marked `volatile`.
     ///
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::{TestGenerator, VolatileItemKind};
+    /// use ctest::{TestGenerator, VolatileItemKind};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.volatile_struct_field(|s, f| {
@@ -237,7 +262,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::{TestGenerator, VolatileItemKind};
+    /// use ctest::{TestGenerator, VolatileItemKind};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.volatile_static(|s| {
@@ -260,7 +285,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::{TestGenerator, VolatileItemKind};
+    /// use ctest::{TestGenerator, VolatileItemKind};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.volatile_fn_arg(|f, _p| {
@@ -286,7 +311,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::{TestGenerator, VolatileItemKind};
+    /// use ctest::{TestGenerator, VolatileItemKind};
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.volatile_fn_return_type(|f| {
@@ -315,7 +340,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.array_arg(|func, arg| {
@@ -334,7 +359,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_struct(|s| {
@@ -357,7 +382,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_union(|u| {
@@ -380,7 +405,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_struct_field(|s, f| {
@@ -406,7 +431,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_union_field(|s, f| {
@@ -429,7 +454,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_alias(|a| {
@@ -452,7 +477,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_const(|s| {
@@ -475,7 +500,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_static(|s| {
@@ -498,7 +523,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_fn(|s| {
@@ -516,6 +541,30 @@ impl TestGenerator {
         self
     }
 
+    /// Configures whether tests for a C enum are generated.
+    ///
+    /// A C enum consists of a type alias, as well as constants that have the same type. Tests
+    /// for both the alias as well as the constants are skipped.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_c_enum(|e| e == "pid_type");
+    /// ```
+    pub fn skip_c_enum(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
+        self.skips.push(Box::new(move |item| {
+            if let MapInput::CEnumType(e) = item {
+                f(e)
+            } else {
+                false
+            }
+        }));
+        self
+    }
+
     /// Add a flag to the C compiler invocation.
     ///
     /// # Examples
@@ -524,7 +573,7 @@ impl TestGenerator {
     /// use std::env;
     /// use std::path::PathBuf;
     ///
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.flag("-Wno-type-limits");
@@ -542,7 +591,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.define("_GNU_SOURCE", None)
@@ -568,7 +617,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_struct_field_type(|s, field| {
@@ -603,7 +652,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_union_field_type(|s, field| {
@@ -629,7 +678,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_constant(|c| {
@@ -652,7 +701,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_alias(|c| {
@@ -675,7 +724,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_struct_field(|_s, field| {
@@ -701,7 +750,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_union_field(|_u, field| {
@@ -727,7 +776,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_fn(|f| Some(format!("{}_c", f.ident())));
@@ -748,7 +797,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_static(|f| Some(format!("{}_c", f.ident())));
@@ -769,7 +818,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_type(|ty| {
@@ -792,7 +841,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_struct_ty(|ty| {
@@ -815,7 +864,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.rename_struct_ty(|ty| {
@@ -846,7 +895,7 @@ impl TestGenerator {
     ///
     /// # Examples
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_roundtrip(|s| {
@@ -868,7 +917,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_signededness(|s| {
@@ -894,7 +943,7 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest_next::TestGenerator;
+    /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.skip_fn_ptrcheck(|name| name == "T1p");
@@ -912,7 +961,7 @@ impl TestGenerator {
         crate_path: impl AsRef<Path>,
         output_file_path: impl AsRef<Path>,
     ) -> Result<PathBuf, GenerationError> {
-        let expanded = expand(&crate_path, &self.cfg).map_err(|e| {
+        let expanded = expand(&crate_path, &self.cfg, get_build_target(self)?).map_err(|e| {
             GenerationError::MacroExpansion(crate_path.as_ref().to_path_buf(), e.to_string())
         })?;
         let ast = syn::parse_file(&expanded)
@@ -976,6 +1025,7 @@ impl TestGenerator {
             MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
             MapInput::UnionType(ty) => format!("union {ty}"),
+            MapInput::CEnumType(ty) => format!("enum {ty}"),
             MapInput::StructFieldType(_, f) => f.ident().to_string(),
             MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => translate_primitive_type(ty),

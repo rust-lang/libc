@@ -1,4 +1,4 @@
-use std::ffi::{c_char, c_void};
+use std::ffi::{c_char, c_int, c_void};
 
 pub type Byte = u8;
 
@@ -17,6 +17,11 @@ pub union Word {
 
 const A: *const c_char = c"abc".as_ptr();
 const B: *const c_char = c"bac".as_ptr();
+
+pub type Color = c_int;
+pub const RED: Color = 0;
+pub const BLUE: Color = RED + 1;
+pub const GREEN: Color = BLUE + 1;
 
 unsafe extern "C" {
     pub fn calloc(num: usize, size: usize) -> *mut c_void;

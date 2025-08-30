@@ -520,6 +520,8 @@ fn main() {
 }
 
 // Run all tests by calling the functions that define them.
+// FIXME(ctest): Maybe consider running the tests in parallel, since everything is independent
+// and we already use atomics.
 fn run_all() {
     ctest_size_align_VecU8();
     ctest_size_align_VecU16();

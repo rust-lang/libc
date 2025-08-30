@@ -1,24 +1,20 @@
 [package]
 name = "ctest"
-version = "0.4.11"
-description = "Automated tests of FFI bindings."
-exclude = ["CHANGELOG.md"]
-edition = "2021"
+version = "0.5.0-beta.0"
+edition = "2024"
+rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-lang/libc"
-rust-version = "1.63.0"
+publish = true
 
 [dependencies]
-anyhow = "1.0"
-garando_syntax = "0.1"
+askama = "0.14.0"
 cc = "1.2.29"
-rustc_version = "0.4"
-indoc = "2.0.6"
+proc-macro2 = { version = "1.0.101", features = ["span-locations"] }
+quote = "1.0.40"
+syn = { version = "2.0.104", features = ["full", "visit", "extra-traits"] }
+thiserror = "2.0.12"
 
-# FIXME(msrv): These should be moved to the root Cargo.toml as `[workspace.lints.*]`
-#              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
-
-[lints.rust]
-unused_qualifications = "warn"
-
-[lints.clippy]
+[dev-dependencies]
+pretty_assertions = "1.4.1"
+tempfile = "3.20.0"
