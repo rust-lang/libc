@@ -10,7 +10,7 @@ pub type ptrdiff_t = isize;
 pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
-pub type sighandler_t = usize;
+pub type sighandler_t = *const c_void;
 
 pub type wchar_t = u16;
 
@@ -237,11 +237,11 @@ pub const SIGABRT: c_int = 22;
 pub const NSIG: c_int = 23;
 
 pub const SIG_ERR: c_int = -1;
-pub const SIG_DFL: crate::sighandler_t = 0;
-pub const SIG_IGN: crate::sighandler_t = 1;
-pub const SIG_GET: crate::sighandler_t = 2;
-pub const SIG_SGE: crate::sighandler_t = 3;
-pub const SIG_ACK: crate::sighandler_t = 4;
+pub const SIG_DFL: crate::sighandler_t = 0 as sighandler_t;
+pub const SIG_IGN: crate::sighandler_t = 1 as sighandler_t;
+pub const SIG_GET: crate::sighandler_t = 2 as sighandler_t;
+pub const SIG_SGE: crate::sighandler_t = 3 as sighandler_t;
+pub const SIG_ACK: crate::sighandler_t = 4 as sighandler_t;
 
 #[cfg_attr(feature = "extra_traits", derive(Debug))]
 pub enum FILE {}
