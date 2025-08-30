@@ -4,8 +4,15 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-
 #include <hierarchy.h>
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+    #define CTEST_EXTERN extern "C" 
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+    #define CTEST_EXTERN
+#endif
 
 typedef void (*ctest_void_func)(void);
 
@@ -13,19 +20,19 @@ static bool ctest_const_ON_val_static = ON;
 
 // Define a function that returns a pointer to the value of the constant to test.
 // This will later be called on the Rust side via FFI.
-bool *ctest_const__ON(void) {
+CTEST_EXTERN bool *ctest_const__ON(void) {
     return &ctest_const_ON_val_static;
 }
 
 // Return the size of a type.
-uint64_t ctest_size_of__in6_addr(void) { return sizeof(in6_addr); }
+CTEST_EXTERN uint64_t ctest_size_of__in6_addr(void) { return sizeof(in6_addr); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__in6_addr(void) { return _Alignof(in6_addr); }
+CTEST_EXTERN uint64_t ctest_align_of__in6_addr(void) { return CTEST_ALIGNOF(in6_addr); }
 
 // Return `1` if the type is signed, otherwise return `0`.
 // Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
-uint32_t ctest_signededness_of__in6_addr(void) {
+CTEST_EXTERN uint32_t ctest_signededness_of__in6_addr(void) {
     in6_addr all_ones = (in6_addr) -1;
     return all_ones < 0;
 }
@@ -39,7 +46,7 @@ uint32_t ctest_signededness_of__in6_addr(void) {
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
 // remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
-in6_addr ctest_roundtrip__in6_addr(
+CTEST_EXTERN in6_addr ctest_roundtrip__in6_addr(
     in6_addr value,
     const uint8_t is_padding_byte[sizeof(in6_addr)],
     uint8_t value_bytes[sizeof(in6_addr)]
@@ -73,7 +80,8 @@ in6_addr ctest_roundtrip__in6_addr(
 #  pragma warning(disable:4191)
 #endif
 
-ctest_void_func ctest_foreign_fn__malloc(void) {
+// Return a function pointer.
+CTEST_EXTERN ctest_void_func ctest_foreign_fn__malloc(void) {
     return (ctest_void_func)malloc;
 }
 
@@ -82,7 +90,7 @@ ctest_void_func ctest_foreign_fn__malloc(void) {
 #endif
 
 // Return a pointer to the static variable content.
-void *ctest_static__in6addr_any(void) {
+CTEST_EXTERN void *ctest_static__in6addr_any(void) {
     // FIXME(ctest): Not correct due to casting the function to a data pointer.
     return (void *)&in6addr_any;
 }

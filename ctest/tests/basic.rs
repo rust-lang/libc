@@ -11,15 +11,18 @@ use pretty_assertions::assert_eq;
 ///
 /// The files will be generated in a unique temporary directory that gets
 /// deleted when it goes out of scope.
-fn default_generator(opt_level: u8, header: &str) -> Result<(TestGenerator, tempfile::TempDir)> {
+fn default_generator(
+    opt_level: u8,
+    header: Option<&str>,
+) -> Result<(TestGenerator, tempfile::TempDir)> {
     // FIXME(mbyx): Remove this in favor of not-unsafe alternatives.
     unsafe { env::set_var("OPT_LEVEL", opt_level.to_string()) };
     let temp_dir = tempfile::tempdir()?;
     let mut generator = TestGenerator::new();
-    generator
-        .out_dir(&temp_dir)
-        .include("tests/input")
-        .header(header);
+    generator.out_dir(&temp_dir).include("tests/input");
+    if let Some(header) = header {
+        generator.header(header);
+    }
 
     Ok((generator, temp_dir))
 }
@@ -84,7 +87,7 @@ fn test_entrypoint_hierarchy() {
     let crate_path = include_path.join("hierarchy/lib.rs");
     let library_path = "hierarchy.out.a";
 
-    let (mut gen_, out_dir) = default_generator(1, "hierarchy.h").unwrap();
+    let (mut gen_, out_dir) = default_generator(1, Some("hierarchy.h")).unwrap();
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
@@ -95,7 +98,7 @@ fn test_skip_simple() {
     let crate_path = include_path.join("simple.rs");
     let library_path = "simple.out.with-skips.a";
 
-    let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
+    let (mut gen_, out_dir) = default_generator(1, Some("simple.h")).unwrap();
     gen_.skip_const(|c| c.ident() == "B" || c.ident() == "A")
         .skip_c_enum(|e| e == "Color")
         .skip_alias(|a| a.ident() == "Byte")
@@ -114,7 +117,7 @@ fn test_map_simple() {
     let crate_path = include_path.join("simple.rs");
     let library_path = "simple.out.with-renames.a";
 
-    let (mut gen_, out_dir) = default_generator(1, "simple.h").unwrap();
+    let (mut gen_, out_dir) = default_generator(1, Some("simple.h")).unwrap();
     gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()))
         .alias_is_c_enum(|e| e == "Color")
         .skip_signededness(|ty| ty == "Color");
@@ -129,7 +132,9 @@ fn test_entrypoint_macro() {
     let crate_path = include_path.join("macro.rs");
     let library_path = "macro.out.a";
 
-    let (mut gen_, out_dir) = default_generator(1, "macro.h").unwrap();
+    let (mut gen_, out_dir) = default_generator(1, None).unwrap();
+    gen_.header_with_defines("macro.h", vec!["SUPPRESS_ERROR"]);
+
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 

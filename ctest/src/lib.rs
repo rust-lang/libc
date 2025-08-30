@@ -78,6 +78,27 @@ pub(crate) enum MapInput<'a> {
     UnionFieldType(&'a Union, &'a Field),
 }
 
+/// The language used to generate the tests.
+#[derive(Debug, Default, Clone)]
+#[non_exhaustive]
+pub enum Language {
+    /// The C Programming Language.
+    #[default]
+    C,
+    /// The C++ Programming Language.
+    CXX,
+}
+
+impl Language {
+    /// Return the file extension of the programming language.
+    pub(crate) fn extension(&self) -> &str {
+        match self {
+            Self::C => "c",
+            Self::CXX => "cpp",
+        }
+    }
+}
+
 /// Search for the target to build for, specified manually or through an environment variable.
 ///
 /// This function will check the following places for the target name:

@@ -35,7 +35,7 @@ impl RustTestTemplate {
 #[template(path = "test.c")]
 pub(crate) struct CTestTemplate {
     pub template: TestTemplate,
-    pub headers: Vec<String>,
+    pub headers: Vec<(BoxStr, Vec<BoxStr>)>,
 }
 
 impl CTestTemplate {

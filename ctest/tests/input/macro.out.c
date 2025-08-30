@@ -5,59 +5,69 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define SUPPRESS_ERROR
 #include <macro.h>
+#undef SUPPRESS_ERROR
+
+#if defined(__cplusplus)
+    #define CTEST_ALIGNOF(T) alignof(T)
+    #define CTEST_EXTERN extern "C" 
+#else
+    #define CTEST_ALIGNOF(T) _Alignof(T)
+    #define CTEST_EXTERN
+#endif
 
 typedef void (*ctest_void_func)(void);
 
 // Return the size of a type.
-uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
+CTEST_EXTERN uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__VecU8(void) { return _Alignof(struct VecU8); }
+CTEST_EXTERN uint64_t ctest_align_of__VecU8(void) { return CTEST_ALIGNOF(struct VecU8); }
 
 // Return the size of a type.
-uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
+CTEST_EXTERN uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
 
 // Return the alignment of a type.
-uint64_t ctest_align_of__VecU16(void) { return _Alignof(struct VecU16); }
+CTEST_EXTERN uint64_t ctest_align_of__VecU16(void) { return CTEST_ALIGNOF(struct VecU16); }
 
 // Return the offset of a struct/union field.
-uint64_t ctest_offset_of__VecU8__x(void) {
+CTEST_EXTERN uint64_t ctest_offset_of__VecU8__x(void) {
     return offsetof(struct VecU8, x);
 }
 
 // Return the size of a struct/union field.
-uint64_t ctest_size_of__VecU8__x(void) {
+CTEST_EXTERN uint64_t ctest_size_of__VecU8__x(void) {
     return sizeof(((struct VecU8){}).x);
 }
 
 // Return the offset of a struct/union field.
-uint64_t ctest_offset_of__VecU8__y(void) {
+CTEST_EXTERN uint64_t ctest_offset_of__VecU8__y(void) {
     return offsetof(struct VecU8, y);
 }
 
 // Return the size of a struct/union field.
-uint64_t ctest_size_of__VecU8__y(void) {
+CTEST_EXTERN uint64_t ctest_size_of__VecU8__y(void) {
     return sizeof(((struct VecU8){}).y);
 }
 
 // Return the offset of a struct/union field.
-uint64_t ctest_offset_of__VecU16__x(void) {
+CTEST_EXTERN uint64_t ctest_offset_of__VecU16__x(void) {
     return offsetof(struct VecU16, x);
 }
 
 // Return the size of a struct/union field.
-uint64_t ctest_size_of__VecU16__x(void) {
+CTEST_EXTERN uint64_t ctest_size_of__VecU16__x(void) {
     return sizeof(((struct VecU16){}).x);
 }
 
 // Return the offset of a struct/union field.
-uint64_t ctest_offset_of__VecU16__y(void) {
+CTEST_EXTERN uint64_t ctest_offset_of__VecU16__y(void) {
     return offsetof(struct VecU16, y);
 }
 
 // Return the size of a struct/union field.
-uint64_t ctest_size_of__VecU16__y(void) {
+CTEST_EXTERN uint64_t ctest_size_of__VecU16__y(void) {
     return sizeof(((struct VecU16){}).y);
 }
 
@@ -65,7 +75,7 @@ uint64_t ctest_size_of__VecU16__y(void) {
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
 typedef uint8_t *ctest_field_ty__VecU8__x;
-ctest_field_ty__VecU8__x
+CTEST_EXTERN ctest_field_ty__VecU8__x
 ctest_field_ptr__VecU8__x(struct VecU8 *b) {
     return &b->x;
 }
@@ -74,7 +84,7 @@ ctest_field_ptr__VecU8__x(struct VecU8 *b) {
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
 typedef uint8_t *ctest_field_ty__VecU8__y;
-ctest_field_ty__VecU8__y
+CTEST_EXTERN ctest_field_ty__VecU8__y
 ctest_field_ptr__VecU8__y(struct VecU8 *b) {
     return &b->y;
 }
@@ -83,7 +93,7 @@ ctest_field_ptr__VecU8__y(struct VecU8 *b) {
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
 typedef uint16_t *ctest_field_ty__VecU16__x;
-ctest_field_ty__VecU16__x
+CTEST_EXTERN ctest_field_ty__VecU16__x
 ctest_field_ptr__VecU16__x(struct VecU16 *b) {
     return &b->x;
 }
@@ -92,7 +102,7 @@ ctest_field_ptr__VecU16__x(struct VecU16 *b) {
 // This field can have a normal data type, or it could be a function pointer or an array, which
 // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
 typedef uint16_t *ctest_field_ty__VecU16__y;
-ctest_field_ty__VecU16__y
+CTEST_EXTERN ctest_field_ty__VecU16__y
 ctest_field_ptr__VecU16__y(struct VecU16 *b) {
     return &b->y;
 }
@@ -106,7 +116,7 @@ ctest_field_ptr__VecU16__y(struct VecU16 *b) {
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
 // remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
-struct VecU8 ctest_roundtrip__VecU8(
+CTEST_EXTERN struct VecU8 ctest_roundtrip__VecU8(
     struct VecU8 value,
     const uint8_t is_padding_byte[sizeof(struct VecU8)],
     uint8_t value_bytes[sizeof(struct VecU8)]
@@ -133,7 +143,7 @@ struct VecU8 ctest_roundtrip__VecU8(
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
 // remains unchanged.
 // It checks if the size is the same as well as if the padding bytes are all in the correct place.
-struct VecU16 ctest_roundtrip__VecU16(
+CTEST_EXTERN struct VecU16 ctest_roundtrip__VecU16(
     struct VecU16 value,
     const uint8_t is_padding_byte[sizeof(struct VecU16)],
     uint8_t value_bytes[sizeof(struct VecU16)]
