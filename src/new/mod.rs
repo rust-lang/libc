@@ -13,3 +13,10 @@ cfg_if! {
         pub use bionic::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        mod musl;
+        pub use musl::*;
+    }
+}
