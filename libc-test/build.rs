@@ -1944,6 +1944,10 @@ fn test_android(target: &str) {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
 
+            "__uint128" | "__uint128_t" => "uint128".to_string(),
+
+            "__int128" | "__int128_t" => "int128".to_string(),
+
             t if is_union => format!("union {t}"),
 
             t if t.ends_with("_t") => t.to_string(),
