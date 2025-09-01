@@ -1746,13 +1746,10 @@ cfg_if! {
 
         /// Build an ioctl number, analogous to the C macro of the same name.
         const fn _IOC(dir: u32, ty: u32, nr: u32, size: usize) -> Ioctl {
-            // FIXME(ctest) the `garando_syntax` crate (used by ctest in the CI test suite)
-            // cannot currently parse these `debug_assert!`s
-            //
-            // debug_assert!(dir <= _IOC_DIRMASK);
-            // debug_assert!(ty <= _IOC_TYPEMASK);
-            // debug_assert!(nr <= _IOC_NRMASK);
-            // debug_assert!(size <= (_IOC_SIZEMASK as usize));
+            core::debug_assert!(dir <= _IOC_DIRMASK);
+            core::debug_assert!(ty <= _IOC_TYPEMASK);
+            core::debug_assert!(nr <= _IOC_NRMASK);
+            core::debug_assert!(size <= (_IOC_SIZEMASK as usize));
 
             ((dir << _IOC_DIRSHIFT)
                 | (ty << _IOC_TYPESHIFT)
