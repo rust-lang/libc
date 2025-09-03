@@ -6,10 +6,6 @@ use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::{env, io};
 
-fn src_hotfix_dir() -> PathBuf {
-    Path::new(&env::var_os("OUT_DIR").unwrap()).join("src-hotfix")
-}
-
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) || target.contains("cygwin") {
@@ -71,11 +67,6 @@ fn do_ctest() {
         t if t.contains("aix") => return test_aix(t),
         t => panic!("unknown target {t}"),
     }
-}
-
-#[expect(unused)]
-fn ctest_old_cfg() -> ctest_old::TestGenerator {
-    ctest_old::TestGenerator::new()
 }
 
 fn ctest_cfg() -> ctest::TestGenerator {
@@ -162,37 +153,9 @@ fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
 
-    let hotfix_dir = src_hotfix_dir();
-    if std::fs::exists(&hotfix_dir).unwrap() {
-        std::fs::remove_dir_all(&hotfix_dir).unwrap();
-    }
-
-    // FIXME(ctest): ctest cannot parse `crate::` in paths, so replace them with `::`
-    let re = regex::bytes::Regex::new(r"(?-u:\b)crate::").unwrap();
-    copy_dir_hotfix(Path::new("../src"), &hotfix_dir, &re, b"::");
-
     do_cc();
     do_ctest();
     do_semver();
-}
-
-// FIXME(clippy): removing `replace` somehow fails the `Test tier1 (x86_64-pc-windows-msvc, windows-2022)` CI job
-#[allow(clippy::only_used_in_recursion)]
-fn copy_dir_hotfix(src: &Path, dst: &Path, regex: &regex::bytes::Regex, replace: &[u8]) {
-    std::fs::create_dir(dst).unwrap();
-    for entry in src.read_dir().unwrap() {
-        let entry = entry.unwrap();
-        let src_path = entry.path();
-        let dst_path = dst.join(entry.file_name());
-        if entry.file_type().unwrap().is_dir() {
-            copy_dir_hotfix(&src_path, &dst_path, regex, replace);
-        } else {
-            // Replace "crate::" with "::"
-            let src_data = std::fs::read(&src_path).unwrap();
-            let dst_data = regex.replace_all(&src_data, b"::");
-            std::fs::write(&dst_path, &dst_data).unwrap();
-        }
-    }
 }
 
 macro_rules! headers {
