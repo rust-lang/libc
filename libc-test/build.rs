@@ -73,6 +73,7 @@ fn do_ctest() {
     }
 }
 
+#[expect(unused)]
 fn ctest_old_cfg() -> ctest_old::TestGenerator {
     ctest_old::TestGenerator::new()
 }
@@ -5077,11 +5078,11 @@ fn which_freebsd() -> Option<i32> {
 fn test_haiku(target: &str) {
     assert!(target.contains("haiku"));
 
-    let mut cfg = ctest_old_cfg();
+    let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("__USE_GNU", Some("1"));
     cfg.define("_GNU_SOURCE", None);
-    cfg.language(ctest_old::Lang::CXX);
+    cfg.language(ctest::Language::CXX);
 
     // POSIX API
     headers! { cfg:
@@ -5216,11 +5217,12 @@ fn test_haiku(target: &str) {
                "support/TypeConstants.h"
     }
 
-    cfg.skip_struct(move |ty| {
-        if ty.starts_with("__c_anonymous_") {
+    cfg.skip_union(|union_| union_.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(move |struct_| {
+        if struct_.ident().starts_with("__c_anonymous_") {
             return true;
         }
-        match ty {
+        match struct_.ident() {
             // FIXME(haiku): locale_t does not exist on Haiku
             "locale_t" => true,
             // FIXME(haiku): rusage has a different layout on Haiku
@@ -5248,8 +5250,8 @@ fn test_haiku(target: &str) {
         }
     });
 
-    cfg.skip_type(move |ty| {
-        match ty {
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
             // FIXME(haiku): locale_t does not exist on Haiku
             "locale_t" => true,
             // These cause errors, to be reviewed in the future
@@ -5262,9 +5264,9 @@ fn test_haiku(target: &str) {
         }
     });
 
-    cfg.skip_fn(move |name| {
+    cfg.skip_fn(move |func| {
         // skip those that are manually verified
-        match name {
+        match func.ident() {
             // FIXME(haiku): does not exist on haiku
             "open_wmemstream" => true,
             "mlockall" | "munlockall" => true,
@@ -5287,8 +5289,8 @@ fn test_haiku(target: &str) {
         }
     });
 
-    cfg.skip_const(move |name| {
-        match name {
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
             // FIXME(haiku): these constants do not exist on Haiku
             "DT_UNKNOWN" | "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK"
             | "DT_SOCK" => true,
@@ -5313,8 +5315,8 @@ fn test_haiku(target: &str) {
         }
     });
 
-    cfg.skip_field(move |struct_, field| {
-        match (struct_, field) {
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
             // FIXME(time): the stat struct actually has timespec members, whereas
             //        the current representation has these unpacked.
             ("stat", "st_atime") => true,
@@ -5348,7 +5350,14 @@ fn test_haiku(target: &str) {
         _ => false,
     });
 
-    cfg.type_name(move |ty, is_struct, is_union| {
+    let c_enums = [
+        "directory_which",
+        "path_base_directory",
+        "cpu_platform",
+        "cpu_vendor",
+    ];
+    cfg.alias_is_c_enum(move |e| c_enums.contains(&e));
+    cfg.rename_struct_ty(move |ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
             "area_info"
@@ -5372,34 +5381,29 @@ fn test_haiku(target: &str) {
             | "cpu_topology_node_info"
             | "cpu_topology_root_info"
             | "cpu_topology_package_info"
-            | "cpu_topology_core_info" => ty.to_string(),
+            | "cpu_topology_core_info" => Some(ty.to_string()),
 
-            // enums don't need a prefix
-            "directory_which" | "path_base_directory" | "cpu_platform" | "cpu_vendor" => {
-                ty.to_string()
-            }
-
-            t if is_union => format!("union {t}"),
-            t if t.ends_with("_t") => t.to_string(),
-            t if is_struct => format!("struct {t}"),
-            t => t.to_string(),
+            t if t.ends_with("_t") => Some(t.to_string()),
+            _ => None,
         }
     });
 
-    cfg.field_name(move |struct_, field| {
-        match field {
+    cfg.rename_struct_field(move |struct_, field| {
+        let struct_ = struct_.ident();
+        match field.ident() {
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
-            "type_" if struct_ == "object_wait_info" => "type".to_string(),
-            "type_" if struct_ == "sem_t" => "type".to_string(),
-            "type_" if struct_ == "attr_info" => "type".to_string(),
-            "type_" if struct_ == "index_info" => "type".to_string(),
-            "type_" if struct_ == "cpu_topology_node_info" => "type".to_string(),
-            "image_type" if struct_ == "image_info" => "type".to_string(),
-            s => s.to_string(),
+            "type_" if struct_ == "object_wait_info" => Some("type".to_string()),
+            "type_" if struct_ == "sem_t" => Some("type".to_string()),
+            "type_" if struct_ == "attr_info" => Some("type".to_string()),
+            "type_" if struct_ == "index_info" => Some("type".to_string()),
+            "type_" if struct_ == "cpu_topology_node_info" => Some("type".to_string()),
+            "image_type" if struct_ == "image_info" => Some("type".to_string()),
+            _ => None,
         }
     });
-    cfg.generate(src_hotfix_dir().join("lib.rs"), "ctest_output.rs");
+
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
 fn test_aix(target: &str) {
