@@ -233,32 +233,33 @@ macro_rules! e {
 macro_rules! c_enum {
     ($(
         $(#[repr($repr:ty)])?
-        pub enum $ty_name:ident {
+        pub enum $($ty_name:ident)? {
             $($variant:ident $(= $value:expr)?,)+
         }
     )+) => {
-        $(c_enum!(@expand;
-            $(#[repr($repr)])?
-            pub enum $ty_name {
-                $($variant $(= $value)?,)+
-            }
-        );)+
+        $(c_enum!(@expand_repr; $($repr)?; $($ty_name)?; $($variant $(= $value)?,)+);)+
     };
 
-    (@expand;
-        $(#[repr($repr:ty)])?
-        pub enum $ty_name:ident {
-            $($variant:ident $(= $value:expr)?,)+
-        }
-    ) => {
-        pub type $ty_name = c_enum!(@ty $($repr)?);
-        c_enum!(@one; $ty_name; 0; $($variant $(= $value)?,)+);
+    (@expand_repr;         ; $($ty_name:ident)?; $($variants:tt)*) => {
+        // Use a specific type if provided, otherwise default to `CEnumRepr`
+        c_enum!(@expand_tyname; $crate::prelude::CEnumRepr; $($ty_name)?; $($variants)*);
+    };
+    (@expand_repr; $repr:ty; $($ty_name:ident)?; $($variants:tt)*) => {
+        c_enum!(@expand_tyname; $repr;                      $($ty_name)?; $($variants)*);
+    };
+
+    (@expand_tyname; $repr:ty;               ; $($variants:tt)*) => {
+        c_enum!(@one; $repr;    0; $($variants)*);
+    };
+    (@expand_tyname; $repr:ty; $ty_name:ident; $($variants:tt)*) => {
+        pub type $ty_name = $repr;
+        c_enum!(@one; $ty_name; 0; $($variants)*);
     };
 
     // Matcher for a single variant
-    (@one; $_ty_name:ident; $_idx:expr;) => {};
+    (@one; $_ty_name:ty; $_idx:expr;) => {};
     (
-        @one; $ty_name:ident; $default_val:expr;
+        @one; $ty_name:ty; $default_val:expr;
         $variant:ident $(= $value:expr)?,
         $($tail:tt)*
     ) => {
@@ -273,10 +274,6 @@ macro_rules! c_enum {
         // set explicitly.
         c_enum!(@one; $ty_name; $variant + 1; $($tail)*);
     };
-
-    // Use a specific type if provided, otherwise default to `CEnumRepr`
-    (@ty $repr:ty) => { $repr };
-    (@ty) => { $crate::prelude::CEnumRepr };
 }
 
 // This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
@@ -449,7 +446,7 @@ mod tests {
         // C enums always take one more than the previous value, unless set to a specific
         // value. Duplicates are allowed.
         c_enum! {
-            pub enum e {
+            pub enum {
                 VAR0,
                 VAR2_0 = 2,
                 VAR3_0,
