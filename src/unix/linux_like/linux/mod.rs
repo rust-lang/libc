@@ -798,7 +798,6 @@ s! {
     }
 
     // linux/openat2.h
-    #[non_exhaustive]
     pub struct open_how {
         pub flags: crate::__u64,
         pub mode: crate::__u64,
@@ -1329,7 +1328,6 @@ s! {
 
     // linux/pidfd.h
 
-    #[non_exhaustive]
     pub struct pidfd_info {
         pub mask: crate::__u64,
         pub cgroupid: crate::__u64,
