@@ -3736,6 +3736,7 @@ fn test_linux(target: &str) {
         headers! { cfg:
             [gnu]: "linux/aio_abi.h",
             "linux/can.h",
+            "linux/can/bcm.h",
             "linux/can/raw.h",
             "linux/can/j1939.h",
             "linux/cn_proc.h",
@@ -4815,7 +4816,9 @@ fn test_linux(target: &str) {
         // the `xsk_tx_metadata_union` field is an anonymous union
         (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
         // After musl 1.2.0, the type becomes `int` instead of `long`.
-        (old_musl && struct_ == "utmpx" && field == "ut_session")
+        (old_musl && struct_ == "utmpx" && field == "ut_session") ||
+        // `frames` is a VLA
+        (struct_ == "bcm_msg_head" && field == "frames")
     });
 
     cfg.skip_roundtrip(move |s| match s {
@@ -4852,6 +4855,7 @@ fn test_linux(target: &str) {
         "inotify_event" => true,
         "fanotify_event_info_fid" => true,
         "cmsghdr" => true,
+        "bcm_msg_head" => true,
 
         // FIXME(linux): the call ABI of max_align_t is incorrect on these platforms:
         "max_align_t" if i686 || ppc64 => true,
