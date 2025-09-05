@@ -20,18 +20,23 @@ s! {
     }
 }
 
-pub const TX_SETUP: crate::__u32 = 1;
-pub const TX_DELETE: crate::__u32 = 2;
-pub const TX_READ: crate::__u32 = 3;
-pub const TX_SEND: crate::__u32 = 4;
-pub const RX_SETUP: crate::__u32 = 5;
-pub const RX_DELETE: crate::__u32 = 6;
-pub const RX_READ: crate::__u32 = 7;
-pub const TX_STATUS: crate::__u32 = 8;
-pub const TX_EXPIRED: crate::__u32 = 9;
-pub const RX_STATUS: crate::__u32 = 10;
-pub const RX_TIMEOUT: crate::__u32 = 11;
-pub const RX_CHANGED: crate::__u32 = 12;
+c_enum! {
+    #[repr(crate::__u32)]
+    pub enum {
+        TX_SETUP = 1,
+        TX_DELETE,
+        TX_READ,
+        TX_SEND,
+        RX_SETUP,
+        RX_DELETE,
+        RX_READ,
+        TX_STATUS,
+        TX_EXPIRED,
+        RX_STATUS,
+        RX_TIMEOUT,
+        RX_CHANGED,
+    }
+}
 
 pub const SETTIMER: crate::__u32 = 0x0001;
 pub const STARTTIMER: crate::__u32 = 0x0002;
