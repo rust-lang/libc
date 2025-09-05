@@ -37,6 +37,10 @@ while IFS= read -r file; do
     # rust-lang/rustfmt#5464).
     perl -pi -e 's/^(\s*)(.*)\{const\}/$1\/\* FMT-CONST \*\/\n$1$2const/g' "$file"
 
+    # The `c_enum!` macro allows anonymous enums without names, which isn't
+    # valid syntax. Replace it with a dummy name and an indicator comment.
+    perl -pi -e 's/^(\s*)(.*)enum(\s*\{)/$1\/\* FMT-ANON-ENUM \*\/\n$1$2enum _Anon$3/g' "$file"
+
     # Format the file. We need to invoke `rustfmt` directly since `cargo fmt`
     # can't figure out the module tree with the hacks in place.
     failed=false
@@ -46,6 +50,7 @@ while IFS= read -r file; do
     perl -pi -e 's/fn (\w+)_fmt_tmp\(\)/$1!/g' "$file"
     perl -pi -0777 -e 's/cfg_tmp!\(\[(.*?)\]\)/#[cfg($1)]/gms' "$file"
     perl -pi -0777 -e 's/\/\* FMT-CONST \*\/(?:\n\s*)?(.*?)const/$1\{const\}/gms' "$file"
+    perl -pi -0777 -e 's/\/\* FMT-ANON-ENUM \*\/(?:\n\s*)?(.*?)enum _Anon(\s*\{)/$1enum$2/gms' "$file"
 
     # Defer emitting the failure until after the files get reset
     if [ "$failed" != "false" ]; then
