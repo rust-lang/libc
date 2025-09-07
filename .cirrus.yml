@@ -40,6 +40,9 @@ task:
     - name: nightly freebsd-15 x86_64 20250801
       freebsd_instance:
        image: freebsd-15-0-current-amd64-ufs-20250801
+    - name: nightly freebsd-15 x86_64 20250094
+      freebsd_instance:
+       image: freebsd-15-0-prerelease-amd64-ufs-20250904
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
