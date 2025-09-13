@@ -1340,6 +1340,7 @@ ftok
 futimes
 getbootfile
 getbyteorder
+getdents
 getdiskrawname
 getdistcookedname
 getdomainname
