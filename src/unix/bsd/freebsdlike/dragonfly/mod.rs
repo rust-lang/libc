@@ -1586,6 +1586,8 @@ extern "C" {
     ) -> c_int;
 
     pub fn closefrom(lowfd: c_int) -> c_int;
+
+    pub fn getdents(fd: c_int, buf: *mut c_char, nbytes: c_int) -> c_int;
 }
 
 #[link(name = "rt")]

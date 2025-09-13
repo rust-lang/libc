@@ -2957,6 +2957,8 @@ extern "C" {
     pub fn flags_to_string(flags: c_ulong, def: *const c_char) -> c_int;
 
     pub fn kinfo_getvmmap(pid: crate::pid_t, cntp: *mut size_t) -> *mut kinfo_vmentry;
+
+    pub fn getdents(fd: c_int, buf: *mut c_char, nbytes: usize) -> c_int;
 }
 
 #[link(name = "execinfo")]
