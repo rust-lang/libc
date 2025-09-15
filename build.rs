@@ -70,8 +70,6 @@ fn main() {
         vers
     } else if libc_ci {
         which_freebsd().unwrap_or(12)
-    } else if rustc_dep_of_std {
-        12
     } else {
         12
     };
