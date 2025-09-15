@@ -6199,10 +6199,11 @@ cfg_if! {
 // These require a dependency on `libiconv`, and including this when built as
 // part of `std` means every Rust program gets it. Ideally we would have a link
 // modifier to only include these if they are used, but we do not.
-#[deprecated(note = "Will be removed in 1.0 to avoid the `iconv` dependency")]
 #[cfg_attr(not(feature = "rustc-dep-of-std"), link(name = "iconv"))]
 extern "C" {
+    #[deprecated(note = "Will be removed in 1.0 to avoid the `iconv` dependency")]
     pub fn iconv_open(tocode: *const c_char, fromcode: *const c_char) -> iconv_t;
+    #[deprecated(note = "Will be removed in 1.0 to avoid the `iconv` dependency")]
     pub fn iconv(
         cd: iconv_t,
         inbuf: *mut *mut c_char,
@@ -6210,6 +6211,7 @@ extern "C" {
         outbuf: *mut *mut c_char,
         outbytesleft: *mut size_t,
     ) -> size_t;
+    #[deprecated(note = "Will be removed in 1.0 to avoid the `iconv` dependency")]
     pub fn iconv_close(cd: iconv_t) -> c_int;
 }
 
