@@ -2869,7 +2869,11 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14.2
             "SO_SPLICE" if Some(14) > freebsd_ver => true,
 
+            // FreeBSD 15
             "TIOCMGDTRWAIT" | "TIOCMSDTRWAIT" if freebsd_ver >= Some(15) => true,
+
+            // Added in FreeBSD 15
+            "_MC_HASTLSBASE" if freebsd_ver < Some(15) => true,
 
             _ => false,
         }
