@@ -2878,6 +2878,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 15
             "_MC_HASTLSBASE" if freebsd_ver < Some(15) => true,
 
+            // Changed in FreeBSD 15
+            "_MC_FLAG_MASK" if freebsd_ver < Some(15) => true,
+
             _ => false,
         }
     });
