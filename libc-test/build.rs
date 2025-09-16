@@ -3074,11 +3074,9 @@ fn test_freebsd(target: &str) {
             // `tcp_snd_wscale` and `tcp_rcv_wscale` are bitfields
             ("tcp_info", "tcp_snd_wscale") => true,
             ("tcp_info", "tcp_rcv_wscale") => true,
-            // mc_spare can change in size between OS releases.  It's a spare field, after all.
-            ("__mcontext", "mc_spare") => true,
 
-            // mc_tlsbase introduced in FreeBSD 15
-            ("__mcontext", "mc_tlsbase") => true,
+            // __mcontext changed mc_spare and mc_tlsbase between OS releases.
+            (t, "mc_spare" | "mc_tlsbase") if t.contains("mcontext") => true,
 
             _ => false,
         }
