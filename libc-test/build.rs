@@ -3074,6 +3074,9 @@ fn test_freebsd(target: &str) {
             // mc_spare can change in size between OS releases.  It's a spare field, after all.
             ("__mcontext", "mc_spare") => true,
 
+            // mc_tlsbase introduced in FreeBSD 15
+            ("__mcontext", "mc_tlsbase") => true,
+
             _ => false,
         }
     });
