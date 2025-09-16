@@ -2646,6 +2646,9 @@ fn test_freebsd(target: &str) {
             // Unaccessible in FreeBSD 15
             "TDI_SWAPPED" | "P_SWAPPINGOUT" | "P_SWAPPINGIN" | "P_UNUSED3" => true,
 
+            // Only exists in FreeBSD 15+
+            "P_IDLEPROC" if freebsd_ver < Some(15) => true,
+
             // Removed in FreeBSD 14 (git a6b55ee6be1)
             "IFF_KNOWSEPOCH" => true,
 
