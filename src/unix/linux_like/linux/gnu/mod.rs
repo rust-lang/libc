@@ -65,23 +65,31 @@ s! {
         pub c_lflag: crate::tcflag_t,
         pub c_line: crate::cc_t,
         pub c_cc: [crate::cc_t; crate::NCCS],
-        #[cfg(not(any(
-            target_arch = "sparc",
-            target_arch = "sparc64",
-            target_arch = "mips",
-            target_arch = "mips32r6",
-            target_arch = "mips64",
-            target_arch = "mips64r6"
-        )))]
+        /// For the sparc and mips architecture, this field if available on glibc 2.42 and higher.
+        #[cfg(any(
+            gnu_simple_baud_rates,
+            not(any(
+                target_arch = "sparc",
+                target_arch = "sparc64",
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "mips64",
+                target_arch = "mips64r6"
+            ))
+        ))]
         pub c_ispeed: crate::speed_t,
-        #[cfg(not(any(
-            target_arch = "sparc",
-            target_arch = "sparc64",
-            target_arch = "mips",
-            target_arch = "mips32r6",
-            target_arch = "mips64",
-            target_arch = "mips64r6"
-        )))]
+        /// For the sparc and mips architecture, this field if available on glibc 2.42 and higher.
+        #[cfg(any(
+            gnu_simple_baud_rates,
+            not(any(
+                target_arch = "sparc",
+                target_arch = "sparc64",
+                target_arch = "mips",
+                target_arch = "mips32r6",
+                target_arch = "mips64",
+                target_arch = "mips64r6"
+            ))
+        ))]
         pub c_ospeed: crate::speed_t,
     }
 
@@ -1044,6 +1052,48 @@ pub const REG_STARTEND: c_int = 4;
 pub const REG_EEND: c_int = 14;
 pub const REG_ESIZE: c_int = 15;
 pub const REG_ERPAREN: c_int = 16;
+
+cfg_if! {
+    if #[cfg(gnu_simple_baud_rates)] {
+        pub const B0: crate::speed_t = 0;
+        pub const B50: crate::speed_t = 50;
+        pub const B75: crate::speed_t = 75;
+        pub const B110: crate::speed_t = 110;
+        pub const B134: crate::speed_t = 134;
+        pub const B150: crate::speed_t = 150;
+        pub const B200: crate::speed_t = 200;
+        pub const B300: crate::speed_t = 300;
+        pub const B600: crate::speed_t = 600;
+        pub const B1200: crate::speed_t = 1200;
+        pub const B1800: crate::speed_t = 1800;
+        pub const B2400: crate::speed_t = 2400;
+        pub const B4800: crate::speed_t = 4800;
+        pub const B9600: crate::speed_t = 9600;
+        pub const B19200: crate::speed_t = 19200;
+        pub const B38400: crate::speed_t = 38400;
+        pub const EXTA: crate::speed_t = B19200;
+        pub const EXTB: crate::speed_t = B38400;
+        pub const B57600: crate::speed_t = 57600;
+        pub const B115200: crate::speed_t = 115200;
+        pub const B230400: crate::speed_t = 230400;
+        pub const B460800: crate::speed_t = 460800;
+        pub const B500000: crate::speed_t = 500000;
+        pub const B576000: crate::speed_t = 576000;
+        pub const B921600: crate::speed_t = 921600;
+        pub const B1000000: crate::speed_t = 1000000;
+        pub const B1152000: crate::speed_t = 1152000;
+        pub const B1500000: crate::speed_t = 1500000;
+        pub const B2000000: crate::speed_t = 2000000;
+        cfg_if! {
+            if #[cfg(not(any(target_arch = "sparc", target_arch = "sparc64")))] {
+                pub const B2500000: crate::speed_t = 2500000;
+                pub const B3000000: crate::speed_t = 3000000;
+                pub const B3500000: crate::speed_t = 3500000;
+                pub const B4000000: crate::speed_t = 4000000;
+            }
+        }
+    }
+}
 
 extern "C" {
     pub fn fgetspent_r(

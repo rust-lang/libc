@@ -24,6 +24,7 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
+    "gnu_simple_baud_rates",
 ];
 
 // Extra values to allow for check-cfg.
@@ -137,6 +138,11 @@ fn main() {
         if filebits == "64" {
             set_cfg("gnu_file_offset_bits64");
         }
+    }
+
+    #[cfg(target_env = "gnu")]
+    if have_symbol("GLIBC_2.42") {
+        set_cfg("gnu_simple_baud_rates");
     }
 
     // On CI: deny all warnings
@@ -286,6 +292,29 @@ fn emcc_version_code() -> Option<u64> {
     let patch = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
 
     Some(major * 10000 + minor * 100 + patch)
+}
+
+/// Check if a symbol is available in the current process.
+///
+/// This can be used to detect properties of the system libc at build time.
+#[cfg(target_env = "gnu")]
+fn have_symbol(symbol: &str) -> bool {
+    use std::ffi::CString;
+    use std::os::raw::{c_char, c_void};
+    extern "C" {
+        fn dlerror() -> *const c_void;
+        fn dlsym(handle: *const c_void, symbol: *const c_char) -> *const c_void;
+    }
+    let symbol = CString::new(symbol).unwrap();
+    unsafe {
+        // Clear any error from previous dlopen/dlsym calls.
+        dlerror();
+        // Try to load the symbol.
+        // The symbol could be present but null, so ignore the return value.
+        dlsym(std::ptr::null(), symbol.as_ptr());
+        // Check that there is no new error.
+        dlerror().is_null()
+    }
 }
 
 fn set_cfg(cfg: &str) {
