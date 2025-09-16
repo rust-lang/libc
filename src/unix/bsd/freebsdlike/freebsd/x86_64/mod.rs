@@ -327,7 +327,8 @@ pub const MINSIGSTKSZ: size_t = 2048; // 512 * 4
 pub const _MC_HASSEGS: u32 = 0x1;
 pub const _MC_HASBASES: u32 = 0x2;
 pub const _MC_HASFPXSTATE: u32 = 0x4;
-pub const _MC_FLAG_MASK: u32 = _MC_HASSEGS | _MC_HASBASES | _MC_HASFPXSTATE;
+pub const _MC_HASTLSBASE: u32 = 0x8;
+pub const _MC_FLAG_MASK: u32 = _MC_HASSEGS | _MC_HASBASES | _MC_HASFPXSTATE | _MC_HASTLSBASE;
 
 pub const _MC_FPFMT_NODEV: c_long = 0x10000;
 pub const _MC_FPFMT_XMM: c_long = 0x10002;
