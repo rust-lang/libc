@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl ca-certificates \
         gcc libc6-dev \
         gcc-sparc64-linux-gnu libc6-dev-sparc64-cross \
-        qemu-system-sparc64 openbios-sparc seabios ipxe-qemu \
+        qemu-system-sparc64 seabios ipxe-qemu \
         p7zip-full cpio linux-libc-dev-sparc64-cross qemu-user
 
 COPY linux-sparc64.sh /
