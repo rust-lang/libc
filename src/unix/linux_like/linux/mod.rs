@@ -2129,7 +2129,8 @@ pub const _PC_ALLOC_SIZE_MIN: c_int = 18;
 pub const _PC_SYMLINK_MAX: c_int = 19;
 pub const _PC_2_SYMLINKS: c_int = 20;
 
-pub const MS_NOUSER: c_ulong = 0xffffffff80000000;
+// FIXME: should this be an int? The suffix is `U` not `UL`.
+pub const MS_NOUSER: c_ulong = 1 << 31;
 
 pub const _SC_ARG_MAX: c_int = 0;
 pub const _SC_CHILD_MAX: c_int = 1;
