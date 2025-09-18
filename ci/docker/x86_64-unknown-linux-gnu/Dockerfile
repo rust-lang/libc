@@ -1,5 +1,7 @@
 FROM ubuntu:24.10
 
+RUN cat /etc/apt/sources.list.d/ubuntu.sources
+RUN cat /etc/apt/sources.list
 RUN sed -i 's|ports.ubuntu.com/ubuntu-ports/|old-releases.ubuntu.com/ubuntu/|g' \
     /etc/apt/sources.list.d/ubuntu.sources
 RUN apt-get update
