@@ -1,8 +1,6 @@
-FROM ubuntu:24.10
+FROM ubuntu:25.10
 
-RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
-    /etc/apt/sources.list.d/ubuntu.sources \
-    && apt-get update
+RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
     gcc g++ libc6-dev ca-certificates linux-headers-generic
 
