@@ -174,10 +174,10 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
+    # needs: [test_tier1, style_check]
     runs-on: ubuntu-24.04
     strategy:
-      fail-fast: true
+      fail-fast: false
       max-parallel: 12
       matrix:
         target:
@@ -279,10 +279,10 @@ jobs:
 
   test_tier2_vm:
     name: Test tier2 VM
-    needs: [test_tier1, style_check]
+    # needs: [test_tier1, style_check]
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         target:
           - x86_64-pc-solaris
