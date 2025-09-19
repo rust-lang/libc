@@ -84,6 +84,11 @@ fn ctest_cfg() -> ctest::TestGenerator {
     cfg
 }
 
+#[expect(unused)]
+fn ctest_next_cfg() -> ctest_next::TestGenerator {
+    ctest_next::TestGenerator::new()
+}
+
 fn do_semver() {
     let mut out = PathBuf::from(env::var("OUT_DIR").unwrap());
     out.push("semver.rs");
@@ -170,6 +175,14 @@ fn main() {
     // FIXME(ctest): ctest2 cannot parse `crate::` in paths, so replace them with `::`
     let re = regex::bytes::Regex::new(r"(?-u:\b)crate::").unwrap();
     copy_dir_hotfix(Path::new("../src"), &hotfix_dir, &re, b"::");
+
+    // FIXME(ctest): Only needed until ctest-next supports all tests.
+    // Provide a default for targets that don't yet use `ctest-next`.
+    std::fs::write(
+        format!("{}/main_next.rs", std::env::var("OUT_DIR").unwrap()),
+        "\nfn main() { println!(\"test result: ok\"); }\n",
+    )
+    .unwrap();
 
     do_cc();
     do_ctest();
