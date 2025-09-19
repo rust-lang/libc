@@ -1,4 +1,4 @@
-FROM ubuntu:24.10
+FROM ubuntu:25.04
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
