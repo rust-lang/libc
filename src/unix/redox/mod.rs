@@ -353,7 +353,7 @@ pub const F_TLOCK: c_int = 2;
 pub const F_TEST: c_int = 3;
 
 // FIXME(redox): relibc {
-pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 // }
 
 // dlfcn.h
