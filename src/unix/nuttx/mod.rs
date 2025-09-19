@@ -274,7 +274,7 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
 };
 
 // dlfcn.h
-pub const RTLD_DEFAULT: *mut c_void = 0 as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 
 // stdlib.h
 pub const EXIT_SUCCESS: i32 = 0;

@@ -173,7 +173,7 @@ pub const AF_INET6: c_int = 23;
 
 pub const FIONBIO: c_ulong = 1;
 
-pub const RTLD_DEFAULT: *mut c_void = 0 as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 
 // For pthread get/setschedparam
 pub const SCHED_FIFO: c_int = 1;

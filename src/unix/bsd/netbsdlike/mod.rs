@@ -650,7 +650,7 @@ pub const B230400: speed_t = 230400;
 pub const EXTA: speed_t = 19200;
 pub const EXTB: speed_t = 38400;
 
-pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
+pub const SEM_FAILED: *mut sem_t = ptr::null_mut();
 
 pub const CRTSCTS: crate::tcflag_t = 0x00010000;
 pub const CRTS_IFLOW: crate::tcflag_t = CRTSCTS;

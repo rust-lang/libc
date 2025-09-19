@@ -4095,6 +4095,49 @@ fn test_linux(target: &str) {
 
     cfg.skip_const(move |constant| {
         let name = constant.ident();
+        if gnu {
+            // FIXME(#4692): these values changed in glibc 2.42. We can't update unless we also
+            // switch to the new symbols.
+            let baud_mismatch = [
+                "SW_MAX",
+                "SW_CNT",
+                "EXTA",
+                "EXTB",
+                "B50",
+                "B75",
+                "B110",
+                "B134",
+                "B150",
+                "B200",
+                "B300",
+                "B600",
+                "B1200",
+                "B1800",
+                "B2400",
+                "B4800",
+                "B9600",
+                "B19200",
+                "B38400",
+                "B57600",
+                "B115200",
+                "B230400",
+                "B460800",
+                "B500000",
+                "B576000",
+                "B921600",
+                "B1000000",
+                "B1152000",
+                "B1500000",
+                "B2000000",
+                "B2500000",
+                "B3000000",
+                "B3500000",
+                "B4000000"
+            ];
+            if baud_mismatch.contains(&name) {
+                return true;
+            }
+        }
         if !gnu {
             // Skip definitions from the kernel on non-glibc Linux targets.
             // They're libc-independent, so we only need to check them on one

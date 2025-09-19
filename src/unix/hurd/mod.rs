@@ -1791,7 +1791,7 @@ pub const RB_DEBUGGER: c_int = 0x1000;
 
 // semaphore.h
 pub const __SIZEOF_SEM_T: usize = 20;
-pub const SEM_FAILED: *mut crate::sem_t = 0 as *mut sem_t;
+pub const SEM_FAILED: *mut crate::sem_t = ptr::null_mut();
 
 // termios.h
 pub const IGNBRK: crate::tcflag_t = 1;
@@ -1962,7 +1962,7 @@ pub const CTIME: u8 = 0;
 pub const CBRK: u8 = 0u8;
 
 // dlfcn.h
-pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 pub const RTLD_NEXT: *mut c_void = -1i64 as *mut c_void;
 pub const RTLD_LAZY: c_int = 1;
 pub const RTLD_NOW: c_int = 2;

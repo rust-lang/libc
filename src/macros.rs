@@ -82,7 +82,7 @@ macro_rules! prelude {
             #[allow(unused_imports)]
             pub(crate) use ::core::prelude::v1::derive;
             #[allow(unused_imports)]
-            pub(crate) use ::core::{fmt, hash, iter, mem};
+            pub(crate) use ::core::{fmt, hash, iter, mem, ptr};
             #[allow(unused_imports)]
             pub(crate) use mem::{align_of, align_of_val, size_of, size_of_val};
 
