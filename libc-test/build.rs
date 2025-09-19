@@ -4741,6 +4741,9 @@ fn test_linux(target: &str) {
             "posix_basename" if gnu => true,
             "gnu_basename" if gnu => true,
 
+            // https://github.com/kraj/musl/commit/725e17ed6dff4d0cd22487bb64470881e86a92e7
+            "basename" if musl => true,
+
             // FIXME(linux): function pointers changed since Ubuntu 23.10
             "strtol" | "strtoll" | "strtoul" | "strtoull" | "fscanf" | "scanf" | "sscanf" => true,
 
