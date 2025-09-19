@@ -178,7 +178,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 30
       matrix:
         target:
           # FIXME(sparc): this takes much longer to run than any other job, put
