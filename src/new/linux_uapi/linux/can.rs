@@ -1,8 +1,10 @@
 //! Header: `uapi/linux/can.h`
 
+pub(crate) mod bcm;
 pub(crate) mod j1939;
 pub(crate) mod raw;
 
+pub use bcm::*;
 pub use j1939::*;
 pub use raw::*;
 
