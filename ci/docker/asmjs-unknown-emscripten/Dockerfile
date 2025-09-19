@@ -12,7 +12,6 @@ RUN apt-get install -y --no-install-recommends \
     gcc \
     git \
     libc6-dev \
-    libxml2 \
     python3 \
     xz-utils \
     bzip2
