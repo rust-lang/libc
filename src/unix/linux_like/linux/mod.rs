@@ -2681,7 +2681,7 @@ pub const ST_NOATIME: c_ulong = 1024;
 pub const ST_NODIRATIME: c_ulong = 2048;
 
 pub const RTLD_NEXT: *mut c_void = -1i64 as *mut c_void;
-pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 pub const RTLD_NODELETE: c_int = 0x1000;
 pub const RTLD_NOW: c_int = 0x2;
 
@@ -2805,7 +2805,7 @@ pub const EFD_SEMAPHORE: c_int = 0x1;
 
 pub const LOG_NFACILITIES: c_int = 24;
 
-pub const SEM_FAILED: *mut crate::sem_t = 0 as *mut sem_t;
+pub const SEM_FAILED: *mut crate::sem_t = ptr::null_mut();
 
 pub const RB_AUTOBOOT: c_int = 0x01234567u32 as i32;
 pub const RB_HALT_SYSTEM: c_int = 0xcdef0123u32 as i32;

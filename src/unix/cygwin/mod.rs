@@ -1018,7 +1018,7 @@ pub const NGROUPS_MAX: c_int = 1024;
 pub const FORK_RELOAD: c_int = 1;
 pub const FORK_NO_RELOAD: c_int = 0;
 
-pub const RTLD_DEFAULT: *mut c_void = 0isize as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 pub const RTLD_LOCAL: c_int = 0;
 pub const RTLD_LAZY: c_int = 1;
 pub const RTLD_NOW: c_int = 2;
