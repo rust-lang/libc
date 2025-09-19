@@ -1551,7 +1551,7 @@ pub const ST_RELATIME: c_ulong = 4096;
 pub const RTLD_NOLOAD: c_int = 0x4;
 pub const RTLD_NODELETE: c_int = 0x1000;
 
-pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
+pub const SEM_FAILED: *mut sem_t = ptr::null_mut();
 
 pub const AI_PASSIVE: c_int = 0x00000001;
 pub const AI_CANONNAME: c_int = 0x00000002;

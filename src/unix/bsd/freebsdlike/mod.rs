@@ -1197,9 +1197,9 @@ pub const _SC_RAW_SOCKETS: c_int = 119;
 pub const _SC_SYMLOOP_MAX: c_int = 120;
 pub const _SC_PHYS_PAGES: c_int = 121;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = ptr::null_mut();
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = ptr::null_mut();
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = ptr::null_mut();
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
 pub const PTHREAD_MUTEX_NORMAL: c_int = 3;
@@ -1331,7 +1331,7 @@ pub const B230400: speed_t = 230400;
 pub const EXTA: speed_t = 19200;
 pub const EXTB: speed_t = 38400;
 
-pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
+pub const SEM_FAILED: *mut sem_t = ptr::null_mut();
 
 pub const CRTSCTS: crate::tcflag_t = 0x00030000;
 pub const CCTS_OFLOW: crate::tcflag_t = 0x00010000;

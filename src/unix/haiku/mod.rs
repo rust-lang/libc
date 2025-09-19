@@ -1060,7 +1060,7 @@ pub const FD_SETSIZE: usize = 1024;
 pub const RTLD_LOCAL: c_int = 0x0;
 pub const RTLD_NOW: c_int = 0x1;
 pub const RTLD_GLOBAL: c_int = 0x2;
-pub const RTLD_DEFAULT: *mut c_void = 0isize as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 
 pub const BUFSIZ: c_uint = 8192;
 pub const FILENAME_MAX: c_uint = 256;

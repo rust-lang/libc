@@ -508,7 +508,7 @@ pub const EAI_SYSTEM: c_int = 11;
 
 // FIXME(vxworks): This is not defined in vxWorks, but we have to define it here
 // to make the building pass for getrandom and std
-pub const RTLD_DEFAULT: *mut c_void = 0i64 as *mut c_void;
+pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 
 //Clock Lib Stuff
 pub const CLOCK_REALTIME: c_int = 0x0;
