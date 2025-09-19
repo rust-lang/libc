@@ -20,6 +20,13 @@ musl="musl-${musl_version}"
 curl --retry 5 "https://www.musl-libc.org/releases/${musl}.tar.gz" | tar xzf -
 
 cd "$musl"
+
+if [ "$musl_version" = "1.1.24" ]; then
+    curl --retry 5 \
+        https://github.com/kraj/musl/commit/725e17ed6dff4d0cd22487bb64470881e86a92e7.patch |
+        patch
+fi
+
 case ${1} in
     aarch64)
         musl_arch=aarch64
