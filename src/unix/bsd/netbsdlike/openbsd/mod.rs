@@ -1321,9 +1321,9 @@ pub const SCHED_RR: c_int = 3;
 
 pub const ST_NOSUID: c_ulong = 2;
 
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0 as *mut _;
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0 as *mut _;
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = 0 as *mut _;
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = ptr::null_mut();
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = ptr::null_mut();
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = ptr::null_mut();
 
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
