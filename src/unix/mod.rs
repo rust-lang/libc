@@ -1825,16 +1825,12 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(target_os = "aix")] {
+    if #[cfg(any(target_os = "aix", target_os = "nto"))] {
         extern "C" {
             pub fn cfmakeraw(termios: *mut crate::termios) -> c_int;
             pub fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
         }
-    } else if #[cfg(not(any(
-        target_os = "solaris",
-        target_os = "illumos",
-        target_os = "nto",
-    )))] {
+    } else if #[cfg(not(any(target_os = "solaris", target_os = "illumos",)))] {
         extern "C" {
             pub fn cfmakeraw(termios: *mut crate::termios);
             pub fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
