@@ -1,8 +1,5 @@
 use crate::prelude::*;
 
-pub type wchar_t = u32;
-pub type time_t = i64;
-
 s! {
     #[repr(align(8))]
     pub struct x86_64_cpu_registers {
