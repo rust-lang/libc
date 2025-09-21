@@ -87,6 +87,10 @@ fn ctest_cfg() -> ctest::TestGenerator {
 fn ctest_next_cfg() -> ctest_next::TestGenerator {
     let mut cfg = ctest_next::TestGenerator::new();
     cfg.skip_private(true);
+    let libc_cfgs = ["libc_thread_local"];
+    for f in &libc_cfgs {
+        cfg.cfg(f, None);
+    }
     cfg
 }
 
