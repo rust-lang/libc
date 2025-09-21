@@ -163,9 +163,9 @@ jobs:
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
+  # Unlike `main` this job doesn't have `needs`, in order to speed up backports a bit
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: true
@@ -270,7 +270,6 @@ jobs:
 
   test_tier2_vm:
     name: Test tier2 VM
-    needs: [test_tier1, style_check]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
