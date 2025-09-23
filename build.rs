@@ -19,7 +19,6 @@ const ALLOWED_CFGS: &[&str] = &[
     "gnu_time_bits64",
     "libc_deny_warnings",
     "libc_thread_local",
-    "libc_ctest",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
