@@ -1795,11 +1795,6 @@ fn test_wasi(target: &str) {
         "wchar.h",
     }
 
-    // Currently `ctest2` doesn't support macros-in-static-expressions and will
-    // panic on them. That affects `CLOCK_*` defines in wasi to set this here
-    // to omit them.
-    cfg.cfg("libc_ctest", None);
-
     cfg.rename_struct_ty(move |ty| match ty {
         "FILE" | "fd_set" | "DIR" => Some(ty.to_string()),
         t if t.ends_with("_t") => Some(t.to_string()),
