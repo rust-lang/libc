@@ -1821,10 +1821,8 @@ cfg_if! {
     }
 }
 
-const_fn! {
-    const fn CMSG_ALIGN(len: usize) -> usize {
-        (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
-    }
+const fn CMSG_ALIGN(len: usize) -> usize {
+    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
 }
 
 f! {

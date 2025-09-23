@@ -2300,10 +2300,8 @@ pub const TFD_NONBLOCK: i32 = crate::O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: i32 = crate::O_WRONLY;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = crate::O_RDWR;
 
-const_fn! {
-    const fn _ALIGN(p: usize) -> usize {
-        (p + _ALIGNBYTES) & !_ALIGNBYTES
-    }
+const fn _ALIGN(p: usize) -> usize {
+    (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
 
 f! {
