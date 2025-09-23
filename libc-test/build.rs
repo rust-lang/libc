@@ -2832,6 +2832,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14.2
             "SO_SPLICE" if Some(14) > freebsd_ver => true,
 
+            // FIXME(deprecated): deprecated in 0.2, removed in main
+            "TIOCMGDTRWAIT" | "TIOCMSDTRWAIT" => true,
+
             _ => false,
         }
     });
