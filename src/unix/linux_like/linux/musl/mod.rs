@@ -136,10 +136,7 @@ s! {
         pub aio_offset: off_t,
         __next: *mut c_void,
         __prev: *mut c_void,
-        #[cfg(target_pointer_width = "32")]
-        __dummy4: [c_char; 24],
-        #[cfg(target_pointer_width = "64")]
-        __dummy4: [c_char; 16],
+        __dummy4: [c_char; 32 - 2 * size_of::<*const ()>()],
     }
 
     #[repr(align(8))]
