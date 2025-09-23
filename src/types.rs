@@ -6,6 +6,9 @@ use crate::prelude::*;
 
 /// A transparent wrapper over `MaybeUninit<T>` to represent uninitialized padding
 /// while providing `Default`.
+// This is restricted to `Copy` types since that's a loose indicator that zeros is actually
+// a valid bitpattern. There is no technical reason this is required, though, so it could be
+// lifted in the future if it becomes a problem.
 #[allow(unused)]
 #[repr(transparent)]
 #[derive(Clone, Copy)]
