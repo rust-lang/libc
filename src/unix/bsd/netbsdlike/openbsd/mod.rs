@@ -1851,10 +1851,8 @@ pub const RTAX_STATIC: c_int = 13;
 pub const RTAX_SEARCH: c_int = 14;
 pub const RTAX_MAX: c_int = 15;
 
-const_fn! {
-    const fn _ALIGN(p: usize) -> usize {
-        (p + _ALIGNBYTES) & !_ALIGNBYTES
-    }
+const fn _ALIGN(p: usize) -> usize {
+    (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
 
 f! {
