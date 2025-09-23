@@ -87,7 +87,7 @@ macro_rules! prelude {
             pub(crate) use mem::{align_of, align_of_val, size_of, size_of_val};
 
             #[allow(unused_imports)]
-            pub(crate) use crate::types::Padding;
+            pub(crate) use crate::types::{CEnumRepr, Padding};
             // Commonly used types defined in this crate
             #[allow(unused_imports)]
             pub(crate) use crate::{
@@ -274,9 +274,9 @@ macro_rules! c_enum {
         c_enum!(@one; $ty_name; $variant + 1; $($tail)*);
     };
 
-    // Use a specific type if provided, otherwise default to `c_uint`
+    // Use a specific type if provided, otherwise default to `CEnumRepr`
     (@ty $repr:ty) => { $repr };
-    (@ty) => { $crate::c_uint };
+    (@ty) => { $crate::prelude::CEnumRepr };
 }
 
 // This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
@@ -431,6 +431,8 @@ macro_rules! deprecated_mach {
 
 #[cfg(test)]
 mod tests {
+    use crate::types::CEnumRepr;
+
     #[test]
     fn c_enumbasic() {
         // By default, variants get sequential values.
@@ -442,9 +444,9 @@ mod tests {
             }
         }
 
-        assert_eq!(VAR0, 0_u32);
-        assert_eq!(VAR1, 1_u32);
-        assert_eq!(VAR2, 2_u32);
+        assert_eq!(VAR0, 0 as CEnumRepr);
+        assert_eq!(VAR1, 1 as CEnumRepr);
+        assert_eq!(VAR2, 2 as CEnumRepr);
     }
 
     #[test]
@@ -471,9 +473,9 @@ mod tests {
             }
         }
 
-        assert_eq!(VAR2, 2_u32);
-        assert_eq!(VAR3, 3_u32);
-        assert_eq!(VAR4, 4_u32);
+        assert_eq!(VAR2, 2 as CEnumRepr);
+        assert_eq!(VAR3, 3 as CEnumRepr);
+        assert_eq!(VAR4, 4 as CEnumRepr);
     }
 
     #[test]
@@ -492,12 +494,12 @@ mod tests {
             }
         }
 
-        assert_eq!(VAR0, 0_u32);
-        assert_eq!(VAR2_0, 2_u32);
-        assert_eq!(VAR3_0, 3_u32);
-        assert_eq!(VAR4_0, 4_u32);
-        assert_eq!(VAR2_1, 2_u32);
-        assert_eq!(VAR3_1, 3_u32);
-        assert_eq!(VAR4_1, 4_u32);
+        assert_eq!(VAR0, 0 as CEnumRepr);
+        assert_eq!(VAR2_0, 2 as CEnumRepr);
+        assert_eq!(VAR3_0, 3 as CEnumRepr);
+        assert_eq!(VAR4_0, 4 as CEnumRepr);
+        assert_eq!(VAR2_1, 2 as CEnumRepr);
+        assert_eq!(VAR3_1, 3 as CEnumRepr);
+        assert_eq!(VAR4_1, 4 as CEnumRepr);
     }
 }
