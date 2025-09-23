@@ -3596,17 +3596,17 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn makedev(ma: c_uint, mi: c_uint) -> crate::dev_t {
+    pub const fn makedev(ma: c_uint, mi: c_uint) -> crate::dev_t {
         let ma = ma as crate::dev_t;
         let mi = mi as crate::dev_t;
         ((ma & 0xfff) << 8) | (mi & 0xff) | ((mi & 0xfff00) << 12)
     }
 
-    pub {const} fn major(dev: crate::dev_t) -> c_int {
+    pub const fn major(dev: crate::dev_t) -> c_int {
         ((dev >> 8) & 0xfff) as c_int
     }
 
-    pub {const} fn minor(dev: crate::dev_t) -> c_int {
+    pub const fn minor(dev: crate::dev_t) -> c_int {
         ((dev & 0xff) | ((dev >> 12) & 0xfff00)) as c_int
     }
 }
