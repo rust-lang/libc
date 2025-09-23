@@ -5380,6 +5380,11 @@ extern "C" {
     pub fn mach_host_self() -> mach_port_t;
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_thread_self() -> mach_port_t;
+    pub fn pthread_cond_timedwait_relative_np(
+        cond: *mut pthread_cond_t,
+        lock: *mut pthread_mutex_t,
+        timeout: *const crate::timespec,
+    ) -> c_int;
     pub fn pthread_once(
         once_control: *mut crate::pthread_once_t,
         init_routine: Option<unsafe extern "C" fn()>,
