@@ -296,114 +296,46 @@ macro_rules! c_enum {
     (@ty) => { $crate::prelude::CEnumRepr };
 }
 
-// This is a pretty horrible hack to allow us to conditionally mark some functions as 'const',
-// without requiring users of this macro to care "libc_const_extern_fn".
-//
-// When 'libc_const_extern_fn' is enabled, we emit the captured 'const' keyword in the expanded
-// function.
-//
-// When 'libc_const_extern_fn' is disabled, we always emit a plain 'pub unsafe extern fn'.
-// Note that the expression matched by the macro is exactly the same - this allows
-// users of this macro to work whether or not 'libc_const_extern_fn' is enabled
-//
-// Unfortunately, we need to duplicate most of this macro between the 'cfg_if' blocks.
-// This is because 'const unsafe extern fn' won't even parse on older compilers,
-// so we need to avoid emitting it at all of 'libc_const_extern_fn'.
-//
-// Specifically, moving the 'cfg_if' into the macro body will *not* work. Doing so would cause the
-// '#[cfg(libc_const_extern_fn)]' to be emitted into user code. The 'cfg' gate will not stop Rust
-// from trying to parse the 'pub const unsafe extern fn', so users would get a compiler error even
-// when the 'libc_const_extern_fn' feature is disabled.
+/// Define a `unsafe` function.
+macro_rules! f {
+    ($(
+        $(#[$attr:meta])*
+        pub $({$constness:ident})? fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
+            $body:block
+    )*) => ($(
+        #[inline]
+        $(#[$attr])*
+        pub $($constness)? unsafe extern "C" fn $i($($arg: $argty),*) -> $ret
+            $body
+    )*)
+}
 
-// FIXME(ctest): ctest can't handle `const extern` functions, we should be able to remove this
-// cfg completely.
-// FIXME(ctest): ctest can't handle `$(,)?` so we use `$(,)*` which isn't quite correct.
-cfg_if! {
-    if #[cfg(libc_const_extern_fn)] {
-        /// Define an `unsafe` function that is const as long as `libc_const_extern_fn` is enabled.
-        macro_rules! f {
-            ($(
-                $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-                    $body:block
-            )*) => ($(
-                #[inline]
-                $(#[$attr])*
-                pub $($constness)* unsafe extern "C" fn $i($($arg: $argty),*) -> $ret
-                    $body
-            )*)
-        }
+/// Define a safe function.
+macro_rules! safe_f {
+    ($(
+        $(#[$attr:meta])*
+        pub $({$constness:ident})? fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
+            $body:block
+    )*) => ($(
+        #[inline]
+        $(#[$attr])*
+        pub $($constness)? extern "C" fn $i($($arg: $argty),*) -> $ret
+            $body
+    )*)
+}
 
-        /// Define a safe function that is const as long as `libc_const_extern_fn` is enabled.
-        macro_rules! safe_f {
-            ($(
-                $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-                    $body:block
-            )*) => ($(
-                #[inline]
-                $(#[$attr])*
-                pub $($constness)* extern "C" fn $i($($arg: $argty),*) -> $ret
-                    $body
-            )*)
-        }
-
-        /// A nonpublic function that is const as long as `libc_const_extern_fn` is enabled.
-        macro_rules! const_fn {
-            ($(
-                $(#[$attr:meta])*
-                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-                    $body:block
-            )*) => ($(
-                #[inline]
-                $(#[$attr])*
-                $($constness)* fn $i($($arg: $argty),*) -> $ret
-                    $body
-            )*)
-        }
-    } else {
-        /// Define an `unsafe` function that is const as long as `libc_const_extern_fn` is enabled.
-        macro_rules! f {
-            ($(
-                $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-                    $body:block
-            )*) => ($(
-                #[inline]
-                $(#[$attr])*
-                pub unsafe extern "C" fn $i($($arg: $argty),*) -> $ret
-                    $body
-            )*)
-        }
-
-        /// Define a safe function that is const as long as `libc_const_extern_fn` is enabled.
-        macro_rules! safe_f {
-            ($(
-                $(#[$attr:meta])*
-                pub $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-                    $body:block
-            )*) => ($(
-                #[inline]
-                $(#[$attr])*
-                pub extern "C" fn $i($($arg: $argty),*) -> $ret
-                    $body
-            )*)
-        }
-
-        /// A nonpublic function that is const as long as `libc_const_extern_fn` is enabled.
-        macro_rules! const_fn {
-            ($(
-                $(#[$attr:meta])*
-                $({$constness:ident})* fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-                    $body:block
-            )*) => ($(
-                #[inline]
-                $(#[$attr])*
-                fn $i($($arg: $argty),*) -> $ret
-                    $body
-            )*)
-        }
-    }
+/// Define a nonpublic function.
+macro_rules! const_fn {
+    ($(
+        $(#[$attr:meta])*
+        $({$constness:ident})? fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
+            $body:block
+    )*) => ($(
+        #[inline]
+        $(#[$attr])*
+        $($constness)? fn $i($($arg: $argty),*) -> $ret
+            $body
+    )*)
 }
 
 macro_rules! __item {
