@@ -23,7 +23,7 @@ case "$target" in
 esac
 
 case "$target" in
-    # garando_errors only compiles on `cfg(any(unix, windows))`
+    # crash in std::env::tmp_dir (no filesystem on wasm).
     *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
     # https://github.com/bytecodealliance/rustix/issues/1496
     *loongarch*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
