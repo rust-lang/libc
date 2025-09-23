@@ -3414,10 +3414,8 @@ pub const PTHREAD_STACK_MIN: size_t = 0;
 // Non-public helper constants
 const _UTSNAME_LENGTH: usize = 1024;
 
-const_fn! {
-    const fn CMSG_ALIGN(len: usize) -> usize {
-        (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
-    }
+const fn CMSG_ALIGN(len: usize) -> usize {
+    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
 }
 
 // functions

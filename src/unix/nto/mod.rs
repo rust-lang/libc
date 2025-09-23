@@ -2607,14 +2607,12 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __spare: 0,
 };
 
-const_fn! {
-    const fn _CMSG_ALIGN(len: usize) -> usize {
-        len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
-    }
+const fn _CMSG_ALIGN(len: usize) -> usize {
+    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
+}
 
-    const fn _ALIGN(p: usize, b: usize) -> usize {
-        (p + b - 1) & !(b - 1)
-    }
+const fn _ALIGN(p: usize, b: usize) -> usize {
+    (p + b - 1) & !(b - 1)
 }
 
 f! {

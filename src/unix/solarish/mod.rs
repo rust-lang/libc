@@ -2390,14 +2390,12 @@ const NEWDEV: c_int = 1;
 // sys/sendfile.h
 pub const SFV_FD_SELF: c_int = -2;
 
-const_fn! {
-    const fn _CMSG_HDR_ALIGN(p: usize) -> usize {
-        (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
-    }
+const fn _CMSG_HDR_ALIGN(p: usize) -> usize {
+    (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
+}
 
-    const fn _CMSG_DATA_ALIGN(p: usize) -> usize {
-        (p + _CMSG_DATA_ALIGNMENT - 1) & !(_CMSG_DATA_ALIGNMENT - 1)
-    }
+const fn _CMSG_DATA_ALIGN(p: usize) -> usize {
+    (p + _CMSG_DATA_ALIGNMENT - 1) & !(_CMSG_DATA_ALIGNMENT - 1)
 }
 
 f! {
