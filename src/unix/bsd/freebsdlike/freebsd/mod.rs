@@ -4749,10 +4749,8 @@ pub const fn MAP_ALIGNED(a: c_int) -> c_int {
     a << 24
 }
 
-const_fn! {
-    const fn _ALIGN(p: usize) -> usize {
-        (p + _ALIGNBYTES) & !_ALIGNBYTES
-    }
+const fn _ALIGN(p: usize) -> usize {
+    (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
 
 f! {

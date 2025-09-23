@@ -1419,10 +1419,8 @@ pub const RTAX_MPLS2: c_int = 9;
 pub const RTAX_MPLS3: c_int = 10;
 pub const RTAX_MAX: c_int = 11;
 
-const_fn! {
-    const fn _CMSG_ALIGN(n: usize) -> usize {
-        (n + (size_of::<c_long>() - 1)) & !(size_of::<c_long>() - 1)
-    }
+const fn _CMSG_ALIGN(n: usize) -> usize {
+    (n + (size_of::<c_long>() - 1)) & !(size_of::<c_long>() - 1)
 }
 
 f! {

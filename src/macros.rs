@@ -330,20 +330,6 @@ macro_rules! safe_f {
     )+};
 }
 
-/// Define a nonpublic function.
-macro_rules! const_fn {
-    ($(
-        $(#[$attr:meta])*
-        const fn $i:ident($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
-            $body:block
-    )*) => ($(
-        #[inline]
-        $(#[$attr])*
-        const fn $i($($arg: $argty),*) -> $ret
-            $body
-    )*)
-}
-
 macro_rules! __item {
     ($i:item) => {
         $i

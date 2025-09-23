@@ -1514,10 +1514,8 @@ pub const POSIX_SPAWN_SETSIGDEF: c_int = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: c_int = 0x20;
 pub const POSIX_SPAWN_SETSID: c_int = 0x40;
 
-const_fn! {
-    const fn CMSG_ALIGN(len: usize) -> usize {
-        len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
-    }
+const fn CMSG_ALIGN(len: usize) -> usize {
+    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
 }
 
 f! {
