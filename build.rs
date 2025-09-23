@@ -20,7 +20,6 @@ const ALLOWED_CFGS: &[&str] = &[
     // FIXME(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
     "libc_const_extern_fn",
     "libc_deny_warnings",
-    "libc_ctest",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
