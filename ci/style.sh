@@ -31,12 +31,6 @@ while IFS= read -r file; do
     # wouldn't be correct for something like `all(any(...), ...)`).
     perl -pi -0777 -e 's/if #\[cfg\((.*?)\)\]/if cfg_tmp!([$1])/gms' "$file"
 
-    # We have some instances of `{const}` that make macros happy but aren't
-    # valid syntax. Replace this with just the keyword, plus an indicator
-    # comment on the preceding line (which is where rustfmt puts it. Also
-    # rust-lang/rustfmt#5464).
-    perl -pi -e 's/^(\s*)(.*)\{const\}/$1\/\* FMT-CONST \*\/\n$1$2const/g' "$file"
-
     # Format the file. We need to invoke `rustfmt` directly since `cargo fmt`
     # can't figure out the module tree with the hacks in place.
     failed=false
@@ -45,7 +39,6 @@ while IFS= read -r file; do
     # Restore all changes to the files.
     perl -pi -e 's/fn (\w+)_fmt_tmp\(\)/$1!/g' "$file"
     perl -pi -0777 -e 's/cfg_tmp!\(\[(.*?)\]\)/#[cfg($1)]/gms' "$file"
-    perl -pi -0777 -e 's/\/\* FMT-CONST \*\/(?:\n\s*)?(.*?)const/$1\{const\}/gms' "$file"
 
     # Defer emitting the failure until after the files get reset
     if [ "$failed" != "false" ]; then
