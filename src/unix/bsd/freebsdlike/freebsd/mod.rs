@@ -4750,7 +4750,7 @@ pub const fn MAP_ALIGNED(a: c_int) -> c_int {
 }
 
 const_fn! {
-    {const} fn _ALIGN(p: usize) -> usize {
+    const fn _ALIGN(p: usize) -> usize {
         (p + _ALIGNBYTES) & !_ALIGNBYTES
     }
 }
@@ -4760,7 +4760,7 @@ f! {
         (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
     }
 
-    pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
         _ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
@@ -4777,7 +4777,7 @@ f! {
         }
     }
 
-    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 
@@ -4785,11 +4785,11 @@ f! {
         ffsl(lg as c_long - 1)
     }
 
-    pub {const} fn MALLOCX_TCACHE(tc: c_int) -> c_int {
+    pub const fn MALLOCX_TCACHE(tc: c_int) -> c_int {
         (tc + 2) << 8 as c_int
     }
 
-    pub {const} fn MALLOCX_ARENA(a: c_int) -> c_int {
+    pub const fn MALLOCX_ARENA(a: c_int) -> c_int {
         (a + 1) << 20 as c_int
     }
 
@@ -4858,11 +4858,11 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+    pub const fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
     }
 
-    pub {const} fn INVALID_SINFO_FLAG(x: c_int) -> bool {
+    pub const fn INVALID_SINFO_FLAG(x: c_int) -> bool {
         (x) & 0xfffffff0
             & !(SCTP_EOF
                 | SCTP_ABORT
@@ -4874,31 +4874,31 @@ safe_f! {
             != 0
     }
 
-    pub {const} fn PR_SCTP_POLICY(x: c_int) -> c_int {
+    pub const fn PR_SCTP_POLICY(x: c_int) -> c_int {
         x & 0x0f
     }
 
-    pub {const} fn PR_SCTP_ENABLED(x: c_int) -> bool {
+    pub const fn PR_SCTP_ENABLED(x: c_int) -> bool {
         PR_SCTP_POLICY(x) != SCTP_PR_SCTP_NONE && PR_SCTP_POLICY(x) != SCTP_PR_SCTP_ALL
     }
 
-    pub {const} fn PR_SCTP_TTL_ENABLED(x: c_int) -> bool {
+    pub const fn PR_SCTP_TTL_ENABLED(x: c_int) -> bool {
         PR_SCTP_POLICY(x) == SCTP_PR_SCTP_TTL
     }
 
-    pub {const} fn PR_SCTP_BUF_ENABLED(x: c_int) -> bool {
+    pub const fn PR_SCTP_BUF_ENABLED(x: c_int) -> bool {
         PR_SCTP_POLICY(x) == SCTP_PR_SCTP_BUF
     }
 
-    pub {const} fn PR_SCTP_RTX_ENABLED(x: c_int) -> bool {
+    pub const fn PR_SCTP_RTX_ENABLED(x: c_int) -> bool {
         PR_SCTP_POLICY(x) == SCTP_PR_SCTP_RTX
     }
 
-    pub {const} fn PR_SCTP_INVALID_POLICY(x: c_int) -> bool {
+    pub const fn PR_SCTP_INVALID_POLICY(x: c_int) -> bool {
         PR_SCTP_POLICY(x) > SCTP_PR_SCTP_MAX
     }
 
-    pub {const} fn PR_SCTP_VALID_POLICY(x: c_int) -> bool {
+    pub const fn PR_SCTP_VALID_POLICY(x: c_int) -> bool {
         PR_SCTP_POLICY(x) <= SCTP_PR_SCTP_MAX
     }
 }

@@ -1614,16 +1614,16 @@ extern "C" {
 safe_f! {
     // It seems htonl, etc are macros on macOS. So we have to reimplement them. So let's
     // reimplement them for all UNIX platforms
-    pub {const} fn htonl(hostlong: u32) -> u32 {
+    pub const fn htonl(hostlong: u32) -> u32 {
         u32::to_be(hostlong)
     }
-    pub {const} fn htons(hostshort: u16) -> u16 {
+    pub const fn htons(hostshort: u16) -> u16 {
         u16::to_be(hostshort)
     }
-    pub {const} fn ntohl(netlong: u32) -> u32 {
+    pub const fn ntohl(netlong: u32) -> u32 {
         u32::from_be(netlong)
     }
-    pub {const} fn ntohs(netshort: u16) -> u16 {
+    pub const fn ntohs(netshort: u16) -> u16 {
         u16::from_be(netshort)
     }
 }
