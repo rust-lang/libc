@@ -348,6 +348,7 @@ utimbuf
 wchar_t
 wchmod
 wcslen
+wcsnlen
 wcstombs
 wexecl
 wexecle
