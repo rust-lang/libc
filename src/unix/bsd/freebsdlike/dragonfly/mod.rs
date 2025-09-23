@@ -1422,7 +1422,7 @@ pub const RTAX_MPLS3: c_int = 10;
 pub const RTAX_MAX: c_int = 11;
 
 const_fn! {
-    {const} fn _CMSG_ALIGN(n: usize) -> usize {
+    const fn _CMSG_ALIGN(n: usize) -> usize {
         (n + (size_of::<c_long>() - 1)) & !(size_of::<c_long>() - 1)
     }
 }
@@ -1432,7 +1432,7 @@ f! {
         (cmsg as *mut c_uchar).offset(_CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
     }
 
-    pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
         (_CMSG_ALIGN(size_of::<cmsghdr>()) + length as usize) as c_uint
     }
 
@@ -1448,7 +1448,7 @@ f! {
         }
     }
 
-    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_CMSG_ALIGN(size_of::<cmsghdr>()) + _CMSG_ALIGN(length as usize)) as c_uint
     }
 
@@ -1477,11 +1477,11 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+    pub const fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }
 
-    pub {const} fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+    pub const fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;
@@ -1490,11 +1490,11 @@ safe_f! {
         dev
     }
 
-    pub {const} fn major(dev: crate::dev_t) -> c_int {
+    pub const fn major(dev: crate::dev_t) -> c_int {
         ((dev >> 8) & 0xff) as c_int
     }
 
-    pub {const} fn minor(dev: crate::dev_t) -> c_int {
+    pub const fn minor(dev: crate::dev_t) -> c_int {
         (dev & 0xffff00ff) as c_int
     }
 }

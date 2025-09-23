@@ -1853,7 +1853,7 @@ f! {
         CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
-    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
         (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
     }
 
@@ -1881,55 +1881,55 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn makedev(ma: c_uint, mi: c_uint) -> dev_t {
+    pub const fn makedev(ma: c_uint, mi: c_uint) -> dev_t {
         let ma = ma as dev_t;
         let mi = mi as dev_t;
         (ma << 16) | (mi & 0xffff)
     }
 
-    pub {const} fn major(dev: dev_t) -> c_uint {
+    pub const fn major(dev: dev_t) -> c_uint {
         ((dev >> 16) & 0xffff) as c_uint
     }
 
-    pub {const} fn minor(dev: dev_t) -> c_uint {
+    pub const fn minor(dev: dev_t) -> c_uint {
         (dev & 0xffff) as c_uint
     }
 
-    pub {const} fn WIFEXITED(status: c_int) -> bool {
+    pub const fn WIFEXITED(status: c_int) -> bool {
         (status & 0xff) == 0
     }
 
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+    pub const fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }
 
-    pub {const} fn WIFSTOPPED(status: c_int) -> bool {
+    pub const fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xff) == 0o177
     }
 
-    pub {const} fn WIFCONTINUED(status: c_int) -> bool {
+    pub const fn WIFCONTINUED(status: c_int) -> bool {
         (status & 0o177777) == 0o177777
     }
 
-    pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
+    pub const fn WEXITSTATUS(status: c_int) -> c_int {
         (status >> 8) & 0xff
     }
 
-    pub {const} fn WTERMSIG(status: c_int) -> c_int {
+    pub const fn WTERMSIG(status: c_int) -> c_int {
         status & 0o177
     }
 
-    pub {const} fn WSTOPSIG(status: c_int) -> c_int {
+    pub const fn WSTOPSIG(status: c_int) -> c_int {
         (status >> 8) & 0xff
     }
 
-    pub {const} fn WCOREDUMP(status: c_int) -> bool {
+    pub const fn WCOREDUMP(status: c_int) -> bool {
         WIFSIGNALED(status) && (status & 0x80) != 0
     }
 }
 
 const_fn! {
-    {const} fn CMSG_ALIGN(len: usize) -> usize {
+    const fn CMSG_ALIGN(len: usize) -> usize {
         len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
     }
 }
