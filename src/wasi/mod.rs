@@ -361,26 +361,17 @@ pub const _SC_PAGE_SIZE: c_int = _SC_PAGESIZE;
 pub const _SC_IOV_MAX: c_int = 60;
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 
-cfg_if! {
-    if #[cfg(libc_ctest)] {
-        // skip these constants when this is active because `ctest` currently
-        // panics on parsing the constants below
-    } else {
-        // unsafe code here is required in the stable, but not in nightly
-        #[allow(unused_unsafe)]
-        pub static CLOCK_MONOTONIC: clockid_t =
-            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_MONOTONIC)) };
-        #[allow(unused_unsafe)]
-        pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
-            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
-        #[allow(unused_unsafe)]
-        pub static CLOCK_REALTIME: clockid_t =
-            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_REALTIME)) };
-        #[allow(unused_unsafe)]
-        pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
-            unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
-    }
-}
+// unsafe code here is required in the stable, but not in nightly
+#[allow(unused_unsafe)]
+pub static CLOCK_MONOTONIC: clockid_t = unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_MONOTONIC)) };
+#[allow(unused_unsafe)]
+pub static CLOCK_PROCESS_CPUTIME_ID: clockid_t =
+    unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_PROCESS_CPUTIME_ID)) };
+#[allow(unused_unsafe)]
+pub static CLOCK_REALTIME: clockid_t = unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_REALTIME)) };
+#[allow(unused_unsafe)]
+pub static CLOCK_THREAD_CPUTIME_ID: clockid_t =
+    unsafe { clockid_t(core::ptr::addr_of!(_CLOCK_THREAD_CPUTIME_ID)) };
 
 pub const ABDAY_1: crate::nl_item = 0x20000;
 pub const ABDAY_2: crate::nl_item = 0x20001;
