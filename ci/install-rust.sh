@@ -27,14 +27,12 @@ rustup set profile minimal
 rustup update --force "$toolchain" --no-self-update
 rustup default "$toolchain"
 
-if [ -n "${TARGET:-}" ]; then
-    echo "Install target"
-    rustup target add "$TARGET"
-fi
-
 if [ -n "${INSTALL_RUST_SRC:-}" ]; then
     echo "Install rust-src"
     rustup component add rust-src
+elif [ -n "${TARGET:-}" ]; then
+    echo "Install target"
+    rustup target add "$TARGET"
 fi
 
 if [ "$os" = "windows" ]; then

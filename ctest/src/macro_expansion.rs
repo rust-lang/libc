@@ -3,7 +3,7 @@ use std::fs::canonicalize;
 use std::path::Path;
 use std::process::Command;
 
-use crate::{EDITION, Result};
+use crate::{EDITION, GenerationError, Result};
 
 /// Use rustc to expand all macros and pretty print the crate into a single file.
 pub fn expand<P: AsRef<Path>>(
@@ -12,10 +12,13 @@ pub fn expand<P: AsRef<Path>>(
     target: String,
 ) -> Result<String> {
     let rustc = env::var("RUSTC").unwrap_or_else(|_| String::from("rustc"));
+    let out_dir =
+        env::var("OUT_DIR").map_err(|_| GenerationError::EnvVarNotFound("OUT_DIR".to_string()))?;
 
     let mut cmd = Command::new(rustc);
     cmd.env("RUSTC_BOOTSTRAP", "1")
         .arg("-Zunpretty=expanded")
+        .arg(format!("-L{out_dir}/../../../deps"))
         .arg("--edition")
         .arg(EDITION) // By default, -Zunpretty=expanded uses 2015 edition.
         .arg(canonicalize(crate_path)?);
