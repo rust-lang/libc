@@ -20,14 +20,7 @@ pub type c_double = f64;
 cfg_if! {
     if #[cfg(all(
         not(windows),
-        // FIXME(ctest): just use `target_vendor` = "apple"` once `ctest` supports it
-        not(any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos",
-        )),
+        not(target_vendor = "apple"),
         not(target_os = "vita"),
         any(
             target_arch = "aarch64",
