@@ -1346,6 +1346,13 @@ extern "C" {
     pub fn mempcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
 }
 
+extern "C" {
+    // There is no glibc wrapper for the getdents system call, and getdents64() is only available
+    // from 2.30 onwards.
+    /// `buffer` points to a buffer of [`crate::dirent64`] structs.
+    pub fn getdents64(fd: c_int, buffer: *mut c_void, nbytes: usize) -> isize;
+}
+
 cfg_if! {
     if #[cfg(any(
         target_arch = "x86",

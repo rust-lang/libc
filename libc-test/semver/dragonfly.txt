@@ -1348,6 +1348,7 @@ freezero
 fsid_t
 fstatfs
 futimes
+getdents
 getdomainname
 getdtablesize
 getentropy

@@ -971,6 +971,10 @@ extern "C" {
     pub fn utmpxname(file: *const c_char) -> c_int;
 }
 
+extern "C" {
+    pub fn getdents(fd: c_int, buf: *mut crate::dirent, len: usize) -> c_int;
+}
+
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
 mod lfs64;
 pub use self::lfs64::*;
