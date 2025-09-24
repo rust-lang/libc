@@ -4923,9 +4923,82 @@ cfg_if! {
         pub const NFT_MSG_GETOBJ: c_int = 19;
         pub const NFT_MSG_DELOBJ: c_int = 20;
         pub const NFT_MSG_GETOBJ_RESET: c_int = 21;
+        pub const NFT_MSG_NEWFLOWTABLE: c_int = 22;
+        pub const NFT_MSG_GETFLOWTABLE: c_int = 23;
+        pub const NFT_MSG_DELFLOWTABLE: c_int = 24;
+        pub const NFT_MSG_GETRULE_RESET: c_int = 25;
+        pub const NFT_MSG_DESTROYTABLE: c_int = 26;
+        pub const NFT_MSG_DESTROYCHAIN: c_int = 27;
+        pub const NFT_MSG_DESTROYRULE: c_int = 28;
+        pub const NFT_MSG_DESTROYSET: c_int = 29;
+        pub const NFT_MSG_DESTROYSETELEM: c_int = 30;
+        pub const NFT_MSG_DESTROYOBJ: c_int = 31;
+        pub const NFT_MSG_DESTROYFLOWTABLE: c_int = 32;
+        pub const NFT_MSG_GETSETELEM_RESET: c_int = 33;
     }
 }
-pub const NFT_MSG_MAX: c_int = 25;
+pub const NFT_MSG_MAX: c_int = 34;
+
+pub const NFTA_LIST_UNSPEC: c_int = 0;
+pub const NFTA_LIST_ELEM: c_int = 1;
+
+pub const NFTA_HOOK_UNSPEC: c_int = 0;
+pub const NFTA_HOOK_HOOKNUM: c_int = 1;
+pub const NFTA_HOOK_PRIORITY: c_int = 2;
+pub const NFTA_HOOK_DEV: c_int = 3;
+pub const NFTA_HOOK_DEVS: c_int = 4;
+
+pub const NFT_TABLE_F_DORMANT: c_int = 0x1;
+pub const NFT_TABLE_F_OWNER: c_int = 0x2;
+pub const NFT_TABLE_F_PERSIST: c_int = 0x4;
+
+pub const NFTA_TABLE_UNSPEC: c_int = 0;
+pub const NFTA_TABLE_NAME: c_int = 1;
+pub const NFTA_TABLE_FLAGS: c_int = 2;
+pub const NFTA_TABLE_USE: c_int = 3;
+pub const NFTA_TABLE_HANDLE: c_int = 4;
+pub const NFTA_TABLE_PAD: c_int = 5;
+pub const NFTA_TABLE_USERDATA: c_int = 6;
+pub const NFTA_TABLE_OWNER: c_int = 7;
+
+pub const NFT_CHAIN_BASE: c_int = 1 << 0;
+pub const NFT_CHAIN_HW_OFFLOAD: c_int = 1 << 1;
+pub const NFT_CHAIN_BINDING: c_int = 1 << 2;
+
+pub const NFTA_CHAIN_UNSPEC: c_int = 0;
+pub const NFTA_CHAIN_TABLE: c_int = 1;
+pub const NFTA_CHAIN_HANDLE: c_int = 2;
+pub const NFTA_CHAIN_NAME: c_int = 3;
+pub const NFTA_CHAIN_HOOK: c_int = 4;
+pub const NFTA_CHAIN_POLICY: c_int = 5;
+pub const NFTA_CHAIN_USE: c_int = 6;
+pub const NFTA_CHAIN_TYPE: c_int = 7;
+pub const NFTA_CHAIN_COUNTERS: c_int = 8;
+pub const NFTA_CHAIN_PAD: c_int = 9;
+pub const NFTA_CHAIN_FLAGS: c_int = 10;
+pub const NFTA_CHAIN_ID: c_int = 11;
+pub const NFTA_CHAIN_USERDATA: c_int = 12;
+
+pub const NFTA_RULE_UNSPEC: c_int = 0;
+pub const NFTA_RULE_TABLE: c_int = 1;
+pub const NFTA_RULE_CHAIN: c_int = 2;
+pub const NFTA_RULE_HANDLE: c_int = 3;
+pub const NFTA_RULE_EXPRESSIONS: c_int = 4;
+pub const NFTA_RULE_COMPAT: c_int = 5;
+pub const NFTA_RULE_POSITION: c_int = 6;
+pub const NFTA_RULE_USERDATA: c_int = 7;
+pub const NFTA_RULE_PAD: c_int = 8;
+pub const NFTA_RULE_ID: c_int = 9;
+pub const NFTA_RULE_POSITION_ID: c_int = 10;
+pub const NFTA_RULE_CHAIN_ID: c_int = 11;
+
+pub const NFT_RULE_COMPAT_F_UNUSED: c_int = 1 << 0;
+pub const NFT_RULE_COMPAT_F_INV: c_int = 1 << 1;
+pub const NFT_RULE_COMPAT_F_MASK: c_int = NFT_RULE_COMPAT_F_INV;
+
+pub const NFTA_RULE_COMPAT_UNSPEC: c_int = 0;
+pub const NFTA_RULE_COMPAT_PROTO: c_int = 1;
+pub const NFTA_RULE_COMPAT_FLAGS: c_int = 2;
 
 pub const NFT_SET_ANONYMOUS: c_int = 0x1;
 pub const NFT_SET_CONSTANT: c_int = 0x2;
@@ -4933,21 +5006,108 @@ pub const NFT_SET_INTERVAL: c_int = 0x4;
 pub const NFT_SET_MAP: c_int = 0x8;
 pub const NFT_SET_TIMEOUT: c_int = 0x10;
 pub const NFT_SET_EVAL: c_int = 0x20;
+pub const NFT_SET_OBJECT: c_int = 0x40;
+pub const NFT_SET_CONCAT: c_int = 0x80;
+pub const NFT_SET_EXPR: c_int = 0x100;
 
 pub const NFT_SET_POL_PERFORMANCE: c_int = 0;
 pub const NFT_SET_POL_MEMORY: c_int = 1;
 
+pub const NFTA_SET_DESC_UNSPEC: c_int = 0;
+pub const NFTA_SET_DESC_SIZE: c_int = 1;
+pub const NFTA_SET_DESC_CONCAT: c_int = 2;
+
+pub const NFTA_SET_FIELD_UNSPEC: c_int = 0;
+pub const NFTA_SET_FIELD_LEN: c_int = 1;
+
+pub const NFTA_SET_UNSPEC: c_int = 0;
+pub const NFTA_SET_TABLE: c_int = 1;
+pub const NFTA_SET_NAME: c_int = 2;
+pub const NFTA_SET_FLAGS: c_int = 3;
+pub const NFTA_SET_KEY_TYPE: c_int = 4;
+pub const NFTA_SET_KEY_LEN: c_int = 5;
+pub const NFTA_SET_DATA_TYPE: c_int = 6;
+pub const NFTA_SET_DATA_LEN: c_int = 7;
+pub const NFTA_SET_POLICY: c_int = 8;
+pub const NFTA_SET_DESC: c_int = 9;
+pub const NFTA_SET_ID: c_int = 10;
+pub const NFTA_SET_TIMEOUT: c_int = 11;
+pub const NFTA_SET_GC_INTERVAL: c_int = 12;
+pub const NFTA_SET_USERDATA: c_int = 13;
+pub const NFTA_SET_PAD: c_int = 14;
+pub const NFTA_SET_OBJ_TYPE: c_int = 15;
+pub const NFTA_SET_HANDLE: c_int = 16;
+pub const NFTA_SET_EXPR: c_int = 17;
+pub const NFTA_SET_EXPRESSIONS: c_int = 18;
+
 pub const NFT_SET_ELEM_INTERVAL_END: c_int = 0x1;
+pub const NFT_SET_ELEM_CATCHALL: c_int = 0x2;
+
+pub const NFTA_SET_ELEM_UNSPEC: c_int = 0;
+pub const NFTA_SET_ELEM_KEY: c_int = 1;
+pub const NFTA_SET_ELEM_DATA: c_int = 2;
+pub const NFTA_SET_ELEM_FLAGS: c_int = 3;
+pub const NFTA_SET_ELEM_TIMEOUT: c_int = 4;
+pub const NFTA_SET_ELEM_EXPIRATION: c_int = 5;
+pub const NFTA_SET_ELEM_USERDATA: c_int = 6;
+pub const NFTA_SET_ELEM_EXPR: c_int = 7;
+pub const NFTA_SET_ELEM_PAD: c_int = 8;
+pub const NFTA_SET_ELEM_OBJREF: c_int = 9;
+pub const NFTA_SET_ELEM_KEY_END: c_int = 10;
+pub const NFTA_SET_ELEM_EXPRESSIONS: c_int = 11;
+
+pub const NFTA_SET_ELEM_LIST_UNSPEC: c_int = 0;
+pub const NFTA_SET_ELEM_LIST_TABLE: c_int = 1;
+pub const NFTA_SET_ELEM_LIST_SET: c_int = 2;
+pub const NFTA_SET_ELEM_LIST_ELEMENTS: c_int = 3;
+pub const NFTA_SET_ELEM_LIST_SET_ID: c_int = 4;
 
 pub const NFT_DATA_VALUE: c_uint = 0;
 pub const NFT_DATA_VERDICT: c_uint = 0xffffff00;
 
 pub const NFT_DATA_RESERVED_MASK: c_uint = 0xffffff00;
 
+pub const NFTA_DATA_UNSPEC: c_int = 0;
+pub const NFTA_DATA_VALUE: c_int = 1;
+pub const NFTA_DATA_VERDICT: c_int = 2;
+
 pub const NFT_DATA_VALUE_MAXLEN: c_int = 64;
+
+pub const NFTA_VERDICT_UNSPEC: c_int = 0;
+pub const NFTA_VERDICT_CODE: c_int = 1;
+pub const NFTA_VERDICT_CHAIN: c_int = 2;
+pub const NFTA_VERDICT_CHAIN_ID: c_int = 3;
+
+pub const NFTA_EXPR_UNSPEC: c_int = 0;
+pub const NFTA_EXPR_NAME: c_int = 1;
+pub const NFTA_EXPR_DATA: c_int = 2;
+
+pub const NFTA_IMMEDIATE_UNSPEC: c_int = 0;
+pub const NFTA_IMMEDIATE_DREG: c_int = 1;
+pub const NFTA_IMMEDIATE_DATA: c_int = 2;
+
+pub const NFT_BITWISE_BOOL: c_int = 0;
+pub const NFT_BITWISE_LSHIFT: c_int = 1;
+pub const NFT_BITWISE_RSHIFT: c_int = 2;
+
+pub const NFTA_BITWISE_UNSPEC: c_int = 0;
+pub const NFTA_BITWISE_SREG: c_int = 1;
+pub const NFTA_BITWISE_DREG: c_int = 2;
+pub const NFTA_BITWISE_LEN: c_int = 3;
+pub const NFTA_BITWISE_MASK: c_int = 4;
+pub const NFTA_BITWISE_XOR: c_int = 5;
+pub const NFTA_BITWISE_OP: c_int = 6;
+pub const NFTA_BITWISE_DATA: c_int = 7;
 
 pub const NFT_BYTEORDER_NTOH: c_int = 0;
 pub const NFT_BYTEORDER_HTON: c_int = 1;
+
+pub const NFTA_BYTEORDER_UNSPEC: c_int = 0;
+pub const NFTA_BYTEORDER_SREG: c_int = 1;
+pub const NFTA_BYTEORDER_DREG: c_int = 2;
+pub const NFTA_BYTEORDER_OP: c_int = 3;
+pub const NFTA_BYTEORDER_LEN: c_int = 4;
+pub const NFTA_BYTEORDER_SIZE: c_int = 5;
 
 pub const NFT_CMP_EQ: c_int = 0;
 pub const NFT_CMP_NEQ: c_int = 1;
@@ -4956,22 +5116,103 @@ pub const NFT_CMP_LTE: c_int = 3;
 pub const NFT_CMP_GT: c_int = 4;
 pub const NFT_CMP_GTE: c_int = 5;
 
+pub const NFTA_CMP_UNSPEC: c_int = 0;
+pub const NFTA_CMP_SREG: c_int = 1;
+pub const NFTA_CMP_OP: c_int = 2;
+pub const NFTA_CMP_DATA: c_int = 3;
+
 pub const NFT_RANGE_EQ: c_int = 0;
 pub const NFT_RANGE_NEQ: c_int = 1;
 
+pub const NFTA_RANGE_UNSPEC: c_int = 0;
+pub const NFTA_RANGE_SREG: c_int = 1;
+pub const NFTA_RANGE_OP: c_int = 2;
+pub const NFTA_RANGE_FROM_DATA: c_int = 3;
+pub const NFTA_RANGE_TO_DATA: c_int = 4;
+
 pub const NFT_LOOKUP_F_INV: c_int = 1 << 0;
+
+pub const NFTA_LOOKUP_UNSPEC: c_int = 0;
+pub const NFTA_LOOKUP_SET: c_int = 1;
+pub const NFTA_LOOKUP_SREG: c_int = 2;
+pub const NFTA_LOOKUP_DREG: c_int = 3;
+pub const NFTA_LOOKUP_SET_ID: c_int = 4;
+pub const NFTA_LOOKUP_FLAGS: c_int = 5;
 
 pub const NFT_DYNSET_OP_ADD: c_int = 0;
 pub const NFT_DYNSET_OP_UPDATE: c_int = 1;
+pub const NFT_DYNSET_OP_DELETE: c_int = 2;
 
 pub const NFT_DYNSET_F_INV: c_int = 1 << 0;
+pub const NFT_DYNSET_F_EXPR: c_int = 1 << 1;
+
+pub const NFTA_DYNSET_UNSPEC: c_int = 0;
+pub const NFTA_DYNSET_SET_NAME: c_int = 1;
+pub const NFTA_DYNSET_SET_ID: c_int = 2;
+pub const NFTA_DYNSET_OP: c_int = 3;
+pub const NFTA_DYNSET_SREG_KEY: c_int = 4;
+pub const NFTA_DYNSET_SREG_DATA: c_int = 5;
+pub const NFTA_DYNSET_TIMEOUT: c_int = 6;
+pub const NFTA_DYNSET_EXPR: c_int = 7;
+pub const NFTA_DYNSET_PAD: c_int = 8;
+pub const NFTA_DYNSET_FLAGS: c_int = 9;
+pub const NFTA_DYNSET_EXPRESSIONS: c_int = 10;
 
 pub const NFT_PAYLOAD_LL_HEADER: c_int = 0;
 pub const NFT_PAYLOAD_NETWORK_HEADER: c_int = 1;
 pub const NFT_PAYLOAD_TRANSPORT_HEADER: c_int = 2;
+pub const NFT_PAYLOAD_INNER_HEADER: c_int = 3;
+pub const NFT_PAYLOAD_TUN_HEADER: c_int = 4;
 
 pub const NFT_PAYLOAD_CSUM_NONE: c_int = 0;
 pub const NFT_PAYLOAD_CSUM_INET: c_int = 1;
+pub const NFT_PAYLOAD_CSUM_SCTP: c_int = 2;
+
+pub const NFT_PAYLOAD_L4CSUM_PSEUDOHDR: c_int = 1;
+
+pub const NFT_INNER_UNSPEC: c_int = 0;
+pub const NFT_INNER_VXLAN: c_int = 1;
+pub const NFT_INNER_GENEVE: c_int = 2;
+
+pub const NFT_INNER_HDRSIZE: c_int = 1 << 0;
+pub const NFT_INNER_LL: c_int = 1 << 1;
+pub const NFT_INNER_NH: c_int = 1 << 2;
+pub const NFT_INNER_TH: c_int = 1 << 3;
+
+pub const NFTA_INNER_UNSPEC: c_int = 0;
+pub const NFTA_INNER_NUM: c_int = 1;
+pub const NFTA_INNER_TYPE: c_int = 2;
+pub const NFTA_INNER_FLAGS: c_int = 3;
+pub const NFTA_INNER_HDRSIZE: c_int = 4;
+pub const NFTA_INNER_EXPR: c_int = 5;
+
+pub const NFTA_PAYLOAD_UNSPEC: c_int = 0;
+pub const NFTA_PAYLOAD_DREG: c_int = 1;
+pub const NFTA_PAYLOAD_BASE: c_int = 2;
+pub const NFTA_PAYLOAD_OFFSET: c_int = 3;
+pub const NFTA_PAYLOAD_LEN: c_int = 4;
+pub const NFTA_PAYLOAD_SREG: c_int = 5;
+pub const NFTA_PAYLOAD_CSUM_TYPE: c_int = 6;
+pub const NFTA_PAYLOAD_CSUM_OFFSET: c_int = 7;
+pub const NFTA_PAYLOAD_CSUM_FLAGS: c_int = 8;
+
+pub const NFT_EXTHDR_F_PRESENT: c_int = 1;
+
+pub const NFT_EXTHDR_OP_IPV6: c_int = 0;
+pub const NFT_EXTHDR_OP_TCPOPT: c_int = 1;
+pub const NFT_EXTHDR_OP_IPV4: c_int = 2;
+pub const NFT_EXTHDR_OP_SCTP: c_int = 3;
+pub const NFT_EXTHDR_OP_DCCP: c_int = 4;
+pub const __NFT_EXTHDR_OP_MAX: c_int = 5;
+
+pub const NFTA_EXTHDR_UNSPEC: c_int = 0;
+pub const NFTA_EXTHDR_DREG: c_int = 1;
+pub const NFTA_EXTHDR_TYPE: c_int = 2;
+pub const NFTA_EXTHDR_OFFSET: c_int = 3;
+pub const NFTA_EXTHDR_LEN: c_int = 4;
+pub const NFTA_EXTHDR_FLAGS: c_int = 5;
+pub const NFTA_EXTHDR_OP: c_int = 6;
+pub const NFTA_EXTHDR_SREG: c_int = 7;
 
 pub const NFT_META_LEN: c_int = 0;
 pub const NFT_META_PROTOCOL: c_int = 1;
@@ -4998,6 +5239,58 @@ pub const NFT_META_IIFGROUP: c_int = 21;
 pub const NFT_META_OIFGROUP: c_int = 22;
 pub const NFT_META_CGROUP: c_int = 23;
 pub const NFT_META_PRANDOM: c_int = 24;
+pub const NFT_META_SECPATH: c_int = 25;
+pub const NFT_META_IIFKIND: c_int = 26;
+pub const NFT_META_OIFKIND: c_int = 27;
+pub const NFT_META_BRI_IIFPVID: c_int = 28;
+pub const NFT_META_BRI_IIFVPROTO: c_int = 29;
+pub const NFT_META_TIME_NS: c_int = 30;
+pub const NFT_META_TIME_DAY: c_int = 31;
+pub const NFT_META_TIME_HOUR: c_int = 32;
+pub const NFT_META_SDIF: c_int = 33;
+pub const NFT_META_SDIFNAME: c_int = 34;
+pub const NFT_META_BRI_BROUTE: c_int = 35;
+pub const __NFT_META_IIFTYPE: c_int = 36;
+
+pub const NFT_RT_CLASSID: c_int = 0;
+pub const NFT_RT_NEXTHOP4: c_int = 1;
+pub const NFT_RT_NEXTHOP6: c_int = 2;
+pub const NFT_RT_TCPMSS: c_int = 3;
+pub const NFT_RT_XFRM: c_int = 4;
+pub const __NFT_RT_MAX: c_int = 5;
+
+pub const NFT_HASH_JENKINS: c_int = 0;
+pub const NFT_HASH_SYM: c_int = 1;
+
+pub const NFTA_HASH_UNSPEC: c_int = 0;
+pub const NFTA_HASH_SREG: c_int = 1;
+pub const NFTA_HASH_DREG: c_int = 2;
+pub const NFTA_HASH_LEN: c_int = 3;
+pub const NFTA_HASH_MODULUS: c_int = 4;
+pub const NFTA_HASH_SEED: c_int = 5;
+pub const NFTA_HASH_OFFSET: c_int = 6;
+pub const NFTA_HASH_TYPE: c_int = 7;
+pub const NFTA_HASH_SET_NAME: c_int = 8;
+pub const NFTA_HASH_SET_ID: c_int = 9;
+
+pub const NFTA_META_UNSPEC: c_int = 0;
+pub const NFTA_META_DREG: c_int = 1;
+pub const NFTA_META_KEY: c_int = 2;
+pub const NFTA_META_SREG: c_int = 3;
+
+pub const NFTA_RT_UNSPEC: c_int = 0;
+pub const NFTA_RT_DREG: c_int = 1;
+pub const NFTA_RT_KEY: c_int = 2;
+
+pub const NFTA_SOCKET_UNSPEC: c_int = 0;
+pub const NFTA_SOCKET_KEY: c_int = 1;
+pub const NFTA_SOCKET_DREG: c_int = 2;
+pub const NFTA_SOCKET_LEVEL: c_int = 3;
+
+pub const NFT_SOCKET_TRANSPARENT: c_int = 0;
+pub const NFT_SOCKET_MARK: c_int = 1;
+pub const NFT_SOCKET_WILDCARD: c_int = 2;
+pub const NFT_SOCKET_CGROUPV2: c_int = 3;
 
 pub const NFT_CT_STATE: c_int = 0;
 pub const NFT_CT_DIRECTION: c_int = 1;
@@ -5022,17 +5315,81 @@ pub const NFT_CT_SRC_IP: c_int = 19;
 pub const NFT_CT_DST_IP: c_int = 20;
 pub const NFT_CT_SRC_IP6: c_int = 21;
 pub const NFT_CT_DST_IP6: c_int = 22;
+pub const NFT_CT_ID: c_int = 23;
+pub const __NFT_CT_MAX: c_int = 24;
+
+pub const NFTA_CT_UNSPEC: c_int = 0;
+pub const NFTA_CT_DREG: c_int = 1;
+pub const NFTA_CT_KEY: c_int = 2;
+pub const NFTA_CT_DIRECTION: c_int = 3;
+pub const NFTA_CT_SREG: c_int = 4;
+
+pub const NFTA_FLOW_UNSPEC: c_int = 0;
+pub const NFTA_FLOW_TABLE_NAME: c_int = 1;
 
 pub const NFT_LIMIT_PKTS: c_int = 0;
 pub const NFT_LIMIT_PKT_BYTES: c_int = 1;
 
 pub const NFT_LIMIT_F_INV: c_int = 1 << 0;
 
+pub const NFTA_LIMIT_UNSPEC: c_int = 0;
+pub const NFTA_LIMIT_RATE: c_int = 1;
+pub const NFTA_LIMIT_UNIT: c_int = 2;
+pub const NFTA_LIMIT_BURST: c_int = 3;
+pub const NFTA_LIMIT_TYPE: c_int = 4;
+pub const NFTA_LIMIT_FLAGS: c_int = 5;
+pub const NFTA_LIMIT_PAD: c_int = 6;
+
+pub const NFT_CONNLIMIT_F_INV: c_int = 1 << 0;
+
+pub const NFTA_CONNLIMIT_UNSPEC: c_int = 0;
+pub const NFTA_CONNLIMIT_COUNT: c_int = 1;
+pub const NFTA_CONNLIMIT_FLAGS: c_int = 2;
+
+pub const NFTA_COUNTER_UNSPEC: c_int = 0;
+pub const NFTA_COUNTER_BYTES: c_int = 1;
+pub const NFTA_COUNTER_PACKETS: c_int = 2;
+pub const NFTA_COUNTER_PAD: c_int = 3;
+
+pub const NFTA_LAST_UNSPEC: c_int = 0;
+pub const NFTA_LAST_SET: c_int = 1;
+pub const NFTA_LAST_MSECS: c_int = 2;
+pub const NFTA_LAST_PAD: c_int = 3;
+
+pub const NFTA_LOG_UNSPEC: c_int = 0;
+pub const NFTA_LOG_GROUP: c_int = 1;
+pub const NFTA_LOG_PREFIX: c_int = 2;
+pub const NFTA_LOG_SNAPLEN: c_int = 3;
+pub const NFTA_LOG_QTHRESHOLD: c_int = 4;
+pub const NFTA_LOG_LEVEL: c_int = 5;
+pub const NFTA_LOG_FLAGS: c_int = 6;
+
+pub const NFT_LOGLEVEL_EMERG: c_int = 0;
+pub const NFT_LOGLEVEL_ALERT: c_int = 1;
+pub const NFT_LOGLEVEL_CRIT: c_int = 2;
+pub const NFT_LOGLEVEL_ERR: c_int = 3;
+pub const NFT_LOGLEVEL_WARNING: c_int = 4;
+pub const NFT_LOGLEVEL_NOTICE: c_int = 5;
+pub const NFT_LOGLEVEL_INFO: c_int = 6;
+pub const NFT_LOGLEVEL_DEBUG: c_int = 7;
+pub const NFT_LOGLEVEL_AUDIT: c_int = 8;
+pub const __NFT_LOGLEVEL_MAX: c_int = 9;
+
 pub const NFT_QUEUE_FLAG_BYPASS: c_int = 0x01;
 pub const NFT_QUEUE_FLAG_CPU_FANOUT: c_int = 0x02;
 pub const NFT_QUEUE_FLAG_MASK: c_int = 0x03;
 
 pub const NFT_QUOTA_F_INV: c_int = 1 << 0;
+pub const NFT_QUOTA_F_DEPLETED: c_int = 1 << 1;
+
+pub const NFTA_QUOTA_UNSPEC: c_int = 0;
+pub const NFTA_QUOTA_BYTES: c_int = 1;
+pub const NFTA_QUOTA_FLAGS: c_int = 2;
+pub const NFTA_QUOTA_PAD: c_int = 3;
+pub const NFTA_QUOTA_CONSUMED: c_int = 4;
+
+pub const NFTA_SECMARK_UNSPEC: c_int = 0;
+pub const NFTA_SECMARK_CTX: c_int = 1;
 
 pub const NFT_REJECT_ICMP_UNREACH: c_int = 0;
 pub const NFT_REJECT_TCP_RST: c_int = 1;
@@ -5043,16 +5400,236 @@ pub const NFT_REJECT_ICMPX_PORT_UNREACH: c_int = 1;
 pub const NFT_REJECT_ICMPX_HOST_UNREACH: c_int = 2;
 pub const NFT_REJECT_ICMPX_ADMIN_PROHIBITED: c_int = 3;
 
+pub const NFTA_REJECT_UNSPEC: c_int = 0;
+pub const NFTA_REJECT_TYPE: c_int = 1;
+pub const NFTA_REJECT_ICMP_CODE: c_int = 2;
+
 pub const NFT_NAT_SNAT: c_int = 0;
 pub const NFT_NAT_DNAT: c_int = 1;
+
+pub const NFTA_NAT_UNSPEC: c_int = 0;
+pub const NFTA_NAT_TYPE: c_int = 1;
+pub const NFTA_NAT_FAMILY: c_int = 2;
+pub const NFTA_NAT_REG_ADDR_MIN: c_int = 3;
+pub const NFTA_NAT_REG_ADDR_MAX: c_int = 4;
+pub const NFTA_NAT_REG_PROTO_MIN: c_int = 5;
+pub const NFTA_NAT_REG_PROTO_MAX: c_int = 6;
+pub const NFTA_NAT_FLAGS: c_int = 7;
+
+pub const NFTA_TPROXY_UNSPEC: c_int = 0;
+pub const NFTA_TPROXY_FAMILY: c_int = 1;
+pub const NFTA_TPROXY_REG_ADDR: c_int = 2;
+pub const NFTA_TPROXY_REG_PORT: c_int = 3;
+
+pub const NFTA_MASQ_UNSPEC: c_uint = 0;
+pub const NFTA_MASQ_FLAGS: c_uint = 1;
+pub const NFTA_MASQ_REG_PROTO_MIN: c_uint = 2;
+pub const NFTA_MASQ_REG_PROTO_MAX: c_uint = 3;
+
+pub const NFTA_REDIR_UNSPEC: c_int = 0;
+pub const NFTA_REDIR_REG_PROTO_MIN: c_int = 1;
+pub const NFTA_REDIR_REG_PROTO_MAX: c_int = 2;
+pub const NFTA_REDIR_FLAGS: c_int = 3;
+
+pub const NFTA_DUP_UNSPEC: c_int = 0;
+pub const NFTA_DUP_SREG_ADDR: c_int = 1;
+pub const NFTA_DUP_SREG_DEV: c_int = 2;
+
+pub const NFTA_FWD_UNSPEC: c_int = 0;
+pub const NFTA_FWD_SREG_DEV: c_int = 1;
+pub const NFTA_FWD_SREG_ADDR: c_int = 2;
+pub const NFTA_FWD_NFPROTO: c_int = 3;
+
+pub const NFTA_OBJREF_UNSPEC: c_int = 0;
+pub const NFTA_OBJREF_IMM_TYPE: c_int = 1;
+pub const NFTA_OBJREF_IMM_NAME: c_int = 2;
+pub const NFTA_OBJREF_SET_SREG: c_int = 3;
+pub const NFTA_OBJREF_SET_NAME: c_int = 4;
+pub const NFTA_OBJREF_SET_ID: c_int = 5;
+
+pub const NFTA_GEN_UNSPEC: c_int = 0;
+pub const NFTA_GEN_ID: c_int = 1;
+pub const NFTA_GEN_PROC_PID: c_int = 2;
+pub const NFTA_GEN_PROC_NAME: c_int = 3;
+
+pub const NFTA_FIB_UNSPEC: c_int = 0;
+pub const NFTA_FIB_DREG: c_int = 1;
+pub const NFTA_FIB_RESULT: c_int = 2;
+pub const NFTA_FIB_FLAGS: c_int = 3;
+
+pub const NFT_FIB_RESULT_UNSPEC: c_int = 0;
+pub const NFT_FIB_RESULT_OIF: c_int = 1;
+pub const NFT_FIB_RESULT_OIFNAME: c_int = 2;
+pub const NFT_FIB_RESULT_ADDRTYPE: c_int = 3;
+
+pub const NFTA_FIB_F_SADDR: c_int = 1 << 0;
+pub const NFTA_FIB_F_DADDR: c_int = 1 << 1;
+pub const NFTA_FIB_F_MARK: c_int = 1 << 2;
+pub const NFTA_FIB_F_IIF: c_int = 1 << 3;
+pub const NFTA_FIB_F_OIF: c_int = 1 << 4;
+pub const NFTA_FIB_F_PRESENT: c_int = 1 << 5;
+
+pub const NFTA_CT_HELPER_UNSPEC: c_int = 0;
+pub const NFTA_CT_HELPER_NAME: c_int = 1;
+pub const NFTA_CT_HELPER_L3PROTO: c_int = 2;
+pub const NFTA_CT_HELPER_L4PROTO: c_int = 3;
+
+pub const NFTA_CT_TIMEOUT_UNSPEC: c_int = 0;
+pub const NFTA_CT_TIMEOUT_L3PROTO: c_int = 1;
+pub const NFTA_CT_TIMEOUT_L4PROTO: c_int = 2;
+pub const NFTA_CT_TIMEOUT_DATA: c_int = 3;
+
+pub const NFTA_CT_EXPECT_UNSPEC: c_int = 0;
+pub const NFTA_CT_EXPECT_L3PROTO: c_int = 1;
+pub const NFTA_CT_EXPECT_L4PROTO: c_int = 2;
+pub const NFTA_CT_EXPECT_DPORT: c_int = 3;
+pub const NFTA_CT_EXPECT_TIMEOUT: c_int = 4;
+pub const NFTA_CT_EXPECT_SIZE: c_int = 5;
+
+pub const NFTA_OBJ_UNSPEC: c_int = 0;
+pub const NFTA_OBJ_TABLE: c_int = 1;
+pub const NFTA_OBJ_NAME: c_int = 2;
+pub const NFTA_OBJ_TYPE: c_int = 3;
+pub const NFTA_OBJ_DATA: c_int = 4;
+pub const NFTA_OBJ_USE: c_int = 5;
+pub const NFTA_OBJ_HANDLE: c_int = 6;
+pub const NFTA_OBJ_PAD: c_int = 7;
+pub const NFTA_OBJ_USERDATA: c_int = 8;
+
+pub const NFT_FLOWTABLE_HW_OFFLOAD: c_int = 0x1;
+pub const NFT_FLOWTABLE_COUNTER: c_int = 0x2;
+pub const NFT_FLOWTABLE_MASK: c_int = NFT_FLOWTABLE_HW_OFFLOAD | NFT_FLOWTABLE_COUNTER;
+
+pub const NFTA_FLOWTABLE_UNSPEC: c_int = 0;
+pub const NFTA_FLOWTABLE_TABLE: c_int = 1;
+pub const NFTA_FLOWTABLE_NAME: c_int = 2;
+pub const NFTA_FLOWTABLE_HOOK: c_int = 3;
+pub const NFTA_FLOWTABLE_USE: c_int = 4;
+pub const NFTA_FLOWTABLE_HANDLE: c_int = 5;
+pub const NFTA_FLOWTABLE_PAD: c_int = 6;
+pub const NFTA_FLOWTABLE_FLAGS: c_int = 7;
+
+pub const NFTA_FLOWTABLE_HOOK_UNSPEC: c_int = 0;
+pub const NFTA_FLOWTABLE_HOOK_NUM: c_int = 1;
+pub const NFTA_FLOWTABLE_HOOK_PRIORITY: c_int = 2;
+pub const NFTA_FLOWTABLE_HOOK_DEVS: c_int = 3;
+
+pub const NFTA_OSF_UNSPEC: c_int = 0;
+pub const NFTA_OSF_DREG: c_int = 1;
+pub const NFTA_OSF_TTL: c_int = 2;
+pub const NFTA_OSF_FLAGS: c_int = 3;
+
+pub const NFTA_SYNPROXY_UNSPEC: c_int = 0;
+pub const NFTA_SYNPROXY_MSS: c_int = 1;
+pub const NFTA_SYNPROXY_WSCALE: c_int = 2;
+pub const NFTA_SYNPROXY_FLAGS: c_int = 3;
+
+pub const NFTA_DEVICE_UNSPEC: c_int = 0;
+pub const NFTA_DEVICE_NAME: c_int = 1;
+
+pub const NFTA_XFRM_UNSPEC: c_int = 0;
+pub const NFTA_XFRM_DREG: c_int = 1;
+pub const NFTA_XFRM_KEY: c_int = 2;
+pub const NFTA_XFRM_DIR: c_int = 3;
+pub const NFTA_XFRM_SPNUM: c_int = 4;
+
+pub const NFT_XFRM_KEY_UNSPEC: c_int = 0;
+pub const NFT_XFRM_KEY_DADDR_IP4: c_int = 1;
+pub const NFT_XFRM_KEY_DADDR_IP6: c_int = 2;
+pub const NFT_XFRM_KEY_SADDR_IP4: c_int = 3;
+pub const NFT_XFRM_KEY_SADDR_IP6: c_int = 4;
+pub const NFT_XFRM_KEY_REQID: c_int = 5;
+pub const NFT_XFRM_KEY_SPI: c_int = 6;
+
+pub const NFTA_TRACE_UNSPEC: c_int = 0;
+pub const NFTA_TRACE_TABLE: c_int = 1;
+pub const NFTA_TRACE_CHAIN: c_int = 2;
+pub const NFTA_TRACE_RULE_HANDLE: c_int = 3;
+pub const NFTA_TRACE_TYPE: c_int = 4;
+pub const NFTA_TRACE_VERDICT: c_int = 5;
+pub const NFTA_TRACE_ID: c_int = 6;
+pub const NFTA_TRACE_LL_HEADER: c_int = 7;
+pub const NFTA_TRACE_NETWORK_HEADER: c_int = 8;
+pub const NFTA_TRACE_TRANSPORT_HEADER: c_int = 9;
+pub const NFTA_TRACE_IIF: c_int = 10;
+pub const NFTA_TRACE_IIFTYPE: c_int = 11;
+pub const NFTA_TRACE_OIF: c_int = 12;
+pub const NFTA_TRACE_OIFTYPE: c_int = 13;
+pub const NFTA_TRACE_MARK: c_int = 14;
+pub const NFTA_TRACE_NFPROTO: c_int = 15;
+pub const NFTA_TRACE_POLICY: c_int = 16;
+pub const NFTA_TRACE_PAD: c_int = 17;
 
 pub const NFT_TRACETYPE_UNSPEC: c_int = 0;
 pub const NFT_TRACETYPE_POLICY: c_int = 1;
 pub const NFT_TRACETYPE_RETURN: c_int = 2;
 pub const NFT_TRACETYPE_RULE: c_int = 3;
 
+pub const NFTA_NG_UNSPEC: c_int = 0;
+pub const NFTA_NG_DREG: c_int = 1;
+pub const NFTA_NG_MODULUS: c_int = 2;
+pub const NFTA_NG_TYPE: c_int = 3;
+pub const NFTA_NG_OFFSET: c_int = 4;
+pub const NFTA_NG_SET_NAME: c_int = 5;
+pub const NFTA_NG_SET_ID: c_int = 6;
+
 pub const NFT_NG_INCREMENTAL: c_int = 0;
 pub const NFT_NG_RANDOM: c_int = 1;
+
+pub const NFTA_TUNNEL_KEY_IP_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_IP_SRC: c_int = 1;
+pub const NFTA_TUNNEL_KEY_IP_DST: c_int = 2;
+
+pub const NFTA_TUNNEL_KEY_IP6_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_IP6_SRC: c_int = 1;
+pub const NFTA_TUNNEL_KEY_IP6_DST: c_int = 2;
+pub const NFTA_TUNNEL_KEY_IP6_FLOWLABEL: c_int = 3;
+
+pub const NFTA_TUNNEL_KEY_OPTS_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_OPTS_VXLAN: c_int = 1;
+pub const NFTA_TUNNEL_KEY_OPTS_ERSPAN: c_int = 2;
+pub const NFTA_TUNNEL_KEY_OPTS_GENEVE: c_int = 3;
+
+pub const NFTA_TUNNEL_KEY_VXLAN_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_VXLAN_GBP: c_int = 1;
+
+pub const NFTA_TUNNEL_KEY_ERSPAN_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_ERSPAN_VERSION: c_int = 1;
+pub const NFTA_TUNNEL_KEY_ERSPAN_V1_INDEX: c_int = 2;
+pub const NFTA_TUNNEL_KEY_ERSPAN_V2_HWID: c_int = 3;
+pub const NFTA_TUNNEL_KEY_ERSPAN_V2_DIR: c_int = 4;
+
+pub const NFTA_TUNNEL_KEY_GENEVE_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_GENEVE_CLASS: c_int = 1;
+pub const NFTA_TUNNEL_KEY_GENEVE_TYPE: c_int = 2;
+pub const NFTA_TUNNEL_KEY_GENEVE_DATA: c_int = 3;
+
+pub const NFT_TUNNEL_F_ZERO_CSUM_TX: c_int = 1 << 0;
+pub const NFT_TUNNEL_F_DONT_FRAGMENT: c_int = 1 << 1;
+pub const NFT_TUNNEL_F_SEQ_NUMBER: c_int = 1 << 2;
+
+pub const NFTA_TUNNEL_KEY_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY_ID: c_int = 1;
+pub const NFTA_TUNNEL_KEY_IP: c_int = 2;
+pub const NFTA_TUNNEL_KEY_IP6: c_int = 3;
+pub const NFTA_TUNNEL_KEY_FLAGS: c_int = 4;
+pub const NFTA_TUNNEL_KEY_TOS: c_int = 5;
+pub const NFTA_TUNNEL_KEY_TTL: c_int = 6;
+pub const NFTA_TUNNEL_KEY_SPORT: c_int = 7;
+pub const NFTA_TUNNEL_KEY_DPORT: c_int = 8;
+pub const NFTA_TUNNEL_KEY_OPTS: c_int = 9;
+
+pub const NFT_TUNNEL_PATH: c_int = 0;
+pub const NFT_TUNNEL_ID: c_int = 1;
+
+pub const NFT_TUNNEL_MODE_NONE: c_int = 0;
+pub const NFT_TUNNEL_MODE_RX: c_int = 1;
+pub const NFT_TUNNEL_MODE_TX: c_int = 2;
+
+pub const NFTA_TUNNEL_UNSPEC: c_int = 0;
+pub const NFTA_TUNNEL_KEY: c_int = 1;
+pub const NFTA_TUNNEL_DREG: c_int = 2;
+pub const NFTA_TUNNEL_MODE: c_int = 3;
 
 // linux/input.h
 pub const FF_MAX: __u16 = 0x7f;
