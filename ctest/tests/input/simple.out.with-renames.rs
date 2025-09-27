@@ -187,6 +187,23 @@ mod generated_tests {
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+    pub fn ctest_size_align_gregset_t() {
+        extern "C" {
+            fn ctest_size_of__gregset_t() -> u64;
+            fn ctest_align_of__gregset_t() -> u64;
+        }
+
+        let rust_size = size_of::<gregset_t>() as u64;
+        let c_size = unsafe { ctest_size_of__gregset_t() };
+
+        let rust_align = align_of::<gregset_t>() as u64;
+        let c_align = unsafe { ctest_align_of__gregset_t() };
+
+        check_same(rust_size, c_size, "gregset_t size");
+        check_same(rust_align, c_align, "gregset_t align");
+    }
+
+    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_Color() {
         extern "C" {
             fn ctest_size_of__Color() -> u64;
@@ -996,6 +1013,7 @@ fn run_all() {
     ctest_const_BLUE();
     ctest_const_GREEN();
     ctest_size_align_Byte();
+    ctest_size_align_gregset_t();
     ctest_size_align_Color();
     ctest_size_align_Person();
     ctest_size_align_Word();

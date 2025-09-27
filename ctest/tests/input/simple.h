@@ -2,6 +2,8 @@
 
 typedef uint8_t Byte;
 
+typedef unsigned long gregset_t[32];
+
 Byte byte = 0x42;
 
 struct Person
