@@ -930,8 +930,6 @@ impl TestGenerator {
         self
     }
 
-    // FIXME(ctest): should arrays be handled differently?
-
     /// Configures whether the ABI roundtrip tests for a type are emitted.
     ///
     /// The closure is passed the name of a Rust type and returns whether the
@@ -939,7 +937,7 @@ impl TestGenerator {
     ///
     /// By default all types undergo ABI roundtrip tests. Arrays cannot undergo
     /// an ABI roundtrip because they cannot be returned by C functions, and
-    /// have to be manually skipped here.
+    /// are automatically skipped.
     ///
     /// # Examples
     /// ```no_run
