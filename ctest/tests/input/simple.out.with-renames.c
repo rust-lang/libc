@@ -63,6 +63,12 @@ CTEST_EXTERN uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 CTEST_EXTERN uint64_t ctest_align_of__Byte(void) { return CTEST_ALIGNOF(Byte); }
 
 // Return the size of a type.
+CTEST_EXTERN uint64_t ctest_size_of__gregset_t(void) { return sizeof(gregset_t); }
+
+// Return the alignment of a type.
+CTEST_EXTERN uint64_t ctest_align_of__gregset_t(void) { return CTEST_ALIGNOF(gregset_t); }
+
+// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__Color(void) { return sizeof(enum Color); }
 
 // Return the alignment of a type.
