@@ -257,6 +257,10 @@ impl TestTemplate {
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
         for alias in helper.filtered_ffi_items.aliases() {
+            // Arrays cannot be roundtripped, and are automatically skipped.
+            if let syn::Type::Array(_) = alias.ty {
+                continue;
+            }
             let c_ty = helper.c_type(alias)?;
             self.add_roundtrip_test(helper, alias.ident(), &[], &c_ty, true);
         }
