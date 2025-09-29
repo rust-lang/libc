@@ -63,6 +63,11 @@ ATF_PUBL
 ATF_USETRAILERS
 AT_EACCESS
 AT_FDCWD
+AT_HWCAP
+AT_HWCAP2
+AT_IGNORE
+AT_NULL
+AT_PAGESZ
 AT_REMOVEDIR
 AT_SYMLINK_FOLLOW
 AT_SYMLINK_NOFOLLOW
@@ -1090,6 +1095,7 @@ dl_phdr_info
 drand48
 dup3
 duplocale
+elf_aux_info
 endgrent
 endpwent
 endservent
