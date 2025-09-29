@@ -525,6 +525,7 @@ fn test_openbsd(target: &str) {
         "sys/syscall.h",
         "sys/shm.h",
         "sys/param.h",
+        "sys/auxv.h",
     }
 
     cfg.rename_type(|ty| match ty {

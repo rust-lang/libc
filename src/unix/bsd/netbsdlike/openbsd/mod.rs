@@ -1040,6 +1040,12 @@ pub const AT_SYMLINK_NOFOLLOW: c_int = 0x02;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x04;
 pub const AT_REMOVEDIR: c_int = 0x08;
 
+pub const AT_NULL: c_int = 0;
+pub const AT_IGNORE: c_int = 1;
+pub const AT_PAGESZ: c_int = 6;
+pub const AT_HWCAP: c_int = 25;
+pub const AT_HWCAP2: c_int = 26;
+
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: c_int = 9;
 
@@ -2076,6 +2082,8 @@ extern "C" {
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
     pub fn getmntinfo(mntbufp: *mut *mut crate::statfs, flags: c_int) -> c_int;
     pub fn getfsstat(buf: *mut statfs, bufsize: size_t, flags: c_int) -> c_int;
+
+    pub fn elf_aux_info(aux: c_int, buf: *mut c_void, buflen: c_int) -> c_int;
 }
 
 #[link(name = "execinfo")]
