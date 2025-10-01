@@ -2233,6 +2233,9 @@ fn test_android(target: &str) {
             // FIXME(android): Requires >= 6.12 kernel headers.
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
 
+            // FIXME(android): Requires >= 6.9 kernel headers.
+            "AT_HWCAP3" | "AT_HWCAP4" => true,
+
             _ => false,
         }
     });
@@ -2828,6 +2831,9 @@ fn test_freebsd(target: &str) {
 
             // FIXME(deprecated): deprecated in 0.2, removed in main
             "TIOCMGDTRWAIT" | "TIOCMSDTRWAIT" => true,
+
+            // Added in FreeBSD 15
+            "AT_HWCAP3" | "AT_HWCAP4" if Some(15) > freebsd_ver => true,
 
             _ => false,
         }
@@ -4732,6 +4738,9 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Value changed in 6.14
             "SECURE_ALL_BITS" | "SECURE_ALL_LOCKS" => true,
+
+            // FIXME(linux): Requires >= 6.9 kernel headers.
+            "AT_HWCAP3" | "AT_HWCAP4" => true,
 
             _ => false,
         }

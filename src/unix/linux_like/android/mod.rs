@@ -3508,6 +3508,8 @@ pub const AT_RANDOM: c_ulong = 25;
 pub const AT_HWCAP2: c_ulong = 26;
 pub const AT_RSEQ_FEATURE_SIZE: c_ulong = 27;
 pub const AT_RSEQ_ALIGN: c_ulong = 28;
+pub const AT_HWCAP3: c_ulong = 29;
+pub const AT_HWCAP4: c_ulong = 30;
 pub const AT_EXECFN: c_ulong = 31;
 pub const AT_MINSIGSTKSZ: c_ulong = 51;
 

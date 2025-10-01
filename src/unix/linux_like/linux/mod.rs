@@ -2544,6 +2544,8 @@ pub const AT_BASE_PLATFORM: c_ulong = 24;
 pub const AT_RANDOM: c_ulong = 25;
 pub const AT_HWCAP2: c_ulong = 26;
 
+pub const AT_HWCAP3: c_ulong = 29;
+pub const AT_HWCAP4: c_ulong = 30;
 pub const AT_EXECFN: c_ulong = 31;
 
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
