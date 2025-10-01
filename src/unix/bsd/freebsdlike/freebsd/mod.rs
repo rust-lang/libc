@@ -3807,6 +3807,8 @@ pub const AT_HWCAP: c_int = 25;
 pub const AT_HWCAP2: c_int = 26;
 pub const AT_USRSTACKBASE: c_int = 35;
 pub const AT_USRSTACKLIM: c_int = 36;
+pub const AT_HWCAP3: c_int = 38;
+pub const AT_HWCAP4: c_int = 39;
 
 pub const TABDLY: crate::tcflag_t = 0x00000004;
 pub const TAB0: crate::tcflag_t = 0x00000000;
