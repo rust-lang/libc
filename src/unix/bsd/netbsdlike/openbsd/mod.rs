@@ -1212,6 +1212,8 @@ pub const _PC_SYMLINK_MAX: c_int = 19;
 pub const _PC_SYNC_IO: c_int = 20;
 pub const _PC_TIMESTAMP_RESOLUTION: c_int = 21;
 
+pub const _CS_PATH: c_int = 1;
+
 pub const _SC_CLK_TCK: c_int = 3;
 pub const _SC_SEM_NSEMS_MAX: c_int = 31;
 pub const _SC_SEM_VALUE_MAX: c_int = 32;
