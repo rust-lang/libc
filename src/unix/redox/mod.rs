@@ -29,10 +29,10 @@ pub type tcflag_t = u32;
 pub type time_t = c_longlong;
 pub type id_t = c_uint;
 pub type pid_t = usize;
-pub type uid_t = u32;
-pub type gid_t = u32;
+pub type uid_t = c_int;
+pub type gid_t = c_int;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -1002,13 +1002,22 @@ pub const _SC_PAGESIZE: c_int = 30;
 pub const _SC_PAGE_SIZE: c_int = 30;
 // ...
 pub const _SC_RE_DUP_MAX: c_int = 44;
+
+pub const _SC_NPROCESSORS_CONF: c_int = 57;
+pub const _SC_NPROCESSORS_ONLN: c_int = 58;
+
 // ...
+pub const _SC_GETGR_R_SIZE_MAX: c_int = 69;
+pub const _SC_GETPW_R_SIZE_MAX: c_int = 70;
 pub const _SC_LOGIN_NAME_MAX: c_int = 71;
 pub const _SC_TTY_NAME_MAX: c_int = 72;
 // ...
 pub const _SC_SYMLOOP_MAX: c_int = 173;
 // ...
 pub const _SC_HOST_NAME_MAX: c_int = 180;
+// ...
+pub const _SC_SIGQUEUE_MAX: c_int = 190;
+pub const _SC_REALTIME_SIGNALS: c_int = 191;
 // } POSIX.1
 
 // confstr
@@ -1094,13 +1103,13 @@ pub const PRIO_USER: c_int = 2;
 
 f! {
     //sys/socket.h
-    pub {const} fn CMSG_ALIGN(len: size_t) -> size_t {
+    pub const fn CMSG_ALIGN(len: size_t) -> size_t {
         (len + size_of::<size_t>() - 1) & !(size_of::<size_t>() - 1)
     }
-    pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
         (CMSG_ALIGN(size_of::<cmsghdr>()) + length as usize) as c_uint
     }
-    pub {const} fn CMSG_SPACE(len: c_uint) -> c_uint {
+    pub const fn CMSG_SPACE(len: c_uint) -> c_uint {
         (CMSG_ALIGN(len as size_t) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
     }
 
@@ -1133,35 +1142,35 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn WIFSTOPPED(status: c_int) -> bool {
+    pub const fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xff) == 0x7f
     }
 
-    pub {const} fn WSTOPSIG(status: c_int) -> c_int {
+    pub const fn WSTOPSIG(status: c_int) -> c_int {
         (status >> 8) & 0xff
     }
 
-    pub {const} fn WIFCONTINUED(status: c_int) -> bool {
+    pub const fn WIFCONTINUED(status: c_int) -> bool {
         status == 0xffff
     }
 
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+    pub const fn WIFSIGNALED(status: c_int) -> bool {
         ((status & 0x7f) + 1) as i8 >= 2
     }
 
-    pub {const} fn WTERMSIG(status: c_int) -> c_int {
+    pub const fn WTERMSIG(status: c_int) -> c_int {
         status & 0x7f
     }
 
-    pub {const} fn WIFEXITED(status: c_int) -> bool {
+    pub const fn WIFEXITED(status: c_int) -> bool {
         (status & 0x7f) == 0
     }
 
-    pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
+    pub const fn WEXITSTATUS(status: c_int) -> c_int {
         (status >> 8) & 0xff
     }
 
-    pub {const} fn WCOREDUMP(status: c_int) -> bool {
+    pub const fn WCOREDUMP(status: c_int) -> bool {
         (status & 0x80) != 0
     }
 }

@@ -17,10 +17,7 @@ const ALLOWED_CFGS: &[&str] = &[
     "gnu_file_offset_bits64",
     // Corresponds to `_TIME_BITS=64` in glibc
     "gnu_time_bits64",
-    // FIXME(ctest): this config shouldn't be needed but ctest can't parse `const extern fn`
-    "libc_const_extern_fn",
     "libc_deny_warnings",
-    "libc_ctest",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
@@ -144,26 +141,15 @@ fn main() {
         set_cfg("libc_deny_warnings");
     }
 
-    // Set unconditionally when ctest is not being invoked.
-    set_cfg("libc_const_extern_fn");
-
     // Since Rust 1.80, configuration that isn't recognized by default needs to be provided to
     // avoid warnings.
     if rustc_minor_ver >= 80 {
         for cfg in ALLOWED_CFGS {
-            if rustc_minor_ver >= 75 {
-                println!("cargo:rustc-check-cfg=cfg({cfg})");
-            } else {
-                println!("cargo:rustc-check-cfg=values({cfg})");
-            }
+            println!("cargo:rustc-check-cfg=cfg({cfg})");
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
-            if rustc_minor_ver >= 75 {
-                println!("cargo:rustc-check-cfg=cfg({name},values(\"{values}\"))");
-            } else {
-                println!("cargo:rustc-check-cfg=values({name},\"{values}\")");
-            }
+            println!("cargo:rustc-check-cfg=cfg({name},values(\"{values}\"))");
         }
     }
 }

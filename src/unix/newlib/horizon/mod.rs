@@ -185,35 +185,35 @@ pub const GRND_RANDOM: c_uint = 0x2;
 
 // Horizon OS works doesn't or can't hold any of this information
 safe_f! {
-    pub {const} fn WIFSTOPPED(_status: c_int) -> bool {
+    pub const fn WIFSTOPPED(_status: c_int) -> bool {
         false
     }
 
-    pub {const} fn WSTOPSIG(_status: c_int) -> c_int {
+    pub const fn WSTOPSIG(_status: c_int) -> c_int {
         0
     }
 
-    pub {const} fn WIFCONTINUED(_status: c_int) -> bool {
+    pub const fn WIFCONTINUED(_status: c_int) -> bool {
         true
     }
 
-    pub {const} fn WIFSIGNALED(_status: c_int) -> bool {
+    pub const fn WIFSIGNALED(_status: c_int) -> bool {
         false
     }
 
-    pub {const} fn WTERMSIG(_status: c_int) -> c_int {
+    pub const fn WTERMSIG(_status: c_int) -> c_int {
         0
     }
 
-    pub {const} fn WIFEXITED(_status: c_int) -> bool {
+    pub const fn WIFEXITED(_status: c_int) -> bool {
         true
     }
 
-    pub {const} fn WEXITSTATUS(_status: c_int) -> c_int {
+    pub const fn WEXITSTATUS(_status: c_int) -> c_int {
         0
     }
 
-    pub {const} fn WCOREDUMP(_status: c_int) -> bool {
+    pub const fn WCOREDUMP(_status: c_int) -> bool {
         false
     }
 }

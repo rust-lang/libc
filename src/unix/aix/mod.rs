@@ -2457,11 +2457,11 @@ f! {
         (cmsg as *mut c_uchar).offset(size_of::<cmsghdr>() as isize)
     }
 
-    pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
         size_of::<cmsghdr>() as c_uint + length
     }
 
-    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
         size_of::<cmsghdr>() as c_uint + length
     }
 
@@ -2493,11 +2493,11 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn WIFSTOPPED(status: c_int) -> bool {
+    pub const fn WIFSTOPPED(status: c_int) -> bool {
         (status & _W_STOPPED) != 0
     }
 
-    pub {const} fn WSTOPSIG(status: c_int) -> c_int {
+    pub const fn WSTOPSIG(status: c_int) -> c_int {
         if WIFSTOPPED(status) {
             (((status as c_uint) >> 8) & 0xff) as c_int
         } else {
@@ -2505,11 +2505,11 @@ safe_f! {
         }
     }
 
-    pub {const} fn WIFEXITED(status: c_int) -> bool {
+    pub const fn WIFEXITED(status: c_int) -> bool {
         (status & 0xFF) == 0
     }
 
-    pub {const} fn WEXITSTATUS(status: c_int) -> c_int {
+    pub const fn WEXITSTATUS(status: c_int) -> c_int {
         if WIFEXITED(status) {
             (((status as c_uint) >> 8) & 0xff) as c_int
         } else {
@@ -2517,11 +2517,11 @@ safe_f! {
         }
     }
 
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+    pub const fn WIFSIGNALED(status: c_int) -> bool {
         !WIFEXITED(status) && !WIFSTOPPED(status)
     }
 
-    pub {const} fn WTERMSIG(status: c_int) -> c_int {
+    pub const fn WTERMSIG(status: c_int) -> c_int {
         if WIFSIGNALED(status) {
             (((status as c_uint) >> 16) & 0xff) as c_int
         } else {
@@ -2529,26 +2529,26 @@ safe_f! {
         }
     }
 
-    pub {const} fn WIFCONTINUED(status: c_int) -> bool {
+    pub const fn WIFCONTINUED(status: c_int) -> bool {
         (status & WCONTINUED) != 0
     }
 
     // AIX doesn't have native WCOREDUMP.
-    pub {const} fn WCOREDUMP(_status: c_int) -> bool {
+    pub const fn WCOREDUMP(_status: c_int) -> bool {
         false
     }
 
-    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+    pub const fn major(dev: crate::dev_t) -> c_uint {
         let x = dev >> 16;
         x as c_uint
     }
 
-    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+    pub const fn minor(dev: crate::dev_t) -> c_uint {
         let y = dev & 0xFFFF;
         y as c_uint
     }
 
-    pub {const} fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+    pub const fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;

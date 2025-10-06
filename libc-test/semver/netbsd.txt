@@ -1536,6 +1536,7 @@ ptrace_siginfo
 pututxline
 pwritev
 qsort
+qsort_r
 rand
 readdir_r
 readlinkat

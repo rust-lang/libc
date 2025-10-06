@@ -175,7 +175,7 @@ pub type copyfile_callback_t = Option<
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum timezone {}
 impl Copy for timezone {}
 impl Clone for timezone {
@@ -5022,49 +5022,49 @@ f! {
         (cmsg as *mut c_uchar).add(__DARWIN_ALIGN32(size_of::<cmsghdr>()))
     }
 
-    pub {const} fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
         (__DARWIN_ALIGN32(size_of::<cmsghdr>()) + __DARWIN_ALIGN32(length as usize)) as c_uint
     }
 
-    pub {const} fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
         (__DARWIN_ALIGN32(size_of::<cmsghdr>()) + length as usize) as c_uint
     }
 
-    pub {const} fn VM_MAKE_TAG(id: u8) -> u32 {
+    pub const fn VM_MAKE_TAG(id: u8) -> u32 {
         (id as u32) << 24u32
     }
 }
 
 safe_f! {
-    pub {const} fn WSTOPSIG(status: c_int) -> c_int {
+    pub const fn WSTOPSIG(status: c_int) -> c_int {
         status >> 8
     }
 
-    pub {const} fn _WSTATUS(status: c_int) -> c_int {
+    pub const fn _WSTATUS(status: c_int) -> c_int {
         status & 0x7f
     }
 
-    pub {const} fn WIFCONTINUED(status: c_int) -> bool {
+    pub const fn WIFCONTINUED(status: c_int) -> bool {
         _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) == 0x13
     }
 
-    pub {const} fn WIFSIGNALED(status: c_int) -> bool {
+    pub const fn WIFSIGNALED(status: c_int) -> bool {
         _WSTATUS(status) != _WSTOPPED && _WSTATUS(status) != 0
     }
 
-    pub {const} fn WIFSTOPPED(status: c_int) -> bool {
+    pub const fn WIFSTOPPED(status: c_int) -> bool {
         _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
     }
 
-    pub {const} fn makedev(major: i32, minor: i32) -> dev_t {
+    pub const fn makedev(major: i32, minor: i32) -> dev_t {
         (major << 24) | minor
     }
 
-    pub {const} fn major(dev: dev_t) -> i32 {
+    pub const fn major(dev: dev_t) -> i32 {
         (dev >> 24) & 0xff
     }
 
-    pub {const} fn minor(dev: dev_t) -> i32 {
+    pub const fn minor(dev: dev_t) -> i32 {
         dev & 0xffffff
     }
 }
@@ -5178,6 +5178,11 @@ extern "C" {
         oldlenp: *mut size_t,
         newp: *mut c_void,
         newlen: size_t,
+    ) -> c_int;
+    pub fn pthread_cond_timedwait_relative_np(
+        cond: *mut pthread_cond_t,
+        lock: *mut pthread_mutex_t,
+        timeout: *const crate::timespec,
     ) -> c_int;
     pub fn pthread_once(
         once_control: *mut crate::pthread_once_t,
@@ -5926,6 +5931,14 @@ extern "C" {
         search_path: *const c_char,
         argv: *const *mut c_char,
     ) -> c_int;
+
+    pub fn qsort_r(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        arg: *mut c_void,
+        compar: Option<unsafe extern "C" fn(*mut c_void, *const c_void, *const c_void) -> c_int>,
+    );
 }
 
 cfg_if! {

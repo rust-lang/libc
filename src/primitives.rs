@@ -20,14 +20,7 @@ pub type c_double = f64;
 cfg_if! {
     if #[cfg(all(
         not(windows),
-        // FIXME(ctest): just use `target_vendor` = "apple"` once `ctest` supports it
-        not(any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos",
-        )),
+        not(target_vendor = "apple"),
         not(target_os = "vita"),
         any(
             target_arch = "aarch64",
@@ -91,13 +84,7 @@ pub type uint64_t = u64;
 cfg_if! {
     if #[cfg(all(
         target_arch = "aarch64",
-        not(any(
-            target_os = "windows",
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos"
-        ))
+        not(any(target_os = "windows", target_vendor = "apple"))
     ))] {
         /// C `__int128` (a GCC extension that's part of many ABIs)
         pub type __int128 = i128;
@@ -107,15 +94,7 @@ cfg_if! {
         pub type __int128_t = i128;
         /// C __uint128_t (alternate name for [__uint128][])
         pub type __uint128_t = u128;
-    } else if #[cfg(all(
-        target_arch = "aarch64",
-        any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos"
-        )
-    ))] {
+    } else if #[cfg(all(target_arch = "aarch64", target_vendor = "apple"))] {
         /// C `__int128_t`
         pub type __int128_t = i128;
         /// C `__uint128_t`

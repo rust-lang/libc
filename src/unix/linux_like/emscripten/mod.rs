@@ -41,7 +41,7 @@ pub type statfs64 = crate::statfs;
 pub type statvfs64 = crate::statvfs;
 pub type dirent64 = crate::dirent;
 
-#[cfg_attr(feature = "extra_traits", derive(Debug))]
+#[derive(Debug)]
 pub enum fpos64_t {} // FIXME(emscripten): fill this out with a struct
 impl Copy for fpos64_t {}
 impl Clone for fpos64_t {
@@ -1407,7 +1407,7 @@ f! {
 }
 
 safe_f! {
-    pub {const} fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+    pub const fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;
@@ -1418,7 +1418,7 @@ safe_f! {
         dev
     }
 
-    pub {const} fn major(dev: crate::dev_t) -> c_uint {
+    pub const fn major(dev: crate::dev_t) -> c_uint {
         // see
         // https://github.com/emscripten-core/emscripten/blob/
         // main/system/lib/libc/musl/include/sys/sysmacros.h
@@ -1428,7 +1428,7 @@ safe_f! {
         major as c_uint
     }
 
-    pub {const} fn minor(dev: crate::dev_t) -> c_uint {
+    pub const fn minor(dev: crate::dev_t) -> c_uint {
         // see
         // https://github.com/emscripten-core/emscripten/blob/
         // main/system/lib/libc/musl/include/sys/sysmacros.h

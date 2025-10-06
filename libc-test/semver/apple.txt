@@ -2090,6 +2090,7 @@ pthread_attr_setschedpolicy
 pthread_attr_setscope
 pthread_attr_setstackaddr
 pthread_cancel
+pthread_cond_timedwait_relative_np
 pthread_condattr_getpshared
 pthread_condattr_setpshared
 pthread_cpu_number_np
@@ -2121,6 +2122,7 @@ ptrace
 pututxline
 pwritev
 qsort
+qsort_r
 querylocale
 quotactl
 radvisory
