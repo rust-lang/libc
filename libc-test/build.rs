@@ -3738,6 +3738,7 @@ fn test_linux(target: &str) {
     let loongarch64 = target.contains("loongarch64");
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
+    let mips = target.contains("mips");
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     let old_musl = musl && !musl_v1_2_3;
@@ -4434,8 +4435,8 @@ fn test_linux(target: &str) {
             // FIXME(linux): Not yet implemented on sparc64
             "SYS_clone3" if sparc64 => true,
 
-            // FIXME(linux): Not defined on ARM, gnueabihf, musl, PowerPC, riscv64, s390x, and sparc64.
-            "SYS_memfd_secret" if arm | gnueabihf | musl | ppc | riscv64 | s390x | sparc64 => true,
+            // FIXME(linux): Not defined on ARM, gnueabihf, mips, musl, PowerPC, riscv64, s390x, and sparc64.
+            "SYS_memfd_secret" if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 => true,
 
             // FIXME(linux): Added in Linux 5.16
             // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
