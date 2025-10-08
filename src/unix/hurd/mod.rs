@@ -4282,6 +4282,8 @@ extern "C" {
     pub fn seekdir(dirp: *mut crate::DIR, loc: c_long);
     pub fn telldir(dirp: *mut crate::DIR) -> c_long;
 
+    pub fn getdents64(fd: c_int, buf: *mut c_void, nbytes: usize) -> isize;
+
     pub fn dirfd(dirp: *mut crate::DIR) -> c_int;
 
     #[link_name = "__xpg_strerror_r"]

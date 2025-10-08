@@ -4819,6 +4819,10 @@ cfg_if! {
 }
 
 extern "C" {
+    pub fn getdents(fd: c_int, buf: *mut c_char, nbytes: usize) -> isize;
+}
+
+extern "C" {
     #[cfg_attr(doc, doc(alias = "__errno_location"))]
     #[cfg_attr(doc, doc(alias = "errno"))]
     pub fn __error() -> *mut c_int;

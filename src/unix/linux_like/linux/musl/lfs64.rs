@@ -199,6 +199,11 @@ pub unsafe extern "C" fn readdir64_r(
 }
 
 #[inline]
+pub unsafe extern "C" fn getdents64(fd: c_int, buf: *mut crate::dirent64, len: usize) -> c_int {
+    crate::getdents(fd, buf as *mut _, len)
+}
+
+#[inline]
 pub unsafe extern "C" fn sendfile64(
     out_fd: c_int,
     in_fd: c_int,

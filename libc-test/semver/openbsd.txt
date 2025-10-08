@@ -1114,6 +1114,7 @@ ftok
 fusefs_args
 futex
 futimes
+getdents
 getdomainname
 getdtablesize
 getentropy

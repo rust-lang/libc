@@ -1985,6 +1985,7 @@ fsid_t
 fstatfs
 ftok
 futimes
+getdents
 getdomainname
 getdtablesize
 getgrent

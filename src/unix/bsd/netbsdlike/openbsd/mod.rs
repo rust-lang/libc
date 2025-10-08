@@ -2076,6 +2076,8 @@ extern "C" {
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
     pub fn getmntinfo(mntbufp: *mut *mut crate::statfs, flags: c_int) -> c_int;
     pub fn getfsstat(buf: *mut statfs, bufsize: size_t, flags: c_int) -> c_int;
+
+    pub fn getdents(fd: c_int, buf: *mut c_void, nbytes: usize) -> c_int;
 }
 
 #[link(name = "execinfo")]

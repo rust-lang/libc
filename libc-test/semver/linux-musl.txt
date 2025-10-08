@@ -65,6 +65,8 @@ euidaccess
 explicit_bzero
 futimes
 getauxval
+getdents
+getdents64
 getloadavg
 getutxent
 getutxid
