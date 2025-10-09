@@ -94,6 +94,14 @@ cfg_if! {
         pub use crate::unix::*;
 
         prelude!();
+    } else if #[cfg(target_os = "helenos")] {
+        mod primitives;
+        pub use primitives::*;
+
+        mod helenos;
+        pub use self::helenos::*;
+
+        prelude!();
     } else if #[cfg(target_os = "hermit")] {
         mod primitives;
         pub use crate::primitives::*;
