@@ -1402,6 +1402,7 @@ in6_pktinfo
 in_pktinfo
 initgroups
 ipc_perm
+issetugid
 itimerspec
 jrand48
 kevent

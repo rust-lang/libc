@@ -2043,6 +2043,7 @@ input_absinfo
 input_event
 ip_mreqn
 ipc_perm
+issetugid
 jail
 jail_attach
 jail_get

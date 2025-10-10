@@ -944,6 +944,8 @@ extern "C" {
     ) -> size_t;
 
     pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
+
+    pub fn issetugid() -> c_int;
 }
 
 cfg_if! {
