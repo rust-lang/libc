@@ -1403,6 +1403,7 @@ if_nameindex
 ifaddrs
 in6_pktinfo
 initgroups
+issetugid
 jrand48
 kevent
 killpg
