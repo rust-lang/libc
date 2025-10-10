@@ -1937,6 +1937,7 @@ initgroups
 integer_t
 ip_mreqn
 ipc_perm
+issetugid
 kern_return_t
 kevent
 kevent64
