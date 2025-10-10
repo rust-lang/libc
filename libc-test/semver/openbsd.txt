@@ -1173,6 +1173,7 @@ initgroups
 ip_mreqn
 ipc_perm
 iso_args
+issetugid
 jrand48
 kevent
 key_t
