@@ -33,7 +33,7 @@ s! {
         pub guard_size: size_t,
         pub sched_policy: i32,
         pub sched_priority: i32,
-        __reserved: [c_char; 16],
+        __reserved: Padding<[c_char; 16]>,
     }
 
     pub struct passwd {
@@ -120,12 +120,12 @@ s! {
 s_no_extra_traits! {
     pub struct pthread_mutex_t {
         value: c_int,
-        __reserved: [c_char; 36],
+        __reserved: Padding<[c_char; 36]>,
     }
 
     pub struct pthread_cond_t {
         value: c_int,
-        __reserved: [c_char; 44],
+        __reserved: Padding<[c_char; 44]>,
     }
 
     pub struct pthread_rwlock_t {
@@ -134,7 +134,7 @@ s_no_extra_traits! {
         pendingReaders: c_int,
         pendingWriters: c_int,
         attr: i32,
-        __reserved: [c_char; 36],
+        __reserved: Padding<[c_char; 36]>,
     }
 
     pub struct sigset64_t {
