@@ -101,7 +101,7 @@ fn test_skip_simple() {
     let (mut gen_, out_dir) = default_generator(1, Some("simple.h")).unwrap();
     gen_.skip_const(|c| c.ident() == "B" || c.ident() == "A")
         .skip_c_enum(|e| e == "Color")
-        .skip_alias(|a| a.ident() == "Byte")
+        .skip_alias(|a| a.ident() == "Byte" || a.ident() == "gregset_t")
         .skip_struct(|s| s.ident() == "Person")
         .skip_union(|u| u.ident() == "Word")
         .skip_fn(|f| f.ident() == "calloc")
