@@ -78,6 +78,8 @@ macro_rules! prelude {
             #[allow(unused_imports)]
             pub(crate) use core::marker::{Copy, Send, Sync};
             #[allow(unused_imports)]
+            pub(crate) use core::mem::{align_of, align_of_val, size_of, size_of_val};
+            #[allow(unused_imports)]
             pub(crate) use core::option::Option;
             #[allow(unused_imports)]
             pub(crate) use core::prelude::v1::derive;
@@ -86,8 +88,6 @@ macro_rules! prelude {
 
             #[allow(unused_imports)]
             pub(crate) use fmt::Debug;
-            #[allow(unused_imports)]
-            pub(crate) use mem::{align_of, align_of_val, size_of, size_of_val};
 
             #[allow(unused_imports)]
             pub(crate) use crate::types::{CEnumRepr, Padding};
