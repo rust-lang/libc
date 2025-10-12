@@ -2703,6 +2703,17 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 14.2
             "SO_SPLICE" if Some(14) > freebsd_ver => true,
 
+            // Added in FreeBSD 15
+            "PROC_LOGSIGEXIT_CTL"
+            | "PROC_LOGSIGEXIT_STATUS"
+            | "PROC_LOGSIGEXIT_CTL_NOFORCE"
+            | "PROC_LOGSIGEXIT_CTL_FORCE_ENABLE"
+            | "PROC_LOGSIGEXIT_CTL_FORCE_DISABLE"
+                if Some(15) > freebsd_ver =>
+            {
+                true
+            }
+
             _ => false,
         }
     });

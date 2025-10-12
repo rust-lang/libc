@@ -3009,6 +3009,11 @@ pub const PROC_NO_NEW_PRIVS_CTL: c_int = 19;
 pub const PROC_NO_NEW_PRIVS_STATUS: c_int = 20;
 pub const PROC_WXMAP_CTL: c_int = 21;
 pub const PROC_WXMAP_STATUS: c_int = 22;
+pub const PROC_LOGSIGEXIT_CTL: c_int = 23;
+pub const PROC_LOGSIGEXIT_STATUS: c_int = 24;
+pub const PROC_LOGSIGEXIT_CTL_NOFORCE: c_int = 1;
+pub const PROC_LOGSIGEXIT_CTL_FORCE_ENABLE: c_int = 2;
+pub const PROC_LOGSIGEXIT_CTL_FORCE_DISABLE: c_int = 3;
 pub const PROC_PROCCTL_MD_MIN: c_int = 0x10000000;
 
 pub const PPROT_SET: c_int = 1;
@@ -4804,6 +4809,14 @@ safe_f! {
 
     pub const fn PR_SCTP_VALID_POLICY(x: c_int) -> bool {
         PR_SCTP_POLICY(x) <= SCTP_PR_SCTP_MAX
+    }
+
+    pub {const} fn PPROT_OP(o: c_int) -> c_int {
+        o & 0xf
+    }
+
+    pub {const} fn PPROT_FLAGS(o: c_int) -> c_int {
+        o & !0xf
     }
 }
 
