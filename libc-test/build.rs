@@ -1769,6 +1769,7 @@ fn test_wasi(target: &str) {
         [p2]: "netinet/in.h",
         [p2]: "netinet/tcp.h",
         "poll.h",
+        "pthread.h",
         "sched.h",
         "stdbool.h",
         "stddef.h",
