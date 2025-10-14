@@ -29,6 +29,7 @@ mod t {
     }
 
     #[test]
+    #[allow(unused_assignments)] // false-positive: https://github.com/rust-lang/rust/issues/147648
     fn test_cmsg_firsthdr() {
         let mut buf = [0u8; 256];
         let mut mhdr: msghdr = unsafe { mem::zeroed() };
