@@ -477,8 +477,8 @@ s! {
     pub struct flock {
         pub l_type: c_short,
         pub l_whence: c_short,
-        pub l_start: c_long,
-        pub l_len: c_long,
+        pub l_start: c_longlong,
+        pub l_len: c_longlong,
         pub l_pid: c_long,
     }
 
