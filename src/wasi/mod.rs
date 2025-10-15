@@ -175,9 +175,8 @@ s! {
         __fds: [c_int; FD_SETSIZE as usize],
     }
 
-    #[repr(align(4))]
     pub struct pthread_attr_t {
-        size: [u8; 36],
+        size: [c_long; 9],
     }
 
     pub struct pthread_mutexattr_t {
@@ -196,24 +195,20 @@ s! {
         __attr: [c_uint; 2],
     }
 
-    #[repr(align(4))]
     pub struct pthread_cond_t {
-        size: [u8; 48],
+        size: [*mut c_void; 12],
     }
 
-    #[repr(align(4))]
     pub struct pthread_mutex_t {
-        size: [u8; 24],
+        size: [*mut c_void; 6],
     }
 
-    #[repr(align(4))]
     pub struct pthread_rwlock_t {
-        size: [u8; 32],
+        size: [*mut c_void; 8],
     }
 
-    #[repr(align(4))]
     pub struct pthread_barrier_t {
-        size: [u8; 20],
+        size: [*mut c_void; 5],
     }
 }
 
