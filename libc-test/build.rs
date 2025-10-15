@@ -106,7 +106,7 @@ fn do_semver() {
     // maintain a file for Android.
     // NOTE: AIX doesn't include the unix file because there are definitions
     // missing on AIX. It is easier to maintain a file for AIX.
-    if family != os && !matches!(os.as_str(), "android" | "aix") {
+    if family != os && !matches!(os.as_str(), "android" | "aix") && os != "vxworks" {
         process_semver_file(&mut output, &mut semver_root, &family);
     }
     // We don't do semver for unknown targets.
@@ -3477,13 +3477,33 @@ fn test_neutrino(target: &str) {
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
+fn which_vxworks() -> Option<(u32, u32)> {
+    let version = env::var("WIND_RELEASE_ID").ok()?; // When in VxWorks setup, WIND_RELEASE_ID is
+                                                     // always set as the version of the release.
+
+    let mut pieces = version.trim().split(['.']);
+
+    let major: u32 = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+    let minor: u32 = pieces.next().and_then(|x| x.parse().ok()).unwrap_or(0);
+
+    Some((major, minor))
+}
+
 fn test_vxworks(target: &str) {
     assert!(target.contains("vxworks"));
 
     let mut cfg = ctest_cfg();
+
+    let vxworks_ver = which_vxworks();
+
+    if vxworks_ver < Some((25, 9)) {
+        cfg.cfg("vxworks_lt_25_09", None);
+    }
+
     headers!(
         cfg,
         "vxWorks.h",
+        "semLibCommon.h",
         "yvals.h",
         "nfs/nfsCommon.h",
         "rtpLibCommon.h",
@@ -3500,13 +3520,11 @@ fn test_vxworks(target: &str) {
         "elf.h",
         "fcntl.h",
         "grp.h",
-        "sys/poll.h",
         "ifaddrs.h",
         "langinfo.h",
         "limits.h",
         "link.h",
         "locale.h",
-        "sys/stat.h",
         "netdb.h",
         "pthread.h",
         "pwd.h",
@@ -3518,6 +3536,9 @@ fn test_vxworks(target: &str) {
         "stdio.h",
         "stdlib.h",
         "string.h",
+        "sys/select.h",
+        "sys/stat.h",
+        "sys/poll.h",
         "sys/file.h",
         "sys/ioctl.h",
         "sys/socket.h",
@@ -3528,7 +3549,14 @@ fn test_vxworks(target: &str) {
         "sys/un.h",
         "sys/utsname.h",
         "sys/wait.h",
+        "sys/ttycom.h",
+        "sys/utsname.h",
+        "sys/resource.h",
+        "sys/mman.h",
         "netinet/tcp.h",
+        "netinet/udp.h",
+        "netinet/in.h",
+        "netinet6/in6.h",
         "syslog.h",
         "termios.h",
         "time.h",
@@ -3537,16 +3565,22 @@ fn test_vxworks(target: &str) {
         "utime.h",
         "wchar.h",
         "errno.h",
-        "sys/mman.h",
         "pathLib.h",
         "mqueue.h",
+        "fnmatch.h",
+        "sioLibCommon.h",
+        "net/if.h",
     );
     // FIXME(vxworks)
     cfg.skip_const(move |constant| match constant.ident() {
         // sighandler_t weirdness
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN"
-        // This is not defined in vxWorks
-        | "RTLD_DEFAULT"   => true,
+        // These are not defined in VxWorks
+        | "RTLD_DEFAULT" | "PRIO_PROCESS"
+        // Sticky bits not supported
+        | "S_ISVTX"
+        // The following are obsolete for VxWorks
+        | "SIGIO" | "SIGWINCH" | "SIGLOST" => true,
         _ => false,
     });
     // FIXME(vxworks)
@@ -3557,7 +3591,12 @@ fn test_vxworks(target: &str) {
 
     cfg.skip_struct_field_type(
         move |struct_, field| match (struct_.ident(), field.ident()) {
-            ("siginfo_t", "si_value") | ("stat", "st_size") | ("sigaction", "sa_u") => true,
+            ("siginfo_t", "si_value")
+            | ("stat", "st_size")
+            // sighandler_t type is super weird
+            | ("sigaction", "sa_sigaction")
+            // sa_u_t type is not defined in vxworks
+            | ("sigaction", "sa_u") => true,
             _ => false,
         },
     );
@@ -3576,10 +3615,15 @@ fn test_vxworks(target: &str) {
         "sigqueue" | "_sigqueue"
         // sighandler_t
         | "signal"
+        // This is used a realpath and not _realpath
+        | "_realpath"
         // not used in static linking by default
         | "dlerror" => true,
         _ => false,
     });
+
+    // Not defined in vxworks. Just a crate specific union type.
+    cfg.skip_union(move |u| u.ident() == "sa_u_t");
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
