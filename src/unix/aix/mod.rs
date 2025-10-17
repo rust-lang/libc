@@ -264,6 +264,15 @@ s! {
         pub tv_nsec: c_int,
     }
 
+    // On AIX, <stat.h> declares 'tv_nsec' as 'long', but the underlying
+    // system calls return a 4-byte value in both 32-bit and 64-bit modes.
+    // It is declared as 'c_int' here to avoid using the other undefined 4
+    // bytes in the 64-bit mode.
+    pub struct timespec {
+        pub tv_sec: time_t,
+        pub tv_nsec: c_int,
+    }
+
     pub struct statfs64 {
         pub f_version: c_int,
         pub f_type: c_int,
