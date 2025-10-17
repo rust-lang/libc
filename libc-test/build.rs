@@ -5591,6 +5591,12 @@ fn test_aix(target: &str) {
             // The field 'data' is actually a unnamed union in the AIX header.
             "pollfd_ext" if field.ident() == "data" => true,
 
+            // On AIX, <stat.h> declares 'tv_nsec' as 'long', but the
+            // underlying system calls return a 32-bit value in both 32-bit
+            // and 64-bit modes. In the 'libc' crate it is declared as 'i32'
+            // to match the system call. Skip this field.
+            "timespec" if field.ident() == "tv_nsec" => true,
+
             _ => false,
         }
     });
