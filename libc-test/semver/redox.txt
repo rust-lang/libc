@@ -302,6 +302,8 @@ getgrouplist
 getline
 getpwent
 getpwnam_r
+getresgid
+getresuid
 getrlimit
 getrusage
 getservbyport
