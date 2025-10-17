@@ -159,7 +159,7 @@ s! {
         pub st_mode: mode_t,
         pub st_uid: uid_t,
         pub st_gid: gid_t,
-        __pad0: c_uint,
+        __pad0: Padding<c_uint>,
         pub st_rdev: dev_t,
         pub st_size: off_t,
         pub st_blksize: blksize_t,
@@ -167,7 +167,7 @@ s! {
         pub st_atim: timespec,
         pub st_mtim: timespec,
         pub st_ctim: timespec,
-        __reserved: [c_longlong; 3],
+        __reserved: Padding<[c_longlong; 3]>,
     }
 
     pub struct fd_set {
