@@ -1186,6 +1186,8 @@ extern "C" {
     // unistd.h
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
     pub fn getdtablesize() -> c_int;
+    pub fn setresgid(rgid: crate::gid_t, egid: crate::gid_t, sgid: crate::gid_t) -> c_int;
+    pub fn setresuid(ruid: crate::uid_t, euid: crate::uid_t, suid: crate::uid_t) -> c_int;
 
     // grp.h
     pub fn getgrent() -> *mut crate::group;
