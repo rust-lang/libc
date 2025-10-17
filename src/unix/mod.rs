@@ -68,12 +68,28 @@ s! {
 
     // linux x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
+    // On AIX, <stat.h> declares 'tv_nsec' as 'long', but the underlying
+    // system calls return a 4-byte value in both 32-bit and 64-bit modes.
+    // It is declared as 'i32' to avoid using the other undefined 4 bytes
+    // in the 64-bit mode.
     #[cfg(not(target_env = "gnu"))]
     pub struct timespec {
         pub tv_sec: time_t,
-        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+
+        #[cfg(target_os = "aix")]
+        pub tv_nsec: i32,
+
+        #[cfg(all(
+            target_arch = "x86_64",
+            target_pointer_width = "32",
+            not(target_os = "aix")
+        ))]
         pub tv_nsec: i64,
-        #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
+
+        #[cfg(not(any(
+            target_os = "aix",
+            all(target_arch = "x86_64", target_pointer_width = "32")
+        )))]
         pub tv_nsec: c_long,
     }
 
