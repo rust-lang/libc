@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Removed
+- Linux: remove `SIGSTKFLT` on `mips32-linux-musl` <https://github.com/rust-lang/libc/pull/4749>
+
 ## [0.2.164](https://github.com/rust-lang/libc/compare/0.2.163...0.2.164) - 2024-11-16
 
 ### MSRV
