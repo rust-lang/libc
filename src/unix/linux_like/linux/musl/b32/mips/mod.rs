@@ -363,7 +363,6 @@ pub const SIGTSTP: c_int = 24;
 pub const SIGURG: c_int = 21;
 pub const SIGIO: c_int = 22;
 pub const SIGSYS: c_int = 12;
-pub const SIGSTKFLT: c_int = 7;
 pub const SIGPOLL: c_int = crate::SIGIO;
 pub const SIGPWR: c_int = 19;
 pub const SIG_SETMASK: c_int = 3;
