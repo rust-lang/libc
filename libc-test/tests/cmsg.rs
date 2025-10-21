@@ -30,13 +30,14 @@ mod t {
 
     #[test]
     fn test_cmsg_firsthdr() {
+        let mut buf = [0u8; 256];
         let mut mhdr: msghdr = unsafe { mem::zeroed() };
-        mhdr.msg_control = 0xdeadbeef as *mut c_void;
-        let pmhdr = &mhdr as *const msghdr;
+        mhdr.msg_control = buf.as_mut_ptr().cast::<c_void>();
+
         for l in 0..128 {
-            mhdr.msg_controllen = l;
+            mhdr.msg_controllen = l as _;
             unsafe {
-                assert_eq!(libc::CMSG_FIRSTHDR(pmhdr), cmsg_firsthdr(pmhdr));
+                assert_eq!(libc::CMSG_FIRSTHDR(&mhdr), cmsg_firsthdr(&mhdr));
             }
         }
     }
