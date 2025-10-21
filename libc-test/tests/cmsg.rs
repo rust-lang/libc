@@ -34,7 +34,6 @@ mod t {
         mhdr.msg_control = 0xdeadbeef as *mut c_void;
         let pmhdr = &mhdr as *const msghdr;
         for l in 0..128 {
-            mhdr.msg_controllen = l;
             unsafe {
                 assert_eq!(libc::CMSG_FIRSTHDR(pmhdr), cmsg_firsthdr(pmhdr));
             }
