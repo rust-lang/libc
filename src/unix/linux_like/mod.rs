@@ -8,8 +8,7 @@ pub type timer_t = *mut c_void;
 pub type key_t = c_int;
 pub type id_t = c_uint;
 
-missing! {
-    #[derive(Debug)]
+extern_ty! {
     pub enum timezone {}
 }
 

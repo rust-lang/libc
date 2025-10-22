@@ -37,8 +37,7 @@ cfg_if! {
     }
 }
 
-missing! {
-    #[derive(Debug)]
+extern_ty! {
     pub enum DIR {}
 }
 pub type locale_t = *mut c_void;
@@ -585,15 +584,13 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
-        missing! {
-            #[derive(Debug)]
+        extern_ty! {
             pub enum fpos_t {} // FIXME(unix): fill this out with a struct
         }
     }
 }
 
-missing! {
-    #[derive(Debug)]
+extern_ty! {
     pub enum FILE {}
 }
 
