@@ -3997,40 +3997,12 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
-            // FIXME(linux): Requires >= 5.1 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "tls12_crypto_info_aes_gcm_256"
-                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
-            {
-                true
-            }
-
-            // FIXME(linux): Requires >= 5.11 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "tls12_crypto_info_chacha20_poly1305"
-                if (aarch64 || arm || i686 || s390x || x86_64) && musl =>
-            {
-                true
-            }
-
-            // FIXME(linux): Requires >= 5.3 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_options" if musl => true,
-
-            // FIXME(linux): Requires >= 5.4 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_ring_offset" | "xdp_mmap_offsets" if musl => true,
-
             // FIXME(linux): Requires >= 6.8 kernel headers.
             // A field was added in 6.8.
             // https://github.com/torvalds/linux/commit/341ac980eab90ac1f6c22ee9f9da83ed9604d899
             // The previous version of the struct was removed in 6.11 due to a bug.
             // https://github.com/torvalds/linux/commit/32654bbd6313b4cfc82297e6634fa9725c3c900f
             "xdp_umem_reg" => true,
-
-            // FIXME(linux): Requires >= 5.9 kernel headers.
-            // Everything that uses install-musl.sh has 4.19 kernel headers.
-            "xdp_statistics" if musl => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "xsk_tx_metadata"
@@ -4115,48 +4087,6 @@ fn test_linux(target: &str) {
             }
         }
         if musl {
-            // FIXME(linux): Requires >= 5.0 kernel headers
-            if name == "SECCOMP_GET_NOTIF_SIZES"
-               || name == "SECCOMP_FILTER_FLAG_NEW_LISTENER"
-               || name == "SECCOMP_FILTER_FLAG_TSYNC_ESRCH"
-               || name == "SECCOMP_USER_NOTIF_FLAG_CONTINUE"  // requires >= 5.5
-               || name == "SECCOMP_ADDFD_FLAG_SETFD"  // requires >= 5.9
-               || name == "SECCOMP_ADDFD_FLAG_SEND"   // requires >= 5.9
-               || name == "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"  // requires >= 5.19
-            {
-                return true;
-            }
-            // FIXME(linux): Requires >= 4.20 kernel headers
-            if name == "PTP_SYS_OFFSET_EXTENDED" {
-                return true;
-            }
-            // FIXME(linux): Requires >= 5.4 kernel headers
-            if name == "PTP_CLOCK_GETCAPS2"
-                || name == "PTP_ENABLE_PPS2"
-                || name == "PTP_EXTTS_REQUEST2"
-                || name == "PTP_PEROUT_REQUEST2"
-                || name == "PTP_PIN_GETFUNC2"
-                || name == "PTP_PIN_SETFUNC2"
-                || name == "PTP_SYS_OFFSET2"
-                || name == "PTP_SYS_OFFSET_PRECISE2"
-                || name == "PTP_SYS_OFFSET_EXTENDED2"
-            {
-                return true;
-            }
-            // FIXME(linux): Requires >= 5.4.1 kernel headers
-            if name.starts_with("J1939")
-                || name.starts_with("RTEXT_FILTER_")
-                || name.starts_with("SO_J1939")
-                || name.starts_with("SCM_J1939")
-            {
-                return true;
-            }
-            // FIXME(linux): Requires >= 5.10 kernel headers
-            if name.starts_with("MEMBARRIER_CMD_REGISTER")
-                || name.starts_with("MEMBARRIER_CMD_PRIVATE")
-            {
-                return true;
-            }
             // LFS64 types have been removed in musl 1.2.4+
             if name.starts_with("RLIM64") {
                 return true;
