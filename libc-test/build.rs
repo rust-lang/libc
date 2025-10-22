@@ -3849,7 +3849,7 @@ fn test_linux(target: &str) {
         }
     });
 
-    cfg.rename_struct_field(|struct_, field| {
+    cfg.rename_struct_field(move |struct_, field| {
         let struct_ = struct_.ident();
         match field.ident() {
             // Our stat *_nsec fields normally don't actually exist but are part
@@ -3871,6 +3871,9 @@ fn test_linux(target: &str) {
             {
                 Some("type".to_string())
             }
+
+            // FIXME(1.0): field has a different name on loongarch
+            "uc_flags" if loongarch64 && struct_ == "ucontext_t" => Some("__uc_flags".to_string()),
 
             _ => None,
         }
@@ -3977,12 +3980,6 @@ fn test_linux(target: &str) {
             // are header conflicts when including them with all the other
             // structs.
             "termios2" => true,
-
-            // FIXME(linux): remove once we set minimum supported glibc version.
-            // ucontext_t added a new field as of glibc 2.28; our struct definition is
-            // conservative and omits the field, but that means the size doesn't match for newer
-            // glibcs (see https://github.com/rust-lang/libc/issues/1410)
-            "ucontext_t" if gnu => true,
 
             // On Linux, the type of `ut_exit` field of struct `utmpx`
             // can be an anonymous struct, so an extra struct,
