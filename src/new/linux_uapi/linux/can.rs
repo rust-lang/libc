@@ -72,7 +72,6 @@ pub const CANXL_XLF: c_int = 0x80;
 pub const CANXL_SEC: c_int = 0x01;
 
 s! {
-    #[repr(align(8))]
     pub struct canxl_frame {
         pub prio: canid_t,
         pub flags: u8,
