@@ -4142,13 +4142,6 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
-            // FIXME(linux): requires >= 6.1 kernel headers
-            "canxl_frame" => true,
-
-            // FIXME(linux): The size of `iv` has been changed since Linux v6.0
-            // https://github.com/torvalds/linux/commit/94dfc73e7cf4a31da66b8843f0b9283ddd6b8381
-            "af_alg_iv" => true,
-
             // FIXME(linux): Requires >= 5.1 kernel headers.
             // Everything that uses install-musl.sh has 4.19 kernel headers.
             "tls12_crypto_info_aes_gcm_256"
@@ -4501,43 +4494,21 @@ fn test_linux(target: &str) {
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
 
-            // linux 5.17 min
-            "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
+            // Not present on old musl
+            "PR_SET_VMA"
+            | "PR_SET_VMA_ANON_NAME"
+            | "PR_SCHED_CORE"
+            | "PR_SCHED_CORE_CREATE"
+            | "PR_SCHED_CORE_GET"
+            | "PR_SCHED_CORE_MAX"
+            | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
+            | "PR_SCHED_CORE_SCOPE_THREAD"
+            | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
+            | "PR_SCHED_CORE_SHARE_FROM"
+            | "PR_SCHED_CORE_SHARE_TO" if old_musl => true,
 
-            // present in recent kernels only
-            "PR_SCHED_CORE" | "PR_SCHED_CORE_CREATE" | "PR_SCHED_CORE_GET" | "PR_SCHED_CORE_MAX" | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP" | "PR_SCHED_CORE_SCOPE_THREAD" | "PR_SCHED_CORE_SCOPE_THREAD_GROUP" | "PR_SCHED_CORE_SHARE_FROM" | "PR_SCHED_CORE_SHARE_TO" => true,
-
-            // present in recent kernels only >= 5.13
-            "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
-            // present in recent kernels only >= 5.19
-            "PR_SME_SET_VL" | "PR_SME_GET_VL" | "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" => true,
-
-            // Added in Linux 5.14
-            "FUTEX_LOCK_PI2" => true,
-
-            // Added in  linux 6.1
-            "STATX_DIOALIGN"
-            | "CAN_RAW_XL_FRAMES"
-            | "CANXL_HDR_SIZE"
-            | "CANXL_MAX_DLC"
-            | "CANXL_MAX_DLC_MASK"
-            | "CANXL_MAX_DLEN"
-            | "CANXL_MAX_MTU"
-            | "CANXL_MIN_DLC"
-            | "CANXL_MIN_DLEN"
-            | "CANXL_MIN_MTU"
-            | "CANXL_MTU"
-            | "CANXL_PRIO_BITS"
-            | "CANXL_PRIO_MASK"
-            | "CANXL_SEC"
-            | "CANXL_XLF"
-             => true,
-
-            // FIXME(linux): Parts of netfilter/nfnetlink*.h require more recent kernel headers:
-            | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
-            | "RTNLGRP_TUNNEL" // linux v5.18+
-            | "RTNLGRP_STATS" // linux v5.18+
-                => true,
+            // Not present in glibc
+            "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" if gnu => true,
 
             // FIXME(linux): The below is no longer const in glibc 2.34:
             // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
@@ -4546,14 +4517,8 @@ fn test_linux(target: &str) {
             | "MINSIGSTKSZ"
                 if gnu => true,
 
-            // FIXME(linux): Linux >= 5.16:
-            // https://github.com/torvalds/linux/commit/42df6e1d221dddc0f2acf2be37e68d553ad65f96
-            "NF_NETDEV_EGRESS" if sparc64 => true,
             // value changed
             "NF_NETDEV_NUMHOOKS" if sparc64 => true,
-
-            // FIXME(linux): requires Linux >= v5.8
-            "IF_LINK_MODE_TESTING" if sparc64 => true,
 
             // DIFF(main): fixed in 1.0 with e9abac9ac2
             "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
@@ -4961,7 +4926,9 @@ fn test_linux(target: &str) {
         // After musl 1.2.0, the type becomes `int` instead of `long`.
         (old_musl && struct_ == "utmpx" && field == "ut_session") ||
         // `frames` is a flexible array member
-        (struct_ == "bcm_msg_head" && field == "frames")
+        (struct_ == "bcm_msg_head" && field == "frames") ||
+        // FAM
+        (struct_ == "af_alg_iv" && field == "iv")
     });
 
     cfg.skip_roundtrip(move |s| match s {
