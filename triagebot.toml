@@ -18,6 +18,11 @@ check-commits = false # don't forbid links to issues
 # Prevents mentions in commits to avoid users being spammed
 [no-mentions]
 
+# Enable comments linking to triagebot range-diff when a PR is rebased
+# onto a different base commit
+# Documentation at: https://forge.rust-lang.org/triagebot/range-diff.html
+[range-diff]
+
 [autolabel."A-CI"]
 trigger_files = [
     ".cirrus.yml",
