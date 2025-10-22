@@ -67,8 +67,7 @@ pub type eventfd_t = u64;
 
 cfg_if! {
     if #[cfg(not(target_env = "gnu"))] {
-        missing! {
-            #[derive(Debug)]
+        extern_ty! {
             pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
         }
     }

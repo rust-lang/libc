@@ -2,8 +2,7 @@ use crate::off_t;
 use crate::prelude::*;
 
 // Define lock_data_instrumented as an empty enum
-missing! {
-    #[derive(Debug)]
+extern_ty! {
     pub enum lock_data_instrumented {}
 }
 
