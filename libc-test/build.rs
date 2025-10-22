@@ -3986,11 +3986,9 @@ fn test_linux(target: &str) {
             // which is absent in musl, has to be defined.
             "__exit_status" if musl => true,
 
-            // clone_args might differ b/w libc versions
-            "clone_args" => true,
-
-            // Might differ between kernel versions
-            "open_how" => true,
+            // FIXME(ppc): tests fail due to a field type mismatch (`long long unsigned` vs
+            // `long unsigned`).
+            "clone_args" if ppc64 => true,
 
             // Linux >= 6.13 (pidfd_info.exit_code: Linux >= 6.15)
             // Might differ between kernel versions
