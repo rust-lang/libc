@@ -3989,12 +3989,6 @@ fn test_linux(target: &str) {
             // glibcs (see https://github.com/rust-lang/libc/issues/1410)
             "ucontext_t" if gnu => true,
 
-            // FIXME(linux): Somehow we cannot include headers correctly in glibc 2.30.
-            // So let's ignore for now and re-visit later.
-            // Probably related: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91085
-            "statx" => true,
-            "statx_timestamp" => true,
-
             // On Linux, the type of `ut_exit` field of struct `utmpx`
             // can be an anonymous struct, so an extra struct,
             // which is absent in musl, has to be defined.
