@@ -4084,11 +4084,6 @@ fn test_linux(target: &str) {
             return true;
         }
 
-        // FIXME(#1558): passing by value corrupts the value for reasons not understood.
-        if (gnu && sparc64) && (ty == "ip_mreqn" || ty == "hwtstamp_config") {
-            return true;
-        }
-
         // FIXME(rust-lang/rust#43894): pass by value for structs that are not an even 32/64 bits
         // on big-endian systems corrupts the value for unknown reasons.
         if (sparc64 || ppc || ppc64 || s390x)
