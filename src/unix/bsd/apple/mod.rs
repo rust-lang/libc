@@ -175,13 +175,8 @@ pub type copyfile_callback_t = Option<
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
 }
 
 c_enum! {

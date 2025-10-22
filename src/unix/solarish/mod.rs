@@ -55,22 +55,9 @@ pub type lgrp_view_t = c_uint;
 pub type posix_spawnattr_t = *mut c_void;
 pub type posix_spawn_file_actions_t = *mut c_void;
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
-
-#[derive(Debug)]
-pub enum ucred_t {}
-impl Copy for ucred_t {}
-impl Clone for ucred_t {
-    fn clone(&self) -> ucred_t {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
+    pub enum ucred_t {}
 }
 
 s! {

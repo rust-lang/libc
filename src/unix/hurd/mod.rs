@@ -225,22 +225,9 @@ pub type nl_item = c_int;
 
 pub type iconv_t = *mut c_void;
 
-#[derive(Debug)]
-pub enum fpos64_t {} // FIXME(hurd): fill this out with a struct
-impl Copy for fpos64_t {}
-impl Clone for fpos64_t {
-    fn clone(&self) -> fpos64_t {
-        *self
-    }
-}
-
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum fpos64_t {} // FIXME(hurd): fill this out with a struct
+    pub enum timezone {}
 }
 
 // structs
