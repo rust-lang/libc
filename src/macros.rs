@@ -203,8 +203,9 @@ macro_rules! s_no_extra_traits {
     );
 }
 
-/// Create an uninhabited type that can't be constructed. It implements `Debug` but no
-/// other traits.
+/// Create an uninhabited type that can't be constructed. It implements `Debug`, `Clone`,
+/// and `Copy`, but these aren't meaningful for extern types so they should eventually
+/// be removed.
 ///
 /// Really what we want here is something that also can't be named without indirection (in
 /// ADTs or function signatures), but this doesn't exist.
@@ -214,9 +215,13 @@ macro_rules! extern_ty {
         pub enum $i:ident {}
     )*) => ($(
         $(#[$attr])*
-        #[allow(missing_copy_implementations)]
-        // FIXME(1.0): the type is uninhabited so this trait is unreachable.
-        #[::core::prelude::v1::derive(::core::fmt::Debug)]
+        // FIXME(1.0): the type is uninhabited so these traits are unreachable and could be
+        // removed.
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+            ::core::fmt::Debug,
+        )]
         pub enum $i { }
     )*);
 }

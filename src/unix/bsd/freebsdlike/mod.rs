@@ -59,13 +59,8 @@ cfg_if! {
 
 // link.h
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
 }
 
 impl siginfo_t {

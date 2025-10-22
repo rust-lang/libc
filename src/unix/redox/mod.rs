@@ -32,13 +32,8 @@ pub type pid_t = usize;
 pub type uid_t = c_int;
 pub type gid_t = c_int;
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
 }
 
 s_no_extra_traits! {
