@@ -31,6 +31,12 @@ while IFS= read -r file; do
     # wouldn't be correct for something like `all(any(...), ...)`).
     perl -pi -0777 -e 's/if #\[cfg\((.*?)\)\]/if cfg_tmp!([$1])/gms' "$file"
 
+    # The `c_enum!` macro allows anonymous enums without names, which
+    # isn't valid syntax. Replace it with a dummy name and an indicator
+    # comment on the preceding line (which is where rustfmt puts it. Also
+    # rust-lang/rustfmt#5464).
+    perl -pi -e 's/^(\s*)(.*)enum #anon\b/$1\/\* FMT-ANON-ENUM \*\/\n$1$2enum _fmt_anon/g' "$file"
+
     # Format the file. We need to invoke `rustfmt` directly since `cargo fmt`
     # can't figure out the module tree with the hacks in place.
     failed=false
@@ -39,6 +45,7 @@ while IFS= read -r file; do
     # Restore all changes to the files.
     perl -pi -e 's/fn (\w+)_fmt_tmp\(\)/$1!/g' "$file"
     perl -pi -0777 -e 's/cfg_tmp!\(\[(.*?)\]\)/#[cfg($1)]/gms' "$file"
+    perl -pi -0777 -e 's/\/\* FMT-ANON-ENUM \*\/(?:\n\s*)?(.*?)enum _fmt_anon/$1enum #anon/gms' "$file"
 
     # Defer emitting the failure until after the files get reset
     if [ "$failed" != "false" ]; then

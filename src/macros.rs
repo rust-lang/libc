@@ -242,36 +242,50 @@ macro_rules! e {
 /// unlisted values, but this is UB in Rust. This enum doesn't implement any traits, its main
 /// purpose is to calculate the correct enum values.
 ///
+/// Use the magic name `#anon` if the C enum doesn't create a type.
+///
 /// See <https://github.com/rust-lang/libc/issues/4419> for more.
 macro_rules! c_enum {
+    // Matcher for multiple enums
     ($(
         $(#[repr($repr:ty)])?
-        pub enum $ty_name:ident {
+        pub enum $($ty_name:ident)? $(#$anon:ident)? {
             $($variant:ident $(= $value:expr)?,)+
         }
     )+) => {
-        $(c_enum!(@expand;
+        $(c_enum!(@single;
             $(#[repr($repr)])?
-            pub enum $ty_name {
+            pub enum $($ty_name)? $(#$anon)? {
                 $($variant $(= $value)?,)+
             }
         );)+
     };
 
-    (@expand;
+    // Matcher for a single enum
+    (@single;
         $(#[repr($repr:ty)])?
         pub enum $ty_name:ident {
             $($variant:ident $(= $value:expr)?,)+
         }
     ) => {
         pub type $ty_name = c_enum!(@ty $($repr)?);
-        c_enum!(@one; $ty_name; 0; $($variant $(= $value)?,)+);
+        c_enum!(@variant; $ty_name; 0; $($variant $(= $value)?,)+);
+    };
+
+    // Matcher for a single anonymous enum
+    (@single;
+        $(#[repr($repr:ty)])?
+        pub enum #anon {
+            $($variant:ident $(= $value:expr)?,)+
+        }
+    ) => {
+        c_enum!(@variant; c_enum!(@ty $($repr)?); 0; $($variant $(= $value)?,)+);
     };
 
     // Matcher for a single variant
-    (@one; $_ty_name:ident; $_idx:expr;) => {};
+    (@variant; $_ty_name:ty; $_idx:expr;) => { /* end of the chain */ };
     (
-        @one; $ty_name:ident; $default_val:expr;
+        @variant; $ty_name:ty; $default_val:expr;
         $variant:ident $(= $value:expr)?,
         $($tail:tt)*
     ) => {
@@ -284,7 +298,7 @@ macro_rules! c_enum {
 
         // The next value is always one more than the previous value, unless
         // set explicitly.
-        c_enum!(@one; $ty_name; $variant + 1; $($tail)*);
+        c_enum!(@variant; $ty_name; $variant + 1; $($tail)*);
     };
 
     // Use a specific type if provided, otherwise default to `CEnumRepr`
@@ -339,7 +353,7 @@ mod tests {
     use crate::types::CEnumRepr;
 
     #[test]
-    fn c_enumbasic() {
+    fn c_enum_basic() {
         // By default, variants get sequential values.
         c_enum! {
             pub enum e {
@@ -347,30 +361,50 @@ mod tests {
                 VAR1,
                 VAR2,
             }
+
+            // Also check enums that don't create a type.
+            pub enum #anon {
+                ANON0,
+                ANON1,
+                ANON2,
+            }
         }
 
         assert_eq!(TypeId::of::<e>(), TypeId::of::<CEnumRepr>());
         assert_eq!(VAR0, 0 as CEnumRepr);
         assert_eq!(VAR1, 1 as CEnumRepr);
         assert_eq!(VAR2, 2 as CEnumRepr);
+
+        assert_eq!(type_id_of_val(&ANON0), TypeId::of::<CEnumRepr>());
+        assert_eq!(ANON0, 0 as CEnumRepr);
+        assert_eq!(ANON1, 1 as CEnumRepr);
+        assert_eq!(ANON2, 2 as CEnumRepr);
     }
 
     #[test]
-    fn c_enumrepr() {
-        // By default, variants get sequential values.
+    fn c_enum_repr() {
+        // Check specifying the integer representation
         c_enum! {
             #[repr(u16)]
             pub enum e {
                 VAR0,
             }
+
+            #[repr(u16)]
+            pub enum #anon {
+                ANON0,
+            }
         }
 
         assert_eq!(TypeId::of::<e>(), TypeId::of::<u16>());
         assert_eq!(VAR0, 0_u16);
+
+        assert_eq!(type_id_of_val(&ANON0), TypeId::of::<u16>());
+        assert_eq!(ANON0, 0_u16);
     }
 
     #[test]
-    fn c_enumset_value() {
+    fn c_enum_set_value() {
         // Setting an explicit value resets the count.
         c_enum! {
             pub enum e {
@@ -386,7 +420,7 @@ mod tests {
     }
 
     #[test]
-    fn c_enummultiple_set_value() {
+    fn c_enum_multiple_set_value() {
         // C enums always take one more than the previous value, unless set to a specific
         // value. Duplicates are allowed.
         c_enum! {
@@ -408,5 +442,9 @@ mod tests {
         assert_eq!(VAR2_1, 2 as CEnumRepr);
         assert_eq!(VAR3_1, 3 as CEnumRepr);
         assert_eq!(VAR4_1, 4 as CEnumRepr);
+    }
+
+    fn type_id_of_val<T: 'static>(_: &T) -> TypeId {
+        TypeId::of::<T>()
     }
 }
