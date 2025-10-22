@@ -203,15 +203,20 @@ macro_rules! s_no_extra_traits {
     );
 }
 
-/// Specify that an enum should have no traits that aren't specified in the macro
-/// invocation, i.e. no `Clone` or `Copy`.
-macro_rules! missing {
+/// Create an uninhabited type that can't be constructed. It implements `Debug` but no
+/// other traits.
+///
+/// Really what we want here is something that also can't be named without indirection (in
+/// ADTs or function signatures), but this doesn't exist.
+macro_rules! extern_ty {
     ($(
         $(#[$attr:meta])*
         pub enum $i:ident {}
     )*) => ($(
         $(#[$attr])*
         #[allow(missing_copy_implementations)]
+        // FIXME(1.0): the type is uninhabited so this trait is unreachable.
+        #[::core::prelude::v1::derive(::core::fmt::Debug)]
         pub enum $i { }
     )*);
 }
