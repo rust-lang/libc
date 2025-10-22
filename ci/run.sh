@@ -9,6 +9,9 @@ target="$1"
 
 export RUST_BACKTRACE="${RUST_BACKTRACE:-1}"
 
+# For logging
+uname -a
+
 cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
 test_flags="--skip check_style"
 
