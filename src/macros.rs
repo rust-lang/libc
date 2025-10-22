@@ -372,6 +372,8 @@ macro_rules! deprecated_mach {
 
 #[cfg(test)]
 mod tests {
+    use core::any::TypeId;
+
     use crate::types::CEnumRepr;
 
     #[test]
@@ -385,6 +387,7 @@ mod tests {
             }
         }
 
+        assert_eq!(TypeId::of::<e>(), TypeId::of::<CEnumRepr>());
         assert_eq!(VAR0, 0 as CEnumRepr);
         assert_eq!(VAR1, 1 as CEnumRepr);
         assert_eq!(VAR2, 2 as CEnumRepr);
@@ -400,6 +403,7 @@ mod tests {
             }
         }
 
+        assert_eq!(TypeId::of::<e>(), TypeId::of::<u16>());
         assert_eq!(VAR0, 0_u16);
     }
 
