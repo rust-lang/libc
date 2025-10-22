@@ -4,13 +4,8 @@ use core::ptr::null_mut;
 
 use crate::prelude::*;
 
-#[derive(Debug)]
-pub enum DIR {}
-impl Copy for DIR {}
-impl Clone for DIR {
-    fn clone(&self) -> DIR {
-        *self
-    }
+extern_ty! {
+    pub enum DIR {}
 }
 
 pub type intmax_t = i64;
@@ -95,13 +90,8 @@ pub type sa_family_t = c_uchar;
 // mqueue.h
 pub type mqd_t = c_int;
 
-#[derive(Debug)]
-pub enum _Vx_semaphore {}
-impl Copy for _Vx_semaphore {}
-impl Clone for _Vx_semaphore {
-    fn clone(&self) -> _Vx_semaphore {
-        *self
-    }
+extern_ty! {
+    pub enum _Vx_semaphore {}
 }
 
 impl siginfo_t {
@@ -1054,21 +1044,9 @@ pub const MAP_CONTIG: c_int = 0x0020;
 
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
-#[derive(Debug)]
-pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
-#[derive(Debug)]
-pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
+extern_ty! {
+    pub enum FILE {}
+    pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
 }
 
 f! {

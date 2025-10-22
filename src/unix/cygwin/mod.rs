@@ -28,13 +28,8 @@ pub type nlink_t = c_ushort;
 pub type suseconds_t = c_long;
 pub type useconds_t = c_ulong;
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
 }
 
 pub type sigset_t = c_ulong;
@@ -75,13 +70,8 @@ pub type nfds_t = c_uint;
 
 pub type sem_t = *mut sem;
 
-#[derive(Debug)]
-pub enum sem {}
-impl Copy for sem {}
-impl Clone for sem {
-    fn clone(&self) -> sem {
-        *self
-    }
+extern_ty! {
+    pub enum sem {}
 }
 
 pub type tcflag_t = c_uint;

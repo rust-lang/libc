@@ -29,14 +29,11 @@ cfg_if! {
 pub type off_t = i32;
 pub type dev_t = u32;
 pub type ino_t = u16;
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+
+extern_ty! {
+    pub enum timezone {}
 }
+
 pub type time64_t = i64;
 
 pub type SOCKET = crate::uintptr_t;
@@ -254,21 +251,9 @@ pub const TMP_MAX: c_uint = 0x7fff_ffff;
 #[link(name = "libcmt", cfg(target_feature = "crt-static"))]
 extern "C" {}
 
-#[derive(Debug)]
-pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
-#[derive(Debug)]
-pub enum fpos_t {} // FIXME(windows): fill this out with a struct
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
+extern_ty! {
+    pub enum FILE {}
+    pub enum fpos_t {} // FIXME(windows): fill this out with a struct
 }
 
 // Special handling for all print and scan type functions because of https://github.com/rust-lang/libc/issues/2860

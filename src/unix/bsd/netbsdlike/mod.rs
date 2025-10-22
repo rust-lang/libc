@@ -16,21 +16,9 @@ pub type id_t = u32;
 pub type sem_t = *mut sem;
 pub type key_t = c_long;
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
-#[derive(Debug)]
-pub enum sem {}
-impl Copy for sem {}
-impl Clone for sem {
-    fn clone(&self) -> sem {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
+    pub enum sem {}
 }
 
 s! {

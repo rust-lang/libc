@@ -45,13 +45,8 @@ pub type vm_map_entry_t = *mut vm_map_entry;
 
 pub type pmap = __c_anonymous_pmap;
 
-#[derive(Debug)]
-pub enum sem {}
-impl Copy for sem {}
-impl Clone for sem {
-    fn clone(&self) -> sem {
-        *self
-    }
+extern_ty! {
+    pub enum sem {}
 }
 
 e! {

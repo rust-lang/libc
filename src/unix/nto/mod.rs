@@ -72,13 +72,8 @@ pub type sem_t = sync_t;
 
 pub type nl_item = c_int;
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
 }
 
 s! {
