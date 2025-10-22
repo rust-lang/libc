@@ -41,13 +41,8 @@ pub type statfs64 = crate::statfs;
 pub type statvfs64 = crate::statvfs;
 pub type dirent64 = crate::dirent;
 
-#[derive(Debug)]
-pub enum fpos64_t {} // FIXME(emscripten): fill this out with a struct
-impl Copy for fpos64_t {}
-impl Clone for fpos64_t {
-    fn clone(&self) -> fpos64_t {
-        *self
-    }
+extern_ty! {
+    pub enum fpos64_t {} // FIXME(emscripten): fill this out with a struct
 }
 
 s! {

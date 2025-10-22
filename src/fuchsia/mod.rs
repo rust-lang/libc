@@ -78,32 +78,10 @@ pub type fsblkcnt_t = c_ulonglong;
 pub type fsfilcnt_t = c_ulonglong;
 pub type rlim_t = c_ulonglong;
 
-// FIXME(fuchsia): why are these uninhabited types? that seems... wrong?
-// Presumably these should be `()` or an `extern type` (when that stabilizes).
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
-}
-#[derive(Debug)]
-pub enum DIR {}
-impl Copy for DIR {}
-impl Clone for DIR {
-    fn clone(&self) -> DIR {
-        *self
-    }
-}
-
-#[derive(Debug)]
-pub enum fpos64_t {} // FIXME(fuchsia): fill this out with a struct
-impl Copy for fpos64_t {}
-impl Clone for fpos64_t {
-    fn clone(&self) -> fpos64_t {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
+    pub enum DIR {}
+    pub enum fpos64_t {} // FIXME(fuchsia): fill this out with a struct
 }
 
 // PUB_STRUCT
@@ -3421,21 +3399,9 @@ fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
 #[link(name = "fdio")]
 extern "C" {}
 
-#[derive(Debug)]
-pub enum FILE {}
-impl Copy for FILE {}
-impl Clone for FILE {
-    fn clone(&self) -> FILE {
-        *self
-    }
-}
-#[derive(Debug)]
-pub enum fpos_t {} // FIXME(fuchsia): fill this out with a struct
-impl Copy for fpos_t {}
-impl Clone for fpos_t {
-    fn clone(&self) -> fpos_t {
-        *self
-    }
+extern_ty! {
+    pub enum FILE {}
+    pub enum fpos_t {} // FIXME(fuchsia): fill this out with a struct
 }
 
 extern "C" {

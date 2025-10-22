@@ -179,13 +179,8 @@ deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
 
-#[derive(Debug)]
-pub enum timezone {}
-impl Copy for timezone {}
-impl Clone for timezone {
-    fn clone(&self) -> timezone {
-        *self
-    }
+extern_ty! {
+    pub enum timezone {}
 }
 
 #[derive(Debug)]
