@@ -72,6 +72,16 @@ fn do_ctest() {
 fn ctest_cfg() -> ctest::TestGenerator {
     let mut cfg = ctest::TestGenerator::new();
     cfg.skip_private(true);
+
+    // Skip anonymous unions/structs.
+    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
+    cfg.skip_struct(|s| s.ident().starts_with("__c_anonymous_"));
+    cfg.skip_alias(|ty| ty.ident().starts_with("__c_anonymous_"));
+
+    // __uint128 is not declared in C, but is an alias we export.
+    // FIXME(1.0): These aliases will eventually be removed.
+    cfg.skip_alias(|ty| ty.ident() == "__uint128");
+
     cfg
 }
 
@@ -299,10 +309,6 @@ fn test_apple(target: &str) {
         (x86_64, "crt_externs.h"),
     );
 
-    // Skip anonymous unions/structs.
-    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
-    cfg.skip_struct(|s| s.ident().starts_with("__c_anonymous_"));
-
     cfg.skip_struct(|s| {
         match s.ident() {
             // FIXME(macos): The size is changed in recent macOSes.
@@ -310,15 +316,6 @@ fn test_apple(target: &str) {
             // it is a moving target, changing through versions
             // also contains bitfields members
             "tcp_connection_info" => true,
-            _ => false,
-        }
-    });
-
-    cfg.skip_alias(|ty| ty.ident().starts_with("__c_anonymous_"));
-    cfg.skip_alias(|ty| {
-        match ty.ident() {
-            // FIXME(macos): "'__uint128' undeclared" in C
-            "__uint128" => true,
             _ => false,
         }
     });
@@ -535,10 +532,6 @@ fn test_openbsd(target: &str) {
         }
     });
 
-    // Skip anonymous unions/structs.
-    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
-    cfg.skip_struct(|s| s.ident().starts_with("__c_anonymous_"));
-
     cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
     cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
 
@@ -659,14 +652,6 @@ fn test_cygwin(target: &str) {
         "sighandler_t" => true,
 
         _ => false,
-    });
-
-    cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
-
-        false
     });
 
     cfg.rename_struct_field(move |struct_, field| {
@@ -801,17 +786,12 @@ fn test_windows(target: &str) {
     });
 
     cfg.skip_struct(move |struct_| {
-        let ty = struct_.ident();
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        match ty {
+        match struct_.ident() {
             // FIXME(windows): The size and alignment of this struct are incorrect
             "timespec" if gnu && i686 => true,
             _ => false,
         }
     });
-    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
@@ -1064,15 +1044,12 @@ fn test_solarish(target: &str) {
 
     cfg.skip_union(|union_| {
         // the union handling is a mess
-        if union_.ident().starts_with("__c_anonymous_") || union_.ident().contains("door_desc_t_") {
+        if union_.ident().contains("door_desc_t_") {
             return true;
         }
         false
     });
     cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         // the union handling is a mess
         if struct_.ident().contains("door_desc_t_") {
             return true;
@@ -1307,13 +1284,7 @@ fn test_netbsd(target: &str) {
         }
     });
 
-    cfg.skip_struct(|ty| ty.ident().starts_with("__c_anonymous_"));
-    cfg.skip_union(|ty| ty.ident().starts_with("__c_anonymous_"));
-
     cfg.skip_alias(move |ty| {
-        if ty.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         match ty.ident() {
             // FIXME(netbsd): sighandler_t is crazy across platforms
             "sighandler_t" => true,
@@ -1531,9 +1502,6 @@ fn test_dragonflybsd(target: &str) {
     });
 
     cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         match struct_.ident() {
             // FIXME(dragonflybsd): These are tested as part of the linux_fcntl tests since
             // there are header conflicts when including them with all the other
@@ -1903,8 +1871,6 @@ fn test_android(target: &str) {
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
 
-            // FIXME(android): "'__uint128' undeclared" in C
-            "__uint128" => true,
             // Added in API level 24
             "if_nameindex" => true,
 
@@ -1912,12 +1878,7 @@ fn test_android(target: &str) {
         }
     });
 
-    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
-
     cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         match struct_.ident() {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
@@ -2685,13 +2646,8 @@ fn test_freebsd(target: &str) {
         }
     });
 
-    cfg.skip_union(|u| u.ident().starts_with("__c_anonymous_"));
     cfg.skip_struct(move |struct_| {
-        let ty = struct_.ident();
-        if ty.starts_with("__c_anonymous_") {
-            return true;
-        }
-        match ty {
+        match struct_.ident() {
             // `procstat` is a private struct
             "procstat" => true,
 
@@ -2998,10 +2954,6 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_union(|union_| {
-        if union_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
-
         match union_.ident() {
             // FIXME(emscripten): Investigate why the test fails.
             // Skip for now to unblock CI.
@@ -3024,9 +2976,6 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         match struct_.ident() {
             // FIXME(emscripten): Investigate why the test fails.
             // Skip for now to unblock CI.
@@ -3297,17 +3246,11 @@ fn test_neutrino(target: &str) {
             // Does not exist in Neutrino
             "locale_t" => true,
 
-            // FIXME: "'__uint128' undeclared" in C
-            "__uint128" => true,
-
             _ => false,
         }
     });
 
     cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         match struct_.ident() {
             "Elf64_Phdr" | "Elf32_Phdr" => true,
 
@@ -3869,9 +3812,6 @@ fn test_linux(target: &str) {
             // specific type.
             "Ioctl" => true,
 
-            // FIXME: "'__uint128' undeclared" in C
-            "__uint128" => true,
-
             t => {
                 if musl {
                     // LFS64 types have been removed in musl 1.2.4+
@@ -3882,10 +3822,6 @@ fn test_linux(target: &str) {
             }
         }
     });
-
-    // Skip structs and enums that are unnamed in C.
-    cfg.skip_union(move |union_| union_.ident().starts_with("__c_anonymous_"));
-    cfg.skip_struct(move |struct_| struct_.ident().starts_with("__c_anonymous_"));
 
     cfg.skip_struct(move |struct_| {
         let ty = struct_.ident();
@@ -3965,10 +3901,7 @@ fn test_linux(target: &str) {
             "xdp_umem_reg" => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
-            "xsk_tx_metadata"
-            | "__c_anonymous_xsk_tx_metadata_union"
-            | "xsk_tx_metadata_request"
-            | "xsk_tx_metadata_completion" => true,
+            "xsk_tx_metadata" | "xsk_tx_metadata_request" | "xsk_tx_metadata_completion" => true,
 
             // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
             // https://github.com/torvalds/linux/commit/77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10
@@ -4637,9 +4570,9 @@ fn test_linux_like_apis(target: &str) {
     if linux || android || emscripten {
         // test strerror_r from the `string.h` header
         config_gnu_bits(target, &mut cfg);
-        headers!(cfg, "string.h",);
 
-        cfg.skip_alias(|_| true)
+        cfg.header("string.h")
+            .skip_alias(|_| true)
             .skip_static(|_| true)
             .skip_const(|_| true)
             .skip_struct(|_| true)
@@ -4938,11 +4871,7 @@ fn test_haiku(target: &str) {
         "support/TypeConstants.h",
     );
 
-    cfg.skip_union(|union_| union_.ident().starts_with("__c_anonymous_"));
     cfg.skip_struct(move |struct_| {
-        if struct_.ident().starts_with("__c_anonymous_") {
-            return true;
-        }
         match struct_.ident() {
             // FIXME(haiku): locale_t does not exist on Haiku
             "locale_t" => true,
