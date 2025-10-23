@@ -325,8 +325,6 @@ fn test_apple(target: &str) {
             // FIXME(deprecated): These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
-            // FIXME(macos): the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
-            "SF_SETTABLE" => true,
 
             // FIXME(deprecated): Removed since 12.0.1 / xnu-8019.41.5. See `ttycom.h` at
             // https://github.com/apple-oss-distributions/xnu/commit/e6231be02a03711ca404e5121a151b24afbff733
