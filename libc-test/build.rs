@@ -4212,13 +4212,11 @@ fn test_linux(target: &str) {
                 || name == "SO_DEVMEM_DMABUF"
                 || name == "SO_DEVMEM_DONTNEED"
             {
-                        return true;
+                return true;
             }
             // FIXME(musl): Not in musl yet
-            if name == "SCM_DEVMEM_LINEAR"
-                || name == "SCM_DEVMEM_DMABUF"
-            {
-                        return true;
+            if name == "SCM_DEVMEM_LINEAR" || name == "SCM_DEVMEM_DMABUF" {
+                return true;
             }
             // FIXME: Does not exist on non-x86 architectures, slated for removal
             // in libc in 1.0
@@ -4230,7 +4228,7 @@ fn test_linux(target: &str) {
             // Constants that don't exist on the old version of musl we test with, but do exist
             // on newer versions.
             match name {
-                | "FAN_EVENT_INFO_TYPE_ERROR"
+                "FAN_EVENT_INFO_TYPE_ERROR"
                 | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME"
                 | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME"
                 | "FAN_FS_ERROR"
@@ -4252,8 +4250,7 @@ fn test_linux(target: &str) {
                 | "RLIM_NLIMITS"
                 | "SI_DETHREAD"
                 | "SO_BUSY_POLL_BUDGET"
-                | "SO_PREFER_BUSY_POLL"
-                    => return true,
+                | "SO_PREFER_BUSY_POLL" => return true,
                 // Values changed in newer musl versions on these arches
                 "O_LARGEFILE" if riscv64 || x86_64 => return true,
                 _ => (),
@@ -4264,13 +4261,13 @@ fn test_linux(target: &str) {
             // and can therefore not be tested here
             //
             // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
-            | "IPV6_FLOWINFO"
+            "IPV6_FLOWINFO"
             | "IPV6_FLOWLABEL_MGR"
             | "IPV6_FLOWINFO_SEND"
             | "IPV6_FLOWINFO_FLOWLABEL"
-            | "IPV6_FLOWINFO_PRIORITY"
+            | "IPV6_FLOWINFO_PRIORITY" => true,
             // The F_ fnctl constants are tested in the `linux_fnctl.rs` tests:
-            | "F_CANCELLK"
+            "F_CANCELLK"
             | "F_ADD_SEALS"
             | "F_GET_SEALS"
             | "F_SEAL_SEAL"
@@ -4293,12 +4290,7 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): conflicts with glibc headers and is tested in
             // `linux_termios.rs` below:
-            | "BOTHER"
-            | "IBSHIFT"
-            | "TCGETS2"
-            | "TCSETS2"
-            | "TCSETSW2"
-            | "TCSETSF2" => true,
+            "BOTHER" | "IBSHIFT" | "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => true,
 
             // FIXME(musl): on musl the pthread types are defined a little differently
             // - these constants are used by the glibc implementation.
@@ -4318,13 +4310,17 @@ fn test_linux(target: &str) {
             "SYS_clone3" if sparc64 => true,
 
             // FIXME(linux): Not defined on ARM, gnueabihf, mips, musl, PowerPC, riscv64, s390x, and sparc64.
-            "SYS_memfd_secret" if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 => true,
+            "SYS_memfd_secret"
+                if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 =>
+            {
+                true
+            }
 
             // Skip as this signal codes and trap reasons need newer headers
             "TRAP_PERF" => true,
 
             // kernel constants not available in uclibc 1.0.34
-            | "EXTPROC"
+            "EXTPROC"
             | "IPPROTO_BEETPH"
             | "IPPROTO_MPLS"
             | "IPV6_HDRINCL"
@@ -4337,7 +4333,10 @@ fn test_linux(target: &str) {
             | "SHM_EXEC"
             | "UDP_GRO"
             | "UDP_SEGMENT"
-                if uclibc => true,
+                if uclibc =>
+            {
+                true
+            }
 
             // headers conflicts with linux/pidfd.h
             "PIDFD_NONBLOCK" => true,
@@ -4380,17 +4379,18 @@ fn test_linux(target: &str) {
             | "PR_SCHED_CORE_SCOPE_THREAD"
             | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
             | "PR_SCHED_CORE_SHARE_FROM"
-            | "PR_SCHED_CORE_SHARE_TO" if old_musl => true,
+            | "PR_SCHED_CORE_SHARE_TO"
+                if old_musl =>
+            {
+                true
+            }
 
             // Not present in glibc
             "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" if gnu => true,
 
             // FIXME(linux): The below is no longer const in glibc 2.34:
             // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
-            | "PTHREAD_STACK_MIN"
-            | "SIGSTKSZ"
-            | "MINSIGSTKSZ"
-                if gnu => true,
+            "PTHREAD_STACK_MIN" | "SIGSTKSZ" | "MINSIGSTKSZ" if gnu => true,
 
             // value changed
             "NF_NETDEV_NUMHOOKS" if sparc64 => true,
@@ -4417,7 +4417,10 @@ fn test_linux(target: &str) {
             | "FAN_EVENT_INFO_TYPE_PIDFD"
             | "FAN_NOPIDFD"
             | "FAN_EPIDFD"
-            if musl => true,
+                if musl =>
+            {
+                true
+            }
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "XDP_USE_SG" | "XDP_PKT_CONTD" => true,
@@ -4429,16 +4432,21 @@ fn test_linux(target: &str) {
             "XDP_UMEM_TX_SW_CSUM"
             | "XDP_TXMD_FLAGS_TIMESTAMP"
             | "XDP_TXMD_FLAGS_CHECKSUM"
-            | "XDP_TX_METADATA"
-                => true,
+            | "XDP_TX_METADATA" => true,
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
             "XDP_UMEM_TX_METADATA_LEN" => true,
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
-            "NS_GET_MNTNS_ID" | "NS_GET_PID_FROM_PIDNS" | "NS_GET_TGID_FROM_PIDNS" | "NS_GET_PID_IN_PIDNS" | "NS_GET_TGID_IN_PIDNS" => true,
+            "NS_GET_MNTNS_ID"
+            | "NS_GET_PID_FROM_PIDNS"
+            | "NS_GET_TGID_FROM_PIDNS"
+            | "NS_GET_PID_IN_PIDNS"
+            | "NS_GET_TGID_IN_PIDNS" => true,
             // FIXME(linux): Requires >= 6.12 kernel headers.
-            "MNT_NS_INFO_SIZE_VER0" | "NS_MNT_GET_INFO" | "NS_MNT_GET_NEXT" | "NS_MNT_GET_PREV" => true,
+            "MNT_NS_INFO_SIZE_VER0" | "NS_MNT_GET_INFO" | "NS_MNT_GET_NEXT" | "NS_MNT_GET_PREV" => {
+                true
+            }
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "SYS_fchmodat2" => true,
@@ -4447,33 +4455,13 @@ fn test_linux(target: &str) {
             "SYS_mseal" => true,
 
             // FIXME(linux): seems to not be available all the time (from <include/linux/sched.h>:
-            "PF_VCPU"
-            | "PF_IDLE"
-            | "PF_EXITING"
-            | "PF_POSTCOREDUMP"
-            | "PF_IO_WORKER"
-            | "PF_WQ_WORKER"
-            | "PF_FORKNOEXEC"
-            | "PF_MCE_PROCESS"
-            | "PF_SUPERPRIV"
-            | "PF_DUMPCORE"
-            | "PF_SIGNALED"
-            | "PF_MEMALLOC"
-            | "PF_NPROC_EXCEEDED"
-            | "PF_USED_MATH"
-            | "PF_USER_WORKER"
-            | "PF_NOFREEZE"
-            | "PF_KSWAPD"
-            | "PF_MEMALLOC_NOFS"
-            | "PF_MEMALLOC_NOIO"
-            | "PF_LOCAL_THROTTLE"
-            | "PF_KTHREAD"
-            | "PF_RANDOMIZE"
-            | "PF_NO_SETAFFINITY"
-            | "PF_MCE_EARLY"
-            | "PF_MEMALLOC_PIN"
-            | "PF_BLOCK_TS"
-            | "PF_SUSPEND_TASK" => true,
+            "PF_VCPU" | "PF_IDLE" | "PF_EXITING" | "PF_POSTCOREDUMP" | "PF_IO_WORKER"
+            | "PF_WQ_WORKER" | "PF_FORKNOEXEC" | "PF_MCE_PROCESS" | "PF_SUPERPRIV"
+            | "PF_DUMPCORE" | "PF_SIGNALED" | "PF_MEMALLOC" | "PF_NPROC_EXCEEDED"
+            | "PF_USED_MATH" | "PF_USER_WORKER" | "PF_NOFREEZE" | "PF_KSWAPD"
+            | "PF_MEMALLOC_NOFS" | "PF_MEMALLOC_NOIO" | "PF_LOCAL_THROTTLE" | "PF_KTHREAD"
+            | "PF_RANDOMIZE" | "PF_NO_SETAFFINITY" | "PF_MCE_EARLY" | "PF_MEMALLOC_PIN"
+            | "PF_BLOCK_TS" | "PF_SUSPEND_TASK" => true,
 
             // FIXME(linux): Requires >= 6.9 kernel headers.
             "EPIOCSPARAMS" | "EPIOCGPARAMS" => true,
@@ -4485,14 +4473,12 @@ fn test_linux(target: &str) {
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
-            "SO_DEVMEM_LINEAR"
-            | "SO_DEVMEM_DMABUF"
-            | "SO_DEVMEM_DONTNEED"
-            | "SCM_DEVMEM_LINEAR"
-            | "SCM_DEVMEM_DMABUF" => true,
+            "SO_DEVMEM_LINEAR" | "SO_DEVMEM_DMABUF" | "SO_DEVMEM_DONTNEED"
+            | "SCM_DEVMEM_LINEAR" | "SCM_DEVMEM_DMABUF" => true,
 
             // FIXME(linux): Requires >= 6.4 kernel headers.
-            "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG" | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
+            "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG"
+            | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
 
             // FIXME(linux): Requires >= 6.14 kernel headers.
             "SECBIT_EXEC_DENY_INTERACTIVE"
