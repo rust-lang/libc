@@ -1,4 +1,4 @@
-//! `linux/can/bcm.h`
+//! Header: `linux/can/bcm.h`
 
 pub use crate::linux::can::*;
 
