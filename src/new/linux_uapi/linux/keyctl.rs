@@ -1,6 +1,5 @@
-//! Header: `uapi/linux/keyctl.h`
+//! Header: `linux/keyctl.h`
 
-// linux/keyctl.h
 pub const KEY_SPEC_THREAD_KEYRING: i32 = -1;
 pub const KEY_SPEC_PROCESS_KEYRING: i32 = -2;
 pub const KEY_SPEC_SESSION_KEYRING: i32 = -3;

@@ -14,16 +14,29 @@
 //!
 //! All modules are only crate-public since we don't reexport this structure.
 
+// Libraries available on each platform
 cfg_if! {
     if #[cfg(target_os = "linux")] {
         mod linux_uapi;
-        pub use linux_uapi::*;
+        pub(crate) use linux_uapi::*;
     } else if #[cfg(target_os = "android")] {
         mod bionic;
         pub use bionic::*;
     } else if #[cfg(target_vendor = "apple")] {
         mod apple;
         pub(crate) use apple::*;
+    }
+}
+
+// Headers we export
+cfg_if! {
+    if #[cfg(target_os = "linux")] {
+        pub use linux::can::bcm::*;
+        pub use linux::can::j1939::*;
+        pub use linux::can::raw::*;
+        pub use linux::can::*;
+        pub use linux::keyctl::*;
+    } else if #[cfg(target_vendor = "apple")] {
         pub use signal::*;
     }
 }
