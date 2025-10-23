@@ -3126,6 +3126,7 @@ pub const TIOCMSET: c_ulong = 0x8004746d;
 pub const TIOCMBIS: c_ulong = 0x8004746c;
 pub const TIOCMBIC: c_ulong = 0x8004746b;
 pub const TIOCMGET: c_ulong = 0x4004746a;
+#[deprecated(since = "0.2.178", note = "Removed in MacOSX 12.0.1")]
 pub const TIOCREMOTE: c_ulong = 0x80047469;
 pub const TIOCGWINSZ: c_ulong = 0x40087468;
 pub const TIOCSWINSZ: c_ulong = 0x80087467;
