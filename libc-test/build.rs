@@ -340,7 +340,8 @@ fn test_apple(target: &str) {
             // FIXME(macos): the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
             "SF_SETTABLE" => true,
 
-            // FIXME(macos): XCode 13.1 doesn't have it.
+            // FIXME(deprecated): Removed since 12.0.1 / xnu-8019.41.5. See `ttycom.h` at
+            // https://github.com/apple-oss-distributions/xnu/commit/e6231be02a03711ca404e5121a151b24afbff733
             "TIOCREMOTE" => true,
 
             _ => false,
