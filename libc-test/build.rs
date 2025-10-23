@@ -4182,9 +4182,6 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "mnt_ns_info" => true,
 
-            // FIXME(linux): Requires >= 6.4 kernel headers.
-            "ptrace_sud_config" => true,
-
             // Struct has changed for new musl versions
             "tcp_info" if old_musl => true,
 
@@ -4240,20 +4237,6 @@ fn test_linux(target: &str) {
             if name.starts_with("NI_IDN") {
                 return true;
             }
-            // FIXME: Requires >= 6.3 kernel headers
-            if loongarch64 && (name == "MFD_NOEXEC_SEAL" || name == "MFD_EXEC") {
-                return true;
-            }
-            // FIXME: Requires >= 6.3 (6.6) kernel headers
-            if name == "PR_GET_MDWE" || name == "PR_MDWE_NO_INHERIT" || name == "PR_MDWE_REFUSE_EXEC_GAIN" || name == "PR_SET_MDWE" {
-                return true;
-            }
-            // Requires musl >= 1.2
-            if old_musl && (name == "SO_PREFER_BUSY_POLL"
-                || name == "SO_BUSY_POLL_BUDGET")
-            {
-                return true;
-            }
             // FIXME(musl): Not in musl yet
             if name == "SO_NETNS_COOKIE"
                 || name == "SO_BUF_LOCK"
@@ -4274,18 +4257,43 @@ fn test_linux(target: &str) {
             {
                         return true;
             }
-            // Values changed in newer musl versions on these arches
-            if old_musl && (riscv64 || x86_64) && name == "O_LARGEFILE" {
-                return true;
-            }
-            // Values changed in newer musl versions
-            if old_musl && name == "RLIM_NLIMITS" {
-                return true;
-            }
             // FIXME: Does not exist on non-x86 architectures, slated for removal
             // in libc in 1.0
             if ppc64 && name == "MAP_32BIT" {
                 return true;
+            }
+        }
+        if old_musl {
+            // Constants that don't exist on the old version of musl we test with, but do exist
+            // on newer versions.
+            match name {
+                | "FAN_EVENT_INFO_TYPE_ERROR"
+                | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME"
+                | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME"
+                | "FAN_FS_ERROR"
+                | "FAN_INFO"
+                | "FAN_MARK_EVICTABLE"
+                | "FAN_MARK_IGNORE"
+                | "FAN_MARK_IGNORE_SURV"
+                | "FAN_RENAME"
+                | "FAN_REPORT_DFID_NAME_TARGET"
+                | "FAN_REPORT_TARGET_FID"
+                | "FAN_RESPONSE_INFO_AUDIT_RULE"
+                | "FAN_RESPONSE_INFO_NONE"
+                | "IPPROTO_ETHERNET"
+                | "IPPROTO_MPTCP"
+                | "PR_GET_MDWE"
+                | "PR_MDWE_NO_INHERIT"
+                | "PR_MDWE_REFUSE_EXEC_GAIN"
+                | "PR_SET_MDWE"
+                | "RLIM_NLIMITS"
+                | "SI_DETHREAD"
+                | "SO_BUSY_POLL_BUDGET"
+                | "SO_PREFER_BUSY_POLL"
+                    => return true,
+                // Values changed in newer musl versions on these arches
+                "O_LARGEFILE" if riscv64 || x86_64 => return true,
+                _ => (),
             }
         }
         match name {
@@ -4340,10 +4348,8 @@ fn test_linux(target: &str) {
             // deprecated: not available from Linux kernel 5.6:
             "VMADDR_CID_RESERVED" => true,
 
-            // IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
-            | "IPPROTO_MAX"
-            | "IPPROTO_ETHERNET"
-            | "IPPROTO_MPTCP" => true,
+            // FIXME(value): IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
+            "IPPROTO_MAX" => true,
 
             // FIXME(linux): Not yet implemented on sparc64
             "SYS_clone3" if sparc64 => true,
@@ -4351,32 +4357,8 @@ fn test_linux(target: &str) {
             // FIXME(linux): Not defined on ARM, gnueabihf, mips, musl, PowerPC, riscv64, s390x, and sparc64.
             "SYS_memfd_secret" if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 => true,
 
-            // FIXME(linux): Added in Linux 5.16
-            // https://github.com/torvalds/linux/commit/039c0ec9bb77446d7ada7f55f90af9299b28ca49
-            "SYS_futex_waitv" => true,
-
-            // FIXME(linux): Added in Linux 5.17
-            // https://github.com/torvalds/linux/commit/c6018b4b254971863bd0ad36bb5e7d0fa0f0ddb0
-            "SYS_set_mempolicy_home_node" => true,
-
-            // FIXME(linux): Added in Linux 5.18
-            // https://github.com/torvalds/linux/commit/8b5413647262dda8d8d0e07e14ea1de9ac7cf0b2
-            "NFQA_PRIORITY" => true,
-
-            // FIXME(linux): requires more recent kernel headers on CI
-            | "UINPUT_VERSION"
-            | "SW_MAX"
-            | "SW_CNT"
-                if ppc64 || riscv64 => true,
-
-            // FIXME(linux): requires more recent kernel headers on CI
-            "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" if sparc64 => true,
-
-            // FIXME(linux): Not currently available in headers on ARM and musl.
-            "NETLINK_GET_STRICT_CHK" if arm => true,
-
             // Skip as this signal codes and trap reasons need newer headers
-            "SI_DETHREAD" | "TRAP_PERF" => true,
+            "TRAP_PERF" => true,
 
             // kernel constants not available in uclibc 1.0.34
             | "EXTPROC"
@@ -4453,12 +4435,6 @@ fn test_linux(target: &str) {
             // DIFF(main): fixed in 1.0 with e9abac9ac2
             "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
 
-            // kernel 6.1 minimum
-            "MADV_COLLAPSE" => true,
-
-            // kernel 6.2 minimum
-            "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
-
             // kernel 6.9 minimum
             "RWF_NOAPPEND" => true,
 
@@ -4467,38 +4443,6 @@ fn test_linux(target: &str) {
 
             // kernel 6.14 minimum
             "RWF_DONTCACHE" => true,
-
-            // FIXME(linux): Requires more recent kernel headers
-            | "IFLA_PARENT_DEV_NAME"     // linux v5.13+
-            | "IFLA_PARENT_DEV_BUS_NAME" // linux v5.13+
-            | "IFLA_GRO_MAX_SIZE"        // linux v5.16+
-            | "IFLA_TSO_MAX_SIZE"        // linux v5.18+
-            | "IFLA_TSO_MAX_SEGS"        // linux v5.18+
-            | "IFLA_ALLMULTI"            // linux v6.0+
-            | "MADV_DONTNEED_LOCKED"     // linux v5.18+
-                => true,
-            "SCTP_FUTURE_ASSOC" | "SCTP_CURRENT_ASSOC" | "SCTP_ALL_ASSOC" | "SCTP_PEER_ADDR_THLDS_V2" => true, // linux 5.5+
-
-            // kernel 6.5 minimum
-            "MOVE_MOUNT_BENEATH" => true,
-            // FIXME(linux): Requires linux 6.1
-            "ALG_SET_KEY_BY_KEY_SERIAL" | "ALG_SET_DRBG_ENTROPY" => true,
-
-            // FIXME(linux): Requires more recent kernel headers
-            | "FAN_FS_ERROR"                      // linux v5.16+
-            | "FAN_RENAME"                        // linux v5.17+
-            | "FAN_REPORT_TARGET_FID"             // linux v5.17+
-            | "FAN_REPORT_DFID_NAME_TARGET"       // linux v5.17+
-            | "FAN_MARK_EVICTABLE"                // linux v5.19+
-            | "FAN_MARK_IGNORE"                   // linux v6.0+
-            | "FAN_MARK_IGNORE_SURV"              // linux v6.0+
-            | "FAN_EVENT_INFO_TYPE_ERROR"         // linux v5.16+
-            | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME" // linux v5.17+
-            | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME" // linux v5.17+
-            | "FAN_RESPONSE_INFO_NONE"            // linux v5.16+
-            | "FAN_RESPONSE_INFO_AUDIT_RULE"      // linux v5.16+
-            | "FAN_INFO"                          // linux v5.16+
-                => true,
 
             // musl doesn't use <linux/fanotify.h> in <sys/fanotify.h>
             "FAN_REPORT_PIDFD"
@@ -4512,36 +4456,24 @@ fn test_linux(target: &str) {
             | "FAN_EPIDFD"
             if musl => true,
 
-            // FIXME(linux): Requires linux 6.5
+            // FIXME(value): value needs update
             "NFT_MSG_MAX" => true,
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
-            "XDP_USE_SG"
-            | "XDP_PKT_CONTD"
-                =>
-            {
-                true
-            }
+            "XDP_USE_SG" | "XDP_PKT_CONTD" => true,
 
-            // FIXME(linux): Requires >= 6.6 kernel headers.
-            "PR_MDWE_NO_INHERIT" => true,
+            // FIXME(linux): Missing only on this platform for some reason
+            "PR_MDWE_NO_INHERIT" if gnueabihf => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"
             | "XDP_TXMD_FLAGS_TIMESTAMP"
             | "XDP_TXMD_FLAGS_CHECKSUM"
             | "XDP_TX_METADATA"
-                =>
-            {
-                true
-            }
+                => true,
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
-            "XDP_UMEM_TX_METADATA_LEN"
-                =>
-            {
-                true
-            }
+            "XDP_UMEM_TX_METADATA_LEN" => true,
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
             "NS_GET_MNTNS_ID" | "NS_GET_PID_FROM_PIDNS" | "NS_GET_TGID_FROM_PIDNS" | "NS_GET_PID_IN_PIDNS" | "NS_GET_TGID_IN_PIDNS" => true,
@@ -4584,14 +4516,10 @@ fn test_linux(target: &str) {
             | "PF_SUSPEND_TASK" => true,
 
             // FIXME(linux): Requires >= 6.9 kernel headers.
-            "EPIOCSPARAMS"
-            | "EPIOCGPARAMS" => true,
+            "EPIOCSPARAMS" | "EPIOCGPARAMS" => true,
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
             "MAP_DROPPABLE" => true,
-
-            // FIXME(linux): Requires >= 6.2 kernel headers.
-            "SOF_TIMESTAMPING_OPT_ID_TCP" => true,
 
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
@@ -4602,11 +4530,9 @@ fn test_linux(target: &str) {
             | "SO_DEVMEM_DONTNEED"
             | "SCM_DEVMEM_LINEAR"
             | "SCM_DEVMEM_DMABUF" => true,
+
             // FIXME(linux): Requires >= 6.4 kernel headers.
             "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG" | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
-
-            // FIXME(linux): Requires >= 6.6 kernel headers.
-            "PROC_EVENT_NONZERO_EXIT" => true,
 
             // FIXME(linux): Requires >= 6.14 kernel headers.
             "SECBIT_EXEC_DENY_INTERACTIVE"
