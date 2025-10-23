@@ -4456,9 +4456,6 @@ fn test_linux(target: &str) {
             | "FAN_EPIDFD"
             if musl => true,
 
-            // FIXME(value): value needs update
-            "NFT_MSG_MAX" => true,
-
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "XDP_USE_SG" | "XDP_PKT_CONTD" => true,
 
