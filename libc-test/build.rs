@@ -240,8 +240,7 @@ fn test_apple(target: &str) {
         "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
-        // FIXME(macos): Requires the macOS 14.4 SDK.
-        //"os/os_sync_wait_on_address.h",
+        "os/os_sync_wait_on_address.h",
         "poll.h",
         "pthread.h",
         "pthread_spis.h",
@@ -318,8 +317,6 @@ fn test_apple(target: &str) {
             // it is a moving target, changing through versions
             // also contains bitfields members
             "tcp_connection_info" => true,
-            // FIXME(macos): The size is changed in recent macOSes.
-            "malloc_introspection_t" => true,
             _ => false,
         }
     });
@@ -327,12 +324,8 @@ fn test_apple(target: &str) {
     cfg.skip_alias(|ty| ty.ident().starts_with("__c_anonymous_"));
     cfg.skip_alias(|ty| {
         match ty.ident() {
-            // FIXME(macos): Requires the macOS 14.4 SDK.
-            "os_sync_wake_by_address_flags_t" | "os_sync_wait_on_address_flags_t" => true,
-
             // FIXME(macos): "'__uint128' undeclared" in C
             "__uint128" => true,
-
             _ => false,
         }
     });
@@ -341,7 +334,7 @@ fn test_apple(target: &str) {
         match constant.ident() {
             // They're declared via `deprecated_mach` and we don't support it anymore.
             x if x.starts_with("VM_FLAGS_") => true,
-            // These OSX constants are removed in Sierra.
+            // FIXME(deprecated): These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
             // FIXME(macos): the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
@@ -349,12 +342,6 @@ fn test_apple(target: &str) {
 
             // FIXME(macos): XCode 13.1 doesn't have it.
             "TIOCREMOTE" => true,
-
-            // FIXME(macos): Requires the macOS 14.4 SDK.
-            "OS_SYNC_WAKE_BY_ADDRESS_NONE"
-            | "OS_SYNC_WAKE_BY_ADDRESS_SHARED"
-            | "OS_SYNC_WAIT_ON_ADDRESS_NONE"
-            | "OS_SYNC_WAIT_ON_ADDRESS_SHARED" => true,
 
             _ => false,
         }
@@ -365,41 +352,17 @@ fn test_apple(target: &str) {
         match func.ident() {
             // FIXME: https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" => true,
-            // close calls the close_nocancel system call
-            "close" => true,
-
             // FIXME(1.0): std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
             "res_init" => true,
-
-            // FIXME(macos): remove once the target in CI is updated
-            "pthread_jit_write_freeze_callbacks_np" => true,
-
-            // FIXME(macos): ABI has been changed on recent macOSes.
-            "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
-
-            // FIXME(macos): Once the SDK get updated to Ventura's level
-            "freadlink" | "mknodat" | "mkfifoat" => true,
-
-            // FIXME(macos): Requires the macOS 14.4 SDK.
-            "os_sync_wake_by_address_any"
-            | "os_sync_wake_by_address_all"
-            | "os_sync_wake_by_address_flags_t"
-            | "os_sync_wait_on_address"
-            | "os_sync_wait_on_address_flags_t"
-            | "os_sync_wait_on_address_with_deadline"
-            | "os_sync_wait_on_address_with_timeout" => true,
-
             _ => false,
         }
     });
 
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // FIXME(macos): the array size has been changed since macOS 10.15 ([8] -> [7]).
-            ("statfs", "f_reserved") => true,
-            ("__darwin_arm_neon_state64", "__v") => true,
             // MAXPATHLEN is too big for auto-derive traits on arrays.
             ("vnode_info_path", "vip_path") => true,
+            // Anonymous ADT fields
             ("ifreq", "ifr_ifru") => true,
             ("in6_ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
@@ -450,8 +413,6 @@ fn test_apple(target: &str) {
     cfg.skip_roundtrip(move |s| match s {
         // FIXME(macos): this type has the wrong ABI
         "max_align_t" if i686 => true,
-        // Can't return an array from a C function.
-        "uuid_t" | "vol_capabilities_set_t" => true,
         _ => false,
     });
 
