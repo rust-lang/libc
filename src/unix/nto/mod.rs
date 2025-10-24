@@ -670,6 +670,13 @@ s! {
         pub uc_stack: stack_t,
         pub uc_mcontext: mcontext_t,
     }
+    pub struct ifreq_buffer {
+        pub length: size_t,
+        pub buffer: *mut c_void,
+    }
+}
+
+s_no_extra_traits! {
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
@@ -795,6 +802,239 @@ s_no_extra_traits! {
         pub __owner: c_uint,
         pub __spare: c_uint,
     }
+
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: crate::sockaddr,
+        pub ifru_dstaddr: crate::sockaddr,
+        pub ifru_broadaddr: crate::sockaddr,
+        pub ifru_buffer: ifreq_buffer,
+        pub ifru_flags: [c_short; 2],
+        pub ifru_index: c_short,
+        pub ifru_jid: c_int,
+        pub ifru_metric: c_int,
+        pub ifru_mtu: c_int,
+        pub ifru_phys: c_int,
+        pub ifru_media: c_int,
+        pub ifru_data: *mut c_char,
+        pub ifru_cap: [c_int; 2],
+        pub ifru_fib: c_uint,
+        pub ifru_vlan_pcp: c_uchar,
+    }
+
+    pub struct ifreq {
+        /// if name, e.g. "en0"
+        pub ifr_name: [c_char; crate::IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        // sigevent
+        impl PartialEq for sigevent {
+            fn eq(&self, other: &sigevent) -> bool {
+                self.sigev_notify == other.sigev_notify
+                    && self.sigev_signo == other.sigev_signo
+                    && self.sigev_value == other.sigev_value
+                    && self.__sigev_un2 == other.__sigev_un2
+            }
+        }
+        impl Eq for sigevent {}
+        impl hash::Hash for sigevent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sigev_notify.hash(state);
+                self.sigev_signo.hash(state);
+                self.sigev_value.hash(state);
+                self.__sigev_un2.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_un {
+            fn eq(&self, other: &sockaddr_un) -> bool {
+                self.sun_len == other.sun_len
+                    && self.sun_family == other.sun_family
+                    && self
+                        .sun_path
+                        .iter()
+                        .zip(other.sun_path.iter())
+                        .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_un {}
+
+        impl hash::Hash for sockaddr_un {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sun_len.hash(state);
+                self.sun_family.hash(state);
+                self.sun_path.hash(state);
+            }
+        }
+
+        // sigset_t
+        impl PartialEq for sigset_t {
+            fn eq(&self, other: &sigset_t) -> bool {
+                self.__val == other.__val
+            }
+        }
+        impl Eq for sigset_t {}
+        impl hash::Hash for sigset_t {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.__val.hash(state);
+            }
+        }
+
+        // msg
+
+        // msqid_ds
+
+        // sockaddr_dl
+        impl PartialEq for sockaddr_dl {
+            fn eq(&self, other: &sockaddr_dl) -> bool {
+                self.sdl_len == other.sdl_len
+                    && self.sdl_family == other.sdl_family
+                    && self.sdl_index == other.sdl_index
+                    && self.sdl_type == other.sdl_type
+                    && self.sdl_nlen == other.sdl_nlen
+                    && self.sdl_alen == other.sdl_alen
+                    && self.sdl_slen == other.sdl_slen
+                    && self
+                        .sdl_data
+                        .iter()
+                        .zip(other.sdl_data.iter())
+                        .all(|(a, b)| a == b)
+            }
+        }
+        impl Eq for sockaddr_dl {}
+        impl hash::Hash for sockaddr_dl {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sdl_len.hash(state);
+                self.sdl_family.hash(state);
+                self.sdl_index.hash(state);
+                self.sdl_type.hash(state);
+                self.sdl_nlen.hash(state);
+                self.sdl_alen.hash(state);
+                self.sdl_slen.hash(state);
+                self.sdl_data.hash(state);
+            }
+        }
+
+        impl PartialEq for utsname {
+            fn eq(&self, other: &utsname) -> bool {
+                self.sysname
+                    .iter()
+                    .zip(other.sysname.iter())
+                    .all(|(a, b)| a == b)
+                    && self
+                        .nodename
+                        .iter()
+                        .zip(other.nodename.iter())
+                        .all(|(a, b)| a == b)
+                    && self
+                        .release
+                        .iter()
+                        .zip(other.release.iter())
+                        .all(|(a, b)| a == b)
+                    && self
+                        .version
+                        .iter()
+                        .zip(other.version.iter())
+                        .all(|(a, b)| a == b)
+                    && self
+                        .machine
+                        .iter()
+                        .zip(other.machine.iter())
+                        .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for utsname {}
+
+        impl hash::Hash for utsname {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.sysname.hash(state);
+                self.nodename.hash(state);
+                self.release.hash(state);
+                self.version.hash(state);
+                self.machine.hash(state);
+            }
+        }
+
+        impl PartialEq for mq_attr {
+            fn eq(&self, other: &mq_attr) -> bool {
+                self.mq_maxmsg == other.mq_maxmsg
+                    && self.mq_msgsize == other.mq_msgsize
+                    && self.mq_flags == other.mq_flags
+                    && self.mq_curmsgs == other.mq_curmsgs
+                    && self.mq_msgsize == other.mq_msgsize
+                    && self.mq_sendwait == other.mq_sendwait
+                    && self.mq_recvwait == other.mq_recvwait
+            }
+        }
+
+        impl Eq for mq_attr {}
+
+        impl hash::Hash for mq_attr {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.mq_maxmsg.hash(state);
+                self.mq_msgsize.hash(state);
+                self.mq_flags.hash(state);
+                self.mq_curmsgs.hash(state);
+                self.mq_sendwait.hash(state);
+                self.mq_recvwait.hash(state);
+            }
+        }
+
+        impl PartialEq for sockaddr_storage {
+            fn eq(&self, other: &sockaddr_storage) -> bool {
+                self.ss_len == other.ss_len
+                    && self.ss_family == other.ss_family
+                    && self.__ss_pad1 == other.__ss_pad1
+                    && self.__ss_align == other.__ss_align
+                    && self
+                        .__ss_pad2
+                        .iter()
+                        .zip(other.__ss_pad2.iter())
+                        .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for sockaddr_storage {}
+
+        impl hash::Hash for sockaddr_storage {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.ss_len.hash(state);
+                self.ss_family.hash(state);
+                self.__ss_pad1.hash(state);
+                self.__ss_align.hash(state);
+                self.__ss_pad2.hash(state);
+            }
+        }
+
+        impl PartialEq for dirent {
+            fn eq(&self, other: &dirent) -> bool {
+                self.d_ino == other.d_ino
+                    && self.d_offset == other.d_offset
+                    && self.d_reclen == other.d_reclen
+                    && self.d_namelen == other.d_namelen
+                    && self.d_name[..self.d_namelen as _]
+                        .iter()
+                        .zip(other.d_name.iter())
+                        .all(|(a, b)| a == b)
+            }
+        }
+
+        impl Eq for dirent {}
+
+        impl hash::Hash for dirent {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                self.d_ino.hash(state);
+                self.d_offset.hash(state);
+                self.d_reclen.hash(state);
+                self.d_namelen.hash(state);
+                self.d_name[..self.d_namelen as _].hash(state);
+            }
+        }
+    }
 }
 
 pub const _SYSNAME_SIZE: usize = 256 + 1;
@@ -877,7 +1117,7 @@ pub const MS_SYNC: c_int = 2;
 pub const SCM_RIGHTS: c_int = 0x01;
 pub const SCM_TIMESTAMP: c_int = 0x02;
 cfg_if! {
-    if #[cfg(not(target_env = "nto71_iosock"))] {
+    if #[cfg(not(any(target_env = "nto71_iosock", target_env = "nto80")))] {
         pub const SCM_CREDS: c_int = 0x04;
         pub const IFF_NOTRAILERS: c_int = 0x00000020;
         pub const AF_INET6: c_int = 24;
@@ -2093,6 +2333,44 @@ pub const BIOCSRTIMEOUT: c_int = -2146418067;
 pub const BIOCVERSION: c_int = 1074020977;
 
 pub const BPF_ALIGNMENT: usize = size_of::<c_long>();
+pub const BPF_LD: u16 = 0x00;
+pub const BPF_LDX: u16 = 0x01;
+pub const BPF_ST: u16 = 0x02;
+pub const BPF_STX: u16 = 0x03;
+pub const BPF_ALU: u16 = 0x04;
+pub const BPF_JMP: u16 = 0x05;
+pub const BPF_RET: u16 = 0x06;
+pub const BPF_MISC: u16 = 0x07;
+pub const BPF_W: u16 = 0x00;
+pub const BPF_H: u16 = 0x08;
+pub const BPF_B: u16 = 0x10;
+pub const BPF_IMM: u16 = 0x00;
+pub const BPF_ABS: u16 = 0x20;
+pub const BPF_IND: u16 = 0x40;
+pub const BPF_MEM: u16 = 0x60;
+pub const BPF_LEN: u16 = 0x80;
+pub const BPF_MSH: u16 = 0xa0;
+pub const BPF_ADD: u16 = 0x00;
+pub const BPF_SUB: u16 = 0x10;
+pub const BPF_MUL: u16 = 0x20;
+pub const BPF_DIV: u16 = 0x30;
+pub const BPF_OR: u16 = 0x40;
+pub const BPF_AND: u16 = 0x50;
+pub const BPF_LSH: u16 = 0x60;
+pub const BPF_RSH: u16 = 0x70;
+pub const BPF_NEG: u16 = 0x80;
+pub const BPF_MOD: u16 = 0x90;
+pub const BPF_XOR: u16 = 0xa0;
+pub const BPF_JA: u16 = 0x00;
+pub const BPF_JEQ: u16 = 0x10;
+pub const BPF_JGT: u16 = 0x20;
+pub const BPF_JGE: u16 = 0x30;
+pub const BPF_JSET: u16 = 0x40;
+pub const BPF_K: u16 = 0x00;
+pub const BPF_X: u16 = 0x08;
+pub const BPF_A: u16 = 0x10;
+pub const BPF_TAX: u16 = 0x00;
+pub const BPF_TXA: u16 = 0x80;
 pub const CHAR_BIT: usize = 8;
 pub const CODESET: crate::nl_item = 1;
 pub const CRNCYSTR: crate::nl_item = 55;
@@ -2482,6 +2760,47 @@ f! {
     pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         size_of::<sockcred>() + size_of::<crate::gid_t>() * ngrps
+    }
+
+    pub fn BPF_CLASS(code: u32) -> u32 {
+        code & 0x07
+    }
+
+    pub fn BPF_SIZE(code: u32) -> u32 {
+        code & 0x18
+    }
+
+    pub fn BPF_MODE(code: u32) -> u32 {
+        code & 0xe0
+    }
+
+    pub fn BPF_OP(code: u32) -> u32 {
+        code & 0xf0
+    }
+
+    pub fn BPF_SRC(code: u32) -> u32 {
+        code & 0x08
+    }
+
+    pub fn BPF_RVAL(code: u32) -> u32 {
+        code & 0x18
+    }
+
+    pub fn BPF_MISCOP(code: u32) -> u32 {
+        code & 0xf8
+    }
+
+    pub fn BPF_STMT(code: u16, k: u32) -> bpf_insn {
+        bpf_insn {
+            code,
+            jt: 0,
+            jf: 0,
+            k,
+        }
+    }
+
+    pub fn BPF_JUMP(code: u16, k: u32, jt: u8, jf: u8) -> bpf_insn {
+        bpf_insn { code, jt, jf, k }
     }
 }
 
