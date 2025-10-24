@@ -203,6 +203,9 @@ cfg_if! {
         pub use utmpx_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
+    } else if #[cfg(target_os = "nto")] {
+        pub use net::bpf::*;
+        pub use net::if_::*;
     }
 }
 
