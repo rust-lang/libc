@@ -40,3 +40,10 @@ cfg_if! {
         pub use signal::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(all(target_os = "linux", target_env = "gnu"))] {
+        mod glibc;
+        pub use glibc::*;
+    }
+}
