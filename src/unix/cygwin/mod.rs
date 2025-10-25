@@ -117,7 +117,6 @@ s! {
         pub tm_gmtoff: c_long,
         pub tm_zone: *const c_char,
     }
-
     pub struct bintime {
         pub sec: time_t,
         pub frac: u64,

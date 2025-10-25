@@ -3665,8 +3665,6 @@ extern "C" {
 
     pub fn lseek64(__fd: c_int, __offset: __off64_t, __whence: c_int) -> __off64_t;
 
-    pub fn lseek(__fd: c_int, __offset: __off_t, __whence: c_int) -> __off_t;
-
     pub fn fgetpos64(stream: *mut crate::FILE, ptr: *mut fpos64_t) -> c_int;
     pub fn fseeko64(stream: *mut crate::FILE, offset: off64_t, whence: c_int) -> c_int;
     pub fn fsetpos64(stream: *mut crate::FILE, ptr: *const fpos64_t) -> c_int;
@@ -4061,7 +4059,6 @@ extern "C" {
         statxbuf: *mut statx,
     ) -> c_int;
 
-    pub fn ftruncate(__fd: c_int, __length: __off_t) -> c_int;
     pub fn ftruncate64(__fd: c_int, __length: __off64_t) -> c_int;
     pub fn truncate64(__file: *const c_char, __length: __off64_t) -> c_int;
 
