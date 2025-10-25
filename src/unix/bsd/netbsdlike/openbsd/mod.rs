@@ -1,6 +1,9 @@
 use crate::prelude::*;
 use crate::unix::bsd::O_SYNC;
-use crate::{cmsghdr, off_t};
+use crate::{
+    cmsghdr,
+    off_t,
+};
 
 pub type clock_t = i64;
 pub type suseconds_t = c_long;
