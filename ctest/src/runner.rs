@@ -32,6 +32,7 @@ pub fn generate_test(
             .flag("/Wall")
             .flag("/WX")
             // ignored warnings
+            .flag("/wd4746") // volatile use, seems to be enabled by default on aarch64
             .flag("/wd4820") // warning about adding padding?
             .flag("/wd4100") // unused parameters
             .flag("/wd4996") // deprecated functions
