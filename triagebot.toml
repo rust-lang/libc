@@ -34,7 +34,10 @@ trigger_files = [
 new_pr = true
 
 [autolabel."O-android"]
-trigger_files = ["src/unix/linux_like/android"]
+trigger_files = [
+    "src/new/bionic_libc",
+    "src/unix/linux_like/android",
+]
 
 [autolabel."O-arm"]
 trigger_files = [
