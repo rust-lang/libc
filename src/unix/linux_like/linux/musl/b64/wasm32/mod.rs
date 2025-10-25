@@ -681,7 +681,7 @@ pub const TOSTOP: crate::tcflag_t = 0x00000100;
 pub const FLUSHO: crate::tcflag_t = 0x00001000;
 
 cfg_if! {
-    if #[cfg(target_vendor = "wali")] {
+    if #[cfg(all(target_family = "wasm", target_env = "musl"))] {
         mod wali;
         pub use self::wali::*;
     }
