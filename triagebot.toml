@@ -80,7 +80,8 @@ trigger_files = ["src/unix/linux_like/mod.rs"]
 [autolabel."O-macos"]
 trigger_files = [
     "src/unix/bsd/apple",
-    "src/new/apple",
+    "src/new/apple_lib",
+    "src/new/apple_xnu",
 ]
 
 [autolabel."O-mips"]
