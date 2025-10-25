@@ -167,7 +167,7 @@ jobs:
     needs: [test_tier1, style_check]
     strategy:
       fail-fast: true
-      max-parallel: 12
+      max-parallel: 16
       matrix:
         include:
           # FIXME(sparc): this takes much longer to run than any other job, put
