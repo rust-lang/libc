@@ -236,11 +236,6 @@ s! {
         pub ipv6mr_multiaddr: in6_addr,
         pub ipv6mr_interface: u32,
     }
-
-    pub struct timeval {
-        pub tv_sec: time_t,
-        pub tv_usec: suseconds_t,
-    }
 }
 
 // Reserved two pointer size for reserved area for some structures.
@@ -528,7 +523,6 @@ pub const SIGQUIT: c_int = 3;
 pub const SIGILL: c_int = 4;
 pub const SIGTRAP: c_int = 5;
 pub const SIGABRT: c_int = 6;
-pub const SIGIOT: c_int = 6;
 pub const SIGBUS: c_int = 7;
 pub const SIGFPE: c_int = 8;
 pub const SIGKILL: c_int = 9;
