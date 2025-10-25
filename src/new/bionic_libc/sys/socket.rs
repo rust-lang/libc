@@ -1,4 +1,4 @@
-//! Header: `bionic/libc/include/sys/socket.h`
+//! Header: `sys/socket.h`
 
 use crate::prelude::*;
 
