@@ -23,8 +23,10 @@ cfg_if! {
         mod bionic_libc;
         pub(crate) use bionic_libc::*;
     } else if #[cfg(target_vendor = "apple")] {
-        mod apple;
-        pub(crate) use apple::*;
+        mod apple_libc;
+        mod apple_xnu;
+        pub(crate) use apple_libc::*;
+        pub(crate) use apple_xnu::*;
     }
 }
 
