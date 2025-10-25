@@ -2275,9 +2275,6 @@ pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 11;
 pub const CLOCK_THREAD_CPUTIME_ID: crate::clockid_t = 12;
 
 // unistd.h
-pub const STDIN_FILENO: c_int = 0;
-pub const STDOUT_FILENO: c_int = 1;
-pub const STDERR_FILENO: c_int = 2;
 pub const _POSIX_VDISABLE: c_int = 0xff;
 pub const _PC_LINK_MAX: c_int = 11;
 pub const _PC_MAX_CANON: c_int = 12;

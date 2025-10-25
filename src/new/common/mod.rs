@@ -16,7 +16,7 @@
     target_os = "netbsd",
     target_os = "openbsd",
 ))]
-mod bsd;
+pub(crate) mod bsd;
 
 #[cfg(any(
     target_os = "android",
@@ -24,15 +24,16 @@ mod bsd;
     target_os = "l4re",
     target_os = "linux",
 ))]
-mod linux_like;
+pub(crate) mod linux_like;
 
 #[cfg(any(target_os = "dragonfly", target_os = "freebsd"))]
-mod freebsd_like;
+pub(crate) mod freebsd_like;
 
 #[cfg(any(target_os = "netbsd", target_os = "openbsd"))]
-mod netbsd_like;
+pub(crate) mod netbsd_like;
 
 #[cfg(any(target_os = "illumos", target_os = "solaris"))]
-mod solarish;
+pub(crate) mod solarish;
 
-mod posix;
+#[cfg(target_family = "unix")]
+pub(crate) mod posix;
