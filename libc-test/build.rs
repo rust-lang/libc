@@ -309,13 +309,16 @@ fn test_apple(target: &str) {
         (x86_64, "crt_externs.h"),
     );
 
-    cfg.skip_struct(|s| {
+    cfg.skip_struct(move |s| {
         match s.ident() {
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_zone_t" => true,
             // it is a moving target, changing through versions
             // also contains bitfields members
             "tcp_connection_info" => true,
+
+            // FIXME(macos): The size is changed in recent macOSes.
+            "malloc_introspection_t" if x86_64 => true,
             _ => false,
         }
     });
@@ -337,6 +340,8 @@ fn test_apple(target: &str) {
     cfg.skip_fn(move |func| {
         // skip those that are manually verified
         match func.ident() {
+            // close calls the close_nocancel system call on x86
+            "close" if x86_64 => true,
             // FIXME(1.0): std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
             "res_init" => true,
             _ => false,
