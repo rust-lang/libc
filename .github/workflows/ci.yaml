@@ -103,6 +103,10 @@ jobs:
         include:
           - target: aarch64-apple-darwin
             os: macos-15
+          - target: aarch64-pc-windows-msvc
+            os: windows-11-arm
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-24.04-arm
           # FIXME: It currently causes segfaults.
           #- target: i686-pc-windows-gnu
           #  env: { ARCH_BITS: 32, ARCH: i686 }
@@ -172,7 +176,6 @@ jobs:
           # it first to make sure it gets a head start.
           - sparc64-unknown-linux-gnu
           - aarch64-linux-android
-          - aarch64-unknown-linux-gnu
           - aarch64-unknown-linux-musl
           - arm-linux-androideabi
           - arm-unknown-linux-musleabihf
