@@ -1479,6 +1479,7 @@ extern "C" {
         link_name = "mknod@FBSD_1.0"
     )]
     pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
+    #[cfg(not(target_os = "espidf"))]
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn endservent();
     pub fn getservbyname(name: *const c_char, proto: *const c_char) -> *mut servent;
