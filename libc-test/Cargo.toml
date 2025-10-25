@@ -9,20 +9,20 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-lang/libc"
 
 [dependencies]
-cfg-if = "1.0.1"
-libc = { path = "..", version = "0.2.171", default-features = false }
+cfg-if = "1.0.4"
+libc = { path = "..", version = "0.2.177", default-features = false }
 
 [dev-dependencies]
-syn = { version = "2.0.104", features = ["full", "visit"] }
-proc-macro2 = { version = "1.0.95", features = ["span-locations"] }
-glob = "0.3.2"
+syn = { version = "2.0.108", features = ["full", "visit"] }
+proc-macro2 = { version = "1.0.103", features = ["span-locations"] }
+glob = "0.3.3"
 annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 
 [build-dependencies]
-cc = "1.2.29"
+cc = "1.2.43"
 # Use the in-tree `ctest` from the `main` branch via crates.io
 ctest = "0.5.0-beta.1"
-regex = "1.11.1"
+regex = "1.12.2"
 
 [features]
 default = ["std"]
