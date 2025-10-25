@@ -1,7 +1,14 @@
 use crate::prelude::*;
 use crate::{
-    exit_status, off_t, termios, NET_MAC_AWARE, NET_MAC_AWARE_INHERIT, PRIV_AWARE_RESET,
-    PRIV_DEBUG, PRIV_PFEXEC, PRIV_XPOLICY,
+    exit_status,
+    off_t,
+    termios,
+    NET_MAC_AWARE,
+    NET_MAC_AWARE_INHERIT,
+    PRIV_AWARE_RESET,
+    PRIV_DEBUG,
+    PRIV_PFEXEC,
+    PRIV_XPOLICY,
 };
 
 pub type door_attr_t = c_uint;
