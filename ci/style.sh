@@ -40,7 +40,7 @@ while IFS= read -r file; do
     # Format the file. We need to invoke `rustfmt` directly since `cargo fmt`
     # can't figure out the module tree with the hacks in place.
     failed=false
-    rustfmt --config-path rustfmt.toml "$file" ${check:+"$check"} || failed=true
+    rustfmt "$file" ${check:+"$check"} || failed=true
 
     # Restore all changes to the files.
     perl -pi -e 's/fn (\w+)_fmt_tmp\(\)/$1!/g' "$file"

@@ -1,7 +1,10 @@
 //! Android-specific definitions for linux-like values
 
 use crate::prelude::*;
-use crate::{cmsghdr, msghdr};
+use crate::{
+    cmsghdr,
+    msghdr,
+};
 
 cfg_if! {
     if #[cfg(doc)] {
