@@ -1172,9 +1172,6 @@ pub const SHM_REMAP: c_int = 0o40000;
 pub const SHM_LOCK: c_int = 11;
 pub const SHM_UNLOCK: c_int = 12;
 // unistd.h
-pub const STDIN_FILENO: c_int = 0;
-pub const STDOUT_FILENO: c_int = 1;
-pub const STDERR_FILENO: c_int = 2;
 pub const __FD_SETSIZE: c_int = 256;
 pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
