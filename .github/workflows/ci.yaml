@@ -92,6 +92,13 @@ jobs:
     strategy:
       matrix:
         include:
+          - target: aarch64-apple-darwin
+            os: macos-15
+          # FIXME: It currently causes segfaults.
+          #- target: i686-pc-windows-gnu
+          #  env: { ARCH_BITS: 32, ARCH: i686 }
+          - target: i686-pc-windows-msvc
+            os: windows-2025
           - target: i686-unknown-linux-gnu
           - target: i686-unknown-linux-gnu
             artifact-tag: offset-bits64
@@ -101,23 +108,12 @@ jobs:
             artifact-tag: time-bits64
             env:
               RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
-          - target: x86_64-unknown-linux-gnu
-          - target: aarch64-apple-darwin
-            os: macos-15
           - target: x86_64-pc-windows-gnu
             os: windows-2025
-            env:
-              ARCH_BITS: 64
-              ARCH: x86_64
+            env: { ARCH_BITS: 64, ARCH: x86_64 }
           - target: x86_64-pc-windows-msvc
             os: windows-2025
-          # FIXME: It currently causes segfaults.
-          #- target: i686-pc-windows-gnu
-          #  env:
-          #    ARCH_BITS: 32
-          #    ARCH: i686
-          - target: i686-pc-windows-msvc
-            os: windows-2025
+          - target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
     env:
