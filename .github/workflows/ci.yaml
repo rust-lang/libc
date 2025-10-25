@@ -102,23 +102,15 @@ jobs:
       matrix:
         include:
           - target: i686-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
           - target: i686-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
             artifact-tag: offset-bits64
             env:
               RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
           - target: i686-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
             artifact-tag: time-bits64
             env:
               RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           - target: x86_64-unknown-linux-gnu
-            docker: true
-            os: ubuntu-24.04
           - target: aarch64-apple-darwin
             os: macos-15
           - target: x86_64-pc-windows-gnu
@@ -135,7 +127,7 @@ jobs:
           #    ARCH: i686
           - target: i686-pc-windows-msvc
             os: windows-2025
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
@@ -155,10 +147,10 @@ jobs:
         shell: bash
 
       - name: Run natively
-        if: "!matrix.docker"
+        if: runner.os != 'Linux'
         run: ./ci/run.sh ${{ matrix.target }}
       - name: Run in Docker
-        if: "matrix.docker"
+        if: runner.os == 'Linux'
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
@@ -175,7 +167,6 @@ jobs:
   test_tier2:
     name: Test tier2
     needs: [test_tier1, style_check]
-    runs-on: ubuntu-24.04
     strategy:
       fail-fast: true
       max-parallel: 12
@@ -248,6 +239,7 @@ jobs:
           #   env:
           #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
           #   artifact-tag: time-bits64
+    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
@@ -266,7 +258,11 @@ jobs:
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
-      - name: Execute run-docker.sh
+      - name: Run natively
+        if: runner.os != 'Linux'
+        run: ./ci/run.sh ${{ matrix.target }}
+      - name: Run in Docker
+        if: runner.os == 'Linux'
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
