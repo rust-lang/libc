@@ -1,6 +1,6 @@
 //! Directory: `mach/`
 //!
-//! https://github.com/apple-oss-distributions/xnu/tree/main/osfmk/mach
+//! <https://github.com/apple-oss-distributions/xnu/tree/main/osfmk/mach>
 
 /// Directory: `mach/arm`
 #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]

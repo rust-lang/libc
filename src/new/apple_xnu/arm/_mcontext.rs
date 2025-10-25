@@ -1,6 +1,6 @@
 //! Header: `arm/_mcontext.h`
 //!
-//! https://github.com/apple-oss-distributions/xnu/blob/main/bsd/arm/_mcontext.h
+//! <https://github.com/apple-oss-distributions/xnu/blob/main/bsd/arm/_mcontext.h>
 
 pub use crate::mach::machine::_structs::*;
 
