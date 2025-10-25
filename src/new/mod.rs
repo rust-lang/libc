@@ -20,8 +20,8 @@ cfg_if! {
         mod linux_uapi;
         pub(crate) use linux_uapi::*;
     } else if #[cfg(target_os = "android")] {
-        mod bionic;
-        pub use bionic::*;
+        mod bionic_libc;
+        pub(crate) use bionic_libc::*;
     } else if #[cfg(target_vendor = "apple")] {
         mod apple;
         pub(crate) use apple::*;
@@ -30,7 +30,9 @@ cfg_if! {
 
 // Headers we export
 cfg_if! {
-    if #[cfg(target_os = "linux")] {
+    if #[cfg(target_os = "android")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "linux")] {
         pub use linux::can::bcm::*;
         pub use linux::can::j1939::*;
         pub use linux::can::raw::*;
