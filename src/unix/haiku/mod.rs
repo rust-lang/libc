@@ -746,9 +746,6 @@ pub const F_OK: c_int = 0;
 pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
 pub const X_OK: c_int = 1;
-pub const STDIN_FILENO: c_int = 0;
-pub const STDOUT_FILENO: c_int = 1;
-pub const STDERR_FILENO: c_int = 2;
 
 pub const SIGHUP: c_int = 1;
 pub const SIGINT: c_int = 2;
