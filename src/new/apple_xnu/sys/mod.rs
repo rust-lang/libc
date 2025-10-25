@@ -1,6 +1,6 @@
 //! Directory: `sys/`
 //!
-//! https://github.com/apple-oss-distributions/xnu/tree/main/bsd/sys
+//! <https://github.com/apple-oss-distributions/xnu/tree/main/bsd/sys>
 
 pub(crate) mod signal;
 

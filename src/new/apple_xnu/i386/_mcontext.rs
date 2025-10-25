@@ -1,6 +1,6 @@
 //! Header: `i386/_mcontext.h`
 //!
-//! https://github.com/apple-oss-distributions/xnu/blob/main/bsd/i386/_mcontext.h
+//! <https://github.com/apple-oss-distributions/xnu/blob/main/bsd/i386/_mcontext.h>
 
 pub use crate::mach::machine::_structs::*;
 
