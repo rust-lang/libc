@@ -204,6 +204,8 @@ jobs:
           - target: wasm32-unknown-emscripten
           - target: wasm32-wasip1
           - target: wasm32-wasip2
+          - target: x86_64-apple-darwin
+            os: macos-15-intel
           - target: x86_64-linux-android
           # FIXME: Exec format error (os error 8)
           # - target: x86_64-unknown-linux-gnux32
