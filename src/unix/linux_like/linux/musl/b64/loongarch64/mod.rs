@@ -1,7 +1,10 @@
 //! LoongArch-specific definitions for 64-bit linux-like values
 
 use crate::prelude::*;
-use crate::{off64_t, off_t};
+use crate::{
+    off64_t,
+    off_t,
+};
 
 pub type wchar_t = c_int;
 

@@ -76,26 +76,59 @@ macro_rules! prelude {
             #[allow(unused_imports)]
             pub(crate) use core::default::Default;
             #[allow(unused_imports)]
-            pub(crate) use core::marker::{Copy, Send, Sync};
+            pub(crate) use core::marker::{
+                Copy,
+                Send,
+                Sync,
+            };
             #[allow(unused_imports)]
             pub(crate) use core::option::Option;
             #[allow(unused_imports)]
             pub(crate) use core::prelude::v1::derive;
             #[allow(unused_imports)]
-            pub(crate) use core::{fmt, hash, iter, mem, ptr};
+            pub(crate) use core::{
+                fmt,
+                hash,
+                iter,
+                mem,
+                ptr,
+            };
 
             #[allow(unused_imports)]
             pub(crate) use fmt::Debug;
             #[allow(unused_imports)]
-            pub(crate) use mem::{align_of, align_of_val, size_of, size_of_val};
+            pub(crate) use mem::{
+                align_of,
+                align_of_val,
+                size_of,
+                size_of_val,
+            };
 
             #[allow(unused_imports)]
-            pub(crate) use crate::types::{CEnumRepr, Padding};
+            pub(crate) use crate::types::{
+                CEnumRepr,
+                Padding,
+            };
             // Commonly used types defined in this crate
             #[allow(unused_imports)]
             pub(crate) use crate::{
-                c_char, c_double, c_float, c_int, c_long, c_longlong, c_short, c_uchar, c_uint,
-                c_ulong, c_ulonglong, c_ushort, c_void, intptr_t, size_t, ssize_t, uintptr_t,
+                c_char,
+                c_double,
+                c_float,
+                c_int,
+                c_long,
+                c_longlong,
+                c_short,
+                c_uchar,
+                c_uint,
+                c_ulong,
+                c_ulonglong,
+                c_ushort,
+                c_void,
+                intptr_t,
+                size_t,
+                ssize_t,
+                uintptr_t,
             };
         }
     };

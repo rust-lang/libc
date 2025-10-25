@@ -1,5 +1,9 @@
 use crate::prelude::*;
-use crate::{off64_t, off_t, pthread_mutex_t};
+use crate::{
+    off64_t,
+    off_t,
+    pthread_mutex_t,
+};
 
 pub type wchar_t = i32;
 

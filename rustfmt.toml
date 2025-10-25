@@ -1,3 +1,4 @@
+# Note that there is a separate configuration for `src/`
 edition = "2021"
 error_on_line_overflow = true
 group_imports = "StdExternalCrate"

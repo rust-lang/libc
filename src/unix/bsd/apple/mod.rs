@@ -3,7 +3,10 @@
 //! This covers *-apple-* triples currently
 
 use crate::prelude::*;
-use crate::{cmsghdr, off_t};
+use crate::{
+    cmsghdr,
+    off_t,
+};
 
 pub type wchar_t = i32;
 pub type clock_t = c_ulong;

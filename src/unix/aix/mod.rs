@@ -1,5 +1,8 @@
 use crate::prelude::*;
-use crate::{in_addr_t, in_port_t};
+use crate::{
+    in_addr_t,
+    in_port_t,
+};
 
 pub type caddr_t = *mut c_char;
 pub type clockid_t = c_longlong;
