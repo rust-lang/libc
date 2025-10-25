@@ -106,12 +106,10 @@ jobs:
           - target: i686-unknown-linux-gnu
           - target: i686-unknown-linux-gnu
             artifact-tag: offset-bits64
-            env:
-              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+            env: { RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64 }
           - target: i686-unknown-linux-gnu
             artifact-tag: time-bits64
-            env:
-              RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
+            env: { RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64 }
           - target: x86_64-pc-windows-gnu
             os: windows-2025
             env: { ARCH_BITS: 64, ARCH: x86_64 }
@@ -163,72 +161,67 @@ jobs:
       fail-fast: true
       max-parallel: 12
       matrix:
-        target:
+        include:
           # FIXME(sparc): this takes much longer to run than any other job, put
           # it first to make sure it gets a head start.
-          - sparc64-unknown-linux-gnu
-          - aarch64-linux-android
-          - aarch64-unknown-linux-musl
-          - arm-linux-androideabi
-          - arm-unknown-linux-musleabihf
-          # FIXME(#4297): Disabled due to spurious failueSome android jobs are disabled because of high rates of
-          # - i686-linux-android
-          - i686-unknown-linux-musl
-          - loongarch64-unknown-linux-gnu
-          - loongarch64-unknown-linux-musl
-          - powerpc64-unknown-linux-gnu
-          - powerpc64le-unknown-linux-gnu
-          - powerpc64le-unknown-linux-musl
-          - riscv64gc-unknown-linux-gnu
-          - s390x-unknown-linux-gnu
-          - wasm32-unknown-emscripten
-          - wasm32-wasip1
-          - wasm32-wasip2
-          - x86_64-linux-android
-          # FIXME: Exec format error (os error 8)
-          # - x86_64-unknown-linux-gnux32
-          - x86_64-unknown-linux-musl
-          # FIXME: It seems some items in `src/unix/mod.rs`
-          # aren't defined on redox actually.
-          # - x86_64-unknown-redox
-        include:
+          - target: sparc64-unknown-linux-gnu
+          - target: aarch64-linux-android
+          - target: aarch64-unknown-linux-musl
+          - target: aarch64-unknown-linux-musl
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
+          - target: arm-linux-androideabi
           - target: arm-unknown-linux-gnueabihf
           - target: arm-unknown-linux-gnueabihf
-            env:
-              RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+            env: { RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64 }
             artifact-tag: offset-bits64
           - target: arm-unknown-linux-gnueabihf
-            env:
-              RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
+            env: { RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64 }
             artifact-tag: time-bits64
-          - target: aarch64-unknown-linux-musl
-            env:
-              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
           - target: arm-unknown-linux-musleabihf
-            env:
-              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: arm-unknown-linux-musleabihf
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
+          # FIXME(#4297): Disabled due to spurious failue
+          # - target: i686-linux-android
           - target: i686-unknown-linux-musl
-            env:
-              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: i686-unknown-linux-musl
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
+          - target: loongarch64-unknown-linux-gnu
           - target: loongarch64-unknown-linux-musl
-            env:
-              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: loongarch64-unknown-linux-musl
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
+          - target: powerpc64-unknown-linux-gnu
+          - target: powerpc64le-unknown-linux-gnu
           - target: powerpc64le-unknown-linux-musl
-            env:
-              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: powerpc64le-unknown-linux-musl
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
+          - target: riscv64gc-unknown-linux-gnu
+          - target: s390x-unknown-linux-gnu
+          - target: wasm32-unknown-emscripten
+          - target: wasm32-wasip1
+          - target: wasm32-wasip2
+          - target: x86_64-linux-android
+          # FIXME: Exec format error (os error 8)
+          # - target: x86_64-unknown-linux-gnux32
           - target: x86_64-unknown-linux-musl
-            env:
-              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: x86_64-unknown-linux-musl
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
+          # FIXME: It seems some items in `src/unix/mod.rs` aren't defined on redox actually.
+          # - target: x86_64-unknown-redox
+
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
           # - target: powerpc-unknown-linux-gnu
-          #   env:
-          #     RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64
+          #   env: { RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64 }
           #   artifact-tag: offset-bits64
           # - target: powerpc-unknown-linux-gnu
-          #   env:
-          #     RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64
+          #   env: { RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64 }
           #   artifact-tag: time-bits64
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
@@ -273,13 +266,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        target:
-          - x86_64-pc-solaris
+        include:
+          - target: x86_64-pc-solaris
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
       - name: test on Solaris
         uses: vmactions/solaris-vm@v1.1.5
+        if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
           usesh: true
