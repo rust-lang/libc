@@ -32,39 +32,9 @@ case "$target" in
     *loongarch*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
 esac
 
-if [ "$target" = "s390x-unknown-linux-gnu" ]; then
-    # FIXME: s390x-unknown-linux-gnu often fails to test due to timeout,
-    # so we retry this N times.
-    N=5
-    n=0
-    passed=0
-    until [ $n -ge $N ]; do
-        if [ "$passed" = "0" ]; then
-            # shellcheck disable=SC2086
-            if $cmd --no-default-features -- $test_flags; then
-                passed=$((passed + 1))
-                continue
-            fi
-        elif [ "$passed" = "1" ]; then
-            # shellcheck disable=SC2086
-            if $cmd -- $test_flags; then
-                passed=$((passed + 1))
-                continue
-            fi
-        elif [ "$passed" = "2" ]; then
-            # shellcheck disable=SC2086
-            if $cmd --features extra_traits -- $test_flags; then
-                break
-            fi
-        fi
-        n=$((n + 1))
-        sleep 1
-    done
-else
-    # shellcheck disable=SC2086
-    $cmd --no-default-features -- $test_flags
-    # shellcheck disable=SC2086
-    $cmd -- $test_flags
-    # shellcheck disable=SC2086
-    $cmd --features extra_traits -- $test_flags
-fi
+# shellcheck disable=SC2086
+$cmd --no-default-features -- $test_flags
+# shellcheck disable=SC2086
+$cmd -- $test_flags
+# shellcheck disable=SC2086
+$cmd --features extra_traits -- $test_flags
