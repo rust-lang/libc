@@ -10,12 +10,12 @@ publish = true
 
 [dependencies]
 askama = "0.14.0"
-cc = "1.2.29"
-proc-macro2 = { version = "1.0.101", features = ["span-locations"] }
-quote = "1.0.40"
-syn = { version = "2.0.104", features = ["full", "visit", "extra-traits"] }
-thiserror = "2.0.12"
+cc = "1.2.43"
+proc-macro2 = { version = "1.0.103", features = ["span-locations"] }
+quote = "1.0.41"
+syn = { version = "2.0.108", features = ["full", "visit", "extra-traits"] }
+thiserror = "2.0.17"
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
-tempfile = "3.20.0"
+tempfile = "3.23.0"
