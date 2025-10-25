@@ -40,6 +40,8 @@ cfg_if! {
 extern_ty! {
     pub enum DIR {}
 }
+
+#[cfg(not(target_os = "nuttx"))]
 pub type locale_t = *mut c_void;
 
 s! {
@@ -131,6 +133,7 @@ s! {
         __reserved: [c_long; 16],
     }
 
+    #[cfg(not(target_os = "nuttx"))]
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         #[cfg(target_os = "android")]
