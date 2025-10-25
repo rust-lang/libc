@@ -1,6 +1,6 @@
 //! Header: `arm/_structs.h`
 //!
-//! https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/arm/_structs.h
+//! <https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/arm/_structs.h>
 
 #[cfg(target_arch = "arm")]
 use crate::prelude::*;

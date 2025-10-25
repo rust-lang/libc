@@ -1,6 +1,6 @@
 //! Header: `i386/_structs.h`
 //!
-//! https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/i386/_structs.h
+//! <https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/i386/_structs.h>
 
 use crate::prelude::*;
 
