@@ -43,7 +43,7 @@ mod common;
 cfg_if! {
     if #[cfg(target_os = "aix")] {
         mod aix;
-        // pub(crate) use aix::*;
+        pub(crate) use aix::*;
     } else if #[cfg(target_os = "android")] {
         mod bionic_libc;
         pub(crate) use bionic_libc::*;
@@ -54,25 +54,25 @@ cfg_if! {
         pub(crate) use apple_xnu::*;
     } else if #[cfg(target_os = "cygwin")] {
         mod cygwin;
-        // pub(crate) use cygwin::*;
+        pub(crate) use cygwin::*;
     } else if #[cfg(target_os = "dragonfly")] {
         mod dragonfly;
-        // pub(crate) use dragonfly::*;
+        pub(crate) use dragonfly::*;
     } else if #[cfg(target_os = "emscripten")] {
         mod emscripten;
-        // pub(crate) use emscripten::*;
+        pub(crate) use emscripten::*;
     } else if #[cfg(target_os = "espidf")] {
         mod espidf;
         // pub(crate) use espidf::*;
     } else if #[cfg(target_os = "freebsd")] {
         mod freebsd;
-        // pub(crate) use freebsd::*;
+        pub(crate) use freebsd::*;
     } else if #[cfg(target_os = "fuchsia")] {
         mod fuchsia;
-        // pub(crate) use fuchsia::*;
+        pub(crate) use fuchsia::*;
     } else if #[cfg(target_os = "haiku")] {
         mod haiku;
-        // pub(crate) use haiku::*;
+        pub(crate) use haiku::*;
     } else if #[cfg(target_os = "hermit")] {
         mod hermit_abi;
         // pub(crate) use hermit_abi::*;
@@ -84,7 +84,7 @@ cfg_if! {
         // pub(crate) use hurd::*;
     } else if #[cfg(target_os = "illumos")] {
         mod illumos;
-        // pub(crate) use illumos::*;
+        pub(crate) use illumos::*;
     } else if #[cfg(target_os = "l4re")] {
         mod l4re;
         // pub(crate) use l4re::*;
@@ -93,25 +93,25 @@ cfg_if! {
         pub(crate) use linux_uapi::*;
     } else if #[cfg(target_os = "netbsd")] {
         mod netbsd;
-        // pub(crate) use netbsd::*;
+        pub(crate) use netbsd::*;
     } else if #[cfg(target_os = "nto")] {
         mod nto;
-        // pub(crate) use nto::*;
+        pub(crate) use nto::*;
     } else if #[cfg(target_os = "nuttx")] {
         mod nuttx;
-        // pub(crate) use nuttx::*;
+        pub(crate) use nuttx::*;
     } else if #[cfg(target_os = "openbsd")] {
         mod openbsd;
-        // pub(crate) use openbsd::*;
+        pub(crate) use openbsd::*;
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         // pub(crate) use redox::*;
     } else if #[cfg(target_os = "rtems")] {
         mod rtems;
-        // pub(crate) use rtems::*;
+        pub(crate) use rtems::*;
     } else if #[cfg(target_os = "solaris")] {
         mod solaris;
-        // pub(crate) use solaris::*;
+        pub(crate) use solaris::*;
     } else if #[cfg(target_os = "solid_asp3")] {
         mod solid;
         // pub(crate) use solid::*;
@@ -126,7 +126,7 @@ cfg_if! {
         // pub(crate) use vita::*;
     } else if #[cfg(target_os = "vxworks")] {
         mod vxworks;
-        // pub(crate) use vxworks::*;
+        pub(crate) use vxworks::*;
     } else if #[cfg(target_os = "wasi")] {
         mod wasi;
         // pub(crate) use wasi::*;
@@ -141,24 +141,29 @@ cfg_if! {
 
 // Multi-platform libc
 cfg_if! {
-    if #[cfg(target_env = "gnu")] {
+    // FIXME(vxworks): vxworks sets `target_env = "gnu"` but maybe shouldn't.
+    if #[cfg(all(
+        target_family = "unix",
+        target_env = "gnu",
+        not(target_os = "vxworks")
+    ))] {
         mod glibc;
-        // pub(crate) use glibc::*;
-    } else if #[cfg(target_env = "musl")] {
+        pub(crate) use glibc::*;
+    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
         mod musl;
-        // pub(crate) use musl::*;
+        pub(crate) use musl::*;
     } else if #[cfg(target_env = "newlib")] {
         mod newlib;
-        // pub(crate) use newlib::*;
+        pub(crate) use newlib::*;
     } else if #[cfg(target_env = "relibc")] {
         mod relibc;
-        // pub(crate) use relibc::*;
+        pub(crate) use relibc::*;
     } else if #[cfg(target_env = "sgx")] {
         mod sgx;
         // pub(crate) use sgx::*;
     } else if #[cfg(target_env = "uclibc")] {
         mod uclibc;
-        // pub(crate) use uclibc::*;
+        pub(crate) use uclibc::*;
     }
 }
 
@@ -176,3 +181,6 @@ cfg_if! {
         pub use signal::*;
     }
 }
+
+#[cfg(target_family = "unix")]
+pub use unistd::*;

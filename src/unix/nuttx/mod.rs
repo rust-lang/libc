@@ -509,9 +509,6 @@ pub const TCP_NODELAY: i32 = 0x10;
 pub const FIONBIO: i32 = 0x30a;
 
 // unistd.h
-pub const STDIN_FILENO: i32 = 0;
-pub const STDOUT_FILENO: i32 = 1;
-pub const STDERR_FILENO: i32 = 2;
 pub const _SC_PAGESIZE: i32 = 0x36;
 pub const _SC_THREAD_STACK_MIN: i32 = 0x58;
 pub const _SC_GETPW_R_SIZE_MAX: i32 = 0x25;
