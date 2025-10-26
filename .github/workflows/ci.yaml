@@ -55,12 +55,18 @@ jobs:
     name: Verify build
     strategy:
       matrix:
-        toolchain: [stable, nightly, 1.63.0]
-        os: [ubuntu-24.04, macos-15, windows-2025]
+        toolchain: [stable, 1.63.0]
         include:
+          # Nightly has a lot of targets, so split it in half
+          - toolchain: nightly
+            half: 1
+          - toolchain: nightly
+            half: 2
           - toolchain: beta
-            os: ubuntu-24.04
-    runs-on: ${{ matrix.os }}
+            only: '(aarch64|x86_64)' # just a spot check for beta
+          - toolchain: stable
+          - toolchain: 1.63.0 # msrv
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       TOOLCHAIN: ${{ matrix.toolchain }}
@@ -92,7 +98,10 @@ jobs:
               perl -i -ne 'print unless /"ctest(-test)?",/ || /"libc-test",/' Cargo.toml
           fi
 
-          python3 ci/verify-build.py --toolchain "$TOOLCHAIN"
+          python3 ci/verify-build.py \
+            --toolchain "$TOOLCHAIN" \
+            ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
+            ${{ matrix.half && format('--half "{0}"', matrix.half) }}
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
