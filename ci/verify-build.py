@@ -77,81 +77,90 @@ class Target:
 
 FREEBSD_VERSIONS = [11, 12, 13, 14, 15]
 
+# FIXME(ohos): CI fails with warnings
 TARGETS = [
-    # linux
-    Target("aarch64-linux-android"),
+    # Tier 1
+    Target("aarch64-apple-darwin"),
+    Target("aarch64-pc-windows-msvc"),
     Target("aarch64-unknown-linux-gnu"),
+    Target("i686-pc-windows-msvc"),
+    Target("i686-unknown-linux-gnu"),
+    Target("x86_64-pc-windows-gnu"),
+    Target("x86_64-pc-windows-msvc"),
+    Target("x86_64-unknown-linux-gnu"),
+    #
+    # Tier 2 with host tools
+    Target("aarch64-pc-windows-gnullvm", min_toolchain=Toolchain.STABLE),
     Target("aarch64-unknown-linux-musl"),
-    Target("arm-linux-androideabi"),
+    # Target("aarch64-unknown-linux-ohos"),
     Target("arm-unknown-linux-gnueabi"),
     Target("arm-unknown-linux-gnueabihf"),
+    Target("armv7-unknown-linux-gnueabihf"),
+    # Target("armv7-unknown-linux-ohos"),
+    Target("i686-pc-windows-gnu"),
+    Target("loongarch64-unknown-linux-gnu", min_toolchain=Toolchain.STABLE),
+    Target("loongarch64-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
+    Target("powerpc-unknown-linux-gnu"),
+    Target("powerpc64-unknown-linux-gnu"),
+    Target("powerpc64le-unknown-linux-gnu"),
+    Target("powerpc64le-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
+    Target("riscv64gc-unknown-linux-gnu"),
+    Target("s390x-unknown-linux-gnu"),
+    Target("sparcv9-sun-solaris"),
+    Target("x86_64-apple-darwin"),
+    Target("x86_64-pc-solaris"),
+    Target("x86_64-pc-windows-gnullvm", min_toolchain=Toolchain.STABLE),
+    Target("x86_64-unknown-freebsd"),
+    Target("x86_64-unknown-illumos"),
+    Target("x86_64-unknown-linux-musl"),
+    # Target("x86_64-unknown-linux-ohos"),
+    Target("x86_64-unknown-netbsd"),
+    #
+    # Tier 2 without host tools
+    Target("aarch64-apple-ios"),
+    Target("aarch64-linux-android"),
+    Target("aarch64-unknown-fuchsia", min_toolchain=Toolchain.STABLE),
+    Target("arm-linux-androideabi"),
     Target("arm-unknown-linux-musleabi"),
     Target("arm-unknown-linux-musleabihf"),
+    Target("armv5te-unknown-linux-gnueabi"),
+    Target("armv5te-unknown-linux-musleabi"),
     Target("armv7-linux-androideabi"),
-    Target("armv7-unknown-linux-gnueabihf"),
     Target("armv7-unknown-linux-musleabihf"),
     Target("i586-unknown-linux-gnu"),
     Target("i586-unknown-linux-musl"),
     Target("i686-linux-android"),
     Target("i686-unknown-freebsd"),
-    Target("i686-unknown-linux-gnu"),
     Target("i686-unknown-linux-musl"),
-    Target("powerpc-unknown-linux-gnu"),
-    Target("powerpc64-unknown-linux-gnu"),
-    Target("powerpc64le-unknown-linux-gnu"),
-    Target("s390x-unknown-linux-gnu"),
     Target("sparc64-unknown-linux-gnu"),
-    Target("sparcv9-sun-solaris"),
     Target("wasm32-unknown-emscripten"),
     Target("wasm32-unknown-unknown"),
-    # Target was renamed
     Target("wasm32-wasip1", min_toolchain=Toolchain.STABLE),
     Target("wasm32-wasip2", min_toolchain=Toolchain.STABLE),
+    Target("x86_64-fortanix-unknown-sgx"),
     Target("x86_64-linux-android"),
-    Target("x86_64-unknown-freebsd"),
-    Target("x86_64-unknown-linux-gnu"),
-    Target("x86_64-unknown-linux-musl"),
-    Target("x86_64-unknown-netbsd"),
-    # nightly linux
-    # FIXME(powerpc64le): powerpc64le-unknown-linux-musl is tier 2 since 1.85 and
-    # can be moved to rust_linux_targets once MSRV is increased
-    Target("aarch64-unknown-fuchsia", min_toolchain=Toolchain.NIGHTLY),
-    Target("armv5te-unknown-linux-gnueabi", min_toolchain=Toolchain.NIGHTLY),
-    Target("armv5te-unknown-linux-musleabi", min_toolchain=Toolchain.NIGHTLY),
-    Target("i686-pc-windows-gnu", min_toolchain=Toolchain.NIGHTLY),
-    Target("powerpc64le-unknown-linux-musl", min_toolchain=Toolchain.NIGHTLY),
-    Target("riscv64gc-unknown-linux-gnu", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-fortanix-unknown-sgx", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-pc-solaris", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-pc-windows-gnu", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-unknown-fuchsia", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-unknown-illumos", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-unknown-linux-gnux32", min_toolchain=Toolchain.NIGHTLY),
-    Target("x86_64-unknown-redox", min_toolchain=Toolchain.NIGHTLY),
-    # apple
-    Target("aarch64-apple-darwin"),
-    Target("aarch64-apple-ios"),
-    # windows
-    Target("x86_64-pc-windows-msvc"),
-    Target("x86_64-pc-windows-gnu"),
-    Target("i686-pc-windows-msvc"),
-    # linux nodist
-    # Targets which are not available via rustup and must be built with -Zbuild-std
-    # FIXME(hexagon): hexagon-unknown-linux-musl should be tested but currently has
-    # duplicate symbol errors from `compiler_builtins`.
-    Target("aarch64-pc-windows-msvc", dist=False),
+    Target("x86_64-unknown-fuchsia", min_toolchain=Toolchain.STABLE),
+    Target("x86_64-unknown-linux-gnux32"),
+    Target("x86_64-unknown-redox"),
+    #
+    # Libc has historically checked that a number of tier 3 targets build. Technically
+    # there is no need to do this given the target tier policy, but the cost is small
+    # and the saved churn from accidental breakage is significant, so we keep it around.
     Target("aarch64-unknown-freebsd", dist=False),
     Target("aarch64-unknown-hermit", dist=False),
+    Target("aarch64-unknown-illumos", dist=False),
     Target("aarch64-unknown-netbsd", dist=False),
     Target("aarch64-unknown-openbsd", dist=False),
     Target("aarch64-wrs-vxworks", dist=False),
-    Target("armebv7r-none-eabi", dist=False),
     Target("armebv7r-none-eabihf", dist=False),
     Target("armv7-wrs-vxworks-eabihf", dist=False),
-    Target("armv7r-none-eabi", dist=False),
     Target("armv7r-none-eabihf", dist=False),
-    Target("i686-pc-windows-msvc", dist=False),
+    Target("armv7s-apple-ios", dist=False),
+    Target("hexagon-unknown-linux-musl", dist=False),
+    Target("i386-apple-ios", dist=False),
+    Target("i686-apple-darwin", dist=False),
     Target("i686-unknown-haiku", dist=False),
+    Target("i686-unknown-hurd-gnu", dist=False),
     Target("i686-unknown-netbsd", dist=False),
     Target("i686-unknown-openbsd", dist=False),
     Target("i686-wrs-vxworks", dist=False),
@@ -168,40 +177,35 @@ TARGETS = [
     Target("powerpc-unknown-netbsd", dist=False),
     Target("powerpc-wrs-vxworks", dist=False),
     Target("powerpc-wrs-vxworks-spe", dist=False),
+    Target("powerpc64-ibm-aix", dist=False),
     Target("powerpc64-unknown-freebsd", dist=False),
     Target("powerpc64-wrs-vxworks", dist=False),
+    Target("riscv32-wrs-vxworks", dist=False),
+    Target("riscv32gc-unknown-linux-gnu", dist=False),
     Target("riscv32i-unknown-none-elf", dist=False),
     Target("riscv32imac-unknown-none-elf", dist=False),
     Target("riscv32imc-unknown-none-elf", dist=False),
-    Target("riscv32gc-unknown-linux-gnu", dist=False),
-    Target("riscv32-wrs-vxworks", dist=False),
+    Target("riscv64-wrs-vxworks", dist=False),
+    Target("riscv64a23-unknown-linux-gnu", dist=False),
     Target("riscv64gc-unknown-freebsd", dist=False),
     Target("riscv64gc-unknown-hermit", dist=False),
     Target("riscv64gc-unknown-linux-musl", dist=False),
     Target("riscv64gc-unknown-none-elf", dist=False),
     Target("riscv64imac-unknown-none-elf", dist=False),
-    Target("riscv64-wrs-vxworks", dist=False),
     Target("s390x-unknown-linux-musl", dist=False),
     Target("sparc-unknown-linux-gnu", dist=False),
     Target("sparc64-unknown-netbsd", dist=False),
-    Target("thumbv6m-none-eabi", dist=False),
-    Target("thumbv7em-none-eabi", dist=False),
     Target("thumbv7em-none-eabihf", dist=False),
     Target("thumbv7m-none-eabi", dist=False),
     Target("thumbv7neon-linux-androideabi", dist=False),
     Target("thumbv7neon-unknown-linux-gnueabihf", dist=False),
     Target("thumbv8m.main-none-eabi", dist=False),
-    Target("x86_64-pc-windows-msvc", dist=False),
     Target("x86_64-unknown-dragonfly", dist=False),
     Target("x86_64-unknown-haiku", dist=False),
     Target("x86_64-unknown-hermit", dist=False),
     Target("x86_64-unknown-l4re-uclibc", dist=False),
     Target("x86_64-unknown-openbsd", dist=False),
     Target("x86_64-wrs-vxworks", dist=False),
-    # apple nodist
-    Target("armv7s-apple-ios", dist=False),
-    Target("i686-apple-darwin", dist=False),
-    Target("i386-apple-ios", dist=False),
 ]
 
 
@@ -228,6 +232,16 @@ def check_output(args: list[str], /, env: Optional[dict[str, str]] = None) -> st
 def run(args: list[str], /, env: Optional[dict[str, str]] = None):
     xtrace(args, env=env)
     sp.run(args, env=env, check=True)
+
+
+def check_dup_targets():
+    all = set()
+    duplicates = set()
+    for target in TARGETS:
+        if target.name in all:
+            duplicates.add(target.name)
+        all.add(target.name)
+    assert len(duplicates) == 0, f"duplicate targets: {duplicates}"
 
 
 def test_target(cfg: Cfg, target: Target):
@@ -315,6 +329,7 @@ def main():
     cfg = Cfg(toolchain_name=args.toolchain)
     eprint(f"Config: {cfg}")
     eprint("Python version: ", sys.version)
+    check_dup_targets()
 
     if cfg.nightly():
         # Needed for build-std
