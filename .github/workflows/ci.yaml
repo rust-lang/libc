@@ -82,7 +82,7 @@ jobs:
       - name: Target size after restoring cache
         run: du -sh target | sort -k 2 || true
 
-      - name: Execute build.sh
+      - name: Execute build check
         run: |
           set -eux
           if [ "${{ matrix.toolchain }}" = "1.63.0" ]; then
@@ -92,7 +92,7 @@ jobs:
               perl -i -ne 'print unless /"ctest(-test)?",/ || /"libc-test",/' Cargo.toml
           fi
 
-          ./ci/verify-build.sh
+          python3 ci/verify-build.py --toolchain "$TOOLCHAIN"
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
