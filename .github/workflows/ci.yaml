@@ -154,7 +154,7 @@ jobs:
       - name: Create CI artifacts
         id: create_artifacts
         if: always()
-        run: ./ci/create-artifacts.py
+        run: python3 ci/create-artifacts.py
       - uses: actions/upload-artifact@v4
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
