@@ -4084,8 +4084,14 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "mnt_ns_info" => true,
 
-            // Struct has changed for new musl versions
-            "tcp_info" if old_musl => true,
+            // FIXME(musl): Struct has changed for new musl versions
+            "tcp_info" if musl => true,
+
+            // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
+            "statx" | "statx_timestamp" if musl => true,
+
+            // FIXME(musl): New fields in newer versions
+            "utmpx" if !old_musl => true,
 
             _ => false,
         }
@@ -4139,35 +4145,26 @@ fn test_linux(target: &str) {
             if name.starts_with("NI_IDN") {
                 return true;
             }
-            // FIXME(musl): Not in musl yet
-            if name == "SO_NETNS_COOKIE"
-                || name == "SO_BUF_LOCK"
-                || name == "SO_RESERVE_MEM"
-                || name == "SO_TXREHASH"
-                || name == "SO_RCVMARK"
-                || name == "SO_PASSPIDFD"
-                || name == "SO_PEERPIDFD"
-                || name == "SO_DEVMEM_LINEAR"
-                || name == "SO_DEVMEM_DMABUF"
-                || name == "SO_DEVMEM_DONTNEED"
-            {
-                return true;
-            }
-            // FIXME(musl): Not in musl yet
-            if name == "SCM_DEVMEM_LINEAR" || name == "SCM_DEVMEM_DMABUF" {
-                return true;
-            }
-            // FIXME: Does not exist on non-x86 architectures, slated for removal
-            // in libc in 1.0
-            if ppc64 && name == "MAP_32BIT" {
-                return true;
-            }
-        }
-        if old_musl {
-            // Constants that don't exist on the old version of musl we test with, but do exist
-            // on newer versions.
+
             match name {
-                "FAN_EVENT_INFO_TYPE_ERROR"
+                // FIXME: Does not exist on non-x86 architectures, slated for removal
+                // in libc in 1.0
+                "MAP_32BIT" if ppc64 => return true,
+
+                // FIXME(musl): None of these are actually defined in musl, they should be removed.
+                "SO_NETNS_COOKIE"
+                | "SO_BUF_LOCK"
+                | "SO_RESERVE_MEM"
+                | "SO_TXREHASH"
+                | "SO_RCVMARK"
+                | "SO_PASSPIDFD"
+                | "SO_PEERPIDFD"
+                | "SO_DEVMEM_LINEAR"
+                | "SO_DEVMEM_DMABUF"
+                | "SO_DEVMEM_DONTNEED"
+                | "SCM_DEVMEM_LINEAR"
+                | "SCM_DEVMEM_DMABUF"
+                | "FAN_EVENT_INFO_TYPE_ERROR"
                 | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME"
                 | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME"
                 | "FAN_FS_ERROR"
@@ -4180,21 +4177,39 @@ fn test_linux(target: &str) {
                 | "FAN_REPORT_TARGET_FID"
                 | "FAN_RESPONSE_INFO_AUDIT_RULE"
                 | "FAN_RESPONSE_INFO_NONE"
-                | "IPPROTO_ETHERNET"
-                | "IPPROTO_MPTCP"
                 | "PR_GET_MDWE"
                 | "PR_MDWE_NO_INHERIT"
                 | "PR_MDWE_REFUSE_EXEC_GAIN"
                 | "PR_SET_MDWE"
-                | "RLIM_NLIMITS"
+                | "IPPROTO_ETHERNET"
+                | "IPPROTO_MPTCP"
                 | "SI_DETHREAD"
-                | "SO_BUSY_POLL_BUDGET"
-                | "SO_PREFER_BUSY_POLL" => return true,
-                // Values changed in newer musl versions on these arches
+                | "PR_SET_VMA"
+                | "PR_SET_VMA_ANON_NAME"
+                | "PR_SCHED_CORE"
+                | "PR_SCHED_CORE_CREATE"
+                | "PR_SCHED_CORE_GET"
+                | "PR_SCHED_CORE_MAX"
+                | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
+                | "PR_SCHED_CORE_SCOPE_THREAD"
+                | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
+                | "PR_SCHED_CORE_SHARE_FROM"
+                | "PR_SCHED_CORE_SHARE_TO" => return true,
+
+                /* Added in versions more recent than what we test */
+                // Since 1.2.3
+                "SO_BUSY_POLL_BUDGET" | "SO_PREFER_BUSY_POLL" => return true,
+
+                // FIXME(musl): value was updated in new musl
+                "RLIM_NLIMITS" => return true,
+
+                // FIXME(musl): Values changed in newer musl versions on these arches
                 "O_LARGEFILE" if riscv64 || x86_64 => return true,
+
                 _ => (),
             }
         }
+
         match name {
             // These constants are not available if gnu headers have been included
             // and can therefore not be tested here
@@ -4306,23 +4321,6 @@ fn test_linux(target: &str) {
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
-
-            // Not present on old musl
-            "PR_SET_VMA"
-            | "PR_SET_VMA_ANON_NAME"
-            | "PR_SCHED_CORE"
-            | "PR_SCHED_CORE_CREATE"
-            | "PR_SCHED_CORE_GET"
-            | "PR_SCHED_CORE_MAX"
-            | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
-            | "PR_SCHED_CORE_SCOPE_THREAD"
-            | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
-            | "PR_SCHED_CORE_SHARE_FROM"
-            | "PR_SCHED_CORE_SHARE_TO"
-                if old_musl =>
-            {
-                true
-            }
 
             // Not present in glibc
             "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" if gnu => true,
@@ -4514,19 +4512,21 @@ fn test_linux(target: &str) {
             // assume it's a int instead.
             "getnameinfo" if uclibc => true,
 
-            // FIXME(musl): This needs musl 1.2.2 or later.
-            "gettid" if old_musl => true,
+            // FIXME(musl): This needs musl 1.2.2 or later, which is newer than what we test with
+            // on CI.
+            "gettid" | "reallocarray" if musl => true,
+            // Needs musl 1.2.3 or later.
+            "pthread_getname_np" if musl => true,
+            // Added in musl 1.2.5
+            "preadv2" | "pwritev2" if musl => true,
+            // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
+            "statx" if musl => true,
 
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
 
-            "reallocarray" if old_musl => true,
-
             // Not defined in uclibc as of 1.0.34
             "gettid" if uclibc => true,
-
-            // Needs musl 1.2.3 or later.
-            "pthread_getname_np" if old_musl => true,
 
             // pthread_sigqueue uses sigval, which was initially declared
             // as a struct but should be defined as a union. However due
@@ -4552,9 +4552,6 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): function pointers changed since Ubuntu 23.10
             "strtol" | "strtoll" | "strtoul" | "strtoull" | "fscanf" | "scanf" | "sscanf" => true,
-
-            // Added in musl 1.2.5
-            "preadv2" | "pwritev2" if musl => true,
 
             _ => false,
         }
@@ -4665,7 +4662,7 @@ fn test_linux(target: &str) {
         // the `xsk_tx_metadata_union` field is an anonymous union
         (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
         // After musl 1.2.0, the type becomes `int` instead of `long`.
-        (old_musl && struct_ == "utmpx" && field == "ut_session") ||
+        (musl && struct_ == "utmpx" && field == "ut_session") ||
         // `frames` is a flexible array member
         (struct_ == "bcm_msg_head" && field == "frames") ||
         // FAM
