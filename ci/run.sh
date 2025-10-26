@@ -33,9 +33,21 @@ case "$target" in
     powerpc64le*musl) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
 esac
 
+env="$(rustc --print cfg --target "$target" | sed -n 's/target_env="\(.*\)"/\1/p')"
+bits="$(rustc --print cfg --target "$target" | sed -n 's/target_pointer_width="\(.*\)"/\1/p')"
+
 # shellcheck disable=SC2086
 $cmd --no-default-features -- $test_flags
 # shellcheck disable=SC2086
 $cmd -- $test_flags
 # shellcheck disable=SC2086
 $cmd --features extra_traits -- $test_flags
+
+# On relevant platforms, also test with our optional settings
+
+if [ "$env" = "gnu" ] && [ "$bits" = "32" ]; then
+    # shellcheck disable=SC2086
+    RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS=64 $cmd -- $test_flags
+    # shellcheck disable=SC2086
+    RUST_LIBC_UNSTABLE_GNU_TIME_BITS=64 $cmd -- $test_flags
+fi
