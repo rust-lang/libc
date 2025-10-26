@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
-import re
-import os
 import argparse
+import os
+import platform
+import re
 import subprocess as sp
 import sys
-import platform
-from typing import Optional
-from enum import Enum, IntEnum
+import time
 from dataclasses import dataclass, field
+from enum import Enum, IntEnum
+from typing import Optional
 
 
 ESC_CYAN = "\033[1;36m"
@@ -235,6 +236,7 @@ def check_dup_targets():
 
 
 def test_target(cfg: Cfg, target: Target):
+    start = time.time()
     env = os.environ.copy()
     env.setdefault("RUSTFLAGS", "")
 
@@ -306,7 +308,8 @@ def test_target(cfg: Cfg, target: Target):
     else:
         eprint("Skipping semver checks")
 
-    eprint(f"Finished checking target {tname}")
+    elapsed = round(time.time() - start, 2)
+    eprint(f"Finished checking target {tname} in {elapsed} seconds")
 
 
 def main():
@@ -326,6 +329,7 @@ def main():
     eprint(f"Config: {cfg}")
     eprint("Python version: ", sys.version)
     check_dup_targets()
+    start = time.time()
 
     if cfg.nightly():
         # Needed for build-std
@@ -364,6 +368,9 @@ def main():
         eprint(f"{ESC_CYAN}Checking target {target} ({at}/{total}){ESC_END}")
         test_target(cfg, target)
         eprint("::endgroup::")
+
+    elapsed = round(time.time() - start, 2)
+    eprint(f"Checked {total} targets in {elapsed} seconds")
 
 
 main()
