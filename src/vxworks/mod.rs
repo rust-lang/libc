@@ -952,6 +952,11 @@ pub const SI_MESGQ: c_int = -5;
 pub const SI_CHILD: c_int = -6;
 pub const SI_KILL: c_int = SI_USER;
 
+pub const AT_FDCWD: c_int = -100;
+pub const AT_SYMLINK_NOFOLLOW: c_int = 0x100;
+pub const AT_REMOVEDIR: c_int = 0x200;
+pub const AT_SYMLINK_FOLLOW: c_int = 0x400;
+
 // vxParams.h definitions
 pub const _PARM_NAME_MAX: c_int = 255;
 pub const _PARM_PATH_MAX: c_int = 1024;
@@ -1017,6 +1022,7 @@ pub const RTP_ID_ERROR: crate::RTP_ID = -1;
 
 // h/public/unistd.h
 pub const _SC_GETPW_R_SIZE_MAX: c_int = 21; // Via unistd.h
+pub const _SC_HOST_NAME_MAX: c_int = 22;
 pub const _SC_PAGESIZE: c_int = 39;
 pub const O_ACCMODE: c_int = 3;
 pub const O_CLOEXEC: c_int = 0x100000; // fcntlcom
@@ -1166,6 +1172,7 @@ extern "C" {
     pub fn strcasecmp(s1: *const c_char, s2: *const c_char) -> c_int;
     pub fn strncasecmp(s1: *const c_char, s2: *const c_char, n: size_t) -> c_int;
     pub fn strlen(cs: *const c_char) -> size_t;
+    pub fn strnlen(cs: *const c_char, n: size_t) -> size_t;
     pub fn strerror(n: c_int) -> *mut c_char;
     pub fn strtok(s: *mut c_char, t: *const c_char) -> *mut c_char;
     pub fn strxfrm(s: *mut c_char, ct: *const c_char, n: size_t) -> size_t;
@@ -1249,6 +1256,13 @@ extern "C" {
     pub fn utimes(filename: *const c_char, times: *const crate::timeval) -> c_int;
 
     pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
+
+    pub fn utimensat(
+        dirfd: c_int,
+        path: *const c_char,
+        times: *const crate::timespec,
+        flag: c_int,
+    ) -> c_int;
 
     #[link_name = "_rtld_dlopen"]
     pub fn dlopen(filename: *const c_char, flag: c_int) -> *mut c_void;
