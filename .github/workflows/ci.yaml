@@ -78,12 +78,12 @@ jobs:
       - name: Target size after restoring cache
         run: du -sh target | sort -k 2 || true
 
-      - name: Execute build.sh
+      - name: Execute build check
         run: |
           set -eux
           # Remove `-Dwarnings` at the MSRV since lints may be different
           [ "${{ matrix.toolchain }}" = "1.63.0" ] && export RUSTFLAGS=""
-          ./ci/verify-build.sh
+          python3 ci/verify-build.py --toolchain "$TOOLCHAIN"
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
