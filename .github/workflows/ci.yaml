@@ -113,12 +113,6 @@ jobs:
           - target: i686-pc-windows-msvc
             os: windows-2025
           - target: i686-unknown-linux-gnu
-          - target: i686-unknown-linux-gnu
-            artifact-tag: offset-bits64
-            env: { RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64 }
-          - target: i686-unknown-linux-gnu
-            artifact-tag: time-bits64
-            env: { RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64 }
           - target: x86_64-pc-windows-gnu
             os: windows-2025
             env: { ARCH_BITS: 64, ARCH: x86_64 }
@@ -181,12 +175,6 @@ jobs:
             artifact-tag: new-musl
           - target: arm-linux-androideabi
           - target: arm-unknown-linux-gnueabihf
-          - target: arm-unknown-linux-gnueabihf
-            env: { RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64 }
-            artifact-tag: offset-bits64
-          - target: arm-unknown-linux-gnueabihf
-            env: { RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64 }
-            artifact-tag: time-bits64
           - target: arm-unknown-linux-musleabihf
           - target: arm-unknown-linux-musleabihf
             env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
@@ -228,12 +216,6 @@ jobs:
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
-          # - target: powerpc-unknown-linux-gnu
-          #   env: { RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS: 64 }
-          #   artifact-tag: offset-bits64
-          # - target: powerpc-unknown-linux-gnu
-          #   env: { RUST_LIBC_UNSTABLE_GNU_TIME_BITS: 64 }
-          #   artifact-tag: time-bits64
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
     env:
