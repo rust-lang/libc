@@ -45,6 +45,7 @@ run() {
         --env LIBC_CI_ZBUILD_STD \
         --env RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS \
         --env RUST_LIBC_UNSTABLE_GNU_TIME_BITS \
+        --env RUST_LIBC_UNSTABLE_MUSL_V1_2_3 \
         --env CARGO_HOME=/cargo \
         --env CARGO_TARGET_DIR=/checkout/target \
         --volume "$CARGO_HOME":/cargo \
