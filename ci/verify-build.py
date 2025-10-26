@@ -248,7 +248,15 @@ def test_target(cfg: Cfg, target: Target):
     assert target_bits in ["32", "64"]
     eprint(f"env {target_env}, os {target_os}, bits {target_bits}")
 
-    cmd = ["cargo", f"+{cfg.toolchain_name}", "build", "--target", tname]
+    # Usually we do a full build to make sure we don't run into any crashes or link
+    # problems. If we need to use build-std, though, only do a check to speed
+    # things up.
+    if target.dist:
+        action = "build"
+    else:
+        action = "check"
+
+    cmd = ["cargo", f"+{cfg.toolchain_name}", action, "--target", tname]
 
     if not target.dist:
         # If we can't download a `core`, we need to build it
