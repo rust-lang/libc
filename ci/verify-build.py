@@ -64,16 +64,6 @@ class Target:
             # We will need to use build-std
             self.min_toolchain = Toolchain.NIGHTLY
 
-    def run_on(self) -> Os:
-        """MacOS CI runs all apple targets, Windows CI runs all Windows targets,
-        Linux CI handles everything else."""
-
-        if "apple" in self.name:
-            return Os.DARWIN
-        elif "windows" in self.name:
-            return Os.WINDOWS
-        return Os.LINUX
-
 
 FREEBSD_VERSIONS = [11, 12, 13, 14, 15]
 
@@ -324,6 +314,12 @@ def main():
     p.add_argument("--toolchain", required=True, help="Rust toolchain")
     p.add_argument("--only", help="only targets matching this regex")
     p.add_argument("--skip", help="skip targets matching this regex")
+    p.add_argument(
+        "--half",
+        type=int,
+        choices=[1, 2],
+        help="specify 1 or 2 to run half of the targets",
+    )
     args = p.parse_args()
 
     cfg = Cfg(toolchain_name=args.toolchain)
@@ -346,30 +342,26 @@ def main():
     targets = [t for t in targets if cfg.toolchain >= t.min_toolchain]
     eprint(f"Targets checkable with this toolchain: {len(targets)}")
 
-    # Targets get split among the diferent CI runners
-    targets = [t for t in targets if t.run_on() == cfg.os_]
-    eprint(f"Targets checked on this OS: {len(targets)}")
-
     # Apply filtering
     if args.only:
         targets = [t for t in targets if re.match(args.only, t.name)]
     if args.skip:
         targets = [t for t in targets if not re.match(args.skip, t.name)]
 
+    # Allow splitting the targets in half for time improvements
+    if args.half == 1:
+        targets = targets[0::2]
+    elif args.half == 2:
+        targets = targets[1::2]
+
     total = len(targets)
     eprint(f"Targets to run: {total}")
     assert total > 0, "some tests should be run"
 
     for i, target in enumerate(targets):
-        # HACK: We need to install the toolchain by name for most Windows toolchains,
-        # but not when cross compiling.
-        if cfg.os_ == Os.WINDOWS and "aarch64" not in target.name:
-            run(
-                ["sh", "./ci/install-rust.sh"], env=os.environ | {"TARGET": target.name}
-            )
-
-        eprint(f"::group::Target: {target.name} ({i}/{total})")
-        eprint(f"{ESC_CYAN}Checking target {target} ({i}/{total}){ESC_END}")
+        at = i + 1
+        eprint(f"::group::Target: {target.name} ({at}/{total})")
+        eprint(f"{ESC_CYAN}Checking target {target} ({at}/{total}){ESC_END}")
         test_target(cfg, target)
         eprint("::endgroup::")
 
