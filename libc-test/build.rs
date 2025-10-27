@@ -5180,11 +5180,9 @@ fn test_aix(target: &str) {
         // Skip 'sighandler_t' assignments.
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
-        // _ALL_SOURCE defines these errno values as aliases of other errno
-        // values, but POSIX requires each errno to be unique. Skip these
-        // values because non-unique values are being used which will
-        // fail the test when _ALL_SOURCE is defined.
-        "EWOULDBLOCK" | "ENOTEMPTY" => true,
+        // _ALL_SOURCE defines ENOTEMPTY as an alias of EEXIST, but POSIX
+        // requires its value to be unique. Skip.
+        "ENOTEMPTY" => true,
 
         // FIXME(ctest): These constants are intended for use as the 'int request' argument
         // to 'ioctl()'. However, the AIX headers do not explicitly define their types. If a
