@@ -142,16 +142,16 @@ macro_rules! prelude {
 macro_rules! s {
     ($(
         $(#[$attr:meta])*
-        pub $t:ident $i:ident { $($field:tt)* }
+        $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s!(it: $(#[$attr])* pub $t $i { $($field)* });
+        s!(it: $(#[$attr])* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
+    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
         compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
     );
 
-    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
+    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             #[cfg_attr(
@@ -165,7 +165,7 @@ macro_rules! s {
             )]
             #[allow(deprecated)]
             $(#[$attr])*
-            pub struct $i { $($field)* }
+            $pub struct $i { $($field)* }
         }
     );
 }
@@ -202,17 +202,17 @@ macro_rules! s_paren {
 macro_rules! s_no_extra_traits {
     ($(
         $(#[$attr:meta])*
-        pub $t:ident $i:ident { $($field:tt)* }
+        $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_no_extra_traits!(it: $(#[$attr])* pub $t $i { $($field)* });
+        s_no_extra_traits!(it: $(#[$attr])* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* pub union $i:ident { $($field:tt)* }) => (
+    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
             $(#[$attr])*
-            pub union $i { $($field)* }
+            $pub union $i { $($field)* }
         }
 
         impl ::core::fmt::Debug for $i {
@@ -222,7 +222,7 @@ macro_rules! s_no_extra_traits {
         }
     );
 
-    (it: $(#[$attr:meta])* pub struct $i:ident { $($field:tt)* }) => (
+    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
             #[::core::prelude::v1::derive(
@@ -231,7 +231,7 @@ macro_rules! s_no_extra_traits {
                 ::core::fmt::Debug,
             )]
             $(#[$attr])*
-            pub struct $i { $($field)* }
+            $pub struct $i { $($field)* }
         }
     );
 }
@@ -489,5 +489,43 @@ mod tests {
 
     fn type_id_of_val<T: 'static>(_: &T) -> TypeId {
         TypeId::of::<T>()
+    }
+}
+
+#[cfg(test)]
+#[allow(unused)]
+mod macro_checks {
+    s! {
+        pub struct S1 {
+            pub a: u32,
+            b: u32,
+        }
+
+        struct S1Priv {
+            pub a: u32,
+            b: u32,
+        }
+    }
+
+    s_no_extra_traits! {
+        pub struct S2 {
+            pub a: u32,
+            b: u32,
+        }
+
+        struct S2Priv {
+            pub a: u32,
+            b: u32,
+        }
+
+        pub union U2 {
+            pub a: u32,
+            b: f32,
+        }
+
+        union U2Priv {
+            pub a: u32,
+            b: f32,
+        }
     }
 }
