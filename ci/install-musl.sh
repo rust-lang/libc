@@ -5,12 +5,15 @@
 
 set -eux
 
+old_musl=1.1.24
+new_musl=1.2.5
+
 case ${1} in
-    loongarch64)
-        musl_version=1.2.5
-        ;;
+    loongarch64) musl_version="$new_musl" ;;
     *)
-        [ -n "${RUST_LIBC_UNSTABLE_MUSL_V1_2_3:-}" ] && musl_version=1.2.3 || musl_version=1.1.24
+        [ -n "${RUST_LIBC_UNSTABLE_MUSL_V1_2_3:-}" ] &&
+            musl_version="$new_musl" ||
+            musl_version="$old_musl"
         ;;
 esac
 
