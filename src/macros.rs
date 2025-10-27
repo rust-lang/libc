@@ -427,6 +427,23 @@ macro_rules! deprecated_mach {
     }
 }
 
+/// Polyfill for std's `offset_of`.
+// FIXME(msrv): stabilized in std in 1.77
+macro_rules! offset_of {
+    ($Ty:path, $field:ident) => {{
+        // Taken from bytemuck, avoids accidentally calling on deref
+        #[allow(clippy::unneeded_field_pattern)]
+        let $Ty { $field: _, .. };
+        let data = core::mem::MaybeUninit::<$Ty>::uninit();
+        let ptr = data.as_ptr();
+        // SAFETY: computed address is inbounds since we have a stack alloc for T
+        let fptr = unsafe { core::ptr::addr_of!((*ptr).$field) };
+        let off = (fptr as usize).checked_sub(ptr as usize).unwrap();
+        assert!(off <= core::mem::size_of::<$Ty>());
+        off
+    }};
+}
+
 #[cfg(test)]
 mod tests {
     use core::any::TypeId;
@@ -527,6 +544,26 @@ mod tests {
 
     fn type_id_of_val<T: 'static>(_: &T) -> TypeId {
         TypeId::of::<T>()
+    }
+
+    #[test]
+    fn test_offset_of() {
+        #[repr(C)]
+        struct Off1 {
+            a: u8,
+            b: u32,
+            c: Off2,
+            d: u64,
+        }
+
+        #[repr(C)]
+        #[repr(align(128))]
+        struct Off2 {}
+
+        assert_eq!(core::mem::offset_of!(Off1, a), offset_of!(Off1, a));
+        assert_eq!(core::mem::offset_of!(Off1, b), offset_of!(Off1, b));
+        assert_eq!(core::mem::offset_of!(Off1, c), offset_of!(Off1, c));
+        assert_eq!(core::mem::offset_of!(Off1, d), offset_of!(Off1, d));
     }
 }
 
