@@ -281,6 +281,10 @@ def test_target(cfg: Cfg, target: Target):
         # Equivalent of _TIME_BITS=64
         run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_TIME_BITS": "64"})
 
+    if "musl" in target_env:
+        # Check with breaking changes from musl, including 64-bit time_t on 32-bit
+        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": "1"})
+
     # Test again without default features, i.e. without `std`
     run(cmd + ["--no-default-features"])
     run(cmd + ["--no-default-features", "--features=extra_traits"])
