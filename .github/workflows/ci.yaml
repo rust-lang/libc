@@ -267,6 +267,7 @@ jobs:
       matrix:
         include:
           - target: x86_64-pc-solaris
+          - target: x86_64-unknown-netbsd
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
@@ -285,6 +286,26 @@ jobs:
             uname -a
           run: |
             export PATH=$HOME/.rust_solaris/bin:$PATH
+            ./ci/run.sh ${{ matrix.target }}
+
+      - name: Test on NetBSD
+        uses: vmactions/netbsd-vm@v1
+        if: contains(matrix.target, 'netbsd')
+        with:
+          release: "10.1"
+          usesh: true
+          mem: 4096
+          copyback: false
+          prepare: |
+            set -x
+            /usr/sbin/pkg_add curl
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
+              --profile minimal --default-toolchain nightly -y
+          run: |
+            set -x
+            . "$HOME/.cargo/env"
+            which rustc
+            rustc -Vv
             ./ci/run.sh ${{ matrix.target }}
 
   docs:
