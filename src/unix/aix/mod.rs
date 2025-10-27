@@ -1275,7 +1275,8 @@ pub const ENOLCK: c_int = 49;
 pub const ENOCONNECT: c_int = 50;
 pub const ESTALE: c_int = 52;
 pub const EDIST: c_int = 53;
-pub const EWOULDBLOCK: c_int = 54;
+// POSIX allows EWOULDBLOCK to be the same value as EAGAIN.
+pub const EWOULDBLOCK: c_int = EAGAIN;
 pub const EINPROGRESS: c_int = 55;
 pub const EALREADY: c_int = 56;
 pub const ENOTSOCK: c_int = 57;
