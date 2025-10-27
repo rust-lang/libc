@@ -3499,6 +3499,7 @@ fn test_linux(target: &str) {
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
+    let ppc32 = target.contains("powerpc-");
     let ppc64 = target.contains("powerpc64");
     let s390x = target.contains("s390x");
     let sparc64 = target.contains("sparc64");
@@ -4213,7 +4214,7 @@ fn test_linux(target: &str) {
             "XDP_USE_SG" | "XDP_PKT_CONTD" => true,
 
             // FIXME(linux): Missing only on this platform for some reason
-            "PR_MDWE_NO_INHERIT" if gnueabihf => true,
+            "PR_MDWE_NO_INHERIT" if gnueabihf || ppc32 => true,
 
             // FIXME(linux): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"

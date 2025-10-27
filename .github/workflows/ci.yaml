@@ -198,6 +198,7 @@ jobs:
           - target: loongarch64-unknown-linux-musl
             env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
+          - target: powerpc-unknown-linux-gnu
           - target: powerpc64-unknown-linux-gnu
           - target: powerpc64le-unknown-linux-gnu
           - target: powerpc64le-unknown-linux-musl
@@ -220,10 +221,6 @@ jobs:
             artifact-tag: new-musl
           # FIXME: It seems some items in `src/unix/mod.rs` aren't defined on redox actually.
           # - target: x86_64-unknown-redox
-
-          # FIXME(ppc): SIGILL running tests, see
-          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
-          # - target: powerpc-unknown-linux-gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
     env:
