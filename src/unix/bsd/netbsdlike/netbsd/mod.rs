@@ -1118,7 +1118,6 @@ pub const IFF_BROADCAST: c_int = 0x0002; // broadcast address valid
 pub const IFF_DEBUG: c_int = 0x0004; // turn on debugging
 pub const IFF_LOOPBACK: c_int = 0x0008; // is a loopback net
 pub const IFF_POINTOPOINT: c_int = 0x0010; // interface is point-to-point link
-pub const IFF_NOTRAILERS: c_int = 0x0020; // avoid use of trailers
 pub const IFF_RUNNING: c_int = 0x0040; // resources allocated
 pub const IFF_NOARP: c_int = 0x0080; // no address resolution protocol
 pub const IFF_PROMISC: c_int = 0x0100; // receive all packets
