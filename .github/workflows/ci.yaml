@@ -273,6 +273,9 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
       - name: test on Solaris
         uses: vmactions/solaris-vm@v1.1.5
         if: contains(matrix.target, 'solaris')
