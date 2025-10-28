@@ -1,18 +1,18 @@
 FROM ubuntu:25.04
 
 RUN dpkg --add-architecture i386
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends libc6-dev gcc
-RUN apt-get install -y --no-install-recommends \
-  file \
-  wget \
-  ca-certificates \
-  python3 \
-  unzip \
-  expect \
-  openjdk-8-jre \
-  libstdc++6:i386 \
-  libpulse0
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    expect \
+    gcc \
+    libc6-dev \
+    libpulse0 \
+    libstdc++6:i386 \
+    openjdk-8-jre \
+    python3 \
+    unzip \
+    wget \
+    file
 
 WORKDIR /android/
 COPY android* /android/
@@ -35,12 +35,12 @@ ENV PATH=$PATH:/rust/bin \
 
 ADD runtest-android.rs /tmp/runtest.rs
 ENTRYPOINT [ \
-  "bash", \
-  "-c", \
-  # set SHELL so android can detect a 64bits system, see
-  # http://stackoverflow.com/a/41789144
-  "SHELL=/bin/dash /android/sdk/emulator/emulator @i686 -no-window -no-accel & \
-   rustc /tmp/runtest.rs -o /tmp/runtest && \
-   exec \"$@\"", \
-  "--" \
+    "bash", \
+    "-c", \
+    # set SHELL so android can detect a 64bits system, see
+    # http://stackoverflow.com/a/41789144
+    "SHELL=/bin/dash /android/sdk/emulator/emulator @i686 -no-window -no-accel & \
+     rustc /tmp/runtest.rs -o /tmp/runtest && \
+     exec \"$@\"", \
+    "--" \
 ]
