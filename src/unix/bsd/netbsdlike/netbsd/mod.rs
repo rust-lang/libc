@@ -48,6 +48,10 @@ c_enum! {
     }
 }
 
+extern_ty! {
+    pub enum _cpuset {}
+}
+
 cfg_if! {
     if #[cfg(target_pointer_width = "64")] {
         type Elf_Addr = Elf64_Addr;
@@ -517,10 +521,6 @@ s! {
         pub dlpi_subs: c_ulonglong,
         pub dlpi_tls_modid: usize,
         pub dlpi_tls_data: *mut c_void,
-    }
-
-    pub struct _cpuset {
-        bits: [u32; 0],
     }
 
     pub struct accept_filter_arg {
