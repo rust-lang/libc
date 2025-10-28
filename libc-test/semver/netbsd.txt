@@ -1654,6 +1654,5 @@ utmpxname
 utpname
 utrace
 uucred
-vm_size_t
 wait4
 waitid
