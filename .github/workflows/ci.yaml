@@ -280,7 +280,6 @@ jobs:
           release: "11.4-gcc"
           usesh: true
           mem: 4096
-          copyback: false
           prepare: |
             set -x
             source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
@@ -289,6 +288,17 @@ jobs:
           run: |
             export PATH=$HOME/.rust_solaris/bin:$PATH
             ./ci/run.sh ${{ matrix.target }}
+
+      - name: Create CI artifacts
+        id: create_artifacts
+        if: always()
+        run: ./ci/create-artifacts.py
+      - uses: actions/upload-artifact@v5
+        if: always() && steps.create_artifacts.outcome == 'success'
+        with:
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
+          path: ${{ env.ARCHIVE_PATH }}
+          retention-days: 5
 
   ctest_msrv:
     name: Check ctest MSRV
