@@ -1413,6 +1413,8 @@ fn test_netbsd(target: &str) {
             "__exit_status" => true,
             // FIXME(netbsd): Should be importable but aren't for some reason.
             "Aux32Info" | "Aux64Info" => true,
+            // deprecated, obsolete upstream
+            "ptrace_lwpinfo" => true,
             _ => false,
         }
     });
@@ -1431,6 +1433,9 @@ fn test_netbsd(target: &str) {
         match constant.ident() {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true,                       // removed in glibc 2.26
+
+            // deprecated, obsolete upstream
+            "PT_LWPINFO" | "PL_EVENT_NONE" | "PL_EVENT_SIGNAL" | "PL_EVENT_SUSPENDED" => true,
 
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
