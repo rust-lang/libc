@@ -8,7 +8,7 @@ mod generated_tests {
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
     use std::ffi::{CStr, c_int, c_char, c_uint};
-    use std::fmt::{Debug, LowerHex};
+    use std::fmt::{Debug, Write};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
@@ -32,17 +32,37 @@ mod generated_tests {
         }
     }
 
-    /// Check that the value returned from the Rust and C side in a certain test is equivalent.
-    ///
-    /// Internally it will remember which checks failed and how many tests have been run. This
-    /// method is the same as `check_same` but prints errors in bytes in hex.
-    fn check_same_hex<T: PartialEq + LowerHex + Debug>(rust: T, c: T, attr: &str) {
-        if rust != c {
-            eprintln!("bad {attr}: rust: {rust:?} ({rust:#x}) != c {c:?} ({c:#x})");
-            FAILED.store(true, Ordering::Relaxed);
-        } else {
+    fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
+        if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
+            return;
         }
+
+        FAILED.store(true, Ordering::Relaxed);
+        // Buffer to a string so we don't write individual bytes to stdio
+        let mut s = String::new();
+        if rust.len() == c.len() {
+            for (i, (&rb, &cb)) in rust.iter().zip(c.iter()).enumerate() {
+                if rb != cb {
+                    writeln!(
+                        s, "bad {attr} at byte {i}: rust: {rb:?} ({rb:#x}) != c {cb:?} ({cb:#x})"
+                    ).unwrap();
+                    break;
+                }
+            }
+        } else {
+            writeln!(s, "bad {attr}: rust len {} != c len {}", rust.len(), c.len()).unwrap();
+        }
+
+        write!(s, "    rust bytes:").unwrap();
+        for b in rust {
+            write!(s, " {b:02x}").unwrap();
+        }
+        write!(s, "\n    c bytes:   ").unwrap();
+        for b in c {
+            write!(s, " {b:02x}").unwrap();
+        }
+        eprintln!("{s}");
     }
 
     // Test that the string constant is the same in both Rust and C.
@@ -55,7 +75,7 @@ mod generated_tests {
         // SAFETY: we assume that `c_char` pointer consts are for C strings.
         let r_val = unsafe {
             let r_ptr: *const c_char = A;
-            assert!(!r_ptr.is_null(), "const A is null");
+            assert!(!r_ptr.is_null(), "const `A` is null");
             CStr::from_ptr(r_ptr)
         };
 
@@ -65,7 +85,7 @@ mod generated_tests {
             CStr::from_ptr(c_ptr)
         };
 
-        check_same(r_val, c_val, "const A string");
+        check_same(r_val, c_val, "const `A` string");
     }
 
     // Test that the string constant is the same in both Rust and C.
@@ -78,7 +98,7 @@ mod generated_tests {
         // SAFETY: we assume that `c_char` pointer consts are for C strings.
         let r_val = unsafe {
             let r_ptr: *const c_char = B;
-            assert!(!r_ptr.is_null(), "const B is null");
+            assert!(!r_ptr.is_null(), "const `B` is null");
             CStr::from_ptr(r_ptr)
         };
 
@@ -88,7 +108,7 @@ mod generated_tests {
             CStr::from_ptr(c_ptr)
         };
 
-        check_same(r_val, c_val, "const B string");
+        check_same(r_val, c_val, "const `B` string");
     }
 
     // Test that the value of the constant is the same in both Rust and C.
@@ -112,9 +132,7 @@ mod generated_tests {
             slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
         };
 
-        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
-            check_same_hex(b1, b2, &format!("RED value at byte {}", i));
-        }
+        check_same_bytes(r_bytes, c_bytes, "`RED` value");
     }
 
     // Test that the value of the constant is the same in both Rust and C.
@@ -138,9 +156,7 @@ mod generated_tests {
             slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
         };
 
-        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
-            check_same_hex(b1, b2, &format!("BLUE value at byte {}", i));
-        }
+        check_same_bytes(r_bytes, c_bytes, "`BLUE` value");
     }
 
     // Test that the value of the constant is the same in both Rust and C.
@@ -164,9 +180,7 @@ mod generated_tests {
             slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
         };
 
-        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
-            check_same_hex(b1, b2, &format!("GREEN value at byte {}", i));
-        }
+        check_same_bytes(r_bytes, c_bytes, "`GREEN` value");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -182,8 +196,8 @@ mod generated_tests {
         let rust_align = align_of::<Byte>() as u64;
         let c_align = unsafe { ctest_align_of__Byte() };
 
-        check_same(rust_size, c_size, "Byte size");
-        check_same(rust_align, c_align, "Byte align");
+        check_same(rust_size, c_size, "`Byte` size");
+        check_same(rust_align, c_align, "`Byte` align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -199,8 +213,8 @@ mod generated_tests {
         let rust_align = align_of::<volatile_char>() as u64;
         let c_align = unsafe { ctest_align_of__volatile_char() };
 
-        check_same(rust_size, c_size, "volatile_char size");
-        check_same(rust_align, c_align, "volatile_char align");
+        check_same(rust_size, c_size, "`volatile_char` size");
+        check_same(rust_align, c_align, "`volatile_char` align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -216,8 +230,8 @@ mod generated_tests {
         let rust_align = align_of::<gregset_t>() as u64;
         let c_align = unsafe { ctest_align_of__gregset_t() };
 
-        check_same(rust_size, c_size, "gregset_t size");
-        check_same(rust_align, c_align, "gregset_t align");
+        check_same(rust_size, c_size, "`gregset_t` size");
+        check_same(rust_align, c_align, "`gregset_t` align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -233,8 +247,8 @@ mod generated_tests {
         let rust_align = align_of::<Color>() as u64;
         let c_align = unsafe { ctest_align_of__Color() };
 
-        check_same(rust_size, c_size, "Color size");
-        check_same(rust_align, c_align, "Color align");
+        check_same(rust_size, c_size, "`Color` size");
+        check_same(rust_align, c_align, "`Color` align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -250,8 +264,8 @@ mod generated_tests {
         let rust_align = align_of::<Person>() as u64;
         let c_align = unsafe { ctest_align_of__Person() };
 
-        check_same(rust_size, c_size, "Person size");
-        check_same(rust_align, c_align, "Person align");
+        check_same(rust_size, c_size, "`Person` size");
+        check_same(rust_align, c_align, "`Person` align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -267,8 +281,8 @@ mod generated_tests {
         let rust_align = align_of::<Word>() as u64;
         let c_align = unsafe { ctest_align_of__Word() };
 
-        check_same(rust_size, c_size, "Word size");
-        check_same(rust_align, c_align, "Word align");
+        check_same(rust_size, c_size, "`Word` size");
+        check_same(rust_align, c_align, "`Word` align");
     }
 
     /// Make sure that the signededness of a type alias in Rust and C is the same.
@@ -284,7 +298,7 @@ mod generated_tests {
         let all_zeros = 0 as Byte;
         let c_is_signed = unsafe { ctest_signededness_of__Byte() };
 
-        check_same((all_ones < all_zeros) as u32, c_is_signed, "Byte signed");
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "`Byte` signed");
     }
 
     /// Make sure that the signededness of a type alias in Rust and C is the same.
@@ -300,7 +314,7 @@ mod generated_tests {
         let all_zeros = 0 as volatile_char;
         let c_is_signed = unsafe { ctest_signededness_of__volatile_char() };
 
-        check_same((all_ones < all_zeros) as u32, c_is_signed, "volatile_char signed");
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "`volatile_char` signed");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -322,11 +336,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__Person__name() };
         check_same(offset_of!(Person, name) as u64, ctest_field_offset,
-            "field offset name of Person");
+            "field offset `name` of `Person`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__Person__name() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size name of Person");
+            "field size `name` of `Person`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -348,11 +362,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__Person__age() };
         check_same(offset_of!(Person, age) as u64, ctest_field_offset,
-            "field offset age of Person");
+            "field offset `age` of `Person`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__Person__age() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size age of Person");
+            "field size `age` of `Person`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -374,11 +388,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__Person__job() };
         check_same(offset_of!(Person, job) as u64, ctest_field_offset,
-            "field offset job of Person");
+            "field offset `job` of `Person`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__Person__job() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size job of Person");
+            "field size `job` of `Person`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -400,11 +414,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__Person__favorite_color() };
         check_same(offset_of!(Person, favorite_color) as u64, ctest_field_offset,
-            "field offset favorite_color of Person");
+            "field offset `favorite_color` of `Person`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__Person__favorite_color() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size favorite_color of Person");
+            "field size `favorite_color` of `Person`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -426,11 +440,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__Word__word() };
         check_same(offset_of!(Word, word) as u64, ctest_field_offset,
-            "field offset word of Word");
+            "field offset `word` of `Word`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__Word__word() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size word of Word");
+            "field size `word` of `Word`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -452,11 +466,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__Word__byte() };
         check_same(offset_of!(Word, byte) as u64, ctest_field_offset,
-            "field offset byte of Word");
+            "field offset `byte` of `Word`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__Word__byte() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size byte of Word");
+            "field size `byte` of `Word`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -474,7 +488,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__Person__name(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type name of Person");
+            "field pointer access `name` of `Person`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -492,7 +506,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__Person__age(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type age of Person");
+            "field pointer access `age` of `Person`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -510,7 +524,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__Person__job(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type job of Person");
+            "field pointer access `job` of `Person`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -528,7 +542,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__Person__favorite_color(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type favorite_color of Person");
+            "field pointer access `favorite_color` of `Person`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -546,7 +560,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__Word__word(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type word of Word");
+            "field pointer access `word` of `Word`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -564,7 +578,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__Word__byte(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type byte of Word");
+            "field pointer access `byte` of `Word`");
     }
 
     /// Generates a padding map for a specific type.
@@ -642,7 +656,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of Byte is {c_size} in C and {SIZE} in Rust\n",
+                "size of `Byte` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -658,7 +672,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"Byte\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `Byte` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -670,7 +684,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"Byte\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `Byte` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -752,7 +766,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of volatile_char is {c_size} in C and {SIZE} in Rust\n",
+                "size of `volatile_char` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -768,7 +782,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"volatile_char\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `volatile_char` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -780,7 +794,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"volatile_char\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `volatile_char` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -862,7 +876,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of enum Color is {c_size} in C and {SIZE} in Rust\n",
+                "size of `enum Color` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -878,7 +892,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"Color\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `Color` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -890,7 +904,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"Color\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `Color` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -1000,7 +1014,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of struct Person is {c_size} in C and {SIZE} in Rust\n",
+                "size of `struct Person` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -1016,7 +1030,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"Person\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `Person` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -1028,7 +1042,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"Person\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `Person` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -1124,7 +1138,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of union Word is {c_size} in C and {SIZE} in Rust\n",
+                "size of `union Word` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -1140,7 +1154,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"Word\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `Word` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -1152,7 +1166,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"Word\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `Word` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -1166,7 +1180,7 @@ mod generated_tests {
         }
         let actual = unsafe { ctest_foreign_fn__calloc() } as u64;
         let expected = calloc as u64;
-        check_same(actual, expected, "calloc function pointer");
+        check_same(actual, expected, "`calloc` function pointer");
     }
 
     // Tests if the pointer to the static variable matches in both Rust and C.
@@ -1178,7 +1192,7 @@ mod generated_tests {
         let expected = unsafe {
             ctest_static__byte().addr()
         };
-        check_same(actual, expected, "byte static");
+        check_same(actual, expected, "`byte` static");
     }
 }
 
