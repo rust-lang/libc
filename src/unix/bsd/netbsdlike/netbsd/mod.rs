@@ -712,6 +712,7 @@ s! {
         pub fae: *mut posix_spawn_file_actions_entry_t,
     }
 
+    #[deprecated(note = "obsolete upstream")]
     pub struct ptrace_lwpinfo {
         pub pl_lwpid: lwpid_t,
         pub pl_event: c_int,
@@ -1796,8 +1797,11 @@ pub const TIME_ERROR: c_int = 5;
 pub const LITTLE_ENDIAN: c_int = 1234;
 pub const BIG_ENDIAN: c_int = 4321;
 
+#[deprecated(note = "obsolete upstream")]
 pub const PL_EVENT_NONE: c_int = 0;
+#[deprecated(note = "obsolete upstream")]
 pub const PL_EVENT_SIGNAL: c_int = 1;
+#[deprecated(note = "obsolete upstream")]
 pub const PL_EVENT_SUSPENDED: c_int = 2;
 
 cfg_if! {
@@ -2180,6 +2184,7 @@ pub const SIGSTKSZ: size_t = 40960;
 pub const REG_ILLSEQ: c_int = 17;
 
 pub const PT_DUMPCORE: c_int = 12;
+#[deprecated(note = "obsolete operation")]
 pub const PT_LWPINFO: c_int = 13;
 pub const PT_SYSCALL: c_int = 14;
 pub const PT_SYSCALLEMU: c_int = 15;
