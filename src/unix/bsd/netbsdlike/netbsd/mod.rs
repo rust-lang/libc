@@ -300,8 +300,7 @@ s! {
         pub flags: u32,
         pub fflags: u32,
         pub data: i64,
-        // FIXME(netbsd): NetBSD 10.0 will finally have same layout as other BSD
-        pub udata: intptr_t,
+        pub udata: *mut c_void,
     }
 
     pub struct dqblk {
