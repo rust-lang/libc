@@ -394,7 +394,7 @@ s! {
         pub cr_unused: c_ushort,
         pub cr_uid: crate::uid_t,
         pub cr_gid: crate::gid_t,
-        pub cr_ngroups: c_int,
+        pub cr_ngroups: c_short,
         pub cr_groups: [crate::gid_t; NGROUPS_MAX as usize],
     }
 
