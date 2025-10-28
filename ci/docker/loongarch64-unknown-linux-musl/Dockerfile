@@ -1,8 +1,17 @@
 FROM ubuntu:25.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl gcc gcc-14-loongarch64-linux-gnu git libc6-dev \
-    make qemu-user xz-utils patch rsync
+    ca-certificates \
+    curl \
+    gcc \
+    gcc-14-loongarch64-linux-gnu \
+    git \
+    libc6-dev \
+    make \
+    patch \
+    qemu-user \
+    rsync \
+    xz-utils
 
 COPY install-musl.sh /
 RUN /install-musl.sh loongarch64

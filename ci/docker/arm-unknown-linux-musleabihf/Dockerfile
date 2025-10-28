@@ -4,8 +4,17 @@ FROM ubuntu:23.10
 RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         /etc/apt/sources.list && \
     apt-get update && apt-get install -y --no-install-recommends \
-        gcc make libc6-dev git curl ca-certificates \
-        gcc-arm-linux-gnueabihf qemu-user xz-utils patch rsync
+        ca-certificates \
+        curl \
+        gcc \
+        gcc-arm-linux-gnueabihf \
+        git \
+        libc6-dev \
+        make \
+        patch \
+        qemu-user \
+        rsync \
+        xz-utils
 
 COPY install-musl.sh /
 RUN /install-musl.sh arm
