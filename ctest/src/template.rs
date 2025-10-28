@@ -576,7 +576,6 @@ fn static_test_ident(ident: &str) -> BoxStr {
 /// Wrap methods that depend on both ffi items and the generator.
 pub(crate) struct TranslateHelper<'a> {
     filtered_ffi_items: FfiItems,
-    ffi_items: &'a FfiItems,
     generator: &'a TestGenerator,
     translator: Translator<'a>,
 }
@@ -584,10 +583,8 @@ pub(crate) struct TranslateHelper<'a> {
 impl<'a> TranslateHelper<'a> {
     /// Create a new translation helper.
     pub(crate) fn new(ffi_items: &'a FfiItems, generator: &'a TestGenerator) -> Self {
-        let filtered_ffi_items = ffi_items.clone();
         let mut helper = Self {
-            filtered_ffi_items,
-            ffi_items,
+            filtered_ffi_items: ffi_items.clone(),
             generator,
             translator: Translator::new(ffi_items, generator),
         };
@@ -697,15 +694,7 @@ impl<'a> TranslateHelper<'a> {
             )
         })?;
 
-        let item = if self.ffi_items.contains_struct(&ty) {
-            MapInput::StructType(&ty)
-        } else if self.ffi_items.contains_union(ident) {
-            MapInput::UnionType(&ty)
-        } else if self.generator.c_enums.iter().any(|f| f(&ty)) {
-            MapInput::CEnumType(&ty)
-        } else {
-            MapInput::Type(&ty)
-        };
+        let item = self.translator.map_rust_name_to_c(&ty);
 
         Ok(self.generator.rty_to_cty(item))
     }

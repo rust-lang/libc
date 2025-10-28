@@ -349,6 +349,32 @@ mod generated_tests {
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
+    pub fn ctest_field_size_offset_Person_favorite_color() {
+        extern "C" {
+            fn ctest_offset_of__Person__favorite_color() -> u64;
+            fn ctest_size_of__Person__favorite_color() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        // SAFETY: we assume the field access doesn't wrap
+        let ty_ptr = unsafe { &raw const (*uninit_ty).favorite_color   };
+        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
+        // test should be skipped.
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_offset = unsafe { ctest_offset_of__Person__favorite_color() };
+        check_same(offset_of!(Person, favorite_color) as u64, ctest_field_offset,
+            "field offset favorite_color of Person");
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_size = unsafe { ctest_size_of__Person__favorite_color() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size favorite_color of Person");
+    }
+
+    /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn ctest_field_size_offset_Word_word() {
         extern "C" {
             fn ctest_offset_of__Word__word() -> u64;
@@ -452,6 +478,24 @@ mod generated_tests {
         let ctest_field_ptr = unsafe { ctest_field_ptr__Person__job(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
             "field type job of Person");
+    }
+
+    /// Tests if the pointer to the field is the same in Rust and C.
+    pub fn ctest_field_ptr_Person_favorite_color() {
+        extern "C" {
+            fn ctest_field_ptr__Person__favorite_color(a: *const Person) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<Person>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).favorite_color) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__Person__favorite_color(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field type favorite_color of Person");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -720,7 +764,7 @@ mod generated_tests {
     /// if there are no fields, then everything is padding, if there are fields, then we have to
     /// go through each field and figure out the padding.
     fn roundtrip_padding__Person() -> Vec<bool> {
-        if 3 == 0 {
+        if 4 == 0 {
             // FIXME(ctest): What if it's an alias to a struct/union?
             return vec![!false; size_of::<Person>()]
         }
@@ -752,6 +796,13 @@ mod generated_tests {
 
         let size = size_of_val(&val);
         let off = offset_of!(Person, job);
+        v.push((off, size));
+
+        let ty_ptr = unsafe { &raw const ((*bar).favorite_color) };
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        let size = size_of_val(&val);
+        let off = offset_of!(Person, favorite_color);
         v.push((off, size));
         // This vector contains `true` if the byte is padding and `false` if the byte is not
         // padding. Initialize all bytes as:
@@ -1007,11 +1058,11 @@ fn main() {
 // FIXME(ctest): Maybe consider running the tests in parallel, since everything is independent
 // and we already use atomics.
 fn run_all() {
-    ctest_const_cstr_A();
-    ctest_const_cstr_B();
     ctest_const_RED();
     ctest_const_BLUE();
     ctest_const_GREEN();
+    ctest_const_cstr_A();
+    ctest_const_cstr_B();
     ctest_size_align_Byte();
     ctest_size_align_gregset_t();
     ctest_size_align_Color();
@@ -1021,11 +1072,13 @@ fn run_all() {
     ctest_field_size_offset_Person_name();
     ctest_field_size_offset_Person_age();
     ctest_field_size_offset_Person_job();
+    ctest_field_size_offset_Person_favorite_color();
     ctest_field_size_offset_Word_word();
     ctest_field_size_offset_Word_byte();
     ctest_field_ptr_Person_name();
     ctest_field_ptr_Person_age();
     ctest_field_ptr_Person_job();
+    ctest_field_ptr_Person_favorite_color();
     ctest_field_ptr_Word_word();
     ctest_field_ptr_Word_byte();
     ctest_roundtrip_Byte();
