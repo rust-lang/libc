@@ -8,7 +8,7 @@
 
 #if defined(__cplusplus)
     #define CTEST_ALIGNOF(T) alignof(T)
-    #define CTEST_EXTERN extern "C" 
+    #define CTEST_EXTERN extern "C"
 #else
     #define CTEST_ALIGNOF(T) _Alignof(T)
     #define CTEST_EXTERN
@@ -63,6 +63,12 @@ CTEST_EXTERN uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 CTEST_EXTERN uint64_t ctest_align_of__Byte(void) { return CTEST_ALIGNOF(Byte); }
 
 // Return the size of a type.
+CTEST_EXTERN uint64_t ctest_size_of__volatile_char(void) { return sizeof(volatile_char); }
+
+// Return the alignment of a type.
+CTEST_EXTERN uint64_t ctest_align_of__volatile_char(void) { return CTEST_ALIGNOF(volatile_char); }
+
+// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__gregset_t(void) { return sizeof(gregset_t); }
 
 // Return the alignment of a type.
@@ -90,6 +96,13 @@ CTEST_EXTERN uint64_t ctest_align_of__Word(void) { return CTEST_ALIGNOF(union Wo
 // Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
 CTEST_EXTERN uint32_t ctest_signededness_of__Byte(void) {
     Byte all_ones = (Byte) -1;
+    return all_ones < 0;
+}
+
+// Return `1` if the type is signed, otherwise return `0`.
+// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+CTEST_EXTERN uint32_t ctest_signededness_of__volatile_char(void) {
+    volatile_char all_ones = (volatile_char) -1;
     return all_ones < 0;
 }
 
@@ -208,9 +221,15 @@ ctest_field_ptr__Word__byte(union Word *b) {
 }
 
 #ifdef _MSC_VER
-// Disable signed/unsigned conversion warnings on MSVC.
-// These trigger even if the conversion is explicit.
-#  pragma warning(disable:4365)
+    // Disable signed/unsigned conversion warnings on MSVC.
+    // These trigger even if the conversion is explicit.
+    #pragma warning(disable:4365)
+#endif
+
+#ifdef __GNUC__
+    // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
@@ -222,6 +241,33 @@ CTEST_EXTERN Byte ctest_roundtrip__Byte(
     uint8_t value_bytes[sizeof(Byte)]
 ) {
     int size = (int)sizeof(Byte);
+    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+    // Otherwise the Rust side would not be able to see it.
+    volatile uint8_t* p = (volatile uint8_t*)&value;
+    int i = 0;
+    for (i = 0; i < size; ++i) {
+        // We skip padding bytes in both Rust and C because writing to it is undefined.
+        // Instead we just make sure the the placement of the padding bytes remains the same.
+        if (is_padding_byte[i]) { continue; }
+        value_bytes[i] = p[i];
+        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
+        d = d == 0 ? 42: d;
+        p[i] = d;
+    }
+    return value;
+}
+
+// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+// remains unchanged.
+// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+CTEST_EXTERN volatile_char ctest_roundtrip__volatile_char(
+    volatile_char value,
+    const uint8_t is_padding_byte[sizeof(volatile_char)],
+    uint8_t value_bytes[sizeof(volatile_char)]
+) {
+    int size = (int)sizeof(volatile_char);
     // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
     // Otherwise the Rust side would not be able to see it.
     volatile uint8_t* p = (volatile uint8_t*)&value;
@@ -321,14 +367,20 @@ CTEST_EXTERN union Word ctest_roundtrip__Word(
     return value;
 }
 
-#ifdef _MSC_VER
-#  pragma warning(default:4365)
+#ifdef __GNUC__
+    // Pop allow for `-Wignored-qualifiers`
+    #pragma GCC diagnostic pop
 #endif
 
 #ifdef _MSC_VER
-// Disable function pointer type conversion warnings on MSVC.
-// The conversion may fail only if we call that function, however we only check its address.
-#  pragma warning(disable:4191)
+    // Pop allow for 4365
+    #pragma warning(default:4365)
+#endif
+
+#ifdef _MSC_VER
+    // Disable function pointer type conversion warnings on MSVC.
+    // The conversion may fail only if we call that function, however we only check its address.
+    #pragma warning(disable:4191)
 #endif
 
 // Return a function pointer.
@@ -337,7 +389,8 @@ CTEST_EXTERN ctest_void_func ctest_foreign_fn__calloc(void) {
 }
 
 #ifdef _MSC_VER
-#  pragma warning(default:4191)
+    // Pop allow for 4191
+    #pragma warning(default:4191)
 #endif
 
 // Return a pointer to the static variable content.

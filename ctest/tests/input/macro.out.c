@@ -11,7 +11,7 @@
 
 #if defined(__cplusplus)
     #define CTEST_ALIGNOF(T) alignof(T)
-    #define CTEST_EXTERN extern "C" 
+    #define CTEST_EXTERN extern "C"
 #else
     #define CTEST_ALIGNOF(T) _Alignof(T)
     #define CTEST_EXTERN
@@ -108,9 +108,15 @@ ctest_field_ptr__VecU16__y(struct VecU16 *b) {
 }
 
 #ifdef _MSC_VER
-// Disable signed/unsigned conversion warnings on MSVC.
-// These trigger even if the conversion is explicit.
-#  pragma warning(disable:4365)
+    // Disable signed/unsigned conversion warnings on MSVC.
+    // These trigger even if the conversion is explicit.
+    #pragma warning(disable:4365)
+#endif
+
+#ifdef __GNUC__
+    // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
@@ -167,16 +173,23 @@ CTEST_EXTERN struct VecU16 ctest_roundtrip__VecU16(
     return value;
 }
 
-#ifdef _MSC_VER
-#  pragma warning(default:4365)
+#ifdef __GNUC__
+    // Pop allow for `-Wignored-qualifiers`
+    #pragma GCC diagnostic pop
 #endif
 
 #ifdef _MSC_VER
-// Disable function pointer type conversion warnings on MSVC.
-// The conversion may fail only if we call that function, however we only check its address.
-#  pragma warning(disable:4191)
+    // Pop allow for 4365
+    #pragma warning(default:4365)
 #endif
 
 #ifdef _MSC_VER
-#  pragma warning(default:4191)
+    // Disable function pointer type conversion warnings on MSVC.
+    // The conversion may fail only if we call that function, however we only check its address.
+    #pragma warning(disable:4191)
+#endif
+
+#ifdef _MSC_VER
+    // Pop allow for 4191
+    #pragma warning(default:4191)
 #endif

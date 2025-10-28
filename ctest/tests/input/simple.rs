@@ -2,6 +2,8 @@ use std::ffi::{c_char, c_int, c_ulong, c_void};
 
 pub type Byte = u8;
 
+pub type volatile_char = c_char;
+
 // This should be automatically skipped for roundtripping.
 pub type gregset_t = [c_ulong; 32];
 

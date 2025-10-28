@@ -6,6 +6,8 @@ typedef unsigned long gregset_t[32];
 
 Byte byte = 0x42;
 
+typedef volatile char volatile_char;
+
 enum Color
 {
     RED,
