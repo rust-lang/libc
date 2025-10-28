@@ -103,8 +103,8 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
 
 #ifdef __GNUC__
     // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wignored-qualifiers"
+    // #pragma GCC diagnostic push
+    // #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
 {%- for item in ctx.roundtrip_tests +%}
@@ -140,7 +140,7 @@ CTEST_EXTERN {{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
 
 #ifdef __GNUC__
     // Pop allow for `-Wignored-qualifiers`
-    #pragma GCC diagnostic pop
+    // #pragma GCC diagnostic pop
 #endif
 
 #ifdef _MSC_VER

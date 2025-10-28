@@ -45,8 +45,8 @@ CTEST_EXTERN uint32_t ctest_signededness_of__in6_addr(void) {
 
 #ifdef __GNUC__
     // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wignored-qualifiers"
+    // #pragma GCC diagnostic push
+    // #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
@@ -78,7 +78,7 @@ CTEST_EXTERN in6_addr ctest_roundtrip__in6_addr(
 
 #ifdef __GNUC__
     // Pop allow for `-Wignored-qualifiers`
-    #pragma GCC diagnostic pop
+    // #pragma GCC diagnostic pop
 #endif
 
 #ifdef _MSC_VER

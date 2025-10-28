@@ -115,8 +115,8 @@ ctest_field_ptr__VecU16__y(struct VecU16 *b) {
 
 #ifdef __GNUC__
     // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wignored-qualifiers"
+    // #pragma GCC diagnostic push
+    // #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
 // Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
@@ -175,7 +175,7 @@ CTEST_EXTERN struct VecU16 ctest_roundtrip__VecU16(
 
 #ifdef __GNUC__
     // Pop allow for `-Wignored-qualifiers`
-    #pragma GCC diagnostic pop
+    // #pragma GCC diagnostic pop
 #endif
 
 #ifdef _MSC_VER
