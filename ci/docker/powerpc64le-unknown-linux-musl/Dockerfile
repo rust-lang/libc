@@ -1,8 +1,17 @@
 FROM ubuntu:25.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  gcc make libc6-dev git curl ca-certificates \
-  gcc-powerpc64le-linux-gnu qemu-user xz-utils patch rsync
+    ca-certificates \
+    curl \
+    gcc \
+    gcc-powerpc64le-linux-gnu \
+    git \
+    libc6-dev \
+    make \
+    patch \
+    qemu-user \
+    rsync \
+    xz-utils
 
 COPY install-musl.sh /
 RUN /install-musl.sh powerpc64le

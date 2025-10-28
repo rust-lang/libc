@@ -5,8 +5,16 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         /etc/apt/sources.list && \
     dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y --no-install-recommends \
-        gcc-multilib make libc6-dev git curl ca-certificates libc6-i386 \
-        xz-utils patch rsync
+        ca-certificates \
+        curl \
+        gcc-multilib \
+        git \
+        libc6-dev \
+        libc6-i386 \
+        make \
+        patch \
+        rsync \
+        xz-utils
 
 COPY install-musl.sh /
 RUN /install-musl.sh i686
