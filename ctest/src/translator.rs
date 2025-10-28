@@ -234,13 +234,7 @@ impl<'a> Translator<'a> {
         }
 
         let name = last.ident.to_string();
-        let item = if self.ffi_items.contains_struct(&name) {
-            MapInput::StructType(&name)
-        } else if self.ffi_items.contains_union(&name) {
-            MapInput::UnionType(&name)
-        } else {
-            MapInput::Type(&name)
-        };
+        let item = self.map_rust_name_to_c(&name);
 
         Ok(cdecl::named(
             &self.generator.rty_to_cty(item),
@@ -285,6 +279,18 @@ impl<'a> Translator<'a> {
                 }
             }
             _ => false,
+        }
+    }
+
+    pub(crate) fn map_rust_name_to_c<'name>(&self, name: &'name str) -> MapInput<'name> {
+        if self.ffi_items.contains_struct(name) {
+            MapInput::StructType(name)
+        } else if self.ffi_items.contains_union(name) {
+            MapInput::UnionType(name)
+        } else if self.generator.c_enums.iter().any(|f| f(name)) {
+            MapInput::CEnumType(name)
+        } else {
+            MapInput::Type(name)
         }
     }
 }

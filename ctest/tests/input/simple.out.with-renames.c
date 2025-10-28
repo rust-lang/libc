@@ -124,6 +124,16 @@ CTEST_EXTERN uint64_t ctest_size_of__Person__job(void) {
 }
 
 // Return the offset of a struct/union field.
+CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
+    return offsetof(struct Person, favorite_color);
+}
+
+// Return the size of a struct/union field.
+CTEST_EXTERN uint64_t ctest_size_of__Person__favorite_color(void) {
+    return sizeof(((struct Person){}).favorite_color);
+}
+
+// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
     return offsetof(union Word, word);
 }
@@ -168,6 +178,15 @@ typedef void (**ctest_field_ty__Person__job)(uint8_t, const char *);
 CTEST_EXTERN ctest_field_ty__Person__job
 ctest_field_ptr__Person__job(struct Person *b) {
     return &b->job;
+}
+
+// Return a pointer to a struct/union field.
+// This field can have a normal data type, or it could be a function pointer or an array, which
+// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+typedef enum Color *ctest_field_ty__Person__favorite_color;
+CTEST_EXTERN ctest_field_ty__Person__favorite_color
+ctest_field_ptr__Person__favorite_color(struct Person *b) {
+    return &b->favorite_color;
 }
 
 // Return a pointer to a struct/union field.

@@ -6,11 +6,19 @@ typedef unsigned long gregset_t[32];
 
 Byte byte = 0x42;
 
+enum Color
+{
+    RED,
+    BLUE,
+    GREEN
+};
+
 struct Person
 {
     const char *name;
     uint8_t age;
     void (*job)(uint8_t, const char *);
+    enum Color favorite_color;
 };
 
 union Word
@@ -21,13 +29,6 @@ union Word
 
 #define A "abc"
 #define C_B "bac"
-
-enum Color
-{
-    RED,
-    BLUE,
-    GREEN
-};
 
 extern void *calloc(size_t num, size_t size);
 extern Byte byte;
