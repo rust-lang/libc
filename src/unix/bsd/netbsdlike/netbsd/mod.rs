@@ -13,7 +13,6 @@ pub type fsfilcnt_t = u64;
 pub type idtype_t = c_int;
 pub type mqd_t = c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
-pub type vm_size_t = crate::uintptr_t; // FIXME(deprecated): deprecated since long time
 pub type lwpid_t = c_uint;
 pub type shmatt_t = c_uint;
 pub type cpuid_t = c_ulong;
