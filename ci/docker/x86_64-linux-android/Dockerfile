@@ -1,13 +1,12 @@
 FROM ubuntu:25.04
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-  ca-certificates \
-  wget \
-  gcc \
-  libc-dev \
-  python3 \
-  unzip
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gcc \
+    libc-dev \
+    python3 \
+    unzip \
+    wget
 
 WORKDIR /android/
 ENV ANDROID_ARCH=x86_64
