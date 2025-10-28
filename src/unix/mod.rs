@@ -351,7 +351,11 @@ cfg_if! {
 pub const FNM_NOMATCH: c_int = 1;
 
 cfg_if! {
-    if #[cfg(any(target_os = "illumos", target_os = "solaris",))] {
+    if #[cfg(any(
+        target_os = "illumos",
+        target_os = "solaris",
+        target_os = "netbsd"
+    ))] {
         pub const FNM_CASEFOLD: c_int = 1 << 3;
     } else if #[cfg(not(target_os = "aix"))] {
         pub const FNM_CASEFOLD: c_int = 1 << 4;
@@ -365,6 +369,7 @@ cfg_if! {
         target_os = "android",
         target_os = "openbsd",
         target_os = "cygwin",
+        target_os = "netbsd",
     ))] {
         pub const FNM_PATHNAME: c_int = 1 << 1;
     } else {
@@ -378,6 +383,7 @@ cfg_if! {
         target_os = "freebsd",
         target_os = "android",
         target_os = "openbsd",
+        target_os = "netbsd",
     ))] {
         pub const FNM_NOESCAPE: c_int = 1 << 0;
     } else if #[cfg(target_os = "nto")] {
