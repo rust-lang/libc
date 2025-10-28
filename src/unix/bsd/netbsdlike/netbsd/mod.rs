@@ -80,7 +80,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
-            __pad1: c_int,
+            __pad1: Padding<c_int>,
             _pid: crate::pid_t,
         }
         (*(self as *const siginfo_t as *const siginfo_timer))._pid
@@ -92,7 +92,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
-            __pad1: c_int,
+            __pad1: Padding<c_int>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
         }
@@ -105,7 +105,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
-            __pad1: c_int,
+            __pad1: Padding<c_int>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
             value: crate::sigval,
@@ -119,7 +119,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
-            __pad1: c_int,
+            __pad1: Padding<c_int>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
             _value: crate::sigval,
@@ -152,13 +152,13 @@ s! {
         pub gl_flags: c_int,
         pub gl_pathv: *mut *mut c_char,
 
-        __unused3: *mut c_void,
+        __unused3: Padding<*mut c_void>,
 
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
-        __unused6: *mut c_void,
-        __unused7: *mut c_void,
-        __unused8: *mut c_void,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
+        __unused6: Padding<*mut c_void>,
+        __unused7: Padding<*mut c_void>,
+        __unused8: Padding<*mut c_void>,
     }
 
     pub struct mq_attr {
@@ -216,9 +216,9 @@ s! {
         pub si_signo: c_int,
         pub si_code: c_int,
         pub si_errno: c_int,
-        __pad1: c_int,
+        __pad1: Padding<c_int>,
         pub si_addr: *mut c_void,
-        __pad2: [u64; 13],
+        __pad2: Padding<[u64; 13]>,
     }
 
     pub struct pthread_attr_t {
@@ -236,7 +236,7 @@ s! {
             target_arch = "x86",
             target_arch = "x86_64"
         ))]
-        ptm_pad1: [u8; 3],
+        ptm_pad1: Padding<[u8; 3]>,
         // actually a union with a non-unused, 0-initialized field
         ptm_unused: __pthread_spin_t,
         #[cfg(any(
@@ -245,7 +245,7 @@ s! {
             target_arch = "x86",
             target_arch = "x86_64"
         ))]
-        ptm_pad2: [u8; 3],
+        ptm_pad2: Padding<[u8; 3]>,
         ptm_owner: crate::pthread_t,
         ptm_waiters: *mut u8,
         ptm_recursed: c_uint,
@@ -645,8 +645,8 @@ s! {
         pub l_priority: u8,
         pub l_usrpri: u8,
         pub l_stat: i8,
-        l_pad1: i8,
-        l_pad2: i32,
+        l_pad1: Padding<i8>,
+        l_pad2: Padding<i32>,
         pub l_wmesg: [c_char; KI_WMESGLEN as usize],
         pub l_wchan: u64,
         pub l_cpuid: u64,
@@ -891,16 +891,16 @@ s_no_extra_traits! {
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: crate::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: i64,
-        __ss_pad3: [u8; 112],
+        __ss_pad1: Padding<[u8; 6]>,
+        __ss_pad2: Padding<i64>,
+        __ss_pad3: Padding<[u8; 112]>,
     }
 
     pub struct sigevent {
         pub sigev_notify: c_int,
         pub sigev_signo: c_int,
         pub sigev_value: crate::sigval,
-        __unused1: *mut c_void, //actually a function pointer
+        __unused1: Padding<*mut c_void>, //actually a function pointer
         pub sigev_notify_attributes: *mut c_void,
     }
 

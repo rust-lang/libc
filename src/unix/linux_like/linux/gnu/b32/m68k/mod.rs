@@ -57,21 +57,21 @@ s! {
         pub cgid: crate::gid_t,
         pub mode: crate::mode_t,
         __seq: c_ushort,
-        __pad1: c_ushort,
+        __pad1: Padding<c_ushort>,
         __glibc_reserved1: c_ulong,
         __glibc_reserved2: c_ulong,
     }
 
     pub struct stat64 {
         pub st_dev: crate::dev_t,
-        __pad1: c_ushort,
+        __pad1: Padding<c_ushort>,
         pub __st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        __pad2: c_ushort,
+        __pad2: Padding<c_ushort>,
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt64_t,
@@ -152,7 +152,7 @@ s! {
         pub si_signo: c_int,
         pub si_code: c_int,
         pub si_errno: c_int,
-        _pad: [c_int; 29],
+        _pad: Padding<[c_int; 29]>,
         _align: [usize; 0],
     }
 
