@@ -882,7 +882,7 @@ s_no_extra_traits! {
         pub f_namemax: c_ulong,
         pub f_owner: crate::uid_t,
 
-        pub f_spare: [u32; 4],
+        pub f_spare: [u64; 4],
 
         pub f_fstypename: [c_char; 32],
         pub f_mntonname: [c_char; 1024],
