@@ -8,7 +8,7 @@ mod generated_tests {
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
     use std::ffi::{CStr, c_int, c_char, c_uint};
-    use std::fmt::{Debug, LowerHex};
+    use std::fmt::{Debug, Write};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
@@ -32,17 +32,37 @@ mod generated_tests {
         }
     }
 
-    /// Check that the value returned from the Rust and C side in a certain test is equivalent.
-    ///
-    /// Internally it will remember which checks failed and how many tests have been run. This
-    /// method is the same as `check_same` but prints errors in bytes in hex.
-    fn check_same_hex<T: PartialEq + LowerHex + Debug>(rust: T, c: T, attr: &str) {
-        if rust != c {
-            eprintln!("bad {attr}: rust: {rust:?} ({rust:#x}) != c {c:?} ({c:#x})");
-            FAILED.store(true, Ordering::Relaxed);
-        } else {
+    fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
+        if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
+            return;
         }
+
+        FAILED.store(true, Ordering::Relaxed);
+        // Buffer to a string so we don't write individual bytes to stdio
+        let mut s = String::new();
+        if rust.len() == c.len() {
+            for (i, (&rb, &cb)) in rust.iter().zip(c.iter()).enumerate() {
+                if rb != cb {
+                    writeln!(
+                        s, "bad {attr} at byte {i}: rust: {rb:?} ({rb:#x}) != c {cb:?} ({cb:#x})"
+                    ).unwrap();
+                    break;
+                }
+            }
+        } else {
+            writeln!(s, "bad {attr}: rust len {} != c len {}", rust.len(), c.len()).unwrap();
+        }
+
+        write!(s, "    rust bytes:").unwrap();
+        for b in rust {
+            write!(s, " {b:02x}").unwrap();
+        }
+        write!(s, "\n    c bytes:   ").unwrap();
+        for b in c {
+            write!(s, " {b:02x}").unwrap();
+        }
+        eprintln!("{s}");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -58,8 +78,8 @@ mod generated_tests {
         let rust_align = align_of::<VecU8>() as u64;
         let c_align = unsafe { ctest_align_of__VecU8() };
 
-        check_same(rust_size, c_size, "VecU8 size");
-        check_same(rust_align, c_align, "VecU8 align");
+        check_same(rust_size, c_size, "`VecU8` size");
+        check_same(rust_align, c_align, "`VecU8` align");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -75,8 +95,8 @@ mod generated_tests {
         let rust_align = align_of::<VecU16>() as u64;
         let c_align = unsafe { ctest_align_of__VecU16() };
 
-        check_same(rust_size, c_size, "VecU16 size");
-        check_same(rust_align, c_align, "VecU16 align");
+        check_same(rust_size, c_size, "`VecU16` size");
+        check_same(rust_align, c_align, "`VecU16` align");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -98,11 +118,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__VecU8__x() };
         check_same(offset_of!(VecU8, x) as u64, ctest_field_offset,
-            "field offset x of VecU8");
+            "field offset `x` of `VecU8`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__VecU8__x() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size x of VecU8");
+            "field size `x` of `VecU8`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -124,11 +144,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__VecU8__y() };
         check_same(offset_of!(VecU8, y) as u64, ctest_field_offset,
-            "field offset y of VecU8");
+            "field offset `y` of `VecU8`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__VecU8__y() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size y of VecU8");
+            "field size `y` of `VecU8`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -150,11 +170,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__VecU16__x() };
         check_same(offset_of!(VecU16, x) as u64, ctest_field_offset,
-            "field offset x of VecU16");
+            "field offset `x` of `VecU16`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__VecU16__x() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size x of VecU16");
+            "field size `x` of `VecU16`");
     }
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
@@ -176,11 +196,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__VecU16__y() };
         check_same(offset_of!(VecU16, y) as u64, ctest_field_offset,
-            "field offset y of VecU16");
+            "field offset `y` of `VecU16`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__VecU16__y() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size y of VecU16");
+            "field size `y` of `VecU16`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -198,7 +218,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__VecU8__x(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type x of VecU8");
+            "field pointer access `x` of `VecU8`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -216,7 +236,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__VecU8__y(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type y of VecU8");
+            "field pointer access `y` of `VecU8`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -234,7 +254,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__VecU16__x(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type x of VecU16");
+            "field pointer access `x` of `VecU16`");
     }
 
     /// Tests if the pointer to the field is the same in Rust and C.
@@ -252,7 +272,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__VecU16__y(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type y of VecU16");
+            "field pointer access `y` of `VecU16`");
     }
 
     /// Generates a padding map for a specific type.
@@ -344,7 +364,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of struct VecU8 is {c_size} in C and {SIZE} in Rust\n",
+                "size of `struct VecU8` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -360,7 +380,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"VecU8\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `VecU8` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -372,7 +392,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"VecU8\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `VecU8` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -468,7 +488,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of struct VecU16 is {c_size} in C and {SIZE} in Rust\n",
+                "size of `struct VecU16` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -484,7 +504,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"VecU16\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `VecU16` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -496,7 +516,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"VecU16\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `VecU16` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }

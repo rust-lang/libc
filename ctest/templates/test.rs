@@ -11,7 +11,7 @@ mod generated_tests {
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
     use std::ffi::{CStr, c_int, c_char, c_uint};
-    use std::fmt::{Debug, LowerHex};
+    use std::fmt::{Debug, Write};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
@@ -35,17 +35,37 @@ mod generated_tests {
         }
     }
 
-    /// Check that the value returned from the Rust and C side in a certain test is equivalent.
-    ///
-    /// Internally it will remember which checks failed and how many tests have been run. This
-    /// method is the same as `check_same` but prints errors in bytes in hex.
-    fn check_same_hex<T: PartialEq + LowerHex + Debug>(rust: T, c: T, attr: &str) {
-        if rust != c {
-            eprintln!("bad {attr}: rust: {rust:?} ({rust:#x}) != c {c:?} ({c:#x})");
-            FAILED.store(true, Ordering::Relaxed);
-        } else {
+    fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
+        if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
+            return;
         }
+
+        FAILED.store(true, Ordering::Relaxed);
+        // Buffer to a string so we don't write individual bytes to stdio
+        let mut s = String::new();
+        if rust.len() == c.len() {
+            for (i, (&rb, &cb)) in rust.iter().zip(c.iter()).enumerate() {
+                if rb != cb {
+                    writeln!(
+                        s, "bad {attr} at byte {i}: rust: {rb:?} ({rb:#x}) != c {cb:?} ({cb:#x})"
+                    ).unwrap();
+                    break;
+                }
+            }
+        } else {
+            writeln!(s, "bad {attr}: rust len {} != c len {}", rust.len(), c.len()).unwrap();
+        }
+
+        write!(s, "    rust bytes:").unwrap();
+        for b in rust {
+            write!(s, " {b:02x}").unwrap();
+        }
+        write!(s, "\n    c bytes:   ").unwrap();
+        for b in c {
+            write!(s, " {b:02x}").unwrap();
+        }
+        eprintln!("{s}");
     }
 
 {%- for const_cstr in ctx.const_cstr_tests +%}
@@ -60,7 +80,7 @@ mod generated_tests {
         // SAFETY: we assume that `c_char` pointer consts are for C strings.
         let r_val = unsafe {
             let r_ptr: *const c_char = {{ const_cstr.rust_val }};
-            assert!(!r_ptr.is_null(), "const {{ const_cstr.rust_val }} is null");
+            assert!(!r_ptr.is_null(), "const `{{ const_cstr.rust_val }}` is null");
             CStr::from_ptr(r_ptr)
         };
 
@@ -70,7 +90,7 @@ mod generated_tests {
             CStr::from_ptr(c_ptr)
         };
 
-        check_same(r_val, c_val, "const {{ const_cstr.rust_val }} string");
+        check_same(r_val, c_val, "const `{{ const_cstr.rust_val }}` string");
     }
 {%- endfor +%}
 
@@ -97,9 +117,7 @@ mod generated_tests {
             slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
         };
 
-        for (i, (&b1, &b2)) in r_bytes.iter().zip(c_bytes.iter()).enumerate() {
-            check_same_hex(b1, b2, &format!("{{ constant.rust_val }} value at byte {}", i));
-        }
+        check_same_bytes(r_bytes, c_bytes, "`{{ constant.rust_val }}` value");
     }
 {%- endfor +%}
 
@@ -118,8 +136,8 @@ mod generated_tests {
         let rust_align = align_of::<{{ item.rust_ty }}>() as u64;
         let c_align = unsafe { ctest_align_of__{{ item.id }}() };
 
-        check_same(rust_size, c_size, "{{ item.id }} size");
-        check_same(rust_align, c_align, "{{ item.id }} align");
+        check_same(rust_size, c_size, "`{{ item.id }}` size");
+        check_same(rust_align, c_align, "`{{ item.id }}` align");
     }
 {%- endfor +%}
 
@@ -138,7 +156,7 @@ mod generated_tests {
         let all_zeros = 0 as {{ alias.id }};
         let c_is_signed = unsafe { ctest_signededness_of__{{ alias.id }}() };
 
-        check_same((all_ones < all_zeros) as u32, c_is_signed, "{{ alias.id }} signed");
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "`{{ alias.id }}` signed");
     }
 {%- endfor +%}
 
@@ -163,11 +181,11 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_offset = unsafe { ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() };
         check_same(offset_of!({{ item.id }}, {{ item.field.ident() }}) as u64, ctest_field_offset,
-            "field offset {{ item.field.ident() }} of {{ item.id }}");
+            "field offset `{{ item.field.ident() }}` of `{{ item.id }}`");
         // SAFETY: FFI call with no preconditions
         let ctest_field_size = unsafe { ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size {{ item.field.ident() }} of {{ item.id }}");
+            "field size `{{ item.field.ident() }}` of `{{ item.id }}`");
     }
 {%- endfor +%}
 
@@ -188,7 +206,7 @@ mod generated_tests {
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field type {{ item.field.ident() }} of {{ item.id }}");
+            "field pointer access `{{ item.field.ident() }}` of `{{ item.id }}`");
     }
 
 {%- endfor +%}
@@ -279,7 +297,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of {{ item.c_ty }} is {c_size} in C and {SIZE} in Rust\n",
+                "size of `{{ item.c_ty }}` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -295,7 +313,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"{{ item.id }}\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `{{ item.id }}` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -307,7 +325,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"{{ item.id }}\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `{{ item.id }}` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
@@ -324,7 +342,7 @@ mod generated_tests {
         }
         let actual = unsafe { ctest_foreign_fn__{{ item.id }}() } as u64;
         let expected = {{ item.id }} as u64;
-        check_same(actual, expected, "{{ item.id }} function pointer");
+        check_same(actual, expected, "`{{ item.id }}` function pointer");
     }
 {%- endfor +%}
 
@@ -339,7 +357,7 @@ mod generated_tests {
         let expected = unsafe {
             ctest_static__{{ static_.id }}().addr()
         };
-        check_same(actual, expected, "{{ static_.id }} static");
+        check_same(actual, expected, "`{{ static_.id }}` static");
     }
 {%- endfor +%}
 }

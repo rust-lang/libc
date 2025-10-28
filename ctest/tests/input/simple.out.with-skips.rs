@@ -8,7 +8,7 @@ mod generated_tests {
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
     use std::ffi::{CStr, c_int, c_char, c_uint};
-    use std::fmt::{Debug, LowerHex};
+    use std::fmt::{Debug, Write};
     use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
     #[allow(unused_imports)]
     use std::{mem, ptr, slice};
@@ -32,17 +32,37 @@ mod generated_tests {
         }
     }
 
-    /// Check that the value returned from the Rust and C side in a certain test is equivalent.
-    ///
-    /// Internally it will remember which checks failed and how many tests have been run. This
-    /// method is the same as `check_same` but prints errors in bytes in hex.
-    fn check_same_hex<T: PartialEq + LowerHex + Debug>(rust: T, c: T, attr: &str) {
-        if rust != c {
-            eprintln!("bad {attr}: rust: {rust:?} ({rust:#x}) != c {c:?} ({c:#x})");
-            FAILED.store(true, Ordering::Relaxed);
-        } else {
+    fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
+        if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
+            return;
         }
+
+        FAILED.store(true, Ordering::Relaxed);
+        // Buffer to a string so we don't write individual bytes to stdio
+        let mut s = String::new();
+        if rust.len() == c.len() {
+            for (i, (&rb, &cb)) in rust.iter().zip(c.iter()).enumerate() {
+                if rb != cb {
+                    writeln!(
+                        s, "bad {attr} at byte {i}: rust: {rb:?} ({rb:#x}) != c {cb:?} ({cb:#x})"
+                    ).unwrap();
+                    break;
+                }
+            }
+        } else {
+            writeln!(s, "bad {attr}: rust len {} != c len {}", rust.len(), c.len()).unwrap();
+        }
+
+        write!(s, "    rust bytes:").unwrap();
+        for b in rust {
+            write!(s, " {b:02x}").unwrap();
+        }
+        write!(s, "\n    c bytes:   ").unwrap();
+        for b in c {
+            write!(s, " {b:02x}").unwrap();
+        }
+        eprintln!("{s}");
     }
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
@@ -58,8 +78,8 @@ mod generated_tests {
         let rust_align = align_of::<volatile_char>() as u64;
         let c_align = unsafe { ctest_align_of__volatile_char() };
 
-        check_same(rust_size, c_size, "volatile_char size");
-        check_same(rust_align, c_align, "volatile_char align");
+        check_same(rust_size, c_size, "`volatile_char` size");
+        check_same(rust_align, c_align, "`volatile_char` align");
     }
 
     /// Make sure that the signededness of a type alias in Rust and C is the same.
@@ -75,7 +95,7 @@ mod generated_tests {
         let all_zeros = 0 as volatile_char;
         let c_is_signed = unsafe { ctest_signededness_of__volatile_char() };
 
-        check_same((all_ones < all_zeros) as u32, c_is_signed, "volatile_char signed");
+        check_same((all_ones < all_zeros) as u32, c_is_signed, "`volatile_char` signed");
     }
 
     /// Generates a padding map for a specific type.
@@ -153,7 +173,7 @@ mod generated_tests {
         if SIZE != c_size {
             FAILED.store(true, Ordering::Relaxed);
             eprintln!(
-                "size of volatile_char is {c_size} in C and {SIZE} in Rust\n",
+                "size of `volatile_char` is {c_size} in C and {SIZE} in Rust\n",
             );
             return;
         }
@@ -169,7 +189,7 @@ mod generated_tests {
             let rust = unsafe { *input_ptr.add(i) };
             let c = c_value_bytes[i];
             if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust \"volatile_char\" -> C", i, rust, c);
+                eprintln!("rust[{}] = {} != {} (C): Rust `volatile_char` -> C", i, rust, c);
                 FAILED.store(true, Ordering::Relaxed);
             }
         }
@@ -181,7 +201,7 @@ mod generated_tests {
             let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
             if rust != c {
                 eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C \"volatile_char\" -> Rust",
+                    "rust [{i}] = {rust} != {c} (C): C `volatile_char` -> Rust",
                 );
                 FAILED.store(true, Ordering::Relaxed);
             }
