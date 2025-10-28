@@ -261,6 +261,66 @@ jobs:
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
+  test_tier3:
+    name: Test tier3
+    #needs: [test_tier2, style_check]
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: true
+      max-parallel: 12
+      matrix:
+        target:
+          # We test a handful of tier 3 targets that are known to be well-maintained
+          #- mips64-unknown-linux-muslabi64
+          #- powerpc64-unknown-linux-musl
+          #- riscv64gc-unknown-linux-musl
+          - s390x-unknown-linux-musl
+        include:
+          #- target: mips64-unknown-linux-muslabi64
+          #  env:
+          #    RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          #- target: powerpc64-unknown-linux-musl
+          #  env:
+          #    RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          #- target: riscv64gc-unknown-linux-musl
+          #  env:
+          #    RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+          - target: s390x-unknown-linux-musl
+            env:
+              RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1
+    timeout-minutes: 25
+    env:
+      INSTALL_RUST_SRC: 1
+      LIBC_CI_ZBUILD_STD: 1
+      TARGET: ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+      - name: Add matrix env variables to the environment
+        if: matrix.env
+        run: |
+          echo '${{ toJson(matrix.env) }}' |
+            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        shell: bash
+
+      - name: Execute run-docker.sh
+        run: ./ci/run-docker.sh ${{ matrix.target }}
+
+      - name: Create CI artifacts
+        id: create_artifacts
+        if: always()
+        run: ./ci/create-artifacts.py
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.create_artifacts.outcome == 'success'
+        with:
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
+          path: ${{ env.ARCHIVE_PATH }}
+          retention-days: 5
+
   test_tier2_vm:
     name: Test tier2 VM
     needs: [test_tier1, style_check]
