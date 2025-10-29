@@ -27,6 +27,7 @@ s! {
 extern "C" {
     pub fn utmpname(file: *const c_char) -> c_int;
     pub fn setutent();
+    #[link_name = "__getutent50"]
     pub fn getutent() -> *mut utmp;
     pub fn endutent();
 }
