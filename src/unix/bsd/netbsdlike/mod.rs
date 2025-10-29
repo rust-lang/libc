@@ -61,22 +61,6 @@ s! {
         pub l_whence: c_short,
     }
 
-    pub struct ipc_perm {
-        pub cuid: crate::uid_t,
-        pub cgid: crate::gid_t,
-        pub uid: crate::uid_t,
-        pub gid: crate::gid_t,
-        pub mode: mode_t,
-        #[cfg(target_os = "openbsd")]
-        pub seq: c_ushort,
-        #[cfg(target_os = "netbsd")]
-        pub _seq: c_ushort,
-        #[cfg(target_os = "openbsd")]
-        pub key: crate::key_t,
-        #[cfg(target_os = "netbsd")]
-        pub _key: crate::key_t,
-    }
-
     pub struct ptrace_io_desc {
         pub piod_op: c_int,
         pub piod_offs: *mut c_void,
