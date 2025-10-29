@@ -1659,6 +1659,7 @@ cfg_if! {
         target_os = "aix",
     )))] {
         extern "C" {
+            #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
             #[cfg_attr(gnu_time_bits64, link_name = "__adjtime64")]
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
         }

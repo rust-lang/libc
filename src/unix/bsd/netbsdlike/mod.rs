@@ -747,6 +747,7 @@ extern "C" {
     pub fn shmget(key: crate::key_t, size: size_t, shmflg: c_int) -> c_int;
     pub fn shmat(shmid: c_int, shmaddr: *const c_void, shmflg: c_int) -> *mut c_void;
     pub fn shmdt(shmaddr: *const c_void) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__shmctl50")]
     pub fn shmctl(shmid: c_int, cmd: c_int, buf: *mut crate::shmid_ds) -> c_int;
     pub fn execvpe(
         file: *const c_char,

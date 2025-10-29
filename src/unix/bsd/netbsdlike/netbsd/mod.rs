@@ -2123,7 +2123,9 @@ extern "C" {
     ) -> c_int;
     pub fn timer_delete(timerid: crate::timer_t) -> c_int;
     pub fn timer_getoverrun(timerid: crate::timer_t) -> c_int;
+    #[link_name = "__timer_gettime50"]
     pub fn timer_gettime(timerid: crate::timer_t, curr_value: *mut crate::itimerspec) -> c_int;
+    #[link_name = "__timer_settime50"]
     pub fn timer_settime(
         timerid: crate::timer_t,
         flags: c_int,
@@ -2149,6 +2151,7 @@ extern "C" {
         flags: c_int,
     ) -> *mut c_void;
 
+    #[link_name = "__sched_rr_get_interval50"]
     pub fn sched_rr_get_interval(pid: crate::pid_t, t: *mut crate::timespec) -> c_int;
     pub fn sched_setparam(pid: crate::pid_t, param: *const crate::sched_param) -> c_int;
     pub fn sched_getparam(pid: crate::pid_t, param: *mut crate::sched_param) -> c_int;
@@ -2191,7 +2194,6 @@ extern "C" {
         ntargets: size_t,
         hint: *const c_void,
     ) -> c_int;
-    #[link_name = "__getmntinfo13"]
     pub fn getmntinfo(mntbufp: *mut *mut crate::statvfs, flags: c_int) -> c_int;
     pub fn getvfsstat(buf: *mut crate::statvfs, bufsize: size_t, flags: c_int) -> c_int;
 
@@ -2238,7 +2240,7 @@ extern "C" {
 
 #[link(name = "util")]
 extern "C" {
-    #[cfg_attr(target_os = "netbsd", link_name = "__getpwent_r50")]
+    #[link_name = "__getpwent_r50"]
     pub fn getpwent_r(
         pwd: *mut crate::passwd,
         buf: *mut c_char,
