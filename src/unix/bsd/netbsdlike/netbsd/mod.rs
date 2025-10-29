@@ -853,40 +853,6 @@ s_no_extra_traits! {
         pub d_name: [c_char; 512],
     }
 
-    pub struct statvfs {
-        pub f_flag: c_ulong,
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_iosize: c_ulong,
-
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_bresvd: crate::fsblkcnt_t,
-
-        pub f_files: crate::fsfilcnt_t,
-        pub f_ffree: crate::fsfilcnt_t,
-        pub f_favail: crate::fsfilcnt_t,
-        pub f_fresvd: crate::fsfilcnt_t,
-
-        pub f_syncreads: u64,
-        pub f_syncwrites: u64,
-
-        pub f_asyncreads: u64,
-        pub f_asyncwrites: u64,
-
-        pub f_fsidx: crate::fsid_t,
-        pub f_fsid: c_ulong,
-        pub f_namemax: c_ulong,
-        pub f_owner: crate::uid_t,
-
-        pub f_spare: [u64; 4],
-
-        pub f_fstypename: [c_char; 32],
-        pub f_mntonname: [c_char; 1024],
-        pub f_mntfromname: [c_char; 1024],
-    }
-
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: crate::sa_family_t,
@@ -1086,72 +1052,6 @@ cfg_if! {
                 self.d_namlen.hash(state);
                 self.d_type.hash(state);
                 self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for statvfs {
-            fn eq(&self, other: &statvfs) -> bool {
-                self.f_flag == other.f_flag
-                    && self.f_bsize == other.f_bsize
-                    && self.f_frsize == other.f_frsize
-                    && self.f_iosize == other.f_iosize
-                    && self.f_blocks == other.f_blocks
-                    && self.f_bfree == other.f_bfree
-                    && self.f_bavail == other.f_bavail
-                    && self.f_bresvd == other.f_bresvd
-                    && self.f_files == other.f_files
-                    && self.f_ffree == other.f_ffree
-                    && self.f_favail == other.f_favail
-                    && self.f_fresvd == other.f_fresvd
-                    && self.f_syncreads == other.f_syncreads
-                    && self.f_syncwrites == other.f_syncwrites
-                    && self.f_asyncreads == other.f_asyncreads
-                    && self.f_asyncwrites == other.f_asyncwrites
-                    && self.f_fsidx == other.f_fsidx
-                    && self.f_fsid == other.f_fsid
-                    && self.f_namemax == other.f_namemax
-                    && self.f_owner == other.f_owner
-                    && self.f_spare == other.f_spare
-                    && self.f_fstypename == other.f_fstypename
-                    && self
-                        .f_mntonname
-                        .iter()
-                        .zip(other.f_mntonname.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .f_mntfromname
-                        .iter()
-                        .zip(other.f_mntfromname.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for statvfs {}
-        impl hash::Hash for statvfs {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.f_flag.hash(state);
-                self.f_bsize.hash(state);
-                self.f_frsize.hash(state);
-                self.f_iosize.hash(state);
-                self.f_blocks.hash(state);
-                self.f_bfree.hash(state);
-                self.f_bavail.hash(state);
-                self.f_bresvd.hash(state);
-                self.f_files.hash(state);
-                self.f_ffree.hash(state);
-                self.f_favail.hash(state);
-                self.f_fresvd.hash(state);
-                self.f_syncreads.hash(state);
-                self.f_syncwrites.hash(state);
-                self.f_asyncreads.hash(state);
-                self.f_asyncwrites.hash(state);
-                self.f_fsidx.hash(state);
-                self.f_fsid.hash(state);
-                self.f_namemax.hash(state);
-                self.f_owner.hash(state);
-                self.f_spare.hash(state);
-                self.f_fstypename.hash(state);
-                self.f_mntonname.hash(state);
-                self.f_mntfromname.hash(state);
             }
         }
 
@@ -2754,7 +2654,7 @@ extern "C" {
     ) -> c_int;
     #[link_name = "__getmntinfo13"]
     pub fn getmntinfo(mntbufp: *mut *mut crate::statvfs, flags: c_int) -> c_int;
-    pub fn getvfsstat(buf: *mut statvfs, bufsize: size_t, flags: c_int) -> c_int;
+    pub fn getvfsstat(buf: *mut crate::statvfs, bufsize: size_t, flags: c_int) -> c_int;
 
     // Added in `NetBSD` 10.0
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
