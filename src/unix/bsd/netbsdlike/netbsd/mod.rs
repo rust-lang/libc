@@ -167,11 +167,6 @@ s! {
         pub mq_curmsgs: c_long,
     }
 
-    pub struct itimerspec {
-        pub it_interval: crate::timespec,
-        pub it_value: crate::timespec,
-    }
-
     pub struct sigset_t {
         __bits: [u32; 4],
     }
@@ -1340,8 +1335,6 @@ pub const fn _IOC(inout: c_ulong, group: c_ulong, num: c_ulong, len: c_ulong) ->
         | (num)
 }
 
-pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 2;
-pub const CLOCK_THREAD_CPUTIME_ID: crate::clockid_t = 4;
 pub const NTP_API: c_int = 4;
 
 pub const LITTLE_ENDIAN: c_int = 1234;
@@ -2281,12 +2274,12 @@ extern "C" {
 
     // Added in `NetBSD` 10.0
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
-    pub fn timerfd_gettime(fd: c_int, curr_value: *mut itimerspec) -> c_int;
+    pub fn timerfd_gettime(fd: c_int, curr_value: *mut crate::itimerspec) -> c_int;
     pub fn timerfd_settime(
         fd: c_int,
         flags: c_int,
-        new_value: *const itimerspec,
-        old_value: *mut itimerspec,
+        new_value: *const crate::itimerspec,
+        old_value: *mut crate::itimerspec,
     ) -> c_int;
 
     pub fn qsort_r(
