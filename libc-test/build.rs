@@ -1398,6 +1398,7 @@ fn test_netbsd(target: &str) {
 
             // Anonymous unions
             ("ifconf", "ifc_ifcu") => true,
+            ("ifreq", "ifr_ifru") => true,
             ("utmpx", "ut_exit") => true,
             ("posix_spawn_file_actions_entry_t", "fae_data") => true,
 
