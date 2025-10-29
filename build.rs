@@ -281,8 +281,10 @@ fn emcc_version_code() -> Option<u64> {
     Some(major * 10000 + minor * 100 + patch)
 }
 
+/// Retrieve the VxWorks release version from the environment variable set by the VxWorks build
+/// environment, in `(minor, patch)` form. Currently the only major version supported by Rust
+/// is 7.
 fn vxworks_version_code() -> Option<(u32, u32)> {
-    // Retrieve the VxWorks release version from the environment variable set by the VxWorks build environment
     let version = env::var("WIND_RELEASE_ID").ok()?;
 
     let mut pieces = version.trim().split(['.']);
