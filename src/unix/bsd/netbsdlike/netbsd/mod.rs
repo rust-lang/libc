@@ -341,38 +341,6 @@ s! {
         pub int_n_sign_posn: c_char,
     }
 
-    pub struct if_data {
-        pub ifi_type: c_uchar,
-        pub ifi_addrlen: c_uchar,
-        pub ifi_hdrlen: c_uchar,
-        pub ifi_link_state: c_int,
-        pub ifi_mtu: u64,
-        pub ifi_metric: u64,
-        pub ifi_baudrate: u64,
-        pub ifi_ipackets: u64,
-        pub ifi_ierrors: u64,
-        pub ifi_opackets: u64,
-        pub ifi_oerrors: u64,
-        pub ifi_collisions: u64,
-        pub ifi_ibytes: u64,
-        pub ifi_obytes: u64,
-        pub ifi_imcasts: u64,
-        pub ifi_omcasts: u64,
-        pub ifi_iqdrops: u64,
-        pub ifi_noproto: u64,
-        pub ifi_lastchange: crate::timespec,
-    }
-
-    pub struct if_msghdr {
-        pub ifm_msglen: c_ushort,
-        pub ifm_version: c_uchar,
-        pub ifm_type: c_uchar,
-        pub ifm_addrs: c_int,
-        pub ifm_flags: c_int,
-        pub ifm_index: c_ushort,
-        pub ifm_data: if_data,
-    }
-
     pub struct sockcred {
         pub sc_pid: crate::pid_t,
         pub sc_uid: crate::uid_t,
@@ -684,15 +652,6 @@ s! {
         pub descr_str: [c_char; 1],
     }
 
-    pub struct ifreq {
-        pub _priv: [[c_char; 6]; 24],
-    }
-
-    pub struct ifconf {
-        pub ifc_len: c_int,
-        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-    }
-
     pub struct tcp_info {
         pub tcpi_state: u8,
         pub __tcpi_ca_state: u8,
@@ -796,11 +755,6 @@ s_no_extra_traits! {
         pub open: __c_anonymous_posix_spawn_fae_open,
         pub dup2: __c_anonymous_posix_spawn_fae_dup2,
     }
-
-    pub union __c_anonymous_ifc_ifcu {
-        pub ifcu_buf: *mut c_void,
-        pub ifcu_req: *mut ifreq,
-    }
 }
 
 cfg_if! {
@@ -816,21 +770,6 @@ cfg_if! {
                 unsafe {
                     self.open.hash(state);
                     self.dup2.hash(state);
-                }
-            }
-        }
-
-        impl Eq for __c_anonymous_ifc_ifcu {}
-        impl PartialEq for __c_anonymous_ifc_ifcu {
-            fn eq(&self, other: &__c_anonymous_ifc_ifcu) -> bool {
-                unsafe { self.ifcu_buf == other.ifcu_buf || self.ifcu_req == other.ifcu_req }
-            }
-        }
-        impl hash::Hash for __c_anonymous_ifc_ifcu {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    self.ifcu_buf.hash(state);
-                    self.ifcu_req.hash(state);
                 }
             }
         }
@@ -999,21 +938,6 @@ pub const LOCAL_PEEREID: c_int = 0x0003; // get peer identification
 pub const LOCAL_CREDS: c_int = 0x0004; // pass credentials to receiver
 
 // https://github.com/NetBSD/src/blob/trunk/sys/net/if.h#L373
-pub const IFF_UP: c_int = 0x0001; // interface is up
-pub const IFF_BROADCAST: c_int = 0x0002; // broadcast address valid
-pub const IFF_DEBUG: c_int = 0x0004; // turn on debugging
-pub const IFF_LOOPBACK: c_int = 0x0008; // is a loopback net
-pub const IFF_POINTOPOINT: c_int = 0x0010; // interface is point-to-point link
-pub const IFF_RUNNING: c_int = 0x0040; // resources allocated
-pub const IFF_NOARP: c_int = 0x0080; // no address resolution protocol
-pub const IFF_PROMISC: c_int = 0x0100; // receive all packets
-pub const IFF_ALLMULTI: c_int = 0x0200; // receive all multicast packets
-pub const IFF_OACTIVE: c_int = 0x0400; // transmission in progress
-pub const IFF_SIMPLEX: c_int = 0x0800; // can't hear own transmissions
-pub const IFF_LINK0: c_int = 0x1000; // per link layer defined bit
-pub const IFF_LINK1: c_int = 0x2000; // per link layer defined bit
-pub const IFF_LINK2: c_int = 0x4000; // per link layer defined bit
-pub const IFF_MULTICAST: c_int = 0x8000; // supports multicast
 
 // sys/netinet/in.h
 // Protocols (RFC 1700)
