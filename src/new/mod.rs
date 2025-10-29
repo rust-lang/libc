@@ -182,6 +182,8 @@ cfg_if! {
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
         pub use signal::*;
+    } else if #[cfg(target_os = "netbsd")] {
+        pub use sys::statvfs::*;
     }
 }
 
