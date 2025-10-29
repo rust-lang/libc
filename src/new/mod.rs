@@ -186,6 +186,7 @@ cfg_if! {
         pub use sys::timex::*;
         pub use sys::types::*;
         pub use utmp_::*;
+        pub use utmpx_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
     }

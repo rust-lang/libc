@@ -408,11 +408,6 @@ s! {
         pub sdl_data: [c_char; 24],
     }
 
-    pub struct __exit_status {
-        pub e_termination: u16,
-        pub e_exit: u16,
-    }
-
     pub struct shmid_ds {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,
@@ -743,27 +738,6 @@ s! {
 }
 
 s_no_extra_traits! {
-    pub struct utmpx {
-        pub ut_name: [c_char; _UTX_USERSIZE],
-        pub ut_id: [c_char; _UTX_IDSIZE],
-        pub ut_line: [c_char; _UTX_LINESIZE],
-        pub ut_host: [c_char; _UTX_HOSTSIZE],
-        pub ut_session: u16,
-        pub ut_type: u16,
-        pub ut_pid: crate::pid_t,
-        pub ut_exit: __exit_status, // FIXME(netbsd): when anonymous struct are supported
-        pub ut_ss: sockaddr_storage,
-        pub ut_tv: crate::timeval,
-        pub ut_pad: [u8; _UTX_PADSIZE],
-    }
-
-    pub struct lastlogx {
-        pub ll_tv: crate::timeval,
-        pub ll_line: [c_char; _UTX_LINESIZE],
-        pub ll_host: [c_char; _UTX_HOSTSIZE],
-        pub ll_ss: sockaddr_storage,
-    }
-
     pub struct in_pktinfo {
         pub ipi_addr: crate::in_addr,
         pub ipi_ifindex: c_uint,
@@ -831,72 +805,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for utmpx {
-            fn eq(&self, other: &utmpx) -> bool {
-                self.ut_type == other.ut_type
-                    && self.ut_pid == other.ut_pid
-                    && self.ut_name == other.ut_name
-                    && self.ut_line == other.ut_line
-                    && self.ut_id == other.ut_id
-                    && self.ut_exit == other.ut_exit
-                    && self.ut_session == other.ut_session
-                    && self.ut_tv == other.ut_tv
-                    && self.ut_ss == other.ut_ss
-                    && self
-                        .ut_pad
-                        .iter()
-                        .zip(other.ut_pad.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .ut_host
-                        .iter()
-                        .zip(other.ut_host.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for utmpx {}
-
-        impl hash::Hash for utmpx {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ut_name.hash(state);
-                self.ut_type.hash(state);
-                self.ut_pid.hash(state);
-                self.ut_line.hash(state);
-                self.ut_id.hash(state);
-                self.ut_host.hash(state);
-                self.ut_exit.hash(state);
-                self.ut_session.hash(state);
-                self.ut_tv.hash(state);
-                self.ut_ss.hash(state);
-                self.ut_pad.hash(state);
-            }
-        }
-
-        impl PartialEq for lastlogx {
-            fn eq(&self, other: &lastlogx) -> bool {
-                self.ll_tv == other.ll_tv
-                    && self.ll_line == other.ll_line
-                    && self.ll_ss == other.ll_ss
-                    && self
-                        .ll_host
-                        .iter()
-                        .zip(other.ll_host.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for lastlogx {}
-
-        impl hash::Hash for lastlogx {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ll_tv.hash(state);
-                self.ll_line.hash(state);
-                self.ll_host.hash(state);
-                self.ll_ss.hash(state);
-            }
-        }
-
         impl PartialEq for in_pktinfo {
             fn eq(&self, other: &in_pktinfo) -> bool {
                 self.ipi_addr == other.ipi_addr && self.ipi_ifindex == other.ipi_ifindex
@@ -1931,28 +1839,6 @@ pub const ONLRET: crate::tcflag_t = 0x40;
 pub const CDTRCTS: crate::tcflag_t = 0x00020000;
 pub const CHWFLOW: crate::tcflag_t = crate::MDMBUF | crate::CRTSCTS | crate::CDTRCTS;
 
-// pub const _PATH_UTMPX: &[c_char; 14] = b"/var/run/utmpx";
-// pub const _PATH_WTMPX: &[c_char; 14] = b"/var/log/wtmpx";
-// pub const _PATH_LASTLOGX: &[c_char; 17] = b"/var/log/lastlogx";
-// pub const _PATH_UTMP_UPDATE: &[c_char; 24] = b"/usr/libexec/utmp_update";
-pub const _UTX_USERSIZE: usize = 32;
-pub const _UTX_LINESIZE: usize = 32;
-pub const _UTX_PADSIZE: usize = 40;
-pub const _UTX_IDSIZE: usize = 4;
-pub const _UTX_HOSTSIZE: usize = 256;
-pub const EMPTY: u16 = 0;
-pub const RUN_LVL: u16 = 1;
-pub const BOOT_TIME: u16 = 2;
-pub const OLD_TIME: u16 = 3;
-pub const NEW_TIME: u16 = 4;
-pub const INIT_PROCESS: u16 = 5;
-pub const LOGIN_PROCESS: u16 = 6;
-pub const USER_PROCESS: u16 = 7;
-pub const DEAD_PROCESS: u16 = 8;
-pub const ACCOUNTING: u16 = 9;
-pub const SIGNATURE: u16 = 10;
-pub const DOWN_TIME: u16 = 11;
-
 pub const SOCK_CLOEXEC: c_int = 0x10000000;
 pub const SOCK_NONBLOCK: c_int = 0x20000000;
 
@@ -2601,21 +2487,6 @@ extern "C" {
 
     pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_char) -> c_int;
 
-    pub fn updwtmpx(file: *const c_char, ut: *const utmpx) -> c_int;
-    pub fn getlastlogx(fname: *const c_char, uid: crate::uid_t, ll: *mut lastlogx)
-        -> *mut lastlogx;
-    pub fn updlastlogx(fname: *const c_char, uid: crate::uid_t, ll: *mut lastlogx) -> c_int;
-    pub fn utmpxname(file: *const c_char) -> c_int;
-    pub fn getutxent() -> *mut utmpx;
-    pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
-    pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
-    pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
-    pub fn setutxent();
-    pub fn endutxent();
-
-    pub fn getutmp(ux: *const utmpx, u: *mut crate::utmp);
-    pub fn getutmpx(u: *const crate::utmp, ux: *mut utmpx);
-
     pub fn efopen(p: *const c_char, m: *const c_char) -> crate::FILE;
     pub fn emalloc(n: size_t) -> *mut c_void;
     pub fn ecalloc(n: size_t, c: size_t) -> *mut c_void;
@@ -2679,7 +2550,7 @@ extern "C" {
     #[link_name = "__login50"]
     pub fn login(ut: *const crate::utmp);
     #[link_name = "__loginx50"]
-    pub fn loginx(ut: *const utmpx);
+    pub fn loginx(ut: *const crate::utmpx);
     pub fn logout(line: *const c_char);
     pub fn logoutx(line: *const c_char, status: c_int, tpe: c_int);
     pub fn logwtmp(line: *const c_char, name: *const c_char, host: *const c_char);
