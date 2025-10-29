@@ -1402,12 +1402,6 @@ pub const FD_SETSIZE: c_int = 0x100;
 
 pub const ST_NOSUID: c_ulong = 8;
 
-pub const BIOCGRSIG: c_ulong = 0x40044272;
-pub const BIOCSRSIG: c_ulong = 0x80044273;
-pub const BIOCSDLT: c_ulong = 0x80044278;
-pub const BIOCGSEESENT: c_ulong = 0x40044276;
-pub const BIOCSSEESENT: c_ulong = 0x80044277;
-
 // <sys/fstypes.h>
 pub const MNT_UNION: c_int = 0x00000020;
 pub const MNT_NOCOREDUMP: c_int = 0x00008000;

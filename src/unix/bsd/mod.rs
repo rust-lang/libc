@@ -398,19 +398,24 @@ pub const POLLWRNORM: c_short = 0x004;
 pub const POLLRDBAND: c_short = 0x080;
 pub const POLLWRBAND: c_short = 0x100;
 
-pub const BIOCGBLEN: c_ulong = 0x40044266;
-pub const BIOCSBLEN: c_ulong = 0xc0044266;
-pub const BIOCFLUSH: c_uint = 0x20004268;
-pub const BIOCPROMISC: c_uint = 0x20004269;
-pub const BIOCGDLT: c_ulong = 0x4004426a;
-pub const BIOCGETIF: c_ulong = 0x4020426b;
-pub const BIOCSETIF: c_ulong = 0x8020426c;
-pub const BIOCGSTATS: c_ulong = 0x4008426f;
-pub const BIOCIMMEDIATE: c_ulong = 0x80044270;
-pub const BIOCVERSION: c_ulong = 0x40044271;
-pub const BIOCGHDRCMPLT: c_ulong = 0x40044274;
-pub const BIOCSHDRCMPLT: c_ulong = 0x80044275;
-pub const SIOCGIFADDR: c_ulong = 0xc0206921;
+cfg_if! {
+    // Not yet implemented on NetBSD
+    if #[cfg(not(any(target_os = "netbsd")))] {
+        pub const BIOCGBLEN: c_ulong = 0x40044266;
+        pub const BIOCSBLEN: c_ulong = 0xc0044266;
+        pub const BIOCFLUSH: c_uint = 0x20004268;
+        pub const BIOCPROMISC: c_uint = 0x20004269;
+        pub const BIOCGDLT: c_ulong = 0x4004426a;
+        pub const BIOCGETIF: c_ulong = 0x4020426b;
+        pub const BIOCSETIF: c_ulong = 0x8020426c;
+        pub const BIOCGSTATS: c_ulong = 0x4008426f;
+        pub const BIOCIMMEDIATE: c_ulong = 0x80044270;
+        pub const BIOCVERSION: c_ulong = 0x40044271;
+        pub const BIOCGHDRCMPLT: c_ulong = 0x40044274;
+        pub const BIOCSHDRCMPLT: c_ulong = 0x80044275;
+        pub const SIOCGIFADDR: c_ulong = 0xc0206921;
+    }
+}
 
 pub const REG_BASIC: c_int = 0o0000;
 pub const REG_EXTENDED: c_int = 0o0001;
