@@ -6,7 +6,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc-riscv64-linux-gnu \
     libc6-dev \
     libc6-dev-riscv64-cross \
-    linux-headers-generic \
     qemu-system-riscv64 \
     qemu-user
 
