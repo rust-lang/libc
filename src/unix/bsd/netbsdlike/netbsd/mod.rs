@@ -851,40 +851,6 @@ s! {
         pub d_name: [c_char; 512],
     }
 
-    pub struct statvfs {
-        pub f_flag: c_ulong,
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_iosize: c_ulong,
-
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_bresvd: crate::fsblkcnt_t,
-
-        pub f_files: crate::fsfilcnt_t,
-        pub f_ffree: crate::fsfilcnt_t,
-        pub f_favail: crate::fsfilcnt_t,
-        pub f_fresvd: crate::fsfilcnt_t,
-
-        pub f_syncreads: u64,
-        pub f_syncwrites: u64,
-
-        pub f_asyncreads: u64,
-        pub f_asyncwrites: u64,
-
-        pub f_fsidx: crate::fsid_t,
-        pub f_fsid: c_ulong,
-        pub f_namemax: c_ulong,
-        pub f_owner: crate::uid_t,
-
-        pub f_spare: [u32; 4],
-
-        pub f_fstypename: [c_char; 32],
-        pub f_mntonname: [c_char; 1024],
-        pub f_mntfromname: [c_char; 1024],
-    }
-
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: crate::sa_family_t,
@@ -2459,7 +2425,7 @@ extern "C" {
     ) -> c_int;
     #[link_name = "__getmntinfo13"]
     pub fn getmntinfo(mntbufp: *mut *mut crate::statvfs, flags: c_int) -> c_int;
-    pub fn getvfsstat(buf: *mut statvfs, bufsize: size_t, flags: c_int) -> c_int;
+    pub fn getvfsstat(buf: *mut crate::statvfs, bufsize: size_t, flags: c_int) -> c_int;
 
     // Added in `NetBSD` 10.0
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
