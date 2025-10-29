@@ -1375,6 +1375,15 @@ fn test_netbsd(target: &str) {
         }
     });
 
+    cfg.skip_fn_ptrcheck(move |func| {
+        match func {
+            // New symbol version present in NetBSD10, but we keep the old versions for NetBSD9
+            // compatibility.
+            "getmntinfo" | "statvfs" | "fstatvfs" | "getvfsstat" | "sigaction" => true,
+            _ => false,
+        }
+    });
+
     cfg.skip_struct_field_type(move |struct_, field| {
         // This is a weird union, don't check the type.
         (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
