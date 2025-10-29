@@ -730,6 +730,7 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigsuspend14")]
     pub fn sigsuspend(mask: *const crate::sigset_t) -> c_int;
     pub fn sem_close(sem: *mut sem_t) -> c_int;
     pub fn getdtablesize() -> c_int;
@@ -804,6 +805,7 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
         link_name = "wait4@FBSD_1.0"
     )]
+    #[cfg_attr(target_os = "netbsd", link_name = "__wait450")]
     pub fn wait4(
         pid: crate::pid_t,
         status: *mut c_int,
@@ -814,11 +816,13 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getitimer$UNIX2003"
     )]
+    #[cfg_attr(target_os = "netbsd", link_name = "__getitimer50")]
     pub fn getitimer(which: c_int, curr_value: *mut crate::itimerval) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "setitimer$UNIX2003"
     )]
+    #[cfg_attr(target_os = "netbsd", link_name = "__setitimer50")]
     pub fn setitimer(
         which: c_int,
         new_value: *const crate::itimerval,
@@ -879,6 +883,7 @@ extern "C" {
         locale: crate::locale_t,
     ) -> size_t;
 
+    #[cfg_attr(target_os = "netbsd", link_name = "__devname50")]
     pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 
     pub fn issetugid() -> c_int;
