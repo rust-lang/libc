@@ -183,6 +183,7 @@ cfg_if! {
     } else if #[cfg(target_vendor = "apple")] {
         pub use signal::*;
     } else if #[cfg(target_os = "netbsd")] {
+        pub use net::if_::*;
         pub use sys::ipc::*;
         pub use sys::statvfs::*;
         pub use sys::time::*;
