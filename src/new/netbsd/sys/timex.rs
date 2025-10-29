@@ -89,6 +89,7 @@ s! {
 }
 
 extern "C" {
+    #[link_name = "__ntp_gettime50"]
     pub fn ntp_gettime(buf: *mut ntptimeval) -> c_int;
     pub fn ntp_adjtime(buf: *mut timex) -> c_int;
 }

@@ -67,16 +67,26 @@ extern "C" {
     pub fn setutxent();
     pub fn endutxent();
 
+    #[link_name = "__getutxent50"]
     pub fn getutxent() -> *mut utmpx;
+    #[link_name = "__getutxid50"]
     pub fn getutxid(ut: *const utmpx) -> *mut utmpx;
+    #[link_name = "__getutxline50"]
     pub fn getutxline(ut: *const utmpx) -> *mut utmpx;
+    #[link_name = "__pututxline50"]
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
 
+    #[link_name = "__updwtmpx50"]
     pub fn updwtmpx(file: *const c_char, ut: *const utmpx) -> c_int;
+    #[link_name = "__getlastlogx50"]
     pub fn getlastlogx(fname: *const c_char, uid: crate::uid_t, ll: *mut lastlogx)
         -> *mut lastlogx;
+
+    #[link_name = "__updlastlogx50"]
     pub fn updlastlogx(fname: *const c_char, uid: crate::uid_t, ll: *mut lastlogx) -> c_int;
+    #[link_name = "__getutmp50"]
     pub fn getutmp(ux: *const utmpx, u: *mut crate::utmp);
+    #[link_name = "__getutmpx50"]
     pub fn getutmpx(u: *const crate::utmp, ux: *mut utmpx);
     pub fn utmpxname(file: *const c_char) -> c_int;
 }

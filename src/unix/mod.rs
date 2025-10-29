@@ -1555,8 +1555,10 @@ extern "C" {
     pub fn sem_wait(sem: *mut sem_t) -> c_int;
     pub fn sem_trywait(sem: *mut sem_t) -> c_int;
     pub fn sem_post(sem: *mut sem_t) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__statvfs90")]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statvfs64")]
     pub fn statvfs(path: *const c_char, buf: *mut crate::statvfs) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__fstatvfs90")]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatvfs64")]
     pub fn fstatvfs(fd: c_int, buf: *mut crate::statvfs) -> c_int;
 
@@ -1659,6 +1661,7 @@ cfg_if! {
         target_os = "aix",
     )))] {
         extern "C" {
+            #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
             #[cfg_attr(gnu_time_bits64, link_name = "__adjtime64")]
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
         }
@@ -1818,7 +1821,7 @@ cfg_if! {
             pub fn fmemopen(buf: *mut c_void, size: size_t, mode: *const c_char) -> *mut FILE;
             pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
             pub fn atexit(cb: extern "C" fn()) -> c_int;
-            #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
+            #[cfg_attr(target_os = "netbsd", link_name = "__sigaction_siginfo")]
             pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction)
                 -> c_int;
             pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: size_t) -> ssize_t;
