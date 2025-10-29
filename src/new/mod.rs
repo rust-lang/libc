@@ -182,6 +182,7 @@ cfg_if! {
     } else if #[cfg(target_os = "netbsd")] {
         pub use sys::ipc::*;
         pub use sys::statvfs::*;
+        pub use sys::types::*;
         pub use utmp_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;

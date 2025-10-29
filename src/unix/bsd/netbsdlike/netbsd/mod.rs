@@ -1,24 +1,19 @@
 use crate::prelude::*;
 use crate::{
     cmsghdr,
+    cpuid_t,
+    lwpid_t,
     off_t,
 };
 
-pub type clock_t = c_uint;
-pub type suseconds_t = c_int;
-pub type dev_t = u64;
 pub type blksize_t = i32;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type idtype_t = c_int;
-pub type mqd_t = c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
-pub type lwpid_t = c_uint;
 pub type shmatt_t = c_uint;
-pub type cpuid_t = c_ulong;
 pub type cpuset_t = _cpuset;
 pub type pthread_spin_t = c_uchar;
-pub type timer_t = c_int;
 
 // elf.h
 
