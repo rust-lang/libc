@@ -186,6 +186,7 @@ cfg_if! {
         pub use sys::ipc::*;
         pub use sys::statvfs::*;
         pub use utmp_::*;
+        pub use utmpx_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
     }
