@@ -1644,9 +1644,9 @@ updwtmpx
 useconds_t
 utimensat
 utmp
+utmpname
 utmpx
 utmpxname
-utpname
 utrace
 uucred
 wait4
