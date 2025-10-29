@@ -185,6 +185,7 @@ cfg_if! {
     } else if #[cfg(target_os = "netbsd")] {
         pub use sys::ipc::*;
         pub use sys::statvfs::*;
+        pub use sys::time::*;
         pub use sys::timex::*;
         pub use sys::types::*;
         pub use utmp_::*;
