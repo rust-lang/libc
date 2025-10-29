@@ -4,4 +4,5 @@
 
 pub(crate) mod ipc;
 pub(crate) mod statvfs;
+pub(crate) mod timex;
 pub(crate) mod types;
