@@ -60,7 +60,7 @@ s! {
     pub struct timeval {
         pub tv_sec: time_t,
         #[cfg(not(gnu_time_bits64))]
-        pub tv_usec: suseconds_t,
+        pub tv_usec: crate::suseconds_t,
         // For 64 bit time on 32 bit linux glibc, suseconds_t is still
         // a 32 bit type.  Use __suseconds64_t instead
         #[cfg(gnu_time_bits64)]
