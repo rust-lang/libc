@@ -435,19 +435,6 @@ s! {
         _shm_internal: *mut c_void,
     }
 
-    pub struct utmp {
-        pub ut_line: [c_char; UT_LINESIZE],
-        pub ut_name: [c_char; UT_NAMESIZE],
-        pub ut_host: [c_char; UT_HOSTSIZE],
-        pub ut_time: crate::time_t,
-    }
-
-    pub struct lastlog {
-        pub ll_line: [c_char; UT_LINESIZE],
-        pub ll_host: [c_char; UT_HOSTSIZE],
-        pub ll_time: crate::time_t,
-    }
-
     pub struct timex {
         pub modes: c_uint,
         pub offset: c_long,
@@ -1815,9 +1802,6 @@ pub const CHWFLOW: crate::tcflag_t = crate::MDMBUF | crate::CRTSCTS | crate::CDT
 // pub const _PATH_WTMPX: &[c_char; 14] = b"/var/log/wtmpx";
 // pub const _PATH_LASTLOGX: &[c_char; 17] = b"/var/log/lastlogx";
 // pub const _PATH_UTMP_UPDATE: &[c_char; 24] = b"/usr/libexec/utmp_update";
-pub const UT_NAMESIZE: usize = 8;
-pub const UT_LINESIZE: usize = 8;
-pub const UT_HOSTSIZE: usize = 16;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_PADSIZE: usize = 40;
@@ -2498,13 +2482,8 @@ extern "C" {
     pub fn setutxent();
     pub fn endutxent();
 
-    pub fn getutmp(ux: *const utmpx, u: *mut utmp);
-    pub fn getutmpx(u: *const utmp, ux: *mut utmpx);
-
-    pub fn utpname(file: *const c_char) -> c_int;
-    pub fn setutent();
-    pub fn endutent();
-    pub fn getutent() -> *mut utmp;
+    pub fn getutmp(ux: *const utmpx, u: *mut crate::utmp);
+    pub fn getutmpx(u: *const crate::utmp, ux: *mut utmpx);
 
     pub fn efopen(p: *const c_char, m: *const c_char) -> crate::FILE;
     pub fn emalloc(n: size_t) -> *mut c_void;
@@ -2567,7 +2546,7 @@ extern "C" {
         precision: size_t,
     ) -> *mut c_char;
     #[link_name = "__login50"]
-    pub fn login(ut: *const utmp);
+    pub fn login(ut: *const crate::utmp);
     #[link_name = "__loginx50"]
     pub fn loginx(ut: *const utmpx);
     pub fn logout(line: *const c_char);
