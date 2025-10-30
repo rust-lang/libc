@@ -242,25 +242,6 @@ impl StyleChecker {
         self.state = initial_state;
     }
 
-    /// If we see a normal s! macro without any attributes we just need
-    /// to check if there are any duplicates.
-    fn handle_s_macro_no_attrs(&mut self, item_macro: &syn::ItemMacro) {
-        let span = item_macro.span();
-        match self.seen_s_macro_cfgs.get("") {
-            Some(seen_span) => {
-                self.error(
-                    "duplicate s! macro".to_string(),
-                    span,
-                    format!("other s! macro"),
-                    (Some(*seen_span), "combine the two".to_string()),
-                );
-            }
-            None => {
-                self.seen_s_macro_cfgs.insert(String::new(), span);
-            }
-        }
-    }
-
     /// If an s! macro has attributes we check for any duplicates as well
     /// as if they are standalone positive cfgs that would be better
     /// in a separate file.
@@ -367,9 +348,7 @@ impl<'ast> Visit<'ast> for StyleChecker {
     /// instead of [syn::Macro] because it contains the attributes.
     fn visit_item_macro(&mut self, item_macro: &'ast syn::ItemMacro) {
         if item_macro.mac.path.is_ident("s") {
-            if item_macro.attrs.is_empty() {
-                self.handle_s_macro_no_attrs(item_macro);
-            } else {
+            if !item_macro.attrs.is_empty() {
                 self.handle_s_macro_with_attrs(item_macro);
             }
         }
