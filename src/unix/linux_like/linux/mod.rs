@@ -1187,7 +1187,7 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_BARRIERATTR_T],
     }
 
-    #[cfg(not(target_env = "musl"))]
+    #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
     #[repr(align(8))]
     pub struct fanotify_event_metadata {
         pub event_len: __u32,
@@ -6723,7 +6723,7 @@ extern "C" {
 //
 // * musl has 64-bit versions only so aliases the LFS64 symbols to the standard ones
 cfg_if! {
-    if #[cfg(not(target_env = "musl"))] {
+    if #[cfg(not(any(target_env = "musl", target_env = "ohos")))] {
         extern "C" {
             pub fn fallocate64(fd: c_int, mode: c_int, offset: off64_t, len: off64_t) -> c_int;
             pub fn fgetpos64(stream: *mut crate::FILE, ptr: *mut fpos64_t) -> c_int;
