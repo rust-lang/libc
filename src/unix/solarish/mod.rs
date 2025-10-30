@@ -2377,6 +2377,7 @@ extern "C" {
 
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
     pub fn settimeofday(tp: *const crate::timeval, tz: *const c_void) -> c_int;
+    #[cfg_attr(target_os = "illumos", link_name = "__getifaddrs")]
     pub fn getifaddrs(ifap: *mut *mut crate::ifaddrs) -> c_int;
     pub fn freeifaddrs(ifa: *mut crate::ifaddrs);
 
