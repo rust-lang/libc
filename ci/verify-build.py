@@ -147,7 +147,8 @@ TARGETS = [
     Target("armv7-wrs-vxworks-eabihf", dist=False),
     Target("armv7r-none-eabihf", dist=False),
     Target("armv7s-apple-ios", dist=False),
-    Target("hexagon-unknown-linux-musl", dist=False),
+    # FIXME(hexagon): hits "error: symbol 'fma' is already defined" error
+    # Target("hexagon-unknown-linux-musl", dist=False),
     Target("i386-apple-ios", dist=False),
     Target("i686-apple-darwin", dist=False),
     Target("i686-unknown-haiku", dist=False),
