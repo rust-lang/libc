@@ -5879,7 +5879,6 @@ f! {
     }
 
     #[cfg(target_env = "gnu")]
-    #[allow(unused_unsafe)]
     pub fn SUN_LEN(s: crate::sockaddr_un) -> usize {
         offset_of!(crate::sockaddr_un, sun_path) + crate::strlen(s.sun_path.as_ptr())
     }
