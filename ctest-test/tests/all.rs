@@ -1,6 +1,3 @@
-// FIXME(ctest): this test doesn't work when cross compiling.
-#![cfg(target_arch = "x86_64")]
-
 use std::collections::HashSet;
 use std::env;
 use std::process::{Command, ExitStatus};
