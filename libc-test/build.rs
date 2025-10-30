@@ -3544,6 +3544,7 @@ fn test_linux(target: &str) {
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
     let ppc64 = target.contains("powerpc64");
+    let ppc32 = ppc && !ppc64;
     let s390x = target.contains("s390x");
     let sparc64 = target.contains("sparc64");
     let x32 = target.contains("x32");
@@ -3556,13 +3557,19 @@ fn test_linux(target: &str) {
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
     let mips = target.contains("mips");
+    let mips64 = target.contains("mips64");
+    let mips32 = mips && !mips64;
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
-    if musl_v1_2_3 {
+    if (musl_v1_2_3 || loongarch64) && musl {
         cfg.cfg("musl_v1_2_3", None);
+        if arm || ppc32 || x86_32 || mips32 {
+            cfg.cfg("musl32_time64", None);
+            cfg.cfg("linux_time_bits64", None);
+        }
     }
     cfg.define("_GNU_SOURCE", None)
         // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
@@ -4551,7 +4558,9 @@ fn test_linux(target: &str) {
         // `frames` is a flexible array member
         (struct_ == "bcm_msg_head" && field == "frames") ||
         // FAM
-        (struct_ == "af_alg_iv" && field == "iv")
+        (struct_ == "af_alg_iv" && field == "iv") ||
+        // FIXME(linux): this is changed to separate sec/usec fields when time64 is enabled
+        (struct_ == "input_event" && field == "time")
     });
 
     cfg.skip_roundtrip(move |s| match s {
