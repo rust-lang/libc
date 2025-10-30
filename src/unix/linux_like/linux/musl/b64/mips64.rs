@@ -7,32 +7,10 @@ pub type __s64 = c_long;
 pub type nlink_t = c_uint;
 pub type blksize_t = i64;
 
+pub type stat64 = stat;
+
 s! {
     pub struct stat {
-        pub st_dev: crate::dev_t,
-        __pad1: Padding<[c_int; 3]>,
-        pub st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
-        pub st_nlink: crate::nlink_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        pub st_rdev: crate::dev_t,
-        __pad2: Padding<[c_uint; 2]>,
-        pub st_size: off_t,
-        __pad3: Padding<c_int>,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
-        pub st_blksize: crate::blksize_t,
-        __pad4: Padding<c_uint>,
-        pub st_blocks: crate::blkcnt_t,
-        __pad5: Padding<[c_int; 14]>,
-    }
-
-    pub struct stat64 {
         pub st_dev: crate::dev_t,
         __pad1: Padding<[c_int; 3]>,
         pub st_ino: crate::ino_t,
