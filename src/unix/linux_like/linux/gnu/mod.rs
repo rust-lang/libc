@@ -7,6 +7,7 @@ pub type __rlimit_resource_t = c_uint;
 pub type Lmid_t = c_long;
 pub type regoff_t = c_int;
 pub type __kernel_rwf_t = c_int;
+pub type __be16 = crate::__u16;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -378,6 +379,15 @@ s_no_extra_traits! {
         ))]
         __pad: [c_char; 4],
         __glibc_reserved: [c_char; 32],
+    }
+
+    // linux/if_ether.h
+
+    #[repr(C, packed)]
+    pub struct ethhdr {
+        pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_source: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_proto: crate::__be16,
     }
 }
 
