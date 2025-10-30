@@ -2510,6 +2510,12 @@ extern "C" {
 
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
     pub fn settimeofday(tp: *const crate::timeval, tz: *const c_void) -> c_int;
+    // illumos' `getifaddrs` only returned AF_INET[6] until illumos#11196 where
+    // it was updated to also return AF_LINK entries. To preserve existing
+    // binaries, the symbol `getifaddrs` refers to the version with the old
+    // behaviour. Newly compiled programs in actuality link to `__getifaddrs`
+    // and thus get the updated version.
+    #[cfg_attr(target_os = "illumos", link_name = "__getifaddrs")]
     pub fn getifaddrs(ifap: *mut *mut crate::ifaddrs) -> c_int;
     pub fn freeifaddrs(ifa: *mut crate::ifaddrs);
 
