@@ -68,7 +68,6 @@ class Target:
 
 FREEBSD_VERSIONS = [11, 12, 13, 14, 15]
 
-# FIXME(ohos): CI fails with warnings
 TARGETS = [
     # Tier 1
     Target("aarch64-apple-darwin"),
@@ -83,11 +82,11 @@ TARGETS = [
     # Tier 2 with host tools
     Target("aarch64-pc-windows-gnullvm", min_toolchain=Toolchain.STABLE),
     Target("aarch64-unknown-linux-musl"),
-    # Target("aarch64-unknown-linux-ohos"),
+    Target("aarch64-unknown-linux-ohos", min_toolchain=Toolchain.STABLE),
     Target("arm-unknown-linux-gnueabi"),
     Target("arm-unknown-linux-gnueabihf"),
     Target("armv7-unknown-linux-gnueabihf"),
-    # Target("armv7-unknown-linux-ohos"),
+    Target("armv7-unknown-linux-ohos", min_toolchain=Toolchain.STABLE),
     Target("i686-pc-windows-gnu"),
     Target("loongarch64-unknown-linux-gnu", min_toolchain=Toolchain.STABLE),
     Target("loongarch64-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
@@ -104,7 +103,7 @@ TARGETS = [
     Target("x86_64-unknown-freebsd"),
     Target("x86_64-unknown-illumos"),
     Target("x86_64-unknown-linux-musl"),
-    # Target("x86_64-unknown-linux-ohos"),
+    Target("x86_64-unknown-linux-ohos", min_toolchain=Toolchain.STABLE),
     Target("x86_64-unknown-netbsd"),
     #
     # Tier 2 without host tools
