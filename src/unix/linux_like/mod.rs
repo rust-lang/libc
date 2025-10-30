@@ -2100,7 +2100,11 @@ extern "C" {
 // * musl and Emscripten has 64-bit versions only so aliases the LFS64 symbols to the standard ones
 // * ulibc doesn't have preadv64/pwritev64
 cfg_if! {
-    if #[cfg(not(any(target_env = "musl", target_os = "emscripten")))] {
+    if #[cfg(not(any(
+        target_env = "musl",
+        target_env = "ohos",
+        target_os = "emscripten",
+    )))] {
         extern "C" {
             pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
             pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
@@ -2160,7 +2164,8 @@ cfg_if! {
     if #[cfg(not(any(
         target_env = "uclibc",
         target_env = "musl",
-        target_os = "emscripten"
+        target_env = "ohos",
+        target_os = "emscripten",
     )))] {
         extern "C" {
             pub fn preadv64(
