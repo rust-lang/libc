@@ -699,7 +699,6 @@ extern "C" {
     pub fn free(p: *mut c_void);
     pub fn abort() -> !;
     pub fn exit(status: c_int) -> !;
-    pub fn _exit(status: c_int) -> !;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "system$UNIX2003"
@@ -983,7 +982,6 @@ extern "C" {
     pub fn rewinddir(dirp: *mut crate::DIR);
 
     pub fn fchmodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, flags: c_int) -> c_int;
-    pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
     pub fn fchownat(
         dirfd: c_int,
         pathname: *const c_char,
@@ -1021,83 +1019,8 @@ extern "C" {
     pub fn symlinkat(target: *const c_char, newdirfd: c_int, linkpath: *const c_char) -> c_int;
     pub fn unlinkat(dirfd: c_int, pathname: *const c_char, flags: c_int) -> c_int;
 
-    pub fn access(path: *const c_char, amode: c_int) -> c_int;
-    pub fn alarm(seconds: c_uint) -> c_uint;
-    pub fn chdir(dir: *const c_char) -> c_int;
-    pub fn fchdir(dirfd: c_int) -> c_int;
-    pub fn chown(path: *const c_char, uid: uid_t, gid: gid_t) -> c_int;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "lchown$UNIX2003"
-    )]
-    pub fn lchown(path: *const c_char, uid: uid_t, gid: gid_t) -> c_int;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "close$NOCANCEL$UNIX2003"
-    )]
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86_64"),
-        link_name = "close$NOCANCEL"
-    )]
-    pub fn close(fd: c_int) -> c_int;
-    pub fn dup(fd: c_int) -> c_int;
-    pub fn dup2(src: c_int, dst: c_int) -> c_int;
-
-    pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-    pub fn execle(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-    pub fn execlp(file: *const c_char, arg0: *const c_char, ...) -> c_int;
-    pub fn execv(prog: *const c_char, argv: *const *mut c_char) -> c_int;
-    pub fn execve(prog: *const c_char, argv: *const *mut c_char, envp: *const *mut c_char)
-        -> c_int;
-    pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> c_int;
-
-    pub fn fork() -> pid_t;
-    pub fn fpathconf(filedes: c_int, name: c_int) -> c_long;
-    pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
-    pub fn getegid() -> gid_t;
-    pub fn geteuid() -> uid_t;
-    pub fn getgid() -> gid_t;
-    pub fn getgroups(ngroups_max: c_int, groups: *mut gid_t) -> c_int;
-    #[cfg_attr(target_os = "illumos", link_name = "getloginx")]
-    pub fn getlogin() -> *mut c_char;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "getopt$UNIX2003"
-    )]
-    pub fn getopt(argc: c_int, argv: *const *mut c_char, optstr: *const c_char) -> c_int;
-    pub fn getpgid(pid: pid_t) -> pid_t;
-    pub fn getpgrp() -> pid_t;
-    pub fn getpid() -> pid_t;
-    pub fn getppid() -> pid_t;
-    pub fn getuid() -> uid_t;
-    pub fn isatty(fd: c_int) -> c_int;
-    #[cfg_attr(target_os = "solaris", link_name = "__link_xpg4")]
-    pub fn link(src: *const c_char, dst: *const c_char) -> c_int;
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "lseek64")]
-    pub fn lseek(fd: c_int, offset: off_t, whence: c_int) -> off_t;
-    pub fn pathconf(path: *const c_char, name: c_int) -> c_long;
-    pub fn pipe(fds: *mut c_int) -> c_int;
     pub fn posix_memalign(memptr: *mut *mut c_void, align: size_t, size: size_t) -> c_int;
     pub fn aligned_alloc(alignment: size_t, size: size_t) -> *mut c_void;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "read$UNIX2003"
-    )]
-    pub fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t;
-    pub fn rmdir(path: *const c_char) -> c_int;
-    pub fn seteuid(uid: uid_t) -> c_int;
-    pub fn setegid(gid: gid_t) -> c_int;
-    pub fn setgid(gid: gid_t) -> c_int;
-    pub fn setpgid(pid: pid_t, pgid: pid_t) -> c_int;
-    pub fn setsid() -> pid_t;
-    pub fn setuid(uid: uid_t) -> c_int;
-    pub fn setreuid(ruid: uid_t, euid: uid_t) -> c_int;
-    pub fn setregid(rgid: gid_t, egid: gid_t) -> c_int;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "sleep$UNIX2003"
-    )]
-    pub fn sleep(secs: c_uint) -> c_uint;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "nanosleep$UNIX2003"
@@ -1105,19 +1028,6 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__nanosleep50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__nanosleep64")]
     pub fn nanosleep(rqtp: *const timespec, rmtp: *mut timespec) -> c_int;
-    pub fn tcgetpgrp(fd: c_int) -> pid_t;
-    pub fn tcsetpgrp(fd: c_int, pgrp: crate::pid_t) -> c_int;
-    pub fn ttyname(fd: c_int) -> *mut c_char;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "ttyname_r$UNIX2003"
-    )]
-    #[cfg_attr(
-        any(target_os = "illumos", target_os = "solaris"),
-        link_name = "__posix_ttyname_r"
-    )]
-    pub fn ttyname_r(fd: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
-    pub fn unlink(c: *const c_char) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "wait$UNIX2003"
@@ -1128,23 +1038,6 @@ extern "C" {
         link_name = "waitpid$UNIX2003"
     )]
     pub fn waitpid(pid: pid_t, status: *mut c_int, options: c_int) -> pid_t;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "write$UNIX2003"
-    )]
-    pub fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "pread$UNIX2003"
-    )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "pread64")]
-    pub fn pread(fd: c_int, buf: *mut c_void, count: size_t, offset: off_t) -> ssize_t;
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "pwrite$UNIX2003"
-    )]
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "pwrite64")]
-    pub fn pwrite(fd: c_int, buf: *const c_void, count: size_t, offset: off_t) -> ssize_t;
     pub fn umask(mask: mode_t) -> mode_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
@@ -1207,12 +1100,6 @@ extern "C" {
 
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
-        link_name = "fsync$UNIX2003"
-    )]
-    pub fn fsync(fd: c_int) -> c_int;
-
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
         link_name = "setenv$UNIX2003"
     )]
     pub fn setenv(name: *const c_char, val: *const c_char, overwrite: c_int) -> c_int;
@@ -1222,14 +1109,6 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__unsetenv13")]
     pub fn unsetenv(name: *const c_char) -> c_int;
-
-    pub fn symlink(path1: *const c_char, path2: *const c_char) -> c_int;
-
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "truncate64")]
-    pub fn truncate(path: *const c_char, length: off_t) -> c_int;
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "ftruncate64")]
-    pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
-
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
@@ -1479,8 +1358,6 @@ extern "C" {
         link_name = "mknod@FBSD_1.0"
     )]
     pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
-    #[cfg(not(target_os = "espidf"))]
-    pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn endservent();
     pub fn getservbyname(name: *const c_char, proto: *const c_char) -> *mut servent;
     pub fn getservbyport(port: c_int, proto: *const c_char) -> *mut servent;
@@ -1570,9 +1447,6 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__sigpending14")]
     pub fn sigpending(set: *mut sigset_t) -> c_int;
 
-    #[cfg_attr(target_os = "solaris", link_name = "__sysconf_xpg7")]
-    pub fn sysconf(name: c_int) -> c_long;
-
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> c_int;
 
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fseeko64")]
@@ -1605,11 +1479,6 @@ extern "C" {
     pub fn setlogmask(maskpri: c_int) -> c_int;
     #[cfg_attr(target_os = "macos", link_name = "syslog$DARWIN_EXTSN")]
     pub fn syslog(priority: c_int, message: *const c_char, ...);
-    #[cfg_attr(
-        all(target_os = "macos", target_arch = "x86"),
-        link_name = "nice$UNIX2003"
-    )]
-    pub fn nice(incr: c_int) -> c_int;
 
     pub fn grantpt(fd: c_int) -> c_int;
     pub fn posix_openpt(flags: c_int) -> c_int;
@@ -1619,9 +1488,6 @@ extern "C" {
     #[cfg(not(target_os = "aix"))]
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
     pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
-
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "lockf64")]
-    pub fn lockf(fd: c_int, cmd: c_int, len: off_t) -> c_int;
 
 }
 
@@ -1690,19 +1556,6 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_os = "android"))] {
-        extern "C" {
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86"),
-                link_name = "confstr$UNIX2003"
-            )]
-            #[cfg_attr(target_os = "solaris", link_name = "__confstr_xpg7")]
-            pub fn confstr(name: c_int, buf: *mut c_char, len: size_t) -> size_t;
-        }
-    }
-}
-
-cfg_if! {
     if #[cfg(not(target_os = "aix"))] {
         extern "C" {
             pub fn dladdr(addr: *const c_void, info: *mut Dl_info) -> c_int;
@@ -1729,13 +1582,6 @@ cfg_if! {
 cfg_if! {
     if #[cfg(not(target_os = "redox"))] {
         extern "C" {
-            pub fn getsid(pid: pid_t) -> pid_t;
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86"),
-                link_name = "pause$UNIX2003"
-            )]
-            pub fn pause() -> c_int;
-
             pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
             #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
             pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
@@ -1815,7 +1661,6 @@ cfg_if! {
             #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
             pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction)
                 -> c_int;
-            pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: size_t) -> ssize_t;
             #[cfg_attr(
                 all(target_os = "macos", target_arch = "x86_64"),
                 link_name = "pselect$1050"

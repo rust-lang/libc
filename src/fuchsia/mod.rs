@@ -3507,7 +3507,6 @@ extern "C" {
     pub fn free(p: *mut c_void);
     pub fn abort() -> !;
     pub fn exit(status: c_int) -> !;
-    pub fn _exit(status: c_int) -> !;
     pub fn atexit(cb: extern "C" fn()) -> c_int;
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
@@ -3619,7 +3618,6 @@ extern "C" {
 
     pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
     pub fn fchmodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, flags: c_int) -> c_int;
-    pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
     pub fn fchownat(
         dirfd: c_int,
         pathname: *const c_char,
@@ -3651,61 +3649,10 @@ extern "C" {
     pub fn symlinkat(target: *const c_char, newdirfd: c_int, linkpath: *const c_char) -> c_int;
     pub fn unlinkat(dirfd: c_int, pathname: *const c_char, flags: c_int) -> c_int;
 
-    pub fn access(path: *const c_char, amode: c_int) -> c_int;
-    pub fn alarm(seconds: c_uint) -> c_uint;
-    pub fn chdir(dir: *const c_char) -> c_int;
-    pub fn chown(path: *const c_char, uid: uid_t, gid: gid_t) -> c_int;
-    pub fn lchown(path: *const c_char, uid: uid_t, gid: gid_t) -> c_int;
-    pub fn close(fd: c_int) -> c_int;
-    pub fn dup(fd: c_int) -> c_int;
-    pub fn dup2(src: c_int, dst: c_int) -> c_int;
-    pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-    pub fn execle(path: *const c_char, arg0: *const c_char, ...) -> c_int;
-    pub fn execlp(file: *const c_char, arg0: *const c_char, ...) -> c_int;
-    pub fn execv(prog: *const c_char, argv: *const *mut c_char) -> c_int;
-    pub fn execve(prog: *const c_char, argv: *const *mut c_char, envp: *const *mut c_char)
-        -> c_int;
-    pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> c_int;
-    pub fn fork() -> pid_t;
-    pub fn fpathconf(filedes: c_int, name: c_int) -> c_long;
-    pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
-    pub fn getegid() -> gid_t;
-    pub fn geteuid() -> uid_t;
-    pub fn getgid() -> gid_t;
-    pub fn getgroups(ngroups_max: c_int, groups: *mut gid_t) -> c_int;
-    pub fn getlogin() -> *mut c_char;
-    pub fn getopt(argc: c_int, argv: *const *mut c_char, optstr: *const c_char) -> c_int;
-    pub fn getpgid(pid: pid_t) -> pid_t;
-    pub fn getpgrp() -> pid_t;
-    pub fn getpid() -> pid_t;
-    pub fn getppid() -> pid_t;
-    pub fn getuid() -> uid_t;
-    pub fn isatty(fd: c_int) -> c_int;
-    pub fn link(src: *const c_char, dst: *const c_char) -> c_int;
-    pub fn lseek(fd: c_int, offset: off_t, whence: c_int) -> off_t;
-    pub fn pathconf(path: *const c_char, name: c_int) -> c_long;
-    pub fn pause() -> c_int;
-    pub fn pipe(fds: *mut c_int) -> c_int;
     pub fn posix_memalign(memptr: *mut *mut c_void, align: size_t, size: size_t) -> c_int;
-    pub fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t;
-    pub fn rmdir(path: *const c_char) -> c_int;
-    pub fn seteuid(uid: uid_t) -> c_int;
-    pub fn setegid(gid: gid_t) -> c_int;
-    pub fn setgid(gid: gid_t) -> c_int;
-    pub fn setpgid(pid: pid_t, pgid: pid_t) -> c_int;
-    pub fn setsid() -> pid_t;
-    pub fn setuid(uid: uid_t) -> c_int;
-    pub fn sleep(secs: c_uint) -> c_uint;
     pub fn nanosleep(rqtp: *const timespec, rmtp: *mut timespec) -> c_int;
-    pub fn tcgetpgrp(fd: c_int) -> pid_t;
-    pub fn tcsetpgrp(fd: c_int, pgrp: crate::pid_t) -> c_int;
-    pub fn ttyname(fd: c_int) -> *mut c_char;
-    pub fn unlink(c: *const c_char) -> c_int;
     pub fn wait(status: *mut c_int) -> pid_t;
     pub fn waitpid(pid: pid_t, status: *mut c_int, options: c_int) -> pid_t;
-    pub fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t;
-    pub fn pread(fd: c_int, buf: *mut c_void, count: size_t, offset: off_t) -> ssize_t;
-    pub fn pwrite(fd: c_int, buf: *const c_void, count: size_t, offset: off_t) -> ssize_t;
     pub fn umask(mask: mode_t) -> mode_t;
 
     pub fn utime(file: *const c_char, buf: *const utimbuf) -> c_int;
@@ -3732,14 +3679,8 @@ extern "C" {
 
     pub fn lstat(path: *const c_char, buf: *mut stat) -> c_int;
 
-    pub fn fsync(fd: c_int) -> c_int;
-
     pub fn setenv(name: *const c_char, val: *const c_char, overwrite: c_int) -> c_int;
     pub fn unsetenv(name: *const c_char) -> c_int;
-
-    pub fn symlink(path1: *const c_char, path2: *const c_char) -> c_int;
-
-    pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
 
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
@@ -3848,7 +3789,6 @@ extern "C" {
 
     pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
     pub fn uname(buf: *mut crate::utsname) -> c_int;
-    pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn getservbyname(name: *const c_char, proto: *const c_char) -> *mut servent;
     pub fn getprotobyname(name: *const c_char) -> *mut protoent;
     pub fn getprotobynumber(proto: c_int) -> *mut protoent;
@@ -3875,8 +3815,6 @@ extern "C" {
     pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> c_int;
     pub fn fstatvfs(fd: c_int, buf: *mut statvfs) -> c_int;
 
-    pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: size_t) -> ssize_t;
-
     pub fn sigemptyset(set: *mut sigset_t) -> c_int;
     pub fn sigaddset(set: *mut sigset_t, signum: c_int) -> c_int;
     pub fn sigfillset(set: *mut sigset_t) -> c_int;
@@ -3887,10 +3825,6 @@ extern "C" {
     pub fn sigpending(set: *mut sigset_t) -> c_int;
 
     pub fn timegm(tm: *mut crate::tm) -> time_t;
-
-    pub fn getsid(pid: pid_t) -> pid_t;
-
-    pub fn sysconf(name: c_int) -> c_long;
 
     pub fn mkfifo(path: *const c_char, mode: mode_t) -> c_int;
 
@@ -3989,8 +3923,6 @@ extern "C" {
         infop: *mut crate::siginfo_t,
         options: c_int,
     ) -> c_int;
-    pub fn setreuid(ruid: crate::uid_t, euid: crate::uid_t) -> c_int;
-    pub fn setregid(rgid: crate::gid_t, egid: crate::gid_t) -> c_int;
     pub fn getresuid(
         ruid: *mut crate::uid_t,
         euid: *mut crate::uid_t,

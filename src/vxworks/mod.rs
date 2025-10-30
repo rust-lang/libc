@@ -1600,23 +1600,6 @@ extern "C" {
     pub fn fileno(stream: *mut crate::FILE) -> c_int;
     pub fn creat(path: *const c_char, mode: mode_t) -> c_int;
     pub fn rewinddir(dirp: *mut crate::DIR);
-    pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
-    pub fn access(path: *const c_char, amode: c_int) -> c_int;
-    pub fn alarm(seconds: c_uint) -> c_uint;
-    pub fn fchdir(dirfd: c_int) -> c_int;
-    pub fn chown(path: *const c_char, uid: uid_t, gid: gid_t) -> c_int;
-    pub fn fpathconf(filedes: c_int, name: c_int) -> c_long;
-    pub fn getegid() -> gid_t;
-    pub fn geteuid() -> uid_t;
-    pub fn getgroups(ngroups_max: c_int, groups: *mut gid_t) -> c_int;
-    pub fn getlogin() -> *mut c_char;
-    pub fn getopt(argc: c_int, argv: *const *mut c_char, optstr: *const c_char) -> c_int;
-    pub fn pathconf(path: *const c_char, name: c_int) -> c_long;
-    pub fn pause() -> c_int;
-    pub fn seteuid(uid: uid_t) -> c_int;
-    pub fn setegid(gid: gid_t) -> c_int;
-    pub fn sleep(secs: c_uint) -> c_uint;
-    pub fn ttyname(fd: c_int) -> *mut c_char;
     pub fn wait(status: *mut c_int) -> pid_t;
     pub fn umask(mask: mode_t) -> mode_t;
     pub fn mlock(addr: *const c_void, len: size_t) -> c_int;
@@ -1637,7 +1620,6 @@ extern "C" {
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn msync(addr: *mut c_void, len: size_t, flags: c_int) -> c_int;
 
-    pub fn truncate(path: *const c_char, length: off_t) -> c_int;
     pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
 
@@ -1687,7 +1669,6 @@ extern "C" {
     pub fn localtime(time_p: *const time_t) -> *mut tm;
     pub fn timegm(tm: *mut tm) -> time_t;
     pub fn difftime(time1: time_t, time0: time_t) -> c_double;
-    pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn usleep(secs: crate::useconds_t) -> c_int;
     pub fn putenv(string: *mut c_char) -> c_int;
     pub fn setlocale(category: c_int, locale: *const c_char) -> *mut c_char;
@@ -1727,12 +1708,6 @@ extern "C" {
 extern "C" {
     // stdlib.h
     pub fn memalign(block_size: size_t, size_arg: size_t) -> *mut c_void;
-
-    // ioLib.h
-    pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
-
-    // ioLib.h
-    pub fn chdir(attr: *const c_char) -> c_int;
 
     // pthread.h
     pub fn pthread_mutexattr_init(attr: *mut pthread_mutexattr_t) -> c_int;
@@ -1829,9 +1804,6 @@ extern "C" {
 
     // stat.h
     pub fn lstat(path: *const c_char, buf: *mut stat) -> c_int;
-
-    // unistd.h
-    pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
 
     // dirent.h
     pub fn readdir_r(
@@ -2075,42 +2047,6 @@ extern "C" {
     // netdb.h for user
     pub fn gai_strerror(errcode: c_int) -> *mut c_char;
 
-    // ioLib.h or
-    // unistd.h
-    pub fn close(fd: c_int) -> c_int;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn read(fd: c_int, buf: *mut c_void, count: size_t) -> ssize_t;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn write(fd: c_int, buf: *const c_void, count: size_t) -> ssize_t;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn isatty(fd: c_int) -> c_int;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn dup(src: c_int) -> c_int;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn dup2(src: c_int, dst: c_int) -> c_int;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn pipe(fds: *mut c_int) -> c_int;
-
-    // ioLib.h or
-    // unistd.h
-    pub fn unlink(pathname: *const c_char) -> c_int;
-
-    // unistd.h and
-    // ioLib.h
-    pub fn lseek(fd: c_int, offset: off_t, whence: c_int) -> off_t;
-
     // netdb.h
     pub fn getaddrinfo(
         node: *const c_char,
@@ -2126,19 +2062,10 @@ extern "C" {
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
     // unistd.h
-    pub fn getpid() -> pid_t;
-
-    // unistd.h
-    pub fn getppid() -> pid_t;
-
-    // unistd.h
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> pid_t;
 
     // wait.h
     pub fn waitpid(pid: pid_t, status: *mut c_int, options: c_int) -> pid_t;
-
-    // unistd.h
-    pub fn sysconf(attr: c_int) -> c_long;
 
     // stdlib.h
     pub fn setenv(
@@ -2157,20 +2084,8 @@ extern "C" {
     // stdlib.h
     pub fn realpath(fileName: *const c_char, resolvedName: *mut c_char) -> *mut c_char;
 
-    // unistd.h
-    pub fn link(src: *const c_char, dst: *const c_char) -> c_int;
-
-    // unistd.h
-    pub fn readlink(path: *const c_char, buf: *mut c_char, bufsize: size_t) -> ssize_t;
-
-    // unistd.h
-    pub fn symlink(path1: *const c_char, path2: *const c_char) -> c_int;
-
     // dirent.h
     pub fn opendir(name: *const c_char) -> *mut crate::DIR;
-
-    // unistd.h
-    pub fn rmdir(path: *const c_char) -> c_int;
 
     // stat.h
     pub fn mkdir(dirName: *const c_char, mode: mode_t) -> c_int;
@@ -2180,9 +2095,6 @@ extern "C" {
 
     // stat.h
     pub fn fchmod(attr1: c_int, attr2: mode_t) -> c_int;
-
-    // unistd.h
-    pub fn fsync(fd: c_int) -> c_int;
 
     // dirent.h
     pub fn closedir(ptr: *mut crate::DIR) -> c_int;
@@ -2220,21 +2132,6 @@ extern "C" {
 
     // errnoLib.h
     pub fn errnoGet() -> c_int;
-
-    // unistd.h
-    pub fn _exit(status: c_int) -> !;
-
-    // unistd.h
-    pub fn setgid(gid: crate::gid_t) -> c_int;
-
-    // unistd.h
-    pub fn getgid() -> crate::gid_t;
-
-    // unistd.h
-    pub fn setuid(uid: crate::uid_t) -> c_int;
-
-    // unistd.h
-    pub fn getuid() -> crate::uid_t;
 
     // signal.h
     pub fn sigemptyset(__set: *mut sigset_t) -> c_int;
