@@ -60,7 +60,7 @@ s! {
     pub struct timeval {
         pub tv_sec: time_t,
         #[cfg(not(gnu_time_bits64))]
-        pub tv_usec: suseconds_t,
+        pub tv_usec: crate::suseconds_t,
         // For 64 bit time on 32 bit linux glibc, suseconds_t is still
         // a 32 bit type.  Use __suseconds64_t instead
         #[cfg(gnu_time_bits64)]
@@ -369,7 +369,11 @@ cfg_if! {
 pub const FNM_NOMATCH: c_int = 1;
 
 cfg_if! {
-    if #[cfg(any(target_os = "illumos", target_os = "solaris",))] {
+    if #[cfg(any(
+        target_os = "illumos",
+        target_os = "solaris",
+        target_os = "netbsd"
+    ))] {
         pub const FNM_CASEFOLD: c_int = 1 << 3;
     } else if #[cfg(not(target_os = "aix"))] {
         pub const FNM_CASEFOLD: c_int = 1 << 4;
@@ -383,6 +387,7 @@ cfg_if! {
         target_os = "android",
         target_os = "openbsd",
         target_os = "cygwin",
+        target_os = "netbsd",
     ))] {
         pub const FNM_PATHNAME: c_int = 1 << 1;
     } else {
@@ -396,6 +401,7 @@ cfg_if! {
         target_os = "freebsd",
         target_os = "android",
         target_os = "openbsd",
+        target_os = "netbsd",
     ))] {
         pub const FNM_NOESCAPE: c_int = 1 << 0;
     } else if #[cfg(target_os = "nto")] {
@@ -1549,10 +1555,12 @@ extern "C" {
     pub fn sem_wait(sem: *mut sem_t) -> c_int;
     pub fn sem_trywait(sem: *mut sem_t) -> c_int;
     pub fn sem_post(sem: *mut sem_t) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__statvfs90")]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statvfs64")]
-    pub fn statvfs(path: *const c_char, buf: *mut statvfs) -> c_int;
+    pub fn statvfs(path: *const c_char, buf: *mut crate::statvfs) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__fstatvfs90")]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatvfs64")]
-    pub fn fstatvfs(fd: c_int, buf: *mut statvfs) -> c_int;
+    pub fn fstatvfs(fd: c_int, buf: *mut crate::statvfs) -> c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__sigemptyset14")]
     pub fn sigemptyset(set: *mut sigset_t) -> c_int;
@@ -1653,6 +1661,7 @@ cfg_if! {
         target_os = "aix",
     )))] {
         extern "C" {
+            #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
             #[cfg_attr(gnu_time_bits64, link_name = "__adjtime64")]
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
         }
@@ -1812,7 +1821,7 @@ cfg_if! {
             pub fn fmemopen(buf: *mut c_void, size: size_t, mode: *const c_char) -> *mut FILE;
             pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
             pub fn atexit(cb: extern "C" fn()) -> c_int;
-            #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
+            #[cfg_attr(target_os = "netbsd", link_name = "__sigaction_siginfo")]
             pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction)
                 -> c_int;
             pub fn readlink(path: *const c_char, buf: *mut c_char, bufsz: size_t) -> ssize_t;

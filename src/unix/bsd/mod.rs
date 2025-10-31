@@ -468,19 +468,24 @@ pub const POLLWRNORM: c_short = 0x004;
 pub const POLLRDBAND: c_short = 0x080;
 pub const POLLWRBAND: c_short = 0x100;
 
-pub const BIOCGBLEN: c_ulong = 0x40044266;
-pub const BIOCSBLEN: c_ulong = 0xc0044266;
-pub const BIOCFLUSH: c_uint = 0x20004268;
-pub const BIOCPROMISC: c_uint = 0x20004269;
-pub const BIOCGDLT: c_ulong = 0x4004426a;
-pub const BIOCGETIF: c_ulong = 0x4020426b;
-pub const BIOCSETIF: c_ulong = 0x8020426c;
-pub const BIOCGSTATS: c_ulong = 0x4008426f;
-pub const BIOCIMMEDIATE: c_ulong = 0x80044270;
-pub const BIOCVERSION: c_ulong = 0x40044271;
-pub const BIOCGHDRCMPLT: c_ulong = 0x40044274;
-pub const BIOCSHDRCMPLT: c_ulong = 0x80044275;
-pub const SIOCGIFADDR: c_ulong = 0xc0206921;
+cfg_if! {
+    // Not yet implemented on NetBSD
+    if #[cfg(not(any(target_os = "netbsd")))] {
+        pub const BIOCGBLEN: c_ulong = 0x40044266;
+        pub const BIOCSBLEN: c_ulong = 0xc0044266;
+        pub const BIOCFLUSH: c_uint = 0x20004268;
+        pub const BIOCPROMISC: c_uint = 0x20004269;
+        pub const BIOCGDLT: c_ulong = 0x4004426a;
+        pub const BIOCGETIF: c_ulong = 0x4020426b;
+        pub const BIOCSETIF: c_ulong = 0x8020426c;
+        pub const BIOCGSTATS: c_ulong = 0x4008426f;
+        pub const BIOCIMMEDIATE: c_ulong = 0x80044270;
+        pub const BIOCVERSION: c_ulong = 0x40044271;
+        pub const BIOCGHDRCMPLT: c_ulong = 0x40044274;
+        pub const BIOCSHDRCMPLT: c_ulong = 0x80044275;
+        pub const SIOCGIFADDR: c_ulong = 0xc0206921;
+    }
+}
 
 pub const REG_BASIC: c_int = 0o0000;
 pub const REG_EXTENDED: c_int = 0o0001;
@@ -794,6 +799,7 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__sigsuspend14")]
     pub fn sigsuspend(mask: *const crate::sigset_t) -> c_int;
     pub fn sem_close(sem: *mut sem_t) -> c_int;
     pub fn getdtablesize() -> c_int;
@@ -868,6 +874,7 @@ extern "C" {
         all(target_os = "freebsd", any(freebsd12, freebsd11, freebsd10)),
         link_name = "wait4@FBSD_1.0"
     )]
+    #[cfg_attr(target_os = "netbsd", link_name = "__wait450")]
     pub fn wait4(
         pid: crate::pid_t,
         status: *mut c_int,
@@ -878,11 +885,13 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "getitimer$UNIX2003"
     )]
+    #[cfg_attr(target_os = "netbsd", link_name = "__getitimer50")]
     pub fn getitimer(which: c_int, curr_value: *mut crate::itimerval) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "setitimer$UNIX2003"
     )]
+    #[cfg_attr(target_os = "netbsd", link_name = "__setitimer50")]
     pub fn setitimer(
         which: c_int,
         new_value: *const crate::itimerval,
@@ -943,6 +952,7 @@ extern "C" {
         locale: crate::locale_t,
     ) -> size_t;
 
+    #[cfg_attr(target_os = "netbsd", link_name = "__devname50")]
     pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 
     pub fn issetugid() -> c_int;
