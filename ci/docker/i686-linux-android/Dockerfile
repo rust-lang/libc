@@ -1,4 +1,4 @@
-FROM ubuntu:25.04
+FROM ubuntu:25.10
 
 RUN dpkg --add-architecture i386
 RUN apt-get update && apt-get install -y --no-install-recommends \
