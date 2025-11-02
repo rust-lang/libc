@@ -2179,7 +2179,21 @@ fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
     let mut cfg = ctest_cfg();
 
-    let freebsd_ver = which_freebsd();
+    let freebsd_ver = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+        let vers = version.parse().unwrap();
+        println!("cargo:warning=setting FreeBSD version to {vers}");
+        Some(vers)
+    } else {
+        match &try_command_output("freebsd-version", &[]) {
+            Some(s) if s.starts_with("10") => Some(10),
+            Some(s) if s.starts_with("11") => Some(11),
+            Some(s) if s.starts_with("12") => Some(12),
+            Some(s) if s.starts_with("13") => Some(13),
+            Some(s) if s.starts_with("14") => Some(14),
+            Some(s) if s.starts_with("15") => Some(15),
+            Some(_) | None => None,
+        }
+    };
 
     match freebsd_ver {
         Some(12) => cfg.cfg("freebsd12", None),
@@ -4744,34 +4758,6 @@ fn test_linux_like_apis(target: &str) {
     }
 }
 
-fn which_freebsd() -> Option<i32> {
-    if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
-        let vers = version.parse().unwrap();
-        println!("cargo:warning=setting FreeBSD version to {vers}");
-        return Some(vers);
-    }
-
-    let output = std::process::Command::new("freebsd-version")
-        .output()
-        .ok()?;
-
-    if !output.status.success() {
-        return None;
-    }
-
-    let stdout = String::from_utf8(output.stdout).ok()?;
-
-    match &stdout {
-        s if s.starts_with("10") => Some(10),
-        s if s.starts_with("11") => Some(11),
-        s if s.starts_with("12") => Some(12),
-        s if s.starts_with("13") => Some(13),
-        s if s.starts_with("14") => Some(14),
-        s if s.starts_with("15") => Some(15),
-        _ => None,
-    }
-}
-
 fn test_haiku(target: &str) {
     assert!(target.contains("haiku"));
 
@@ -5395,4 +5381,18 @@ fn test_aix(target: &str) {
     });
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+}
+
+/// Attempt to execute a command and collect its output, If the command fails for whatever
+/// reason, return `None`.
+fn try_command_output(cmd: &str, args: &[&str]) -> Option<String> {
+    let output = std::process::Command::new(cmd).args(args).output().ok()?;
+
+    if !output.status.success() {
+        return None;
+    }
+
+    let res = String::from_utf8(output.stdout)
+        .unwrap_or_else(|e| panic!("command {cmd} returned non-UTF-8 output: {e}"));
+    Some(res)
 }
