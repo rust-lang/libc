@@ -104,37 +104,7 @@ s! {
         pub error_code: c_ulong,
         pub fault_address: c_ulong,
     }
-}
 
-s_no_extra_traits! {
-    pub union __c_anonymous_uc_sigmask {
-        uc_sigmask: crate::sigset_t,
-        uc_sigmask64: crate::sigset64_t,
-    }
-
-    #[repr(align(16))]
-    pub struct max_align_t {
-        priv_: [f64; 4],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __c_anonymous_uc_sigmask {
-            fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
-                unsafe { self.uc_sigmask == other.uc_sigmask }
-            }
-        }
-        impl Eq for __c_anonymous_uc_sigmask {}
-        impl hash::Hash for __c_anonymous_uc_sigmask {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.uc_sigmask.hash(state) }
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
     pub struct _libc_fpxreg {
         pub significand: [u16; 4],
         pub exponent: u16,
@@ -185,127 +155,29 @@ s_no_extra_traits! {
     }
 }
 
+s_no_extra_traits! {
+    pub union __c_anonymous_uc_sigmask {
+        uc_sigmask: crate::sigset_t,
+        uc_sigmask64: crate::sigset64_t,
+    }
+
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4],
+    }
+}
+
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for _libc_fpxreg {
-            fn eq(&self, other: &Self) -> bool {
-                self.significand == other.significand && self.exponent == other.exponent
-                // Ignore padding field
+        impl PartialEq for __c_anonymous_uc_sigmask {
+            fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
+                unsafe { self.uc_sigmask == other.uc_sigmask }
             }
         }
-        impl Eq for _libc_fpxreg {}
-        impl hash::Hash for _libc_fpxreg {
+        impl Eq for __c_anonymous_uc_sigmask {}
+        impl hash::Hash for __c_anonymous_uc_sigmask {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.significand.hash(state);
-                self.exponent.hash(state);
-                // Ignore padding field
-            }
-        }
-
-        impl PartialEq for _libc_fpstate {
-            fn eq(&self, other: &Self) -> bool {
-                self.cwd == other.cwd
-                    && self.swd == other.swd
-                    && self.ftw == other.ftw
-                    && self.fop == other.fop
-                    && self.rip == other.rip
-                    && self.rdp == other.rdp
-                    && self.mxcsr == other.mxcsr
-                    && self.mxcr_mask == other.mxcr_mask
-                    && self._st == other._st
-                    && self._xmm == other._xmm
-                // Ignore padding field
-            }
-        }
-        impl Eq for _libc_fpstate {}
-        impl hash::Hash for _libc_fpstate {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.cwd.hash(state);
-                self.swd.hash(state);
-                self.ftw.hash(state);
-                self.fop.hash(state);
-                self.rip.hash(state);
-                self.rdp.hash(state);
-                self.mxcsr.hash(state);
-                self.mxcr_mask.hash(state);
-                self._st.hash(state);
-                self._xmm.hash(state);
-                // Ignore padding field
-            }
-        }
-
-        impl PartialEq for mcontext_t {
-            fn eq(&self, other: &Self) -> bool {
-                self.gregs == other.gregs && self.fpregs == other.fpregs
-                // Ignore padding field
-            }
-        }
-        impl Eq for mcontext_t {}
-        impl hash::Hash for mcontext_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.gregs.hash(state);
-                self.fpregs.hash(state);
-                // Ignore padding field
-            }
-        }
-
-        impl PartialEq for ucontext_t {
-            fn eq(&self, other: &Self) -> bool {
-                self.uc_flags == other.uc_flags
-                    && self.uc_link == other.uc_link
-                    && self.uc_stack == other.uc_stack
-                    && self.uc_mcontext == other.uc_mcontext
-                    && self.uc_sigmask64 == other.uc_sigmask64
-                // Ignore padding field
-            }
-        }
-        impl Eq for ucontext_t {}
-        impl hash::Hash for ucontext_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.uc_flags.hash(state);
-                self.uc_link.hash(state);
-                self.uc_stack.hash(state);
-                self.uc_mcontext.hash(state);
-                self.uc_sigmask64.hash(state);
-                // Ignore padding field
-            }
-        }
-
-        impl PartialEq for user_fpregs_struct {
-            fn eq(&self, other: &user_fpregs_struct) -> bool {
-                self.cwd == other.cwd
-                    && self.swd == other.swd
-                    && self.ftw == other.ftw
-                    && self.fop == other.fop
-                    && self.rip == other.rip
-                    && self.rdp == other.rdp
-                    && self.mxcsr == other.mxcsr
-                    && self.mxcr_mask == other.mxcr_mask
-                    && self.st_space == other.st_space
-                    && self
-                        .xmm_space
-                        .iter()
-                        .zip(other.xmm_space.iter())
-                        .all(|(a, b)| a == b)
-                // Ignore padding field
-            }
-        }
-
-        impl Eq for user_fpregs_struct {}
-
-        impl hash::Hash for user_fpregs_struct {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.cwd.hash(state);
-                self.swd.hash(state);
-                self.ftw.hash(state);
-                self.fop.hash(state);
-                self.rip.hash(state);
-                self.rdp.hash(state);
-                self.mxcsr.hash(state);
-                self.mxcr_mask.hash(state);
-                self.st_space.hash(state);
-                self.xmm_space.hash(state);
-                // Ignore padding field
+                unsafe { self.uc_sigmask.hash(state) }
             }
         }
     }
