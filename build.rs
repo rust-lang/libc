@@ -7,8 +7,6 @@ use std::{env, str};
 const ALLOWED_CFGS: &[&str] = &[
     "emscripten_old_stat_abi",
     "espidf_time32",
-    "freebsd10",
-    "freebsd11",
     "freebsd12",
     "freebsd13",
     "freebsd14",
@@ -72,8 +70,6 @@ fn main() {
 
     match which_freebsd {
         x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
-        10 => set_cfg("freebsd10"),
-        11 => set_cfg("freebsd11"),
         12 => set_cfg("freebsd12"),
         13 => set_cfg("freebsd13"),
         14 => set_cfg("freebsd14"),
