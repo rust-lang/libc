@@ -1366,46 +1366,7 @@ s! {
         pub token_start: crate::__u32,
         pub token_count: crate::__u32,
     }
-}
 
-cfg_if! {
-    if #[cfg(not(target_arch = "sparc64"))] {
-        s! {
-            pub struct iw_thrspy {
-                pub addr: crate::sockaddr,
-                pub qual: iw_quality,
-                pub low: iw_quality,
-                pub high: iw_quality,
-            }
-
-            pub struct iw_mlme {
-                pub cmd: __u16,
-                pub reason_code: __u16,
-                pub addr: crate::sockaddr,
-            }
-
-            pub struct iw_michaelmicfailure {
-                pub flags: __u32,
-                pub src_addr: crate::sockaddr,
-                pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
-            }
-
-            pub struct __c_anonymous_elf32_rela {
-                pub r_offset: Elf32_Addr,
-                pub r_info: Elf32_Word,
-                pub r_addend: Elf32_Sword,
-            }
-
-            pub struct __c_anonymous_elf64_rela {
-                pub r_offset: Elf64_Addr,
-                pub r_info: Elf64_Xword,
-                pub r_addend: Elf64_Sxword,
-            }
-        }
-    }
-}
-
-s_no_extra_traits! {
     pub struct sockaddr_nl {
         pub nl_family: crate::sa_family_t,
         nl_pad: c_ushort,
@@ -1416,6 +1377,14 @@ s_no_extra_traits! {
     pub struct dirent {
         pub d_ino: crate::ino_t,
         pub d_off: off_t,
+        pub d_reclen: c_ushort,
+        pub d_type: c_uchar,
+        pub d_name: [c_char; 256],
+    }
+
+    pub struct dirent64 {
+        pub d_ino: crate::ino64_t,
+        pub d_off: off64_t,
         pub d_reclen: c_ushort,
         pub d_type: c_uchar,
         pub d_name: [c_char; 256],
@@ -1445,11 +1414,6 @@ s_no_extra_traits! {
         pub absflat: [__s32; ABS_CNT],
     }
 
-    pub struct af_alg_iv {
-        pub ivlen: u32,
-        pub iv: [c_uchar; 0],
-    }
-
     // x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
     pub struct mq_attr {
@@ -1476,53 +1440,10 @@ s_no_extra_traits! {
         pad: [c_long; 4],
     }
 
-    pub union __c_anonymous_ifr_ifru {
-        pub ifru_addr: crate::sockaddr,
-        pub ifru_dstaddr: crate::sockaddr,
-        pub ifru_broadaddr: crate::sockaddr,
-        pub ifru_netmask: crate::sockaddr,
-        pub ifru_hwaddr: crate::sockaddr,
-        pub ifru_flags: c_short,
-        pub ifru_ifindex: c_int,
-        pub ifru_metric: c_int,
-        pub ifru_mtu: c_int,
-        pub ifru_map: __c_anonymous_ifru_map,
-        pub ifru_slave: [c_char; crate::IFNAMSIZ],
-        pub ifru_newname: [c_char; crate::IFNAMSIZ],
-        pub ifru_data: *mut c_char,
-    }
-
-    pub struct ifreq {
-        /// interface name, e.g. "en0"
-        pub ifr_name: [c_char; crate::IFNAMSIZ],
-        pub ifr_ifru: __c_anonymous_ifr_ifru,
-    }
-
-    pub union __c_anonymous_ifc_ifcu {
-        pub ifcu_buf: *mut c_char,
-        pub ifcu_req: *mut crate::ifreq,
-    }
-
-    /// Structure used in SIOCGIFCONF request.  Used to retrieve interface configuration for
-    /// machine (useful for programs which must know all networks accessible).
-    pub struct ifconf {
-        /// Size of buffer
-        pub ifc_len: c_int,
-        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-    }
-
     pub struct hwtstamp_config {
         pub flags: c_int,
         pub tx_type: c_int,
         pub rx_filter: c_int,
-    }
-
-    pub struct dirent64 {
-        pub d_ino: crate::ino64_t,
-        pub d_off: off64_t,
-        pub d_reclen: c_ushort,
-        pub d_type: c_uchar,
-        pub d_name: [c_char; 256],
     }
 
     pub struct sched_attr {
@@ -1534,21 +1455,6 @@ s_no_extra_traits! {
         pub sched_runtime: crate::__u64,
         pub sched_deadline: crate::__u64,
         pub sched_period: crate::__u64,
-    }
-
-    pub union tpacket_req_u {
-        pub req: crate::tpacket_req,
-        pub req3: crate::tpacket_req3,
-    }
-
-    pub union tpacket_bd_header_u {
-        pub bh1: crate::tpacket_hdr_v1,
-    }
-
-    pub struct tpacket_block_desc {
-        pub version: __u32,
-        pub offset_to_priv: __u32,
-        pub hdr: crate::tpacket_bd_header_u,
     }
 
     #[cfg_attr(
@@ -1703,6 +1609,100 @@ s_no_extra_traits! {
     pub struct pthread_barrier_t {
         size: [u8; crate::__SIZEOF_PTHREAD_BARRIER_T],
     }
+}
+
+cfg_if! {
+    if #[cfg(not(target_arch = "sparc64"))] {
+        s! {
+            pub struct iw_thrspy {
+                pub addr: crate::sockaddr,
+                pub qual: iw_quality,
+                pub low: iw_quality,
+                pub high: iw_quality,
+            }
+
+            pub struct iw_mlme {
+                pub cmd: __u16,
+                pub reason_code: __u16,
+                pub addr: crate::sockaddr,
+            }
+
+            pub struct iw_michaelmicfailure {
+                pub flags: __u32,
+                pub src_addr: crate::sockaddr,
+                pub tsc: [__u8; IW_ENCODE_SEQ_MAX_SIZE],
+            }
+
+            pub struct __c_anonymous_elf32_rela {
+                pub r_offset: Elf32_Addr,
+                pub r_info: Elf32_Word,
+                pub r_addend: Elf32_Sword,
+            }
+
+            pub struct __c_anonymous_elf64_rela {
+                pub r_offset: Elf64_Addr,
+                pub r_info: Elf64_Xword,
+                pub r_addend: Elf64_Sxword,
+            }
+        }
+    }
+}
+
+s_no_extra_traits! {
+    pub struct af_alg_iv {
+        pub ivlen: u32,
+        pub iv: [c_uchar; 0],
+    }
+
+    pub union __c_anonymous_ifr_ifru {
+        pub ifru_addr: crate::sockaddr,
+        pub ifru_dstaddr: crate::sockaddr,
+        pub ifru_broadaddr: crate::sockaddr,
+        pub ifru_netmask: crate::sockaddr,
+        pub ifru_hwaddr: crate::sockaddr,
+        pub ifru_flags: c_short,
+        pub ifru_ifindex: c_int,
+        pub ifru_metric: c_int,
+        pub ifru_mtu: c_int,
+        pub ifru_map: __c_anonymous_ifru_map,
+        pub ifru_slave: [c_char; crate::IFNAMSIZ],
+        pub ifru_newname: [c_char; crate::IFNAMSIZ],
+        pub ifru_data: *mut c_char,
+    }
+
+    pub struct ifreq {
+        /// interface name, e.g. "en0"
+        pub ifr_name: [c_char; crate::IFNAMSIZ],
+        pub ifr_ifru: __c_anonymous_ifr_ifru,
+    }
+
+    pub union __c_anonymous_ifc_ifcu {
+        pub ifcu_buf: *mut c_char,
+        pub ifcu_req: *mut crate::ifreq,
+    }
+
+    /// Structure used in SIOCGIFCONF request.  Used to retrieve interface configuration for
+    /// machine (useful for programs which must know all networks accessible).
+    pub struct ifconf {
+        /// Size of buffer
+        pub ifc_len: c_int,
+        pub ifc_ifcu: __c_anonymous_ifc_ifcu,
+    }
+
+    pub union tpacket_req_u {
+        pub req: crate::tpacket_req,
+        pub req3: crate::tpacket_req3,
+    }
+
+    pub union tpacket_bd_header_u {
+        pub bh1: crate::tpacket_hdr_v1,
+    }
+
+    pub struct tpacket_block_desc {
+        pub version: __u32,
+        pub offset_to_priv: __u32,
+        pub hdr: crate::tpacket_bd_header_u,
+    }
 
     // linux/net_tstamp.h
     pub struct sock_txtime {
@@ -1775,265 +1775,6 @@ s_no_extra_traits! {
     pub union __c_anonymous_xsk_tx_metadata_union {
         pub request: xsk_tx_metadata_request,
         pub completion: xsk_tx_metadata_completion,
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sockaddr_nl {
-            fn eq(&self, other: &sockaddr_nl) -> bool {
-                self.nl_family == other.nl_family
-                    && self.nl_pid == other.nl_pid
-                    && self.nl_groups == other.nl_groups
-            }
-        }
-        impl Eq for sockaddr_nl {}
-        impl hash::Hash for sockaddr_nl {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.nl_family.hash(state);
-                self.nl_pid.hash(state);
-                self.nl_groups.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for dirent {}
-
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent64 {
-            fn eq(&self, other: &dirent64) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for dirent64 {}
-
-        impl hash::Hash for dirent64 {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_cond_t {
-            fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_cond_t {}
-
-        impl hash::Hash for pthread_cond_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_mutex_t {
-            fn eq(&self, other: &pthread_mutex_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_mutex_t {}
-
-        impl hash::Hash for pthread_mutex_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_rwlock_t {
-            fn eq(&self, other: &pthread_rwlock_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_rwlock_t {}
-
-        impl hash::Hash for pthread_rwlock_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_barrier_t {
-            fn eq(&self, other: &pthread_barrier_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for pthread_barrier_t {}
-
-        impl hash::Hash for pthread_barrier_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_alg {
-            fn eq(&self, other: &sockaddr_alg) -> bool {
-                self.salg_family == other.salg_family
-                    && self
-                        .salg_type
-                        .iter()
-                        .zip(other.salg_type.iter())
-                        .all(|(a, b)| a == b)
-                    && self.salg_feat == other.salg_feat
-                    && self.salg_mask == other.salg_mask
-                    && self
-                        .salg_name
-                        .iter()
-                        .zip(other.salg_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for sockaddr_alg {}
-
-        impl hash::Hash for sockaddr_alg {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.salg_family.hash(state);
-                self.salg_type.hash(state);
-                self.salg_feat.hash(state);
-                self.salg_mask.hash(state);
-                self.salg_name.hash(state);
-            }
-        }
-
-        impl PartialEq for uinput_setup {
-            fn eq(&self, other: &uinput_setup) -> bool {
-                self.id == other.id
-                    && self.name[..] == other.name[..]
-                    && self.ff_effects_max == other.ff_effects_max
-            }
-        }
-        impl Eq for uinput_setup {}
-
-        impl hash::Hash for uinput_setup {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.id.hash(state);
-                self.name.hash(state);
-                self.ff_effects_max.hash(state);
-            }
-        }
-
-        impl PartialEq for uinput_user_dev {
-            fn eq(&self, other: &uinput_user_dev) -> bool {
-                self.name[..] == other.name[..]
-                    && self.id == other.id
-                    && self.ff_effects_max == other.ff_effects_max
-                    && self.absmax[..] == other.absmax[..]
-                    && self.absmin[..] == other.absmin[..]
-                    && self.absfuzz[..] == other.absfuzz[..]
-                    && self.absflat[..] == other.absflat[..]
-            }
-        }
-        impl Eq for uinput_user_dev {}
-
-        impl hash::Hash for uinput_user_dev {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.name.hash(state);
-                self.id.hash(state);
-                self.ff_effects_max.hash(state);
-                self.absmax.hash(state);
-                self.absmin.hash(state);
-                self.absfuzz.hash(state);
-                self.absflat.hash(state);
-            }
-        }
-
-        impl PartialEq for mq_attr {
-            fn eq(&self, other: &mq_attr) -> bool {
-                self.mq_flags == other.mq_flags
-                    && self.mq_maxmsg == other.mq_maxmsg
-                    && self.mq_msgsize == other.mq_msgsize
-                    && self.mq_curmsgs == other.mq_curmsgs
-            }
-        }
-        impl Eq for mq_attr {}
-        impl hash::Hash for mq_attr {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.mq_flags.hash(state);
-                self.mq_maxmsg.hash(state);
-                self.mq_msgsize.hash(state);
-                self.mq_curmsgs.hash(state);
-            }
-        }
-        impl PartialEq for hwtstamp_config {
-            fn eq(&self, other: &hwtstamp_config) -> bool {
-                self.flags == other.flags
-                    && self.tx_type == other.tx_type
-                    && self.rx_filter == other.rx_filter
-            }
-        }
-        impl Eq for hwtstamp_config {}
-        impl hash::Hash for hwtstamp_config {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.flags.hash(state);
-                self.tx_type.hash(state);
-                self.rx_filter.hash(state);
-            }
-        }
-
-        impl PartialEq for sched_attr {
-            fn eq(&self, other: &sched_attr) -> bool {
-                self.size == other.size
-                    && self.sched_policy == other.sched_policy
-                    && self.sched_flags == other.sched_flags
-                    && self.sched_nice == other.sched_nice
-                    && self.sched_priority == other.sched_priority
-                    && self.sched_runtime == other.sched_runtime
-                    && self.sched_deadline == other.sched_deadline
-                    && self.sched_period == other.sched_period
-            }
-        }
-        impl Eq for sched_attr {}
-        impl hash::Hash for sched_attr {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-                self.sched_policy.hash(state);
-                self.sched_flags.hash(state);
-                self.sched_nice.hash(state);
-                self.sched_priority.hash(state);
-                self.sched_runtime.hash(state);
-                self.sched_deadline.hash(state);
-                self.sched_period.hash(state);
-            }
-        }
     }
 }
 

@@ -47,9 +47,7 @@ s! {
     pub struct malloc_zone_t {
         __private: [crate::uintptr_t; 18], // FIXME(macos): keeping private for now
     }
-}
 
-s_no_extra_traits! {
     pub struct pthread_attr_t {
         __sig: c_long,
         __opaque: [c_char; 36],
@@ -59,49 +57,12 @@ s_no_extra_traits! {
         __sig: c_long,
         __opaque: [c_char; crate::__PTHREAD_ONCE_SIZE__],
     }
+}
 
+s_no_extra_traits! {
     #[repr(align(16))]
     pub struct max_align_t {
         priv_: [f64; 2],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for pthread_attr_t {
-            fn eq(&self, other: &pthread_attr_t) -> bool {
-                self.__sig == other.__sig
-                    && self
-                        .__opaque
-                        .iter()
-                        .zip(other.__opaque.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_attr_t {}
-        impl hash::Hash for pthread_attr_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.__sig.hash(state);
-                self.__opaque.hash(state);
-            }
-        }
-        impl PartialEq for pthread_once_t {
-            fn eq(&self, other: &pthread_once_t) -> bool {
-                self.__sig == other.__sig
-                    && self
-                        .__opaque
-                        .iter()
-                        .zip(other.__opaque.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_once_t {}
-        impl hash::Hash for pthread_once_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.__sig.hash(state);
-                self.__opaque.hash(state);
-            }
-        }
     }
 }
 
