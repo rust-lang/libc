@@ -154,14 +154,14 @@ macro_rules! s {
     (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
         __item! {
             #[repr(C)]
-            #[cfg_attr(
-                feature = "extra_traits",
-                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
-            )]
             #[::core::prelude::v1::derive(
                 ::core::clone::Clone,
                 ::core::marker::Copy,
                 ::core::fmt::Debug,
+            )]
+            #[cfg_attr(
+                feature = "extra_traits",
+                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
             )]
             #[allow(deprecated)]
             $(#[$attr])*
