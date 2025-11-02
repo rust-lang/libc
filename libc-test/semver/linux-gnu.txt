@@ -593,6 +593,7 @@ dlvsym
 eaccess
 endutxent
 epoll_pwait2
+ethhdr
 euidaccess
 execveat
 explicit_bzero
