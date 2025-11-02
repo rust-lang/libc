@@ -440,12 +440,19 @@ s! {
         pub f_namelen: c_long,
         pub f_spare: [c_long; 6],
     }
-}
 
-s_no_extra_traits! {
-    #[repr(align(16))]
-    pub struct max_align_t {
-        priv_: [f64; 4],
+    pub struct sockaddr_un {
+        pub sun_family: sa_family_t,
+        pub sun_path: [c_char; 108],
+    }
+
+    pub struct utsname {
+        pub sysname: [c_char; 66],
+        pub nodename: [c_char; 65],
+        pub release: [c_char; 65],
+        pub version: [c_char; 65],
+        pub machine: [c_char; 65],
+        pub domainname: [c_char; 65],
     }
 
     pub struct siginfo_t {
@@ -455,6 +462,22 @@ s_no_extra_traits! {
         pub si_uid: uid_t,
         pub si_errno: c_int,
         __pad: [u32; 32],
+    }
+
+    pub struct dirent {
+        __d_version: u32,
+        pub d_ino: ino_t,
+        pub d_type: c_uchar,
+        __d_unused1: [c_uchar; 3],
+        __d_internal1: u32,
+        pub d_name: [c_char; 256],
+    }
+}
+
+s_no_extra_traits! {
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f64; 4],
     }
 
     pub union __c_anonymous_ifr_ifru {
@@ -485,29 +508,6 @@ s_no_extra_traits! {
     pub struct ifconf {
         pub ifc_len: c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
-    }
-
-    pub struct dirent {
-        __d_version: u32,
-        pub d_ino: ino_t,
-        pub d_type: c_uchar,
-        __d_unused1: [c_uchar; 3],
-        __d_internal1: u32,
-        pub d_name: [c_char; 256],
-    }
-
-    pub struct sockaddr_un {
-        pub sun_family: sa_family_t,
-        pub sun_path: [c_char; 108],
-    }
-
-    pub struct utsname {
-        pub sysname: [c_char; 66],
-        pub nodename: [c_char; 65],
-        pub release: [c_char; 65],
-        pub version: [c_char; 65],
-        pub machine: [c_char; 65],
-        pub domainname: [c_char; 65],
     }
 }
 
@@ -557,122 +557,6 @@ impl siginfo_t {
             si_value: sigval,
         }
         (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for siginfo_t {
-            fn eq(&self, other: &siginfo_t) -> bool {
-                self.si_signo == other.si_signo
-                    && self.si_code == other.si_code
-                    && self.si_pid == other.si_pid
-                    && self.si_uid == other.si_uid
-                    && self.si_errno == other.si_errno
-            }
-        }
-
-        impl Eq for siginfo_t {}
-
-        impl hash::Hash for siginfo_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.si_signo.hash(state);
-                self.si_code.hash(state);
-                self.si_pid.hash(state);
-                self.si_uid.hash(state);
-                self.si_errno.hash(state);
-                // Ignore __pad
-            }
-        }
-
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for dirent {}
-
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_un {
-            fn eq(&self, other: &sockaddr_un) -> bool {
-                self.sun_family == other.sun_family
-                    && self
-                        .sun_path
-                        .iter()
-                        .zip(other.sun_path.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for sockaddr_un {}
-
-        impl hash::Hash for sockaddr_un {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sun_family.hash(state);
-                self.sun_path.hash(state);
-            }
-        }
-
-        impl PartialEq for utsname {
-            fn eq(&self, other: &utsname) -> bool {
-                self.sysname
-                    .iter()
-                    .zip(other.sysname.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                        .nodename
-                        .iter()
-                        .zip(other.nodename.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .release
-                        .iter()
-                        .zip(other.release.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .version
-                        .iter()
-                        .zip(other.version.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .machine
-                        .iter()
-                        .zip(other.machine.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .domainname
-                        .iter()
-                        .zip(other.domainname.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for utsname {}
-
-        impl hash::Hash for utsname {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sysname.hash(state);
-                self.nodename.hash(state);
-                self.release.hash(state);
-                self.version.hash(state);
-                self.machine.hash(state);
-                self.domainname.hash(state);
-            }
-        }
     }
 }
 

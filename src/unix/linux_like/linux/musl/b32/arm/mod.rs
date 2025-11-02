@@ -130,9 +130,6 @@ s! {
         pub arm_cpsr: c_ulong,
         pub fault_address: c_ulong,
     }
-}
-
-s_no_extra_traits! {
     pub struct ucontext_t {
         pub uc_flags: c_ulong,
         pub uc_link: *mut ucontext_t,
@@ -141,34 +138,12 @@ s_no_extra_traits! {
         pub uc_sigmask: crate::sigset_t,
         pub uc_regspace: [c_ulonglong; 64],
     }
+}
 
+s_no_extra_traits! {
     #[repr(align(8))]
     pub struct max_align_t {
         priv_: (i64, i64),
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for ucontext_t {
-            fn eq(&self, other: &ucontext_t) -> bool {
-                self.uc_flags == other.uc_flags
-                    && self.uc_link == other.uc_link
-                    && self.uc_stack == other.uc_stack
-                    && self.uc_mcontext == other.uc_mcontext
-                    && self.uc_sigmask == other.uc_sigmask
-            }
-        }
-        impl Eq for ucontext_t {}
-        impl hash::Hash for ucontext_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.uc_flags.hash(state);
-                self.uc_link.hash(state);
-                self.uc_stack.hash(state);
-                self.uc_mcontext.hash(state);
-                self.uc_sigmask.hash(state);
-            }
-        }
     }
 }
 

@@ -609,6 +609,109 @@ s! {
         pub tcpi_so_snd_sb_lowat: u32,
         pub tcpi_so_snd_sb_wat: u32,
     }
+
+    pub struct dirent {
+        pub d_fileno: crate::ino_t,
+        pub d_off: off_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_namlen: u8,
+        __d_padding: [u8; 4],
+        pub d_name: [c_char; 256],
+    }
+
+    pub struct sockaddr_storage {
+        pub ss_len: u8,
+        pub ss_family: crate::sa_family_t,
+        __ss_pad1: [u8; 6],
+        __ss_pad2: i64,
+        __ss_pad3: [u8; 240],
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: c_int,
+        pub si_code: c_int,
+        pub si_errno: c_int,
+        pub si_addr: *mut c_char,
+        #[cfg(target_pointer_width = "32")]
+        __pad: [u8; 112],
+        #[cfg(target_pointer_width = "64")]
+        __pad: [u8; 108],
+    }
+
+    pub struct lastlog {
+        ll_time: crate::time_t,
+        ll_line: [c_char; UT_LINESIZE],
+        ll_host: [c_char; UT_HOSTSIZE],
+    }
+
+    pub struct utmp {
+        pub ut_line: [c_char; UT_LINESIZE],
+        pub ut_name: [c_char; UT_NAMESIZE],
+        pub ut_host: [c_char; UT_HOSTSIZE],
+        pub ut_time: crate::time_t,
+    }
+
+    pub struct statfs {
+        pub f_flags: u32,
+        pub f_bsize: u32,
+        pub f_iosize: u32,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: i64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: i64,
+        pub f_syncwrites: u64,
+        pub f_syncreads: u64,
+        pub f_asyncwrites: u64,
+        pub f_asyncreads: u64,
+        pub f_fsid: crate::fsid_t,
+        pub f_namemax: u32,
+        pub f_owner: crate::uid_t,
+        pub f_ctime: u64,
+        pub f_fstypename: [c_char; 16],
+        pub f_mntonname: [c_char; 90],
+        pub f_mntfromname: [c_char; 90],
+        pub f_mntfromspec: [c_char; 90],
+        pub mount_info: mount_info,
+    }
+}
+
+s_no_extra_traits! {
+    pub union mount_info {
+        pub ufs_args: ufs_args,
+        pub mfs_args: mfs_args,
+        pub nfs_args: nfs_args,
+        pub iso_args: iso_args,
+        pub msdosfs_args: msdosfs_args,
+        pub ntfs_args: ntfs_args,
+        pub tmpfs_args: tmpfs_args,
+        align: [c_char; 160],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for mount_info {
+            fn eq(&self, other: &mount_info) -> bool {
+                unsafe {
+                    self.align
+                        .iter()
+                        .zip(other.align.iter())
+                        .all(|(a, b)| a == b)
+                }
+            }
+        }
+
+        impl Eq for mount_info {}
+
+        impl hash::Hash for mount_info {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.align.hash(state) };
+            }
+        }
+    }
 }
 
 impl siginfo_t {
@@ -665,59 +768,6 @@ impl siginfo_t {
 }
 
 s_no_extra_traits! {
-    pub struct dirent {
-        pub d_fileno: crate::ino_t,
-        pub d_off: off_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_namlen: u8,
-        __d_padding: [u8; 4],
-        pub d_name: [c_char; 256],
-    }
-
-    pub struct sockaddr_storage {
-        pub ss_len: u8,
-        pub ss_family: crate::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: i64,
-        __ss_pad3: [u8; 240],
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_code: c_int,
-        pub si_errno: c_int,
-        pub si_addr: *mut c_char,
-        #[cfg(target_pointer_width = "32")]
-        __pad: [u8; 112],
-        #[cfg(target_pointer_width = "64")]
-        __pad: [u8; 108],
-    }
-
-    pub struct lastlog {
-        ll_time: crate::time_t,
-        ll_line: [c_char; UT_LINESIZE],
-        ll_host: [c_char; UT_HOSTSIZE],
-    }
-
-    pub struct utmp {
-        pub ut_line: [c_char; UT_LINESIZE],
-        pub ut_name: [c_char; UT_NAMESIZE],
-        pub ut_host: [c_char; UT_HOSTSIZE],
-        pub ut_time: crate::time_t,
-    }
-
-    pub union mount_info {
-        pub ufs_args: ufs_args,
-        pub mfs_args: mfs_args,
-        pub nfs_args: nfs_args,
-        pub iso_args: iso_args,
-        pub msdosfs_args: msdosfs_args,
-        pub ntfs_args: ntfs_args,
-        pub tmpfs_args: tmpfs_args,
-        align: [c_char; 160],
-    }
-
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: crate::sockaddr,
         pub ifru_dstaddr: crate::sockaddr,
@@ -729,175 +779,10 @@ s_no_extra_traits! {
         pub ifru_data: crate::caddr_t,
         pub ifru_index: c_uint,
     }
-
-    pub struct statfs {
-        pub f_flags: u32,
-        pub f_bsize: u32,
-        pub f_iosize: u32,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: i64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: i64,
-        pub f_syncwrites: u64,
-        pub f_syncreads: u64,
-        pub f_asyncwrites: u64,
-        pub f_asyncreads: u64,
-        pub f_fsid: crate::fsid_t,
-        pub f_namemax: u32,
-        pub f_owner: crate::uid_t,
-        pub f_ctime: u64,
-        pub f_fstypename: [c_char; 16],
-        pub f_mntonname: [c_char; 90],
-        pub f_mntfromname: [c_char; 90],
-        pub f_mntfromspec: [c_char; 90],
-        pub mount_info: mount_info,
-    }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_fileno == other.d_fileno
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self.d_namlen == other.d_namlen
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for dirent {}
-
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_fileno.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_namlen.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_storage {
-            fn eq(&self, other: &sockaddr_storage) -> bool {
-                self.ss_len == other.ss_len && self.ss_family == other.ss_family
-            }
-        }
-
-        impl Eq for sockaddr_storage {}
-
-        impl hash::Hash for sockaddr_storage {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ss_len.hash(state);
-                self.ss_family.hash(state);
-            }
-        }
-
-        impl PartialEq for siginfo_t {
-            fn eq(&self, other: &siginfo_t) -> bool {
-                self.si_signo == other.si_signo
-                    && self.si_code == other.si_code
-                    && self.si_errno == other.si_errno
-                    && self.si_addr == other.si_addr
-            }
-        }
-
-        impl Eq for siginfo_t {}
-
-        impl hash::Hash for siginfo_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.si_signo.hash(state);
-                self.si_code.hash(state);
-                self.si_errno.hash(state);
-                self.si_addr.hash(state);
-            }
-        }
-
-        impl PartialEq for lastlog {
-            fn eq(&self, other: &lastlog) -> bool {
-                self.ll_time == other.ll_time
-                    && self
-                        .ll_line
-                        .iter()
-                        .zip(other.ll_line.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .ll_host
-                        .iter()
-                        .zip(other.ll_host.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for lastlog {}
-
-        impl hash::Hash for lastlog {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ll_time.hash(state);
-                self.ll_line.hash(state);
-                self.ll_host.hash(state);
-            }
-        }
-
-        impl PartialEq for utmp {
-            fn eq(&self, other: &utmp) -> bool {
-                self.ut_time == other.ut_time
-                    && self
-                        .ut_line
-                        .iter()
-                        .zip(other.ut_line.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .ut_name
-                        .iter()
-                        .zip(other.ut_name.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .ut_host
-                        .iter()
-                        .zip(other.ut_host.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for utmp {}
-
-        impl hash::Hash for utmp {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ut_line.hash(state);
-                self.ut_name.hash(state);
-                self.ut_host.hash(state);
-                self.ut_time.hash(state);
-            }
-        }
-
-        impl PartialEq for mount_info {
-            fn eq(&self, other: &mount_info) -> bool {
-                unsafe {
-                    self.align
-                        .iter()
-                        .zip(other.align.iter())
-                        .all(|(a, b)| a == b)
-                }
-            }
-        }
-
-        impl Eq for mount_info {}
-
-        impl hash::Hash for mount_info {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe { self.align.hash(state) };
-            }
-        }
-
         impl PartialEq for __c_anonymous_ifr_ifru {
             fn eq(&self, other: &__c_anonymous_ifr_ifru) -> bool {
                 unsafe {
@@ -929,78 +814,6 @@ cfg_if! {
                     self.ifru_data.hash(state);
                     self.ifru_index.hash(state);
                 }
-            }
-        }
-
-        impl PartialEq for statfs {
-            fn eq(&self, other: &statfs) -> bool {
-                self.f_flags == other.f_flags
-                    && self.f_bsize == other.f_bsize
-                    && self.f_iosize == other.f_iosize
-                    && self.f_blocks == other.f_blocks
-                    && self.f_bfree == other.f_bfree
-                    && self.f_bavail == other.f_bavail
-                    && self.f_files == other.f_files
-                    && self.f_ffree == other.f_ffree
-                    && self.f_favail == other.f_favail
-                    && self.f_syncwrites == other.f_syncwrites
-                    && self.f_syncreads == other.f_syncreads
-                    && self.f_asyncwrites == other.f_asyncwrites
-                    && self.f_asyncreads == other.f_asyncreads
-                    && self.f_fsid == other.f_fsid
-                    && self.f_namemax == other.f_namemax
-                    && self.f_owner == other.f_owner
-                    && self.f_ctime == other.f_ctime
-                    && self
-                        .f_fstypename
-                        .iter()
-                        .zip(other.f_fstypename.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .f_mntonname
-                        .iter()
-                        .zip(other.f_mntonname.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .f_mntfromname
-                        .iter()
-                        .zip(other.f_mntfromname.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .f_mntfromspec
-                        .iter()
-                        .zip(other.f_mntfromspec.iter())
-                        .all(|(a, b)| a == b)
-                    && self.mount_info == other.mount_info
-            }
-        }
-
-        impl Eq for statfs {}
-
-        impl hash::Hash for statfs {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.f_flags.hash(state);
-                self.f_bsize.hash(state);
-                self.f_iosize.hash(state);
-                self.f_blocks.hash(state);
-                self.f_bfree.hash(state);
-                self.f_bavail.hash(state);
-                self.f_files.hash(state);
-                self.f_ffree.hash(state);
-                self.f_favail.hash(state);
-                self.f_syncwrites.hash(state);
-                self.f_syncreads.hash(state);
-                self.f_asyncwrites.hash(state);
-                self.f_asyncreads.hash(state);
-                self.f_fsid.hash(state);
-                self.f_namemax.hash(state);
-                self.f_owner.hash(state);
-                self.f_ctime.hash(state);
-                self.f_fstypename.hash(state);
-                self.f_mntonname.hash(state);
-                self.f_mntfromname.hash(state);
-                self.f_mntfromspec.hash(state);
-                self.mount_info.hash(state);
             }
         }
     }

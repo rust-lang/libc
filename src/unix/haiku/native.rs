@@ -451,6 +451,13 @@ s! {
         pub edx: u32,
         pub ecx: u32,
     }
+
+    pub struct cpu_topology_node_info {
+        pub id: u32,
+        pub type_: topology_level_type,
+        pub level: u32,
+        pub data: __c_anonymous_cpu_topology_info_data,
+    }
 }
 
 s_no_extra_traits! {
@@ -467,13 +474,6 @@ s_no_extra_traits! {
         pub root: cpu_topology_root_info,
         pub package: cpu_topology_package_info,
         pub core: cpu_topology_core_info,
-    }
-
-    pub struct cpu_topology_node_info {
-        pub id: u32,
-        pub type_: topology_level_type,
-        pub level: u32,
-        pub data: __c_anonymous_cpu_topology_info_data,
     }
 }
 
@@ -492,6 +492,11 @@ cfg_if! {
             }
         }
         impl Eq for cpuid_info {}
+        impl hash::Hash for cpuid_info {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits");
+            }
+        }
 
         impl PartialEq for __c_anonymous_cpu_topology_info_data {
             fn eq(&self, other: &__c_anonymous_cpu_topology_info_data) -> bool {
@@ -503,14 +508,11 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_cpu_topology_info_data {}
-
-        impl PartialEq for cpu_topology_node_info {
-            fn eq(&self, other: &cpu_topology_node_info) -> bool {
-                self.id == other.id && self.type_ == other.type_ && self.level == other.level
+        impl hash::Hash for __c_anonymous_cpu_topology_info_data {
+            fn hash<H: hash::Hasher>(&self, _state: &mut H) {
+                unimplemented!("traits");
             }
         }
-
-        impl Eq for cpu_topology_node_info {}
     }
 }
 

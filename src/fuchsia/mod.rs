@@ -875,9 +875,7 @@ s! {
     pub struct pthread_condattr_t {
         size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
     }
-}
 
-s_no_extra_traits! {
     pub struct sysinfo {
         pub uptime: c_ulong,
         pub loads: [c_ulong; 3],
@@ -964,6 +962,8 @@ s_no_extra_traits! {
         pub nl_groups: u32,
     }
 
+    // FIXME(msrv): suggested method was added in 1.85
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigevent {
         pub sigev_value: crate::sigval,
         pub sigev_signo: c_int,
@@ -1016,7 +1016,9 @@ s_no_extra_traits! {
     pub struct pthread_cond_t {
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
     }
+}
 
+s_no_extra_traits! {
     pub union sigval {
         pub sival_int: c_int,
         pub sival_ptr: *mut c_void,
@@ -1037,265 +1039,6 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for sysinfo {
-            fn eq(&self, other: &sysinfo) -> bool {
-                self.uptime == other.uptime
-                    && self.loads == other.loads
-                    && self.totalram == other.totalram
-                    && self.freeram == other.freeram
-                    && self.sharedram == other.sharedram
-                    && self.bufferram == other.bufferram
-                    && self.totalswap == other.totalswap
-                    && self.freeswap == other.freeswap
-                    && self.procs == other.procs
-                    && self.pad == other.pad
-                    && self.totalhigh == other.totalhigh
-                    && self.freehigh == other.freehigh
-                    && self.mem_unit == other.mem_unit
-                    && self
-                        .__reserved
-                        .iter()
-                        .zip(other.__reserved.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for sysinfo {}
-        impl hash::Hash for sysinfo {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.uptime.hash(state);
-                self.loads.hash(state);
-                self.totalram.hash(state);
-                self.freeram.hash(state);
-                self.sharedram.hash(state);
-                self.bufferram.hash(state);
-                self.totalswap.hash(state);
-                self.freeswap.hash(state);
-                self.procs.hash(state);
-                self.pad.hash(state);
-                self.totalhigh.hash(state);
-                self.freehigh.hash(state);
-                self.mem_unit.hash(state);
-                self.__reserved.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_un {
-            fn eq(&self, other: &sockaddr_un) -> bool {
-                self.sun_family == other.sun_family
-                    && self
-                        .sun_path
-                        .iter()
-                        .zip(other.sun_path.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for sockaddr_un {}
-        impl hash::Hash for sockaddr_un {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sun_family.hash(state);
-                self.sun_path.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_storage {
-            fn eq(&self, other: &sockaddr_storage) -> bool {
-                self.ss_family == other.ss_family
-                    && self.__ss_align == other.__ss_align
-                    && self
-                        .__ss_pad2
-                        .iter()
-                        .zip(other.__ss_pad2.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for sockaddr_storage {}
-        impl hash::Hash for sockaddr_storage {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ss_family.hash(state);
-                self.__ss_align.hash(state);
-                self.__ss_pad2.hash(state);
-            }
-        }
-
-        impl PartialEq for utsname {
-            fn eq(&self, other: &utsname) -> bool {
-                self.sysname
-                    .iter()
-                    .zip(other.sysname.iter())
-                    .all(|(a, b)| a == b)
-                    && self
-                        .nodename
-                        .iter()
-                        .zip(other.nodename.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .release
-                        .iter()
-                        .zip(other.release.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .version
-                        .iter()
-                        .zip(other.version.iter())
-                        .all(|(a, b)| a == b)
-                    && self
-                        .machine
-                        .iter()
-                        .zip(other.machine.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for utsname {}
-        impl hash::Hash for utsname {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sysname.hash(state);
-                self.nodename.hash(state);
-                self.release.hash(state);
-                self.version.hash(state);
-                self.machine.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent {
-            fn eq(&self, other: &dirent) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for dirent {}
-        impl hash::Hash for dirent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for dirent64 {
-            fn eq(&self, other: &dirent64) -> bool {
-                self.d_ino == other.d_ino
-                    && self.d_off == other.d_off
-                    && self.d_reclen == other.d_reclen
-                    && self.d_type == other.d_type
-                    && self
-                        .d_name
-                        .iter()
-                        .zip(other.d_name.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for dirent64 {}
-        impl hash::Hash for dirent64 {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.d_ino.hash(state);
-                self.d_off.hash(state);
-                self.d_reclen.hash(state);
-                self.d_type.hash(state);
-                self.d_name.hash(state);
-            }
-        }
-
-        impl PartialEq for mq_attr {
-            fn eq(&self, other: &mq_attr) -> bool {
-                self.mq_flags == other.mq_flags
-                    && self.mq_maxmsg == other.mq_maxmsg
-                    && self.mq_msgsize == other.mq_msgsize
-                    && self.mq_curmsgs == other.mq_curmsgs
-            }
-        }
-        impl Eq for mq_attr {}
-        impl hash::Hash for mq_attr {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.mq_flags.hash(state);
-                self.mq_maxmsg.hash(state);
-                self.mq_msgsize.hash(state);
-                self.mq_curmsgs.hash(state);
-            }
-        }
-
-        impl PartialEq for sockaddr_nl {
-            fn eq(&self, other: &sockaddr_nl) -> bool {
-                self.nl_family == other.nl_family
-                    && self.nl_pid == other.nl_pid
-                    && self.nl_groups == other.nl_groups
-            }
-        }
-        impl Eq for sockaddr_nl {}
-        impl hash::Hash for sockaddr_nl {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.nl_family.hash(state);
-                self.nl_pid.hash(state);
-                self.nl_groups.hash(state);
-            }
-        }
-
-        // FIXME(msrv): suggested method was added in 1.85
-        #[allow(unpredictable_function_pointer_comparisons)]
-        impl PartialEq for sigevent {
-            fn eq(&self, other: &sigevent) -> bool {
-                self.sigev_value == other.sigev_value
-                    && self.sigev_signo == other.sigev_signo
-                    && self.sigev_notify == other.sigev_notify
-                    && self.sigev_notify_function == other.sigev_notify_function
-                    && self.sigev_notify_attributes == other.sigev_notify_attributes
-            }
-        }
-        impl Eq for sigevent {}
-        impl hash::Hash for sigevent {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.sigev_value.hash(state);
-                self.sigev_signo.hash(state);
-                self.sigev_notify.hash(state);
-                self.sigev_notify_function.hash(state);
-                self.sigev_notify_attributes.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_cond_t {
-            fn eq(&self, other: &pthread_cond_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_cond_t {}
-        impl hash::Hash for pthread_cond_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_mutex_t {
-            fn eq(&self, other: &pthread_mutex_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_mutex_t {}
-        impl hash::Hash for pthread_mutex_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
-        impl PartialEq for pthread_rwlock_t {
-            fn eq(&self, other: &pthread_rwlock_t) -> bool {
-                self.size.iter().zip(other.size.iter()).all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for pthread_rwlock_t {}
-        impl hash::Hash for pthread_rwlock_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.size.hash(state);
-            }
-        }
-
         impl PartialEq for sigval {
             fn eq(&self, _other: &sigval) -> bool {
                 unimplemented!("traits")
