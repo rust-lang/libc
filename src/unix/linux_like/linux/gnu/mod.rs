@@ -350,6 +350,50 @@ s! {
         #[cfg(all(gnu_time_bits64, target_endian = "little"))]
         __pad: i32,
     }
+
+    pub struct utmpx {
+        pub ut_type: c_short,
+        pub ut_pid: crate::pid_t,
+        pub ut_line: [c_char; __UT_LINESIZE],
+        pub ut_id: [c_char; 4],
+
+        pub ut_user: [c_char; __UT_NAMESIZE],
+        pub ut_host: [c_char; __UT_HOSTSIZE],
+        pub ut_exit: __exit_status,
+
+        #[cfg(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        ))]
+        pub ut_session: c_long,
+        #[cfg(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        ))]
+        pub ut_tv: crate::timeval,
+
+        #[cfg(not(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        )))]
+        pub ut_session: i32,
+        #[cfg(not(any(
+            target_arch = "aarch64",
+            target_arch = "s390x",
+            target_arch = "loongarch64",
+            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+        )))]
+        pub ut_tv: __timeval,
+
+        pub ut_addr_v6: [i32; 4],
+        __glibc_reserved: [c_char; 20],
+    }
 }
 
 impl siginfo_t {
@@ -442,92 +486,10 @@ s_no_extra_traits! {
         pub exit: __c_anonymous_ptrace_syscall_info_exit,
         pub seccomp: __c_anonymous_ptrace_syscall_info_seccomp,
     }
-
-    pub struct utmpx {
-        pub ut_type: c_short,
-        pub ut_pid: crate::pid_t,
-        pub ut_line: [c_char; __UT_LINESIZE],
-        pub ut_id: [c_char; 4],
-
-        pub ut_user: [c_char; __UT_NAMESIZE],
-        pub ut_host: [c_char; __UT_HOSTSIZE],
-        pub ut_exit: __exit_status,
-
-        #[cfg(any(
-            target_arch = "aarch64",
-            target_arch = "s390x",
-            target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
-        ))]
-        pub ut_session: c_long,
-        #[cfg(any(
-            target_arch = "aarch64",
-            target_arch = "s390x",
-            target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
-        ))]
-        pub ut_tv: crate::timeval,
-
-        #[cfg(not(any(
-            target_arch = "aarch64",
-            target_arch = "s390x",
-            target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
-        )))]
-        pub ut_session: i32,
-        #[cfg(not(any(
-            target_arch = "aarch64",
-            target_arch = "s390x",
-            target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
-        )))]
-        pub ut_tv: __timeval,
-
-        pub ut_addr_v6: [i32; 4],
-        __glibc_reserved: [c_char; 20],
-    }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for utmpx {
-            fn eq(&self, other: &utmpx) -> bool {
-                self.ut_type == other.ut_type
-                    && self.ut_pid == other.ut_pid
-                    && self.ut_line == other.ut_line
-                    && self.ut_id == other.ut_id
-                    && self.ut_user == other.ut_user
-                    && self
-                        .ut_host
-                        .iter()
-                        .zip(other.ut_host.iter())
-                        .all(|(a, b)| a == b)
-                    && self.ut_exit == other.ut_exit
-                    && self.ut_session == other.ut_session
-                    && self.ut_tv == other.ut_tv
-                    && self.ut_addr_v6 == other.ut_addr_v6
-                    && self.__glibc_reserved == other.__glibc_reserved
-            }
-        }
-
-        impl Eq for utmpx {}
-
-        impl hash::Hash for utmpx {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ut_type.hash(state);
-                self.ut_pid.hash(state);
-                self.ut_line.hash(state);
-                self.ut_id.hash(state);
-                self.ut_user.hash(state);
-                self.ut_host.hash(state);
-                self.ut_exit.hash(state);
-                self.ut_session.hash(state);
-                self.ut_tv.hash(state);
-                self.ut_addr_v6.hash(state);
-                self.__glibc_reserved.hash(state);
-            }
-        }
-
         impl PartialEq for __c_anonymous_ptrace_syscall_info_data {
             fn eq(&self, other: &__c_anonymous_ptrace_syscall_info_data) -> bool {
                 unsafe {

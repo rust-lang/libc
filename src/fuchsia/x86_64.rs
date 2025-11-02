@@ -64,9 +64,7 @@ s! {
         __unused1: c_long,
         __unused2: c_long,
     }
-}
 
-s_no_extra_traits! {
     pub struct ucontext_t {
         pub uc_flags: c_ulong,
         pub uc_link: *mut ucontext_t,
@@ -74,36 +72,6 @@ s_no_extra_traits! {
         pub uc_mcontext: mcontext_t,
         pub uc_sigmask: crate::sigset_t,
         __private: [u8; 512],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for ucontext_t {
-            fn eq(&self, other: &ucontext_t) -> bool {
-                self.uc_flags == other.uc_flags
-                    && self.uc_link == other.uc_link
-                    && self.uc_stack == other.uc_stack
-                    && self.uc_mcontext == other.uc_mcontext
-                    && self.uc_sigmask == other.uc_sigmask
-                    && self
-                        .__private
-                        .iter()
-                        .zip(other.__private.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-        impl Eq for ucontext_t {}
-        impl hash::Hash for ucontext_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.uc_flags.hash(state);
-                self.uc_link.hash(state);
-                self.uc_stack.hash(state);
-                self.uc_mcontext.hash(state);
-                self.uc_sigmask.hash(state);
-                self.__private.hash(state);
-            }
-        }
     }
 }
 

@@ -544,14 +544,6 @@ s! {
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
     }
-}
-
-s_no_extra_traits! {
-    pub union __poll_ctl_ext_u {
-        pub addr: *mut c_void,
-        pub data32: u32,
-        pub data: u64,
-    }
 
     pub struct poll_ctl_ext {
         pub version: u8,
@@ -560,6 +552,14 @@ s_no_extra_traits! {
         pub fd: c_int,
         pub u: __poll_ctl_ext_u,
         pub reserved64: [u64; 6],
+    }
+}
+
+s_no_extra_traits! {
+    pub union __poll_ctl_ext_u {
+        pub addr: *mut c_void,
+        pub data32: u32,
+        pub data: u64,
     }
 }
 
@@ -582,28 +582,6 @@ cfg_if! {
                     self.data32.hash(state);
                     self.data.hash(state);
                 }
-            }
-        }
-
-        impl PartialEq for poll_ctl_ext {
-            fn eq(&self, other: &poll_ctl_ext) -> bool {
-                self.version == other.version
-                    && self.command == other.command
-                    && self.events == other.events
-                    && self.fd == other.fd
-                    && self.reserved64 == other.reserved64
-                    && self.u == other.u
-            }
-        }
-        impl Eq for poll_ctl_ext {}
-        impl hash::Hash for poll_ctl_ext {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.version.hash(state);
-                self.command.hash(state);
-                self.events.hash(state);
-                self.fd.hash(state);
-                self.u.hash(state);
-                self.reserved64.hash(state);
             }
         }
     }

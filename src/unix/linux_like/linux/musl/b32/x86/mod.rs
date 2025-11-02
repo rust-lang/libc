@@ -110,9 +110,7 @@ s! {
         __pad1: c_ulong,
         __pad2: c_ulong,
     }
-}
 
-s_no_extra_traits! {
     pub struct user_fpxregs_struct {
         pub cwd: c_ushort,
         pub swd: c_ushort,
@@ -137,80 +135,12 @@ s_no_extra_traits! {
         pub uc_sigmask: crate::sigset_t,
         __private: [u8; 112],
     }
+}
 
+s_no_extra_traits! {
     #[repr(align(8))]
     pub struct max_align_t {
         priv_: [f64; 3],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for user_fpxregs_struct {
-            fn eq(&self, other: &user_fpxregs_struct) -> bool {
-                self.cwd == other.cwd
-                    && self.swd == other.swd
-                    && self.twd == other.twd
-                    && self.fop == other.fop
-                    && self.fip == other.fip
-                    && self.fcs == other.fcs
-                    && self.foo == other.foo
-                    && self.fos == other.fos
-                    && self.mxcsr == other.mxcsr
-                // Ignore __reserved field
-                    && self.st_space == other.st_space
-                    && self.xmm_space == other.xmm_space
-                // Ignore padding field
-            }
-        }
-
-        impl Eq for user_fpxregs_struct {}
-
-        impl hash::Hash for user_fpxregs_struct {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.cwd.hash(state);
-                self.swd.hash(state);
-                self.twd.hash(state);
-                self.fop.hash(state);
-                self.fip.hash(state);
-                self.fcs.hash(state);
-                self.foo.hash(state);
-                self.fos.hash(state);
-                self.mxcsr.hash(state);
-                // Ignore __reserved field
-                self.st_space.hash(state);
-                self.xmm_space.hash(state);
-                // Ignore padding field
-            }
-        }
-
-        impl PartialEq for ucontext_t {
-            fn eq(&self, other: &ucontext_t) -> bool {
-                self.uc_flags == other.uc_flags
-                    && self.uc_link == other.uc_link
-                    && self.uc_stack == other.uc_stack
-                    && self.uc_mcontext == other.uc_mcontext
-                    && self.uc_sigmask == other.uc_sigmask
-                    && self
-                        .__private
-                        .iter()
-                        .zip(other.__private.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for ucontext_t {}
-
-        impl hash::Hash for ucontext_t {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.uc_flags.hash(state);
-                self.uc_link.hash(state);
-                self.uc_stack.hash(state);
-                self.uc_mcontext.hash(state);
-                self.uc_sigmask.hash(state);
-                self.__private.hash(state);
-            }
-        }
     }
 }
 

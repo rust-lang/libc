@@ -47,9 +47,7 @@ s! {
         pub fi_pos: c_int,
         pub fi_name: [c_char; crate::FILNAME_MAX as usize],
     }
-}
 
-s_no_extra_traits! {
     #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed(4)))]
     pub struct epoll_event {
         pub events: u32,
@@ -68,63 +66,6 @@ s_no_extra_traits! {
         pub ut_pad: [c_int; _UTX_PADSIZE],
         pub ut_syslen: c_short,
         pub ut_host: [c_char; _UTX_HOSTSIZE],
-    }
-}
-
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for utmpx {
-            fn eq(&self, other: &utmpx) -> bool {
-                self.ut_type == other.ut_type
-                    && self.ut_pid == other.ut_pid
-                    && self.ut_user == other.ut_user
-                    && self.ut_line == other.ut_line
-                    && self.ut_id == other.ut_id
-                    && self.ut_exit == other.ut_exit
-                    && self.ut_session == other.ut_session
-                    && self.ut_tv == other.ut_tv
-                    && self.ut_syslen == other.ut_syslen
-                    && self.ut_pad == other.ut_pad
-                    && self
-                        .ut_host
-                        .iter()
-                        .zip(other.ut_host.iter())
-                        .all(|(a, b)| a == b)
-            }
-        }
-
-        impl Eq for utmpx {}
-
-        impl hash::Hash for utmpx {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                self.ut_user.hash(state);
-                self.ut_type.hash(state);
-                self.ut_pid.hash(state);
-                self.ut_line.hash(state);
-                self.ut_id.hash(state);
-                self.ut_host.hash(state);
-                self.ut_exit.hash(state);
-                self.ut_session.hash(state);
-                self.ut_tv.hash(state);
-                self.ut_syslen.hash(state);
-                self.ut_pad.hash(state);
-            }
-        }
-
-        impl PartialEq for epoll_event {
-            fn eq(&self, other: &epoll_event) -> bool {
-                self.events == other.events && self.u64 == other.u64
-            }
-        }
-        impl Eq for epoll_event {}
-        impl hash::Hash for epoll_event {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                let events = self.events;
-                let u64 = self.u64;
-                events.hash(state);
-                u64.hash(state);
-            }
-        }
     }
 }
 
