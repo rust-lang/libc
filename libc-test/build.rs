@@ -1423,6 +1423,8 @@ fn test_netbsd(target: &str) {
 
         cfg.skip_struct(move |struct_| match struct_.ident() {
             x if x.starts_with("ptrace_lwp") => true,
+            // These were packed before NetBSD 10
+            "arphdr" | "in_addr" | "ip_mreq" | "sockaddr_in" => true,
             _ => false,
         });
 
