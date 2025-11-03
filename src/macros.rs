@@ -87,6 +87,7 @@ macro_rules! prelude {
             pub(crate) use core::prelude::v1::derive;
             #[allow(unused_imports)]
             pub(crate) use core::{
+                cfg,
                 fmt,
                 hash,
                 iter,
