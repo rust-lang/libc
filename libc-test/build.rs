@@ -1327,6 +1327,8 @@ fn test_netbsd(target: &str) {
             "Aux32Info" | "Aux64Info" => true,
             // deprecated, obsolete upstream
             "ptrace_lwpinfo" => true,
+            // ABI change in NetBSD10, with symbol versioning.
+            "statvfs" if !netbsd9 => true,
             _ => false,
         }
     });
