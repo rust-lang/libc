@@ -245,7 +245,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_os = "nto"))] {
+    if #[cfg(not(any(target_os = "nto", target_os = "l4re")))] {
         pub const USRQUOTA: c_int = 0;
         pub const GRPQUOTA: c_int = 1;
     }
@@ -973,6 +973,7 @@ extern "C" {
 
     pub fn fchmodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, flags: c_int) -> c_int;
     pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn fchownat(
         dirfd: c_int,
         pathname: *const c_char,
@@ -993,7 +994,9 @@ extern "C" {
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
         link_name = "fstatat64"
     )]
+    #[cfg(not(target_os = "l4re"))]
     pub fn fstatat(dirfd: c_int, pathname: *const c_char, buf: *mut stat, flags: c_int) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn linkat(
         olddirfd: c_int,
         oldpath: *const c_char,
@@ -1001,13 +1004,16 @@ extern "C" {
         newpath: *const c_char,
         flags: c_int,
     ) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn renameat(
         olddirfd: c_int,
         oldpath: *const c_char,
         newdirfd: c_int,
         newpath: *const c_char,
     ) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn symlinkat(target: *const c_char, newdirfd: c_int, linkpath: *const c_char) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn unlinkat(dirfd: c_int, pathname: *const c_char, flags: c_int) -> c_int;
 
     pub fn access(path: *const c_char, amode: c_int) -> c_int;
@@ -1425,6 +1431,7 @@ extern "C" {
         link_name = "res_9_init"
     )]
     #[cfg_attr(target_os = "aix", link_name = "_res_init")]
+    #[cfg(not(target_os = "l4re"))]
     pub fn res_init() -> c_int;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
@@ -1611,9 +1618,13 @@ extern "C" {
     )]
     pub fn nice(incr: c_int) -> c_int;
 
+    #[cfg(not(target_os = "l4re"))]
     pub fn grantpt(fd: c_int) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn posix_openpt(flags: c_int) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
     pub fn ptsname(fd: c_int) -> *mut c_char;
+    #[cfg(not(target_os = "l4re"))]
     pub fn unlockpt(fd: c_int) -> c_int;
 
     #[cfg(not(target_os = "aix"))]
@@ -1651,6 +1662,7 @@ cfg_if! {
         target_os = "solaris",
         target_os = "cygwin",
         target_os = "aix",
+        target_os = "l4re",
     )))] {
         extern "C" {
             #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
@@ -1683,6 +1695,7 @@ cfg_if! {
         target_os = "hurd",
         target_os = "macos",
         target_os = "openbsd",
+        target_os = "l4re",
     )))] {
         extern "C" {
             pub fn sigqueue(pid: pid_t, sig: c_int, value: crate::sigval) -> c_int;
@@ -1737,6 +1750,7 @@ cfg_if! {
             )]
             pub fn pause() -> c_int;
 
+            #[cfg(not(target_os = "l4re"))]
             pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
             #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
             pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
@@ -1804,13 +1818,16 @@ cfg_if! {
         }
     } else {
         extern "C" {
+            #[cfg(not(target_os = "l4re"))]
             pub fn readlinkat(
                 dirfd: c_int,
                 pathname: *const c_char,
                 buf: *mut c_char,
                 bufsiz: size_t,
             ) -> ssize_t;
+            #[cfg(not(target_os = "l4re"))]
             pub fn fmemopen(buf: *mut c_void, size: size_t, mode: *const c_char) -> *mut FILE;
+            #[cfg(not(target_os = "l4re"))]
             pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
             pub fn atexit(cb: extern "C" fn()) -> c_int;
             #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
@@ -1865,6 +1882,7 @@ cfg_if! {
         target_os = "nto"
     )))] {
         extern "C" {
+            #[cfg(not(target_os = "l4re"))]
             pub fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
         }
     }
