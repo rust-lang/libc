@@ -9,9 +9,11 @@ import sys
 import time
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Sequence
 
 
+ESC_YELLOW = "\033[1;33m"
 ESC_CYAN = "\033[1;36m"
 ESC_END = "\033[0m"
 
@@ -35,6 +37,8 @@ class Cfg:
     toolchain: Toolchain = field(init=False)
     host_target: str = field(init=False)
     os_: Os = field(init=False)
+    baseline_crate_dir: Optional[Path]
+    skip_semver: bool
 
     def __post_init__(self):
         rustc_output = check_output(["rustc", f"+{self.toolchain_name}", "-vV"])
@@ -64,6 +68,14 @@ class Target:
         if not self.dist:
             # We will need to use build-std
             self.min_toolchain = Toolchain.NIGHTLY
+
+
+@dataclass
+class TargetResult:
+    """Not all checks exit immediately, so failures are reported here."""
+
+    target: Target
+    semver_ok: bool
 
 
 FREEBSD_VERSIONS = [11, 12, 13, 14, 15]
@@ -200,13 +212,13 @@ TARGETS = [
 ]
 
 
-def eprint(*args, **kw):
+def eprint(*args, **kw) -> None:
     print(*args, file=sys.stderr, **kw)
 
 
-def xtrace(args: list[str], /, env: Optional[dict[str, str]]):
+def xtrace(args: Sequence[str | Path], *, env: Optional[dict[str, str]]) -> None:
     """Print commands before running them."""
-    astr = " ".join(args)
+    astr = " ".join(str(arg) for arg in args)
     if env is None:
         eprint(f"+ {astr}")
     else:
@@ -215,17 +227,25 @@ def xtrace(args: list[str], /, env: Optional[dict[str, str]]):
         eprint(f"+ {estr} {astr}")
 
 
-def check_output(args: list[str], /, env: Optional[dict[str, str]] = None) -> str:
+def check_output(
+    args: Sequence[str | Path], *, env: Optional[dict[str, str]] = None
+) -> str:
     xtrace(args, env=env)
     return sp.check_output(args, env=env, encoding="utf8")
 
 
-def run(args: list[str], /, env: Optional[dict[str, str]] = None):
+def run(
+    args: Sequence[str | Path],
+    *,
+    env: Optional[dict[str, str]] = None,
+    check: bool = True,
+) -> sp.CompletedProcess:
     xtrace(args, env=env)
-    sp.run(args, env=env, check=True)
+    return sp.run(args, env=env, check=check)
 
 
-def check_dup_targets():
+def check_dup_targets() -> None:
+    """Ensure there are no duplicate targets in the list."""
     all = set()
     duplicates = set()
     for target in TARGETS:
@@ -235,7 +255,106 @@ def check_dup_targets():
     assert len(duplicates) == 0, f"duplicate targets: {duplicates}"
 
 
-def test_target(cfg: Cfg, target: Target):
+def do_semver_checks(cfg: Cfg, target: Target) -> bool:
+    """Run cargo semver-checks for a target."""
+    tname = target.name
+    if cfg.toolchain != Toolchain.STABLE:
+        eprint("Skipping semver checks (only supported on stable)")
+        return True
+
+    if not target.dist:
+        eprint("Skipping semver checks on non-dist target")
+        return True
+
+    if tname == cfg.host_target:
+        # FIXME(semver): This is what we actually want to be doing on all targets, but
+        # `--target` doesn't work right with semver-checks.
+        eprint("Running semver checks on host")
+        # NOTE: this is the only check which actually fails CI if it doesn't succeed,
+        # since it is the only check we can control lints for (via the
+        # package.metadata table).
+        #
+        # We may need to play around with this a bit.
+        run(
+            [
+                "cargo",
+                "semver-checks",
+                "--only-explicit-features",
+                "--features=std,extra_traits",
+                "--release-type=patch",
+            ],
+            check=True,
+        )
+        # Don't return here so we still get the same rustdoc-json-base tests even while
+        # running on the host.
+
+    if cfg.baseline_crate_dir is None:
+        eprint(
+            "Non-host target: --baseline-crate-dir must be specified to \
+            run semver-checks"
+        )
+        sys.exit(1)
+
+    # Since semver-checks doesn't work with `--target`, we build the json ourself and
+    # hand it over.
+    eprint("Running semver checks with cross compilation")
+
+    # Set the bootstrap hack (for rustdoc json), allow warnings, and get rid of LIBC_CI
+    # (which sets `deny(warnings)`).
+    env = os.environ.copy()
+    env.setdefault("RUSTFLAGS", "")
+    env["RUSTFLAGS"] += " -Awarnings"
+    env["RUSTC_BOOTSTRAP"] = "1"
+    env.pop("LIBC_CI", None)
+
+    cmd = ["cargo", "rustdoc", "--target", tname]
+    # Take the flags from:
+    # https://github.com/obi1kenobi/cargo-semver-checks/blob/030af2032e93a64a6a40c4deaa0f57f262042426/src/data_generation/generate.rs#L241-L297
+    rustdoc_args = [
+        "--",
+        "-Zunstable-options",
+        "--document-private-items",
+        "--document-hidden-items",
+        "--output-format=json",
+        "--cap-lints=allow",
+    ]
+
+    # Build the current crate and the baseline crate, which CI should have downloaded
+    run([*cmd, *rustdoc_args], env=env)
+    run(
+        [*cmd, "--manifest-path", cfg.baseline_crate_dir / "Cargo.toml", *rustdoc_args],
+        env=env,
+    )
+
+    baseline = cfg.baseline_crate_dir / "target" / tname / "doc" / "libc.json"
+    current = Path("target") / tname / "doc" / "libc.json"
+
+    # NOTE: We can't configure lints when using the rustoc input :(. For this reason,
+    # we don't check for failure output status since there is no way to override false
+    # positives.
+    #
+    # See: https://github.com/obi1kenobi/cargo-semver-checks/issues/827
+    res = run(
+        [
+            "cargo",
+            "semver-checks",
+            "--baseline-rustdoc",
+            baseline,
+            "--current-rustdoc",
+            current,
+            # For now, everything is a patch
+            "--release-type=patch",
+        ],
+        check=False,
+    )
+
+    # If this job failed, we can't fail CI because it may have been a false positive.
+    # But at least we can make an explicit note of it.
+    return res.returncode == 0
+
+
+def test_target(cfg: Cfg, target: Target) -> TargetResult:
+    """Run tests for a single target."""
     start = time.time()
     env = os.environ.copy()
     env.setdefault("RUSTFLAGS", "")
@@ -261,14 +380,15 @@ def test_target(cfg: Cfg, target: Target):
     if not target.dist:
         # If we can't download a `core`, we need to build it
         cmd += ["-Zbuild-std=core"]
-        # FIXME: With `build-std` feature, `compiler_builtins` emits a lot of lint warnings.
+        # FIXME: With `the build-std` feature, `compiler_builtins` emits a lot of
+        # lint warnings.
         env["RUSTFLAGS"] += " -Aimproper_ctypes_definitions"
     else:
         run(["rustup", "target", "add", tname, "--toolchain", cfg.toolchain_name])
 
     # Test with expected combinations of features
     run(cmd, env=env)
-    run(cmd + ["--features=extra_traits"], env=env)
+    run([*cmd, "--features=extra_traits"], env=env)
 
     # Check with different env for 64-bit time_t
     if target_os == "linux" and target_bits == "32":
@@ -286,12 +406,12 @@ def test_target(cfg: Cfg, target: Target):
         run(cmd, env=env | {"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": "1"})
 
     # Test again without default features, i.e. without `std`
-    run(cmd + ["--no-default-features"])
-    run(cmd + ["--no-default-features", "--features=extra_traits"])
+    run([*cmd, "--no-default-features"])
+    run([*cmd, "--no-default-features", "--features=extra_traits"])
 
     # Ensure the crate will build when used as a dependency of `std`
     if cfg.nightly():
-        run(cmd + ["--no-default-features", "--features=rustc-dep-of-std"])
+        run([*cmd, "--no-default-features", "--features=rustc-dep-of-std"])
 
     # For freebsd targets, check with the different versions we support
     # if on nightly or stable
@@ -299,36 +419,31 @@ def test_target(cfg: Cfg, target: Target):
         for version in FREEBSD_VERSIONS:
             run(cmd, env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)})
             run(
-                cmd + ["--no-default-features"],
+                [*cmd, "--no-default-features"],
                 env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)},
             )
 
-    is_stable = cfg.toolchain == Toolchain.STABLE
-    # FIXME(semver): can't pass `--target` to `cargo-semver-checks` so we restrict to
-    # the host target
-    is_host = tname == cfg.host_target
-    if is_stable and is_host:
-        eprint("Running semver checks")
-        run(
-            [
-                "cargo",
-                "semver-checks",
-                "--only-explicit-features",
-                "--features=std,extra_traits",
-            ]
-        )
-    else:
+    if cfg.skip_semver:
         eprint("Skipping semver checks")
+        semver_ok = True
+    else:
+        semver_ok = do_semver_checks(cfg, target)
 
     elapsed = round(time.time() - start, 2)
     eprint(f"Finished checking target {tname} in {elapsed} seconds")
+    return TargetResult(target=target, semver_ok=semver_ok)
 
 
-def main():
+def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--toolchain", required=True, help="Rust toolchain")
     p.add_argument("--only", help="only targets matching this regex")
     p.add_argument("--skip", help="skip targets matching this regex")
+    p.add_argument("--skip-semver", help="don't run semver checks")
+    p.add_argument(
+        "--baseline-crate-dir",
+        help="specify the directory of the crate to run semver checks against",
+    )
     p.add_argument(
         "--half",
         type=int,
@@ -337,7 +452,11 @@ def main():
     )
     args = p.parse_args()
 
-    cfg = Cfg(toolchain_name=args.toolchain)
+    cfg = Cfg(
+        toolchain_name=args.toolchain,
+        baseline_crate_dir=args.baseline_crate_dir and Path(args.baseline_crate_dir),
+        skip_semver=args.skip_semver,
+    )
     eprint(f"Config: {cfg}")
     eprint("Python version: ", sys.version)
     check_dup_targets()
@@ -373,16 +492,25 @@ def main():
     total = len(targets)
     eprint(f"Targets to run: {total}")
     assert total > 0, "some tests should be run"
+    target_results: list[TargetResult] = []
 
     for i, target in enumerate(targets):
         at = i + 1
         eprint(f"::group::Target: {target.name} ({at}/{total})")
         eprint(f"{ESC_CYAN}Checking target {target} ({at}/{total}){ESC_END}")
-        test_target(cfg, target)
+        res = test_target(cfg, target)
+        target_results.append(res)
         eprint("::endgroup::")
 
     elapsed = round(time.time() - start, 2)
-    eprint(f"Checked {total} targets in {elapsed} seconds")
+
+    semver_failures = [t.target.name for t in target_results if not t.semver_ok]
+    if len(semver_failures) != 0:
+        eprint(f"\n{ESC_YELLOW}Some targets had semver failures:{ESC_END}")
+        for t in semver_failures:
+            eprint(f"* {t}")
+
+    eprint(f"\nChecked {total} targets in {elapsed} seconds")
 
 
 main()
