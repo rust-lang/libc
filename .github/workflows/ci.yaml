@@ -310,6 +310,7 @@ jobs:
       - test_tier2_vm
       - verify_build
       - docs
+      - clippy
     # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
