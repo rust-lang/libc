@@ -182,3 +182,5 @@ used_underscore_binding = "allow"
 [package.metadata.cargo-semver-checks.lints]
 # Alignment is an internal detail that users must not rely upon
 repr_align_removed = "warn"
+# We deprecate things all the time
+global_value_marked_deprecated = "warn"
