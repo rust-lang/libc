@@ -13,6 +13,7 @@ env:
   RUSTDOCFLAGS: -Dwarnings
   RUSTFLAGS: -Dwarnings
   RUST_BACKTRACE: full
+  TARGET_REF: ${{ github.base_ref || github.event.merge_group.base_ref }}
 
 defaults:
   run:
@@ -75,6 +76,10 @@ jobs:
         uses: taiki-e/install-action@cargo-semver-checks
         if: matrix.toolchain == 'stable'
 
+      - name: Retrieve semver baseline
+        if: matrix.toolchain == 'stable'
+        run: ./ci/prep-semver-baseline.sh
+
       # FIXME(ci): These `du` statements are temporary for debugging cache
       - name: Target size before restoring cache
         run: du -sh target | sort -k 2 || true
@@ -91,6 +96,7 @@ jobs:
           [ "${{ matrix.toolchain }}" = "1.63.0" ] && export RUSTFLAGS=""
           python3 ci/verify-build.py \
             --toolchain "$TOOLCHAIN" \
+            ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
             ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
             ${{ matrix.half && format('--half "{0}"', matrix.half) }}
       - name: Target size after job completion
