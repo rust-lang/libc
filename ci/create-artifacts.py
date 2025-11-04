@@ -30,7 +30,11 @@ def main():
     archive_name = f"archive-{now}"
     archive_path = f"{archive_name}.tar.gz"
 
-    sp.run(["tar", "czvf", archive_path, "-C", build_dir, "-T-"], input=file_list)
+    sp.run(
+        ["tar", "czvf", archive_path, "-C", build_dir, "-T-"],
+        input=file_list,
+        check=True,
+    )
 
     # If we are in GHA, set these env vars for future use
     gh_env = os.getenv("GITHUB_ENV")
@@ -42,6 +46,7 @@ def main():
 
 
 if __name__ == "__main__":
+    print("Starting script...")  # For debugging CI failures
     # FIXME(ci): remove after the bump to windoes-2025 GHA images
     # Python <= 3.9 does not support the very helpful `root_dir` argument,
     # and that is the version used by the Windows GHA images. Rather than
@@ -55,10 +60,12 @@ if __name__ == "__main__":
             sys.exit(1)
 
         # Find the next 3.1x Python version
-        dirs = sorted(list(Path(r"C:\hostedtoolcache\windows\Python").iterdir()))
+        dirs = sorted(Path(r"C:\hostedtoolcache\windows\Python").iterdir())
         usepy = next(x for x in dirs if r"\3.1" in str(x))
         py = usepy.joinpath(r"x64\python.exe")
         print(f"relaunching with {py}")
         os.execvp(py, [__file__] + sys.argv)
 
     main()
+else:
+    print("not invoked as main, exiting")  # For debugging CI failures
