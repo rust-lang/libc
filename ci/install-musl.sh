@@ -19,9 +19,11 @@ esac
 
 musl="musl-${musl_version}"
 
-# Download, configure, build, and install musl:
-curl --retry 5 "https://www.musl-libc.org/releases/${musl}.tar.gz" | tar xzf -
+# Note that if a new version of musl is needed, it needs to be added to the mirror
+# first. See https://github.com/rust-lang/ci-mirrors/blob/main/files/libc.toml.
+curl --retry 5 "https://ci-mirrors.rust-lang.org/libc/${musl}.tar.gz" | tar xzf -
 
+# Configure, build, and install musl:
 cd "$musl"
 case ${1} in
     aarch64)
