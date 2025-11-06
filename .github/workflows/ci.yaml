@@ -39,11 +39,11 @@ jobs:
       TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v5
-      # - name: Setup Rust toolchain
-      #   run: ./ci/install-rust.sh
-      # - uses: Swatinem/rust-cache@v2
-      #   with:
-      #     key: ${{ matrix.target }}
+      - name: Setup Rust toolchain
+        run: ./ci/install-rust.sh
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
 
       - name: Run natively
         run: ./ci/run.sh ${{ matrix.target }}
