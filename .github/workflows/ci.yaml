@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        id: [1, 2, 3, 4]
+        id: [1, 2, 3, 4, 5, 6]
         target:
           - aarch64-pc-windows-msvc
           - i686-pc-windows-msvc
