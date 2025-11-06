@@ -24,7 +24,7 @@ s! {
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_long,
 
-        __unused: [c_int; 2],
+        __unused: Padding<[c_int; 2]>,
     }
 
     pub struct stack_t {
@@ -55,33 +55,33 @@ s! {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,
         pub shm_atime: crate::time_t,
-        __unused1: c_int,
+        __unused1: Padding<c_int>,
         pub shm_dtime: crate::time_t,
-        __unused2: c_int,
+        __unused2: Padding<c_int>,
         pub shm_ctime: crate::time_t,
-        __unused3: c_int,
+        __unused3: Padding<c_int>,
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: c_ulong,
-        __pad1: c_ulong,
-        __pad2: c_ulong,
+        __pad1: Padding<c_ulong>,
+        __pad2: Padding<c_ulong>,
     }
 
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
         pub msg_stime: crate::time_t,
-        __unused1: c_int,
+        __unused1: Padding<c_int>,
         pub msg_rtime: crate::time_t,
-        __unused2: c_int,
+        __unused2: Padding<c_int>,
         pub msg_ctime: crate::time_t,
-        __unused3: c_int,
+        __unused3: Padding<c_int>,
         pub __msg_cbytes: c_ulong,
         pub msg_qnum: crate::msgqnum_t,
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
-        __pad1: c_ulong,
-        __pad2: c_ulong,
+        __pad1: Padding<c_ulong>,
+        __pad2: Padding<c_ulong>,
     }
 }
 

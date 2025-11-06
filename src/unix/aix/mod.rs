@@ -250,9 +250,9 @@ s! {
     pub struct sockaddr_storage {
         pub __ss_len: c_uchar,
         pub ss_family: sa_family_t,
-        __ss_pad1: [c_char; 6],
+        __ss_pad1: Padding<[c_char; 6]>,
         __ss_align: crate::int64_t,
-        __ss_pad2: [c_char; 1265],
+        __ss_pad2: Padding<[c_char; 1265]>,
     }
 
     pub struct sockaddr_un {

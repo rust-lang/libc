@@ -75,13 +75,13 @@ s! {
         pub gl_offs: size_t,
         pub gl_flags: c_int,
         pub gl_pathv: *mut *mut c_char,
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
-        __unused6: *mut c_void,
-        __unused7: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
+        __unused6: Padding<*mut c_void>,
+        __unused7: Padding<*mut c_void>,
     }
 
     pub struct lconv {
@@ -733,7 +733,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_code: c_int,
             _si_errno: c_int,
-            _pad: [c_int; SI_PAD],
+            _pad: Padding<[c_int; SI_PAD]>,
             _pid: crate::pid_t,
         }
         (*(self as *const siginfo_t).cast::<siginfo_timer>())._pid
@@ -745,7 +745,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_code: c_int,
             _si_errno: c_int,
-            _pad: [c_int; SI_PAD],
+            _pad: Padding<[c_int; SI_PAD]>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
         }
@@ -758,7 +758,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_code: c_int,
             _si_errno: c_int,
-            _pad: [c_int; SI_PAD],
+            _pad: Padding<[c_int; SI_PAD]>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
             value: crate::sigval,

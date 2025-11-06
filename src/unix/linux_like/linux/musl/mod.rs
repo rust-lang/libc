@@ -185,7 +185,7 @@ s! {
         #[cfg(target_endian = "little")]
         pub f_fsid: c_ulong,
         #[cfg(target_pointer_width = "32")]
-        __pad: c_int,
+        __pad: Padding<c_int>,
         #[cfg(target_endian = "big")]
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
@@ -205,7 +205,7 @@ s! {
         #[cfg(target_endian = "little")]
         pub f_fsid: c_ulong,
         #[cfg(target_pointer_width = "32")]
-        __pad: c_int,
+        __pad: Padding<c_int>,
         #[cfg(target_endian = "big")]
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
@@ -245,7 +245,7 @@ s! {
     pub struct regex_t {
         __re_nsub: size_t,
         __opaque: *mut c_void,
-        __padding: [*mut c_void; 4usize],
+        __padding: Padding<[*mut c_void; 4usize]>,
         __nsub2: size_t,
         __padding2: c_char,
     }
@@ -435,7 +435,7 @@ s! {
 
     pub struct utmpx {
         pub ut_type: c_short,
-        __ut_pad1: c_short,
+        __ut_pad1: Padding<c_short>,
         pub ut_pid: crate::pid_t,
         pub ut_line: [c_char; 32],
         pub ut_id: [c_char; 4],
@@ -453,18 +453,18 @@ s! {
 
         #[cfg(musl_v1_2_3)]
         #[cfg(not(target_endian = "little"))]
-        __ut_pad2: c_int,
+        __ut_pad2: Padding<c_int>,
 
         #[cfg(musl_v1_2_3)]
         pub ut_session: c_int,
 
         #[cfg(musl_v1_2_3)]
         #[cfg(target_endian = "little")]
-        __ut_pad2: c_int,
+        __ut_pad2: Padding<c_int>,
 
         pub ut_tv: crate::timeval,
         pub ut_addr_v6: [c_uint; 4],
-        __unused: [c_char; 20],
+        __unused: Padding<[c_char; 20]>,
     }
 }
 

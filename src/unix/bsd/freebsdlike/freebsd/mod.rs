@@ -320,8 +320,8 @@ s! {
 
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
         pub msg_cbytes: crate::msglen_t,
         pub msg_qnum: crate::msgqnum_t,
         pub msg_qbytes: crate::msglen_t,
@@ -1119,7 +1119,7 @@ s! {
     pub struct shm_largepage_conf {
         pub psind: c_int,
         pub alloc_policy: c_int,
-        __pad: [c_int; 10],
+        __pad: Padding<[c_int; 10]>,
     }
 
     pub struct memory_type {
@@ -1454,7 +1454,7 @@ s! {
         pub mq_maxmsg: c_long,
         pub mq_msgsize: c_long,
         pub mq_curmsgs: c_long,
-        __reserved: [c_long; 4],
+        __reserved: Padding<[c_long; 4]>,
     }
 
     pub struct ptsstat {
@@ -1590,7 +1590,7 @@ s! {
     pub struct sctp_error_invalid_stream {
         pub cause: sctp_error_cause,
         pub stream_id: u16,
-        __reserved: u16,
+        __reserved: Padding<u16>,
     }
 
     #[repr(packed)]
@@ -1640,11 +1640,11 @@ s! {
         pub kf_fd: c_int,
         pub kf_ref_count: c_int,
         pub kf_flags: c_int,
-        _kf_pad0: c_int,
+        _kf_pad0: Padding<c_int>,
         pub kf_offset: i64,
         _priv: [u8; 304], // FIXME(freebsd): this is really a giant union
         pub kf_status: u16,
-        _kf_pad1: u16,
+        _kf_pad1: Padding<u16>,
         _kf_ispare0: c_int,
         pub kf_cap_rights: crate::cap_rights_t,
         _kf_cap_spare: u64,

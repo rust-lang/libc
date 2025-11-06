@@ -270,7 +270,7 @@ cfg_if! {
                 pub stx_uid: crate::__u32,
                 pub stx_gid: crate::__u32,
                 pub stx_mode: crate::__u16,
-                __statx_pad1: [crate::__u16; 1],
+                __statx_pad1: Padding<[crate::__u16; 1]>,
                 pub stx_ino: crate::__u64,
                 pub stx_size: crate::__u64,
                 pub stx_blocks: crate::__u64,
@@ -286,13 +286,13 @@ cfg_if! {
                 pub stx_mnt_id: crate::__u64,
                 pub stx_dio_mem_align: crate::__u32,
                 pub stx_dio_offset_align: crate::__u32,
-                __statx_pad3: [crate::__u64; 12],
+                __statx_pad3: Padding<[crate::__u64; 12]>,
             }
 
             pub struct statx_timestamp {
                 pub tv_sec: crate::__s64,
                 pub tv_nsec: crate::__u32,
-                __statx_timestamp_pad1: [crate::__s32; 1],
+                __statx_timestamp_pad1: Padding<[crate::__s32; 1]>,
             }
         }
     }
@@ -316,9 +316,9 @@ s_no_extra_traits! {
         // the most useful member
         pub sigev_notify_thread_id: c_int,
         #[cfg(target_pointer_width = "64")]
-        __unused1: [c_int; 11],
+        __unused1: Padding<[c_int; 11]>,
         #[cfg(target_pointer_width = "32")]
-        __unused1: [c_int; 12],
+        __unused1: Padding<[c_int; 12]>,
     }
 }
 

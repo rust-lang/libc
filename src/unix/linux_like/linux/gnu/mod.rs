@@ -37,7 +37,7 @@ s! {
             not(target_arch = "x86_64"),
             target_pointer_width = "32"
         ))]
-        __unused1: [c_char; 4],
+        __unused1: Padding<[c_char; 4]>,
         __glibc_reserved: [c_char; 32],
     }
 
@@ -57,11 +57,11 @@ s! {
         pub gl_offs: size_t,
         pub gl_flags: c_int,
 
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
     }
 
     pub struct msghdr {
@@ -342,13 +342,13 @@ s! {
     pub struct timespec {
         pub tv_sec: time_t,
         #[cfg(all(gnu_time_bits64, target_endian = "big"))]
-        __pad: i32,
+        __pad: Padding<i32>,
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pub tv_nsec: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         pub tv_nsec: i64,
         #[cfg(all(gnu_time_bits64, target_endian = "little"))]
-        __pad: i32,
+        __pad: Padding<i32>,
     }
 
     pub struct utmpx {

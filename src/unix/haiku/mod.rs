@@ -276,17 +276,17 @@ s! {
 
     pub struct glob_t {
         pub gl_pathc: size_t,
-        __unused1: size_t,
+        __unused1: Padding<size_t>,
         pub gl_offs: size_t,
-        __unused2: size_t,
+        __unused2: Padding<size_t>,
         pub gl_pathv: *mut *mut c_char,
 
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
-        __unused6: *mut c_void,
-        __unused7: *mut c_void,
-        __unused8: *mut c_void,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
+        __unused6: Padding<*mut c_void>,
+        __unused7: Padding<*mut c_void>,
+        __unused8: Padding<*mut c_void>,
     }
 
     pub struct pthread_mutex_t {
@@ -466,9 +466,9 @@ s! {
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: u64,
-        __ss_pad3: [u8; 112],
+        __ss_pad1: Padding<[u8; 6]>,
+        __ss_pad2: Padding<u64>,
+        __ss_pad3: Padding<[u8; 112]>,
     }
     pub struct dirent {
         pub d_dev: dev_t,
@@ -483,7 +483,7 @@ s! {
         pub sigev_notify: c_int,
         pub sigev_signo: c_int,
         pub sigev_value: crate::sigval,
-        __unused1: *mut c_void, // actually a function pointer
+        __unused1: Padding<*mut c_void>, // actually a function pointer
         pub sigev_notify_attributes: *mut crate::pthread_attr_t,
     }
 

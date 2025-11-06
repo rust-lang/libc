@@ -438,8 +438,8 @@ s! {
         pub d_fileno: crate::ino_t,
         pub d_namlen: u16,
         pub d_type: u8,
-        __unused1: u8,
-        __unused2: u32,
+        __unused1: Padding<u8>,
+        __unused2: Padding<u32>,
         pub d_name: [c_char; 256],
     }
 
@@ -472,13 +472,13 @@ s! {
         pub sigev_notify: c_int,
         // The union is 8-byte in size, so it is aligned at a 8-byte offset.
         #[cfg(target_pointer_width = "64")]
-        __unused1: c_int,
+        __unused1: Padding<c_int>,
         pub sigev_signo: c_int, //actually a union
         // pad the union
         #[cfg(target_pointer_width = "64")]
-        __unused2: c_int,
+        __unused2: Padding<c_int>,
         pub sigev_value: crate::sigval,
-        __unused3: *mut c_void, //actually a function pointer
+        __unused3: Padding<*mut c_void>, //actually a function pointer
     }
 
     pub struct mcontext_t {
@@ -511,8 +511,8 @@ s! {
         pub mc_len: c_uint,
         pub mc_fpformat: c_uint,
         pub mc_ownedfp: c_uint,
-        __reserved: c_uint,
-        __unused: [c_uint; 8],
+        __reserved: Padding<c_uint>,
+        __unused: Padding<[c_uint; 8]>,
         pub mc_fpregs: [c_uint; 256],
     }
 
@@ -525,7 +525,7 @@ s! {
         pub uc_stack: stack_t,
         pub uc_cofunc: Option<unsafe extern "C" fn(uc: *mut ucontext_t, arg: *mut c_void)>,
         pub uc_arg: *mut c_void,
-        __pad: [c_int; 4],
+        __pad: Padding<[c_int; 4]>,
     }
 }
 
