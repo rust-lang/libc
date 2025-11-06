@@ -103,7 +103,8 @@ s! {
         pub sp: c_ulong,
         pub pc: c_ulong,
         pub pstate: c_ulong,
-        __reserved: [u64; 512],
+        _padding: u64,
+        pub __reserved: [u8; 4096],
     }
 
     #[repr(align(8))]

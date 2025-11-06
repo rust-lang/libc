@@ -74,7 +74,8 @@ s! {
         pub sp: c_ulonglong,
         pub pc: c_ulonglong,
         pub pstate: c_ulonglong,
-        __reserved: [u64; 512],
+        _padding: u64,
+        pub __reserved: [u8; 4096],
     }
 
     pub struct user_fpsimd_struct {
