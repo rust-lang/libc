@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        id: [1, 2, 3, 4, 5, 6, 7, 8]
+        id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         target:
           - i686-pc-windows-msvc
           - x86_64-pc-windows-gnu
@@ -39,11 +39,11 @@ jobs:
       TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v5
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: ${{ matrix.target }}
+      # - name: Setup Rust toolchain
+      #   run: ./ci/install-rust.sh
+      # - uses: Swatinem/rust-cache@v2
+      #   with:
+      #     key: ${{ matrix.target }}
 
       - name: Run natively
         run: ./ci/run.sh ${{ matrix.target }}
