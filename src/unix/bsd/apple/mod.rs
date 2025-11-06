@@ -284,18 +284,18 @@ s! {
 
     pub struct glob_t {
         pub gl_pathc: size_t,
-        __unused1: c_int,
+        __unused1: Padding<c_int>,
         pub gl_offs: size_t,
-        __unused2: c_int,
+        __unused2: Padding<c_int>,
         pub gl_pathv: *mut *mut c_char,
 
-        __unused3: *mut c_void,
+        __unused3: Padding<*mut c_void>,
 
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
-        __unused6: *mut c_void,
-        __unused7: *mut c_void,
-        __unused8: *mut c_void,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
+        __unused6: Padding<*mut c_void>,
+        __unused7: Padding<*mut c_void>,
+        __unused8: Padding<*mut c_void>,
     }
 
     pub struct addrinfo {
@@ -365,7 +365,7 @@ s! {
         pub si_addr: *mut c_void,
         //Requires it to be union for tests
         //pub si_value: crate::sigval,
-        _pad: [usize; 9],
+        _pad: Padding<[usize; 9]>,
     }
 
     pub struct sigaction {
@@ -1142,7 +1142,7 @@ s! {
         pub tcpi_state: u8,
         pub tcpi_snd_wscale: u8,
         pub tcpi_rcv_wscale: u8,
-        __pad1: u8,
+        __pad1: Padding<u8>,
         pub tcpi_options: u32,
         pub tcpi_flags: u32,
         pub tcpi_rto: u32,
@@ -1170,7 +1170,7 @@ s! {
         pub tcpi_tfo_send_blackhole: u32,
         pub tcpi_tfo_recv_blackhole: u32,
         pub tcpi_tfo_onebyte_proxy: u32,
-        __pad2: u32,
+        __pad2: Padding<u32>,
         pub tcpi_txpackets: u64,
         pub tcpi_txbytes: u64,
         pub tcpi_txretransmitbytes: u64,
@@ -1406,9 +1406,9 @@ s! {
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: crate::sa_family_t,
-        __ss_pad1: [u8; 6],
+        __ss_pad1: Padding<[u8; 6]>,
         __ss_align: i64,
-        __ss_pad2: [u8; 112],
+        __ss_pad2: Padding<[u8; 112]>,
     }
 
     pub struct utmpx {
@@ -1426,7 +1426,7 @@ s! {
         pub sigev_notify: c_int,
         pub sigev_signo: c_int,
         pub sigev_value: crate::sigval,
-        __unused1: *mut c_void, //actually a function pointer
+        __unused1: Padding<*mut c_void>, //actually a function pointer
         pub sigev_notify_attributes: *mut crate::pthread_attr_t,
     }
 

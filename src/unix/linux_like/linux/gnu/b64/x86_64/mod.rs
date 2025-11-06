@@ -21,7 +21,7 @@ s! {
         pub sa_sigaction: crate::sighandler_t,
         pub sa_mask: crate::sigset_t,
         #[cfg(target_arch = "sparc64")]
-        __reserved0: c_int,
+        __reserved0: Padding<c_int>,
         pub sa_flags: c_int,
         pub sa_restorer: Option<extern "C" fn()>,
     }
@@ -86,7 +86,7 @@ s! {
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        __pad0: c_int,
+        __pad0: Padding<c_int>,
         pub st_rdev: crate::dev_t,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
@@ -97,7 +97,7 @@ s! {
         pub st_mtime_nsec: i64,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: i64,
-        __unused: [i64; 3],
+        __unused: Padding<[i64; 3]>,
     }
 
     pub struct stat64 {
@@ -107,7 +107,7 @@ s! {
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        __pad0: c_int,
+        __pad0: Padding<c_int>,
         pub st_rdev: crate::dev_t,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
@@ -118,7 +118,7 @@ s! {
         pub st_mtime_nsec: i64,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: i64,
-        __reserved: [i64; 3],
+        __reserved: Padding<[i64; 3]>,
     }
 
     pub struct statfs64 {
@@ -222,12 +222,12 @@ s! {
         pub start_code: c_ulonglong,
         pub start_stack: c_ulonglong,
         pub signal: c_longlong,
-        __reserved: c_int,
+        __reserved: Padding<c_int>,
         #[cfg(target_pointer_width = "32")]
-        __pad1: u32,
+        __pad1: Padding<u32>,
         pub u_ar0: *mut user_regs_struct,
         #[cfg(target_pointer_width = "32")]
-        __pad2: u32,
+        __pad2: Padding<u32>,
         pub u_fpstate: *mut user_fpregs_struct,
         pub magic: c_ulonglong,
         pub u_comm: [c_char; 32],
@@ -247,11 +247,11 @@ s! {
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
         pub mode: c_ushort,
-        __pad1: c_ushort,
+        __pad1: Padding<c_ushort>,
         pub __seq: c_ushort,
-        __pad2: c_ushort,
-        __unused1: u64,
-        __unused2: u64,
+        __pad2: Padding<c_ushort>,
+        __unused1: Padding<u64>,
+        __unused2: Padding<u64>,
     }
 
     pub struct shmid_ds {
@@ -263,8 +263,8 @@ s! {
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: crate::shmatt_t,
-        __unused4: u64,
-        __unused5: u64,
+        __unused4: Padding<u64>,
+        __unused5: Padding<u64>,
     }
 
     pub struct ptrace_rseq_configuration {

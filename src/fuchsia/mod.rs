@@ -121,46 +121,46 @@ s! {
         pub ru_stime: timeval,
         pub ru_maxrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad1: u32,
+        __pad1: Padding<u32>,
         pub ru_ixrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad2: u32,
+        __pad2: Padding<u32>,
         pub ru_idrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad3: u32,
+        __pad3: Padding<u32>,
         pub ru_isrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad4: u32,
+        __pad4: Padding<u32>,
         pub ru_minflt: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad5: u32,
+        __pad5: Padding<u32>,
         pub ru_majflt: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad6: u32,
+        __pad6: Padding<u32>,
         pub ru_nswap: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad7: u32,
+        __pad7: Padding<u32>,
         pub ru_inblock: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad8: u32,
+        __pad8: Padding<u32>,
         pub ru_oublock: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad9: u32,
+        __pad9: Padding<u32>,
         pub ru_msgsnd: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad10: u32,
+        __pad10: Padding<u32>,
         pub ru_msgrcv: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad11: u32,
+        __pad11: Padding<u32>,
         pub ru_nsignals: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad12: u32,
+        __pad12: Padding<u32>,
         pub ru_nvcsw: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad13: u32,
+        __pad13: Padding<u32>,
         pub ru_nivcsw: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad14: u32,
+        __pad14: Padding<u32>,
     }
 
     pub struct in_addr {
@@ -432,11 +432,11 @@ s! {
         pub gl_offs: size_t,
         pub gl_flags: c_int,
 
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
     }
 
     pub struct ifaddrs {
@@ -521,7 +521,7 @@ s! {
         pub ssi_stime: u64,
         pub ssi_addr: u64,
         pub ssi_addr_lsb: u16,
-        _pad2: u16,
+        _pad2: Padding<u16>,
         pub ssi_syscall: i32,
         pub ssi_call_addr: u64,
         pub ssi_arch: u32,
@@ -778,8 +778,8 @@ s! {
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: c_ulong,
-        __pad1: c_ulong,
-        __pad2: c_ulong,
+        __pad1: Padding<c_ulong>,
+        __pad2: Padding<c_ulong>,
     }
 
     pub struct msqid_ds {
@@ -792,8 +792,8 @@ s! {
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
-        __pad1: c_ulong,
-        __pad2: c_ulong,
+        __pad1: Padding<c_ulong>,
+        __pad2: Padding<c_ulong>,
     }
 
     pub struct statfs {
@@ -816,10 +816,10 @@ s! {
         pub msg_namelen: crate::socklen_t,
         pub msg_iov: *mut crate::iovec,
         pub msg_iovlen: c_int,
-        __pad1: c_int,
+        __pad1: Padding<c_int>,
         pub msg_control: *mut c_void,
         pub msg_controllen: crate::socklen_t,
-        __pad2: crate::socklen_t,
+        __pad2: Padding<crate::socklen_t>,
         pub msg_flags: c_int,
     }
 
@@ -905,7 +905,7 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
-        __ss_pad2: [u8; 128 - 2 - 8],
+        __ss_pad2: Padding<[u8; 128 - 2 - 8]>,
         __ss_align: size_t,
     }
 
@@ -962,7 +962,7 @@ s! {
 
     pub struct sockaddr_nl {
         pub nl_family: crate::sa_family_t,
-        nl_pad: c_ushort,
+        nl_pad: Padding<c_ushort>,
         pub nl_pid: u32,
         pub nl_groups: u32,
     }

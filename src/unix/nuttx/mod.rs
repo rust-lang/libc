@@ -47,7 +47,7 @@ s! {
         pub st_ctim: timespec,
         pub st_blksize: blksize_t,
         pub st_blocks: i64,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct sockaddr {
@@ -63,7 +63,7 @@ s! {
         pub pw_gecos: *const c_char,
         pub pw_dir: *const c_char,
         pub pw_shell: *const c_char,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct sem_t {
@@ -118,7 +118,7 @@ s! {
         pub int_p_cs_precedes: i8,
         pub int_p_sep_by_space: i8,
         pub int_p_sign_posn: i8,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct tm {
@@ -133,7 +133,7 @@ s! {
         pub tm_isdst: i32,
         pub tm_gmtoff: isize,
         pub tm_zone: *const c_char,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct addrinfo {
@@ -145,7 +145,7 @@ s! {
         pub ai_addr: *mut sockaddr,
         pub ai_canonname: *mut c_char,
         pub ai_next: *mut addrinfo,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct pthread_rwlock_t {
@@ -164,7 +164,7 @@ s! {
         pub f_fsid: usize,
         pub f_flag: usize,
         pub f_namemax: usize,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct dirent {
@@ -185,7 +185,7 @@ s! {
         pub sa_mask: sigset_t,
         pub sa_flags: i32,
         pub sa_user: usize,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct termios {
@@ -195,7 +195,7 @@ s! {
         pub c_lflag: tcflag_t,
         pub c_cc: [cc_t; 12],
         pub c_speed: speed_t,
-        __reserved: [usize; __DEFAULT_RESERVED_SIZE__],
+        __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
     pub struct in_addr {
