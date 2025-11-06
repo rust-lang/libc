@@ -316,11 +316,11 @@ s! {
         pub gl_flags: c_int,
         pub gl_errfunc: extern "C" fn(*const c_char, c_int) -> c_int,
 
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
     }
 
     pub struct passwd {
@@ -485,7 +485,7 @@ s! {
         pub c_cflag: crate::tcflag_t,
         pub c_lflag: crate::tcflag_t,
         pub c_cc: [crate::cc_t; crate::NCCS],
-        __reserved: [c_uint; 3],
+        __reserved: Padding<[c_uint; 3]>,
         pub c_ispeed: crate::speed_t,
         pub c_ospeed: crate::speed_t,
     }
@@ -538,7 +538,7 @@ s! {
         pub aio_sigevent: crate::sigevent,
         pub aio_lio_opcode: c_int,
         pub _aio_lio_state: *mut c_void,
-        _aio_pad: [c_int; 3],
+        _aio_pad: Padding<[c_int; 3]>,
         pub _aio_next: *mut crate::aiocb,
         pub _aio_flag: c_uint,
         pub _aio_iotype: c_uint,
@@ -593,7 +593,7 @@ s! {
         pub __prioceiling: c_int,
         pub __clockid: c_int,
         pub __count: c_int,
-        __reserved: [c_int; 3],
+        __reserved: Padding<[c_int; 3]>,
     }
 
     pub struct sockcred {
@@ -679,9 +679,9 @@ s! {
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: sa_family_t,
-        __ss_pad1: [c_char; 6],
+        __ss_pad1: Padding<[c_char; 6]>,
         __ss_align: i64,
-        __ss_pad2: [c_char; 112],
+        __ss_pad2: Padding<[c_char; 112]>,
     }
 
     pub struct utsname {
@@ -752,7 +752,7 @@ s_no_extra_traits! {
         pub msg_type: c_long,
         pub msg_ts: c_ushort,
         pub msg_spot: c_short,
-        _pad: [u8; 4],
+        _pad: Padding<[u8; 4]>,
     }
 
     pub struct msqid_ds {
@@ -765,12 +765,12 @@ s_no_extra_traits! {
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
         pub msg_stime: crate::time_t,
-        msg_pad1: c_long,
+        msg_pad1: Padding<c_long>,
         pub msg_rtime: crate::time_t,
-        msg_pad2: c_long,
+        msg_pad2: Padding<c_long>,
         pub msg_ctime: crate::time_t,
-        msg_pad3: c_long,
-        msg_pad4: [c_long; 4],
+        msg_pad3: Padding<c_long>,
+        msg_pad4: Padding<[c_long; 4]>,
     }
 
     pub struct sync_t {
@@ -781,7 +781,7 @@ s_no_extra_traits! {
     #[repr(align(4))]
     pub struct pthread_barrier_t {
         // union
-        __pad: [u8; 28], // union
+        __pad: Padding<[u8; 28]>, // union
     }
 
     pub struct pthread_rwlock_t {
@@ -3127,7 +3127,7 @@ impl siginfo_t {
     pub unsafe fn si_addr(&self) -> *mut c_void {
         #[repr(C)]
         struct siginfo_si_addr {
-            _pad: [u8; 32],
+            _pad: Padding<[u8; 32]>,
             si_addr: *mut c_void,
         }
         (*(self as *const siginfo_t as *const siginfo_si_addr)).si_addr
@@ -3136,7 +3136,7 @@ impl siginfo_t {
     pub unsafe fn si_value(&self) -> crate::sigval {
         #[repr(C)]
         struct siginfo_si_value {
-            _pad: [u8; 32],
+            _pad: Padding<[u8; 32]>,
             si_value: crate::sigval,
         }
         (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
@@ -3145,7 +3145,7 @@ impl siginfo_t {
     pub unsafe fn si_pid(&self) -> crate::pid_t {
         #[repr(C)]
         struct siginfo_si_pid {
-            _pad: [u8; 16],
+            _pad: Padding<[u8; 16]>,
             si_pid: crate::pid_t,
         }
         (*(self as *const siginfo_t as *const siginfo_si_pid)).si_pid
@@ -3154,7 +3154,7 @@ impl siginfo_t {
     pub unsafe fn si_uid(&self) -> crate::uid_t {
         #[repr(C)]
         struct siginfo_si_uid {
-            _pad: [u8; 24],
+            _pad: Padding<[u8; 24]>,
             si_uid: crate::uid_t,
         }
         (*(self as *const siginfo_t as *const siginfo_si_uid)).si_uid
@@ -3163,7 +3163,7 @@ impl siginfo_t {
     pub unsafe fn si_status(&self) -> c_int {
         #[repr(C)]
         struct siginfo_si_status {
-            _pad: [u8; 28],
+            _pad: Padding<[u8; 28]>,
             si_status: c_int,
         }
         (*(self as *const siginfo_t as *const siginfo_si_status)).si_status

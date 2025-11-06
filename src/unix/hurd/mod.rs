@@ -415,7 +415,7 @@ s! {
         pub sigev_value: crate::sigval,
         pub sigev_signo: c_int,
         pub sigev_notify: c_int,
-        __unused1: *mut c_void, //actually a function pointer
+        __unused1: Padding<*mut c_void>, //actually a function pointer
         pub sigev_notify_attributes: *mut pthread_attr_t,
     }
 
@@ -495,7 +495,7 @@ s! {
         pub stx_uid: u32,
         pub stx_gid: u32,
         pub stx_mode: u16,
-        __statx_pad1: [u16; 1],
+        __statx_pad1: Padding<[u16; 1]>,
         pub stx_ino: u64,
         pub stx_size: u64,
         pub stx_blocks: u64,
@@ -508,7 +508,7 @@ s! {
         pub stx_rdev_minor: u32,
         pub stx_dev_major: u32,
         pub stx_dev_minor: u32,
-        __statx_pad2: [u64; 14],
+        __statx_pad2: Padding<[u64; 14]>,
     }
 
     pub struct statx_timestamp {
@@ -595,7 +595,7 @@ s! {
         __return_value: ssize_t,
         pub aio_offset: off_t,
         #[cfg(all(not(target_arch = "x86_64"), target_pointer_width = "32"))]
-        __unused1: [c_char; 4],
+        __unused1: Padding<[c_char; 4]>,
         __glibc_reserved: [c_char; 32],
     }
 
@@ -921,11 +921,11 @@ s! {
         pub gl_offs: size_t,
         pub gl_flags: c_int,
 
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
     }
 
     pub struct glob64_t {
@@ -934,11 +934,11 @@ s! {
         pub gl_offs: size_t,
         pub gl_flags: c_int,
 
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
     }
 
     pub struct regex_t {
@@ -995,7 +995,7 @@ s! {
         __allocated: c_int,
         __used: c_int,
         __actions: *mut c_int,
-        __pad: [c_int; 16],
+        __pad: Padding<[c_int; 16]>,
     }
 
     pub struct posix_spawnattr_t {
@@ -1005,7 +1005,7 @@ s! {
         __ss: crate::sigset_t,
         __sp: crate::sched_param,
         __policy: c_int,
-        __pad: [c_int; 16],
+        __pad: Padding<[c_int; 16]>,
     }
 
     pub struct regmatch_t {

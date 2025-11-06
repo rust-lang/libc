@@ -440,7 +440,7 @@ s! {
     }
 
     pub struct __c_anonymous_eax_3 {
-        __reserved: [u32; 2],
+        __reserved: Padding<[u32; 2]>,
         pub serial_number_high: u32,
         pub serial_number_low: u32,
     }

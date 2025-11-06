@@ -367,9 +367,9 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
-        __ss_pad1: [c_char; 6],
+        __ss_pad1: Padding<[c_char; 6]>,
         __ss_align: i64,
-        __ss_pad2: [c_char; 112],
+        __ss_pad2: Padding<[c_char; 112]>,
     }
 
     pub struct stat {
@@ -461,7 +461,7 @@ s! {
         pub si_pid: pid_t,
         pub si_uid: uid_t,
         pub si_errno: c_int,
-        __pad: [u32; 32],
+        __pad: Padding<[u32; 32]>,
     }
 
     pub struct dirent {
@@ -491,7 +491,7 @@ s_no_extra_traits! {
         pub ifru_mtu: c_int,
         pub ifru_ifindex: c_int,
         pub ifru_data: *mut c_char,
-        __ifru_pad: [c_char; 28],
+        __ifru_pad: Padding<[c_char; 28]>,
     }
 
     pub struct ifreq {
