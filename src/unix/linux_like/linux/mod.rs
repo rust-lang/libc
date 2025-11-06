@@ -104,11 +104,11 @@ s! {
         pub gl_offs: size_t,
         pub gl_flags: c_int,
 
-        __unused1: *mut c_void,
-        __unused2: *mut c_void,
-        __unused3: *mut c_void,
-        __unused4: *mut c_void,
-        __unused5: *mut c_void,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<*mut c_void>,
+        __unused3: Padding<*mut c_void>,
+        __unused4: Padding<*mut c_void>,
+        __unused5: Padding<*mut c_void>,
     }
 
     pub struct passwd {
@@ -163,11 +163,11 @@ s! {
         pub ssi_stime: u64,
         pub ssi_addr: u64,
         pub ssi_addr_lsb: u16,
-        _pad2: u16,
+        _pad2: Padding<u16>,
         pub ssi_syscall: i32,
         pub ssi_call_addr: u64,
         pub ssi_arch: u32,
-        _pad: [u8; 28],
+        _pad: Padding<[u8; 28]>,
     }
 
     pub struct itimerspec {
@@ -642,7 +642,7 @@ s! {
         __allocated: c_int,
         __used: c_int,
         __actions: *mut c_int,
-        __pad: [c_int; 16],
+        __pad: Padding<[c_int; 16]>,
     }
 
     pub struct posix_spawnattr_t {
@@ -655,7 +655,7 @@ s! {
         #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
         __sp: crate::sched_param,
         __policy: c_int,
-        __pad: [c_int; 16],
+        __pad: Padding<[c_int; 16]>,
     }
 
     pub struct genlmsghdr {
@@ -1369,7 +1369,7 @@ s! {
 
     pub struct sockaddr_nl {
         pub nl_family: crate::sa_family_t,
-        nl_pad: c_ushort,
+        nl_pad: Padding<c_ushort>,
         pub nl_pid: u32,
         pub nl_groups: u32,
     }

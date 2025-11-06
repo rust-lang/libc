@@ -88,49 +88,49 @@ s! {
         pub ru_stime: timeval,
         pub ru_maxrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad1: u32,
+        __pad1: Padding<u32>,
         pub ru_ixrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad2: u32,
+        __pad2: Padding<u32>,
         pub ru_idrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad3: u32,
+        __pad3: Padding<u32>,
         pub ru_isrss: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad4: u32,
+        __pad4: Padding<u32>,
         pub ru_minflt: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad5: u32,
+        __pad5: Padding<u32>,
         pub ru_majflt: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad6: u32,
+        __pad6: Padding<u32>,
         pub ru_nswap: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad7: u32,
+        __pad7: Padding<u32>,
         pub ru_inblock: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad8: u32,
+        __pad8: Padding<u32>,
         pub ru_oublock: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad9: u32,
+        __pad9: Padding<u32>,
         pub ru_msgsnd: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad10: u32,
+        __pad10: Padding<u32>,
         pub ru_msgrcv: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad11: u32,
+        __pad11: Padding<u32>,
         pub ru_nsignals: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad12: u32,
+        __pad12: Padding<u32>,
         pub ru_nvcsw: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad13: u32,
+        __pad13: Padding<u32>,
         pub ru_nivcsw: c_long,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        __pad14: u32,
+        __pad14: Padding<u32>,
 
         #[cfg(any(target_env = "musl", target_env = "ohos", target_os = "emscripten"))]
-        __reserved: [c_long; 16],
+        __reserved: Padding<[c_long; 16]>,
     }
 
     #[cfg(not(target_os = "nuttx"))]

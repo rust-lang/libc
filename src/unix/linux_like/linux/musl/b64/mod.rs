@@ -30,8 +30,8 @@ s! {
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: c_ulong,
-        __pad1: c_ulong,
-        __pad2: c_ulong,
+        __pad1: Padding<c_ulong>,
+        __pad2: Padding<c_ulong>,
     }
 
     pub struct msqid_ds {
@@ -44,8 +44,8 @@ s! {
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
-        __pad1: c_ulong,
-        __pad2: c_ulong,
+        __pad1: Padding<c_ulong>,
+        __pad2: Padding<c_ulong>,
     }
 
     pub struct sem_t {

@@ -24,6 +24,6 @@ s! {
         pub st_lspare: i32,
         pub st_birthtime: crate::time_t,
         pub st_birthtime_nsec: c_long,
-        __unused: [u8; 8],
+        __unused: Padding<[u8; 8]>,
     }
 }

@@ -24,7 +24,7 @@ s! {
         pub st_mtime_nsec: c_long,
         pub st_ctime: c_long,
         pub st_ctime_nsec: c_long,
-        __unused: [c_long; 3],
+        __unused: Padding<[c_long; 3]>,
     }
 
     pub struct stat64 {
@@ -44,7 +44,7 @@ s! {
         pub st_mtime_nsec: c_long,
         pub st_ctime: c_long,
         pub st_ctime_nsec: c_long,
-        __unused: [c_long; 3],
+        __unused: Padding<[c_long; 3]>,
     }
 
     pub struct _libc_xmmreg {
@@ -91,12 +91,12 @@ s! {
         pub start_code: c_ulong,
         pub start_stack: c_ulong,
         pub signal: c_long,
-        __reserved: c_int,
+        __reserved: Padding<c_int>,
         #[cfg(target_pointer_width = "32")]
-        __pad1: u32,
+        __pad1: Padding<u32>,
         pub u_ar0: *mut user_regs_struct,
         #[cfg(target_pointer_width = "32")]
-        __pad2: u32,
+        __pad2: Padding<u32>,
         pub u_fpstate: *mut user_fpregs_struct,
         pub magic: c_ulong,
         pub u_comm: [c_char; 32],
@@ -108,7 +108,7 @@ s! {
     pub struct _libc_fpxreg {
         pub significand: [u16; 4],
         pub exponent: u16,
-        __padding: [u16; 3],
+        __padding: Padding<[u16; 3]>,
     }
 
     pub struct _libc_fpstate {
