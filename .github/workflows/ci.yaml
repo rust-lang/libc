@@ -27,43 +27,15 @@ jobs:
     name: Test tier1
     strategy:
       matrix:
+        id: [1, 2, 3, 4]
         include:
           - target: i686-pc-windows-msvc
             os: windows-2025
-          - target: i686-unknown-linux-gnu
           - target: x86_64-pc-windows-gnu
             os: windows-2025
             env: { ARCH_BITS: 64, ARCH: x86_64 }
           - target: x86_64-pc-windows-msvc
             os: windows-2025
-          - target: x86_64-unknown-linux-gnu
-          - target: i686-pc-windows-msvc
-            os: windows-2025
-          - target: i686-unknown-linux-gnu
-          - target: x86_64-pc-windows-gnu
-            os: windows-2025
-            env: { ARCH_BITS: 64, ARCH: x86_64 }
-          - target: x86_64-pc-windows-msvc
-            os: windows-2025
-          - target: x86_64-unknown-linux-gnu
-          - target: i686-pc-windows-msvc
-            os: windows-2025
-          - target: i686-unknown-linux-gnu
-          - target: x86_64-pc-windows-gnu
-            os: windows-2025
-            env: { ARCH_BITS: 64, ARCH: x86_64 }
-          - target: x86_64-pc-windows-msvc
-            os: windows-2025
-          - target: x86_64-unknown-linux-gnu
-          - target: i686-pc-windows-msvc
-            os: windows-2025
-          - target: i686-unknown-linux-gnu
-          - target: x86_64-pc-windows-gnu
-            os: windows-2025
-            env: { ARCH_BITS: 64, ARCH: x86_64 }
-          - target: x86_64-pc-windows-msvc
-            os: windows-2025
-          - target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
     env:
@@ -102,7 +74,7 @@ jobs:
       - uses: actions/upload-artifact@v5
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
+          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}-${{ matrix.id }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
