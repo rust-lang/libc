@@ -58,6 +58,9 @@ jobs:
           ls -l $(which python3) || true
           python3 -c 'print("I work")'
           python3 ci/create-artifacts.py
+          echo "in between"
+          python3 ci/other-script.py
+          echo "done"
       - uses: actions/upload-artifact@v5
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
