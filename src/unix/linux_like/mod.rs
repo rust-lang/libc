@@ -277,7 +277,7 @@ cfg_if! {
                 pub stx_uid: crate::__u32,
                 pub stx_gid: crate::__u32,
                 pub stx_mode: crate::__u16,
-                __statx_pad1: [crate::__u16; 1],
+                __statx_pad1: Padding<[crate::__u16; 1]>,
                 pub stx_ino: crate::__u64,
                 pub stx_size: crate::__u64,
                 pub stx_blocks: crate::__u64,
@@ -293,13 +293,13 @@ cfg_if! {
                 pub stx_mnt_id: crate::__u64,
                 pub stx_dio_mem_align: crate::__u32,
                 pub stx_dio_offset_align: crate::__u32,
-                __statx_pad3: [crate::__u64; 12],
+                __statx_pad3: Padding<[crate::__u64; 12]>,
             }
 
             pub struct statx_timestamp {
                 pub tv_sec: crate::__s64,
                 pub tv_nsec: crate::__u32,
-                __statx_timestamp_pad1: [crate::__s32; 1],
+                __statx_timestamp_pad1: Padding<[crate::__s32; 1]>,
             }
         }
     }
@@ -323,7 +323,7 @@ s_no_extra_traits! {
     }
 
     pub union __c_anonymous_sigev_un {
-        _pad: [c_int; SIGEV_PAD_SIZE],
+        _pad: Padding<[c_int; SIGEV_PAD_SIZE]>,
         pub _tid: c_int,
         pub _sigev_thread: __c_anonymous_sigev_thread,
     }

@@ -33,7 +33,7 @@ s! {
         pub guard_size: size_t,
         pub sched_policy: i32,
         pub sched_priority: i32,
-        __reserved: [c_char; 16],
+        __reserved: Padding<[c_char; 16]>,
     }
 
     pub struct passwd {

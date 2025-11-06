@@ -137,7 +137,7 @@ s! {
     pub struct sem_t {
         count: c_uint,
         #[cfg(target_pointer_width = "64")]
-        __reserved: [c_int; 3],
+        __reserved: Padding<[c_int; 3]>,
     }
 
     pub struct exit_status {
@@ -179,11 +179,11 @@ s! {
         pub ssi_stime: c_ulonglong,
         pub ssi_addr: c_ulonglong,
         pub ssi_addr_lsb: u16,
-        _pad2: u16,
+        _pad2: Padding<u16>,
         pub ssi_syscall: i32,
         pub ssi_call_addr: u64,
         pub ssi_arch: u32,
-        _pad: [u8; 28],
+        _pad: Padding<[u8; 28]>,
     }
 
     pub struct itimerspec {
@@ -503,7 +503,7 @@ s! {
 
     pub struct sockaddr_nl {
         pub nl_family: crate::sa_family_t,
-        nl_pad: c_ushort,
+        nl_pad: Padding<c_ushort>,
         pub nl_pid: u32,
         pub nl_groups: u32,
     }
