@@ -267,6 +267,7 @@ jobs:
       matrix:
         include:
           - target: x86_64-pc-solaris
+          - target: x86_64-unknown-netbsd
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
@@ -287,6 +288,37 @@ jobs:
             export PATH=$HOME/.rust_solaris/bin:$PATH
             ./ci/run.sh ${{ matrix.target }}
 
+      - name: Test on NetBSD
+        uses: vmactions/netbsd-vm@v1
+        if: contains(matrix.target, 'netbsd')
+        with:
+          release: "10.1"
+          usesh: true
+          mem: 4096
+          copyback: false
+          prepare: |
+            set -x
+            /usr/sbin/pkg_add curl
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
+              --profile minimal --default-toolchain nightly -y
+          run: |
+            set -x
+            . "$HOME/.cargo/env"
+            which rustc
+            rustc -Vv
+            ./ci/run.sh ${{ matrix.target }}
+
+  docs:
+    name: Ensure docs build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Rust
+      run: rustup update nightly --no-self-update && rustup default nightly
+    - uses: Swatinem/rust-cache@v2
+    - run: cargo doc --workspace --no-deps
+
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
   success:
@@ -298,8 +330,9 @@ jobs:
       - test_tier2
       - test_tier2_vm
       - verify_build
+      - docs
       - clippy
-    # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
+    # Github branch protection is exceedingly silly and treats "jobs skipped because a dependency
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
     if: always() # make sure this is never "skipped"

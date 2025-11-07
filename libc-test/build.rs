@@ -1254,6 +1254,12 @@ fn test_netbsd(target: &str) {
     assert!(target.contains("netbsd"));
     let mut cfg = ctest_cfg();
 
+    // Assume netbsd10 but check for netbsd9 for test config.
+    let netbsd9 = match try_command_output("uname", &["-sr"]) {
+        Some(s) if s.starts_with("NetBSD 9.") => true,
+        _ => false,
+    };
+
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
 
@@ -1280,10 +1286,12 @@ fn test_netbsd(target: &str) {
         "ctype.h",
         "dirent.h",
         "dlfcn.h",
+        "execinfo.h",
         "glob.h",
         "grp.h",
         "ifaddrs.h",
         "langinfo.h",
+        "lwp.h",
         "net/bpf.h",
         "net/if.h",
         "net/if_arp.h",
@@ -1302,12 +1310,14 @@ fn test_netbsd(target: &str) {
         "sched.h",
         "semaphore.h",
         "signal.h",
+        "spawn.h",
         "string.h",
         "sys/endian.h",
         "sys/exec_elf.h",
         "sys/xattr.h",
         "sys/extattr.h",
         "sys/file.h",
+        (!netbsd9, "sys/futex.h"),
         "sys/ioctl.h",
         "sys/ioctl_compat.h",
         "sys/ipc.h",
@@ -1315,12 +1325,15 @@ fn test_netbsd(target: &str) {
         "sys/mman.h",
         "sys/mount.h",
         "sys/ptrace.h",
+        (!netbsd9, "sys/random.h"),
         "sys/resource.h",
+        "sys/sched.h",
         "sys/shm.h",
         "sys/socket.h",
         "sys/statvfs.h",
         "sys/sysctl.h",
         "sys/time.h",
+        (!netbsd9, "sys/timerfd.h"),
         "sys/times.h",
         "sys/timex.h",
         "sys/ucontext.h",
@@ -1343,6 +1356,8 @@ fn test_netbsd(target: &str) {
         "sys/reboot.h",
         "sys/shm.h",
         "iconv.h",
+        "utmp.h",
+        "utmpx.h",
     );
 
     cfg.rename_type(move |ty| {
@@ -1375,10 +1390,14 @@ fn test_netbsd(target: &str) {
         }
     });
 
+    cfg.alias_is_c_enum(|ty| ty == "fae_action");
+
     cfg.skip_alias(move |ty| {
         match ty.ident() {
             // FIXME(netbsd): sighandler_t is crazy across platforms
             "sighandler_t" => true,
+            // Incomplete type in C
+            "cpuset_t" => true,
             _ => false,
         }
     });
@@ -1390,6 +1409,14 @@ fn test_netbsd(target: &str) {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
+            // Anon struct
+            "__exit_status" => true,
+            // FIXME(netbsd): Should be importable but aren't for some reason.
+            "Aux32Info" | "Aux64Info" => true,
+            // deprecated, obsolete upstream
+            "ptrace_lwpinfo" => true,
+            // ABI change in NetBSD10, with symbol versioning.
+            "statvfs" if !netbsd9 => true,
             _ => false,
         }
     });
@@ -1409,11 +1436,18 @@ fn test_netbsd(target: &str) {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
             "SIGUNUSED" => true,                       // removed in glibc 2.26
 
+            // deprecated, obsolete upstream
+            "PT_LWPINFO" | "PL_EVENT_NONE" | "PL_EVENT_SIGNAL" | "PL_EVENT_SUSPENDED" => true,
+
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
             "MS_RMT_MASK" => true, // updated in glibc 2.22 and musl 1.1.13
             "BOTHER" => true,
             "GRND_RANDOM" | "GRND_INSECURE" | "GRND_NONBLOCK" => true, // netbsd 10 minimum
+
+            // Due to the NetBSD `__BIT` macro this turns out to be an `unsigned long`, but
+            // the futex syscall takes `int` ops.
+            "FUTEX_CMD_MASK" => true,
 
             _ => false,
         }
@@ -1422,15 +1456,20 @@ fn test_netbsd(target: &str) {
     cfg.skip_fn(move |func| {
         #[expect(clippy::wildcard_in_or_patterns)]
         match func.ident() {
-            // FIXME(netbsd): netbsd 10 minimum
             // FIXME(netbsd): https://github.com/rust-lang/libc/issues/1272
             "execv" | "execve" | "execvp" => true,
-            "getentropy" | "getrandom" => true,
+            // FIXME(netbsd): Look into setting `_POSIX_C_SOURCE` to enable this
+            "qsort_r" => true,
 
-            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
-            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
-            "prlimit" | "prlimit64" |        // non-int in 2nd arg
+            _ => false,
+        }
+    });
 
+    cfg.skip_fn_ptrcheck(move |func| {
+        match func {
+            // New symbol version present in NetBSD10, but we keep the old versions for NetBSD9
+            // compatibility.
+            "getmntinfo" | "statvfs" | "fstatvfs" | "getvfsstat" | "sigaction" => true,
             _ => false,
         }
     });
@@ -1453,9 +1492,64 @@ fn test_netbsd(target: &str) {
             ("Elf64_Phdr", "p_type") => true,
             // pthread_spin_t is a volatile uchar
             ("pthread_spinlock_t", "pts_spin") => true,
+
+            // `tcp_snd_wscale` and `tcp_rcv_wscale` are bitfields
+            ("tcp_info", "tcp_snd_wscale") => true,
+            ("tcp_info", "tcp_rcv_wscale") => true,
+
+            // Anonymous unions
+            ("ifconf", "ifc_ifcu") => true,
+            ("ifreq", "ifr_ifru") => true,
+            ("utmpx", "ut_exit") => true,
+            ("posix_spawn_file_actions_entry_t", "fae_data") => true,
+
             _ => false,
         }
     });
+
+    // Unless otherwise noted, everything in this block was an addition in NetBS 10.
+    if netbsd9 {
+        cfg.skip_const(move |constant| match constant.ident() {
+            "EOWNERDEAD"
+            | "ENOTRECOVERABLE"
+            | "F_GETPATH"
+            | "MNT_NFS4ACLS"
+            | "MNT_POSIX1EACLS"
+            | "MNT_ACLS"
+            | "EVFILT_USER"
+            | "EVFILT_EMPTY"
+            | "REG_ILLSEQ"
+            | "PT_SET_SIGPASS"
+            | "PT_GET_SIGPASS"
+            | "EXTATTR_NAMESPACE_EMPTY" => true,
+            x if x.starts_with("FUTEX") => true,
+            x if x.starts_with("NOTE_") => true,
+            x if x.starts_with("PT_LWP") => true,
+            x if x.starts_with("TFD_") => true,
+            "ELAST" => true, // not version-stable
+            _ => false,
+        });
+
+        cfg.skip_struct(move |struct_| match struct_.ident() {
+            "sockaddr_dl" => true, // Last field increased size in 10
+            x if x.starts_with("ptrace_lwp") => true,
+            // These were packed before NetBSD 10
+            "arphdr" | "in_addr" | "ip_mreq" | "sockaddr_in" => true,
+            _ => false,
+        });
+
+        cfg.skip_fn(move |func| match func.ident() {
+            "reallocarray" | "getentropy" | "ppoll" | "getrandom" => true,
+            x if x.starts_with("timerfd_") => true,
+            _ => false,
+        });
+
+        cfg.skip_struct_field(|struct_, field| match (struct_.ident(), field.ident()) {
+            ("statvfs", "f_mntfromlabel") => true, // added field
+            ("kevent", "udata") => true,           // changed type (ABI-compatible)
+            _ => false,
+        });
+    }
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
@@ -2286,7 +2380,21 @@ fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
     let mut cfg = ctest_cfg();
 
-    let freebsd_ver = which_freebsd();
+    let freebsd_ver = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+        let vers = version.parse().unwrap();
+        println!("cargo:warning=setting FreeBSD version to {vers}");
+        Some(vers)
+    } else {
+        match &try_command_output("freebsd-version", &[]) {
+            Some(s) if s.starts_with("10") => Some(10),
+            Some(s) if s.starts_with("11") => Some(11),
+            Some(s) if s.starts_with("12") => Some(12),
+            Some(s) if s.starts_with("13") => Some(13),
+            Some(s) if s.starts_with("14") => Some(14),
+            Some(s) if s.starts_with("15") => Some(15),
+            Some(_) | None => None,
+        }
+    };
 
     match freebsd_ver {
         Some(12) => cfg.cfg("freebsd12", None),
@@ -4905,34 +5013,6 @@ fn test_linux_like_apis(target: &str) {
     }
 }
 
-fn which_freebsd() -> Option<i32> {
-    if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
-        let vers = version.parse().unwrap();
-        println!("cargo:warning=setting FreeBSD version to {vers}");
-        return Some(vers);
-    }
-
-    let output = std::process::Command::new("freebsd-version")
-        .output()
-        .ok()?;
-
-    if !output.status.success() {
-        return None;
-    }
-
-    let stdout = String::from_utf8(output.stdout).ok()?;
-
-    match &stdout {
-        s if s.starts_with("10") => Some(10),
-        s if s.starts_with("11") => Some(11),
-        s if s.starts_with("12") => Some(12),
-        s if s.starts_with("13") => Some(13),
-        s if s.starts_with("14") => Some(14),
-        s if s.starts_with("15") => Some(15),
-        _ => None,
-    }
-}
-
 fn test_haiku(target: &str) {
     assert!(target.contains("haiku"));
 
@@ -5572,4 +5652,18 @@ fn test_aix(target: &str) {
     });
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+}
+
+/// Attempt to execute a command and collect its output, If the command fails for whatever
+/// reason, return `None`.
+fn try_command_output(cmd: &str, args: &[&str]) -> Option<String> {
+    let output = std::process::Command::new(cmd).args(args).output().ok()?;
+
+    if !output.status.success() {
+        return None;
+    }
+
+    let res = String::from_utf8(output.stdout)
+        .unwrap_or_else(|e| panic!("command {cmd} returned non-UTF-8 output: {e}"));
+    Some(res)
 }

@@ -668,71 +668,38 @@ cfg_if! {
     }
 }
 
-#[repr(C)]
-struct siginfo_fault {
-    addr: *mut c_void,
-    trapno: c_int,
-    pc: *mut crate::caddr_t,
-}
-impl Copy for siginfo_fault {}
-impl Clone for siginfo_fault {
-    fn clone(&self) -> Self {
-        *self
+s_no_extra_traits! {
+    struct siginfo_fault {
+        addr: *mut c_void,
+        trapno: c_int,
+        pc: *mut crate::caddr_t,
     }
-}
 
-#[repr(C)]
-struct siginfo_cldval {
-    utime: crate::clock_t,
-    status: c_int,
-    stime: crate::clock_t,
-}
-impl Copy for siginfo_cldval {}
-impl Clone for siginfo_cldval {
-    fn clone(&self) -> Self {
-        *self
+    struct siginfo_cldval {
+        utime: crate::clock_t,
+        status: c_int,
+        stime: crate::clock_t,
     }
-}
 
-#[repr(C)]
-struct siginfo_killval {
-    uid: crate::uid_t,
-    value: crate::sigval,
-    // Pad out to match the SIGCLD value size
-    _pad: *mut c_void,
-}
-impl Copy for siginfo_killval {}
-impl Clone for siginfo_killval {
-    fn clone(&self) -> Self {
-        *self
+    struct siginfo_killval {
+        uid: crate::uid_t,
+        value: crate::sigval,
+        // Pad out to match the SIGCLD value size
+        _pad: *mut c_void,
     }
-}
 
-#[repr(C)]
-struct siginfo_sigcld {
-    pid: crate::pid_t,
-    val: siginfo_cldval,
-    ctid: crate::ctid_t,
-    zoneid: crate::zoneid_t,
-}
-impl Copy for siginfo_sigcld {}
-impl Clone for siginfo_sigcld {
-    fn clone(&self) -> Self {
-        *self
+    struct siginfo_sigcld {
+        pid: crate::pid_t,
+        val: siginfo_cldval,
+        ctid: crate::ctid_t,
+        zoneid: crate::zoneid_t,
     }
-}
 
-#[repr(C)]
-struct siginfo_kill {
-    pid: crate::pid_t,
-    val: siginfo_killval,
-    ctid: crate::ctid_t,
-    zoneid: crate::zoneid_t,
-}
-impl Copy for siginfo_kill {}
-impl Clone for siginfo_kill {
-    fn clone(&self) -> Self {
-        *self
+    struct siginfo_kill {
+        pid: crate::pid_t,
+        val: siginfo_killval,
+        ctid: crate::ctid_t,
+        zoneid: crate::zoneid_t,
     }
 }
 

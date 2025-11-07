@@ -61,22 +61,6 @@ s! {
         pub l_whence: c_short,
     }
 
-    pub struct ipc_perm {
-        pub cuid: crate::uid_t,
-        pub cgid: crate::gid_t,
-        pub uid: crate::uid_t,
-        pub gid: crate::gid_t,
-        pub mode: mode_t,
-        #[cfg(target_os = "openbsd")]
-        pub seq: c_ushort,
-        #[cfg(target_os = "netbsd")]
-        pub _seq: c_ushort,
-        #[cfg(target_os = "openbsd")]
-        pub key: crate::key_t,
-        #[cfg(target_os = "netbsd")]
-        pub _key: crate::key_t,
-    }
-
     pub struct ptrace_io_desc {
         pub piod_op: c_int,
         pub piod_offs: *mut c_void,
@@ -720,7 +704,8 @@ extern "C" {
     pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
     pub fn setpriority(which: c_int, who: crate::id_t, prio: c_int) -> c_int;
 
-    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
+    pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: crate::dev_t)
+        -> c_int;
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn sem_timedwait(sem: *mut sem_t, abstime: *const crate::timespec) -> c_int;
     pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
@@ -764,6 +749,7 @@ extern "C" {
     pub fn shmget(key: crate::key_t, size: size_t, shmflg: c_int) -> c_int;
     pub fn shmat(shmid: c_int, shmaddr: *const c_void, shmflg: c_int) -> *mut c_void;
     pub fn shmdt(shmaddr: *const c_void) -> c_int;
+    #[cfg_attr(target_os = "netbsd", link_name = "__shmctl50")]
     pub fn shmctl(shmid: c_int, cmd: c_int, buf: *mut crate::shmid_ds) -> c_int;
 
     // DIFF(main): changed to `*const *mut` in e77f551de9

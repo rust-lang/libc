@@ -182,6 +182,17 @@ cfg_if! {
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
         pub use signal::*;
+    } else if #[cfg(target_os = "netbsd")] {
+        pub use net::if_::*;
+        pub use sys::ipc::*;
+        pub use sys::statvfs::*;
+        pub use sys::time::*;
+        pub use sys::timex::*;
+        pub use sys::types::*;
+        pub use utmp_::*;
+        pub use utmpx_::*;
+    } else if #[cfg(target_os = "openbsd")] {
+        pub use sys::ipc::*;
     }
 }
 
