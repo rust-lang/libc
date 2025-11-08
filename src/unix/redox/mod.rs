@@ -28,7 +28,6 @@ pub type suseconds_t = c_int;
 pub type tcflag_t = u32;
 pub type time_t = c_longlong;
 pub type id_t = c_uint;
-pub type pid_t = usize;
 pub type uid_t = c_int;
 pub type gid_t = c_int;
 
@@ -247,7 +246,7 @@ s! {
     }
 
     pub struct ucred {
-        pub pid: pid_t,
+        pub pid: crate::pid_t,
         pub uid: uid_t,
         pub gid: gid_t,
     }
