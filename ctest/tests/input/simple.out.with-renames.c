@@ -247,7 +247,7 @@ CTEST_EXTERN Byte ctest_roundtrip__Byte(
     int i = 0;
     for (i = 0; i < size; ++i) {
         // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        // Instead we just make sure the placement of the padding bytes remains the same.
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
         // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
@@ -274,7 +274,7 @@ CTEST_EXTERN volatile_char ctest_roundtrip__volatile_char(
     int i = 0;
     for (i = 0; i < size; ++i) {
         // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        // Instead we just make sure the placement of the padding bytes remains the same.
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
         // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
@@ -301,7 +301,7 @@ CTEST_EXTERN enum Color ctest_roundtrip__Color(
     int i = 0;
     for (i = 0; i < size; ++i) {
         // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        // Instead we just make sure the placement of the padding bytes remains the same.
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
         // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
@@ -328,7 +328,7 @@ CTEST_EXTERN struct Person ctest_roundtrip__Person(
     int i = 0;
     for (i = 0; i < size; ++i) {
         // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        // Instead we just make sure the placement of the padding bytes remains the same.
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
         // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
@@ -355,7 +355,7 @@ CTEST_EXTERN union Word ctest_roundtrip__Word(
     int i = 0;
     for (i = 0; i < size; ++i) {
         // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        // Instead we just make sure the placement of the padding bytes remains the same.
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
         // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
