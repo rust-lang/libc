@@ -4328,6 +4328,51 @@ fn test_linux(target: &str) {
             // Not present in glibc
             "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" if gnu => true,
 
+            // linux 5.17 min
+            "PR_SET_VMA" | "PR_SET_VMA_ANON_NAME" => true,
+
+            // present in recent kernels only
+            "PR_SCHED_CORE" | "PR_SCHED_CORE_CREATE" | "PR_SCHED_CORE_GET" | "PR_SCHED_CORE_MAX" | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP" | "PR_SCHED_CORE_SCOPE_THREAD" | "PR_SCHED_CORE_SCOPE_THREAD_GROUP" | "PR_SCHED_CORE_SHARE_FROM" | "PR_SCHED_CORE_SHARE_TO" => true,
+
+            // present in recent kernels only >= 5.13
+            "PR_PAC_SET_ENABLED_KEYS" | "PR_PAC_GET_ENABLED_KEYS" => true,
+            // present in recent kernels only >= 5.19
+            "PR_SME_SET_VL" | "PR_SME_GET_VL" | "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" => true,
+
+            // Added in Linux 5.14
+            "FUTEX_LOCK_PI2" => true,
+
+            // Added in  linux 6.1
+            "STATX_DIOALIGN"
+            | "CAN_RAW_XL_FRAMES"
+            | "CANXL_HDR_SIZE"
+            | "CANXL_MAX_DLC"
+            | "CANXL_MAX_DLC_MASK"
+            | "CANXL_MAX_DLEN"
+            | "CANXL_MAX_MTU"
+            | "CANXL_MIN_DLC"
+            | "CANXL_MIN_DLEN"
+            | "CANXL_MIN_MTU"
+            | "CANXL_MTU"
+            | "CANXL_PRIO_BITS"
+            | "CANXL_PRIO_MASK"
+            | "CANXL_SEC"
+            | "CANXL_XLF"
+             => true,
+
+            "STATX_MNT_ID_UNIQUE" // Added in Linux 6.8
+            | "STATX_SUBVOL" // Added in Linux 6.10
+            | "STATX_WRITE_ATOMIC" // Added in Linux 6.11
+            | "STATX_ATTR_WRITE_ATOMIC" // Added in Linux 6.11
+            | "STATX_DIO_READ_ALIGN" // Added in Linux 6.14
+            => true,
+
+            // FIXME(linux): Parts of netfilter/nfnetlink*.h require more recent kernel headers:
+            | "RTNLGRP_MCTP_IFADDR" // linux v5.17+
+            | "RTNLGRP_TUNNEL" // linux v5.18+
+            | "RTNLGRP_STATS" // linux v5.18+
+                => true,
+
             // FIXME(linux): The below is no longer const in glibc 2.34:
             // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
             "PTHREAD_STACK_MIN" | "SIGSTKSZ" | "MINSIGSTKSZ" if gnu => true,
