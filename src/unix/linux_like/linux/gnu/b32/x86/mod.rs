@@ -108,7 +108,7 @@ s! {
         pub start_code: c_ulong,
         pub start_stack: c_ulong,
         pub signal: c_long,
-        __reserved: c_int,
+        __reserved: Padding<c_int>,
         pub u_ar0: *mut user_regs_struct,
         pub u_fpstate: *mut user_fpregs_struct,
         pub magic: c_ulong,
@@ -130,17 +130,17 @@ s! {
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
         pub mode: c_ushort,
-        __pad1: c_ushort,
+        __pad1: Padding<c_ushort>,
         pub __seq: c_ushort,
-        __pad2: c_ushort,
-        __unused1: c_ulong,
-        __unused2: c_ulong,
+        __pad2: Padding<c_ushort>,
+        __unused1: Padding<c_ulong>,
+        __unused2: Padding<c_ulong>,
     }
 
     pub struct stat64 {
         pub st_dev: crate::dev_t,
         #[cfg(not(gnu_time_bits64))]
-        __pad1: c_uint,
+        __pad1: Padding<c_uint>,
         #[cfg(not(gnu_time_bits64))]
         __st_ino: c_ulong,
         #[cfg(gnu_time_bits64)]
@@ -151,22 +151,22 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         #[cfg(not(gnu_time_bits64))]
-        __pad2: c_uint,
+        __pad2: Padding<c_uint>,
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt64_t,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
         #[cfg(gnu_time_bits64)]
-        _atime_pad: c_int,
+        _atime_pad: Padding<c_int>,
         pub st_mtime: crate::time_t,
         pub st_mtime_nsec: c_long,
         #[cfg(gnu_time_bits64)]
-        _mtime_pad: c_int,
+        _mtime_pad: Padding<c_int>,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_long,
         #[cfg(gnu_time_bits64)]
-        _ctime_pad: c_int,
+        _ctime_pad: Padding<c_int>,
         #[cfg(not(gnu_time_bits64))]
         pub st_ino: crate::ino64_t,
     }
@@ -207,18 +207,18 @@ s! {
         pub shm_segsz: size_t,
         pub shm_atime: crate::time_t,
         #[cfg(not(gnu_time_bits64))]
-        __unused1: c_ulong,
+        __unused1: Padding<c_ulong>,
         pub shm_dtime: crate::time_t,
         #[cfg(not(gnu_time_bits64))]
-        __unused2: c_ulong,
+        __unused2: Padding<c_ulong>,
         pub shm_ctime: crate::time_t,
         #[cfg(not(gnu_time_bits64))]
-        __unused3: c_ulong,
+        __unused3: Padding<c_ulong>,
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: crate::shmatt_t,
-        __unused4: c_ulong,
-        __unused5: c_ulong,
+        __unused4: Padding<c_ulong>,
+        __unused5: Padding<c_ulong>,
     }
 
     pub struct msqid_ds {
@@ -272,7 +272,7 @@ s! {
         pub foo: c_long,
         pub fos: c_long,
         pub mxcsr: c_long,
-        __reserved: c_long,
+        __reserved: Padding<c_long>,
         pub st_space: [c_long; 32],
         pub xmm_space: [c_long; 32],
         padding: [c_long; 56],

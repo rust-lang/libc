@@ -273,9 +273,9 @@ s! {
         pub d_off: off_t,
         pub d_reclen: u16,
         pub d_type: u8,
-        d_pad0: u8,
+        d_pad0: Padding<u8>,
         pub d_namlen: u16,
-        d_pad1: u16,
+        d_pad1: Padding<u16>,
         pub d_name: [c_char; 256],
     }
 

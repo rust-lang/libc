@@ -43,7 +43,7 @@ s! {
         pub uc_sigmask__c_anonymous_union: __c_anonymous_uc_sigmask,
         /* The kernel adds extra padding after uc_sigmask to match
          * glibc sigset_t on ARM. */
-        __padding: [c_char; 120],
+        __padding: Padding<[c_char; 120]>,
         __align: [c_longlong; 0],
         uc_regspace: [c_ulong; 128],
     }

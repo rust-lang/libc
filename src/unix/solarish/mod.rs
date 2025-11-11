@@ -226,24 +226,24 @@ s! {
         pub gl_pathc: size_t,
         pub gl_pathv: *mut *mut c_char,
         pub gl_offs: size_t,
-        __unused1: *mut c_void,
-        __unused2: c_int,
+        __unused1: Padding<*mut c_void>,
+        __unused2: Padding<c_int>,
         #[cfg(target_os = "illumos")]
-        __unused3: c_int,
+        __unused3: Padding<c_int>,
         #[cfg(target_os = "illumos")]
-        __unused4: c_int,
+        __unused4: Padding<c_int>,
         #[cfg(target_os = "illumos")]
-        __unused5: *mut c_void,
+        __unused5: Padding<*mut c_void>,
         #[cfg(target_os = "illumos")]
-        __unused6: *mut c_void,
+        __unused6: Padding<*mut c_void>,
         #[cfg(target_os = "illumos")]
-        __unused7: *mut c_void,
+        __unused7: Padding<*mut c_void>,
         #[cfg(target_os = "illumos")]
-        __unused8: *mut c_void,
+        __unused8: Padding<*mut c_void>,
         #[cfg(target_os = "illumos")]
-        __unused9: *mut c_void,
+        __unused9: Padding<*mut c_void>,
         #[cfg(target_os = "illumos")]
-        __unused10: *mut c_void,
+        __unused10: Padding<*mut c_void>,
     }
 
     pub struct addrinfo {
@@ -300,7 +300,7 @@ s! {
 
     pub struct sched_param {
         pub sched_priority: c_int,
-        sched_pad: [c_int; 8],
+        sched_pad: Padding<[c_int; 8]>,
     }
 
     pub struct Dl_info {
@@ -393,7 +393,7 @@ s! {
         pub mq_maxmsg: c_long,
         pub mq_msgsize: c_long,
         pub mq_curmsgs: c_long,
-        _pad: [c_int; 12],
+        _pad: Padding<[c_int; 12]>,
     }
 
     pub struct port_event {
@@ -507,9 +507,9 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_family: crate::sa_family_t,
-        __ss_pad1: [u8; 6],
+        __ss_pad1: Padding<[u8; 6]>,
         __ss_align: i64,
-        __ss_pad2: [u8; 240],
+        __ss_pad2: Padding<[u8; 240]>,
     }
 
     pub struct sockaddr_dl {
@@ -528,7 +528,7 @@ s! {
         pub sigev_value: crate::sigval,
         pub ss_sp: *mut c_void,
         pub sigev_notify_attributes: *const crate::pthread_attr_t,
-        __sigev_pad2: c_int,
+        __sigev_pad2: Padding<c_int>,
     }
 }
 
@@ -685,7 +685,7 @@ s_no_extra_traits! {
         uid: crate::uid_t,
         value: crate::sigval,
         // Pad out to match the SIGCLD value size
-        _pad: *mut c_void,
+        _pad: Padding<*mut c_void>,
     }
 
     struct siginfo_sigcld {
