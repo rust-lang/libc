@@ -1,13 +1,7 @@
 //! Linux-specific definitions for linux-like values
 
 use crate::prelude::*;
-use crate::{
-    sock_filter,
-    _IO,
-    _IOR,
-    _IOW,
-    _IOWR,
-};
+use crate::{sock_filter, _IO, _IOR, _IOW, _IOWR};
 
 pub type useconds_t = u32;
 pub type dev_t = u64;
@@ -2302,6 +2296,9 @@ pub const F_SEAL_EXEC: c_int = 0x0020;
 pub const IFF_LOWER_UP: c_int = 0x10000;
 pub const IFF_DORMANT: c_int = 0x20000;
 pub const IFF_ECHO: c_int = 0x40000;
+
+// linux/fcntl.h
+pub const AT_EXECVE_CHECK: c_int = 0x10000;
 
 // linux/if_addr.h
 pub const IFA_UNSPEC: c_ushort = 0;
