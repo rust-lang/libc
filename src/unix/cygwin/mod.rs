@@ -509,6 +509,18 @@ s_no_extra_traits! {
         pub ifc_len: c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
+
+    pub struct utmpx {
+        pub ut_type: c_short,
+        pub ut_pid: pid_t,
+        pub ut_line: [c_char; UT_LINESIZE],
+        pub ut_id: [c_char; UT_IDLEN],
+        pub ut_time: time_t,
+        pub ut_user: [c_char; UT_NAMESIZE],
+        pub ut_host: [c_char; UT_HOSTSIZE],
+        pub ut_addr: c_long,
+        pub ut_tv: timeval,
+    }
 }
 
 impl siginfo_t {
@@ -889,6 +901,8 @@ pub const PATH_MAX: c_int = 4096;
 pub const PIPE_BUF: usize = 4096;
 pub const NGROUPS_MAX: c_int = 1024;
 
+pub const FILENAME_MAX: c_int = 4096;
+
 pub const FORK_RELOAD: c_int = 1;
 pub const FORK_NO_RELOAD: c_int = 0;
 
@@ -965,6 +979,19 @@ pub const EAI_SERVICE: c_int = 9;
 pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 pub const EAI_OVERFLOW: c_int = 14;
+
+pub const UT_LINESIZE: usize = 16;
+pub const UT_NAMESIZE: usize = 16;
+pub const UT_HOSTSIZE: usize = 256;
+pub const UT_IDLEN: usize = 2;
+pub const RUN_LVL: c_short = 1;
+pub const BOOT_TIME: c_short = 2;
+pub const NEW_TIME: c_short = 3;
+pub const OLD_TIME: c_short = 4;
+pub const INIT_PROCESS: c_short = 5;
+pub const LOGIN_PROCESS: c_short = 6;
+pub const USER_PROCESS: c_short = 7;
+pub const DEAD_PROCESS: c_short = 8;
 
 pub const POLLIN: c_short = 0x1;
 pub const POLLPRI: c_short = 0x2;
@@ -1617,6 +1644,8 @@ pub const _POSIX_VDISABLE: cc_t = 0;
 pub const GRND_NONBLOCK: c_uint = 0x1;
 pub const GRND_RANDOM: c_uint = 0x2;
 
+pub const _IOFBF: c_int = 0;
+pub const _IOLBF: c_int = 1;
 pub const _IONBF: c_int = 2;
 pub const BUFSIZ: c_int = 1024;
 
@@ -2317,6 +2346,7 @@ extern "C" {
         winp: *const crate::winsize,
     ) -> c_int;
 
+    pub fn getgrgid(gid: crate::gid_t) -> *mut crate::group;
     pub fn getgrgid_r(
         gid: crate::gid_t,
         grp: *mut crate::group,
@@ -2330,6 +2360,7 @@ extern "C" {
         groups: *mut crate::gid_t,
         ngroups: *mut c_int,
     ) -> c_int;
+    pub fn getgrnam(name: *const c_char) -> *mut crate::group;
     pub fn getgrnam_r(
         name: *const c_char,
         grp: *mut crate::group,
@@ -2345,4 +2376,13 @@ extern "C" {
     pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
+
+    pub fn endutxent();
+    pub fn getutxent() -> *mut utmpx;
+    pub fn getutxid(id: *const utmpx) -> *mut utmpx;
+    pub fn getutxline(line: *const utmpx) -> *mut utmpx;
+    pub fn pututxline(utmpx: *const utmpx) -> *mut utmpx;
+    pub fn setutxent();
+    pub fn utmpxname(file: *const c_char) -> c_int;
+    pub fn updwtmpx(file: *const c_char, utmpx: *const utmpx);
 }
