@@ -509,6 +509,18 @@ s_no_extra_traits! {
         pub ifc_len: c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
+
+    pub struct utmpx {
+        pub ut_type: c_short,
+        pub ut_pid: pid_t,
+        pub ut_line: [c_char; UT_LINESIZE],
+        pub ut_id: [c_char; UT_IDLEN],
+        pub ut_time: time_t,
+        pub ut_user: [c_char; UT_NAMESIZE],
+        pub ut_host: [c_char; UT_HOSTSIZE],
+        pub ut_addr: c_long,
+        pub ut_tv: timeval,
+    }
 }
 
 impl siginfo_t {
@@ -980,20 +992,6 @@ pub const INIT_PROCESS: c_short = 5;
 pub const LOGIN_PROCESS: c_short = 6;
 pub const USER_PROCESS: c_short = 7;
 pub const DEAD_PROCESS: c_short = 8;
-
-#[derive(Debug, Copy, Clone)]
-#[repr(C)]
-pub struct utmpx {
-    pub ut_type: c_short,
-    pub ut_pid: pid_t,
-    pub ut_line: [c_char; UT_LINESIZE],
-    pub ut_id: [c_char; UT_IDLEN],
-    pub ut_time: time_t,
-    pub ut_user: [c_char; UT_NAMESIZE],
-    pub ut_host: [c_char; UT_NAMESIZE],
-    pub ut_addr: c_long,
-    pub ut_tv: timeval,
-}
 
 pub const POLLIN: c_short = 0x1;
 pub const POLLPRI: c_short = 0x2;
