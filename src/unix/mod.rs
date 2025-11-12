@@ -384,6 +384,7 @@ cfg_if! {
         target_os = "android",
         target_os = "openbsd",
         target_os = "netbsd",
+        target_os = "cygwin",
     ))] {
         pub const FNM_NOESCAPE: c_int = 1 << 0;
     } else if #[cfg(target_os = "nto")] {
