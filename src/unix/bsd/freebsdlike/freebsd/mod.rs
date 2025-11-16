@@ -4795,7 +4795,7 @@ extern "C" {
     pub fn memfd_create(name: *const c_char, flags: c_uint) -> c_int;
     pub fn setaudit(auditinfo: *const auditinfo_t) -> c_int;
 
-    pub fn eventfd(init: c_uint, flags: c_int) -> c_int;
+    pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
     pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 
