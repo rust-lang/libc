@@ -1179,7 +1179,7 @@ mod generated_tests {
             fn ctest_foreign_fn__calloc() -> unsafe extern "C" fn();
         }
         let actual = unsafe { ctest_foreign_fn__calloc() } as u64;
-        let expected = calloc as u64;
+        let expected = calloc as *const () as u64;
         check_same(actual, expected, "`calloc` function pointer");
     }
 

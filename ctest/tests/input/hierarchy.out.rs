@@ -238,7 +238,7 @@ mod generated_tests {
             fn ctest_foreign_fn__malloc() -> unsafe extern "C" fn();
         }
         let actual = unsafe { ctest_foreign_fn__malloc() } as u64;
-        let expected = malloc as u64;
+        let expected = malloc as *const () as u64;
         check_same(actual, expected, "`malloc` function pointer");
     }
 
