@@ -341,7 +341,7 @@ mod generated_tests {
             fn ctest_foreign_fn__{{ item.id }}() -> unsafe extern "C" fn();
         }
         let actual = unsafe { ctest_foreign_fn__{{ item.id }}() } as u64;
-        let expected = {{ item.id }} as u64;
+        let expected = {{ item.id }} as *const () as u64;
         check_same(actual, expected, "`{{ item.id }}` function pointer");
     }
 {%- endfor +%}
