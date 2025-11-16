@@ -7,6 +7,7 @@ use crate::{
 };
 
 pub type blksize_t = i32;
+pub type eventfd_t = u64;
 pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u64;
 pub type idtype_t = c_int;
@@ -1743,6 +1744,11 @@ pub const RTA_TAG: c_int = 0x100;
 pub const RTAX_TAG: c_int = 8;
 pub const RTAX_MAX: c_int = 9;
 
+// For eventfd
+pub const EFD_SEMAPHORE: c_int = crate::O_RDWR;
+pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
+pub const EFD_CLOEXEC: c_int = crate::O_CLOEXEC;
+
 // sys/timerfd.h
 pub const TFD_CLOEXEC: i32 = crate::O_CLOEXEC;
 pub const TFD_NONBLOCK: i32 = crate::O_NONBLOCK;
@@ -2197,6 +2203,10 @@ extern "C" {
     ) -> c_int;
     pub fn getmntinfo(mntbufp: *mut *mut crate::statvfs, flags: c_int) -> c_int;
     pub fn getvfsstat(buf: *mut crate::statvfs, bufsize: size_t, flags: c_int) -> c_int;
+
+    pub fn eventfd(val: c_uint, flags: c_int) -> c_int;
+    pub fn eventfd_read(efd: c_int, valp: *mut eventfd_t) -> c_int;
+    pub fn eventfd_write(efd: c_int, val: eventfd_t) -> c_int;
 
     // Added in `NetBSD` 10.0
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
