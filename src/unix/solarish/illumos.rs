@@ -212,7 +212,7 @@ pub const TFD_TIMER_ABSTIME: i32 = 1 << 0;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 
 extern "C" {
-    pub fn eventfd(init: c_uint, flags: c_int) -> c_int;
+    pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
 
     pub fn epoll_pwait(
         epfd: c_int,
