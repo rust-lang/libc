@@ -1280,6 +1280,7 @@ fn test_netbsd(target: &str) {
         "mqueue.h",
         "netinet/dccp.h",
         "sys/event.h",
+        (!netbsd9, "sys/eventfd.h"),
         "sys/quota.h",
         "sys/reboot.h",
         "sys/shm.h",
@@ -1325,6 +1326,7 @@ fn test_netbsd(target: &str) {
             "sighandler_t" => true,
             // Incomplete type in C
             "cpuset_t" => true,
+            "eventfd_t" if netbsd9 => true,
             _ => false,
         }
     });
@@ -1383,6 +1385,8 @@ fn test_netbsd(target: &str) {
         match func.ident() {
             // FIXME(netbsd): Look into setting `_POSIX_C_SOURCE` to enable this
             "qsort_r" => true,
+
+            "eventfd" | "eventfd_read" | "eventfd_write" if netbsd9 => true,
 
             _ => false,
         }
