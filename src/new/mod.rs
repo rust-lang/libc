@@ -179,6 +179,11 @@ cfg_if! {
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
+        pub use pthread::*;
+        pub use pthread_::introspection::*;
+        pub use pthread_::pthread_spis::*;
+        pub use pthread_::spawn::*;
+        pub use pthread_::stack_np::*;
         pub use signal::*;
     } else if #[cfg(target_os = "netbsd")] {
         pub use net::if_::*;

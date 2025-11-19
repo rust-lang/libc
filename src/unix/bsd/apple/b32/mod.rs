@@ -47,16 +47,6 @@ s! {
     pub struct malloc_zone_t {
         __private: [crate::uintptr_t; 18], // FIXME(macos): keeping private for now
     }
-
-    pub struct pthread_attr_t {
-        __sig: c_long,
-        __opaque: [c_char; 36],
-    }
-
-    pub struct pthread_once_t {
-        __sig: c_long,
-        __opaque: [c_char; crate::__PTHREAD_ONCE_SIZE__],
-    }
 }
 
 s_no_extra_traits! {
@@ -70,13 +60,6 @@ s_no_extra_traits! {
 #[deprecated(since = "0.2.55")]
 pub const NET_RT_MAXID: c_int = 10;
 
-pub const __PTHREAD_MUTEX_SIZE__: usize = 40;
-pub const __PTHREAD_COND_SIZE__: usize = 24;
-pub const __PTHREAD_CONDATTR_SIZE__: usize = 4;
-pub const __PTHREAD_ONCE_SIZE__: usize = 4;
-pub const __PTHREAD_RWLOCK_SIZE__: usize = 124;
-pub const __PTHREAD_RWLOCKATTR_SIZE__: usize = 12;
-
 pub const TIOCTIMESTAMP: c_ulong = 0x40087459;
 pub const TIOCDCDTIMESTAMP: c_ulong = 0x40087458;
 
@@ -84,12 +67,6 @@ pub const BIOCSETF: c_ulong = 0x80084267;
 pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
 pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
 pub const BIOCSETFNR: c_ulong = 0x8008427e;
-
-const _PTHREAD_ONCE_SIG_INIT: c_long = 0x30B1BCBA;
-pub const PTHREAD_ONCE_INIT: crate::pthread_once_t = crate::pthread_once_t {
-    __sig: _PTHREAD_ONCE_SIG_INIT,
-    __opaque: [0; 4],
-};
 
 extern "C" {
     pub fn exchangedata(path1: *const c_char, path2: *const c_char, options: c_ulong) -> c_int;
