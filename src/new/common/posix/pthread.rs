@@ -18,19 +18,24 @@ extern "C" {
         guardsize: *mut size_t,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_vendor = "apple",
+    ))]
     pub fn pthread_attr_getinheritsched(
         attr: *const crate::pthread_attr_t,
         inheritsched: *mut c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
     pub fn pthread_attr_getschedparam(
         attr: *const crate::pthread_attr_t,
         param: *mut crate::sched_param,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
     pub fn pthread_attr_getschedpolicy(
         attr: *const crate::pthread_attr_t,
         policy: *mut c_int,
@@ -51,19 +56,24 @@ extern "C" {
     #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
     pub fn pthread_attr_setguardsize(attr: *mut crate::pthread_attr_t, guardsize: size_t) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_vendor = "apple"
+    ))]
     pub fn pthread_attr_setinheritsched(
         attr: *mut crate::pthread_attr_t,
         inheritsched: c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
     pub fn pthread_attr_setschedparam(
         attr: *mut crate::pthread_attr_t,
         param: *const crate::sched_param,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
     pub fn pthread_attr_setschedpolicy(attr: *mut crate::pthread_attr_t, policy: c_int) -> c_int;
 
     #[cfg(any(
@@ -116,14 +126,19 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
     ))]
     pub fn pthread_condattr_getclock(
         attr: *const crate::pthread_condattr_t,
         clock_id: *mut crate::clockid_t,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_vendor = "apple",
+    ))]
     pub fn pthread_condattr_getpshared(
         attr: *const crate::pthread_condattr_t,
         pshared: *mut c_int,
@@ -133,7 +148,7 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
     ))]
     pub fn pthread_condattr_setclock(
         attr: *mut crate::pthread_condattr_t,
@@ -144,7 +159,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_vendor = "apple",
     ))]
     pub fn pthread_condattr_setpshared(
         attr: *mut crate::pthread_condattr_t,
@@ -155,7 +171,7 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "l4re",
-        target_os = "linux"
+        target_os = "linux",
     ))]
     pub fn pthread_create(
         native: *mut crate::pthread_t,
@@ -167,7 +183,12 @@ extern "C" {
     #[cfg(any(target_os = "android", target_os = "linux"))]
     pub fn pthread_getcpuclockid(thread: crate::pthread_t, clk_id: *mut crate::clockid_t) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_vendor = "apple",
+    ))]
     pub fn pthread_getschedparam(
         native: crate::pthread_t,
         policy: *mut c_int,
@@ -195,7 +216,12 @@ extern "C" {
         protocol: *mut c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_vendor = "apple",
+    ))]
     pub fn pthread_mutexattr_getpshared(
         attr: *const crate::pthread_mutexattr_t,
         pshared: *mut c_int,
@@ -217,7 +243,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_vendor = "apple",
     ))]
     pub fn pthread_mutexattr_setpshared(
         attr: *mut crate::pthread_mutexattr_t,
@@ -234,7 +261,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_vendor = "apple",
     ))]
     pub fn pthread_rwlockattr_getpshared(
         attr: *const crate::pthread_rwlockattr_t,
@@ -245,17 +273,29 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_vendor = "apple",
     ))]
     pub fn pthread_rwlockattr_setpshared(
         attr: *mut crate::pthread_rwlockattr_t,
         val: c_int,
     ) -> c_int;
 
+    // FIXME(1.0): These shoul be combined to the version that takes an optional unsafe function.
     #[cfg(any(target_os = "l4re", target_os = "linux"))]
     pub fn pthread_once(control: *mut crate::pthread_once_t, routine: extern "C" fn()) -> c_int;
+    #[cfg(target_vendor = "apple")]
+    pub fn pthread_once(
+        once_control: *mut crate::pthread_once_t,
+        init_routine: Option<unsafe extern "C" fn()>,
+    ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_vendor = "apple",
+    ))]
     pub fn pthread_setschedparam(
         native: crate::pthread_t,
         policy: c_int,
