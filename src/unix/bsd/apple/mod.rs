@@ -18,7 +18,6 @@ pub type mode_t = u16;
 pub type nlink_t = u16;
 pub type blksize_t = i32;
 pub type rlim_t = u64;
-pub type pthread_key_t = c_ulong;
 pub type sigset_t = u32;
 pub type clockid_t = c_uint;
 pub type fsblkcnt_t = c_uint;
@@ -131,8 +130,6 @@ pub type thread_latency_qos_policy_t = *mut thread_latency_qos_policy;
 pub type thread_throughput_qos_policy_data_t = thread_throughput_qos_policy;
 pub type thread_throughput_qos_policy_t = *mut thread_throughput_qos_policy;
 
-pub type pthread_introspection_hook_t =
-    extern "C" fn(event: c_uint, thread: crate::pthread_t, addr: *mut c_void, size: size_t);
 pub type pthread_jit_write_callback_t = Option<extern "C" fn(ctx: *mut c_void) -> c_int>;
 
 pub type os_clockid_t = u32;
@@ -184,23 +181,6 @@ deprecated_mach! {
 
 extern_ty! {
     pub enum timezone {}
-}
-
-#[derive(Debug)]
-#[repr(u32)]
-pub enum qos_class_t {
-    QOS_CLASS_USER_INTERACTIVE = 0x21,
-    QOS_CLASS_USER_INITIATED = 0x19,
-    QOS_CLASS_DEFAULT = 0x15,
-    QOS_CLASS_UTILITY = 0x11,
-    QOS_CLASS_BACKGROUND = 0x09,
-    QOS_CLASS_UNSPECIFIED = 0x00,
-}
-impl Copy for qos_class_t {}
-impl Clone for qos_class_t {
-    fn clone(&self) -> qos_class_t {
-        *self
-    }
 }
 
 #[derive(Debug)]
@@ -338,21 +318,6 @@ s! {
         pub st_gen: u32,
         pub st_lspare: i32,
         pub st_qspare: [i64; 2],
-    }
-
-    pub struct pthread_mutexattr_t {
-        __sig: c_long,
-        __opaque: [u8; 8],
-    }
-
-    pub struct pthread_condattr_t {
-        __sig: c_long,
-        __opaque: [u8; __PTHREAD_CONDATTR_SIZE__],
-    }
-
-    pub struct pthread_rwlockattr_t {
-        __sig: c_long,
-        __opaque: [u8; __PTHREAD_RWLOCKATTR_SIZE__],
     }
 
     pub struct siginfo_t {
@@ -901,12 +866,6 @@ s! {
         pub size: crate::vm_size_t,
     }
 
-    // sched.h
-    pub struct sched_param {
-        pub sched_priority: c_int,
-        __opaque: [c_char; 4],
-    }
-
     pub struct vinfo_stat {
         pub vst_dev: u32,
         pub vst_mode: u16,
@@ -1386,21 +1345,6 @@ s! {
         pub d_namlen: u16,
         pub d_type: u8,
         pub d_name: [c_char; 1024],
-    }
-
-    pub struct pthread_rwlock_t {
-        __sig: c_long,
-        __opaque: [u8; __PTHREAD_RWLOCK_SIZE__],
-    }
-
-    pub struct pthread_mutex_t {
-        __sig: c_long,
-        __opaque: [u8; __PTHREAD_MUTEX_SIZE__],
-    }
-
-    pub struct pthread_cond_t {
-        __sig: c_long,
-        __opaque: [u8; __PTHREAD_COND_SIZE__],
     }
 
     pub struct sockaddr_storage {
@@ -2399,11 +2343,6 @@ pub const AT_SYMLINK_NOFOLLOW: c_int = 0x0020;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x0040;
 pub const AT_REMOVEDIR: c_int = 0x0080;
 
-pub const PTHREAD_INTROSPECTION_THREAD_CREATE: c_uint = 1;
-pub const PTHREAD_INTROSPECTION_THREAD_START: c_uint = 2;
-pub const PTHREAD_INTROSPECTION_THREAD_TERMINATE: c_uint = 3;
-pub const PTHREAD_INTROSPECTION_THREAD_DESTROY: c_uint = 4;
-
 pub const TIOCMODG: c_ulong = 0x40047403;
 pub const TIOCMODS: c_ulong = 0x80047404;
 pub const TIOCM_LE: c_int = 0x1;
@@ -2555,23 +2494,6 @@ pub const _SC_XOPEN_UNIX: c_int = 115;
 pub const _SC_XOPEN_VERSION: c_int = 116;
 pub const _SC_XOPEN_XCU_VERSION: c_int = 121;
 pub const _SC_PHYS_PAGES: c_int = 200;
-
-pub const PTHREAD_PROCESS_PRIVATE: c_int = 2;
-pub const PTHREAD_PROCESS_SHARED: c_int = 1;
-pub const PTHREAD_CREATE_JOINABLE: c_int = 1;
-pub const PTHREAD_CREATE_DETACHED: c_int = 2;
-pub const PTHREAD_INHERIT_SCHED: c_int = 1;
-pub const PTHREAD_EXPLICIT_SCHED: c_int = 2;
-pub const PTHREAD_CANCEL_ENABLE: c_int = 0x01;
-pub const PTHREAD_CANCEL_DISABLE: c_int = 0x00;
-pub const PTHREAD_CANCEL_DEFERRED: c_int = 0x02;
-pub const PTHREAD_CANCEL_ASYNCHRONOUS: c_int = 0x00;
-pub const PTHREAD_CANCELED: *mut c_void = 1 as *mut c_void;
-pub const PTHREAD_SCOPE_SYSTEM: c_int = 1;
-pub const PTHREAD_SCOPE_PROCESS: c_int = 2;
-pub const PTHREAD_PRIO_NONE: c_int = 0;
-pub const PTHREAD_PRIO_INHERIT: c_int = 1;
-pub const PTHREAD_PRIO_PROTECT: c_int = 2;
 
 #[cfg(target_arch = "aarch64")]
 pub const PTHREAD_STACK_MIN: size_t = 16384;
@@ -3199,26 +3121,6 @@ pub const _CS_DARWIN_USER_DIR: c_int = 65536;
 pub const _CS_DARWIN_USER_TEMP_DIR: c_int = 65537;
 pub const _CS_DARWIN_USER_CACHE_DIR: c_int = 65538;
 
-pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
-pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 1;
-pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
-pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
-pub const _PTHREAD_MUTEX_SIG_init: c_long = 0x32AAABA7;
-pub const _PTHREAD_COND_SIG_init: c_long = 0x3CB0B1BB;
-pub const _PTHREAD_RWLOCK_SIG_init: c_long = 0x2DA8B3B4;
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    __sig: _PTHREAD_MUTEX_SIG_init,
-    __opaque: [0; __PTHREAD_MUTEX_SIZE__],
-};
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    __sig: _PTHREAD_COND_SIG_init,
-    __opaque: [0; __PTHREAD_COND_SIZE__],
-};
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    __sig: _PTHREAD_RWLOCK_SIG_init,
-    __opaque: [0; __PTHREAD_RWLOCK_SIZE__],
-};
-
 pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
     _os_unfair_lock_opaque: 0,
 };
@@ -3239,10 +3141,6 @@ pub const SIGSTKSZ: size_t = 131072;
 pub const FD_SETSIZE: usize = 1024;
 
 pub const ST_NOSUID: c_ulong = 2;
-
-pub const SCHED_OTHER: c_int = 1;
-pub const SCHED_FIFO: c_int = 4;
-pub const SCHED_RR: c_int = 2;
 
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
@@ -4510,21 +4408,9 @@ extern "C" {
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_thread_self() -> mach_port_t;
     pub fn pthread_cond_timedwait_relative_np(
-        cond: *mut pthread_cond_t,
-        lock: *mut pthread_mutex_t,
+        cond: *mut crate::pthread_cond_t,
+        lock: *mut crate::pthread_mutex_t,
         timeout: *const crate::timespec,
-    ) -> c_int;
-    pub fn pthread_once(
-        once_control: *mut crate::pthread_once_t,
-        init_routine: Option<unsafe extern "C" fn()>,
-    ) -> c_int;
-    pub fn pthread_attr_getinheritsched(
-        attr: *const crate::pthread_attr_t,
-        inheritsched: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_attr_getschedpolicy(
-        attr: *const crate::pthread_attr_t,
-        policy: *mut c_int,
     ) -> c_int;
     pub fn pthread_attr_getscope(
         attr: *const crate::pthread_attr_t,
@@ -4538,11 +4424,6 @@ extern "C" {
         attr: *const crate::pthread_attr_t,
         detachstate: *mut c_int,
     ) -> c_int;
-    pub fn pthread_attr_setinheritsched(
-        attr: *mut crate::pthread_attr_t,
-        inheritsched: c_int,
-    ) -> c_int;
-    pub fn pthread_attr_setschedpolicy(attr: *mut crate::pthread_attr_t, policy: c_int) -> c_int;
     pub fn pthread_attr_setscope(attr: *mut crate::pthread_attr_t, contentionscope: c_int)
         -> c_int;
     pub fn pthread_attr_setstackaddr(
@@ -4553,83 +4434,11 @@ extern "C" {
     pub fn pthread_getname_np(thread: crate::pthread_t, name: *mut c_char, len: size_t) -> c_int;
     pub fn pthread_mach_thread_np(thread: crate::pthread_t) -> crate::mach_port_t;
     pub fn pthread_from_mach_thread_np(port: crate::mach_port_t) -> crate::pthread_t;
-    pub fn pthread_create_from_mach_thread(
-        thread: *mut crate::pthread_t,
-        attr: *const crate::pthread_attr_t,
-        f: extern "C" fn(*mut c_void) -> *mut c_void,
-        value: *mut c_void,
-    ) -> c_int;
-    pub fn pthread_stack_frame_decode_np(
-        frame_addr: crate::uintptr_t,
-        return_addr: *mut crate::uintptr_t,
-    ) -> crate::uintptr_t;
     pub fn pthread_get_stackaddr_np(thread: crate::pthread_t) -> *mut c_void;
     pub fn pthread_get_stacksize_np(thread: crate::pthread_t) -> size_t;
-    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, pshared: c_int) -> c_int;
-    pub fn pthread_condattr_getpshared(
-        attr: *const pthread_condattr_t,
-        pshared: *mut c_int,
-    ) -> c_int;
     pub fn pthread_main_np() -> c_int;
-    pub fn pthread_mutexattr_setpshared(attr: *mut pthread_mutexattr_t, pshared: c_int) -> c_int;
-    pub fn pthread_mutexattr_getpshared(
-        attr: *const pthread_mutexattr_t,
-        pshared: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_rwlockattr_getpshared(
-        attr: *const pthread_rwlockattr_t,
-        val: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, val: c_int) -> c_int;
     pub fn pthread_threadid_np(thread: crate::pthread_t, thread_id: *mut u64) -> c_int;
-    pub fn pthread_attr_set_qos_class_np(
-        attr: *mut pthread_attr_t,
-        class: qos_class_t,
-        priority: c_int,
-    ) -> c_int;
-    pub fn pthread_attr_get_qos_class_np(
-        attr: *mut pthread_attr_t,
-        class: *mut qos_class_t,
-        priority: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_set_qos_class_self_np(class: qos_class_t, priority: c_int) -> c_int;
-    pub fn pthread_get_qos_class_np(
-        thread: crate::pthread_t,
-        class: *mut qos_class_t,
-        priority: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_attr_getschedparam(
-        attr: *const crate::pthread_attr_t,
-        param: *mut sched_param,
-    ) -> c_int;
-    pub fn pthread_attr_setschedparam(
-        attr: *mut crate::pthread_attr_t,
-        param: *const sched_param,
-    ) -> c_int;
-    pub fn pthread_getschedparam(
-        thread: crate::pthread_t,
-        policy: *mut c_int,
-        param: *mut sched_param,
-    ) -> c_int;
-    pub fn pthread_setschedparam(
-        thread: crate::pthread_t,
-        policy: c_int,
-        param: *const sched_param,
-    ) -> c_int;
 
-    // Available from Big Sur
-    pub fn pthread_introspection_hook_install(
-        hook: crate::pthread_introspection_hook_t,
-    ) -> crate::pthread_introspection_hook_t;
-    pub fn pthread_introspection_setspecific_np(
-        thread: crate::pthread_t,
-        key: crate::pthread_key_t,
-        value: *const c_void,
-    ) -> c_int;
-    pub fn pthread_introspection_getspecific_np(
-        thread: crate::pthread_t,
-        key: crate::pthread_key_t,
-    ) -> *mut c_void;
     pub fn pthread_jit_write_protect_np(enabled: c_int);
     pub fn pthread_jit_write_protect_supported_np() -> c_int;
     // An array of pthread_jit_write_with_callback_np must declare
@@ -4947,14 +4756,6 @@ extern "C" {
         count: size_t,
         pref: *mut crate::cpu_type_t,
         ocount: *mut size_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_set_qos_class_np(
-        attr: *mut posix_spawnattr_t,
-        qos_class: crate::qos_class_t,
-    ) -> c_int;
-    pub fn posix_spawnattr_get_qos_class_np(
-        attr: *const posix_spawnattr_t,
-        qos_class: *mut crate::qos_class_t,
     ) -> c_int;
 
     pub fn posix_spawn_file_actions_init(actions: *mut posix_spawn_file_actions_t) -> c_int;

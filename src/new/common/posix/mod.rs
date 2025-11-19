@@ -7,7 +7,8 @@
     target_os = "android",
     target_os = "emscripten",
     target_os = "l4re",
-    target_os = "linux"
+    target_os = "linux",
+    target_vendor = "apple",
 ))]
 pub(crate) mod pthread;
 pub(crate) mod unistd;
