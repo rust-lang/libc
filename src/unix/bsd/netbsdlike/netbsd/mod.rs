@@ -37,9 +37,9 @@ pub type iconv_t = *mut c_void;
 
 c_enum! {
     pub enum fae_action {
-        FAE_OPEN,
-        FAE_DUP2,
-        FAE_CLOSE,
+        pub FAE_OPEN,
+        pub FAE_DUP2,
+        pub FAE_CLOSE,
     }
 }
 

@@ -55,18 +55,18 @@ extern_ty! {
 c_enum! {
     #[repr(u32)]
     pub enum lwpstat {
-        LSRUN = 1,
-        LSSTOP = 2,
-        LSSLEEP = 3,
+        pub LSRUN = 1,
+        pub LSSTOP = 2,
+        pub LSSLEEP = 3,
     }
 
     #[repr(u32)]
     pub enum procstat {
-        SIDL = 1,
-        SACTIVE = 2,
-        SSTOP = 3,
-        SZOMB = 4,
-        SCORE = 5,
+        pub SIDL = 1,
+        pub SACTIVE = 2,
+        pub SSTOP = 3,
+        pub SZOMB = 4,
+        pub SCORE = 5,
     }
 }
 

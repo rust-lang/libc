@@ -294,13 +294,13 @@ macro_rules! c_enum {
     ($(
         $(#[repr($repr:ty)])?
         pub enum $($ty_name:ident)? $(#$anon:ident)? {
-            $($variant:ident $(= $value:expr)?,)+
+            $($vis:vis $variant:ident $(= $value:expr)?,)+
         }
     )+) => {
         $(c_enum!(@single;
             $(#[repr($repr)])?
             pub enum $($ty_name)? $(#$anon)? {
-                $($variant $(= $value)?,)+
+                $($vis $variant $(= $value)?,)+
             }
         );)+
     };
@@ -309,31 +309,45 @@ macro_rules! c_enum {
     (@single;
         $(#[repr($repr:ty)])?
         pub enum $ty_name:ident {
-            $($variant:ident $(= $value:expr)?,)+
+            $($vis:vis $variant:ident $(= $value:expr)?,)+
         }
     ) => {
         pub type $ty_name = c_enum!(@ty $($repr)?);
-        c_enum!(@variant; $ty_name; 0; $($variant $(= $value)?,)+);
+        c_enum! {
+            @variant;
+            ty: $ty_name;
+            default: 0;
+            variants: [$($vis $variant $(= $value)?,)+]
+        }
     };
 
     // Matcher for a single anonymous enum
     (@single;
         $(#[repr($repr:ty)])?
         pub enum #anon {
-            $($variant:ident $(= $value:expr)?,)+
+            $($vis:vis $variant:ident $(= $value:expr)?,)+
         }
     ) => {
-        c_enum!(@variant; c_enum!(@ty $($repr)?); 0; $($variant $(= $value)?,)+);
+        c_enum! {
+            @variant;
+            ty: c_enum!(@ty $($repr)?);
+            default: 0;
+            variants: [$($vis $variant $(= $value)?,)+]
+        }
     };
 
-    // Matcher for a single variant
-    (@variant; $_ty_name:ty; $_idx:expr;) => { /* end of the chain */ };
+    // Matcher for variants: eats a single variant then recurses with the rest
+    (@variant; ty: $_ty_name:ty; default: $_idx:expr; variants: []) => { /* end of the chain */ };
     (
-        @variant; $ty_name:ty; $default_val:expr;
-        $variant:ident $(= $value:expr)?,
-        $($tail:tt)*
+        @variant;
+        ty: $ty_name:ty;
+        default: $default_val:expr;
+        variants: [
+            $vis:vis $variant:ident $(= $value:expr)?,
+            $($tail:tt)*
+        ]
     ) => {
-        pub const $variant: $ty_name = {
+        $vis const $variant: $ty_name = {
             #[allow(unused_variables)]
             let r = $default_val;
             $(let r = $value;)?
@@ -342,7 +356,12 @@ macro_rules! c_enum {
 
         // The next value is always one more than the previous value, unless
         // set explicitly.
-        c_enum!(@variant; $ty_name; $variant + 1; $($tail)*);
+        c_enum! {
+            @variant;
+            ty: $ty_name;
+            default: $variant + 1;
+            variants: [$($tail)*]
+        }
     };
 
     // Use a specific type if provided, otherwise default to `CEnumRepr`
@@ -503,6 +522,40 @@ mod tests {
         assert_eq!(VAR2_1, 2 as CEnumRepr);
         assert_eq!(VAR3_1, 3 as CEnumRepr);
         assert_eq!(VAR4_1, 4 as CEnumRepr);
+    }
+
+    #[test]
+    fn c_enum_vis() {
+        mod priv1 {
+            c_enum! {
+                #[repr(u8)]
+                pub enum e1 {
+                    PRIV_ON_1 = 10,
+                    // Variant should still be usable within its visibility
+                    pub PUB1 = PRIV_ON_1 * 2,
+                }
+            }
+        }
+        mod priv2 {
+            c_enum! {
+                #[repr(u16)]
+                pub enum e2 {
+                    pub PRIV_ON_1 = 42,
+                    pub PUB2 = PRIV_ON_1 * 2,
+                }
+            }
+        }
+
+        use priv1::*;
+        use priv2::*;
+
+        assert_eq!(TypeId::of::<e1>(), TypeId::of::<u8>());
+        assert_eq!(TypeId::of::<e2>(), TypeId::of::<u16>());
+        assert_eq!(PUB1, 10u8 * 2);
+        assert_eq!(PUB2, 42u16 * 2);
+        // Verify that the default is private. If `PRIV_ON_1` was actually public in `priv1`, this
+        // would be an ambiguous import and/or type mismatch error.
+        assert_eq!(PRIV_ON_1, 42u16);
     }
 
     fn type_id_of_val<T: 'static>(_: &T) -> TypeId {

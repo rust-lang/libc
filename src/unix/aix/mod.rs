@@ -65,17 +65,17 @@ pub type iconv_t = *mut c_void;
 c_enum! {
     #[repr(u32)]
     pub enum uio_rw {
-        UIO_READ = 0,
-        UIO_WRITE,
-        UIO_READ_NO_MOVE,
-        UIO_WRITE_NO_MOVE,
-        UIO_PWRITE,
+        pub UIO_READ = 0,
+        pub UIO_WRITE,
+        pub UIO_READ_NO_MOVE,
+        pub UIO_WRITE_NO_MOVE,
+        pub UIO_PWRITE,
     }
 
     #[repr(u32)]
     pub enum ACTION {
-        FIND = 0,
-        ENTER,
+        pub FIND = 0,
+        pub ENTER,
     }
 }
 
