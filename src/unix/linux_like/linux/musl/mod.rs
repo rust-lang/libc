@@ -562,8 +562,6 @@ pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const NI_MAXHOST: crate::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: size_t = 2048;
 
-pub const POSIX_MADV_DONTNEED: c_int = 4;
-
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
 pub const SOCK_SEQPACKET: c_int = 5;

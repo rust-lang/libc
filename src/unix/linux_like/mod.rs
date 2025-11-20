@@ -5,6 +5,7 @@ pub type speed_t = c_uint;
 pub type tcflag_t = c_uint;
 pub type clockid_t = c_int;
 pub type timer_t = *mut c_void;
+pub type useconds_t = u32;
 pub type key_t = c_int;
 pub type id_t = c_uint;
 
@@ -226,6 +227,11 @@ s! {
         pub version: [c_char; 65],
         pub machine: [c_char; 65],
         pub domainname: [c_char; 65],
+    }
+
+    pub struct if_nameindex {
+        pub if_index: c_uint,
+        pub if_name: *mut c_char,
     }
 }
 
@@ -2015,6 +2021,24 @@ extern "C" {
     pub fn getdomainname(name: *mut c_char, len: size_t) -> c_int;
     #[cfg(not(target_os = "l4re"))]
     pub fn setdomainname(name: *const c_char, len: size_t) -> c_int;
+
+    pub fn if_nameindex() -> *mut if_nameindex;
+    pub fn if_freenameindex(ptr: *mut if_nameindex);
+
+    pub fn getpwnam_r(
+        name: *const c_char,
+        pwd: *mut passwd,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut passwd,
+    ) -> c_int;
+    pub fn getpwuid_r(
+        uid: crate::uid_t,
+        pwd: *mut passwd,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut passwd,
+    ) -> c_int;
 }
 
 // LFS64 extensions
