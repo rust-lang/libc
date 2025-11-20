@@ -2191,12 +2191,14 @@ pseudo_AF_PIP
 pseudo_AF_RTIP
 pseudo_AF_XTP
 pthread_atfork
+pthread_attr_get_qos_class_np
 pthread_attr_getdetachstate
 pthread_attr_getinheritsched
 pthread_attr_getschedparam
 pthread_attr_getschedpolicy
 pthread_attr_getscope
 pthread_attr_getstackaddr
+pthread_attr_set_qos_class_np
 pthread_attr_setinheritsched
 pthread_attr_setschedparam
 pthread_attr_setschedpolicy
@@ -2209,6 +2211,7 @@ pthread_condattr_setpshared
 pthread_cpu_number_np
 pthread_create_from_mach_thread
 pthread_from_mach_thread_np
+pthread_get_qos_class_np
 pthread_get_stackaddr_np
 pthread_get_stacksize_np
 pthread_getname_np
@@ -2230,6 +2233,7 @@ pthread_once
 pthread_once_t
 pthread_rwlockattr_getpshared
 pthread_rwlockattr_setpshared
+pthread_set_qos_class_self_np
 pthread_setname_np
 pthread_setschedparam
 pthread_stack_frame_decode_np
