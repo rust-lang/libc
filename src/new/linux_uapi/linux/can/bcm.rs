@@ -23,18 +23,18 @@ s! {
 c_enum! {
     #[repr(u32)]
     pub enum #anon {
-        TX_SETUP = 1,
-        TX_DELETE,
-        TX_READ,
-        TX_SEND,
-        RX_SETUP,
-        RX_DELETE,
-        RX_READ,
-        TX_STATUS,
-        TX_EXPIRED,
-        RX_STATUS,
-        RX_TIMEOUT,
-        RX_CHANGED,
+        pub TX_SETUP = 1,
+        pub TX_DELETE,
+        pub TX_READ,
+        pub TX_SEND,
+        pub RX_SETUP,
+        pub RX_DELETE,
+        pub RX_READ,
+        pub TX_STATUS,
+        pub TX_EXPIRED,
+        pub RX_STATUS,
+        pub RX_TIMEOUT,
+        pub RX_CHANGED,
     }
 }
 
