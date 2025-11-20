@@ -1,0 +1,31 @@
+//! Header: `unistd.h`
+
+pub use crate::new::common::linux_like::pthread::pthread_setname_np;
+pub use crate::new::common::posix::pthread::{
+    pthread_atfork,
+    pthread_attr_getguardsize,
+    pthread_attr_getinheritsched,
+    pthread_attr_setguardsize,
+    pthread_attr_setinheritsched,
+    pthread_barrier_destroy,
+    pthread_barrier_init,
+    pthread_barrier_wait,
+    pthread_barrierattr_destroy,
+    pthread_barrierattr_getpshared,
+    pthread_barrierattr_init,
+    pthread_barrierattr_setpshared,
+    pthread_condattr_getpshared,
+    pthread_create,
+    pthread_getcpuclockid,
+    pthread_getschedparam,
+    pthread_kill,
+    pthread_mutex_timedlock,
+    pthread_mutexattr_getpshared,
+    pthread_setschedparam,
+    pthread_sigmask,
+    pthread_spin_destroy,
+    pthread_spin_init,
+    pthread_spin_lock,
+    pthread_spin_trylock,
+    pthread_spin_unlock,
+};

@@ -18,6 +18,6 @@ extern "C" {
         cpuset: *const crate::cpu_set_t,
     ) -> c_int;
 
-    #[cfg(target_os = "linux")]
+    #[cfg(any(target_os = "android", target_os = "linux"))]
     pub fn pthread_setname_np(thread: crate::pthread_t, name: *const c_char) -> c_int;
 }
