@@ -793,6 +793,7 @@ extern "C" {
         timeout: *const timeval,
     ) -> c_int;
 
+    #[cfg(target_env = "p1")]
     pub fn __wasilibc_register_preopened_fd(fd: c_int, path: *const c_char) -> c_int;
     pub fn __wasilibc_fd_renumber(fd: c_int, newfd: c_int) -> c_int;
     pub fn __wasilibc_unlinkat(fd: c_int, path: *const c_char) -> c_int;
