@@ -5840,17 +5840,6 @@ cfg_if! {
                 newattr: *const crate::mq_attr,
                 oldattr: *mut crate::mq_attr,
             ) -> c_int;
-
-            pub fn pthread_mutex_consistent(mutex: *mut pthread_mutex_t) -> c_int;
-            pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
-            pub fn pthread_mutexattr_getrobust(
-                attr: *const pthread_mutexattr_t,
-                robustness: *mut c_int,
-            ) -> c_int;
-            pub fn pthread_mutexattr_setrobust(
-                attr: *mut pthread_mutexattr_t,
-                robustness: c_int,
-            ) -> c_int;
         }
     }
 }
@@ -6005,17 +5994,6 @@ extern "C" {
         len: *mut crate::socklen_t,
         flg: c_int,
     ) -> c_int;
-    pub fn pthread_getaffinity_np(
-        thread: crate::pthread_t,
-        cpusetsize: size_t,
-        cpuset: *mut crate::cpu_set_t,
-    ) -> c_int;
-    pub fn pthread_setaffinity_np(
-        thread: crate::pthread_t,
-        cpusetsize: size_t,
-        cpuset: *const crate::cpu_set_t,
-    ) -> c_int;
-    pub fn pthread_setschedprio(native: crate::pthread_t, priority: c_int) -> c_int;
     pub fn reboot(how_to: c_int) -> c_int;
     pub fn setfsgid(gid: crate::gid_t) -> c_int;
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
@@ -6102,11 +6080,6 @@ extern "C" {
         timeout: c_int,
     ) -> c_int;
     pub fn epoll_ctl(epfd: c_int, op: c_int, fd: c_int, event: *mut crate::epoll_event) -> c_int;
-    pub fn pthread_getschedparam(
-        native: crate::pthread_t,
-        policy: *mut c_int,
-        param: *mut crate::sched_param,
-    ) -> c_int;
     pub fn unshare(flags: c_int) -> c_int;
     pub fn umount(target: *const c_char) -> c_int;
     pub fn sched_get_priority_max(policy: c_int) -> c_int;
@@ -6153,39 +6126,7 @@ extern "C" {
         timeout: *const crate::timespec,
         sigmask: *const sigset_t,
     ) -> c_int;
-    pub fn pthread_mutexattr_getprotocol(
-        attr: *const pthread_mutexattr_t,
-        protocol: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_mutexattr_setprotocol(attr: *mut pthread_mutexattr_t, protocol: c_int) -> c_int;
 
-    #[cfg_attr(gnu_time_bits64, link_name = "__pthread_mutex_timedlock64")]
-    pub fn pthread_mutex_timedlock(
-        lock: *mut pthread_mutex_t,
-        abstime: *const crate::timespec,
-    ) -> c_int;
-    pub fn pthread_barrierattr_init(attr: *mut crate::pthread_barrierattr_t) -> c_int;
-    pub fn pthread_barrierattr_destroy(attr: *mut crate::pthread_barrierattr_t) -> c_int;
-    pub fn pthread_barrierattr_getpshared(
-        attr: *const crate::pthread_barrierattr_t,
-        shared: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_barrierattr_setpshared(
-        attr: *mut crate::pthread_barrierattr_t,
-        shared: c_int,
-    ) -> c_int;
-    pub fn pthread_barrier_init(
-        barrier: *mut pthread_barrier_t,
-        attr: *const crate::pthread_barrierattr_t,
-        count: c_uint,
-    ) -> c_int;
-    pub fn pthread_barrier_destroy(barrier: *mut pthread_barrier_t) -> c_int;
-    pub fn pthread_barrier_wait(barrier: *mut pthread_barrier_t) -> c_int;
-    pub fn pthread_spin_init(lock: *mut crate::pthread_spinlock_t, pshared: c_int) -> c_int;
-    pub fn pthread_spin_destroy(lock: *mut crate::pthread_spinlock_t) -> c_int;
-    pub fn pthread_spin_lock(lock: *mut crate::pthread_spinlock_t) -> c_int;
-    pub fn pthread_spin_trylock(lock: *mut crate::pthread_spinlock_t) -> c_int;
-    pub fn pthread_spin_unlock(lock: *mut crate::pthread_spinlock_t) -> c_int;
     pub fn clone(
         cb: extern "C" fn(*mut c_void) -> c_int,
         child_stack: *mut c_void,
@@ -6201,45 +6142,10 @@ extern "C" {
         rqtp: *const crate::timespec,
         rmtp: *mut crate::timespec,
     ) -> c_int;
-    pub fn pthread_attr_getguardsize(
-        attr: *const crate::pthread_attr_t,
-        guardsize: *mut size_t,
-    ) -> c_int;
-    pub fn pthread_attr_setguardsize(attr: *mut crate::pthread_attr_t, guardsize: size_t) -> c_int;
-    pub fn pthread_attr_getinheritsched(
-        attr: *const crate::pthread_attr_t,
-        inheritsched: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_attr_setinheritsched(
-        attr: *mut crate::pthread_attr_t,
-        inheritsched: c_int,
-    ) -> c_int;
-    pub fn pthread_attr_getschedpolicy(
-        attr: *const crate::pthread_attr_t,
-        policy: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_attr_setschedpolicy(attr: *mut crate::pthread_attr_t, policy: c_int) -> c_int;
-    pub fn pthread_attr_getschedparam(
-        attr: *const crate::pthread_attr_t,
-        param: *mut crate::sched_param,
-    ) -> c_int;
-    pub fn pthread_attr_setschedparam(
-        attr: *mut crate::pthread_attr_t,
-        param: *const crate::sched_param,
-    ) -> c_int;
     pub fn sethostname(name: *const c_char, len: size_t) -> c_int;
     pub fn sched_get_priority_min(policy: c_int) -> c_int;
-    pub fn pthread_condattr_getpshared(
-        attr: *const pthread_condattr_t,
-        pshared: *mut c_int,
-    ) -> c_int;
     pub fn sysinfo(info: *mut crate::sysinfo) -> c_int;
     pub fn umount2(target: *const c_char, flags: c_int) -> c_int;
-    pub fn pthread_setschedparam(
-        native: crate::pthread_t,
-        policy: c_int,
-        param: *const crate::sched_param,
-    ) -> c_int;
     pub fn swapon(path: *const c_char, swapflags: c_int) -> c_int;
     pub fn sched_setscheduler(
         pid: crate::pid_t,
@@ -6267,10 +6173,8 @@ extern "C" {
         result: *mut *mut crate::group,
     ) -> c_int;
     pub fn initgroups(user: *const c_char, group: crate::gid_t) -> c_int;
-    pub fn pthread_sigmask(how: c_int, set: *const sigset_t, oldset: *mut sigset_t) -> c_int;
     pub fn sem_open(name: *const c_char, oflag: c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const c_char) -> *mut crate::group;
-    pub fn pthread_kill(thread: crate::pthread_t, sig: c_int) -> c_int;
     pub fn sem_unlink(name: *const c_char) -> c_int;
     pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
     pub fn getpwnam_r(
@@ -6288,11 +6192,6 @@ extern "C" {
         result: *mut *mut passwd,
     ) -> c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
-    pub fn pthread_atfork(
-        prepare: Option<unsafe extern "C" fn()>,
-        parent: Option<unsafe extern "C" fn()>,
-        child: Option<unsafe extern "C" fn()>,
-    ) -> c_int;
     pub fn getgrgid(gid: crate::gid_t) -> *mut crate::group;
     pub fn getgrouplist(
         user: *const c_char,
@@ -6300,18 +6199,8 @@ extern "C" {
         groups: *mut crate::gid_t,
         ngroups: *mut c_int,
     ) -> c_int;
-    pub fn pthread_mutexattr_getpshared(
-        attr: *const pthread_mutexattr_t,
-        pshared: *mut c_int,
-    ) -> c_int;
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut crate::FILE;
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
-    pub fn pthread_create(
-        native: *mut crate::pthread_t,
-        attr: *const crate::pthread_attr_t,
-        f: extern "C" fn(*mut c_void) -> *mut c_void,
-        value: *mut c_void,
-    ) -> c_int;
     pub fn dl_iterate_phdr(
         callback: Option<
             unsafe extern "C" fn(
@@ -6464,7 +6353,6 @@ extern "C" {
 
     pub fn gethostid() -> c_long;
 
-    pub fn pthread_getcpuclockid(thread: crate::pthread_t, clk_id: *mut crate::clockid_t) -> c_int;
     pub fn memmem(
         haystack: *const c_void,
         haystacklen: size_t,
@@ -6473,8 +6361,6 @@ extern "C" {
     ) -> *mut c_void;
     pub fn sched_getcpu() -> c_int;
 
-    pub fn pthread_getname_np(thread: crate::pthread_t, name: *mut c_char, len: size_t) -> c_int;
-    pub fn pthread_setname_np(thread: crate::pthread_t, name: *const c_char) -> c_int;
     pub fn getopt_long(
         argc: c_int,
         argv: *const *mut c_char,
@@ -6482,8 +6368,6 @@ extern "C" {
         longopts: *const option,
         longindex: *mut c_int,
     ) -> c_int;
-
-    pub fn pthread_once(control: *mut pthread_once_t, routine: extern "C" fn()) -> c_int;
 
     pub fn copy_file_range(
         fd_in: c_int,

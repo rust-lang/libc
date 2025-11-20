@@ -1,3 +1,8 @@
 //! POSIX APIs that are used by a number of platforms
+//!
+//! These can be found at: <https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/contents.html>.
 
+// FIXME(pthread): eventually all platforms should use this module
+#[cfg(target_os = "linux")]
+pub(crate) mod pthread;
 pub(crate) mod unistd;
