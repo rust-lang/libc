@@ -1,0 +1,23 @@
+use crate::prelude::*;
+
+extern "C" {
+    #[cfg(target_os = "linux")]
+    pub fn pthread_getaffinity_np(
+        thread: crate::pthread_t,
+        cpusetsize: size_t,
+        cpuset: *mut crate::cpu_set_t,
+    ) -> c_int;
+
+    #[cfg(target_os = "linux")]
+    pub fn pthread_getname_np(thread: crate::pthread_t, name: *mut c_char, len: size_t) -> c_int;
+
+    #[cfg(target_os = "linux")]
+    pub fn pthread_setaffinity_np(
+        thread: crate::pthread_t,
+        cpusetsize: size_t,
+        cpuset: *const crate::cpu_set_t,
+    ) -> c_int;
+
+    #[cfg(target_os = "linux")]
+    pub fn pthread_setname_np(thread: crate::pthread_t, name: *const c_char) -> c_int;
+}

@@ -1,1 +1,4 @@
 //! API that primarily comes from Linux but is also used other platforms (e.g. Android).
+
+#[cfg(target_os = "linux")]
+pub(crate) mod pthread;

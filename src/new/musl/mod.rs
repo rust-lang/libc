@@ -20,6 +20,8 @@ pub(crate) mod bits {
     }
 }
 
+pub(crate) mod pthread;
+
 /// Directory: `sys/`
 ///
 /// <https://github.com/kraj/musl/tree/kraj/master/include/sys>
