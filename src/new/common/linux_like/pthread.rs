@@ -8,6 +8,8 @@ extern "C" {
         cpuset: *mut crate::cpu_set_t,
     ) -> c_int;
 
+    pub fn pthread_getattr_np(native: crate::pthread_t, attr: *mut crate::pthread_attr_t) -> c_int;
+
     #[cfg(target_os = "linux")]
     pub fn pthread_getname_np(thread: crate::pthread_t, name: *mut c_char, len: size_t) -> c_int;
 
