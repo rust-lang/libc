@@ -3,7 +3,10 @@ use std::fs::canonicalize;
 use std::path::Path;
 use std::process::Command;
 
-use crate::{EDITION, Result};
+use crate::{
+    EDITION,
+    Result,
+};
 
 /// Use rustc to expand all macros and pretty print the crate into a single file.
 pub fn expand<P: AsRef<Path>>(

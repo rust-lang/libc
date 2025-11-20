@@ -1,7 +1,19 @@
-use std::path::{Path, PathBuf};
-use std::{env, fs};
+use std::path::{
+    Path,
+    PathBuf,
+};
+use std::{
+    env,
+    fs,
+};
 
-use ctest::{__compile_test, __run_test, Result, TestGenerator, generate_test};
+use ctest::{
+    __compile_test,
+    __run_test,
+    Result,
+    TestGenerator,
+    generate_test,
+};
 use pretty_assertions::assert_eq;
 
 // Headers are found relevative to the include directory, all files are generated

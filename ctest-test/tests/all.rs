@@ -3,7 +3,10 @@
 
 use std::collections::HashSet;
 use std::env;
-use std::process::{Command, ExitStatus};
+use std::process::{
+    Command,
+    ExitStatus,
+};
 
 /// Create a command that starts in the `target/debug` or `target/release` directory.
 fn cmd(name: &str) -> Command {

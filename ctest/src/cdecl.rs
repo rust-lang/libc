@@ -10,7 +10,10 @@ pub(crate) enum Constness {
 }
 
 #[cfg_attr(not(test), expect(unused_imports))]
-use Constness::{Const, Mut};
+use Constness::{
+    Const,
+    Mut,
+};
 
 use crate::BoxStr;
 

@@ -6,11 +6,17 @@
 // (https://github.com/snipsco/dinghy): cargo dinghy install, then cargo dinghy
 // test.
 
-use std::fs::{self, File};
+use std::fs::{
+    self,
+    File,
+};
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
-use std::{env, process};
+use std::{
+    env,
+    process,
+};
 
 macro_rules! t {
     ($e:expr) => {
