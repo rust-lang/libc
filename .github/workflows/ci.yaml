@@ -169,7 +169,7 @@ jobs:
     name: Test tier2
     # needs: [test_tier1, style_check]
     strategy:
-      fail-fast: true
+      fail-fast: false
       max-parallel: 16
       matrix:
         include:
