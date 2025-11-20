@@ -1,7 +1,6 @@
 use crate::prelude::*;
 
 pub type wchar_t = i32;
-pub type useconds_t = u32;
 pub type dev_t = u32;
 pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
@@ -128,11 +127,6 @@ s! {
 
     pub struct cpu_set_t {
         bits: [u32; 32],
-    }
-
-    pub struct if_nameindex {
-        pub if_index: c_uint,
-        pub if_name: *mut c_char,
     }
 
     // System V IPC
@@ -1378,8 +1372,6 @@ extern "C" {
     pub fn getloadavg(loadavg: *mut c_double, nelem: c_int) -> c_int;
 
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
-    pub fn if_nameindex() -> *mut if_nameindex;
-    pub fn if_freenameindex(ptr: *mut if_nameindex);
 
     pub fn mremap(
         addr: *mut c_void,
@@ -1438,21 +1430,6 @@ extern "C" {
     pub fn setpriority(which: c_int, who: crate::id_t, prio: c_int) -> c_int;
 
     pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
-
-    pub fn getpwnam_r(
-        name: *const c_char,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-    pub fn getpwuid_r(
-        uid: crate::uid_t,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
 
     // grp.h
     pub fn getgrgid(gid: crate::gid_t) -> *mut crate::group;
