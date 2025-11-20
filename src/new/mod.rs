@@ -203,5 +203,12 @@ cfg_if! {
     }
 }
 
-#[cfg(target_family = "unix")]
-pub use unistd::*;
+// Per-family headers we export
+cfg_if! {
+    if #[cfg(target_family = "unix")] {
+        // FIXME(pthread): eventually all platforms should use this module
+        #[cfg(target_os = "linux")]
+        pub use pthread::*;
+        pub use unistd::*;
+    }
+}
