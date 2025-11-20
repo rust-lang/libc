@@ -1,4 +1,3 @@
-# Note that there is a separate top-level configuration for everything else
 edition = "2021"
 error_on_line_overflow = true
 group_imports = "StdExternalCrate"

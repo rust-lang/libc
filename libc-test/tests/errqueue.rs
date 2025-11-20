@@ -2,7 +2,11 @@
 
 #[cfg(any(target_os = "linux", target_os = "android"))]
 mod t {
-    use libc::{self, sock_extended_err, sockaddr};
+    use libc::{
+        self,
+        sock_extended_err,
+        sockaddr,
+    };
 
     extern "C" {
         pub fn so_ee_offender(ee: *const sock_extended_err) -> *mut sockaddr;
