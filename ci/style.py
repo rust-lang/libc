@@ -87,6 +87,22 @@ def fmt_one(fpath: Path, check_only: bool):
     # syntax. Replace it with a dummy name.
     text = re.sub(r"enum #anon\b", r"enum _fmt_anon", text)
 
+    # If enum variants are annotated with `pub`, rustfmt erases the visibility. To get
+    # around this we first match on all enums to extract their bodies, then look for `pub`
+    # visibility indicators. If found, these get stashed in a comment on the preceding
+    # line.
+    def enum_sub(m: re.Match) -> str:
+        enum_body = m.group(0)
+        rep = re.sub(
+            r"^(.*)\b(pub\s*?(\(.*?\))?)\s*",
+            r"\1/* FMT-VIS \2 END-FMT-VIS */\n\1",
+            enum_body,
+            flags=re.MULTILINE,
+        )
+        return rep
+
+    text = re.sub(r"\benum.*\{\n?(?:\s*[^}]*\n)+\s*\}", enum_sub, text)
+
     # Invoke rustfmt passing via stdin/stdout so we don't need to write the file. Exits
     # on failure.
     cmd = ["rustfmt", "--config-path=.rustfmt.toml"]
@@ -109,6 +125,7 @@ def fmt_one(fpath: Path, check_only: bool):
     text = re.sub(r"fn (\w+)_fmt_tmp\(\)", r"\1!", text)
     text = re.sub(r"cfg_tmp!\(\[(.*?)\]\)", r"#[cfg(\1)]", text, flags=re.DOTALL)
     text = re.sub(r"enum _fmt_anon", r"enum #anon", text)
+    text = re.sub(r"/\* FMT-VIS (.*) END-FMT-VIS \*/\n\s*", r"\1 ", text)
 
     # And write the formatted file back
     fpath.write_text(text)
