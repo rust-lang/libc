@@ -18,9 +18,9 @@ pub type lgrp_affinity_t = c_uint;
 c_enum! {
     #[repr(u32)]
     pub enum lgrp_rsrc_t {
-        LGRP_RSRC_CPU = 0,
-        LGRP_RSRC_MEM = 1,
-        LGRP_RSRC_TYPES = 2,
+        pub LGRP_RSRC_CPU = 0,
+        pub LGRP_RSRC_MEM = 1,
+        pub LGRP_RSRC_TYPES = 2,
     }
 }
 
