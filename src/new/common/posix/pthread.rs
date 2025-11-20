@@ -94,7 +94,7 @@ extern "C" {
         pshared: *mut c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux"))]
     pub fn pthread_create(
         native: *mut crate::pthread_t,
         attr: *const crate::pthread_attr_t,
