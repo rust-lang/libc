@@ -122,12 +122,7 @@ extern "C" {
     #[cfg(any(target_os = "l4re", all(target_os = "linux", not(target_env = "ohos"))))]
     pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
 
-    #[cfg(any(
-        target_os = "android",
-        target_os = "emscripten",
-        target_os = "linux",
-        target_os = "l4re",
-    ))]
+    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux",))]
     pub fn pthread_condattr_getclock(
         attr: *const crate::pthread_condattr_t,
         clock_id: *mut crate::clockid_t,
@@ -144,12 +139,7 @@ extern "C" {
         pshared: *mut c_int,
     ) -> c_int;
 
-    #[cfg(any(
-        target_os = "android",
-        target_os = "emscripten",
-        target_os = "linux",
-        target_os = "l4re",
-    ))]
+    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux",))]
     pub fn pthread_condattr_setclock(
         attr: *mut crate::pthread_condattr_t,
         clock_id: crate::clockid_t,
