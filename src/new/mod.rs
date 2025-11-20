@@ -207,7 +207,7 @@ cfg_if! {
 cfg_if! {
     if #[cfg(target_family = "unix")] {
         // FIXME(pthread): eventually all platforms should use this module
-        #[cfg(any(target_os = "android", target_os = "linux"))]
+        #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux"))]
         pub use pthread::*;
         pub use unistd::*;
     }
