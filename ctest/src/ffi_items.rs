@@ -5,7 +5,18 @@ use std::ops::Deref;
 use syn::punctuated::Punctuated;
 use syn::visit::Visit;
 
-use crate::{Abi, BoxStr, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
+use crate::{
+    Abi,
+    BoxStr,
+    Const,
+    Field,
+    Fn,
+    Parameter,
+    Static,
+    Struct,
+    Type,
+    Union,
+};
 
 /// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
 ///

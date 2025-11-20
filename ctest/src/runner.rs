@@ -1,13 +1,25 @@
 //! Generation, compilation, and running of tests.
 
 use std::env;
-use std::fs::{File, canonicalize};
+use std::fs::{
+    File,
+    canonicalize,
+};
 use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::{
+    Path,
+    PathBuf,
+};
 use std::process::Command;
 
 use crate::generator::GenerationError;
-use crate::{EDITION, Language, Result, TestGenerator, get_build_target};
+use crate::{
+    EDITION,
+    Language,
+    Result,
+    TestGenerator,
+    get_build_target,
+};
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]

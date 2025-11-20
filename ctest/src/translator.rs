@@ -3,7 +3,10 @@
 //! Simple to semi complex types are supported only.
 
 use std::fmt;
-use std::ops::{Deref, DerefMut};
+use std::ops::{
+    Deref,
+    DerefMut,
+};
 
 use proc_macro2::Span;
 use quote::ToTokens;
@@ -12,7 +15,12 @@ use thiserror::Error;
 
 use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
-use crate::{BoxStr, MapInput, TestGenerator, cdecl};
+use crate::{
+    BoxStr,
+    MapInput,
+    TestGenerator,
+    cdecl,
+};
 
 /// An error that occurs during translation, detailing cause and location.
 #[derive(Debug, Error)]

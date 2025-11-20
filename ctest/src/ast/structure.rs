@@ -1,4 +1,7 @@
-use crate::{BoxStr, Field};
+use crate::{
+    BoxStr,
+    Field,
+};
 
 /// Represents a struct defined in Rust.
 #[derive(Debug, Clone)]

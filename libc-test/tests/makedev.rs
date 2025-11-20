@@ -13,7 +13,11 @@
     target_os = "cygwin",
 ))]
 
-use libc::{self, c_uint, dev_t};
+use libc::{
+    self,
+    c_uint,
+    dev_t,
+};
 
 cfg_if::cfg_if! {
     if #[cfg(any(target_os = "solaris", target_os = "illumos"))] {

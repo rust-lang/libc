@@ -22,10 +22,24 @@ mod translator;
 
 use std::env;
 
-pub use ast::{Abi, Const, Field, Fn, Parameter, Static, Struct, Type, Union};
+pub use ast::{
+    Abi,
+    Const,
+    Field,
+    Fn,
+    Parameter,
+    Static,
+    Struct,
+    Type,
+    Union,
+};
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
-pub use runner::{__compile_test, __run_test, generate_test};
+pub use runner::{
+    __compile_test,
+    __run_test,
+    generate_test,
+};
 pub use translator::TranslationError;
 
 use crate::generator::GenerationError;

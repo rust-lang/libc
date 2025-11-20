@@ -1,4 +1,8 @@
-use crate::{Abi, BoxStr, Parameter};
+use crate::{
+    Abi,
+    BoxStr,
+    Parameter,
+};
 
 /// Represents a function signature defined in Rust.
 ///

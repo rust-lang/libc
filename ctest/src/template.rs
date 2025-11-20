@@ -7,9 +7,19 @@ use syn::spanned::Spanned;
 
 use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
-use crate::translator::{TranslationErrorKind, Translator};
+use crate::translator::{
+    TranslationErrorKind,
+    Translator,
+};
 use crate::{
-    BoxStr, Field, MapInput, Result, TestGenerator, TranslationError, VolatileItemKind, cdecl,
+    BoxStr,
+    Field,
+    MapInput,
+    Result,
+    TestGenerator,
+    TranslationError,
+    VolatileItemKind,
+    cdecl,
 };
 
 /// Represents the Rust side of the generated testing suite.

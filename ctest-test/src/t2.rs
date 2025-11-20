@@ -1,6 +1,9 @@
 #![allow(non_camel_case_types)]
 
-use std::ffi::{c_char, c_int};
+use std::ffi::{
+    c_char,
+    c_int,
+};
 
 pub type T2Foo = u32;
 pub type T2Bar = u32;
