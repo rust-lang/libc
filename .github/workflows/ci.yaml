@@ -29,7 +29,7 @@ jobs:
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh && rustup component add rustfmt
       - name: Check style
-        run: ./ci/style.sh
+        run: ./ci/style.py
 
   clippy:
     name: Clippy on ${{ matrix.os }}
