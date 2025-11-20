@@ -17,9 +17,15 @@ mod posix {
 ///
 /// <https://github.com/bminor/glibc/tree/master/sysdeps>
 mod sysdeps {
+    // FIXME(pthread): eventually all platforms should use this module
+    #[cfg(target_os = "linux")]
+    pub(crate) mod nptl;
     pub(crate) mod unix;
 }
 
 pub(crate) use posix::*;
+// FIXME(pthread): eventually all platforms should use this module
+#[cfg(target_os = "linux")]
+pub(crate) use sysdeps::nptl::*;
 #[cfg(target_os = "linux")]
 pub(crate) use sysdeps::unix::linux::*;
