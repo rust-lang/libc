@@ -645,7 +645,6 @@ pub const BUFSIZ: c_uint = 8192;
 pub const TMP_MAX: c_uint = 238328;
 pub const FOPEN_MAX: c_uint = 16;
 pub const FILENAME_MAX: c_uint = 4096;
-pub const POSIX_MADV_DONTNEED: c_int = 4;
 pub const _CS_GNU_LIBC_VERSION: c_int = 2;
 pub const _CS_GNU_LIBPTHREAD_VERSION: c_int = 3;
 pub const _CS_V6_ENV: c_int = 1148;
