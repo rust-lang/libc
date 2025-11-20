@@ -3508,11 +3508,6 @@ extern "C" {
         timeout: c_int,
     ) -> c_int;
     pub fn epoll_ctl(epfd: c_int, op: c_int, fd: c_int, event: *mut crate::epoll_event) -> c_int;
-    pub fn pthread_getschedparam(
-        native: crate::pthread_t,
-        policy: *mut c_int,
-        param: *mut crate::sched_param,
-    ) -> c_int;
     pub fn unshare(flags: c_int) -> c_int;
     pub fn umount(target: *const c_char) -> c_int;
     pub fn sched_get_priority_max(policy: c_int) -> c_int;
@@ -3553,32 +3548,7 @@ extern "C" {
         timeout: *const crate::timespec,
         sigmask: *const sigset_t,
     ) -> c_int;
-    pub fn pthread_mutex_timedlock(
-        lock: *mut pthread_mutex_t,
-        abstime: *const crate::timespec,
-    ) -> c_int;
-    pub fn pthread_barrierattr_init(attr: *mut crate::pthread_barrierattr_t) -> c_int;
-    pub fn pthread_barrierattr_destroy(attr: *mut crate::pthread_barrierattr_t) -> c_int;
-    pub fn pthread_barrierattr_getpshared(
-        attr: *const crate::pthread_barrierattr_t,
-        shared: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_barrierattr_setpshared(
-        attr: *mut crate::pthread_barrierattr_t,
-        shared: c_int,
-    ) -> c_int;
-    pub fn pthread_barrier_init(
-        barrier: *mut pthread_barrier_t,
-        attr: *const crate::pthread_barrierattr_t,
-        count: c_uint,
-    ) -> c_int;
-    pub fn pthread_barrier_destroy(barrier: *mut pthread_barrier_t) -> c_int;
-    pub fn pthread_barrier_wait(barrier: *mut pthread_barrier_t) -> c_int;
-    pub fn pthread_spin_init(lock: *mut crate::pthread_spinlock_t, pshared: c_int) -> c_int;
-    pub fn pthread_spin_destroy(lock: *mut crate::pthread_spinlock_t) -> c_int;
-    pub fn pthread_spin_lock(lock: *mut crate::pthread_spinlock_t) -> c_int;
-    pub fn pthread_spin_trylock(lock: *mut crate::pthread_spinlock_t) -> c_int;
-    pub fn pthread_spin_unlock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+
     pub fn clone(
         cb: extern "C" fn(*mut c_void) -> c_int,
         child_stack: *mut c_void,
@@ -3593,29 +3563,11 @@ extern "C" {
         rqtp: *const crate::timespec,
         rmtp: *mut crate::timespec,
     ) -> c_int;
-    pub fn pthread_attr_getguardsize(
-        attr: *const crate::pthread_attr_t,
-        guardsize: *mut size_t,
-    ) -> c_int;
-    pub fn pthread_attr_setguardsize(attr: *mut crate::pthread_attr_t, guardsize: size_t) -> c_int;
-    pub fn pthread_attr_getinheritsched(
-        attr: *const crate::pthread_attr_t,
-        flag: *mut c_int,
-    ) -> c_int;
-    pub fn pthread_attr_setinheritsched(attr: *mut crate::pthread_attr_t, flag: c_int) -> c_int;
+
     pub fn sethostname(name: *const c_char, len: size_t) -> c_int;
     pub fn sched_get_priority_min(policy: c_int) -> c_int;
-    pub fn pthread_condattr_getpshared(
-        attr: *const pthread_condattr_t,
-        pshared: *mut c_int,
-    ) -> c_int;
     pub fn sysinfo(info: *mut crate::sysinfo) -> c_int;
     pub fn umount2(target: *const c_char, flags: c_int) -> c_int;
-    pub fn pthread_setschedparam(
-        native: crate::pthread_t,
-        policy: c_int,
-        param: *const crate::sched_param,
-    ) -> c_int;
     pub fn swapon(path: *const c_char, swapflags: c_int) -> c_int;
     pub fn sched_setscheduler(
         pid: crate::pid_t,
@@ -3643,10 +3595,8 @@ extern "C" {
         buflen: size_t,
         result: *mut *mut crate::group,
     ) -> c_int;
-    pub fn pthread_sigmask(how: c_int, set: *const sigset_t, oldset: *mut sigset_t) -> c_int;
     pub fn sem_open(name: *const c_char, oflag: c_int, ...) -> *mut sem_t;
     pub fn getgrnam(name: *const c_char) -> *mut crate::group;
-    pub fn pthread_kill(thread: crate::pthread_t, sig: c_int) -> c_int;
     pub fn sem_unlink(name: *const c_char) -> c_int;
     pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
     pub fn getpwnam_r(
@@ -3669,11 +3619,6 @@ extern "C" {
         timeout: *const crate::timespec,
     ) -> c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
-    pub fn pthread_atfork(
-        prepare: Option<unsafe extern "C" fn()>,
-        parent: Option<unsafe extern "C" fn()>,
-        child: Option<unsafe extern "C" fn()>,
-    ) -> c_int;
     pub fn getgrgid(gid: crate::gid_t) -> *mut crate::group;
     pub fn getgrouplist(
         user: *const c_char,
@@ -3682,18 +3627,8 @@ extern "C" {
         ngroups: *mut c_int,
     ) -> c_int;
     pub fn initgroups(user: *const c_char, group: crate::gid_t) -> c_int;
-    pub fn pthread_mutexattr_getpshared(
-        attr: *const pthread_mutexattr_t,
-        pshared: *mut c_int,
-    ) -> c_int;
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut crate::FILE;
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
-    pub fn pthread_create(
-        native: *mut crate::pthread_t,
-        attr: *const crate::pthread_attr_t,
-        f: extern "C" fn(*mut c_void) -> *mut c_void,
-        value: *mut c_void,
-    ) -> c_int;
     pub fn __errno() -> *mut c_int;
     pub fn inotify_rm_watch(fd: c_int, wd: u32) -> c_int;
     pub fn inotify_init() -> c_int;
@@ -3729,8 +3664,6 @@ extern "C" {
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
     pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
 
-    pub fn pthread_setname_np(thread: crate::pthread_t, name: *const c_char) -> c_int;
-
     pub fn __system_property_set(__name: *const c_char, __value: *const c_char) -> c_int;
     pub fn __system_property_get(__name: *const c_char, __value: *mut c_char) -> c_int;
     pub fn __system_property_find(__name: *const c_char) -> *const prop_info;
@@ -3754,8 +3687,6 @@ extern "C" {
     pub fn arc4random_buf(__buf: *mut c_void, __n: size_t);
 
     pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
-
-    pub fn pthread_getcpuclockid(thread: crate::pthread_t, clk_id: *mut crate::clockid_t) -> c_int;
 
     pub fn dirname(path: *const c_char) -> *mut c_char;
     pub fn basename(path: *const c_char) -> *mut c_char;
