@@ -22,7 +22,6 @@ pub type off_t = c_long;
 pub type blkcnt_t = c_ulong;
 pub type blksize_t = c_ulong;
 pub type nlink_t = u32;
-pub type useconds_t = u32;
 pub type pthread_t = c_long;
 pub type pthread_mutexattr_t = c_long;
 pub type pthread_rwlockattr_t = c_long;
@@ -494,11 +493,6 @@ s! {
         pub ifr6_addr: crate::in6_addr,
         pub ifr6_prefixlen: u32,
         pub ifr6_ifindex: c_int,
-    }
-
-    pub struct if_nameindex {
-        pub if_index: c_uint,
-        pub if_name: *mut c_char,
     }
 
     pub struct sockaddr_nl {
@@ -3640,20 +3634,6 @@ extern "C" {
     pub fn getgrnam(name: *const c_char) -> *mut crate::group;
     pub fn sem_unlink(name: *const c_char) -> c_int;
     pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
-    pub fn getpwnam_r(
-        name: *const c_char,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-    pub fn getpwuid_r(
-        uid: crate::uid_t,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
     pub fn sigtimedwait(
         set: *const sigset_t,
         info: *mut siginfo_t,
@@ -3773,9 +3753,6 @@ extern "C" {
         newpath: *const c_char,
         flags: c_uint,
     ) -> c_int;
-
-    pub fn if_nameindex() -> *mut if_nameindex;
-    pub fn if_freenameindex(ptr: *mut if_nameindex);
 }
 
 cfg_if! {

@@ -903,6 +903,7 @@ pub const POSIX_MADV_NORMAL: c_int = 0;
 pub const POSIX_MADV_RANDOM: c_int = 1;
 pub const POSIX_MADV_SEQUENTIAL: c_int = 2;
 pub const POSIX_MADV_WILLNEED: c_int = 3;
+pub const POSIX_MADV_DONTNEED: c_int = 4;
 
 pub const S_IEXEC: crate::mode_t = 0o0100;
 pub const S_IWRITE: crate::mode_t = 0o0200;
