@@ -108,11 +108,6 @@ s! {
         pub spkt_protocol: c_ushort,
     }
 
-    pub struct if_nameindex {
-        pub if_index: c_uint,
-        pub if_name: *mut c_char,
-    }
-
     pub struct tpacket_auxdata {
         pub tp_status: __u32,
         pub tp_len: __u32,
@@ -4365,20 +4360,6 @@ extern "C" {
     pub fn sendfile(out_fd: c_int, in_fd: c_int, offset: *mut off_t, count: size_t) -> ssize_t;
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
     pub fn getdtablesize() -> c_int;
-    pub fn getpwnam_r(
-        name: *const c_char,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
-    pub fn getpwuid_r(
-        uid: crate::uid_t,
-        pwd: *mut passwd,
-        buf: *mut c_char,
-        buflen: size_t,
-        result: *mut *mut passwd,
-    ) -> c_int;
     pub fn getgrouplist(
         user: *const c_char,
         group: crate::gid_t,
