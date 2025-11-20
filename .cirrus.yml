@@ -7,15 +7,16 @@ task:
     # https://github.com/rust-lang/rust/issues/132185
     RUST_BACKTRACE: "0"
   matrix:
-    - name: nightly freebsd-13 i686
-      # Test i686 FreeBSD in 32-bit emulation on a 64-bit host.
-      env:
-        TARGET: i686-unknown-freebsd
-      freebsd_instance:
-        image_family: freebsd-13-4
-    - name: nightly freebsd-13 x86_64
-      freebsd_instance:
-        image_family: freebsd-13-4
+    # FIXME(#4740): FreeBSD 13 tests are extremely flaky and fail most of the time
+    # - name: nightly freebsd-13 i686
+    #   # Test i686 FreeBSD in 32-bit emulation on a 64-bit host.
+    #   env:
+    #     TARGET: i686-unknown-freebsd
+    #   freebsd_instance:
+    #     image_family: freebsd-13-4
+    # - name: nightly freebsd-13 x86_64
+    #   freebsd_instance:
+    #     image_family: freebsd-13-4
     - name: nightly freebsd-14 x86_64
       freebsd_instance:
         image: freebsd-14-3-release-amd64-ufs
