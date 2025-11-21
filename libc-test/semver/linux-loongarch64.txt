@@ -119,7 +119,6 @@ TIOCCBRK
 TIOCGRS485
 TIOCSBRK
 TIOCSRS485
-XCASE
 flock64
 max_align_t
 mcontext_t
