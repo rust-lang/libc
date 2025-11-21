@@ -88,7 +88,7 @@ mod generated_tests {
     /// this would result in a value larger than zero. For signed types, this results in a value
     /// smaller than 0.
     pub fn ctest_signededness_volatile_char() {
-         extern "C" {
+        extern "C" {
             fn ctest_signededness_of__volatile_char() -> u32;
         }
         let all_ones = !(0 as volatile_char);

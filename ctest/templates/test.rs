@@ -2,6 +2,7 @@
 {#- ↑ Doesn't apply here, this is the template! +#}
 
 {%- let ctx = self.template +%}
+{%- let ctest_extern = self.extern_keyword +%}
 
 /// As this file is sometimes built using rustc, crate level attributes
 /// are not allowed at the top-level, so we hack around this by keeping it
@@ -73,7 +74,7 @@ mod generated_tests {
     // Test that the string constant is the same in both Rust and C.
     // While fat pointers can't be translated, we instead use * const c_char.
     pub fn {{ const_cstr.test_name }}() {
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_const_cstr__{{ const_cstr.id }}() -> *const c_char;
         }
 
@@ -100,7 +101,7 @@ mod generated_tests {
     // This performs a byte by byte comparison of the constant value.
     pub fn {{ constant.test_name }}() {
         type T = {{ constant.rust_ty }};
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_const__{{ constant.id }}() -> *const T;
         }
 
@@ -125,7 +126,7 @@ mod generated_tests {
 
     /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn {{ item.test_name }}() {
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_size_of__{{ item.id }}() -> u64;
             fn ctest_align_of__{{ item.id }}() -> u64;
         }
@@ -149,7 +150,7 @@ mod generated_tests {
     /// this would result in a value larger than zero. For signed types, this results in a value
     /// smaller than 0.
     pub fn {{ alias.test_name }}() {
-         extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_signededness_of__{{ alias.id }}() -> u32;
         }
         let all_ones = !(0 as {{ alias.id }});
@@ -164,7 +165,7 @@ mod generated_tests {
 
     /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn {{ item.test_name }}() {
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
             fn ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
         }
@@ -193,7 +194,7 @@ mod generated_tests {
 
     /// Tests if the pointer to the field is the same in Rust and C.
     pub fn {{ item.test_name }}() {
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(a: *const {{ item.id }}) -> *mut u8;
         }
 
@@ -264,7 +265,7 @@ mod generated_tests {
     /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
     pub fn {{ item.test_name }}() {
         type U = {{ item.id }};
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_size_of__{{ item.id }}() -> u64;
             fn ctest_roundtrip__{{ item.id }}(
                 input: MaybeUninit<U>, is_padding_byte: *const bool, value_bytes: *mut u8
@@ -337,7 +338,7 @@ mod generated_tests {
 
     /// Check if the Rust and C side function pointers point to the same underlying function.
     pub fn {{ item.test_name }}() {
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_foreign_fn__{{ item.id }}() -> unsafe extern "C" fn();
         }
         let actual = unsafe { ctest_foreign_fn__{{ item.id }}() } as u64;
@@ -350,7 +351,7 @@ mod generated_tests {
 
     // Tests if the pointer to the static variable matches in both Rust and C.
     pub fn {{ static_.test_name }}() {
-        extern "C" {
+        {{ ctest_extern }} "C" {
             fn ctest_static__{{ static_.id }}() -> *const {{ static_.rust_ty }};
         }
         let actual = (&raw const {{ static_.id }}).addr();

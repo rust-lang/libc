@@ -150,6 +150,20 @@ fn test_entrypoint_macro() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if generated code for macro.rs passes requirements for edition 2024.
+#[test]
+fn test_edition_2024_macro() {
+    let include_path = PathBuf::from("tests/input");
+    let crate_path = include_path.join("macro.rs");
+    let library_path = "macro.out.edition-2024.a";
+
+    let (mut gen_, out_dir) = default_generator(1, None).unwrap();
+    gen_.edition(2024)
+        .header_with_defines("macro.h", vec!["SUPPRESS_ERROR"]);
+
+    check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
+}
+
 /// Test if a file with invalid syntax fails to generate tests.
 #[test]
 fn test_entrypoint_invalid_syntax() {
