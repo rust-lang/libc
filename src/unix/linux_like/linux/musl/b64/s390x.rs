@@ -362,7 +362,6 @@ pub const CIBAUD: crate::tcflag_t = 0o02003600000;
 
 pub const ISIG: crate::tcflag_t = 0o000001;
 pub const ICANON: crate::tcflag_t = 0o000002;
-pub const XCASE: crate::tcflag_t = 0o000004;
 pub const ECHOE: crate::tcflag_t = 0o000020;
 pub const ECHOK: crate::tcflag_t = 0o000040;
 pub const ECHONL: crate::tcflag_t = 0o000100;

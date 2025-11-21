@@ -99,7 +99,6 @@ SYS_utimes
 SYS_vfork
 TIOCCBRK
 TIOCSBRK
-XCASE
 __psw_t
 flock64
 fpreg_t
