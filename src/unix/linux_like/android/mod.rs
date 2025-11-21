@@ -1421,6 +1421,7 @@ pub const TABDLY: crate::tcflag_t = 0o014000;
 pub const BSDLY: crate::tcflag_t = 0o020000;
 pub const FFDLY: crate::tcflag_t = 0o100000;
 pub const VTDLY: crate::tcflag_t = 0o040000;
+pub const XCASE: crate::tcflag_t = 0o000004;
 pub const XTABS: crate::tcflag_t = 0o014000;
 
 pub const B0: crate::speed_t = 0o000000;
