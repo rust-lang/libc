@@ -1427,6 +1427,7 @@ pub const VSTART: usize = 8;
 pub const VSTOP: usize = 9;
 pub const VDISCARD: usize = 13;
 pub const VTIME: usize = 5;
+pub const IUCLC: crate::tcflag_t = 0x00000200;
 pub const IXON: crate::tcflag_t = 0x00000400;
 pub const IXOFF: crate::tcflag_t = 0x00001000;
 pub const ONLCR: crate::tcflag_t = 0x4;
