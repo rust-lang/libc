@@ -36,6 +36,9 @@ use crate::{
     get_build_target,
 };
 
+/// The default Rust edition used to generate the code.
+const DEFAULT_EDITION: u32 = 2021;
+
 /// A function that takes a mappable input and returns its mapping as `Some`, otherwise
 /// use the default name if `None`.
 type MappedName = Box<dyn Fn(&MapInput) -> Option<String>>;
@@ -73,6 +76,8 @@ pub struct TestGenerator {
     pub(crate) skip_roundtrip: Option<SkipTest>,
     pub(crate) skip_signededness: Option<SkipTest>,
     pub(crate) skip_fn_ptrcheck: Option<SkipTest>,
+    /// The Rust edition to generate code against.
+    pub(crate) edition: Option<u32>,
 }
 
 /// An error that occurs when generating the test files.
@@ -236,6 +241,21 @@ impl TestGenerator {
     /// ```
     pub fn include<P: AsRef<Path>>(&mut self, p: P) -> &mut Self {
         self.includes.push(p.as_ref().to_owned());
+        self
+    }
+
+    /// Set the Rust edition that the code is generated for.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.edition(2024);
+    /// ```
+    pub fn edition(&mut self, e: u32) -> &mut Self {
+        self.edition = Some(e);
         self
     }
 
@@ -1048,6 +1068,7 @@ impl TestGenerator {
         };
 
         let mut rust_file = RustTestTemplate::new(&ffi_items, self)?
+            .edition(self.edition.unwrap_or(DEFAULT_EDITION))
             .render()
             .map_err(GenerationError::RustTemplateRender)?;
         ensure_trailing_newline(&mut rust_file);

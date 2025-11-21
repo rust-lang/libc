@@ -112,7 +112,7 @@ mod generated_tests {
     /// this would result in a value larger than zero. For signed types, this results in a value
     /// smaller than 0.
     pub fn ctest_signededness_in6_addr() {
-         extern "C" {
+        extern "C" {
             fn ctest_signededness_of__in6_addr() -> u32;
         }
         let all_ones = !(0 as in6_addr);
