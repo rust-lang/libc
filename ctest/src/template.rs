@@ -27,6 +27,7 @@ use crate::{
 #[template(path = "test.rs")]
 pub(crate) struct RustTestTemplate {
     pub template: TestTemplate,
+    pub extern_keyword: BoxStr,
 }
 
 impl RustTestTemplate {
@@ -36,7 +37,23 @@ impl RustTestTemplate {
     ) -> Result<Self, TranslationError> {
         Ok(Self {
             template: TestTemplate::new(ffi_items, generator)?,
+            extern_keyword: "extern".into(),
         })
+    }
+
+    /// Modify the generated template such that it supports edition 2024.
+    pub(crate) fn edition(&mut self, edition: u32) -> &Self {
+        match edition {
+            2021 => {
+                self.extern_keyword = "extern".into();
+            }
+            2024 => {
+                // For now we only use this to convert extern to unsafe extern.
+                self.extern_keyword = "unsafe extern".into();
+            }
+            _ => panic!("unsupported or invalid edition: {edition}"),
+        }
+        self
     }
 }
 
