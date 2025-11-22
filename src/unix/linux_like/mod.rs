@@ -1259,6 +1259,8 @@ pub const CLD_CONTINUED: c_int = 6;
 pub const SIGEV_SIGNAL: c_int = 0;
 pub const SIGEV_NONE: c_int = 1;
 pub const SIGEV_THREAD: c_int = 2;
+#[cfg(any(not(target_env = "musl"), musl_v1_2_3))]
+pub const SIGEV_THREAD_ID: c_int = 4;
 
 pub const P_ALL: idtype_t = 0;
 pub const P_PID: idtype_t = 1;
