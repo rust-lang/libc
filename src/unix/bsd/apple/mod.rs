@@ -4085,16 +4085,16 @@ safe_f! {
         _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
     }
 
-    pub const fn makedev(major: i32, minor: i32) -> dev_t {
-        (major << 24) | minor
+    pub const fn makedev(major: u32, minor: u32) -> dev_t {
+        ((major << 24) | minor) as dev_t
     }
 
-    pub const fn major(dev: dev_t) -> i32 {
-        (dev >> 24) & 0xff
+    pub const fn major(dev: u32) -> i32 {
+        ((dev >> 24) & 0xff) as i32
     }
 
-    pub const fn minor(dev: dev_t) -> i32 {
-        dev & 0xffffff
+    pub const fn minor(dev: u32) -> i32 {
+        (dev & 0xffffff) as i32
     }
 }
 
