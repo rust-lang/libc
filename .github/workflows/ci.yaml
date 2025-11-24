@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh && rustup component add rustfmt
       - name: Check style
@@ -39,7 +39,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: rustup update stable --no-self-update
       - uses: Swatinem/rust-cache@v2
       # Here we use the latest stable Rust toolchain already installed by GitHub
@@ -68,7 +68,7 @@ jobs:
     env:
       TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
 
@@ -130,7 +130,7 @@ jobs:
     env:
       TARGET: ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
       - uses: Swatinem/rust-cache@v2
@@ -227,7 +227,7 @@ jobs:
     env:
       TARGET: ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
       - uses: Swatinem/rust-cache@v2
@@ -270,7 +270,7 @@ jobs:
           - target: x86_64-unknown-netbsd
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: test on Solaris
         uses: vmactions/solaris-vm@v1.1.6
         if: contains(matrix.target, 'solaris')
