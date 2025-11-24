@@ -667,6 +667,7 @@ fn test_cygwin(target: &str) {
         "spawn.h",
         "stddef.h",
         "stdlib.h",
+        "stdio.h",
         "string.h",
         "sys/cpuset.h",
         "sys/ioctl.h",
@@ -689,6 +690,7 @@ fn test_cygwin(target: &str) {
         "termios.h",
         "unistd.h",
         "utime.h",
+        "utmpx.h",
         "wait.h",
         "wchar.h",
     );
