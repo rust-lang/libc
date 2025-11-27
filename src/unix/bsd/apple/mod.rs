@@ -1939,6 +1939,11 @@ pub const PROT_READ: c_int = 1;
 pub const PROT_WRITE: c_int = 2;
 pub const PROT_EXEC: c_int = 4;
 
+pub const VM_INHERIT_SHARE: c_int = 0;
+pub const VM_INHERIT_COPY: c_int = 1;
+pub const VM_INHERIT_NONE: c_int = 2;
+pub const VM_INHERIT_DONATE_COPY: c_int = 3;
+
 pub const PT_TRACE_ME: c_int = 0;
 pub const PT_READ_I: c_int = 1;
 pub const PT_READ_D: c_int = 2;
@@ -4176,6 +4181,7 @@ extern "C" {
         link_name = "mprotect$UNIX2003"
     )]
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
+    pub fn minherit(addr: *mut c_void, len: size_t, inherit: c_int) -> c_int;
     pub fn semget(key: key_t, nsems: c_int, semflg: c_int) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
