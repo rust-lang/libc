@@ -285,7 +285,7 @@ s! {
     pub struct sockaddr_storage {
         pub ss_len: c_uchar,
         pub ss_family: sa_family_t,
-        pub __ss_padding: [c_char; 122usize],
+        __ss_padding: Padding<[c_char; 122usize]>,
         pub __ss_align: __uint32_t,
     }
 
