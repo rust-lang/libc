@@ -326,7 +326,7 @@ s! {
 
     pub struct sockaddr_vm {
         pub svm_family: sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: crate::in_port_t,
         pub svm_cid: c_uint,
         pub svm_zero: [u8; 4],
@@ -895,7 +895,7 @@ s! {
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub __reserved: [c_char; 256],
+        __reserved: Padding<[c_char; 256]>,
     }
 
     pub struct sockaddr_un {
