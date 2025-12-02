@@ -119,7 +119,7 @@ s! {
     pub struct fanotify_event_metadata {
         pub event_len: c_uint,
         pub vers: c_uchar,
-        pub reserved: c_uchar,
+        reserved: Padding<c_uchar>,
         pub metadata_len: c_ushort,
         pub mask: c_ulonglong,
         pub fd: c_int,
@@ -261,7 +261,7 @@ s! {
 
     pub struct Elf64_Chdr {
         pub ch_type: crate::Elf64_Word,
-        pub ch_reserved: crate::Elf64_Word,
+        ch_reserved: Padding<crate::Elf64_Word>,
         pub ch_size: crate::Elf64_Xword,
         pub ch_addralign: crate::Elf64_Xword,
     }
@@ -413,7 +413,7 @@ s! {
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub __reserved: [c_char; 256],
+        __reserved: Padding<[c_char; 256]>,
     }
 
     pub struct utmpx {

@@ -36,8 +36,8 @@ s! {
         pub ifi_lastchange: timeval32,
         pub ifi_unused2: u32,
         pub ifi_hwassist: u32,
-        pub ifi_reserved1: u32,
-        pub ifi_reserved2: u32,
+        ifi_reserved1: Padding<u32>,
+        ifi_reserved2: Padding<u32>,
     }
 
     pub struct bpf_hdr {
