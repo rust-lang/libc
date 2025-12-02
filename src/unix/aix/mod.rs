@@ -443,7 +443,7 @@ s! {
         pub re_esub: [*mut c_void; 24],
         pub re_map: *mut c_uchar,
         pub __maxsub: c_int,
-        pub __unused: [*mut c_void; 34],
+        __unused: Padding<[*mut c_void; 34]>,
     }
 
     pub struct rlimit64 {
