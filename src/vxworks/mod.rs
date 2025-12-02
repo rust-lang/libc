@@ -580,7 +580,7 @@ s_no_extra_traits! {
         pub ss_len: c_uchar,
         pub ss_family: crate::sa_family_t,
         __ss_pad1: Padding<[c_char; _SS_PAD1SIZE]>,
-        pub __ss_align: i32,
+        __ss_align: i32,
         __ss_pad2: Padding<[c_char; _SS_PAD2SIZE]>,
     }
 
