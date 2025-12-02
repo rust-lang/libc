@@ -365,7 +365,7 @@ s! {
         pub mq_maxmsg: c_long,
         pub mq_msgsize: c_long,
         pub mq_curmsgs: c_long,
-        pad: [c_long; 4],
+        pad: Padding<[c_long; 4]>,
     }
 
     #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
