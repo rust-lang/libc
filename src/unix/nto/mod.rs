@@ -694,9 +694,9 @@ s! {
 
     pub struct sigevent {
         pub sigev_notify: c_int,
-        pub __padding1: c_int,
+        __padding1: Padding<c_int>,
         pub sigev_signo: c_int, // union
-        pub __padding2: c_int,
+        __padding2: Padding<c_int>,
         pub sigev_value: crate::sigval,
         __sigev_un2: usize, // union
     }

@@ -140,7 +140,7 @@ s! {
         pub st_nlink: crate::nlink_t,
         pub st_dev: crate::dev_t,
         pub st_mode: crate::mode_t,
-        pub st_padding1: u16,
+        st_padding1: Padding<u16>,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
