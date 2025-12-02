@@ -946,7 +946,7 @@ s! {
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         pub mq_curmsgs: i64,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
-        pad: [i64; 4],
+        pad: Padding<[i64; 4]>,
 
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pub mq_flags: c_long,
@@ -957,7 +957,7 @@ s! {
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
         pub mq_curmsgs: c_long,
         #[cfg(not(all(target_arch = "x86_64", target_pointer_width = "32")))]
-        pad: [c_long; 4],
+        pad: Padding<[c_long; 4]>,
     }
 
     pub struct sockaddr_nl {
