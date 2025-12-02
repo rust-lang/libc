@@ -520,7 +520,7 @@ s! {
         pub ssi_syscall: i32,
         pub ssi_call_addr: u64,
         pub ssi_arch: u32,
-        _pad: [u8; 28],
+        _pad: Padding<[u8; 28]>,
     }
 
     pub struct itimerspec {

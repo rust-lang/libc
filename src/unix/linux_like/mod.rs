@@ -220,9 +220,9 @@ s! {
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
         #[cfg(target_pointer_width = "32")]
-        __ss_pad2: [u8; 128 - 2 - 4],
+        __ss_pad2: Padding<[u8; 128 - 2 - 4]>,
         #[cfg(target_pointer_width = "64")]
-        __ss_pad2: [u8; 128 - 2 - 8],
+        __ss_pad2: Padding<[u8; 128 - 2 - 8]>,
         __ss_align: size_t,
     }
 
