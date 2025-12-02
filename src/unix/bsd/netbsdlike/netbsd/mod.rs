@@ -233,7 +233,7 @@ s! {
         ))]
         ptm_pad1: Padding<[u8; 3]>,
         // actually a union with a non-unused, 0-initialized field
-        ptm_unused: __pthread_spin_t,
+        ptm_unused: Padding<__pthread_spin_t>,
         #[cfg(any(
             target_arch = "sparc",
             target_arch = "sparc64",
@@ -1283,7 +1283,7 @@ cfg_if! {
             ptm_magic: 0x33330003,
             ptm_errorcheck: 0,
             ptm_pad1: Padding::uninit(),
-            ptm_unused: 0,
+            ptm_unused: Padding::uninit(),
             ptm_pad2: Padding::uninit(),
             ptm_waiters: 0 as *mut _,
             ptm_owner: 0,
@@ -1294,7 +1294,7 @@ cfg_if! {
         pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
             ptm_magic: 0x33330003,
             ptm_errorcheck: 0,
-            ptm_unused: 0,
+            ptm_unused: Padding::uninit(),
             ptm_waiters: 0 as *mut _,
             ptm_owner: 0,
             ptm_recursed: 0,

@@ -708,7 +708,7 @@ s! {
     }
 
     pub struct _IO_FILE {
-        _unused: [u8; 0],
+        _unused: Padding<[u8; 0]>,
     }
 
     pub struct sched_param {

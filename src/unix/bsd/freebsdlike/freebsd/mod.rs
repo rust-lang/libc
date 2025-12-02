@@ -1654,7 +1654,7 @@ s! {
 
 s_no_extra_traits! {
     pub union __c_anonymous_cr_pid {
-        __cr_unused: *mut c_void,
+        __cr_unused: Padding<*mut c_void>,
         pub cr_pid: crate::pid_t,
     }
 
