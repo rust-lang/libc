@@ -634,8 +634,8 @@ s! {
         pub __shpid: c_int,
         pub __type: c_int,
         pub __flags: c_int,
-        pub __reserved1: c_uint,
-        pub __reserved2: c_uint,
+        __reserved1: Padding<c_uint>,
+        __reserved2: Padding<c_uint>,
     }
 
     pub struct __pthread_condattr {
