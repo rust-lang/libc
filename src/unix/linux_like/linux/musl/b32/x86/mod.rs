@@ -6,14 +6,14 @@ pub type wchar_t = i32;
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
-        __st_dev_padding: c_int,
+        __st_dev_padding: Padding<c_int>,
         __st_ino_truncated: c_long,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        __st_rdev_padding: c_int,
+        __st_rdev_padding: Padding<c_int>,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
@@ -28,14 +28,14 @@ s! {
 
     pub struct stat64 {
         pub st_dev: crate::dev_t,
-        __st_dev_padding: c_int,
+        __st_dev_padding: Padding<c_int>,
         __st_ino_truncated: c_long,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        __st_rdev_padding: c_int,
+        __st_rdev_padding: Padding<c_int>,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
@@ -124,7 +124,7 @@ s! {
         __reserved: Padding<c_long>,
         pub st_space: [c_long; 32],
         pub xmm_space: [c_long; 32],
-        padding: [c_long; 56],
+        padding: Padding<[c_long; 56]>,
     }
 
     pub struct ucontext_t {

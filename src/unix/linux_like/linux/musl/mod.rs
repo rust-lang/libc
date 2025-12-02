@@ -230,7 +230,7 @@ s! {
         __opaque: *mut c_void,
         __padding: Padding<[*mut c_void; 4usize]>,
         __nsub2: size_t,
-        __padding2: c_char,
+        __padding2: Padding<c_char>,
     }
 
     pub struct rtentry {

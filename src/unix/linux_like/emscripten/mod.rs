@@ -223,7 +223,7 @@ s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
         #[cfg(emscripten_old_stat_abi)]
-        __st_dev_padding: c_int,
+        __st_dev_padding: Padding<c_int>,
         #[cfg(emscripten_old_stat_abi)]
         __st_ino_truncated: c_long,
         pub st_mode: mode_t,
@@ -232,7 +232,7 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         #[cfg(emscripten_old_stat_abi)]
-        __st_rdev_padding: c_int,
+        __st_rdev_padding: Padding<c_int>,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
