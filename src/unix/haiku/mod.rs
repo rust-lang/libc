@@ -292,14 +292,14 @@ s! {
     pub struct pthread_mutex_t {
         flags: u32,
         lock: i32,
-        unused: i32,
+        unused: Padding<i32>,
         owner: i32,
         owner_count: i32,
     }
 
     pub struct pthread_cond_t {
         flags: u32,
-        unused: i32,
+        unused: Padding<i32>,
         mutex: *mut c_void,
         waiter_count: i32,
         lock: i32,
@@ -1090,13 +1090,13 @@ pub const PTHREAD_STACK_MIN: size_t = 8192;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     flags: 0,
     lock: 0,
-    unused: -42,
+    unused: Padding::uninit(),
     owner: -1,
     owner_count: 0,
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     flags: 0,
-    unused: -42,
+    unused: Padding::uninit(),
     mutex: 0 as *mut _,
     waiter_count: 0,
     lock: 0,

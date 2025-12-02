@@ -549,7 +549,7 @@ s! {
         pub ut_session: c_long,
         pub ut_tv: crate::timeval,
         pub ut_addr_v6: [i32; 4],
-        unused: [c_char; 20],
+        unused: Padding<[c_char; 20]>,
     }
 
     pub struct sockaddr_alg {
