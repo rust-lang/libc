@@ -275,7 +275,7 @@ s! {
         __reserved: Padding<c_long>,
         pub st_space: [c_long; 32],
         pub xmm_space: [c_long; 32],
-        padding: [c_long; 56],
+        padding: Padding<[c_long; 56]>,
     }
 
     pub struct ucontext_t {
