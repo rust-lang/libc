@@ -615,7 +615,7 @@ s! {
         pub bs_recv: u64,
         pub bs_drop: u64,
         pub bs_capt: u64,
-        bs_padding: [u64; 13],
+        bs_padding: Padding<[u64; 13]>,
     }
 
     #[cfg(target_env = "nto71_iosock")]
