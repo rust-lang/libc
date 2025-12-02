@@ -235,7 +235,7 @@ s! {
         pub l_len: off_t,
         pub l_sysid: c_long,
         pub l_pid: crate::pid_t,
-        pad: [c_long; 4],
+        pad: Padding<[c_long; 4]>,
     }
 
     pub struct sysinfo {
