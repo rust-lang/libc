@@ -659,7 +659,7 @@ s! {
     pub struct genlmsghdr {
         pub cmd: u8,
         pub version: u8,
-        pub reserved: u16,
+        reserved: Padding<u16>,
     }
 
     pub struct in6_pktinfo {
@@ -702,7 +702,7 @@ s! {
 
     pub struct sockaddr_vm {
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
         pub svm_flags: u8,
@@ -812,7 +812,7 @@ s! {
     pub struct ptp_clock_time {
         pub sec: crate::__s64,
         pub nsec: __u32,
-        pub reserved: __u32,
+        reserved: Padding<__u32>,
     }
 
     pub struct ptp_extts_request {
@@ -1190,7 +1190,7 @@ s! {
     pub struct fanotify_event_metadata {
         pub event_len: __u32,
         pub vers: __u8,
-        pub reserved: __u8,
+        reserved: Padding<__u8>,
         pub metadata_len: __u16,
         pub mask: __u64,
         pub fd: c_int,

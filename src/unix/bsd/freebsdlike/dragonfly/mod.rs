@@ -417,14 +417,14 @@ s! {
         pub ut_line: [c_char; 32],
         pub ut_host: [c_char; 256],
 
-        pub ut_unused: [u8; 16],
+        ut_unused: Padding<[u8; 16]>,
         pub ut_session: u16,
         pub ut_type: u16,
         pub ut_pid: crate::pid_t,
         ut_exit: exit_status,
         ut_ss: crate::sockaddr_storage,
         pub ut_tv: crate::timeval,
-        pub ut_unused2: [u8; 16],
+        ut_unused2: Padding<[u8; 16]>,
     }
 
     pub struct lastlogx {
