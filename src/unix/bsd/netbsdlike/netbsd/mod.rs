@@ -359,7 +359,7 @@ s! {
     }
 
     pub struct uucred {
-        pub cr_unused: c_ushort,
+        cr_unused: Padding<c_ushort>,
         pub cr_uid: crate::uid_t,
         pub cr_gid: crate::gid_t,
         pub cr_ngroups: c_short,
