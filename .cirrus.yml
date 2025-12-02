@@ -8,21 +8,21 @@ task:
     RUST_BACKTRACE: "0"
   matrix:
     # FIXME(#4740): FreeBSD 13 tests are extremely flaky and fail most of the time
-    # - name: nightly freebsd-13 i686
-    #   # Test i686 FreeBSD in 32-bit emulation on a 64-bit host.
-    #   env:
-    #     TARGET: i686-unknown-freebsd
-    #   freebsd_instance:
-    #     image_family: freebsd-13-4
     # - name: nightly freebsd-13 x86_64
     #   freebsd_instance:
     #     image_family: freebsd-13-4
+    - name: nightly freebsd-15 i686
+      # Test i686 FreeBSD in 32-bit emulation on a 64-bit host.
+      env:
+        TARGET: i686-unknown-freebsd
+      freebsd_instance:
+        image: freebsd-15-0-release-amd64-ufs
     - name: nightly freebsd-14 x86_64
       freebsd_instance:
         image: freebsd-14-3-release-amd64-ufs
     - name: nightly freebsd-15 x86_64
       freebsd_instance:
-        image: freebsd-15-0-alpha3-amd64-ufs
+        image: freebsd-15-0-release-amd64-ufs
   setup_script:
     - pkg install -y libnghttp2 curl
     - curl https://sh.rustup.rs -sSf --output rustup.sh
