@@ -47,7 +47,10 @@ def main():
 
 if __name__ == "__main__":
     print("Starting script...")  # For debugging CI failures
-    # FIXME(ci): remove after the bump to windoes-2025 GHA images
+    print("version: ", sys.version)
+    # FIXME(ci): If the windows-2025 images update to a minimum python above 3.9,
+    # this can be removed.
+    #
     # Python <= 3.9 does not support the very helpful `root_dir` argument,
     # and that is the version used by the Windows GHA images. Rather than
     # using setup-python or doing something in the CI script, just find
@@ -55,16 +58,18 @@ if __name__ == "__main__":
     # version.
     try:
         glob("", root_dir="")
-    except TypeError:
+    except TypeError as e:
         if os.environ.get("CI") is None:
-            sys.exit(1)
+            raise e  # Just fail if we're not in CI
 
         # Find the next 3.1x Python version
         dirs = sorted(Path(r"C:\hostedtoolcache\windows\Python").iterdir())
         usepy = next(x for x in dirs if r"\3.1" in str(x))
         py = usepy.joinpath(r"x64\python.exe")
-        print(f"relaunching with {py}")
-        os.execvp(py, [__file__] + sys.argv)
+        args = [py, __file__, *sys.argv[1:]]
+        print(f"relaunching with {args}")
+        sp.run(args, check=True)
+        exit()
 
     main()
 else:
