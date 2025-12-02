@@ -112,10 +112,14 @@ git clone -n --depth=1 --filter=tree:0 -b "${alpine_version}-stable" "$alpine_gi
         echo "\$sha512sums" > alpine-sha512sums
 EOF
 
-    # Retrieve all the variables
-    sh APKBUILD.vars
+    # Use a mirror since kernel.org can be a bit inconsistent
+    sed -i 's|https://kernel.org/pub/linux/kernel|https://ci-mirrors.rust-lang.org/linux/kernel|g' \
+        APKBUILD.vars
 
     cat APKBUILD.vars
+
+    # Retrieve all the variables
+    sh APKBUILD.vars
 
     kernel_version=$(tr -d "[:space:]" < alpine-kernver)
     pkg_version=$(tr -d "[:space:]" < alpine-pkgver)
