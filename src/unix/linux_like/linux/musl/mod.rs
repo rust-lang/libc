@@ -308,7 +308,7 @@ s! {
         pub errcnt: c_long,
         pub stbcnt: c_long,
         pub tai: c_int,
-        pub __padding: [c_int; 11],
+        __padding: Padding<[c_int; 11]>,
     }
 
     pub struct ntptimeval {

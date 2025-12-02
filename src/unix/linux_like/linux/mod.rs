@@ -131,7 +131,7 @@ s! {
         pub tp_rxhash: __u32,
         pub tp_vlan_tci: __u32,
         pub tp_vlan_tpid: __u16,
-        pub tp_padding: __u16,
+        tp_padding: Padding<__u16>,
     }
 
     pub struct tpacket2_hdr {
@@ -144,7 +144,7 @@ s! {
         pub tp_nsec: __u32,
         pub tp_vlan_tci: __u16,
         pub tp_vlan_tpid: __u16,
-        pub tp_padding: [__u8; 4],
+        tp_padding: Padding<[__u8; 4]>,
     }
 
     pub struct tpacket_req {
@@ -192,7 +192,7 @@ s! {
         pub tp_mac: __u16,
         pub tp_net: __u16,
         pub hv1: crate::tpacket_hdr_variant1,
-        pub tp_padding: [__u8; 8],
+        tp_padding: Padding<[__u8; 8]>,
     }
 
     pub struct tpacket_bd_ts {
