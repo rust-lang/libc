@@ -623,9 +623,9 @@ s! {
     pub struct sockaddr_storage {
         pub ss_len: u8,
         pub ss_family: crate::sa_family_t,
-        __ss_pad1: [u8; 6],
-        __ss_pad2: i64,
-        __ss_pad3: [u8; 240],
+        __ss_pad1: Padding<[u8; 6]>,
+        __ss_pad2: Padding<i64>,
+        __ss_pad3: Padding<[u8; 240]>,
     }
 
     pub struct siginfo_t {
@@ -634,9 +634,9 @@ s! {
         pub si_errno: c_int,
         pub si_addr: *mut c_char,
         #[cfg(target_pointer_width = "32")]
-        __pad: [u8; 112],
+        __pad: Padding<[u8; 112]>,
         #[cfg(target_pointer_width = "64")]
-        __pad: [u8; 108],
+        __pad: Padding<[u8; 108]>,
     }
 
     pub struct lastlog {

@@ -45,15 +45,15 @@ s! {
 
         pub st_atime: crate::time_t,
         #[cfg(gnu_time_bits64)]
-        _atime_pad: c_int,
+        _atime_pad: Padding<c_int>,
         pub st_atime_nsec: c_long,
         pub st_mtime: crate::time_t,
         #[cfg(gnu_time_bits64)]
-        _mtime_pad: c_int,
+        _mtime_pad: Padding<c_int>,
         pub st_mtime_nsec: c_long,
         pub st_ctime: crate::time_t,
         #[cfg(gnu_time_bits64)]
-        _ctime_pad: c_int,
+        _ctime_pad: Padding<c_int>,
         pub st_ctime_nsec: c_long,
 
         #[cfg(not(gnu_time_bits64))]
@@ -98,15 +98,15 @@ s! {
 
         pub st_atime: crate::time_t,
         #[cfg(gnu_time_bits64)]
-        _atime_pad: c_int,
+        _atime_pad: Padding<c_int>,
         pub st_atime_nsec: c_long,
         pub st_mtime: crate::time_t,
         #[cfg(gnu_time_bits64)]
-        _mtime_pad: c_int,
+        _mtime_pad: Padding<c_int>,
         pub st_mtime_nsec: c_long,
         pub st_ctime: crate::time_t,
         #[cfg(gnu_time_bits64)]
-        _ctime_pad: c_int,
+        _ctime_pad: Padding<c_int>,
         pub st_ctime_nsec: c_long,
 
         #[cfg(not(gnu_time_bits64))]

@@ -417,7 +417,7 @@ s! {
         m_ceilings: [u32; 2],
         m_rb_link: crate::uintptr_t,
         #[cfg(target_pointer_width = "32")]
-        m_pad: u32,
+        m_pad: Padding<u32>,
         m_spare: [u32; 2],
     }
 
@@ -1727,7 +1727,7 @@ s_no_extra_traits! {
     }
 
     pub struct in_addr_4in6 {
-        _ia46_pad32: [u32; 3],
+        _ia46_pad32: Padding<[u32; 3]>,
         pub ia46_addr4: crate::in_addr,
     }
 
