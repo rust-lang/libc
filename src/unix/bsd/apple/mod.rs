@@ -1392,7 +1392,7 @@ s! {
         pub ifi_hdrlen: c_uchar,
         pub ifi_recvquota: c_uchar,
         pub ifi_xmitquota: c_uchar,
-        pub ifi_unused1: c_uchar,
+        ifi_unused1: Padding<c_uchar>,
         pub ifi_mtu: u32,
         pub ifi_metric: u32,
         pub ifi_baudrate: u64,
