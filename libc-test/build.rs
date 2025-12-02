@@ -1548,7 +1548,7 @@ fn test_netbsd(target: &str) {
         });
 
         cfg.skip_struct(move |struct_| match struct_.ident() {
-            "sockaddr_dl" => true, // Last field increased size in 10
+            "sockaddr_dl" if !netbsd9 => true, // Last field increased size in 10
             x if x.starts_with("ptrace_lwp") => true,
             // These were packed before NetBSD 10
             "arphdr" | "in_addr" | "ip_mreq" | "sockaddr_in" => true,
