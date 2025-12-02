@@ -53,7 +53,7 @@ s! {
         pub ss_len: u8,
         pub ss_family: crate::sa_family_t,
         __ss_pad1: Padding<[u8; 2]>,
-        pub __ss_align: i64,
+        __ss_align: i64,
         __ss_pad2: Padding<[u8; 116]>,
     }
 
