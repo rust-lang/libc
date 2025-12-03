@@ -233,7 +233,7 @@ s! {
         pub aio_buf: crate::__u64,
         pub aio_nbytes: crate::__u64,
         pub aio_offset: crate::__s64,
-        aio_reserved2: crate::__u64,
+        aio_reserved2: Padding<crate::__u64>,
         pub aio_flags: crate::__u32,
         pub aio_resfd: crate::__u32,
     }
@@ -370,7 +370,7 @@ s! {
         pub ut_tv: __timeval,
 
         pub ut_addr_v6: [i32; 4],
-        __glibc_reserved: [c_char; 20],
+        __glibc_reserved: Padding<[c_char; 20]>,
     }
 }
 
@@ -421,7 +421,7 @@ s_no_extra_traits! {
             target_pointer_width = "32"
         ))]
         __pad: Padding<[c_char; 4]>,
-        __glibc_reserved: [c_char; 32],
+        __glibc_reserved: Padding<[c_char; 32]>,
     }
 
     // Internal, for casts to access union fields

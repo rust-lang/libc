@@ -245,7 +245,7 @@ s_no_extra_traits! {
     }
 
     pub struct mcontext_t {
-        __glibc_reserved: [c_ulong; 4],
+        __glibc_reserved: Padding<[c_ulong; 4]>,
         pub signal: c_int,
         __pad0: Padding<c_int>,
         pub handler: c_ulong,

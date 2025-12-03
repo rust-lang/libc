@@ -173,7 +173,7 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_reserved: [c_int; 6],
+        __f_reserved: Padding<[c_int; 6]>,
     }
 
     pub struct statvfs64 {
@@ -193,7 +193,7 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_reserved: [c_int; 6],
+        __f_reserved: Padding<[c_int; 6]>,
     }
 
     // PowerPC implementations are special, see the subfolders

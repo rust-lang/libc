@@ -225,20 +225,20 @@ s! {
         pub msg_perm: crate::ipc_perm,
         pub msg_stime: crate::time_t,
         #[cfg(not(gnu_time_bits64))]
-        __glibc_reserved1: c_ulong,
+        __glibc_reserved1: Padding<c_ulong>,
         pub msg_rtime: crate::time_t,
         #[cfg(not(gnu_time_bits64))]
-        __glibc_reserved2: c_ulong,
+        __glibc_reserved2: Padding<c_ulong>,
         pub msg_ctime: crate::time_t,
         #[cfg(not(gnu_time_bits64))]
-        __glibc_reserved3: c_ulong,
+        __glibc_reserved3: Padding<c_ulong>,
         pub __msg_cbytes: c_ulong,
         pub msg_qnum: crate::msgqnum_t,
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
-        __glibc_reserved4: c_ulong,
-        __glibc_reserved5: c_ulong,
+        __glibc_reserved4: Padding<c_ulong>,
+        __glibc_reserved5: Padding<c_ulong>,
     }
 
     pub struct siginfo_t {
