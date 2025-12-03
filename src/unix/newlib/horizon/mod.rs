@@ -169,7 +169,7 @@ pub const EAI_OVERFLOW: c_int = 14;
 pub const EAI_MAX: c_int = 15;
 
 pub const AF_UNIX: c_int = 1;
-pub const AF_INET6: c_int = 23;
+pub const AF_INET6: crate::sa_family_t = 23;
 
 pub const FIONBIO: c_ulong = 1;
 
