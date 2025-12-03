@@ -13,8 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rsync \
     xz-utils
 
+ARG MUSL_VERSION
 COPY install-musl.sh /
-RUN /install-musl.sh aarch64
+RUN /install-musl.sh aarch64 "$MUSL_VERSION"
 
 # FIXME: shouldn't need the `-lgcc` here, shouldn't that be in std?
 ENV PATH=$PATH:/musl-aarch64/bin:/rust/bin \

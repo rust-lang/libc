@@ -10,8 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     patch \
     rsync
 
+ARG MUSL_VERSION
 COPY install-musl.sh /
-RUN /install-musl.sh s390x
+RUN /install-musl.sh s390x "$MUSL_VERSION"
 
 # FIXME: shouldn't need the `-lgcc` here, shouldn't that be in std?
 ENV CARGO_TARGET_S390X_UNKNOWN_LINUX_GNU_LINKER=s390x-linux-gnu-gcc \

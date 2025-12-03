@@ -16,8 +16,9 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         rsync \
         xz-utils
 
+ARG MUSL_VERSION
 COPY install-musl.sh /
-RUN /install-musl.sh arm
+RUN /install-musl.sh arm "$MUSL_VERSION"
 
 ENV PATH=$PATH:/musl-arm/bin:/rust/bin \
     CC_arm_unknown_linux_musleabihf=musl-gcc \
