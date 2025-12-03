@@ -21,7 +21,7 @@ fi
 # Find the most recent version matching a pattern.
 version=$(
     echo "$index" |
-    jq -er --slurp --arg pat "$pat" '
+        jq -er --slurp --arg pat "$pat" '
         map(select(.vers | test($pat)))
         | last
         | debug("version:", .)
