@@ -3650,12 +3650,12 @@ fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
             "RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS must be 64 or unset if RUST_LIBC_UNSTABLE_GNU_TIME_BITS is 64"
         );
         if timebits == "64" {
-            cfg.define("_TIME_BITS", Some("64"));
+            // cfg.define("_TIME_BITS", Some("64"));
             cfg.cfg("linux_time_bits64", None);
             cfg.cfg("gnu_time_bits64", None);
         }
         if filebits == "64" {
-            cfg.define("_FILE_OFFSET_BITS", Some("64"));
+            // cfg.define("_FILE_OFFSET_BITS", Some("64"));
             cfg.cfg("gnu_file_offset_bits64", None);
         }
     }
