@@ -10,6 +10,8 @@ set -eux
 
 target="$1"
 
+printenv
+
 # Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
 # subdir) from where the `cargo` binary in `$PATH` lives.
 default_cargo_home="$(dirname "$(dirname "$(command -v cargo)")")"

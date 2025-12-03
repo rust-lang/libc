@@ -8,6 +8,8 @@ set -eux
 old_musl=1.1.24
 new_musl=1.2.5
 
+printenv
+
 case ${1} in
     loongarch64) musl_version="$new_musl" ;;
     *)
