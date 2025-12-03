@@ -1,6 +1,7 @@
 #![deny(warnings)]
 #![allow(clippy::match_like_matches_macro)]
 
+use std::env::VarError;
 use std::fs::File;
 use std::io::{
     BufRead,
@@ -2295,7 +2296,7 @@ fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
     let mut cfg = ctest_cfg();
 
-    let freebsd_ver = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+    let freebsd_ver = if let Some(version) = env_value("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
         let vers = version.parse().unwrap();
         println!("cargo:warning=setting FreeBSD version to {vers}");
         Some(vers)
@@ -3224,8 +3225,8 @@ fn test_neutrino(target: &str) {
 
     let mut cfg = ctest_cfg();
     if target.ends_with("_iosock") {
-        let qnx_target_val = env::var("QNX_TARGET")
-            .unwrap_or_else(|_| "QNX_TARGET_not_set_please_source_qnxsdp".into());
+        let qnx_target_val = env_value("QNX_TARGET")
+            .unwrap_or_else(|| "QNX_TARGET_not_set_please_source_qnxsdp".into());
 
         cfg.include(qnx_target_val + "/usr/include/io-sock");
         headers!(
@@ -3469,8 +3470,9 @@ fn test_neutrino(target: &str) {
 }
 
 fn which_vxworks() -> Option<(u32, u32)> {
-    let version = env::var("WIND_RELEASE_ID").ok()?; // When in VxWorks setup, WIND_RELEASE_ID is
-                                                     // always set as the version of the release.
+    // When in VxWorks setup, WIND_RELEASE_ID is
+    // always set as the version of the release.
+    let version = env_value("WIND_RELEASE_ID")?;
 
     let mut pieces = version.trim().split(['.']);
 
@@ -3627,16 +3629,16 @@ fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
     {
         let defaultbits = "32".to_string();
         let (timebits, filebits) = match (
-            env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
-            env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            env_value("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
+            env_value("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
         ) {
-            (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
-            (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
-            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
-            (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
-            (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
-            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
-            (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
+            (Some(_), Some(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            (None, None) => (defaultbits.clone(), defaultbits.clone()),
+            (Some(tb), None) if tb == "64" => (tb.clone(), tb.clone()),
+            (Some(tb), None) if tb == "32" => (tb, defaultbits.clone()),
+            (Some(_), None) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
+            (None, Some(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
+            (None, Some(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
         };
         let valid_bits = ["32", "64"];
         assert!(
@@ -3692,7 +3694,7 @@ fn test_linux(target: &str) {
     let uclibc = target.contains("uclibc");
     let mips = target.contains("mips");
 
-    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
     if musl_v1_2_3 {
         assert!(musl);
     }
@@ -5606,4 +5608,23 @@ fn try_command_output(cmd: &str, args: &[&str]) -> Option<String> {
     let res = String::from_utf8(output.stdout)
         .unwrap_or_else(|e| panic!("command {cmd} returned non-UTF-8 output: {e}"));
     Some(res)
+}
+
+/// Return true if the env is set to a value other than `0`. Sets `rerun-if-changed`.
+fn env_flag(key: &str) -> bool {
+    match env_value(key) {
+        Some(x) if x == "0" => false,
+        None => false,
+        Some(_) => true,
+    }
+}
+
+/// Return the value if set. Sets `rerun-if-changed`.
+fn env_value(key: &str) -> Option<String> {
+    println!("cargo:rerun-if-env-changed={key}");
+    match env::var(key) {
+        Ok(v) => Some(v),
+        Err(VarError::NotPresent) => None,
+        Err(VarError::NotUnicode(_)) => panic!("non-unicode env value `{key}`"),
+    }
 }

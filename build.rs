@@ -65,9 +65,9 @@ fn main() {
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
-    // Allow overriding the default version for testing
-    let which_freebsd = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+    //
+    // The env allows overriding the default version for testing
+    let which_freebsd = if let Some(version) = env_value("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
         let vers = version.parse().unwrap();
         println!("cargo:warning=setting FreeBSD version to {vers}");
         vers
@@ -100,14 +100,11 @@ fn main() {
     }
 
     let musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
     // loongarch64 and ohos have already updated
     if musl_v1_2_3 || target_arch == "loongarch64" || target_env == "ohos" {
         // FIXME(musl): enable time64 api as well
         set_cfg("musl_v1_2_3");
     }
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_TIME_BITS");
     if target_env == "gnu"
         && target_os == "linux"
         && target_ptr_width == "32"
@@ -116,16 +113,16 @@ fn main() {
     {
         let defaultbits = "32".to_string();
         let (timebits, filebits) = match (
-            env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
-            env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            env_value("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
+            env_value("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
         ) {
-            (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
-            (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
-            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
-            (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
-            (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
-            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
-            (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
+            (Some(_), Some(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            (None, None) => (defaultbits.clone(), defaultbits.clone()),
+            (Some(tb), None) if tb == "64" => (tb.clone(), tb.clone()),
+            (Some(tb), None) if tb == "32" => (tb, defaultbits.clone()),
+            (Some(_), None) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
+            (None, Some(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
+            (None, Some(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
         };
         let valid_bits = ["32", "64"];
         assert!(
@@ -287,7 +284,7 @@ fn emcc_version_code() -> Option<u64> {
 /// environment, in `(minor, patch)` form. Currently the only major version supported by Rust
 /// is 7.
 fn vxworks_version_code() -> Option<(u32, u32)> {
-    let version = env::var("WIND_RELEASE_ID").ok()?;
+    let version = env_value("WIND_RELEASE_ID")?;
 
     let mut pieces = version.trim().split(['.']);
 
@@ -305,12 +302,21 @@ fn set_cfg(cfg: &str) {
     println!("cargo:rustc-cfg={cfg}");
 }
 
-/// Return true if the env is set to a value other than `0`.
+/// Return true if the env is set to a value other than `0`. Sets `rerun-if-changed`.
 fn env_flag(key: &str) -> bool {
+    match env_value(key) {
+        Some(x) if x == "0" => false,
+        None => false,
+        Some(_) => true,
+    }
+}
+
+/// Return the value if set. Sets `rerun-if-changed`.
+fn env_value(key: &str) -> Option<String> {
+    println!("cargo:rerun-if-env-changed={key}");
     match env::var(key) {
-        Ok(x) if x == "0" => false,
-        Err(VarError::NotPresent) => false,
-        Err(VarError::NotUnicode(_)) => panic!("non-unicode var for `{key}`"),
-        Ok(_) => true,
+        Ok(v) => Some(v),
+        Err(VarError::NotPresent) => None,
+        Err(VarError::NotUnicode(_)) => panic!("non-unicode env value `{key}`"),
     }
 }
