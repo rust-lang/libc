@@ -13,6 +13,8 @@ export RUSTFLAGS="${EXTRA_RUSTFLAGS:-} ${RUSTFLAGS:-}"
 
 echo "RUSTFLAGS: '$RUSTFLAGS'"
 
+export CC_ENABLE_DEBUG_OUTPUT=1
+
 # For logging
 uname -a
 
