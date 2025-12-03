@@ -1165,33 +1165,30 @@ fn test_solarish(target: &str) {
     });
 
     cfg.skip_struct_field(move |s, field| {
-        let field = field.ident();
-        match s.ident() {
+        match (s.ident(), field.ident()) {
             // C99 sizing on this is tough
-            "dirent" if field == "d_name" => true,
+            ("dirent", "d_name") => true,
             // the union/macro makes this rough
-            "sigaction" if field == "sa_sigaction" => true,
+            ("sigaction", "sa_sigaction") => true,
             // Missing in illumos
-            "sigevent" if field == "ss_sp" => true,
+            ("sigevent", "ss_sp") => true,
             // Avoid sigval union issues
-            "sigevent" if field == "sigev_value" => true,
+            ("sigevent", "sigev_value") => true,
             // const issues
-            "sigevent" if field == "sigev_notify_attributes" => true,
+            ("sigevent", "sigev_notify_attributes") => true,
 
             // Avoid const and union issues
-            "door_arg" if field == "desc_ptr" => true,
-            "door_desc_t" if field == "d_data" => true,
-            "door_arg_t" if field.ends_with("_ptr") => true,
-            "door_arg_t" if field.ends_with("rbuf") => true,
+            ("door_arg", "desc_ptr") => true,
+            ("door_desc_t", "d_data") => true,
+            ("door_arg_t", f) if f.ends_with("_ptr") => true,
+            ("door_arg_t", f) if f.ends_with("rbuf") => true,
 
             // anonymous union challenges
-            "fpregset_t" if field == "fp_reg_set" => true,
+            ("fpregset_t", "fp_reg_set") => true,
 
             // The LX brand (integrated into some illumos distros) commandeered several of the
             // `uc_filler` fields to use for brand-specific state.
-            "ucontext_t" if is_illumos && (field == "uc_filler" || field == "uc_brand_data") => {
-                true
-            }
+            ("ucontext_t", "uc_filler" | "uc_brand_data") if is_illumos => true,
 
             _ => false,
         }
@@ -1492,14 +1489,17 @@ fn test_netbsd(target: &str) {
     });
 
     cfg.skip_struct_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
-        // sighandler_t type is super weird
-        (struct_.ident() == "sigaction" && field.ident() == "sa_sigaction") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_.ident() == "sigevent" && field.ident() == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_.ident() == "aiocb" && field.ident() == "aio_buf")
+        match (struct_.ident(), field.ident()) {
+            // This is a weird union, don't check the type.
+            ("ifaddrs", "ifa_ifu") => true,
+            // sighandler_t type is super weird
+            ("sigaction", "sa_sigaction") => true,
+            // sigval is actually a union, but we pretend it's a struct
+            ("sigevent", "sigev_value") => true,
+            // aio_buf is "volatile void*" and Rust doesn't understand volatile
+            ("aiocb", "aio_buf") => true,
+            _ => false,
+        }
     });
 
     cfg.skip_struct_field(|struct_, field| {
@@ -1771,22 +1771,28 @@ fn test_dragonflybsd(target: &str) {
     });
 
     cfg.skip_struct_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
-        // sighandler_t type is super weird
-        (struct_.ident() == "sigaction" && field.ident() == "sa_sigaction") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_.ident() == "sigevent" && field.ident() == "sigev_value") ||
-        // aio_buf is "volatile void*" and Rust doesn't understand volatile
-        (struct_.ident() == "aiocb" && field.ident() == "aio_buf")
+        match (struct_.ident(), field.ident()) {
+            // This is a weird union, don't check the type.
+            ("ifaddrs", "ifa_ifu") => true,
+            // sighandler_t type is super weird
+            ("sigaction", "sa_sigaction") => true,
+            // sigval is actually a union, but we pretend it's a struct
+            ("sigevent", "sigev_value") => true,
+            // aio_buf is "volatile void*" and Rust doesn't understand volatile
+            ("aiocb", "aio_buf") => true,
+            _ => false,
+        }
     });
 
     cfg.skip_struct_field(move |struct_, field| {
-        // this is actually a union on linux, so we can't represent it well and
-        // just insert some padding.
-        (struct_.ident() == "siginfo_t" && field.ident() == "_pad") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_.ident() == "sigevent" && field.ident() == "sigev_notify_thread_id")
+        match (struct_.ident(), field.ident()) {
+            // this is actually a union on linux, so we can't represent it well and
+            // just insert some padding.
+            ("siginfo_t", "_pad") => true,
+            // sigev_notify_thread_id is actually part of a sigev_un union
+            ("sigevent", "sigev_notify_thread_id") => true,
+            _ => false,
+        }
     });
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
@@ -2059,22 +2065,20 @@ fn test_android(target: &str) {
     });
 
     cfg.rename_struct_field(move |struct_, field| {
-        match field.ident() {
+        match (struct_.ident(), field.ident()) {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => Some(s.to_string()),
+            ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
+                if f.ends_with("_nsec") =>
+            {
+                Some(f.to_string())
+            }
             // FIXME(union): appears that `epoll_event.data` is an union
-            "u64" if struct_.ident() == "epoll_event" => Some("data.u64".to_string()),
+            ("epoll_event", "u64") => Some("data.u64".to_string()),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
-            "type_"
-                if struct_.ident() == "input_event"
-                    || struct_.ident() == "input_mask"
-                    || struct_.ident() == "ff_effect" =>
-            {
-                Some("type".to_string())
-            }
+            ("input_event" | "input_mask" | "ff_effect", "type_") => Some("type".to_string()),
             _ => None,
         }
     });
@@ -2355,21 +2359,22 @@ fn test_android(target: &str) {
     });
 
     cfg.skip_struct_field_type(move |struct_, field| {
-        let struct_ = struct_.ident();
-        let field = field.ident();
-        // This is a weird union, don't check the type.
-        (struct_ == "ifaddrs" && field == "ifa_ifu") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
-        // this one is an anonymous union
-        (struct_ == "ff_effect" && field == "u") ||
-        // FIXME(android): `sa_sigaction` has type `sighandler_t` but that type is
-        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
-        (struct_ == "signalfd_siginfo" && field == "ssi_call_addr") ||
-        // FIXME(android): Seems the type has been changed on NDK r26b
-        (struct_ == "flock64" && (field == "l_start" || field == "l_len"))
+        match (struct_.ident(), field.ident()) {
+            // This is a weird union, don't check the type.
+            ("ifaddrs", "ifa_ifu") => true,
+            // sigval is actually a union, but we pretend it's a struct
+            ("sigevent", "sigev_value") => true,
+            // this one is an anonymous union
+            ("ff_effect", "u") => true,
+            // FIXME(android): `sa_sigaction` has type `sighandler_t` but that type is
+            // incorrect, see: https://github.com/rust-lang/libc/issues/1359
+            ("sigaction", "sa_sigaction") => true,
+            // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
+            ("signalfd_siginfo", "ssi_call_addr") => true,
+            // FIXME(android): Seems the type has been changed on NDK r26b
+            ("flock64", "l_start" | "l_len") => true,
+            _ => false,
+        }
     });
 
     cfg.skip_struct_field(|struct_, field| {
@@ -3314,30 +3319,35 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_struct_field_type(move |struct_, field| {
-        // This is a weird union, don't check the type.
-        (struct_.ident() == "ifaddrs" && field.ident() == "ifa_ifu") ||
-        // sighandler_t type is super weird
-        (struct_.ident() == "sigaction" && field.ident() == "sa_sigaction") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (struct_.ident() == "sigevent" && field.ident() == "sigev_value")
+        match (struct_.ident(), field.ident()) {
+            // This is a weird union, don't check the type.
+            ("ifaddrs", "ifa_ifu") => true,
+            // sighandler_t type is super weird
+            ("sigaction", "sa_sigaction") => true,
+            // sigval is actually a union, but we pretend it's a struct
+            ("sigevent", "sigev_value") => true,
+            _ => false,
+        }
     });
 
     cfg.skip_struct_field(move |struct_, field| {
-        let struct_ = struct_.ident();
-        let field = field.ident();
-        // this is actually a union on linux, so we can't represent it well and
-        // just insert some padding.
-        (struct_ == "siginfo_t" && field == "_pad") ||
-        // musl names this __dummy1 but it's still there
-        (struct_ == "glob_t" && field == "gl_flags") ||
-        // FIXME(emscripten): After musl 1.1.24, it have only one field `sched_priority`,
-        // while other fields become reserved.
-        (struct_ == "sched_param" && [
-            "sched_ss_low_priority",
-            "sched_ss_repl_period",
-            "sched_ss_init_budget",
-            "sched_ss_max_repl",
-        ].contains(&field))
+        match (struct_.ident(), field.ident()) {
+            // this is actually a union on linux, so we can't represent it well and
+            // just insert some padding.
+            ("siginfo_t", "_pad") => true,
+            // musl names this __dummy1 but it's still there
+            ("glob_t", "gl_flags") => true,
+            // FIXME(emscripten): After musl 1.1.24, it have only one field `sched_priority`,
+            // while other fields become reserved.
+            (
+                "sched_param",
+                "sched_ss_low_priority"
+                | "sched_ss_repl_period"
+                | "sched_ss_init_budget"
+                | "sched_ss_max_repl",
+            ) => true,
+            _ => false,
+        }
     });
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
@@ -4073,30 +4083,26 @@ fn test_linux(target: &str) {
     });
 
     cfg.rename_struct_field(move |struct_, field| {
-        let struct_ = struct_.ident();
-        match field.ident() {
+        match (struct_.ident(), field.ident()) {
             // Our stat *_nsec fields normally don't actually exist but are part
             // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
+            ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
+                if f.ends_with("_nsec") =>
+            {
+                Some(f.replace("e_nsec", ".tv_nsec"))
             }
+
             // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
-            "u64" if struct_ == "epoll_event" => Some("data.u64".to_string()),
+            ("epoll_event", "u64") => Some("data.u64".to_string()),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
-            "type_"
-                if struct_ == "input_event"
-                    || struct_ == "input_mask"
-                    || struct_ == "ff_effect" =>
-            {
-                Some("type".to_string())
-            }
+            ("input_event" | "input_mask" | "ff_effect", "type_") => Some("type".to_string()),
 
             // FIXME(1.0): field has a different name on loongarch
-            "uc_flags" if loongarch64 && struct_ == "ucontext_t" => Some("__uc_flags".to_string()),
+            ("ucontext_t", "uc_flags") if loongarch64 => Some("__uc_flags".to_string()),
 
             _ => None,
         }
@@ -4727,115 +4733,129 @@ fn test_linux(target: &str) {
     });
 
     cfg.skip_struct_field_type(move |union_, field| {
-        let union_ = union_.ident();
-        let field = field.ident();
-        // This is a weird union, don't check the type.
-        (union_ == "ifaddrs" && field == "ifa_ifu") ||
-        // sighandler_t type is super weird
-        (union_ == "sigaction" && field == "sa_sigaction") ||
-        // __timeval type is a patch which doesn't exist in glibc
-        (union_ == "utmpx" && field == "ut_tv") ||
-        // sigval is actually a union, but we pretend it's a struct
-        (union_ == "sigevent" && field == "sigev_value") ||
-        // this one is an anonymous union
-        (union_ == "ff_effect" && field == "u") ||
-        // `__exit_status` type is a patch which is absent in musl
-        (union_ == "utmpx" && field == "ut_exit" && musl) ||
-        // `can_addr` is an anonymous union
-        (union_ == "sockaddr_can" && field == "can_addr") ||
-        // `anonymous_1` is an anonymous union
-        (union_ == "ptp_perout_request" && field == "anonymous_1") ||
-        // `anonymous_2` is an anonymous union
-        (union_ == "ptp_perout_request" && field == "anonymous_2") ||
-        // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
-        // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
-        // the rsv field shrunk when those fields got added, so is omitted too
-        (union_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field)))
+        match (union_.ident(), field.ident()) {
+            // This is a weird union, don't check the type.
+            ("ifaddrs", "ifa_ifu") => true,
+            // sighandler_t type is super weird
+            ("sigaction", "sa_sigaction") => true,
+            // __timeval type is a patch which doesn't exist in glibc
+            ("utmpx", "ut_tv") => true,
+            // sigval is actually a union, but we pretend it's a struct
+            ("sigevent", "sigev_value") => true,
+            // this one is an anonymous union
+            ("ff_effect", "u") => true,
+            // `__exit_status` type is a patch which is absent in musl
+            ("utmpx", "ut_exit") if musl => true,
+            // `can_addr` is an anonymous union
+            ("sockaddr_can", "can_addr") => true,
+            // `anonymous_1` is an anonymous union
+            ("ptp_perout_request", "anonymous_1") => true,
+            // `anonymous_2` is an anonymous union
+            ("ptp_perout_request", "anonymous_2") => true,
+            // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
+            // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
+            // the rsv field shrunk when those fields got added, so is omitted too
+            ("ptp_clock_caps", "adjust_phase" | "max_phase_adj" | "rsv")
+                if (loongarch64 || sparc64) =>
+            {
+                true
+            }
+            _ => false,
+        }
     });
 
     cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
 
     cfg.skip_struct_field(move |struct_, field| {
-        let struct_ = struct_.ident();
-        let field = field.ident();
-        // this is actually a union on linux, so we can't represent it well and
-        // just insert some padding.
-        (struct_ == "siginfo_t" && field == "_pad") ||
-        // musl names this __dummy1 but it's still there
-        (musl && struct_ == "glob_t" && field == "gl_flags") ||
-        // musl seems to define this as an *anonymous* bitfield
-        (musl && struct_ == "statvfs" && field == "__f_unused") ||
-        // sigev_notify_thread_id is actually part of a sigev_un union
-        (struct_ == "sigevent" && field == "sigev_notify_thread_id") ||
-        // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
-        // has them yet.
-        (struct_ == "signalfd_siginfo" && (field == "ssi_addr_lsb" ||
-                                           field == "_pad2" ||
-                                           field == "ssi_syscall" ||
-                                           field == "ssi_call_addr" ||
-                                           field == "ssi_arch")) ||
-        // FIXME(musl): After musl 1.1.24, it have only one field `sched_priority`,
-        // while other fields become reserved.
-        (struct_ == "sched_param" && [
-            "sched_ss_low_priority",
-            "sched_ss_repl_period",
-            "sched_ss_init_budget",
-            "sched_ss_max_repl",
-        ].contains(&field) && musl) ||
-        // After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
-        (struct_ == "ipc_perm" && field == "__seq" && old_musl && aarch64) ||
-        // glibc uses unnamed fields here and Rust doesn't support that yet
-        (struct_ == "timex" && field.starts_with("__unused")) ||
-        // FIXME(linux): It now takes mode_t since glibc 2.31 on some targets.
-        (struct_ == "ipc_perm" && field == "mode"
-            && ((x86_64 || i686 || arm || riscv64) && gnu || x86_64_gnux32)
-        ) ||
-        // the `u` field is in fact an anonymous union
-        (gnu && struct_ == "ptrace_syscall_info" && (field == "u" || field == "pad")) ||
-        // the vregs field is a `__uint128_t` C's type.
-        (struct_ == "user_fpsimd_struct" && field == "vregs") ||
-        // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
-        // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
-        (struct_ == "sockaddr_vm" && field == "svm_zero") ||
-        // the `ifr_ifru` field is an anonymous union
-        (struct_ == "ifreq" && field == "ifr_ifru") ||
-        // the `ifc_ifcu` field is an anonymous union
-        (struct_ == "ifconf" && field == "ifc_ifcu") ||
-        // glibc uses a single array `uregs` instead of individual fields.
-        (struct_ == "user_regs" && arm) ||
-        // the `ifr_ifrn` field is an anonymous union
-        (struct_ == "iwreq" && field == "ifr_ifrn") ||
-        // the `key` field is a zero-sized array
-        (struct_ == "iw_encode_ext" && field == "key") ||
-        // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
-        (struct_ == "tcp_info" && field == "tcpi_snd_rcv_wscale") ||
-        // the `tcpi_delivery_fastopen_bitfields` map two bitfield fields stored in a u8
-        (musl && struct_ == "tcp_info" && field == "tcpi_delivery_fastopen_bitfields") ||
-        // either fsid_t or int[2] type
-        (struct_ == "fanotify_event_info_fid" && field == "fsid") ||
-        // `handle` is a flexible array member
-        (struct_ == "fanotify_event_info_fid" && field == "handle") ||
-        // `anonymous_1` is an anonymous union
-        (struct_ == "ptp_perout_request" && field == "anonymous_1") ||
-        // `anonymous_2` is an anonymous union
-        (struct_ == "ptp_perout_request" && field == "anonymous_2") ||
-        // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
-        // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
-        // the rsv field shrunk when those fields got added, so is omitted too
-        (struct_ == "ptp_clock_caps" && (loongarch64 || sparc64) && (["adjust_phase", "max_phase_adj", "rsv"].contains(&field))) ||
-        // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
-        (musl && struct_ == "mcontext_t" && field == "__extcontext" && loongarch64) ||
-        // FIXME(#4121): a new field was added from `f_spare`
-        (struct_ == "statvfs" && field == "__f_spare") ||
-        (struct_ == "statvfs64" && field == "__f_spare") ||
-        // the `xsk_tx_metadata_union` field is an anonymous union
-        (struct_ == "xsk_tx_metadata" && field == "xsk_tx_metadata_union") ||
-        // After musl 1.2.0, the type becomes `int` instead of `long`.
-        (musl && struct_ == "utmpx" && field == "ut_session") ||
-        // `frames` is a flexible array member
-        (struct_ == "bcm_msg_head" && field == "frames") ||
-        // FAM
-        (struct_ == "af_alg_iv" && field == "iv")
+        match (struct_.ident(), field.ident()) {
+            // this is actually a union on linux, so we can't represent it well and
+            // just insert some padding.
+            ("siginfo_t", "_pad") => true,
+            // musl names this __dummy1 but it's still there
+            ("glob_t", "gl_flags") if musl => true,
+            // musl seems to define this as an *anonymous* bitfield
+            ("statvfs", "__f_unused") if musl => true,
+            // sigev_notify_thread_id is actually part of a sigev_un union
+            ("sigevent", "sigev_notify_thread_id") => true,
+            // signalfd had SIGSYS fields added in Linux 4.18, but no libc release
+            // has them yet.
+            (
+                "signalfd_siginfo",
+                "ssi_addr_lsb" | "_pad2" | "ssi_syscall" | "ssi_call_addr" | "ssi_arch",
+            ) => true,
+            // FIXME(musl): After musl 1.1.24, it have only one field `sched_priority`,
+            // while other fields become reserved.
+            (
+                "sched_param",
+                "sched_ss_low_priority"
+                | "sched_ss_repl_period"
+                | "sched_ss_init_budget"
+                | "sched_ss_max_repl",
+            ) if musl => true,
+            // After musl 1.1.24, the type becomes `int` instead of `unsigned short`.
+            ("ipc_perm", "__seq") if old_musl && aarch64 => true,
+            // glibc uses unnamed fields here and Rust doesn't support that yet
+            ("timex", f) if f.starts_with("__unused") => true,
+            // // FIXME(linux): It now takes mode_t since glibc 2.31 on some targets.
+            ("ipc_perm", "mode")
+                if ((x86_64 || i686 || arm || riscv64) && gnu || x86_64_gnux32) =>
+            {
+                true
+            }
+            // the `u` field is in fact an anonymous union
+            ("ptrace_syscall_info", "u" | "pad") if gnu => true,
+            // the vregs field is a `__uint128_t` C's type.
+            ("user_fpsimd_struct", "vregs") => true,
+            // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
+            // https://github.com/torvalds/linux/commit/dc8eeef73b63ed8988224ba6b5ed19a615163a7f
+            ("sockaddr_vm", "svm_zero") => true,
+            // Linux >= 5.11 had added the svm_flags field to the `sockaddr_vm` struct.
+            ("sockaddr_vm", "svm_flags") => true,
+            // the `ifr_ifru` field is an anonymous union
+            ("ifreq", "ifr_ifru") => true,
+            // the `ifc_ifcu` field is an anonymous union
+            ("ifconf", "ifc_ifcu") => true,
+            // glibc uses a single array `uregs` instead of individual fields.
+            ("user_regs", _) if arm => true,
+            // the `ifr_ifrn` field is an anonymous union
+            ("iwreq", "ifr_ifrn") => true,
+            // the `key` field is a zero-sized array
+            ("iw_encode_ext", "key") => true,
+            // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
+            ("tcp_info", "tcpi_snd_rcv_wscale") => true,
+            // the `tcpi_delivery_fastopen_bitfields` map two bitfield fields stored in a u8
+            ("tcp_info", "tcpi_delivery_fastopen_bitfields") if musl => true,
+            // either fsid_t or int[2] type
+            ("fanotify_event_info_fid", "fsid") => true,
+            // `handle` is a flexible array member
+            ("fanotify_event_info_fid", "handle") => true,
+            // `anonymous_1` is an anonymous union
+            ("ptp_perout_request", "anonymous_1") => true,
+            // `anonymous_2` is an anonymous union
+            ("ptp_perout_request", "anonymous_2") => true,
+            // FIXME(linux): `adjust_phase` requires >= 5.7 kernel headers
+            // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
+            // the rsv field shrunk when those fields got added, so is omitted too
+            ("ptp_clock_caps", "adjust_phase" | "max_phase_adj" | "rsv")
+                if loongarch64 || sparc64 =>
+            {
+                true
+            }
+            // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
+            ("mcontext_t", "__extcontext") if musl && loongarch64 => true,
+            // FIXME(#4121): a new field was added from `f_spare`
+            ("statvfs", "__f_spare") => true,
+            ("statvfs64", "__f_spare") => true,
+            // the `xsk_tx_metadata_union` field is an anonymous union
+            ("xsk_tx_metadata", "xsk_tx_metadata_union") => true,
+            // After musl 1.2.0, the type becomes `int` instead of `long`.
+            ("utmpx", "ut_session") if musl => true,
+            // `frames` is a flexible array member
+            ("bcm_msg_head", "frames") => true,
+            // FAM
+            ("af_alg_iv", "iv") => true,
+            _ => false,
+        }
     });
 
     cfg.skip_roundtrip(move |s| match s {
