@@ -68,16 +68,24 @@ mod generated_tests {
         eprintln!("{s}");
     }
 
-    // Test that the value of the constant is the same in both Rust and C.
-    // This performs a byte by byte comparison of the constant value.
+
+/* Test that the string constant is the same in both Rust and C.
+ * While fat pointers can't be translated, we instead use * const c_char.
+ */
+
+
+/* Test that the value of the constant is the same in both Rust and C.
+ *
+ * This performs a byte by byte comparison of the constant value.
+ */
+
     pub fn ctest_const_ON() {
         type T = bool;
         extern "C" {
             fn ctest_const__ON() -> *const T;
         }
 
-        /* HACK: The slices may contain uninitialized data! We do this because
-         * there isn't a good way to recursively iterate all fields. */
+        
 
         let r_val: T = ON;
         let r_bytes = unsafe {
@@ -92,7 +100,9 @@ mod generated_tests {
         check_same_bytes(r_bytes, c_bytes, "`ON` value");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+
+/* Compare the size and alignment of the type in Rust and C, making sure they are the same. */
+
     pub fn ctest_size_align_in6_addr() {
         extern "C" {
             fn ctest_size_of__in6_addr() -> u64;
@@ -109,11 +119,14 @@ mod generated_tests {
         check_same(rust_align, c_align, "`in6_addr` align");
     }
 
-    /// Make sure that the signededness of a type alias in Rust and C is the same.
-    ///
-    /// This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
-    /// this would result in a value larger than zero. For signed types, this results in a value
-    /// smaller than 0.
+
+/* Make sure that the signededness of a type alias in Rust and C is the same.
+ *
+ * This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
+ * this would result in a value larger than zero. For signed types, this results in a value
+ * smaller than 0.
+ */
+
     pub fn ctest_signededness_in6_addr() {
         extern "C" {
             fn ctest_signededness_of__in6_addr() -> u32;
@@ -125,33 +138,37 @@ mod generated_tests {
         check_same((all_ones < all_zeros) as u32, c_is_signed, "`in6_addr` signed");
     }
 
-    /// Generates a padding map for a specific type.
-    ///
-    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
-    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
-    /// and `false` if the byte is not padding.
-    ///
-    /// For aliases we assume that there are no padding bytes, for structs and unions,
-    /// if there are no fields, then everything is padding, if there are fields, then we have to
-    /// go through each field and figure out the padding.
+
+/* Make sure that the offset and size of a field in a struct/union is the same. */
+
+
+/* Tests if the pointer to the field is the same in Rust and C. */
+
+/* Generates a padding map for a specific type.
+ *
+ * Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+ * bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
+ * and `false` if the byte is not padding.
+ *
+ * For aliases we assume that there are no padding bytes, for structs and unions,
+ * if there are no fields, then everything is padding, if there are fields, then we have to
+ * go through each field and figure out the padding.
+ */
+
     fn roundtrip_padding__in6_addr() -> Vec<bool> {
         if 0 == 0 {
-            // FIXME(ctest): What if it's an alias to a struct/union?
+            
             return vec![!true; size_of::<in6_addr>()]
         }
 
-        // If there are no fields, v and bar become unused.
+        
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
         let bar = MaybeUninit::<in6_addr>::zeroed();
         #[allow(unused_variables)]
         let bar = bar.as_ptr();
-        // This vector contains `true` if the byte is padding and `false` if the byte is not
-        // padding. Initialize all bytes as:
-        //  - padding if we have fields, this means that only the fields will be checked
-        //  - no-padding if we have a type alias: if this causes problems the type alias should
-        //    be skipped
+        
         let mut is_padding_byte = vec![true; size_of::<in6_addr>()];
         for (off, size) in &v {
             for i in 0..*size {
@@ -161,10 +178,7 @@ mod generated_tests {
         is_padding_byte
     }
 
-    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    
     pub fn ctest_roundtrip_in6_addr() {
         type U = in6_addr;
         extern "C" {
@@ -182,9 +196,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the uninitialized memory with a deterministic pattern.
-        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
-        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        
         for i in 0..SIZE {
             let c: u8 = (i % 256) as u8;
             let c = if c == 0 { 42 } else { c };
@@ -210,7 +222,7 @@ mod generated_tests {
             ctest_roundtrip__in6_addr(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
 
-        // Check that the value bytes as read from C match the byte we sent from Rust.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = unsafe { *input_ptr.add(i) };
@@ -221,7 +233,7 @@ mod generated_tests {
             }
         }
 
-        // Check that value returned from C contains the bytes we expect.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = expected[i] as usize;
@@ -235,7 +247,8 @@ mod generated_tests {
         }
     }
 
-    /// Check if the Rust and C side function pointers point to the same underlying function.
+/* Check if the Rust and C side function pointers point to the same underlying function. */
+
     pub fn ctest_foreign_fn_malloc() {
         extern "C" {
             fn ctest_foreign_fn__malloc() -> unsafe extern "C" fn();
@@ -245,7 +258,8 @@ mod generated_tests {
         check_same(actual, expected, "`malloc` function pointer");
     }
 
-    // Tests if the pointer to the static variable matches in both Rust and C.
+/* Tests if the pointer to the static variable matches in both Rust and C. */
+
     pub fn ctest_static_in6addr_any() {
         extern "C" {
             fn ctest_static__in6addr_any() -> *const in6_addr;

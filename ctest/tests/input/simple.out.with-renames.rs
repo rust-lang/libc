@@ -68,21 +68,24 @@ mod generated_tests {
         eprintln!("{s}");
     }
 
-    // Test that the string constant is the same in both Rust and C.
-    // While fat pointers can't be translated, we instead use * const c_char.
+
+/* Test that the string constant is the same in both Rust and C.
+ * While fat pointers can't be translated, we instead use * const c_char.
+ */
+
     pub fn ctest_const_cstr_A() {
         extern "C" {
             fn ctest_const_cstr__A() -> *const c_char;
         }
 
-        // SAFETY: we assume that `c_char` pointer consts are for C strings.
+        
         let r_val = unsafe {
             let r_ptr: *const c_char = A;
             assert!(!r_ptr.is_null(), "const `A` is null");
             CStr::from_ptr(r_ptr)
         };
 
-        // SAFETY: FFI call returns a valid C string.
+        
         let c_val = unsafe {
             let c_ptr: *const c_char = ctest_const_cstr__A();
             CStr::from_ptr(c_ptr)
@@ -91,21 +94,19 @@ mod generated_tests {
         check_same(r_val, c_val, "const `A` string");
     }
 
-    // Test that the string constant is the same in both Rust and C.
-    // While fat pointers can't be translated, we instead use * const c_char.
     pub fn ctest_const_cstr_B() {
         extern "C" {
             fn ctest_const_cstr__B() -> *const c_char;
         }
 
-        // SAFETY: we assume that `c_char` pointer consts are for C strings.
+        
         let r_val = unsafe {
             let r_ptr: *const c_char = B;
             assert!(!r_ptr.is_null(), "const `B` is null");
             CStr::from_ptr(r_ptr)
         };
 
-        // SAFETY: FFI call returns a valid C string.
+        
         let c_val = unsafe {
             let c_ptr: *const c_char = ctest_const_cstr__B();
             CStr::from_ptr(c_ptr)
@@ -114,16 +115,19 @@ mod generated_tests {
         check_same(r_val, c_val, "const `B` string");
     }
 
-    // Test that the value of the constant is the same in both Rust and C.
-    // This performs a byte by byte comparison of the constant value.
+
+/* Test that the value of the constant is the same in both Rust and C.
+ *
+ * This performs a byte by byte comparison of the constant value.
+ */
+
     pub fn ctest_const_RED() {
         type T = Color;
         extern "C" {
             fn ctest_const__RED() -> *const T;
         }
 
-        /* HACK: The slices may contain uninitialized data! We do this because
-         * there isn't a good way to recursively iterate all fields. */
+        
 
         let r_val: T = RED;
         let r_bytes = unsafe {
@@ -138,16 +142,13 @@ mod generated_tests {
         check_same_bytes(r_bytes, c_bytes, "`RED` value");
     }
 
-    // Test that the value of the constant is the same in both Rust and C.
-    // This performs a byte by byte comparison of the constant value.
     pub fn ctest_const_BLUE() {
         type T = Color;
         extern "C" {
             fn ctest_const__BLUE() -> *const T;
         }
 
-        /* HACK: The slices may contain uninitialized data! We do this because
-         * there isn't a good way to recursively iterate all fields. */
+        
 
         let r_val: T = BLUE;
         let r_bytes = unsafe {
@@ -162,16 +163,13 @@ mod generated_tests {
         check_same_bytes(r_bytes, c_bytes, "`BLUE` value");
     }
 
-    // Test that the value of the constant is the same in both Rust and C.
-    // This performs a byte by byte comparison of the constant value.
     pub fn ctest_const_GREEN() {
         type T = Color;
         extern "C" {
             fn ctest_const__GREEN() -> *const T;
         }
 
-        /* HACK: The slices may contain uninitialized data! We do this because
-         * there isn't a good way to recursively iterate all fields. */
+        
 
         let r_val: T = GREEN;
         let r_bytes = unsafe {
@@ -186,7 +184,9 @@ mod generated_tests {
         check_same_bytes(r_bytes, c_bytes, "`GREEN` value");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
+
+/* Compare the size and alignment of the type in Rust and C, making sure they are the same. */
+
     pub fn ctest_size_align_Byte() {
         extern "C" {
             fn ctest_size_of__Byte() -> u64;
@@ -203,7 +203,6 @@ mod generated_tests {
         check_same(rust_align, c_align, "`Byte` align");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_volatile_char() {
         extern "C" {
             fn ctest_size_of__volatile_char() -> u64;
@@ -220,7 +219,6 @@ mod generated_tests {
         check_same(rust_align, c_align, "`volatile_char` align");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_gregset_t() {
         extern "C" {
             fn ctest_size_of__gregset_t() -> u64;
@@ -237,7 +235,6 @@ mod generated_tests {
         check_same(rust_align, c_align, "`gregset_t` align");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_Color() {
         extern "C" {
             fn ctest_size_of__Color() -> u64;
@@ -254,7 +251,6 @@ mod generated_tests {
         check_same(rust_align, c_align, "`Color` align");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_Person() {
         extern "C" {
             fn ctest_size_of__Person() -> u64;
@@ -271,7 +267,6 @@ mod generated_tests {
         check_same(rust_align, c_align, "`Person` align");
     }
 
-    /// Compare the size and alignment of the type in Rust and C, making sure they are the same.
     pub fn ctest_size_align_Word() {
         extern "C" {
             fn ctest_size_of__Word() -> u64;
@@ -288,11 +283,14 @@ mod generated_tests {
         check_same(rust_align, c_align, "`Word` align");
     }
 
-    /// Make sure that the signededness of a type alias in Rust and C is the same.
-    ///
-    /// This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
-    /// this would result in a value larger than zero. For signed types, this results in a value
-    /// smaller than 0.
+
+/* Make sure that the signededness of a type alias in Rust and C is the same.
+ *
+ * This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
+ * this would result in a value larger than zero. For signed types, this results in a value
+ * smaller than 0.
+ */
+
     pub fn ctest_signededness_Byte() {
         extern "C" {
             fn ctest_signededness_of__Byte() -> u32;
@@ -304,11 +302,6 @@ mod generated_tests {
         check_same((all_ones < all_zeros) as u32, c_is_signed, "`Byte` signed");
     }
 
-    /// Make sure that the signededness of a type alias in Rust and C is the same.
-    ///
-    /// This is done by casting 0 to that type and flipping all of its bits. For unsigned types,
-    /// this would result in a value larger than zero. For signed types, this results in a value
-    /// smaller than 0.
     pub fn ctest_signededness_volatile_char() {
         extern "C" {
             fn ctest_signededness_of__volatile_char() -> u32;
@@ -320,7 +313,9 @@ mod generated_tests {
         check_same((all_ones < all_zeros) as u32, c_is_signed, "`volatile_char` signed");
     }
 
-    /// Make sure that the offset and size of a field in a struct/union is the same.
+
+/* Make sure that the offset and size of a field in a struct/union is the same. */
+
     pub fn ctest_field_size_offset_Person_name() {
         extern "C" {
             fn ctest_offset_of__Person__name() -> u64;
@@ -330,23 +325,21 @@ mod generated_tests {
         let uninit_ty = MaybeUninit::<Person>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
-        // SAFETY: we assume the field access doesn't wrap
+        
         let ty_ptr = unsafe { &raw const (*uninit_ty).name   };
-        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
-        // test should be skipped.
+        
         let val = unsafe { ty_ptr.read_unaligned() };
 
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_offset = unsafe { ctest_offset_of__Person__name() };
         check_same(offset_of!(Person, name) as u64, ctest_field_offset,
             "field offset `name` of `Person`");
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_size = unsafe { ctest_size_of__Person__name() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `name` of `Person`");
     }
 
-    /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn ctest_field_size_offset_Person_age() {
         extern "C" {
             fn ctest_offset_of__Person__age() -> u64;
@@ -356,23 +349,21 @@ mod generated_tests {
         let uninit_ty = MaybeUninit::<Person>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
-        // SAFETY: we assume the field access doesn't wrap
+        
         let ty_ptr = unsafe { &raw const (*uninit_ty).age   };
-        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
-        // test should be skipped.
+        
         let val = unsafe { ty_ptr.read_unaligned() };
 
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_offset = unsafe { ctest_offset_of__Person__age() };
         check_same(offset_of!(Person, age) as u64, ctest_field_offset,
             "field offset `age` of `Person`");
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_size = unsafe { ctest_size_of__Person__age() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `age` of `Person`");
     }
 
-    /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn ctest_field_size_offset_Person_job() {
         extern "C" {
             fn ctest_offset_of__Person__job() -> u64;
@@ -382,23 +373,21 @@ mod generated_tests {
         let uninit_ty = MaybeUninit::<Person>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
-        // SAFETY: we assume the field access doesn't wrap
+        
         let ty_ptr = unsafe { &raw const (*uninit_ty).job   };
-        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
-        // test should be skipped.
+        
         let val = unsafe { ty_ptr.read_unaligned() };
 
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_offset = unsafe { ctest_offset_of__Person__job() };
         check_same(offset_of!(Person, job) as u64, ctest_field_offset,
             "field offset `job` of `Person`");
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_size = unsafe { ctest_size_of__Person__job() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `job` of `Person`");
     }
 
-    /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn ctest_field_size_offset_Person_favorite_color() {
         extern "C" {
             fn ctest_offset_of__Person__favorite_color() -> u64;
@@ -408,23 +397,21 @@ mod generated_tests {
         let uninit_ty = MaybeUninit::<Person>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
-        // SAFETY: we assume the field access doesn't wrap
+        
         let ty_ptr = unsafe { &raw const (*uninit_ty).favorite_color   };
-        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
-        // test should be skipped.
+        
         let val = unsafe { ty_ptr.read_unaligned() };
 
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_offset = unsafe { ctest_offset_of__Person__favorite_color() };
         check_same(offset_of!(Person, favorite_color) as u64, ctest_field_offset,
             "field offset `favorite_color` of `Person`");
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_size = unsafe { ctest_size_of__Person__favorite_color() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `favorite_color` of `Person`");
     }
 
-    /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn ctest_field_size_offset_Word_word() {
         extern "C" {
             fn ctest_offset_of__Word__word() -> u64;
@@ -434,23 +421,21 @@ mod generated_tests {
         let uninit_ty = MaybeUninit::<Word>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
-        // SAFETY: we assume the field access doesn't wrap
+        
         let ty_ptr = unsafe { &raw const (*uninit_ty).word   };
-        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
-        // test should be skipped.
+        
         let val = unsafe { ty_ptr.read_unaligned() };
 
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_offset = unsafe { ctest_offset_of__Word__word() };
         check_same(offset_of!(Word, word) as u64, ctest_field_offset,
             "field offset `word` of `Word`");
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_size = unsafe { ctest_size_of__Word__word() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `word` of `Word`");
     }
 
-    /// Make sure that the offset and size of a field in a struct/union is the same.
     pub fn ctest_field_size_offset_Word_byte() {
         extern "C" {
             fn ctest_offset_of__Word__byte() -> u64;
@@ -460,23 +445,24 @@ mod generated_tests {
         let uninit_ty = MaybeUninit::<Word>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
-        // SAFETY: we assume the field access doesn't wrap
+        
         let ty_ptr = unsafe { &raw const (*uninit_ty).byte   };
-        // SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
-        // test should be skipped.
+        
         let val = unsafe { ty_ptr.read_unaligned() };
 
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_offset = unsafe { ctest_offset_of__Word__byte() };
         check_same(offset_of!(Word, byte) as u64, ctest_field_offset,
             "field offset `byte` of `Word`");
-        // SAFETY: FFI call with no preconditions
+        
         let ctest_field_size = unsafe { ctest_size_of__Word__byte() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `byte` of `Word`");
     }
 
-    /// Tests if the pointer to the field is the same in Rust and C.
+
+/* Tests if the pointer to the field is the same in Rust and C. */
+
     pub fn ctest_field_ptr_Person_name() {
         extern "C" {
             fn ctest_field_ptr__Person__name(a: *const Person) -> *mut u8;
@@ -494,7 +480,6 @@ mod generated_tests {
             "field pointer access `name` of `Person`");
     }
 
-    /// Tests if the pointer to the field is the same in Rust and C.
     pub fn ctest_field_ptr_Person_age() {
         extern "C" {
             fn ctest_field_ptr__Person__age(a: *const Person) -> *mut u8;
@@ -512,7 +497,6 @@ mod generated_tests {
             "field pointer access `age` of `Person`");
     }
 
-    /// Tests if the pointer to the field is the same in Rust and C.
     pub fn ctest_field_ptr_Person_job() {
         extern "C" {
             fn ctest_field_ptr__Person__job(a: *const Person) -> *mut u8;
@@ -530,7 +514,6 @@ mod generated_tests {
             "field pointer access `job` of `Person`");
     }
 
-    /// Tests if the pointer to the field is the same in Rust and C.
     pub fn ctest_field_ptr_Person_favorite_color() {
         extern "C" {
             fn ctest_field_ptr__Person__favorite_color(a: *const Person) -> *mut u8;
@@ -548,7 +531,6 @@ mod generated_tests {
             "field pointer access `favorite_color` of `Person`");
     }
 
-    /// Tests if the pointer to the field is the same in Rust and C.
     pub fn ctest_field_ptr_Word_word() {
         extern "C" {
             fn ctest_field_ptr__Word__word(a: *const Word) -> *mut u8;
@@ -566,7 +548,6 @@ mod generated_tests {
             "field pointer access `word` of `Word`");
     }
 
-    /// Tests if the pointer to the field is the same in Rust and C.
     pub fn ctest_field_ptr_Word_byte() {
         extern "C" {
             fn ctest_field_ptr__Word__byte(a: *const Word) -> *mut u8;
@@ -584,33 +565,31 @@ mod generated_tests {
             "field pointer access `byte` of `Word`");
     }
 
-    /// Generates a padding map for a specific type.
-    ///
-    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
-    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
-    /// and `false` if the byte is not padding.
-    ///
-    /// For aliases we assume that there are no padding bytes, for structs and unions,
-    /// if there are no fields, then everything is padding, if there are fields, then we have to
-    /// go through each field and figure out the padding.
+/* Generates a padding map for a specific type.
+ *
+ * Essentially, it returns a list of bytes, whose length is equal to the size of the type in
+ * bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
+ * and `false` if the byte is not padding.
+ *
+ * For aliases we assume that there are no padding bytes, for structs and unions,
+ * if there are no fields, then everything is padding, if there are fields, then we have to
+ * go through each field and figure out the padding.
+ */
+
     fn roundtrip_padding__Byte() -> Vec<bool> {
         if 0 == 0 {
-            // FIXME(ctest): What if it's an alias to a struct/union?
+            
             return vec![!true; size_of::<Byte>()]
         }
 
-        // If there are no fields, v and bar become unused.
+        
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
         let bar = MaybeUninit::<Byte>::zeroed();
         #[allow(unused_variables)]
         let bar = bar.as_ptr();
-        // This vector contains `true` if the byte is padding and `false` if the byte is not
-        // padding. Initialize all bytes as:
-        //  - padding if we have fields, this means that only the fields will be checked
-        //  - no-padding if we have a type alias: if this causes problems the type alias should
-        //    be skipped
+        
         let mut is_padding_byte = vec![true; size_of::<Byte>()];
         for (off, size) in &v {
             for i in 0..*size {
@@ -620,10 +599,7 @@ mod generated_tests {
         is_padding_byte
     }
 
-    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    
     pub fn ctest_roundtrip_Byte() {
         type U = Byte;
         extern "C" {
@@ -641,9 +617,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the uninitialized memory with a deterministic pattern.
-        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
-        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        
         for i in 0..SIZE {
             let c: u8 = (i % 256) as u8;
             let c = if c == 0 { 42 } else { c };
@@ -669,7 +643,7 @@ mod generated_tests {
             ctest_roundtrip__Byte(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
 
-        // Check that the value bytes as read from C match the byte we sent from Rust.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = unsafe { *input_ptr.add(i) };
@@ -680,7 +654,7 @@ mod generated_tests {
             }
         }
 
-        // Check that value returned from C contains the bytes we expect.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = expected[i] as usize;
@@ -694,33 +668,20 @@ mod generated_tests {
         }
     }
 
-    /// Generates a padding map for a specific type.
-    ///
-    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
-    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
-    /// and `false` if the byte is not padding.
-    ///
-    /// For aliases we assume that there are no padding bytes, for structs and unions,
-    /// if there are no fields, then everything is padding, if there are fields, then we have to
-    /// go through each field and figure out the padding.
     fn roundtrip_padding__volatile_char() -> Vec<bool> {
         if 0 == 0 {
-            // FIXME(ctest): What if it's an alias to a struct/union?
+            
             return vec![!true; size_of::<volatile_char>()]
         }
 
-        // If there are no fields, v and bar become unused.
+        
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
         let bar = MaybeUninit::<volatile_char>::zeroed();
         #[allow(unused_variables)]
         let bar = bar.as_ptr();
-        // This vector contains `true` if the byte is padding and `false` if the byte is not
-        // padding. Initialize all bytes as:
-        //  - padding if we have fields, this means that only the fields will be checked
-        //  - no-padding if we have a type alias: if this causes problems the type alias should
-        //    be skipped
+        
         let mut is_padding_byte = vec![true; size_of::<volatile_char>()];
         for (off, size) in &v {
             for i in 0..*size {
@@ -730,10 +691,7 @@ mod generated_tests {
         is_padding_byte
     }
 
-    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    
     pub fn ctest_roundtrip_volatile_char() {
         type U = volatile_char;
         extern "C" {
@@ -751,9 +709,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the uninitialized memory with a deterministic pattern.
-        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
-        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        
         for i in 0..SIZE {
             let c: u8 = (i % 256) as u8;
             let c = if c == 0 { 42 } else { c };
@@ -779,7 +735,7 @@ mod generated_tests {
             ctest_roundtrip__volatile_char(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
 
-        // Check that the value bytes as read from C match the byte we sent from Rust.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = unsafe { *input_ptr.add(i) };
@@ -790,7 +746,7 @@ mod generated_tests {
             }
         }
 
-        // Check that value returned from C contains the bytes we expect.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = expected[i] as usize;
@@ -804,33 +760,20 @@ mod generated_tests {
         }
     }
 
-    /// Generates a padding map for a specific type.
-    ///
-    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
-    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
-    /// and `false` if the byte is not padding.
-    ///
-    /// For aliases we assume that there are no padding bytes, for structs and unions,
-    /// if there are no fields, then everything is padding, if there are fields, then we have to
-    /// go through each field and figure out the padding.
     fn roundtrip_padding__Color() -> Vec<bool> {
         if 0 == 0 {
-            // FIXME(ctest): What if it's an alias to a struct/union?
+            
             return vec![!true; size_of::<Color>()]
         }
 
-        // If there are no fields, v and bar become unused.
+        
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
         let bar = MaybeUninit::<Color>::zeroed();
         #[allow(unused_variables)]
         let bar = bar.as_ptr();
-        // This vector contains `true` if the byte is padding and `false` if the byte is not
-        // padding. Initialize all bytes as:
-        //  - padding if we have fields, this means that only the fields will be checked
-        //  - no-padding if we have a type alias: if this causes problems the type alias should
-        //    be skipped
+        
         let mut is_padding_byte = vec![true; size_of::<Color>()];
         for (off, size) in &v {
             for i in 0..*size {
@@ -840,10 +783,7 @@ mod generated_tests {
         is_padding_byte
     }
 
-    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    
     pub fn ctest_roundtrip_Color() {
         type U = Color;
         extern "C" {
@@ -861,9 +801,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the uninitialized memory with a deterministic pattern.
-        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
-        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        
         for i in 0..SIZE {
             let c: u8 = (i % 256) as u8;
             let c = if c == 0 { 42 } else { c };
@@ -889,7 +827,7 @@ mod generated_tests {
             ctest_roundtrip__Color(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
 
-        // Check that the value bytes as read from C match the byte we sent from Rust.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = unsafe { *input_ptr.add(i) };
@@ -900,7 +838,7 @@ mod generated_tests {
             }
         }
 
-        // Check that value returned from C contains the bytes we expect.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = expected[i] as usize;
@@ -914,22 +852,13 @@ mod generated_tests {
         }
     }
 
-    /// Generates a padding map for a specific type.
-    ///
-    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
-    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
-    /// and `false` if the byte is not padding.
-    ///
-    /// For aliases we assume that there are no padding bytes, for structs and unions,
-    /// if there are no fields, then everything is padding, if there are fields, then we have to
-    /// go through each field and figure out the padding.
     fn roundtrip_padding__Person() -> Vec<bool> {
         if 4 == 0 {
-            // FIXME(ctest): What if it's an alias to a struct/union?
+            
             return vec![!false; size_of::<Person>()]
         }
 
-        // If there are no fields, v and bar become unused.
+        
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
@@ -964,11 +893,7 @@ mod generated_tests {
         let size = size_of_val(&val);
         let off = offset_of!(Person, favorite_color);
         v.push((off, size));
-        // This vector contains `true` if the byte is padding and `false` if the byte is not
-        // padding. Initialize all bytes as:
-        //  - padding if we have fields, this means that only the fields will be checked
-        //  - no-padding if we have a type alias: if this causes problems the type alias should
-        //    be skipped
+        
         let mut is_padding_byte = vec![true; size_of::<Person>()];
         for (off, size) in &v {
             for i in 0..*size {
@@ -978,10 +903,7 @@ mod generated_tests {
         is_padding_byte
     }
 
-    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    
     pub fn ctest_roundtrip_Person() {
         type U = Person;
         extern "C" {
@@ -999,9 +921,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the uninitialized memory with a deterministic pattern.
-        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
-        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        
         for i in 0..SIZE {
             let c: u8 = (i % 256) as u8;
             let c = if c == 0 { 42 } else { c };
@@ -1027,7 +947,7 @@ mod generated_tests {
             ctest_roundtrip__Person(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
 
-        // Check that the value bytes as read from C match the byte we sent from Rust.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = unsafe { *input_ptr.add(i) };
@@ -1038,7 +958,7 @@ mod generated_tests {
             }
         }
 
-        // Check that value returned from C contains the bytes we expect.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = expected[i] as usize;
@@ -1052,22 +972,13 @@ mod generated_tests {
         }
     }
 
-    /// Generates a padding map for a specific type.
-    ///
-    /// Essentially, it returns a list of bytes, whose length is equal to the size of the type in
-    /// bytes. Each element corresponds to a byte and has two values. `true` if the byte is padding,
-    /// and `false` if the byte is not padding.
-    ///
-    /// For aliases we assume that there are no padding bytes, for structs and unions,
-    /// if there are no fields, then everything is padding, if there are fields, then we have to
-    /// go through each field and figure out the padding.
     fn roundtrip_padding__Word() -> Vec<bool> {
         if 2 == 0 {
-            // FIXME(ctest): What if it's an alias to a struct/union?
+            
             return vec![!false; size_of::<Word>()]
         }
 
-        // If there are no fields, v and bar become unused.
+        
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
@@ -1088,11 +999,7 @@ mod generated_tests {
         let size = size_of_val(&val);
         let off = offset_of!(Word, byte);
         v.push((off, size));
-        // This vector contains `true` if the byte is padding and `false` if the byte is not
-        // padding. Initialize all bytes as:
-        //  - padding if we have fields, this means that only the fields will be checked
-        //  - no-padding if we have a type alias: if this causes problems the type alias should
-        //    be skipped
+        
         let mut is_padding_byte = vec![true; size_of::<Word>()];
         for (off, size) in &v {
             for i in 0..*size {
@@ -1102,10 +1009,7 @@ mod generated_tests {
         is_padding_byte
     }
 
-    /// Tests whether a type alias when passed to C and back to Rust remains unchanged.
-    ///
-    /// It checks if the size is the same as well as if the padding bytes are all in the
-    /// correct place. For this test to be sound, `T` must be valid for any bitpattern.
+    
     pub fn ctest_roundtrip_Word() {
         type U = Word;
         extern "C" {
@@ -1123,9 +1027,7 @@ mod generated_tests {
 
         let input_ptr = input.as_mut_ptr().cast::<u8>();
 
-        // Fill the uninitialized memory with a deterministic pattern.
-        // From Rust to C: every byte will be labelled from 1 to 255, with 0 turning into 42.
-        // From C to Rust: every byte will be inverted from before (254 -> 1), but 0 is still 42.
+        
         for i in 0..SIZE {
             let c: u8 = (i % 256) as u8;
             let c = if c == 0 { 42 } else { c };
@@ -1151,7 +1053,7 @@ mod generated_tests {
             ctest_roundtrip__Word(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
 
-        // Check that the value bytes as read from C match the byte we sent from Rust.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = unsafe { *input_ptr.add(i) };
@@ -1162,7 +1064,7 @@ mod generated_tests {
             }
         }
 
-        // Check that value returned from C contains the bytes we expect.
+        
         for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
             if *is_padding_byte { continue; }
             let rust = expected[i] as usize;
@@ -1176,7 +1078,8 @@ mod generated_tests {
         }
     }
 
-    /// Check if the Rust and C side function pointers point to the same underlying function.
+/* Check if the Rust and C side function pointers point to the same underlying function. */
+
     pub fn ctest_foreign_fn_calloc() {
         extern "C" {
             fn ctest_foreign_fn__calloc() -> unsafe extern "C" fn();
@@ -1186,7 +1089,8 @@ mod generated_tests {
         check_same(actual, expected, "`calloc` function pointer");
     }
 
-    // Tests if the pointer to the static variable matches in both Rust and C.
+/* Tests if the pointer to the static variable matches in both Rust and C. */
+
     pub fn ctest_static_byte() {
         extern "C" {
             fn ctest_static__byte() -> *const Byte;
