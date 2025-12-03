@@ -8,6 +8,10 @@ set -eux
 target="$1"
 
 export RUST_BACKTRACE="${RUST_BACKTRACE:-1}"
+# Add target-specific rustflags set in dockerfiles
+export RUSTFLAGS="${EXTRA_RUSTFLAGS:-} ${RUSTFLAGS:-}"
+
+echo "RUSTFLAGS: '$RUSTFLAGS'"
 
 # For logging
 uname -a

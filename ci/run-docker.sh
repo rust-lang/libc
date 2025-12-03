@@ -59,6 +59,7 @@ run() {
         --user "$(id -u)":"$(id -g)" \
         --env LIBC_CI \
         --env LIBC_CI_ZBUILD_STD \
+        --env RUSTFLAGS \
         --env RUSTDOCFLAGS \
         --env RUST_BACKTRACE \
         --env RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS \
