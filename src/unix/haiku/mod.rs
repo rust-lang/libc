@@ -495,7 +495,7 @@ s! {
         pub ut_user: [c_char; 32],
         pub ut_line: [c_char; 16],
         pub ut_host: [c_char; 128],
-        __ut_reserved: [c_char; 64],
+        __ut_reserved: Padding<[c_char; 64]>,
     }
 }
 
