@@ -24,4 +24,4 @@ ENV PATH=$PATH:/musl-arm/bin:/rust/bin \
     CC_arm_unknown_linux_musleabihf=musl-gcc \
     CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_LINKER=musl-gcc \
     CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_RUNNER="qemu-arm -L /musl-arm" \
-    RUSTFLAGS="-L /musl-arm/lib"
+    EXTRA_RUSTFLAGS="-L /musl-arm/lib"
