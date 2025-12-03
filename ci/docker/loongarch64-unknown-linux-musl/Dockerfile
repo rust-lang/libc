@@ -13,8 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rsync \
     xz-utils
 
+ARG MUSL_VERSION
 COPY install-musl.sh /
-RUN /install-musl.sh loongarch64
+RUN /install-musl.sh loongarch64 "$MUSL_VERSION"
 
 ENV CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc \
     CARGO_TARGET_LOONGARCH64_UNKNOWN_LINUX_MUSL_RUNNER="qemu-loongarch64" \
