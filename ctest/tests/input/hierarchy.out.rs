@@ -5,6 +5,9 @@
 /// inside of a module.
 mod generated_tests {
     #![allow(non_snake_case)]
+    // FIXME: rustc raises this lint on `#[non_exhaustive]` structs, even via a pointer. Once
+    // this is fixed we should deny it.
+    #![allow(improper_ctypes)]
     #![deny(improper_ctypes_definitions)]
     #[allow(unused_imports)]
     use std::ffi::{CStr, c_int, c_char, c_uint};
