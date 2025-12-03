@@ -3839,6 +3839,9 @@ fn test_linux(target: &str) {
     let mips = target.contains("mips");
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    if musl_v1_2_3 {
+        assert!(musl);
+    }
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
@@ -4850,6 +4853,8 @@ fn test_linux(target: &str) {
             ("xsk_tx_metadata", "xsk_tx_metadata_union") => true,
             // After musl 1.2.0, the type becomes `int` instead of `long`.
             ("utmpx", "ut_session") if musl => true,
+            // FIXME(musl,time): changed with the musl time updates
+            ("input_event", "time") if musl_v1_2_3 => true,
             // `frames` is a flexible array member
             ("bcm_msg_head", "frames") => true,
             // FAM
