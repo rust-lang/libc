@@ -6,11 +6,11 @@ mod t {
 
     #[test]
     fn test_kernel_version() {
-        assert_eq!(unsafe { libc::KERNEL_VERSION(6, 0, 0) }, 393216);
+        assert_eq!(libc::KERNEL_VERSION(6, 0, 0), 393216);
         // Check that the patch level saturates
-        assert_eq!(unsafe { libc::KERNEL_VERSION(6, 0, 255) }, 393471);
-        assert_eq!(unsafe { libc::KERNEL_VERSION(6, 0, 256) }, 393471);
-        assert_eq!(unsafe { libc::KERNEL_VERSION(6, 0, 300) }, 393471);
-        assert_eq!(unsafe { libc::KERNEL_VERSION(6, 0, u32::MAX) }, 393471);
+        assert_eq!(libc::KERNEL_VERSION(6, 0, 255), 393471);
+        assert_eq!(libc::KERNEL_VERSION(6, 0, 256), 393471);
+        assert_eq!(libc::KERNEL_VERSION(6, 0, 300), 393471);
+        assert_eq!(libc::KERNEL_VERSION(6, 0, u32::MAX), 393471);
     }
 }
