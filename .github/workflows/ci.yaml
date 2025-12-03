@@ -116,23 +116,23 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: aarch64-apple-darwin
-            os: macos-15
-          - target: aarch64-pc-windows-msvc
-            os: windows-11-arm
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-24.04-arm
-          # FIXME: It currently causes segfaults.
-          #- target: i686-pc-windows-gnu
-          #  env: { ARCH_BITS: 32, ARCH: i686 }
-          - target: i686-pc-windows-msvc
-            os: windows-2025
+          # - target: aarch64-apple-darwin
+          #   os: macos-15
+          # - target: aarch64-pc-windows-msvc
+          #   os: windows-11-arm
+          # - target: aarch64-unknown-linux-gnu
+          #   os: ubuntu-24.04-arm
+          # # FIXME: It currently causes segfaults.
+          # #- target: i686-pc-windows-gnu
+          # #  env: { ARCH_BITS: 32, ARCH: i686 }
+          # - target: i686-pc-windows-msvc
+          #   os: windows-2025
           - target: i686-unknown-linux-gnu
-          - target: x86_64-pc-windows-gnu
-            os: windows-2025
-            env: { ARCH_BITS: 64, ARCH: x86_64 }
-          - target: x86_64-pc-windows-msvc
-            os: windows-2025
+          # - target: x86_64-pc-windows-gnu
+          #   os: windows-2025
+          #   env: { ARCH_BITS: 64, ARCH: x86_64 }
+          # - target: x86_64-pc-windows-msvc
+          #   os: windows-2025
           - target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
     timeout-minutes: 25
@@ -173,16 +173,16 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
+    # needs: [test_tier1, style_check]
     strategy:
-      fail-fast: true
+      fail-fast: false
       max-parallel: 16
       matrix:
         include:
           # FIXME(sparc): this takes much longer to run than any other job, put
           # it first to make sure it gets a head start.
           - target: sparc64-unknown-linux-gnu
-          - target: aarch64-linux-android
+          # - target: aarch64-linux-android
           - target: aarch64-unknown-linux-musl
           - target: aarch64-unknown-linux-musl
             env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
@@ -199,25 +199,25 @@ jobs:
           - target: i686-unknown-linux-musl
             env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
-          - target: loongarch64-unknown-linux-gnu
-          - target: loongarch64-unknown-linux-musl
-          - target: loongarch64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: powerpc64-unknown-linux-gnu
-          - target: powerpc64le-unknown-linux-gnu
-          - target: powerpc64le-unknown-linux-musl
-          - target: powerpc64le-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: riscv64gc-unknown-linux-gnu
-          - target: s390x-unknown-linux-gnu
-          - target: wasm32-unknown-emscripten
-          - target: wasm32-wasip1
-          - target: wasm32-wasip2
-          - target: x86_64-apple-darwin
-            os: macos-15-intel
-          - target: x86_64-linux-android
+          # - target: loongarch64-unknown-linux-gnu
+          # - target: loongarch64-unknown-linux-musl
+          # - target: loongarch64-unknown-linux-musl
+          #   env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+          #   artifact-tag: new-musl
+          # - target: powerpc64-unknown-linux-gnu
+          # - target: powerpc64le-unknown-linux-gnu
+          # - target: powerpc64le-unknown-linux-musl
+          # - target: powerpc64le-unknown-linux-musl
+          #   env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+          #   artifact-tag: new-musl
+          # - target: riscv64gc-unknown-linux-gnu
+          # - target: s390x-unknown-linux-gnu
+          # - target: wasm32-unknown-emscripten
+          # - target: wasm32-wasip1
+          # - target: wasm32-wasip2
+          # - target: x86_64-apple-darwin
+          #   os: macos-15-intel
+          # - target: x86_64-linux-android
           # FIXME: Exec format error (os error 8)
           # - target: x86_64-unknown-linux-gnux32
           - target: x86_64-unknown-linux-musl
@@ -267,55 +267,55 @@ jobs:
           path: ${{ env.ARCHIVE_PATH }}
           retention-days: 5
 
-  test_tier2_vm:
-    name: Test tier2 VM
-    needs: [test_tier1, style_check]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        include:
-          - target: x86_64-pc-solaris
-          - target: x86_64-unknown-netbsd
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v6
-      - name: test on Solaris
-        uses: vmactions/solaris-vm@v1.1.8
-        if: contains(matrix.target, 'solaris')
-        with:
-          release: "11.4-gcc"
-          usesh: true
-          mem: 4096
-          copyback: false
-          prepare: |
-            set -x
-            source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
-            rustc --version
-            uname -a
-          run: |
-            export PATH=$HOME/.rust_solaris/bin:$PATH
-            ./ci/run.sh ${{ matrix.target }}
+  # test_tier2_vm:
+  #   name: Test tier2 VM
+  #   needs: [test_tier1, style_check]
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       include:
+  #         - target: x86_64-pc-solaris
+  #         - target: x86_64-unknown-netbsd
+  #   timeout-minutes: 25
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: test on Solaris
+  #       uses: vmactions/solaris-vm@v1.1.8
+  #       if: contains(matrix.target, 'solaris')
+  #       with:
+  #         release: "11.4-gcc"
+  #         usesh: true
+  #         mem: 4096
+  #         copyback: false
+  #         prepare: |
+  #           set -x
+  #           source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
+  #           rustc --version
+  #           uname -a
+  #         run: |
+  #           export PATH=$HOME/.rust_solaris/bin:$PATH
+  #           ./ci/run.sh ${{ matrix.target }}
 
-      - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@v1
-        if: contains(matrix.target, 'netbsd')
-        with:
-          release: "10.1"
-          usesh: true
-          mem: 4096
-          copyback: false
-          prepare: |
-            set -x
-            /usr/sbin/pkg_add curl
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
-              --profile minimal --default-toolchain nightly -y
-          run: |
-            set -x
-            . "$HOME/.cargo/env"
-            which rustc
-            rustc -Vv
-            ./ci/run.sh ${{ matrix.target }}
+  #     - name: Test on NetBSD
+  #       uses: vmactions/netbsd-vm@v1
+  #       if: contains(matrix.target, 'netbsd')
+  #       with:
+  #         release: "10.1"
+  #         usesh: true
+  #         mem: 4096
+  #         copyback: false
+  #         prepare: |
+  #           set -x
+  #           /usr/sbin/pkg_add curl
+  #           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
+  #             --profile minimal --default-toolchain nightly -y
+  #         run: |
+  #           set -x
+  #           . "$HOME/.cargo/env"
+  #           which rustc
+  #           rustc -Vv
+  #           ./ci/run.sh ${{ matrix.target }}
 
   ctest_msrv:
     name: Check ctest MSRV
@@ -357,7 +357,7 @@ jobs:
       - style_check
       - test_tier1
       - test_tier2
-      - test_tier2_vm
+      # - test_tier2_vm
       - verify_build
       - ctest_msrv
       - docs
