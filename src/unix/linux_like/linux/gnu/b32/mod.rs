@@ -117,9 +117,9 @@ cfg_if! {
                 _ctime_pad: Padding<c_int>,
 
                 #[cfg(not(gnu_file_offset_bits64))]
-                __glibc_reserved4: c_long,
+                __glibc_reserved4: Padding<c_long>,
                 #[cfg(not(gnu_file_offset_bits64))]
-                __glibc_reserved5: c_long,
+                __glibc_reserved5: Padding<c_long>,
                 #[cfg(all(not(gnu_time_bits64), gnu_file_offset_bits64))]
                 pub st_ino: crate::ino_t,
             }
@@ -207,8 +207,8 @@ s! {
             ))
         ))]
         __reserved2: Padding<crate::__syscall_ulong_t>,
-        __glibc_reserved3: crate::__syscall_ulong_t,
-        __glibc_reserved4: crate::__syscall_ulong_t,
+        __glibc_reserved3: Padding<crate::__syscall_ulong_t>,
+        __glibc_reserved4: Padding<crate::__syscall_ulong_t>,
     }
 
     #[cfg(gnu_time_bits64)]

@@ -158,7 +158,7 @@ s! {
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
         #[cfg(target_pointer_width = "64")]
-        __f_reserved: [u32; 6],
+        __f_reserved: Padding<[u32; 6]>,
     }
 
     pub struct signalfd_siginfo {
