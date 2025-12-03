@@ -59,9 +59,13 @@ run() {
         --user "$(id -u)":"$(id -g)" \
         --env LIBC_CI \
         --env LIBC_CI_ZBUILD_STD \
+        --env RUSTDOCFLAGS \
+        --env RUST_BACKTRACE \
         --env RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS \
         --env RUST_LIBC_UNSTABLE_GNU_TIME_BITS \
         --env RUST_LIBC_UNSTABLE_MUSL_V1_2_3 \
+        --env CARGO_TERM_COLOR \
+        --env CARGO_TERM_VERBOSE \
         --env CARGO_HOME=/cargo \
         --env CARGO_TARGET_DIR=/checkout/target \
         --volume "$CARGO_HOME":/cargo \
