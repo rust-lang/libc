@@ -1,3 +1,4 @@
+use std::env::VarError;
 use std::process::{
     Command,
     Output,
@@ -53,7 +54,7 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
-    let libc_ci = env::var("LIBC_CI").is_ok();
+    let libc_ci = env_flag("LIBC_CI");
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
     let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
@@ -98,14 +99,14 @@ fn main() {
         _ => (),
     }
 
-    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
     // loongarch64 and ohos have already updated
     if musl_v1_2_3 || target_arch == "loongarch64" || target_env == "ohos" {
         // FIXME(musl): enable time64 api as well
         set_cfg("musl_v1_2_3");
     }
-    let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
+    let linux_time_bits64 = env_flag("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {
         set_cfg("linux_time_bits64");
@@ -307,4 +308,14 @@ fn set_cfg(cfg: &str) {
         "trying to set cfg {cfg}, but it is not in ALLOWED_CFGS",
     );
     println!("cargo:rustc-cfg={cfg}");
+}
+
+/// Return true if the env is set to a value other than `0`.
+fn env_flag(key: &str) -> bool {
+    match env::var(key) {
+        Ok(x) if x == "0" => false,
+        Err(VarError::NotPresent) => false,
+        Err(VarError::NotUnicode(_)) => panic!("non-unicode var for `{key}`"),
+        Ok(_) => true,
+    }
 }
