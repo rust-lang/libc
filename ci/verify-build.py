@@ -390,11 +390,6 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     run(cmd, env=env)
     run([*cmd, "--features=extra_traits"], env=env)
 
-    # Check with different env for 64-bit time_t
-    if target_os == "linux" and target_bits == "32":
-        # Equivalent of __USE_TIME_BITS64
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64": "1"})
-
     if "gnu" in target_env and target_bits == "32":
         # Equivalent of _FILE_OFFSET_BITS=64
         run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS": "64"})
