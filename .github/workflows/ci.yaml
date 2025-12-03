@@ -114,6 +114,7 @@ jobs:
   test_tier1:
     name: Test tier1
     strategy:
+      fail-fast: false
       matrix:
         include:
           - target: aarch64-apple-darwin
@@ -163,7 +164,7 @@ jobs:
       - name: Create CI artifacts
         id: create_artifacts
         if: always()
-        run: echo "step is actually running" && python3 ci/create-artifacts.py
+        run: echo "step is actually running" && python3.10 ci/create-artifacts.py
       - uses: actions/upload-artifact@v5
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
