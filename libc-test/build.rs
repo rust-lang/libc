@@ -3972,9 +3972,9 @@ fn test_linux(target: &str) {
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
+            // of a timeval struct - this is fixed in musl_v1_2_3
             ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if f.ends_with("_nsec") =>
+                if !musl_v1_2_3 && f.ends_with("_nsec") =>
             {
                 Some(f.replace("e_nsec", ".tv_nsec"))
             }
