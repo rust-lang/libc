@@ -5479,13 +5479,23 @@ fn test_aix(target: &str) {
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
-            // '__poll_ctl_ext_u' and '__pollfd_ext_u' are for unnamed unions.
-            "__poll_ctl_ext_u" => true,
-            "__pollfd_ext_u" => true,
-
             // 'struct fpreg_t' is not defined in AIX headers. It is created to
             // allow type 'double' to be used in signal contexts.
             "fpreg_t" => true,
+
+            // These structures are guarded by the `_KERNEL` macro in the AIX
+            // header.
+            "fileops_t" | "file" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_union(|union_| {
+        match union_.ident() {
+            // '__poll_ctl_ext_u' and '__pollfd_ext_u' are for unnamed unions.
+            "__poll_ctl_ext_u" => true,
+            "__pollfd_ext_u" => true,
 
             // This type is defined for a union used within `struct ld_info`.
             // The AIX header does not declare a separate standalone union
@@ -5494,10 +5504,6 @@ fn test_aix(target: &str) {
 
             // This is a simplified version of the AIX union `_simple_lock`.
             "_kernel_simple_lock" => true,
-
-            // These structures are guarded by the `_KERNEL` macro in the AIX
-            // header.
-            "fileops_t" | "file" => true,
 
             _ => false,
         }
@@ -5624,6 +5630,9 @@ fn test_aix(target: &str) {
         ("aiocb", "aio_buf") => true,
         _ => false,
     });
+
+    let c_enums = ["uio_rw"];
+    cfg.alias_is_c_enum(move |e| c_enums.contains(&e));
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
