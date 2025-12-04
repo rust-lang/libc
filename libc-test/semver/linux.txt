@@ -4264,6 +4264,12 @@ regmatch_t
 regoff_t
 remap_file_pages
 removexattr
+res_init
+res_mkquery
+res_query
+res_querydomain
+res_search
+res_send
 rlim64_t
 rlimit64
 rtentry
