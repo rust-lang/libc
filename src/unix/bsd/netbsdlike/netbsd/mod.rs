@@ -1111,6 +1111,13 @@ pub const MAP_ALIGNMENT_64PB: c_int = 56 << MAP_ALIGNMENT_SHIFT;
 // mremap flag
 pub const MAP_REMAPDUP: c_int = 0x004;
 
+// minherit syscall inherit values
+pub const MAP_INHERIT_SHARE: c_int = 0;
+pub const MAP_INHERIT_COPY: c_int = 1;
+pub const MAP_INHERIT_NONE: c_int = 2;
+pub const MAP_INHERIT_DONATE_COPY: c_int = 3;
+pub const MAP_INHERIT_ZERO: c_int = 4;
+
 pub const DCCP_TYPE_REQUEST: c_int = 0;
 pub const DCCP_TYPE_RESPONSE: c_int = 1;
 pub const DCCP_TYPE_DATA: c_int = 2;
