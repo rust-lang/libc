@@ -4893,8 +4893,6 @@ fn test_linux(target: &str) {
             ("xsk_tx_metadata", "xsk_tx_metadata_union") => true,
             // After musl 1.2.0, the type becomes `int` instead of `long`.
             ("utmpx", "ut_session") if musl => true,
-            // FIXME(musl,time): changed with the musl time updates
-            ("input_event", "time") if musl_v1_2_3 => true,
             // `frames` is a flexible array member
             ("bcm_msg_head", "frames") => true,
             // FAM
