@@ -3064,17 +3064,6 @@ fn test_emscripten(target: &str) {
         }
     });
 
-    cfg.rename_struct_field(move |struct_, field| {
-        match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
-            _ => None,
-        }
-    });
-
     cfg.skip_alias(move |ty| {
         match ty.ident() {
             // sighandler_t is crazy across platforms
