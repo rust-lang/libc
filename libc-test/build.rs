@@ -4486,6 +4486,9 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.9 kernel headers.
             "AT_HWCAP3" | "AT_HWCAP4" => true,
 
+            // Linux 6.14
+            "AT_EXECVE_CHECK" => true,
+
             _ => false,
         }
     });
