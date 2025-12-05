@@ -877,7 +877,7 @@ pub const MS_SYNC: c_int = 2;
 pub const SCM_RIGHTS: c_int = 0x01;
 pub const SCM_TIMESTAMP: c_int = 0x02;
 cfg_if! {
-    if #[cfg(not(target_env = "nto71_iosock"))] {
+    if #[cfg(not(any(target_env = "nto71_iosock", target_env = "nto80")))] {
         pub const SCM_CREDS: c_int = 0x04;
         pub const IFF_NOTRAILERS: c_int = 0x00000020;
         pub const AF_INET6: c_int = 24;
