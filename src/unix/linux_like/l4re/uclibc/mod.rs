@@ -225,57 +225,57 @@ s! {
     }
 
     pub struct _pthread_fastlock {
-        pub __status: c_long,
-        pub __spinlock: c_int,
+        __status: c_long,
+        __spinlock: c_int,
     }
 
     pub struct pthread_cond_t {
-        pub __c_lock: _pthread_fastlock,
-        pub __c_waiting: _pthread_descr,
-        pub __padding: [u8; PTHREAD_COND_PADDING_SIZE],
-        pub __align: __pthread_cond_align_t,
+        __c_lock: _pthread_fastlock,
+        __c_waiting: _pthread_descr,
+        __padding: [u8; PTHREAD_COND_PADDING_SIZE],
+        __align: __pthread_cond_align_t,
     }
 
     pub struct pthread_condattr_t {
-        pub __dummy: c_int,
+        __dummy: c_int,
     }
 
     pub struct pthread_mutex_t {
-        pub __m_reserved: c_int,
-        pub __m_count: c_int,
-        pub __m_owner: _pthread_descr,
-        pub __m_kind: c_int,
-        pub __m_lock: _pthread_fastlock,
+        __m_reserved: c_int,
+        __m_count: c_int,
+        __m_owner: _pthread_descr,
+        __m_kind: c_int,
+        __m_lock: _pthread_fastlock,
     }
 
     pub struct pthread_mutexattr_t {
-        pub __mutexkind: c_int,
+        __mutexkind: c_int,
     }
 
     pub struct pthread_rwlock_t {
-        pub __rw_lock: _pthread_fastlock,
-        pub __rw_readers: c_int,
-        pub __rw_writer: _pthread_descr,
-        pub __rw_read_waiting: _pthread_descr,
-        pub __rw_write_waiting: _pthread_descr,
-        pub __rw_kind: c_int,
-        pub __rw_pshared: c_int,
+        __rw_lock: _pthread_fastlock,
+        __rw_readers: c_int,
+        __rw_writer: _pthread_descr,
+        __rw_read_waiting: _pthread_descr,
+        __rw_write_waiting: _pthread_descr,
+        __rw_kind: c_int,
+        __rw_pshared: c_int,
     }
 
     pub struct pthread_rwlockattr_t {
-        pub __lockkind: c_int,
-        pub __pshared: c_int,
+        __lockkind: c_int,
+        __pshared: c_int,
     }
 
     pub struct pthread_barrier_t {
-        pub __ba_lock: _pthread_fastlock,
-        pub __ba_required: c_int,
-        pub __ba_present: c_int,
-        pub __ba_waiting: _pthread_descr,
+        __ba_lock: _pthread_fastlock,
+        __ba_required: c_int,
+        __ba_present: c_int,
+        __ba_waiting: _pthread_descr,
     }
 
     pub struct pthread_barrierattr_t {
-        pub __pshared: c_int,
+        __pshared: c_int,
     }
 }
 
