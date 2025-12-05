@@ -1461,6 +1461,15 @@ const SI_PAD: size_t = (SI_MAXSZ / size_of::<c_int>()) - 3;
 pub const MAP_STACK: c_int = 0x4000;
 pub const MAP_CONCEAL: c_int = 0x8000;
 
+// https://github.com/openbsd/src/blob/f8a2f73b6503213f5eb24ca315ac7e1f9421c0c9/sys/net/if.h#L135
+pub const LINK_STATE_UNKNOWN: c_int = 0; // link unknown
+pub const LINK_STATE_INVALID: c_int = 1; // link invalid
+pub const LINK_STATE_DOWN: c_int = 2; // link is down
+pub const LINK_STATE_KALIVE_DOWN: c_int = 3; // keepalive reports down
+pub const LINK_STATE_UP: c_int = 4; // link is up
+pub const LINK_STATE_HALF_DUPLEX: c_int = 5; // link is up and half duplex
+pub const LINK_STATE_FULL_DUPLEX: c_int = 6; // link is up and full duplex
+
 // https://github.com/openbsd/src/blob/HEAD/sys/net/if.h#L187
 pub const IFF_UP: c_int = 0x1; // interface is up
 pub const IFF_BROADCAST: c_int = 0x2; // broadcast address valid
