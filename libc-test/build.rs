@@ -5262,17 +5262,6 @@ fn test_haiku(target: &str) {
 
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // FIXME(time): the stat struct actually has timespec members, whereas
-            //        the current representation has these unpacked.
-            ("stat", "st_atime") => true,
-            ("stat", "st_atime_nsec") => true,
-            ("stat", "st_mtime") => true,
-            ("stat", "st_mtime_nsec") => true,
-            ("stat", "st_ctime") => true,
-            ("stat", "st_ctime_nsec") => true,
-            ("stat", "st_crtime") => true,
-            ("stat", "st_crtime_nsec") => true,
-
             // these are actually unions, but we cannot represent it well
             ("sem_t", "named_sem_id") => true,
             ("sigaction", "sa_sigaction") => true,
