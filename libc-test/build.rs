@@ -694,12 +694,6 @@ fn test_cygwin(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
-
             // FIXME(cygwin): sigaction actually contains a union with two variants:
             // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
             // a sa_handler with type sig_t
