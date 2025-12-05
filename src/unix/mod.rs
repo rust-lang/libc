@@ -142,7 +142,7 @@ s! {
         pub ipv6mr_interface: c_uint,
     }
 
-    #[cfg(not(target_os = "cygwin"))]
+    #[cfg(all(not(target_os = "cygwin"), not(target_os = "horizon")))]
     pub struct hostent {
         pub h_name: *mut c_char,
         pub h_aliases: *mut *mut c_char,
@@ -156,6 +156,7 @@ s! {
         pub iov_len: size_t,
     }
 
+    #[cfg(not(target_os = "horizon"))]
     pub struct pollfd {
         pub fd: c_int,
         pub events: c_short,
