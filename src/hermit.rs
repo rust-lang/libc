@@ -115,8 +115,8 @@ s! {
 }
 
 pub const AF_UNSPEC: i32 = 0;
-pub const AF_INET: i32 = 3;
-pub const AF_INET6: i32 = 1;
+pub const AF_INET: sa_family_t = 3;
+pub const AF_INET6: sa_family_t = 1;
 pub const AF_VSOCK: i32 = 2;
 
 pub const CLOCK_REALTIME: clockid_t = 1;
