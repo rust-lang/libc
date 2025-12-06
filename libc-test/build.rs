@@ -1609,11 +1609,6 @@ fn test_dragonflybsd(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
             "type_" if struct_.ident() == "rtprio" => Some("type".to_string()),
