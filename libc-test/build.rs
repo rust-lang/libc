@@ -3933,14 +3933,6 @@ fn test_linux(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct - this is fixed in musl_v1_2_3
-            ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if !musl_v1_2_3 && f.ends_with("_nsec") =>
-            {
-                Some(f.replace("e_nsec", ".tv_nsec"))
-            }
-
             // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
