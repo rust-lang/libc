@@ -1307,17 +1307,6 @@ fn test_netbsd(target: &str) {
         _ => None,
     });
 
-    cfg.rename_struct_field(move |struct_, field| {
-        match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
-            _ => None,
-        }
-    });
-
     cfg.alias_is_c_enum(|ty| ty == "fae_action");
 
     cfg.skip_alias(move |ty| {
