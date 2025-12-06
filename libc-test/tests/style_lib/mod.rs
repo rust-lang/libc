@@ -51,6 +51,12 @@ use syn::visit::{
 use syn::Token;
 
 const ALLOWED_REPEATED_MACROS: &[&str] = &["s", "s_no_extra_traits", "s_paren"];
+const ALLOWED_POSITIVE_S_CFGS: &[&str] = &[
+    "gnu_file_offset_bits64",
+    "gnu_time_bits64",
+    "musl32_time64",
+    "musl_v1_2_3",
+];
 
 pub type Error = Box<dyn std::error::Error>;
 pub type Result<T> = std::result::Result<T, Error>;
@@ -236,25 +242,6 @@ impl StyleChecker {
         self.state = initial_state;
     }
 
-    /// If we see a normal s! macro without any attributes we just need
-    /// to check if there are any duplicates.
-    fn handle_s_macro_no_attrs(&mut self, item_macro: &syn::ItemMacro) {
-        let span = item_macro.span();
-        match self.seen_s_macro_cfgs.get("") {
-            Some(seen_span) => {
-                self.error(
-                    "duplicate s! macro".to_string(),
-                    span,
-                    format!("other s! macro"),
-                    (Some(*seen_span), "combine the two".to_string()),
-                );
-            }
-            None => {
-                self.seen_s_macro_cfgs.insert(String::new(), span);
-            }
-        }
-    }
-
     /// If an s! macro has attributes we check for any duplicates as well
     /// as if they are standalone positive cfgs that would be better
     /// in a separate file.
@@ -285,6 +272,8 @@ impl StyleChecker {
                 if !meta_str.starts_with("not")
                     && !meta_str.starts_with("any")
                     && !meta_str.starts_with("all")
+                    && !meta_str.starts_with("target_endian")
+                    && !ALLOWED_POSITIVE_S_CFGS.contains(&meta_str.as_str())
                 {
                     self.error(
                         "positive #[cfg] for s! macro".to_string(),
@@ -359,9 +348,7 @@ impl<'ast> Visit<'ast> for StyleChecker {
     /// instead of [syn::Macro] because it contains the attributes.
     fn visit_item_macro(&mut self, item_macro: &'ast syn::ItemMacro) {
         if item_macro.mac.path.is_ident("s") {
-            if item_macro.attrs.is_empty() {
-                self.handle_s_macro_no_attrs(item_macro);
-            } else {
+            if !item_macro.attrs.is_empty() {
                 self.handle_s_macro_with_attrs(item_macro);
             }
         }

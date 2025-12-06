@@ -155,19 +155,6 @@ s! { pub struct bar { /* ... */ } }
 }
 
 #[test]
-fn check_style_reject_duplicated_s_macro() {
-    let contents = r#"
-s! {}
-s! {}
-"#
-    .to_string();
-
-    let mut checker = StyleChecker::new();
-    checker.check_string(contents).unwrap();
-    assert!(checker.finalize().is_err());
-}
-
-#[test]
 fn check_style_reject_duplicated_s_macro_cfg() {
     let contents = r#"
 #[cfg(not(target_arch = "foo"))]
