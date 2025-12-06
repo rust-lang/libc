@@ -2471,11 +2471,6 @@ fn test_freebsd(target: &str) {
     cfg.rename_struct_field(|struct_, field_| {
         let struct_ = struct_.ident();
         let replacement = match field_.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
-            }
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
             "type_" if struct_ == "rtprio" => "type".to_string(),
