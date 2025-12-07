@@ -106,6 +106,153 @@ cfg_if! {
     }
 }
 
+// Structures based on QuRT headers
+
+s! {
+    pub struct timespec {
+        pub tv_sec: time_t,
+        pub tv_nsec: c_long,
+    }
+
+    pub struct timeval {
+        pub tv_sec: time_t,
+        pub tv_usec: suseconds_t,
+    }
+
+    pub struct sigval {
+        pub sival_int: c_int,
+        pub sival_ptr: *mut c_void,
+    }
+
+    pub struct sigevent {
+        pub sigev_notify: c_int,
+        pub sigev_signo: c_int,
+        pub sigev_value: sigval,
+        pub sigev_notify_function: Option<extern "C" fn(sigval)>,
+        pub sigev_notify_attributes: *mut pthread_attr_t,
+    }
+
+    pub struct siginfo_t {
+        pub si_signo: c_int,
+        pub si_code: c_int,
+        pub si_value: sigval,
+    }
+
+    pub struct sigaction {
+        pub sa_handler: Option<extern "C" fn(c_int)>,
+        pub sa_mask: sigset_t,
+        pub sa_flags: c_int,
+        pub sa_sigaction: Option<extern "C" fn(c_int, *mut siginfo_t, *mut c_void)>,
+    }
+
+    pub struct pthread_attr_t {
+        pub stackaddr: *mut c_void,
+        pub internal_stack: c_int,
+        pub stacksize: size_t,
+        pub priority: c_int,
+        pub timetest_id: c_ushort,
+        pub autostack: c_ushort,
+        pub bus_priority: c_ushort,
+        pub reserved: c_ushort,
+        pub cpumask: c_uint,
+        pub name: [c_char; 16],
+        pub ext_context: c_int,
+        pub detachstate: c_int,
+    }
+
+    pub struct pthread_mutexattr_t {
+        pub is_initialized: c_int,
+        pub type_: c_int,
+        pub pshared: c_int,
+        pub protocol: c_int,
+    }
+
+    pub struct pthread_condattr_t {
+        pub is_initialized: c_int,
+        pub pshared: c_int,
+        pub clock_id: clockid_t,
+    }
+
+    pub struct pthread_barrierattr_t {
+        pub is_initialized: c_int,
+        pub pshared: c_int,
+    }
+
+    pub struct itimerspec {
+        pub it_interval: timespec,
+        pub it_value: timespec,
+    }
+
+    pub struct termios {
+        pub c_iflag: tcflag_t,
+        pub c_oflag: tcflag_t,
+        pub c_cflag: tcflag_t,
+        pub c_lflag: tcflag_t,
+        pub c_cc: [c_uchar; 32],
+        pub c_ispeed: speed_t,
+        pub c_ospeed: speed_t,
+    }
+
+    pub struct dirent {
+        pub d_ino: ino_t,
+        pub d_type: c_uchar,
+        pub d_name: [c_char; 256],
+    }
+
+    pub struct tm {
+        pub tm_sec: c_int,
+        pub tm_min: c_int,
+        pub tm_hour: c_int,
+        pub tm_mday: c_int,
+        pub tm_mon: c_int,
+        pub tm_year: c_int,
+        pub tm_wday: c_int,
+        pub tm_yday: c_int,
+        pub tm_isdst: c_int,
+    }
+
+    pub struct sched_param {
+        pub sched_priority: c_int,
+    }
+
+    pub struct iovec {
+        pub iov_base: *mut c_void,
+        pub iov_len: size_t,
+    }
+
+    pub struct rlimit {
+        pub rlim_cur: rlim_t,
+        pub rlim_max: rlim_t,
+    }
+
+    pub struct rusage {
+        pub ru_utime: timeval,
+        pub ru_stime: timeval,
+        pub ru_maxrss: c_long,
+        pub ru_ixrss: c_long,
+        pub ru_idrss: c_long,
+        pub ru_isrss: c_long,
+        pub ru_minflt: c_long,
+        pub ru_majflt: c_long,
+        pub ru_nswap: c_long,
+        pub ru_inblock: c_long,
+        pub ru_oublock: c_long,
+        pub ru_msgsnd: c_long,
+        pub ru_msgrcv: c_long,
+        pub ru_nsignals: c_long,
+        pub ru_nvcsw: c_long,
+        pub ru_nivcsw: c_long,
+    }
+
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: off_t,
+        pub l_len: off_t,
+        pub l_pid: pid_t,
+    }
+}
+
 // Constants from QuRT headers
 
 // POSIX error codes (from errno.h and QuRT qurt_error.h)
@@ -444,153 +591,6 @@ pub const RTLD_LOCAL: c_int = 0x200;
 
 // Semaphore constants
 pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
-
-// Structures based on QuRT headers
-
-s! {
-    pub struct timespec {
-        pub tv_sec: time_t,
-        pub tv_nsec: c_long,
-    }
-
-    pub struct timeval {
-        pub tv_sec: time_t,
-        pub tv_usec: suseconds_t,
-    }
-
-    pub struct sigval {
-        pub sival_int: c_int,
-        pub sival_ptr: *mut c_void,
-    }
-
-    pub struct sigevent {
-        pub sigev_notify: c_int,
-        pub sigev_signo: c_int,
-        pub sigev_value: sigval,
-        pub sigev_notify_function: Option<extern "C" fn(sigval)>,
-        pub sigev_notify_attributes: *mut pthread_attr_t,
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_code: c_int,
-        pub si_value: sigval,
-    }
-
-    pub struct sigaction {
-        pub sa_handler: Option<extern "C" fn(c_int)>,
-        pub sa_mask: sigset_t,
-        pub sa_flags: c_int,
-        pub sa_sigaction: Option<extern "C" fn(c_int, *mut siginfo_t, *mut c_void)>,
-    }
-
-    pub struct pthread_attr_t {
-        pub stackaddr: *mut c_void,
-        pub internal_stack: c_int,
-        pub stacksize: size_t,
-        pub priority: c_int,
-        pub timetest_id: c_ushort,
-        pub autostack: c_ushort,
-        pub bus_priority: c_ushort,
-        pub reserved: c_ushort,
-        pub cpumask: c_uint,
-        pub name: [c_char; 16],
-        pub ext_context: c_int,
-        pub detachstate: c_int,
-    }
-
-    pub struct pthread_mutexattr_t {
-        pub is_initialized: c_int,
-        pub type_: c_int,
-        pub pshared: c_int,
-        pub protocol: c_int,
-    }
-
-    pub struct pthread_condattr_t {
-        pub is_initialized: c_int,
-        pub pshared: c_int,
-        pub clock_id: clockid_t,
-    }
-
-    pub struct pthread_barrierattr_t {
-        pub is_initialized: c_int,
-        pub pshared: c_int,
-    }
-
-    pub struct itimerspec {
-        pub it_interval: timespec,
-        pub it_value: timespec,
-    }
-
-    pub struct termios {
-        pub c_iflag: tcflag_t,
-        pub c_oflag: tcflag_t,
-        pub c_cflag: tcflag_t,
-        pub c_lflag: tcflag_t,
-        pub c_cc: [c_uchar; 32],
-        pub c_ispeed: speed_t,
-        pub c_ospeed: speed_t,
-    }
-
-    pub struct dirent {
-        pub d_ino: ino_t,
-        pub d_type: c_uchar,
-        pub d_name: [c_char; 256],
-    }
-
-    pub struct tm {
-        pub tm_sec: c_int,
-        pub tm_min: c_int,
-        pub tm_hour: c_int,
-        pub tm_mday: c_int,
-        pub tm_mon: c_int,
-        pub tm_year: c_int,
-        pub tm_wday: c_int,
-        pub tm_yday: c_int,
-        pub tm_isdst: c_int,
-    }
-
-    pub struct sched_param {
-        pub sched_priority: c_int,
-    }
-
-    pub struct iovec {
-        pub iov_base: *mut c_void,
-        pub iov_len: size_t,
-    }
-
-    pub struct rlimit {
-        pub rlim_cur: rlim_t,
-        pub rlim_max: rlim_t,
-    }
-
-    pub struct rusage {
-        pub ru_utime: timeval,
-        pub ru_stime: timeval,
-        pub ru_maxrss: c_long,
-        pub ru_ixrss: c_long,
-        pub ru_idrss: c_long,
-        pub ru_isrss: c_long,
-        pub ru_minflt: c_long,
-        pub ru_majflt: c_long,
-        pub ru_nswap: c_long,
-        pub ru_inblock: c_long,
-        pub ru_oublock: c_long,
-        pub ru_msgsnd: c_long,
-        pub ru_msgrcv: c_long,
-        pub ru_nsignals: c_long,
-        pub ru_nvcsw: c_long,
-        pub ru_nivcsw: c_long,
-    }
-
-    pub struct flock {
-        pub l_type: c_short,
-        pub l_whence: c_short,
-        pub l_start: off_t,
-        pub l_len: off_t,
-        pub l_pid: pid_t,
-    }
-}
 
 // Function declarations for QuRT POSIX API
 extern "C" {
