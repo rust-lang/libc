@@ -1,6 +1,8 @@
 //! QuRT (Qualcomm Real-Time OS) bindings
 //!
 //! QuRT is Qualcomm's real-time operating system for Hexagon DSP architectures.
+//! Headers available via the
+//! Hexagon SDK: https://softwarecenter.qualcomm.com/catalog/item/Hexagon_SDK
 
 pub(crate) mod errno;
 pub(crate) mod fcntl;
