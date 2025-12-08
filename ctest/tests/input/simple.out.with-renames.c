@@ -16,204 +16,177 @@
 
 typedef void (*ctest_void_func)(void);
 
+/* Query a pointer to string constants.
+ *
+ *  Define a function that returns a pointer to the value of the constant to test.
+ *  This will later be called on the Rust side via FFI.
+ */
+
 static char *ctest_const_A_val_static = A;
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN char *ctest_const_cstr__A(void) {
     return ctest_const_A_val_static;
 }
 
 static char *ctest_const_B_val_static = C_B;
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN char *ctest_const_cstr__B(void) {
     return ctest_const_B_val_static;
 }
 
+
+/* Query a pointer to non-string constants.
+ *
+ * Define a function that returns a pointer to the value of the constant to test.
+ * This will later be called on the Rust side via FFI.
+ */
+
 static enum Color ctest_const_RED_val_static = RED;
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN enum Color *ctest_const__RED(void) {
     return &ctest_const_RED_val_static;
 }
 
 static enum Color ctest_const_BLUE_val_static = BLUE;
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN enum Color *ctest_const__BLUE(void) {
     return &ctest_const_BLUE_val_static;
 }
 
 static enum Color ctest_const_GREEN_val_static = GREEN;
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN enum Color *ctest_const__GREEN(void) {
     return &ctest_const_GREEN_val_static;
 }
 
-// Return the size of a type.
-CTEST_EXTERN uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 
-// Return the alignment of a type.
+/* Query the size and alignment of all types */
+
+CTEST_EXTERN uint64_t ctest_size_of__Byte(void) { return sizeof(Byte); }
 CTEST_EXTERN uint64_t ctest_align_of__Byte(void) { return CTEST_ALIGNOF(Byte); }
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__volatile_char(void) { return sizeof(volatile_char); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__volatile_char(void) { return CTEST_ALIGNOF(volatile_char); }
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__gregset_t(void) { return sizeof(gregset_t); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__gregset_t(void) { return CTEST_ALIGNOF(gregset_t); }
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__Color(void) { return sizeof(enum Color); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__Color(void) { return CTEST_ALIGNOF(enum Color); }
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__Person(void) { return sizeof(struct Person); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__Person(void) { return CTEST_ALIGNOF(struct Person); }
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__Word(void) { return sizeof(union Word); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__Word(void) { return CTEST_ALIGNOF(union Word); }
 
-// Return `1` if the type is signed, otherwise return `0`.
-// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+
+/* Query the signedness of a type.
+ *
+ * Return `1` if the type is signed, otherwise return `0`.
+ * Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+ */
+
 CTEST_EXTERN uint32_t ctest_signededness_of__Byte(void) {
     Byte all_ones = (Byte) -1;
     return all_ones < 0;
 }
 
-// Return `1` if the type is signed, otherwise return `0`.
-// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
 CTEST_EXTERN uint32_t ctest_signededness_of__volatile_char(void) {
     volatile_char all_ones = (volatile_char) -1;
     return all_ones < 0;
 }
 
-// Return the offset of a struct/union field.
+
+/* Query the offsets of fields and their sizes. */
+
 CTEST_EXTERN uint64_t ctest_offset_of__Person__name(void) {
     return offsetof(struct Person, name);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__Person__name(void) {
     return sizeof(((struct Person){}).name);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__Person__age(void) {
     return offsetof(struct Person, age);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__Person__age(void) {
     return sizeof(((struct Person){}).age);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__Person__job(void) {
     return offsetof(struct Person, job);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__Person__job(void) {
     return sizeof(((struct Person){}).job);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
     return offsetof(struct Person, favorite_color);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__Person__favorite_color(void) {
     return sizeof(((struct Person){}).favorite_color);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
     return offsetof(union Word, word);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__Word__word(void) {
     return sizeof(((union Word){}).word);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__Word__byte(void) {
     return offsetof(union Word, byte);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__Word__byte(void) {
     return sizeof(((union Word){}).byte);
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
+/* Query a pointer to a field given a pointer to its struct */
+
+
 typedef const char **ctest_field_ty__Person__name;
 CTEST_EXTERN ctest_field_ty__Person__name
 ctest_field_ptr__Person__name(struct Person *b) {
     return &b->name;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef uint8_t *ctest_field_ty__Person__age;
 CTEST_EXTERN ctest_field_ty__Person__age
 ctest_field_ptr__Person__age(struct Person *b) {
     return &b->age;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef void (**ctest_field_ty__Person__job)(uint8_t, const char *);
 CTEST_EXTERN ctest_field_ty__Person__job
 ctest_field_ptr__Person__job(struct Person *b) {
     return &b->job;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef enum Color *ctest_field_ty__Person__favorite_color;
 CTEST_EXTERN ctest_field_ty__Person__favorite_color
 ctest_field_ptr__Person__favorite_color(struct Person *b) {
     return &b->favorite_color;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef uint16_t *ctest_field_ty__Word__word;
 CTEST_EXTERN ctest_field_ty__Word__word
 ctest_field_ptr__Word__word(union Word *b) {
     return &b->word;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef Byte (*ctest_field_ty__Word__byte)[2];
 CTEST_EXTERN ctest_field_ty__Word__byte
 ctest_field_ptr__Word__byte(union Word *b) {
@@ -232,26 +205,28 @@ ctest_field_ptr__Word__byte(union Word *b) {
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+
+/* Write a nonrepeating bitpattern to a data type
+ *
+ * Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+ * remains unchanged.
+ * It checks if the size is the same as well as if the padding bytes are all in the correct place.
+ */
+
 CTEST_EXTERN Byte ctest_roundtrip__Byte(
     Byte value,
     const uint8_t is_padding_byte[sizeof(Byte)],
     uint8_t value_bytes[sizeof(Byte)]
 ) {
     int size = (int)sizeof(Byte);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -259,26 +234,20 @@ CTEST_EXTERN Byte ctest_roundtrip__Byte(
     return value;
 }
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
 CTEST_EXTERN volatile_char ctest_roundtrip__volatile_char(
     volatile_char value,
     const uint8_t is_padding_byte[sizeof(volatile_char)],
     uint8_t value_bytes[sizeof(volatile_char)]
 ) {
     int size = (int)sizeof(volatile_char);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -286,26 +255,20 @@ CTEST_EXTERN volatile_char ctest_roundtrip__volatile_char(
     return value;
 }
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
 CTEST_EXTERN enum Color ctest_roundtrip__Color(
     enum Color value,
     const uint8_t is_padding_byte[sizeof(enum Color)],
     uint8_t value_bytes[sizeof(enum Color)]
 ) {
     int size = (int)sizeof(enum Color);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -313,26 +276,20 @@ CTEST_EXTERN enum Color ctest_roundtrip__Color(
     return value;
 }
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
 CTEST_EXTERN struct Person ctest_roundtrip__Person(
     struct Person value,
     const uint8_t is_padding_byte[sizeof(struct Person)],
     uint8_t value_bytes[sizeof(struct Person)]
 ) {
     int size = (int)sizeof(struct Person);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -340,26 +297,20 @@ CTEST_EXTERN struct Person ctest_roundtrip__Person(
     return value;
 }
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
 CTEST_EXTERN union Word ctest_roundtrip__Word(
     union Word value,
     const uint8_t is_padding_byte[sizeof(union Word)],
     uint8_t value_bytes[sizeof(union Word)]
 ) {
     int size = (int)sizeof(union Word);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -383,7 +334,8 @@ CTEST_EXTERN union Word ctest_roundtrip__Word(
     #pragma warning(disable:4191)
 #endif
 
-// Return a function pointer.
+/* Query a function's pointer */
+
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__calloc(void) {
     return (ctest_void_func)calloc;
 }
@@ -393,8 +345,10 @@ CTEST_EXTERN ctest_void_func ctest_foreign_fn__calloc(void) {
     #pragma warning(default:4191)
 #endif
 
-// Return a pointer to the static variable content.
+
+/* Query pointers to statics */
+
 CTEST_EXTERN void *ctest_static__byte(void) {
-    // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    
     return (void *)&byte;
 }

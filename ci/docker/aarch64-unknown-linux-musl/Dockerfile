@@ -20,6 +20,6 @@ RUN /install-musl.sh aarch64 "$MUSL_VERSION"
 # FIXME: shouldn't need the `-lgcc` here, shouldn't that be in std?
 ENV PATH=$PATH:/musl-aarch64/bin:/rust/bin \
     CC_aarch64_unknown_linux_musl=musl-gcc \
-    RUSTFLAGS='-Clink-args=-lgcc -L /musl-aarch64/lib' \
     CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc \
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUNNER="qemu-aarch64 -L /musl-aarch64"
+    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUNNER="qemu-aarch64 -L /musl-aarch64" \
+    EXTRA_RUSTFLAGS="-Clink-args=-lgcc -L /musl-aarch64/lib"

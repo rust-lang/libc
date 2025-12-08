@@ -29,65 +29,78 @@
 
 typedef void (*ctest_void_func)(void);
 
+/* Query a pointer to string constants.
+ *
+ *  Define a function that returns a pointer to the value of the constant to test.
+ *  This will later be called on the Rust side via FFI.
+ */
 {%- for const_cstr in ctx.const_cstr_tests +%}
 
 static char *ctest_const_{{ const_cstr.id }}_val_static = {{ const_cstr.c_val }};
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN char *ctest_const_cstr__{{ const_cstr.id }}(void) {
     return ctest_const_{{ const_cstr.id }}_val_static;
 }
 {%- endfor +%}
 
+
+/* Query a pointer to non-string constants.
+ *
+ * Define a function that returns a pointer to the value of the constant to test.
+ * This will later be called on the Rust side via FFI.
+ */
 {%- for constant in ctx.const_tests +%}
 
 static {{ constant.c_ty }} ctest_const_{{ constant.id }}_val_static = {{ constant.c_val }};
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN {{ constant.c_ty }} *ctest_const__{{ constant.id }}(void) {
     return &ctest_const_{{ constant.id }}_val_static;
 }
 {%- endfor +%}
 
+
+/* Query the size and alignment of all types */
 {%- for item in ctx.size_align_tests +%}
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__{{ item.id }}(void) { return sizeof({{ item.c_ty }}); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__{{ item.id }}(void) { return CTEST_ALIGNOF({{ item.c_ty }}); }
 {%- endfor +%}
 
+
+/* Query the signedness of a type.
+ *
+ * Return `1` if the type is signed, otherwise return `0`.
+ * Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+ */
 {%- for alias in ctx.signededness_tests +%}
 
-// Return `1` if the type is signed, otherwise return `0`.
-// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
 CTEST_EXTERN uint32_t ctest_signededness_of__{{ alias.id }}(void) {
     {{ alias.c_ty }} all_ones = ({{ alias.c_ty }}) -1;
     return all_ones < 0;
 }
 {%- endfor +%}
 
+
+/* Query the offsets of fields and their sizes. */
 {%- for item in ctx.field_size_offset_tests +%}
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(void) {
     return offsetof({{ item.c_ty }}, {{ item.c_field }});
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
     return sizeof((({{ item.c_ty }}){}).{{ item.c_field }});
 }
 {%- endfor +%}
 
+
+/* Query a pointer to a field given a pointer to its struct */
 {%- for item in ctx.field_ptr_tests +%}
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+{#
+    // This field can have a normal data type, or it could be a function pointer or an array, which
+    // have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+#}
 typedef {{ item.volatile_keyword }}{{ item.field_return_type }};
 CTEST_EXTERN ctest_field_ty__{{ item.id }}__{{ item.field.ident() }}
 ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
@@ -107,28 +120,38 @@ ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
+
+/* Write a nonrepeating bitpattern to a data type
+ *
+ * Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+ * remains unchanged.
+ * It checks if the size is the same as well as if the padding bytes are all in the correct place.
+ */
 {%- for item in ctx.roundtrip_tests +%}
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
 CTEST_EXTERN {{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
     {{ item.c_ty }} value,
     const uint8_t is_padding_byte[sizeof({{ item.c_ty }})],
     uint8_t value_bytes[sizeof({{ item.c_ty }})]
 ) {
     int size = (int)sizeof({{ item.c_ty }});
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    {#
+        // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
+        // Otherwise the Rust side would not be able to see it.
+    #}
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        {#
+            // We skip padding bytes in both Rust and C because writing to it is undefined.
+            // Instead we just make sure the the placement of the padding bytes remains the same.
+        #}
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        {#
+            // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
+            // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        #}
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -154,9 +177,9 @@ CTEST_EXTERN {{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
     #pragma warning(disable:4191)
 #endif
 
+/* Query a function's pointer */
 {%- for item in ctx.foreign_fn_tests +%}
 
-// Return a function pointer.
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
     return (ctest_void_func){{ item.c_val }};
 }
@@ -167,11 +190,14 @@ CTEST_EXTERN ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
     #pragma warning(default:4191)
 #endif
 
+
+/* Query pointers to statics */
 {%- for static_ in ctx.foreign_static_tests +%}
 
-// Return a pointer to the static variable content.
 CTEST_EXTERN void *ctest_static__{{ static_.id }}(void) {
-    // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    {#
+        // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    #}
     return (void *)&{{ static_.c_val }};
 }
 {%- endfor +%}

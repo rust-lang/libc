@@ -19,88 +19,95 @@
 
 typedef void (*ctest_void_func)(void);
 
-// Return the size of a type.
-CTEST_EXTERN uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
+/* Query a pointer to string constants.
+ *
+ *  Define a function that returns a pointer to the value of the constant to test.
+ *  This will later be called on the Rust side via FFI.
+ */
 
-// Return the alignment of a type.
+
+/* Query a pointer to non-string constants.
+ *
+ * Define a function that returns a pointer to the value of the constant to test.
+ * This will later be called on the Rust side via FFI.
+ */
+
+
+/* Query the size and alignment of all types */
+
+CTEST_EXTERN uint64_t ctest_size_of__VecU8(void) { return sizeof(struct VecU8); }
 CTEST_EXTERN uint64_t ctest_align_of__VecU8(void) { return CTEST_ALIGNOF(struct VecU8); }
 
-// Return the size of a type.
 CTEST_EXTERN uint64_t ctest_size_of__VecU16(void) { return sizeof(struct VecU16); }
-
-// Return the alignment of a type.
 CTEST_EXTERN uint64_t ctest_align_of__VecU16(void) { return CTEST_ALIGNOF(struct VecU16); }
 
-// Return the offset of a struct/union field.
+
+/* Query the signedness of a type.
+ *
+ * Return `1` if the type is signed, otherwise return `0`.
+ * Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+ */
+
+
+/* Query the offsets of fields and their sizes. */
+
 CTEST_EXTERN uint64_t ctest_offset_of__VecU8__x(void) {
     return offsetof(struct VecU8, x);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__VecU8__x(void) {
     return sizeof(((struct VecU8){}).x);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__VecU8__y(void) {
     return offsetof(struct VecU8, y);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__VecU8__y(void) {
     return sizeof(((struct VecU8){}).y);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__VecU16__x(void) {
     return offsetof(struct VecU16, x);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__VecU16__x(void) {
     return sizeof(((struct VecU16){}).x);
 }
 
-// Return the offset of a struct/union field.
 CTEST_EXTERN uint64_t ctest_offset_of__VecU16__y(void) {
     return offsetof(struct VecU16, y);
 }
 
-// Return the size of a struct/union field.
 CTEST_EXTERN uint64_t ctest_size_of__VecU16__y(void) {
     return sizeof(((struct VecU16){}).y);
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
+/* Query a pointer to a field given a pointer to its struct */
+
+
 typedef uint8_t *ctest_field_ty__VecU8__x;
 CTEST_EXTERN ctest_field_ty__VecU8__x
 ctest_field_ptr__VecU8__x(struct VecU8 *b) {
     return &b->x;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef uint8_t *ctest_field_ty__VecU8__y;
 CTEST_EXTERN ctest_field_ty__VecU8__y
 ctest_field_ptr__VecU8__y(struct VecU8 *b) {
     return &b->y;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef uint16_t *ctest_field_ty__VecU16__x;
 CTEST_EXTERN ctest_field_ty__VecU16__x
 ctest_field_ptr__VecU16__x(struct VecU16 *b) {
     return &b->x;
 }
 
-// Return a pointer to a struct/union field.
-// This field can have a normal data type, or it could be a function pointer or an array, which
-// have different syntax. A typedef is used for convenience, but the syntax must be precomputed.
+
 typedef uint16_t *ctest_field_ty__VecU16__y;
 CTEST_EXTERN ctest_field_ty__VecU16__y
 ctest_field_ptr__VecU16__y(struct VecU16 *b) {
@@ -119,26 +126,28 @@ ctest_field_ptr__VecU16__y(struct VecU16 *b) {
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+
+/* Write a nonrepeating bitpattern to a data type
+ *
+ * Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+ * remains unchanged.
+ * It checks if the size is the same as well as if the padding bytes are all in the correct place.
+ */
+
 CTEST_EXTERN struct VecU8 ctest_roundtrip__VecU8(
     struct VecU8 value,
     const uint8_t is_padding_byte[sizeof(struct VecU8)],
     uint8_t value_bytes[sizeof(struct VecU8)]
 ) {
     int size = (int)sizeof(struct VecU8);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -146,26 +155,20 @@ CTEST_EXTERN struct VecU8 ctest_roundtrip__VecU8(
     return value;
 }
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
 CTEST_EXTERN struct VecU16 ctest_roundtrip__VecU16(
     struct VecU16 value,
     const uint8_t is_padding_byte[sizeof(struct VecU16)],
     uint8_t value_bytes[sizeof(struct VecU16)]
 ) {
     int size = (int)sizeof(struct VecU16);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -189,7 +192,12 @@ CTEST_EXTERN struct VecU16 ctest_roundtrip__VecU16(
     #pragma warning(disable:4191)
 #endif
 
+/* Query a function's pointer */
+
 #ifdef _MSC_VER
     // Pop allow for 4191
     #pragma warning(default:4191)
 #endif
+
+
+/* Query pointers to statics */

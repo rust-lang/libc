@@ -22,4 +22,4 @@ RUN /install-musl.sh i686 "$MUSL_VERSION"
 
 ENV PATH=$PATH:/musl-i686/bin:/rust/bin \
     CC_i686_unknown_linux_musl=musl-gcc \
-    RUSTFLAGS="-L /musl-i686/lib"
+    EXTRA_RUSTFLAGS="-L /musl-i686/lib"

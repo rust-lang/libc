@@ -16,26 +16,48 @@
 
 typedef void (*ctest_void_func)(void);
 
+/* Query a pointer to string constants.
+ *
+ *  Define a function that returns a pointer to the value of the constant to test.
+ *  This will later be called on the Rust side via FFI.
+ */
+
+
+/* Query a pointer to non-string constants.
+ *
+ * Define a function that returns a pointer to the value of the constant to test.
+ * This will later be called on the Rust side via FFI.
+ */
+
 static bool ctest_const_ON_val_static = ON;
 
-// Define a function that returns a pointer to the value of the constant to test.
-// This will later be called on the Rust side via FFI.
 CTEST_EXTERN bool *ctest_const__ON(void) {
     return &ctest_const_ON_val_static;
 }
 
-// Return the size of a type.
-CTEST_EXTERN uint64_t ctest_size_of__in6_addr(void) { return sizeof(in6_addr); }
 
-// Return the alignment of a type.
+/* Query the size and alignment of all types */
+
+CTEST_EXTERN uint64_t ctest_size_of__in6_addr(void) { return sizeof(in6_addr); }
 CTEST_EXTERN uint64_t ctest_align_of__in6_addr(void) { return CTEST_ALIGNOF(in6_addr); }
 
-// Return `1` if the type is signed, otherwise return `0`.
-// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+
+/* Query the signedness of a type.
+ *
+ * Return `1` if the type is signed, otherwise return `0`.
+ * Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+ */
+
 CTEST_EXTERN uint32_t ctest_signededness_of__in6_addr(void) {
     in6_addr all_ones = (in6_addr) -1;
     return all_ones < 0;
 }
+
+
+/* Query the offsets of fields and their sizes. */
+
+
+/* Query a pointer to a field given a pointer to its struct */
 
 #ifdef _MSC_VER
     // Disable signed/unsigned conversion warnings on MSVC.
@@ -49,26 +71,28 @@ CTEST_EXTERN uint32_t ctest_signededness_of__in6_addr(void) {
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+
+/* Write a nonrepeating bitpattern to a data type
+ *
+ * Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+ * remains unchanged.
+ * It checks if the size is the same as well as if the padding bytes are all in the correct place.
+ */
+
 CTEST_EXTERN in6_addr ctest_roundtrip__in6_addr(
     in6_addr value,
     const uint8_t is_padding_byte[sizeof(in6_addr)],
     uint8_t value_bytes[sizeof(in6_addr)]
 ) {
     int size = (int)sizeof(in6_addr);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -92,7 +116,8 @@ CTEST_EXTERN in6_addr ctest_roundtrip__in6_addr(
     #pragma warning(disable:4191)
 #endif
 
-// Return a function pointer.
+/* Query a function's pointer */
+
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__malloc(void) {
     return (ctest_void_func)malloc;
 }
@@ -102,8 +127,10 @@ CTEST_EXTERN ctest_void_func ctest_foreign_fn__malloc(void) {
     #pragma warning(default:4191)
 #endif
 
-// Return a pointer to the static variable content.
+
+/* Query pointers to statics */
+
 CTEST_EXTERN void *ctest_static__in6addr_any(void) {
-    // FIXME(ctest): Not correct due to casting the function to a data pointer.
+    
     return (void *)&in6addr_any;
 }

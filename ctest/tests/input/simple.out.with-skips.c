@@ -16,18 +16,42 @@
 
 typedef void (*ctest_void_func)(void);
 
-// Return the size of a type.
-CTEST_EXTERN uint64_t ctest_size_of__volatile_char(void) { return sizeof(volatile_char); }
+/* Query a pointer to string constants.
+ *
+ *  Define a function that returns a pointer to the value of the constant to test.
+ *  This will later be called on the Rust side via FFI.
+ */
 
-// Return the alignment of a type.
+
+/* Query a pointer to non-string constants.
+ *
+ * Define a function that returns a pointer to the value of the constant to test.
+ * This will later be called on the Rust side via FFI.
+ */
+
+
+/* Query the size and alignment of all types */
+
+CTEST_EXTERN uint64_t ctest_size_of__volatile_char(void) { return sizeof(volatile_char); }
 CTEST_EXTERN uint64_t ctest_align_of__volatile_char(void) { return CTEST_ALIGNOF(volatile_char); }
 
-// Return `1` if the type is signed, otherwise return `0`.
-// Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+
+/* Query the signedness of a type.
+ *
+ * Return `1` if the type is signed, otherwise return `0`.
+ * Casting -1 to the aliased type if signed evaluates to `-1 < 0`, if unsigned to `MAX_VALUE < 0`
+ */
+
 CTEST_EXTERN uint32_t ctest_signededness_of__volatile_char(void) {
     volatile_char all_ones = (volatile_char) -1;
     return all_ones < 0;
 }
+
+
+/* Query the offsets of fields and their sizes. */
+
+
+/* Query a pointer to a field given a pointer to its struct */
 
 #ifdef _MSC_VER
     // Disable signed/unsigned conversion warnings on MSVC.
@@ -41,26 +65,28 @@ CTEST_EXTERN uint32_t ctest_signededness_of__volatile_char(void) {
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
 
-// Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
-// remains unchanged.
-// It checks if the size is the same as well as if the padding bytes are all in the correct place.
+
+/* Write a nonrepeating bitpattern to a data type
+ *
+ * Tests whether the struct/union/alias `x` when passed by value to C and back to Rust
+ * remains unchanged.
+ * It checks if the size is the same as well as if the padding bytes are all in the correct place.
+ */
+
 CTEST_EXTERN volatile_char ctest_roundtrip__volatile_char(
     volatile_char value,
     const uint8_t is_padding_byte[sizeof(volatile_char)],
     uint8_t value_bytes[sizeof(volatile_char)]
 ) {
     int size = (int)sizeof(volatile_char);
-    // Mark `p` as volatile so that the C compiler does not optimize away the pattern we create.
-    // Otherwise the Rust side would not be able to see it.
+    
     volatile uint8_t* p = (volatile uint8_t*)&value;
     int i = 0;
     for (i = 0; i < size; ++i) {
-        // We skip padding bytes in both Rust and C because writing to it is undefined.
-        // Instead we just make sure the the placement of the padding bytes remains the same.
+        
         if (is_padding_byte[i]) { continue; }
         value_bytes[i] = p[i];
-        // After we check that the pattern remained unchanged from Rust to C, we invert the pattern
-        // and send it back to Rust to make sure that it remains unchanged from C to Rust.
+        
         uint8_t d = (uint8_t)(255) - (uint8_t)(i % 256);
         d = d == 0 ? 42: d;
         p[i] = d;
@@ -84,7 +110,12 @@ CTEST_EXTERN volatile_char ctest_roundtrip__volatile_char(
     #pragma warning(disable:4191)
 #endif
 
+/* Query a function's pointer */
+
 #ifdef _MSC_VER
     // Pop allow for 4191
     #pragma warning(default:4191)
 #endif
+
+
+/* Query pointers to statics */

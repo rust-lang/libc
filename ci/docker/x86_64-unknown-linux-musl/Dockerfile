@@ -16,4 +16,4 @@ COPY install-musl.sh /
 RUN /install-musl.sh x86_64 "$MUSL_VERSION"
 
 ENV PATH=$PATH:/musl-x86_64/bin:/rust/bin \
-    RUSTFLAGS="-L /musl-x86_64/lib"
+    EXTRA_RUSTFLAGS="-L /musl-x86_64/lib"

@@ -9,7 +9,7 @@ RUN /wasi.sh
 # itself, this should be fixed upstream.
 ENV CARGO_TARGET_WASM32_WASIP2_RUNNER=wasmtime \
     CARGO_TARGET_WASM32_WASIP2_LINKER=/opt/wasi-sdk/bin/clang \
-    CARGO_TARGET_WASM32_WASIP2_RUSTFLAGS="-Clink-self-contained=n -lwasi-emulated-process-clocks -Clink-arg=-Wl,--export,cabi_realloc" \
+    EXTRA_RUSTFLAGS="-Clink-self-contained=n -lwasi-emulated-process-clocks -Clink-arg=-Wl,--export,cabi_realloc" \
     CC_wasm32_wasip2=/opt/wasi-sdk/bin/clang \
     CFLAGS_wasm32_wasip2=-D_WASI_EMULATED_PROCESS_CLOCKS \
     PATH=$PATH:/rust/bin:/wasmtime
