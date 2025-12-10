@@ -1245,13 +1245,13 @@ extern "C" {
         __id: crate::clockid_t,
         _new: *const crate::_clockperiod,
         __old: *mut crate::_clockperiod,
-        __reserved: Padding<c_int>,
+        __reserved: c_int,
     ) -> c_int;
     pub fn ClockPeriod_r(
         __id: crate::clockid_t,
         _new: *const crate::_clockperiod,
         __old: *mut crate::_clockperiod,
-        __reserved: Padding<c_int>,
+        __reserved: c_int,
     ) -> c_int;
     pub fn ClockId(__pid: crate::pid_t, __tid: c_int) -> c_int;
     pub fn ClockId_r(__pid: crate::pid_t, __tid: c_int) -> c_int;
