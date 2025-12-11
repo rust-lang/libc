@@ -3,9 +3,6 @@ task:
   env:
     HOME: /tmp  # cargo cache needs it
     TARGET: x86_64-unknown-freebsd
-    # FIXME(freebsd): FreeBSD has a segfault when `RUST_BACKTRACE` is set
-    # https://github.com/rust-lang/rust/issues/132185
-    RUST_BACKTRACE: "0"
   matrix:
     # FIXME(#4740): FreeBSD 13 tests are extremely flaky and fail most of the time
     # - name: nightly freebsd-13 x86_64
