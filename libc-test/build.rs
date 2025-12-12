@@ -4947,6 +4947,30 @@ fn test_linux(target: &str) {
         _ => false,
     });
 
+    if gnu {
+        // old constants, so tests fail if glibc is too new
+        cfg.skip_const(|s| {
+            [
+                "B50", "B75", "B110", "B134", "B150", "B200", "B300", "B600", "B1200", "B1800",
+                "B2400", "B4800", "B9600", "B19200", "B38400", "EXTA", "EXTB", "B57600", "B115200",
+                "B230400", "B460800", "B500000", "B576000", "B921600", "B1000000", "B1152000",
+                "B1500000", "B2000000", "B2500000", "B3000000", "B3500000", "B4000000",
+            ]
+            .contains(&s.ident())
+        });
+        // old symbols, so tests fail if glibc is too new
+        cfg.skip_fn_ptrcheck(|s| {
+            [
+                "cfgetispeed",
+                "cfgetospeed",
+                "cfsetispeed",
+                "cfsetospeed",
+                "cfsetspeed",
+            ]
+            .contains(&s)
+        });
+    }
+
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 
     if !l4re {
