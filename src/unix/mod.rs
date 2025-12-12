@@ -1601,9 +1601,377 @@ extern "C" {
         link_name = "tcdrain$UNIX2003"
     )]
     pub fn tcdrain(fd: c_int) -> c_int;
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "arm"),
+        link_name = "cfgetispeed@GLIBC_2.4"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "csky"),
+        link_name = "cfgetispeed@GLIBC_2.29"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "m68k"),
+        link_name = "cfgetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips"),
+        link_name = "cfgetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "powerpc"),
+        link_name = "cfgetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv32"),
+        link_name = "cfgetispeed@GLIBC_2.33"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc"),
+        link_name = "cfgetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "x86"),
+        link_name = "cfgetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "aarch64"),
+        link_name = "cfgetispeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "loongarch64"),
+        link_name = "cfgetispeed@GLIBC_2.36"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips64"),
+        link_name = "cfgetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "big"
+        ),
+        link_name = "cfgetispeed@GLIBC_2.3"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "little"
+        ),
+        link_name = "cfgetispeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv64"),
+        link_name = "cfgetispeed@GLIBC_2.27"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "s390x"),
+        link_name = "cfgetispeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+        link_name = "cfgetispeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "64"
+        ),
+        link_name = "cfgetispeed@GLIBC_2.2.5"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "32"
+        ),
+        link_name = "cfgetispeed@GLIBC_2.16"
+    )]
     pub fn cfgetispeed(termios: *const crate::termios) -> crate::speed_t;
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "arm"),
+        link_name = "cfgetospeed@GLIBC_2.4"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "csky"),
+        link_name = "cfgetospeed@GLIBC_2.29"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "m68k"),
+        link_name = "cfgetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips"),
+        link_name = "cfgetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "powerpc"),
+        link_name = "cfgetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv32"),
+        link_name = "cfgetospeed@GLIBC_2.33"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc"),
+        link_name = "cfgetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "x86"),
+        link_name = "cfgetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "aarch64"),
+        link_name = "cfgetospeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "loongarch64"),
+        link_name = "cfgetospeed@GLIBC_2.36"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips64"),
+        link_name = "cfgetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "big"
+        ),
+        link_name = "cfgetospeed@GLIBC_2.3"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "little"
+        ),
+        link_name = "cfgetospeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv64"),
+        link_name = "cfgetospeed@GLIBC_2.27"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "s390x"),
+        link_name = "cfgetospeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+        link_name = "cfgetospeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "64"
+        ),
+        link_name = "cfgetospeed@GLIBC_2.2.5"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "32"
+        ),
+        link_name = "cfgetospeed@GLIBC_2.16"
+    )]
     pub fn cfgetospeed(termios: *const crate::termios) -> crate::speed_t;
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "arm"),
+        link_name = "cfsetispeed@GLIBC_2.4"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "csky"),
+        link_name = "cfsetispeed@GLIBC_2.29"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "m68k"),
+        link_name = "cfsetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips"),
+        link_name = "cfsetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "powerpc"),
+        link_name = "cfsetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv32"),
+        link_name = "cfsetispeed@GLIBC_2.33"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc"),
+        link_name = "cfsetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "x86"),
+        link_name = "cfsetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "aarch64"),
+        link_name = "cfsetispeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "loongarch64"),
+        link_name = "cfsetispeed@GLIBC_2.36"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips64"),
+        link_name = "cfsetispeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "big"
+        ),
+        link_name = "cfsetispeed@GLIBC_2.3"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "little"
+        ),
+        link_name = "cfsetispeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv64"),
+        link_name = "cfsetispeed@GLIBC_2.27"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "s390x"),
+        link_name = "cfsetispeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+        link_name = "cfsetispeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "64"
+        ),
+        link_name = "cfsetispeed@GLIBC_2.2.5"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "32"
+        ),
+        link_name = "cfsetispeed@GLIBC_2.16"
+    )]
     pub fn cfsetispeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "arm"),
+        link_name = "cfsetospeed@GLIBC_2.4"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "csky"),
+        link_name = "cfsetospeed@GLIBC_2.29"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "m68k"),
+        link_name = "cfsetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips"),
+        link_name = "cfsetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "powerpc"),
+        link_name = "cfsetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv32"),
+        link_name = "cfsetospeed@GLIBC_2.33"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc"),
+        link_name = "cfsetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "x86"),
+        link_name = "cfsetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "aarch64"),
+        link_name = "cfsetospeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "loongarch64"),
+        link_name = "cfsetospeed@GLIBC_2.36"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "mips64"),
+        link_name = "cfsetospeed@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "big"
+        ),
+        link_name = "cfsetospeed@GLIBC_2.3"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "powerpc64",
+            target_endian = "little"
+        ),
+        link_name = "cfsetospeed@GLIBC_2.17"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "riscv64"),
+        link_name = "cfsetospeed@GLIBC_2.27"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "s390x"),
+        link_name = "cfsetospeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+        link_name = "cfsetospeed@GLIBC_2.2"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "64"
+        ),
+        link_name = "cfsetospeed@GLIBC_2.2.5"
+    )]
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            target_arch = "x86_64",
+            target_pointer_width = "32"
+        ),
+        link_name = "cfsetospeed@GLIBC_2.16"
+    )]
     pub fn cfsetospeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
     pub fn tcgetattr(fd: c_int, termios: *mut crate::termios) -> c_int;
     pub fn tcsetattr(fd: c_int, optional_actions: c_int, termios: *const crate::termios) -> c_int;
@@ -1894,6 +2262,98 @@ cfg_if! {
     )))] {
         extern "C" {
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "arm"),
+                link_name = "cfsetspeed@GLIBC_2.4"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "csky"),
+                link_name = "cfsetspeed@GLIBC_2.29"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "m68k"),
+                link_name = "cfsetspeed@GLIBC_2.0"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "mips"),
+                link_name = "cfsetspeed@GLIBC_2.0"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "powerpc"),
+                link_name = "cfsetspeed@GLIBC_2.0"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "riscv32"),
+                link_name = "cfsetspeed@GLIBC_2.33"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "sparc"),
+                link_name = "cfsetspeed@GLIBC_2.0"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "x86"),
+                link_name = "cfsetspeed@GLIBC_2.0"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "aarch64"),
+                link_name = "cfsetspeed@GLIBC_2.17"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "loongarch64"),
+                link_name = "cfsetspeed@GLIBC_2.36"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "mips64"),
+                link_name = "cfsetspeed@GLIBC_2.0"
+            )]
+            #[cfg_attr(
+                all(
+                    target_os = "linux",
+                    target_env = "gnu",
+                    target_arch = "powerpc64",
+                    target_endian = "big"
+                ),
+                link_name = "cfsetspeed@GLIBC_2.3"
+            )]
+            #[cfg_attr(
+                all(
+                    target_os = "linux",
+                    target_env = "gnu",
+                    target_arch = "powerpc64",
+                    target_endian = "little"
+                ),
+                link_name = "cfsetspeed@GLIBC_2.17"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "riscv64"),
+                link_name = "cfsetspeed@GLIBC_2.27"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "s390x"),
+                link_name = "cfsetspeed@GLIBC_2.2"
+            )]
+            #[cfg_attr(
+                all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+                link_name = "cfsetspeed@GLIBC_2.2"
+            )]
+            #[cfg_attr(
+                all(
+                    target_os = "linux",
+                    target_env = "gnu",
+                    target_arch = "x86_64",
+                    target_pointer_width = "64"
+                ),
+                link_name = "cfsetspeed@GLIBC_2.2.5"
+            )]
+            #[cfg_attr(
+                all(
+                    target_os = "linux",
+                    target_env = "gnu",
+                    target_arch = "x86_64",
+                    target_pointer_width = "32"
+                ),
+                link_name = "cfsetspeed@GLIBC_2.16"
+            )]
             pub fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
         }
     }
