@@ -3690,6 +3690,7 @@ fn test_linux(target: &str) {
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
     let ppc64 = target.contains("powerpc64");
+    let ppc32 = ppc && !ppc64;
     let s390x = target.contains("s390x");
     let sparc64 = target.contains("sparc64");
     let x32 = target.contains("x32");
@@ -3702,6 +3703,8 @@ fn test_linux(target: &str) {
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
     let mips = target.contains("mips");
+    let mips64 = target.contains("mips64");
+    let mips32 = mips && !mips64;
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     if musl_v1_2_3 {
@@ -3710,8 +3713,12 @@ fn test_linux(target: &str) {
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
-    if musl_v1_2_3 {
+    if (musl_v1_2_3 || loongarch64) && musl {
         cfg.cfg("musl_v1_2_3", None);
+        if arm || ppc32 || x86_32 || mips32 {
+            cfg.cfg("musl32_time64", None);
+            cfg.cfg("linux_time_bits64", None);
+        }
     }
     cfg.define("_GNU_SOURCE", None)
         // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
@@ -3965,9 +3972,9 @@ fn test_linux(target: &str) {
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
+            // of a timeval struct - this is fixed in musl_v1_2_3
             ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if f.ends_with("_nsec") =>
+                if !musl_v1_2_3 && f.ends_with("_nsec") =>
             {
                 Some(f.replace("e_nsec", ".tv_nsec"))
             }
@@ -4722,8 +4729,6 @@ fn test_linux(target: &str) {
             ("xsk_tx_metadata", "xsk_tx_metadata_union") => true,
             // After musl 1.2.0, the type becomes `int` instead of `long`.
             ("utmpx", "ut_session") if musl => true,
-            // FIXME(musl,time): changed with the musl time updates
-            ("input_event", "time") if musl_v1_2_3 => true,
             // `frames` is a flexible array member
             ("bcm_msg_head", "frames") => true,
             // FAM
@@ -4775,83 +4780,6 @@ fn test_linux(target: &str) {
 
         _ => false,
     });
-
-    // FIXME(musl,time): these should be resolved with the time64 updates
-    if musl_v1_2_3 {
-        // Time primitives changed, as did structs containing them
-        cfg.skip_alias(|ty| match ty.ident() {
-            "time_t" | "suseconds_t" => true,
-            _ => false,
-        });
-        cfg.skip_struct(|s| match s.ident() {
-            "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "itimerspec"
-            | "timex" | "ntptimeval" | "stat" | "shmid_ds" | "msqid_ds" => true,
-            _ => false,
-        });
-
-        cfg.skip_const(|c| match c.ident() {
-            // Changed syscall numbers under `linux_time_bits64`
-            "SO_TIMESTAMP" | "SO_TIMESTAMPNS" | "SO_TIMESTAMPING" | "SO_RCVTIMEO"
-            | "SO_SNDTIMEO" => true,
-            // Derived from `SO_` constants
-            "SCM_TIMESTAMP" | "SCM_TIMESTAMPNS" | "SCM_TIMESTAMPING" => true,
-            // `IPC_STAT` and derived values
-            "IPC_STAT" | "SEM_STAT" | "SEM_STAT_ANY" => true,
-            _ => false,
-        });
-
-        // Functions that got a new link name
-        cfg.skip_fn_ptrcheck(|f| match f {
-            "pthread_mutex_timedlock"
-            | "recvmmsg"
-            | "fstat"
-            | "stat"
-            | "fstatat"
-            | "nanosleep"
-            | "utime"
-            | "lstat"
-            | "getrusage"
-            | "pthread_cond_timedwait"
-            | "utimes"
-            | "dlsym"
-            | "gmtime_r"
-            | "localtime_r"
-            | "mktime"
-            | "time"
-            | "gmtime"
-            | "localtime"
-            | "difftime"
-            | "timegm"
-            | "select"
-            | "adjtime"
-            | "pselect"
-            | "clock_getres"
-            | "clock_gettime"
-            | "clock_settime"
-            | "futimens"
-            | "utimensat"
-            | "wait4"
-            | "aio_suspend"
-            | "futimes"
-            | "mq_timedreceive"
-            | "mq_timedsend"
-            | "lutimes"
-            | "timerfd_gettime"
-            | "timerfd_settime"
-            | "sigtimedwait"
-            | "settimeofday"
-            | "sched_rr_get_interval"
-            | "sem_timedwait"
-            | "ppoll"
-            | "clock_nanosleep"
-            | "timer_gettime"
-            | "timer_settime"
-            | "gettimeofday"
-            | "adjtimex"
-            | "clock_adjtime" => true,
-            _ => false,
-        });
-    }
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 

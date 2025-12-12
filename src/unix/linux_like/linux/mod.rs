@@ -1,5 +1,4 @@
 //! Linux-specific definitions for linux-like values
-
 use crate::prelude::*;
 use crate::{
     sock_filter,
@@ -1569,7 +1568,7 @@ pub const RENAME_NOREPLACE: c_uint = 1;
 pub const RENAME_EXCHANGE: c_uint = 2;
 pub const RENAME_WHITEOUT: c_uint = 4;
 
-pub const MSG_STAT: c_int = 11;
+pub const MSG_STAT: c_int = 11 | (crate::IPC_STAT & 0x100);
 pub const MSG_INFO: c_int = 12;
 pub const MSG_NOTIFICATION: c_int = 0x8000;
 
@@ -1586,9 +1585,9 @@ pub const GETNCNT: c_int = 14;
 pub const GETZCNT: c_int = 15;
 pub const SETVAL: c_int = 16;
 pub const SETALL: c_int = 17;
-pub const SEM_STAT: c_int = 18;
+pub const SEM_STAT: c_int = 18 | (crate::IPC_STAT & 0x100);
 pub const SEM_INFO: c_int = 19;
-pub const SEM_STAT_ANY: c_int = 20;
+pub const SEM_STAT_ANY: c_int = 20 | (crate::IPC_STAT & 0x100);
 
 pub const QFMT_VFS_OLD: c_int = 1;
 pub const QFMT_VFS_V0: c_int = 2;
@@ -4132,7 +4131,10 @@ cfg_if! {
                 msg_len: size_t,
                 msg_prio: *mut c_uint,
             ) -> ssize_t;
-            #[cfg_attr(gnu_time_bits64, link_name = "__mq_timedreceive_time64")]
+            #[cfg_attr(
+                any(gnu_time_bits64, musl32_time64),
+                link_name = "__mq_timedreceive_time64"
+            )]
             pub fn mq_timedreceive(
                 mqd: mqd_t,
                 msg_ptr: *mut c_char,
@@ -4146,7 +4148,10 @@ cfg_if! {
                 msg_len: size_t,
                 msg_prio: c_uint,
             ) -> c_int;
-            #[cfg_attr(gnu_time_bits64, link_name = "__mq_timedsend_time64")]
+            #[cfg_attr(
+                any(gnu_time_bits64, musl32_time64),
+                link_name = "__mq_timedsend_time64"
+            )]
             pub fn mq_timedsend(
                 mqd: mqd_t,
                 msg_ptr: *const c_char,
@@ -4170,6 +4175,7 @@ extern "C" {
     pub fn lcong48(p: *mut c_ushort);
 
     #[cfg_attr(gnu_time_bits64, link_name = "__lutimes64")]
+    #[cfg_attr(musl32_time64, link_name = "__lutimes_time64")]
     pub fn lutimes(file: *const c_char, times: *const crate::timeval) -> c_int;
 
     pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
@@ -4245,9 +4251,9 @@ extern "C" {
     pub fn fremovexattr(filedes: c_int, name: *const c_char) -> c_int;
     pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
-    #[cfg_attr(gnu_time_bits64, link_name = "__timerfd_gettime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__timerfd_gettime64")]
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut crate::itimerspec) -> c_int;
-    #[cfg_attr(gnu_time_bits64, link_name = "__timerfd_settime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__timerfd_settime64")]
     pub fn timerfd_settime(
         fd: c_int,
         flags: c_int,
@@ -4264,6 +4270,7 @@ extern "C" {
     ) -> c_int;
     pub fn dup3(oldfd: c_int, newfd: c_int, flags: c_int) -> c_int;
     #[cfg_attr(gnu_time_bits64, link_name = "__sigtimedwait64")]
+    #[cfg_attr(musl32_time64, link_name = "__sigtimedwait_time64")]
     pub fn sigtimedwait(
         set: *const sigset_t,
         info: *mut siginfo_t,
@@ -4326,6 +4333,7 @@ extern "C" {
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 
     #[cfg_attr(gnu_time_bits64, link_name = "__sched_rr_get_interval64")]
+    #[cfg_attr(musl32_time64, link_name = "__sched_rr_get_interval_time64")]
     pub fn sched_rr_get_interval(pid: crate::pid_t, tp: *mut crate::timespec) -> c_int;
     pub fn sched_setparam(pid: crate::pid_t, param: *const crate::sched_param) -> c_int;
     pub fn setns(fd: c_int, nstype: c_int) -> c_int;
@@ -4342,7 +4350,10 @@ extern "C" {
         ...
     ) -> c_int;
     pub fn sched_getscheduler(pid: crate::pid_t) -> c_int;
-    #[cfg_attr(gnu_time_bits64, link_name = "__clock_nanosleep_time64")]
+    #[cfg_attr(
+        any(gnu_time_bits64, musl32_time64),
+        link_name = "__clock_nanosleep_time64"
+    )]
     pub fn clock_nanosleep(
         clk_id: crate::clockid_t,
         flags: c_int,
