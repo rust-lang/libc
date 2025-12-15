@@ -239,6 +239,8 @@ s! {
         #[cfg(all(target_pointer_width = "32", linux_time_bits64))]
         pub input_event_usec: c_ulong,
 
+        #[cfg(target_arch = "sparc64")]
+        _pad1: Padding<c_int>,
         pub type_: __u16,
         pub code: __u16,
         pub value: __s32,
