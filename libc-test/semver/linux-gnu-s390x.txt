@@ -1,4 +1,10 @@
 PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP
 PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP
 PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
+getcontext
+makecontext
+mcontext_t
+setcontext
+swapcontext
 sysctl
+ucontext_t

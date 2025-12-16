@@ -103,11 +103,5 @@ __psw_t
 flock64
 fpreg_t
 fpregset_t
-getcontext
 greg_t
-makecontext
-mcontext_t
-setcontext
-swapcontext
 termios2
-ucontext_t
