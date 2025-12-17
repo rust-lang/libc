@@ -4788,7 +4788,7 @@ fn test_linux(target: &str) {
         });
         cfg.skip_struct(|s| match s.ident() {
             "utimbuf" | "timeval" | "timespec" | "rusage" | "itimerval" | "itimerspec"
-            | "timex" | "ntptimeval" | "stat" | "shmid_ds" | "msqid_ds" => true,
+            | "timex" | "ntptimeval" | "stat" | "shmid_ds" | "msqid_ds" | "input_event" => true,
             _ => false,
         });
 
