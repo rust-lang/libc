@@ -379,9 +379,9 @@ s! {
         __pgrp: crate::pid_t,
         __sd: crate::sigset_t,
         __ss: crate::sigset_t,
-        #[cfg(any(target_env = "musl", target_env = "ohos"))]
+        #[cfg(any(target_env = "musl", target_env = "ohos", target_env = "pauthtest"))]
         __prio: c_int,
-        #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
+        #[cfg(not(any(target_env = "musl", target_env = "ohos", target_env = "pauthtest")))]
         __sp: crate::sched_param,
         __policy: c_int,
         __pad: Padding<[c_int; 16]>,
@@ -834,6 +834,7 @@ s! {
             target_env = "musl",
             target_env = "ohos",
             target_env = "uclibc",
+            target_env = "pauthtest",
             target_pointer_width = "32"
         ),
         repr(align(4))
@@ -843,6 +844,7 @@ s! {
             not(target_env = "musl"),
             not(target_env = "ohos"),
             not(target_env = "uclibc"),
+            not(target_env = "pauthtest"),
             target_pointer_width = "64"
         ),
         repr(align(8))
@@ -864,7 +866,7 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_BARRIERATTR_T],
     }
 
-    #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
+    #[cfg(not(any(target_env = "musl", target_env = "ohos", target_env = "pauthtest")))]
     #[repr(align(8))]
     pub struct fanotify_event_metadata {
         pub event_len: __u32,
@@ -1036,28 +1038,28 @@ s! {
 
     #[cfg_attr(
         all(
-            any(target_env = "musl", target_env = "ohos"),
+            any(target_env = "musl", target_env = "ohos", target_env = "pauthtest"),
             target_pointer_width = "32"
         ),
         repr(align(4))
     )]
     #[cfg_attr(
         all(
-            any(target_env = "musl", target_env = "ohos"),
+            any(target_env = "musl", target_env = "ohos", target_env = "pauthtest"),
             target_pointer_width = "64"
         ),
         repr(align(8))
     )]
     #[cfg_attr(
         all(
-            not(any(target_env = "musl", target_env = "ohos")),
+            not(any(target_env = "musl", target_env = "ohos", target_env = "pauthtest")),
             target_arch = "x86"
         ),
         repr(align(4))
     )]
     #[cfg_attr(
         all(
-            not(any(target_env = "musl", target_env = "ohos")),
+            not(any(target_env = "musl", target_env = "ohos", target_env = "pauthtest")),
             not(target_arch = "x86")
         ),
         repr(align(8))
@@ -4364,7 +4366,11 @@ extern "C" {
 //
 // * musl has 64-bit versions only so aliases the LFS64 symbols to the standard ones
 cfg_if! {
-    if #[cfg(not(any(target_env = "musl", target_env = "ohos")))] {
+    if #[cfg(not(any(
+        target_env = "musl",
+        target_env = "ohos",
+        target_env = "pauthtest"
+    )))] {
         extern "C" {
             pub fn fallocate64(fd: c_int, mode: c_int, offset: off64_t, len: off64_t) -> c_int;
             pub fn fgetpos64(stream: *mut crate::FILE, ptr: *mut crate::fpos64_t) -> c_int;
@@ -4385,7 +4391,11 @@ cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
-    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+    } else if #[cfg(any(
+        target_env = "musl",
+        target_env = "ohos",
+        target_env = "pauthtest"
+    ))] {
         mod musl;
         pub use self::musl::*;
     } else if #[cfg(target_env = "gnu")] {

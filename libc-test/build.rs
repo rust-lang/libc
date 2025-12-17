@@ -3679,7 +3679,7 @@ fn test_linux(target: &str) {
 
     // target_env
     let gnu = target.contains("gnu");
-    let musl = target.contains("musl") || target.contains("ohos");
+    let musl = target.contains("musl") || target.contains("ohos") || target.contains("pauthtest");
     let uclibc = target.contains("uclibc");
 
     match (l4re, gnu, musl, uclibc) {
@@ -3716,8 +3716,10 @@ fn test_linux(target: &str) {
     let mips = target.contains("mips");
     let mips64 = target.contains("mips64");
     let mips32 = mips && !mips64;
+    let pauthtest = target.contains("pauthtest");
 
-    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    // Force modern musl for pauthtest.
+    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok() || pauthtest;
     if musl_v1_2_3 {
         assert!(musl);
     }
@@ -4880,7 +4882,7 @@ fn test_linux(target: &str) {
 // are included (e.g. because including both sets of headers clashes)
 fn test_linux_like_apis(target: &str) {
     let gnu = target.contains("gnu");
-    let musl = target.contains("musl") || target.contains("ohos");
+    let musl = target.contains("musl") || target.contains("ohos") || target.contains("pauthtest");
     let linux = target.contains("linux");
     let wali = target.contains("linux") && target.contains("wasm32");
     let emscripten = target.contains("emscripten");

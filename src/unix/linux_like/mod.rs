@@ -110,7 +110,12 @@ s! {
         pub tm_zone: *const c_char,
     }
 
-    #[cfg(not(any(target_env = "musl", target_os = "emscripten", target_env = "ohos")))]
+    #[cfg(not(any(
+        target_env = "musl",
+        target_os = "emscripten",
+        target_env = "ohos",
+        target_env = "pauthtest"
+    )))]
     pub struct sched_param {
         pub sched_priority: c_int,
     }
@@ -994,7 +999,12 @@ pub const TCP_MD5SIG: c_int = 14;
 cfg_if! {
     if #[cfg(all(
         target_os = "linux",
-        any(target_env = "gnu", target_env = "musl", target_env = "ohos")
+        any(
+            target_env = "gnu",
+            target_env = "musl",
+            target_env = "ohos",
+            target_env = "pauthtest"
+        )
     ))] {
         // WARN: deprecated
         pub const TCP_COOKIE_TRANSACTIONS: c_int = 15;
@@ -2105,6 +2115,7 @@ cfg_if! {
     if #[cfg(not(any(
         target_env = "musl",
         target_env = "ohos",
+        target_env = "pauthtest",
         target_os = "emscripten",
     )))] {
         extern "C" {
@@ -2170,6 +2181,7 @@ cfg_if! {
         target_env = "uclibc",
         target_env = "musl",
         target_env = "ohos",
+        target_env = "pauthtest",
         target_os = "emscripten",
     )))] {
         extern "C" {

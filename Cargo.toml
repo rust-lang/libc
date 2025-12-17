@@ -94,6 +94,7 @@ targets = [
     "aarch64-unknown-freebsd",
     "aarch64-unknown-hermit",
     "aarch64-unknown-illumos",
+    "aarch64-unknown-linux-pauthtest",
     "aarch64-unknown-netbsd",
     "aarch64-unknown-nto-qnx800",
     "aarch64-unknown-openbsd",
