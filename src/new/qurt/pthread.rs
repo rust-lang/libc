@@ -2,7 +2,25 @@
 //!
 //! QuRT provides a subset of POSIX pthread functionality optimized for real-time systems.
 
+use super::*;
 use crate::prelude::*;
+use crate::{
+    cpu_set_t,
+    pthread_attr_t,
+    pthread_barrier_t,
+    pthread_barrierattr_t,
+    pthread_cond_t,
+    pthread_condattr_t,
+    pthread_key_t,
+    pthread_mutex_t,
+    pthread_mutexattr_t,
+    pthread_once_t,
+    pthread_rwlock_t,
+    pthread_rwlockattr_t,
+    pthread_spinlock_t,
+    pthread_t,
+    timespec,
+};
 
 // Thread creation attributes
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;

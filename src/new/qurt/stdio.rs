@@ -1,5 +1,6 @@
 //! Header: `stdio.h`
 
+use super::*;
 use crate::prelude::*;
 
 // File position constants

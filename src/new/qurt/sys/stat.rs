@@ -1,5 +1,6 @@
 //! Header: `sys/stat.h`
 
+use super::super::*;
 use crate::prelude::*;
 
 // File type constants for stat.st_mode

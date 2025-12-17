@@ -1,5 +1,6 @@
 //! Header: `semaphore.h`
 
+use super::*;
 use crate::prelude::*;
 
 extern "C" {

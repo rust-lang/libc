@@ -1,5 +1,6 @@
 //! Header: `time.h`
 
+use super::*;
 use crate::prelude::*;
 
 // Clock types

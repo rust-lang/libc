@@ -1,5 +1,6 @@
 //! Header: `signal.h`
 
+use super::*;
 use crate::prelude::*;
 
 // Standard signal numbers

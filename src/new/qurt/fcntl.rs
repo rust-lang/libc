@@ -1,5 +1,6 @@
 //! Header: `fcntl.h`
 
+use super::*;
 use crate::prelude::*;
 
 // File access modes
@@ -17,10 +18,11 @@ pub const O_TRUNC: c_int = 0x0200;
 // File status flags
 pub const O_APPEND: c_int = 0x0400;
 pub const O_NONBLOCK: c_int = 0x0800;
-pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const O_SYNC: c_int = 0x1000;
+pub const O_FSYNC: c_int = O_SYNC;
+pub const O_DSYNC: c_int = 0x1000;
 
-// fcntl commands
+// fcntl() commands
 pub const F_DUPFD: c_int = 0;
 pub const F_GETFD: c_int = 1;
 pub const F_SETFD: c_int = 2;
@@ -30,14 +32,15 @@ pub const F_GETLK: c_int = 5;
 pub const F_SETLK: c_int = 6;
 pub const F_SETLKW: c_int = 7;
 
-// fcntl file descriptor flags
+// File descriptor flags
 pub const FD_CLOEXEC: c_int = 1;
 
-// flock types
+// Lock types for fcntl()
 pub const F_RDLCK: c_int = 0;
 pub const F_WRLCK: c_int = 1;
 pub const F_UNLCK: c_int = 2;
 
+// Functions
 extern "C" {
     pub fn open(pathname: *const c_char, flags: c_int, ...) -> c_int;
     pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
