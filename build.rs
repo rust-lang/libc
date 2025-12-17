@@ -35,6 +35,7 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `_REDIR_TIME64` in musl: symbol redirects to __*_time64
     "musl_redir_time64",
     "vxworks_lt_25_09",
+    "libc_pauthtest",
 ];
 
 // Extra values to allow for check-cfg.
@@ -69,6 +70,14 @@ fn main() {
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
     let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
+    let target_abi = env::var("CARGO_CFG_TARGET_ABI").unwrap_or_default();
+
+    // FIXME(msrv): Once the MSRV is 1.78, use `cfg(target_abi = "pauthtest")`
+    // directly instead of translating it to `libc_pauthtest`. `target_abi`
+    // cannot be used directly in cfg expressions on the current MSRV.
+    if target_abi == "pauthtest" {
+        println!("cargo:rustc-cfg=libc_pauthtest");
+    }
 
     // FIXME: this can be removed in 1-2 releases
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
@@ -122,8 +131,12 @@ fn main() {
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
 
-    // loongarch64, hexagon, and ohos only exist with recent musl
-    if target_arch == "loongarch64" || target_arch == "hexagon" || target_env == "ohos" {
+    // loongarch64, hexagon, ohos and pauthtest only exist with recent musl
+    if target_arch == "loongarch64"
+        || target_arch == "hexagon"
+        || target_env == "ohos"
+        || target_abi == "pauthtest"
+    {
         musl_v1_2_3 = true;
     }
 
