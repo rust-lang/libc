@@ -69,6 +69,7 @@ fn main() {
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
     let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
+    let target_abi = env::var("CARGO_CFG_TARGET_ABI").unwrap_or_default();
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
@@ -115,8 +116,12 @@ fn main() {
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
 
-    // loongarch64, hexagon, and ohos only exist with recent musl
-    if target_arch == "loongarch64" || target_arch == "hexagon" || target_env == "ohos" {
+    // loongarch64, hexagon, ohos and pauthtest only exist with recent musl
+    if target_arch == "loongarch64"
+        || target_arch == "hexagon"
+        || target_env == "ohos"
+        || target_abi == "pauthtest"
+    {
         musl_v1_2_3 = true;
     }
 

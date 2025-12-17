@@ -514,7 +514,17 @@ cfg_if! {
         #[link(name = "dl", cfg(not(target_feature = "crt-static")))]
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
         extern "C" {}
-    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+    } else if #[cfg(target_abi = "pauthtest")] {
+        #[link(name = "c")]
+        #[link(name = "m")]
+        #[link(name = "rt")]
+        #[link(name = "pthread")]
+        #[link(name = "dl")]
+        extern "C" {}
+    } else if #[cfg(any(
+        all(target_env = "musl", not(target_abi = "pauthtest")),
+        target_env = "ohos"
+    ))] {
         #[cfg_attr(
             feature = "rustc-dep-of-std",
             link(
