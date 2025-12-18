@@ -291,52 +291,6 @@ extern "C" {
     pub fn telldir(dirp: *mut DIR) -> c_long;
     pub fn seekdir(dirp: *mut DIR, loc: c_long);
 
-    // Math functions
-    pub fn acos(x: c_double) -> c_double;
-    pub fn acosf(x: c_float) -> c_float;
-    pub fn asin(x: c_double) -> c_double;
-    pub fn asinf(x: c_float) -> c_float;
-    pub fn atan(x: c_double) -> c_double;
-    pub fn atanf(x: c_float) -> c_float;
-    pub fn atan2(y: c_double, x: c_double) -> c_double;
-    pub fn atan2f(y: c_float, x: c_float) -> c_float;
-    pub fn cos(x: c_double) -> c_double;
-    pub fn cosf(x: c_float) -> c_float;
-    pub fn sin(x: c_double) -> c_double;
-    pub fn sinf(x: c_float) -> c_float;
-    pub fn tan(x: c_double) -> c_double;
-    pub fn tanf(x: c_float) -> c_float;
-    pub fn cosh(x: c_double) -> c_double;
-    pub fn coshf(x: c_float) -> c_float;
-    pub fn sinh(x: c_double) -> c_double;
-    pub fn sinhf(x: c_float) -> c_float;
-    pub fn tanh(x: c_double) -> c_double;
-    pub fn tanhf(x: c_float) -> c_float;
-    pub fn exp(x: c_double) -> c_double;
-    pub fn expf(x: c_float) -> c_float;
-    pub fn frexp(value: c_double, exp: *mut c_int) -> c_double;
-    pub fn frexpf(value: c_float, exp: *mut c_int) -> c_float;
-    pub fn ldexp(x: c_double, exp: c_int) -> c_double;
-    pub fn ldexpf(x: c_float, exp: c_int) -> c_float;
-    pub fn log(x: c_double) -> c_double;
-    pub fn logf(x: c_float) -> c_float;
-    pub fn log10(x: c_double) -> c_double;
-    pub fn log10f(x: c_float) -> c_float;
-    pub fn modf(value: c_double, iptr: *mut c_double) -> c_double;
-    pub fn modff(value: c_float, iptr: *mut c_float) -> c_float;
-    pub fn pow(x: c_double, y: c_double) -> c_double;
-    pub fn powf(x: c_float, y: c_float) -> c_float;
-    pub fn sqrt(x: c_double) -> c_double;
-    pub fn sqrtf(x: c_float) -> c_float;
-    pub fn ceil(x: c_double) -> c_double;
-    pub fn ceilf(x: c_float) -> c_float;
-    pub fn fabs(x: c_double) -> c_double;
-    pub fn fabsf(x: c_float) -> c_float;
-    pub fn floor(x: c_double) -> c_double;
-    pub fn floorf(x: c_float) -> c_float;
-    pub fn fmod(x: c_double, y: c_double) -> c_double;
-    pub fn fmodf(x: c_float, y: c_float) -> c_float;
-
     // Memory mapping functions
     pub fn mmap(
         addr: *mut c_void,
