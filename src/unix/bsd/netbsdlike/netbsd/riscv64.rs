@@ -1,5 +1,5 @@
 use core::clone::Clone;
-use core::cmp{
+use core::cmp::{
     Eq,
     PartialEq,
 };
