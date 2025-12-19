@@ -1,6 +1,5 @@
-use crate::PT_FIRSTMACH;
-
 use crate::prelude::*;
+use crate::PT_FIRSTMACH;
 
 pub type __greg_t = u64;
 pub type __cpu_simple_lock_nv_t = c_int;
@@ -25,10 +24,7 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for __fpreg {
             fn eq(&self, other: &__fpreg) -> bool {
-                unsafe {
-                    self.u_u64 == other.u_u64
-                        || self.u_d == other.u_d
-                }
+                unsafe { self.u_u64 == other.u_u64 || self.u_d == other.u_d }
             }
         }
         impl Eq for __fpreg {}
