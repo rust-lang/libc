@@ -1,10 +1,13 @@
-use crate::prelude::*;
-use crate::PT_FIRSTMACH;
 use core::clone::Clone;
-use core::cmp::Eq;
-use core::cmp::PartialEq;
+use core::cmp{
+    Eq,
+    PartialEq,
+};
 use core::fmt::Debug;
 use core::marker::Copy;
+
+use crate::prelude::*;
+use crate::PT_FIRSTMACH;
 
 pub type __greg_t = u64;
 pub type __cpu_simple_lock_nv_t = c_int;
