@@ -1,5 +1,10 @@
 use crate::prelude::*;
 use crate::PT_FIRSTMACH;
+use core::clone::Clone;
+use core::cmp::Eq;
+use core::cmp::PartialEq;
+use core::fmt::Debug;
+use core::marker::Copy;
 
 pub type __greg_t = u64;
 pub type __cpu_simple_lock_nv_t = c_int;
@@ -14,36 +19,37 @@ s! {
     }
 }
 
-#[derive(Clone, Copy)]
 pub union __fpreg {
     pub u_u64: u64,
     pub u_d: c_double,
 }
 
-cfg_if! {
-    if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __fpreg {
-            fn eq(&self, other: &__fpreg) -> bool {
-                unsafe { self.u_u64 == other.u_u64 || self.u_d == other.u_d }
-            }
+impl core::cmp::PartialEq for __fpreg {
+    fn eq(&self, other: &__fpreg) -> bool {
+        unsafe { self.u_u64 == other.u_u64 || self.u_d == other.u_d }
+    }
+}
+impl core::cmp::Eq for __fpreg {}
+impl core::marker::Copy for __fpreg {}
+impl core::clone::Clone for __fpreg {
+    fn clone(&self) -> __fpreg {
+        *self
+    }
+}
+impl hash::Hash for __fpreg {
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        unsafe {
+            self.u_u64.hash(state);
         }
-        impl Eq for __fpreg {}
-        impl hash::Hash for __fpreg {
-            fn hash<H: hash::Hasher>(&self, state: &mut H) {
-                unsafe {
-                    self.u_u64.hash(state);
-                }
-            }
-        }
-        impl fmt::Debug for __fpreg {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                unsafe {
-                    f.debug_struct("__fpreg")
-                        .field("u_u64", &self.u_u64)
-                        .field("u_d", &self.u_d)
-                        .finish()
-                }
-            }
+    }
+}
+impl core::fmt::Debug for __fpreg {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        unsafe {
+            f.debug_struct("__fpreg")
+                .field("u_u64", &self.u_u64)
+                .field("u_d", &self.u_d)
+                .finish()
         }
     }
 }
