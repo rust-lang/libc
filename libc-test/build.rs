@@ -1951,13 +1951,6 @@ fn test_android(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if f.ends_with("_nsec") =>
-            {
-                Some(f.to_string())
-            }
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
