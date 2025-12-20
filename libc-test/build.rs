@@ -4391,6 +4391,14 @@ fn test_linux(target: &str) {
             // Not present in glibc
             "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" if gnu => true,
 
+            "STATX_DIOALIGN" // Added in  linux 6.1
+            | "STATX_MNT_ID_UNIQUE" // Added in Linux 6.8
+            | "STATX_SUBVOL" // Added in Linux 6.10
+            | "STATX_WRITE_ATOMIC" // Added in Linux 6.11
+            | "STATX_ATTR_WRITE_ATOMIC" // Added in Linux 6.11
+            | "STATX_DIO_READ_ALIGN" // Added in Linux 6.14
+            => true,
+
             // FIXME(linux): The below is no longer const in glibc 2.34:
             // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
             "PTHREAD_STACK_MIN" | "SIGSTKSZ" | "MINSIGSTKSZ" if gnu => true,
