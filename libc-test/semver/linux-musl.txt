@@ -82,6 +82,7 @@ prlimit
 prlimit64
 process_vm_readv
 process_vm_writev
+pthread_timedjoin_np
 pututxline
 pwritev2
 pwritev64

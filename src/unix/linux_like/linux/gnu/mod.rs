@@ -1120,6 +1120,16 @@ extern "C" {
         val: c_int,
     ) -> c_int;
     pub fn pthread_sigqueue(thread: crate::pthread_t, sig: c_int, value: crate::sigval) -> c_int;
+    pub fn pthread_tryjoin_np(thread: crate::pthread_t, retval: *mut *mut c_void) -> c_int;
+    #[cfg_attr(
+        all(target_pointer_width = "32", gnu_time_bits64),
+        link_name = "__pthread_timedjoin_np64"
+    )]
+    pub fn pthread_timedjoin_np(
+        thread: crate::pthread_t,
+        retval: *mut *mut c_void,
+        abstime: *const crate::timespec,
+    ) -> c_int;
     pub fn mallinfo() -> crate::mallinfo;
     pub fn mallinfo2() -> crate::mallinfo2;
     pub fn malloc_stats();

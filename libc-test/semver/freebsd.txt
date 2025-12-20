@@ -2241,6 +2241,7 @@ pthread_spin_lock
 pthread_spin_trylock
 pthread_spin_unlock
 pthread_spinlock_t
+pthread_timedjoin_np
 ptrace
 ptrace_io_desc
 ptrace_lwpinfo
