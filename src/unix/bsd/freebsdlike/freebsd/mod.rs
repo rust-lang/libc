@@ -4644,6 +4644,12 @@ extern "C" {
     pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> c_int;
     pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> c_int;
 
+    pub fn pthread_timedjoin_np(
+        thread: crate::pthread_t,
+        retval: *mut *mut c_void,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+
     #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "statfs@FBSD_1.0")]
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
     #[cfg_attr(all(target_os = "freebsd", freebsd11), link_name = "fstatfs@FBSD_1.0")]
