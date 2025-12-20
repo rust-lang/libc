@@ -869,6 +869,16 @@ extern "C" {
         note = "musl provides `utmp` as stubs and an alternative should be preferred; see https://wiki.musl-libc.org/faq.html"
     )]
     pub fn utmpxname(file: *const c_char) -> c_int;
+    pub fn pthread_tryjoin_np(thread: crate::pthread_t, retval: *mut *mut c_void) -> c_int;
+    #[cfg_attr(
+        all(musl32_time64, target_pointer_width = "32"),
+        link_name = "__pthread_timedjoin_np_time64"
+    )]
+    pub fn pthread_timedjoin_np(
+        thread: crate::pthread_t,
+        retval: *mut *mut c_void,
+        abstime: *const crate::timespec,
+    ) -> c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
