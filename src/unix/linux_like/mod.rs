@@ -1001,6 +1001,7 @@ pub const LOCK_UN: c_int = 8;
 pub const SS_ONSTACK: c_int = 1;
 pub const SS_DISABLE: c_int = 2;
 
+pub const NAME_MAX: c_int = 255;
 pub const PATH_MAX: c_int = 4096;
 
 pub const UIO_MAXIOV: c_int = 1024;
