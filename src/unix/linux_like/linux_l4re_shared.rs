@@ -1493,15 +1493,17 @@ f! {
         if ((*cmsg).cmsg_len as usize) < size_of::<crate::cmsghdr>() {
             return core::ptr::null_mut::<crate::cmsghdr>();
         }
-        let next =
-            (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut crate::cmsghdr;
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if (next.wrapping_offset(1)) as usize > max
-            || next as usize + super::CMSG_ALIGN((*next).cmsg_len as usize) > max
-        {
+
+        // IMPROVEMENT(1.75): use `.byte_add()`
+        let next_cmsg = (cmsg.cast::<u8>())
+            .add(super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
+            .cast::<crate::cmsghdr>();
+        let max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+
+        if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
             core::ptr::null_mut::<crate::cmsghdr>()
         } else {
-            next
+            next_cmsg as _
         }
     }
 
