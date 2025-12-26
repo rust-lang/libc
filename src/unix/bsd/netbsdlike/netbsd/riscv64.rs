@@ -1,30 +1,20 @@
-use core::clone::Clone;
-use core::cmp::{
-    Eq,
-    PartialEq,
-};
-use core::fmt::Debug;
-use core::marker::Copy;
-
 use crate::prelude::*;
 use crate::PT_FIRSTMACH;
 
 pub type __greg_t = u64;
-pub type __cpu_simple_lock_nv_t = c_int;
-pub type __gregset = [__greg_t; _NGREG];
-pub type __fpregset = [__fpreg; _NFREG];
-
-s! {
-    pub struct mcontext_t {
-        pub __gregs: __gregset,
-        pub __fpregs: __fpregset,
-        __spare: [crate::__greg_t; 7],
-    }
-}
-
 pub union __fpreg {
     pub u_u64: u64,
     pub u_d: c_double,
+}
+pub type __cpu_simple_lock_nv_t = c_uint;
+pub type __gregset_t = [__greg_t; _NGREG];
+pub type __fregset_t = [__fpreg; _NFREG];
+
+#[derive(Debug)]
+pub struct mcontext_t {
+    pub __gregs: __gregset_t,
+    pub __fregs: __fregset_t,
+    __spare: [crate::__greg_t; 7],
 }
 
 impl core::cmp::PartialEq for __fpreg {
@@ -57,7 +47,7 @@ impl core::fmt::Debug for __fpreg {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = size_of::<c_long>() - 1;
+pub(crate) const _ALIGNBYTES: usize = 0xf;
 
 pub const PT_GETREGS: c_int = PT_FIRSTMACH + 0;
 pub const PT_SETREGS: c_int = PT_FIRSTMACH + 1;
