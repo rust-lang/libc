@@ -1881,6 +1881,17 @@ extern "C" {
     #[cfg(not(target_os = "l4re"))]
     pub fn clock_getcpuclockid(pid: crate::pid_t, clk_id: *mut crate::clockid_t) -> c_int;
 
+    #[cfg_attr(gnu_time_bits64, link_name = "__getitimer64")]
+    #[cfg_attr(musl32_time64, link_name = "__getitimer_time64")]
+    pub fn getitimer(which: c_int, curr_value: *mut crate::itimerval) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__setitimer64")]
+    #[cfg_attr(musl32_time64, link_name = "__setitimer_time64")]
+    pub fn setitimer(
+        which: c_int,
+        new_value: *const crate::itimerval,
+        old_value: *mut crate::itimerval,
+    ) -> c_int;
+
     pub fn dirfd(dirp: *mut crate::DIR) -> c_int;
 
     pub fn memalign(align: size_t, size: size_t) -> *mut c_void;
