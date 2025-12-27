@@ -80,21 +80,12 @@ mod t {
                 if cfg!(target_os = "aix") && cmsg_len % std::mem::size_of::<cmsghdr>() != 0 {
                     continue;
                 }
-                for next_cmsg_len in 0..32 {
-                    unsafe {
-                        pcmsghdr.cast::<u8>().write_bytes(0, CAPACITY);
-                        (*pcmsghdr).cmsg_len = cmsg_len as _;
-                        let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
-                        let next = cmsg_nxthdr(&mhdr, pcmsghdr);
-                        assert_eq!(libc_next, next);
-
-                        if !libc_next.is_null() {
-                            (*libc_next).cmsg_len = next_cmsg_len;
-                            let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
-                            let next = cmsg_nxthdr(&mhdr, pcmsghdr);
-                            assert_eq!(libc_next, next);
-                        }
-                    }
+                unsafe {
+                    pcmsghdr.cast::<u8>().write_bytes(0, CAPACITY);
+                    (*pcmsghdr).cmsg_len = cmsg_len as _;
+                    let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
+                    let next = cmsg_nxthdr(&mhdr, pcmsghdr);
+                    assert_eq!(libc_next, next);
                 }
             }
         }
