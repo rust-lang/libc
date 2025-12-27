@@ -74,14 +74,10 @@ mod t {
             let pcmsghdr = buffer.0.as_mut_ptr().cast::<cmsghdr>();
             mhdr.msg_control = pcmsghdr.cast::<c_void>();
             mhdr.msg_controllen = (160 - start_ofs) as _;
-            for cmsg_len in 0..64 {
-                // Address must be a multiple of 0x4 for testing on AIX.
-                if cfg!(target_os = "aix") && cmsg_len % std::mem::size_of::<cmsghdr>() != 0 {
-                    continue;
-                }
+            for cmsg_payload_len in 0..64 {
                 unsafe {
                     pcmsghdr.cast::<u8>().write_bytes(0, CAPACITY);
-                    (*pcmsghdr).cmsg_len = cmsg_len as _;
+                    (*pcmsghdr).cmsg_len = libc::CMSG_LEN(cmsg_payload_len as _) as _;
                     let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
                     let next = cmsg_nxthdr(&mhdr, pcmsghdr);
                     assert_eq!(libc_next, next);
