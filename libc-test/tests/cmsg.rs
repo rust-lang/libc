@@ -75,6 +75,7 @@ mod t {
             for cmsg_payload_len in 0..64 {
                 let mut current_cmsghdr_ptr = pcmsghdr;
                 assert!(!current_cmsghdr_ptr.is_null());
+                let mut count = 0;
 
                 // Go from first cmsghdr to the last (until null) using various
                 // cmsg_len increments. `cmsg_len` is set by us to check that
@@ -87,9 +88,14 @@ mod t {
 
                         let libc_next = libc::CMSG_NXTHDR(&mhdr, current_cmsghdr_ptr);
                         let system_next = cmsg_nxthdr(&mhdr, current_cmsghdr_ptr);
-                        assert_eq!(libc_next, system_next);
+                        assert_eq!(
+                            system_next, libc_next,
+                            "msg_crontrollen: {}, payload_len: {}, count: {}",
+                            mhdr.msg_controllen, cmsg_payload_len, count
+                        );
 
                         current_cmsghdr_ptr = libc_next;
+                        count += 1;
                     }
                 }
 
