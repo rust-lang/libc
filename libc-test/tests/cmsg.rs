@@ -64,18 +64,37 @@ mod t {
 
         const CAPACITY: usize = 512;
         let mut buffer = Align8([0_u8; CAPACITY]);
+        let pcmsghdr = buffer.0.as_mut_ptr().cast::<cmsghdr>();
+
         let mut mhdr: msghdr = unsafe { mem::zeroed() };
-        for start_ofs in 0..64 {
-            let pcmsghdr = buffer.0.as_mut_ptr().cast::<cmsghdr>();
-            mhdr.msg_control = pcmsghdr.cast::<c_void>();
-            mhdr.msg_controllen = (160 - start_ofs) as _;
+        mhdr.msg_control = pcmsghdr.cast::<c_void>();
+
+        for trunc in 0..64 {
+            mhdr.msg_controllen = (160 - trunc) as _;
+
             for cmsg_payload_len in 0..64 {
+                let mut current_cmsghdr_ptr = pcmsghdr;
+                assert!(!current_cmsghdr_ptr.is_null());
+
+                // Go from first cmsghdr to the last (until null) using various
+                // cmsg_len increments. `cmsg_len` is set by us to check that
+                // the jump to the next cmsghdr is correct with respect to
+                // alignment and payload padding.
+                while !current_cmsghdr_ptr.is_null() {
+                    unsafe {
+                        (*current_cmsghdr_ptr).cmsg_len =
+                            libc::CMSG_LEN(cmsg_payload_len as _) as _;
+
+                        let libc_next = libc::CMSG_NXTHDR(&mhdr, current_cmsghdr_ptr);
+                        let system_next = cmsg_nxthdr(&mhdr, current_cmsghdr_ptr);
+                        assert_eq!(libc_next, system_next);
+
+                        current_cmsghdr_ptr = libc_next;
+                    }
+                }
+
                 unsafe {
                     pcmsghdr.cast::<u8>().write_bytes(0, CAPACITY);
-                    (*pcmsghdr).cmsg_len = libc::CMSG_LEN(cmsg_payload_len as _) as _;
-                    let libc_next = libc::CMSG_NXTHDR(&mhdr, pcmsghdr);
-                    let next = cmsg_nxthdr(&mhdr, pcmsghdr);
-                    assert_eq!(libc_next, next);
                 }
             }
         }
