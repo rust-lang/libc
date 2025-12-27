@@ -17,8 +17,6 @@ mod t {
 
     extern "C" {
         pub fn cmsg_firsthdr(msgh: *const msghdr) -> *mut cmsghdr;
-        // see below
-        #[cfg(not(target_arch = "sparc64"))]
         pub fn cmsg_nxthdr(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr;
         pub fn cmsg_space(length: c_uint) -> usize;
         pub fn cmsg_len(length: c_uint) -> usize;
@@ -59,9 +57,6 @@ mod t {
         }
     }
 
-    // Skip on sparc64
-    // https://github.com/rust-lang/libc/issues/1239
-    #[cfg(not(target_arch = "sparc64"))]
     #[test]
     fn test_cmsg_nxthdr() {
         // Helps to align the buffer on the stack.
