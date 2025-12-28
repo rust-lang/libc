@@ -1046,6 +1046,7 @@ pub const LOCK_UN: c_int = 8;
 pub const SS_ONSTACK: c_int = 1;
 pub const SS_DISABLE: c_int = 2;
 
+pub const NAME_MAX: c_int = 255;
 pub const PATH_MAX: c_int = 4096;
 
 pub const UIO_MAXIOV: c_int = 1024;
@@ -1929,6 +1930,17 @@ extern "C" {
     pub fn clock_settime(clk_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
     #[cfg(not(target_os = "l4re"))]
     pub fn clock_getcpuclockid(pid: crate::pid_t, clk_id: *mut crate::clockid_t) -> c_int;
+
+    #[cfg_attr(gnu_time_bits64, link_name = "__getitimer64")]
+    #[cfg_attr(musl32_time64, link_name = "__getitimer_time64")]
+    pub fn getitimer(which: c_int, curr_value: *mut crate::itimerval) -> c_int;
+    #[cfg_attr(gnu_time_bits64, link_name = "__setitimer64")]
+    #[cfg_attr(musl32_time64, link_name = "__setitimer_time64")]
+    pub fn setitimer(
+        which: c_int,
+        new_value: *const crate::itimerval,
+        old_value: *mut crate::itimerval,
+    ) -> c_int;
 
     pub fn dirfd(dirp: *mut crate::DIR) -> c_int;
 
