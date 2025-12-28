@@ -100,9 +100,9 @@ version = "0.1.0"
 
 [[package]]
 name = "ctest"
-version = "0.5.0-beta.2"
+version = "0.5.0-beta.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2011d1b0af8c72339aab2847f4650561f4a2807ea3797c8abb7525dcbb1fbaf7"
+checksum = "a41986fe714de2b29e44b072f0f6676a247e5469d9262811dfd1bf733482a3b6"
 dependencies = [
  "askama",
  "cc",
@@ -144,7 +144,7 @@ dependencies = [
  "annotate-snippets",
  "cc",
  "cfg-if",
- "ctest 0.5.0-beta.2",
+ "ctest 0.5.0-beta.3",
  "glob",
  "libc",
  "proc-macro2",
