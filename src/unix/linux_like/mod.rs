@@ -307,11 +307,11 @@ cfg_if! {
                 #[cfg(target_os = "linux")]
                 pub stx_atomic_write_unit_max_opt: crate::__u32,
                 #[cfg(target_os = "linux")]
-                __statx_pad2: [crate::__u32; 1],
+                __statx_pad2: Padding<[crate::__u32; 1]>,
                 #[cfg(target_os = "linux")]
-                __statx_pad3: [crate::__u64; 8],
+                __statx_pad3: Padding<[crate::__u64; 8]>,
                 #[cfg(not(target_os = "linux"))]
-                __statx_pad3: [crate::__u64; 12],
+                __statx_pad3: Padding<[crate::__u64; 12]>,
             }
 
             pub struct statx_timestamp {
