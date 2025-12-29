@@ -14,7 +14,7 @@ pub type idtype_t = c_int;
 type __pthread_spin_t = __cpu_simple_lock_nv_t;
 pub type shmatt_t = c_uint;
 pub type cpuset_t = _cpuset;
-pub type pthread_spin_t = c_uchar;
+pub type pthread_spin_t = __pthread_spin_t;
 
 // elf.h
 
