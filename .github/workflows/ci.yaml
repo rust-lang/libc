@@ -281,7 +281,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: test on Solaris
-        uses: vmactions/solaris-vm@v1.1.8
+        uses: vmactions/solaris-vm@v1.2.3
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
