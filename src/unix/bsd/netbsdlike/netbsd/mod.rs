@@ -79,6 +79,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
+            #[cfg(target_pointer_width = "64")]
             __pad1: Padding<c_int>,
             _pid: crate::pid_t,
         }
@@ -91,6 +92,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
+            #[cfg(target_pointer_width = "64")]
             __pad1: Padding<c_int>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
@@ -104,6 +106,7 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
+            #[cfg(target_pointer_width = "64")]
             __pad1: Padding<c_int>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
@@ -118,12 +121,10 @@ impl siginfo_t {
             _si_signo: c_int,
             _si_errno: c_int,
             _si_code: c_int,
+            #[cfg(target_pointer_width = "64")]
             __pad1: Padding<c_int>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
-            _value: crate::sigval,
-            _cpid: crate::pid_t,
-            _cuid: crate::uid_t,
             status: c_int,
         }
         (*(self as *const siginfo_t as *const siginfo_timer)).status
@@ -210,9 +211,13 @@ s! {
         pub si_signo: c_int,
         pub si_code: c_int,
         pub si_errno: c_int,
+        #[cfg(target_pointer_width = "64")]
         __pad1: Padding<c_int>,
         pub si_addr: *mut c_void,
+        #[cfg(target_pointer_width = "64")]
         __pad2: Padding<[u64; 13]>,
+        #[cfg(target_pointer_width = "32")]
+        __pad2: Padding<[u64; 14]>,
     }
 
     pub struct pthread_attr_t {
