@@ -1,2 +1,5 @@
 //! GNU Hurd libc.
-// FIXME(hurd): link to headers needed.
+//!
+//! Header files: <https://github.com/bminor/glibc/tree/master/sysdeps/mach/hurd/bits>
+
+pub(crate) mod sys;

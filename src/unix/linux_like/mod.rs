@@ -1782,31 +1782,7 @@ cfg_if! {
     }
 }
 
-const fn CMSG_ALIGN(len: usize) -> usize {
-    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
-}
-
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut crate::cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<crate::cmsghdr>() {
-            (*mhdr).msg_control.cast::<crate::cmsghdr>()
-        } else {
-            core::ptr::null_mut::<crate::cmsghdr>()
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const crate::cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1) as *mut c_uchar
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<crate::cmsghdr>())) as c_uint
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(size_of::<crate::cmsghdr>()) as c_uint + length
-    }
-
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;

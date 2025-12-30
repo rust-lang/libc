@@ -2389,45 +2389,12 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __spare: 0,
 };
 
-const fn _CMSG_ALIGN(len: usize) -> usize {
-    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
-}
-
+// IMPROVEMENT: reuse crate::new::common::posix::sys::socket::align_impl?
 const fn _ALIGN(p: usize, b: usize) -> usize {
     (p + b - 1) & !(b - 1)
 }
 
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control as *mut cmsghdr
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let msg = _CMSG_ALIGN((*cmsg).cmsg_len as usize);
-        let next = cmsg as usize + msg + _CMSG_ALIGN(size_of::<cmsghdr>());
-        if next > (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            (cmsg as usize + msg) as *mut cmsghdr
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        _CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_CMSG_ALIGN(size_of::<cmsghdr>()) + _CMSG_ALIGN(length as usize)) as c_uint
-    }
-
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;

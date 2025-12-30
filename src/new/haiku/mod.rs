@@ -1,4 +1,6 @@
 //! Haiku OS libc.
-// FIXME(haiku): link to headers needed.
+//!
+//! <https://github.com/haiku/haiku/tree/master/headers/posix>
 
+pub(crate) mod sys;
 pub(crate) mod unistd;

@@ -3354,47 +3354,8 @@ pub const PTHREAD_STACK_MIN: size_t = 0;
 // Non-public helper constants
 const _UTSNAME_LENGTH: usize = 1024;
 
-const fn CMSG_ALIGN(len: usize) -> usize {
-    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
-}
-
 // functions
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast::<cmsghdr>()
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
-            return core::ptr::null_mut::<cmsghdr>();
-        }
-        let next = (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if (next.offset(1)) as usize > max
-            || next as usize + CMSG_ALIGN((*next).cmsg_len as usize) > max
-        {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            next.cast::<cmsghdr>()
-        }
-    }
-
     pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = mem::zeroed();
         let size_in_bits = 8 * size_of_val(&_dummy.bits[0]);

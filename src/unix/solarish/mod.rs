@@ -2185,63 +2185,12 @@ pub const PI_FPUTYPE: c_int = 32;
 // sys/auxv.h
 pub const AT_SUN_HWCAP: c_uint = 2009;
 
-// As per sys/socket.h, header alignment must be 8 bytes on SPARC
-// and 4 bytes everywhere else:
-#[cfg(target_arch = "sparc64")]
-const _CMSG_HDR_ALIGNMENT: usize = 8;
-#[cfg(not(target_arch = "sparc64"))]
-const _CMSG_HDR_ALIGNMENT: usize = 4;
-
-const _CMSG_DATA_ALIGNMENT: usize = size_of::<c_int>();
-
 const NEWDEV: c_int = 1;
 
 // sys/sendfile.h
 pub const SFV_FD_SELF: c_int = -2;
 
-const fn _CMSG_HDR_ALIGN(p: usize) -> usize {
-    (p + _CMSG_HDR_ALIGNMENT - 1) & !(_CMSG_HDR_ALIGNMENT - 1)
-}
-
-const fn _CMSG_DATA_ALIGN(p: usize) -> usize {
-    (p + _CMSG_DATA_ALIGNMENT - 1) & !(_CMSG_DATA_ALIGNMENT - 1)
-}
-
 f! {
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        _CMSG_DATA_ALIGN(cmsg.offset(1) as usize) as *mut c_uchar
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        _CMSG_DATA_ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut cmsghdr {
-        if ((*mhdr).msg_controllen as usize) < size_of::<cmsghdr>() {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            (*mhdr).msg_control as *mut cmsghdr
-        }
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if cmsg.is_null() {
-            return crate::CMSG_FIRSTHDR(mhdr);
-        }
-        let next =
-            _CMSG_HDR_ALIGN(cmsg as usize + (*cmsg).cmsg_len as usize + size_of::<cmsghdr>());
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next > max {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            _CMSG_HDR_ALIGN(cmsg as usize + (*cmsg).cmsg_len as usize) as *mut cmsghdr
-        }
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        _CMSG_HDR_ALIGN(size_of::<cmsghdr>() as usize + length as usize) as c_uint
-    }
-
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;

@@ -1,8 +1,5 @@
+use crate::off_t;
 use crate::prelude::*;
-use crate::{
-    cmsghdr,
-    off_t,
-};
 
 pub type dev_t = u32;
 pub type wchar_t = i32;
@@ -1170,35 +1167,7 @@ pub const RTAX_MPLS2: c_int = 9;
 pub const RTAX_MPLS3: c_int = 10;
 pub const RTAX_MAX: c_int = 11;
 
-const fn _CMSG_ALIGN(n: usize) -> usize {
-    (n + (size_of::<c_long>() - 1)) & !(size_of::<c_long>() - 1)
-}
-
 f! {
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        (_CMSG_ALIGN(size_of::<cmsghdr>()) + length as usize) as c_uint
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = cmsg as usize
-            + _CMSG_ALIGN((*cmsg).cmsg_len as usize)
-            + _CMSG_ALIGN(size_of::<cmsghdr>());
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next <= max {
-            (cmsg as usize + _CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_CMSG_ALIGN(size_of::<cmsghdr>()) + _CMSG_ALIGN(length as usize)) as c_uint
-    }
-
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.ary.iter_mut() {
             *slot = 0;
