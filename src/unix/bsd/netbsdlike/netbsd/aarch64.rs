@@ -65,8 +65,6 @@ cfg_if! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = size_of::<c_int>() - 1;
-
 pub const PT_GETREGS: c_int = PT_FIRSTMACH + 0;
 pub const PT_SETREGS: c_int = PT_FIRSTMACH + 1;
 pub const PT_GETFPREGS: c_int = PT_FIRSTMACH + 2;

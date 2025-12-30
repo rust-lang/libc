@@ -1251,19 +1251,6 @@ pub const PRIO_USER: c_int = 2;
 pub const SOMAXCONN: c_int = 128;
 
 f! {
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
-            return core::ptr::null_mut::<cmsghdr>();
-        }
-        let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if (next.offset(1)) as usize >= max {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            next as *mut cmsghdr
-        }
-    }
-
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         for slot in cpuset.bits.iter_mut() {
             *slot = 0;

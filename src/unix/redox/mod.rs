@@ -1091,17 +1091,6 @@ pub const PRIO_PGRP: c_int = 1;
 pub const PRIO_USER: c_int = 2;
 
 f! {
-    //sys/socket.h
-    pub const fn CMSG_ALIGN(len: size_t) -> size_t {
-        (len + size_of::<size_t>() - 1) & !(size_of::<size_t>() - 1)
-    }
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(size_of::<cmsghdr>()) + length as usize) as c_uint
-    }
-    pub const fn CMSG_SPACE(len: c_uint) -> c_uint {
-        (CMSG_ALIGN(len as size_t) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
-    }
-
     // wait.h
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
@@ -1331,10 +1320,6 @@ extern "C" {
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
 
-    // sys/socket.h
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar;
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr;
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr;
     pub fn bind(
         socket: c_int,
         address: *const crate::sockaddr,

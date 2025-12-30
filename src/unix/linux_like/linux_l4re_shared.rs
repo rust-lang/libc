@@ -1486,34 +1486,6 @@ pub const NT_PRFPXREG: c_int = 20;
 pub const MS_NOUSER: c_ulong = 0xffffffff80000000;
 
 f! {
-    pub fn CMSG_NXTHDR(
-        mhdr: *const crate::msghdr,
-        cmsg: *const crate::cmsghdr,
-    ) -> *mut crate::cmsghdr {
-        if ((*cmsg).cmsg_len as usize) < size_of::<crate::cmsghdr>() {
-            return core::ptr::null_mut::<crate::cmsghdr>();
-        }
-
-        // IMPROVEMENT(1.75): use `.byte_add()`
-        let next_cmsg = (cmsg.cast::<u8>())
-            .add(super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
-            .cast::<crate::cmsghdr>();
-
-        #[allow(unused_mut)]
-        let mut max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-
-        #[cfg(any(target_env = "musl", target_env = "ohos"))]
-        {
-            max_addr -= 1;
-        }
-
-        if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
-            core::ptr::null_mut::<crate::cmsghdr>()
-        } else {
-            next_cmsg as _
-        }
-    }
-
     pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = mem::zeroed();
         let size_in_bits = 8 * size_of_val(&_dummy.bits[0]);

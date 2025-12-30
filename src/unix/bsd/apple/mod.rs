@@ -2,11 +2,8 @@
 //!
 //! This covers *-apple-* triples currently
 
+use crate::off_t;
 use crate::prelude::*;
-use crate::{
-    cmsghdr,
-    off_t,
-};
 
 pub type wchar_t = i32;
 pub type clock_t = c_ulong;
@@ -3965,11 +3962,6 @@ pub const VMADDR_CID_RESERVED: c_uint = 1;
 pub const VMADDR_CID_HOST: c_uint = 2;
 pub const VMADDR_PORT_ANY: c_uint = 0xFFFFFFFF;
 
-const fn __DARWIN_ALIGN32(p: usize) -> usize {
-    const __DARWIN_ALIGNBYTES32: usize = size_of::<u32>() - 1;
-    (p + __DARWIN_ALIGNBYTES32) & !__DARWIN_ALIGNBYTES32
-}
-
 pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_extended_policy_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
@@ -4033,32 +4025,6 @@ pub const DOT3COMPLIANCE_COLLS: c_int = 2;
 pub const MAX_KCTL_NAME: usize = 96;
 
 f! {
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if cmsg.is_null() {
-            return crate::CMSG_FIRSTHDR(mhdr);
-        }
-        let cmsg_len = (*cmsg).cmsg_len as usize;
-        let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next + __DARWIN_ALIGN32(size_of::<cmsghdr>()) > max {
-            core::ptr::null_mut()
-        } else {
-            next as *mut cmsghdr
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).add(__DARWIN_ALIGN32(size_of::<cmsghdr>()))
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (__DARWIN_ALIGN32(size_of::<cmsghdr>()) + __DARWIN_ALIGN32(length as usize)) as c_uint
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        (__DARWIN_ALIGN32(size_of::<cmsghdr>()) + length as usize) as c_uint
-    }
-
     pub const fn VM_MAKE_TAG(id: u8) -> u32 {
         (id as u32) << 24u32
     }

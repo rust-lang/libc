@@ -80,13 +80,13 @@ cfg_if! {
         // pub(crate) use horizon::*;
     } else if #[cfg(target_os = "hurd")] {
         mod hurd;
-        // pub(crate) use hurd::*;
+        pub(crate) use hurd::*;
     } else if #[cfg(target_os = "illumos")] {
         mod illumos;
         pub(crate) use illumos::*;
     } else if #[cfg(target_os = "l4re")] {
         mod l4re;
-        // pub(crate) use l4re::*;
+        pub(crate) use l4re::*;
     } else if #[cfg(target_os = "linux")] {
         mod linux_uapi;
         pub(crate) use linux_uapi::*;
@@ -107,7 +107,7 @@ cfg_if! {
         pub(crate) use qurt::*;
     } else if #[cfg(target_os = "redox")] {
         mod redox;
-        // pub(crate) use redox::*;
+        pub(crate) use redox::*;
     } else if #[cfg(target_os = "rtems")] {
         mod rtems;
         pub(crate) use rtems::*;
@@ -173,16 +173,10 @@ cfg_if! {
 
 // Per-OS headers we export
 cfg_if! {
-    if #[cfg(target_os = "android")] {
+    if #[cfg(target_os = "aix")] {
         pub use sys::socket::*;
-    } else if #[cfg(target_os = "linux")] {
-        pub use linux::can::bcm::*;
-        pub use linux::can::j1939::*;
-        pub use linux::can::raw::*;
-        pub use linux::can::*;
-        pub use linux::keyctl::*;
-        #[cfg(target_env = "gnu")]
-        pub use net::route::*;
+    } else if #[cfg(target_os = "android")] {
+        pub use sys::socket::*;
     } else if #[cfg(target_vendor = "apple")] {
         pub use pthread::*;
         pub use pthread_::introspection::*;
@@ -190,23 +184,63 @@ cfg_if! {
         pub use pthread_::spawn::*;
         pub use pthread_::stack_np::*;
         pub use signal::*;
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "cygwin")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "dragonfly")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "emscripten")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "freebsd")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "fuchsia")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "haiku")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "hurd")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "illumos")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "l4re")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "linux")] {
+        pub use linux::can::bcm::*;
+        pub use linux::can::j1939::*;
+        pub use linux::can::raw::*;
+        pub use linux::can::*;
+        pub use linux::keyctl::*;
+
+        // per-linux-env headers
+        cfg_if! {
+            if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+                // ./musl
+                pub use sys::socket::*;
+            } else if #[cfg(target_env = "gnu")] {
+                // ./glibc/sysdeps/unix/linux
+                pub use net::route::*;
+                pub use sys::socket::*;
+            }
+        }
     } else if #[cfg(target_os = "netbsd")] {
         pub use net::if_::*;
         pub use sys::ipc::*;
+        pub use sys::socket::*;
         pub use sys::statvfs::*;
         pub use sys::time::*;
         pub use sys::timex::*;
         pub use sys::types::*;
         pub use utmp_::*;
         pub use utmpx_::*;
+    } else if #[cfg(target_os = "nto")] {
+        pub use sys::socket::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
-    }
-}
-
-// Per-env headers we export
-cfg_if! {
-    if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "redox")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "solaris")] {
+        pub use sys::socket::*;
+    } else if #[cfg(target_os = "vxworks")] {
         pub use sys::socket::*;
     }
 }
