@@ -54,8 +54,6 @@ s! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = size_of::<c_long>() - 1;
-
 pub const _MAX_PAGE_SHIFT: u32 = 12;
 
 pub const PT_STEP: c_int = PT_FIRSTMACH + 0;

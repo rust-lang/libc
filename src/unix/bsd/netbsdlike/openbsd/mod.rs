@@ -1,9 +1,6 @@
+use crate::off_t;
 use crate::prelude::*;
 use crate::unix::bsd::O_SYNC;
-use crate::{
-    cmsghdr,
-    off_t,
-};
 
 pub type clock_t = i64;
 pub type suseconds_t = c_long;
@@ -1683,37 +1680,6 @@ pub const RTAX_DNS: c_int = 12;
 pub const RTAX_STATIC: c_int = 13;
 pub const RTAX_SEARCH: c_int = 14;
 pub const RTAX_MAX: c_int = 15;
-
-const fn _ALIGN(p: usize) -> usize {
-    (p + _ALIGNBYTES) & !_ALIGNBYTES
-}
-
-f! {
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_ALIGN(size_of::<cmsghdr>()) as isize)
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        _ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if cmsg.is_null() {
-            return crate::CMSG_FIRSTHDR(mhdr);
-        }
-        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(size_of::<cmsghdr>());
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next > max {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
-        }
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
-    }
-}
 
 safe_f! {
     pub const fn WSTOPSIG(status: c_int) -> c_int {

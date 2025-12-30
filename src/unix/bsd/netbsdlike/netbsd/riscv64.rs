@@ -39,11 +39,6 @@ cfg_if! {
     }
 }
 
-// gcc for riscv64 defines `BIGGEST_ALIGNMENT`, but it's mesured in bits.
-pub(crate) const __BIGGEST_ALIGNMENT_IN_BITS__: usize = 128;
-// `_ALIGNBYTES` is measured in, well, bytes.
-pub(crate) const _ALIGNBYTES: usize = (__BIGGEST_ALIGNMENT_IN_BITS__ / 8) - 1;
-
 pub const PT_GETREGS: c_int = PT_FIRSTMACH + 0;
 pub const PT_SETREGS: c_int = PT_FIRSTMACH + 1;
 pub const PT_GETFPREGS: c_int = PT_FIRSTMACH + 2;

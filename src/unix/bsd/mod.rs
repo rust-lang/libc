@@ -507,14 +507,6 @@ pub const RTAX_AUTHOR: c_int = 6;
 pub const RTAX_BRD: c_int = 7;
 
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast::<cmsghdr>()
-        } else {
-            core::ptr::null_mut()
-        }
-    }
-
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
