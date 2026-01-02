@@ -12,8 +12,8 @@ pub(crate) mod sys {
             crate::new::common::posix::sys::socket::align_impl(p, size_of::<c_int>())
         }
 
-        pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-            _CMSG_DATA_ALIGN(size_of::<cmsghdr>()) as c_uint + length
+        pub const fn CMSG_LEN(length: size_t) -> size_t {
+            _CMSG_DATA_ALIGN(size_of::<cmsghdr>()) + length
         }
 
         pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
