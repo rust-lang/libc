@@ -7,17 +7,17 @@ mod t {
 
     use libc::{
         c_uchar,
-        c_uint,
         c_void,
         cmsghdr,
         msghdr,
+        size_t,
     };
 
     extern "C" {
         pub fn cmsg_firsthdr(msgh: *const msghdr) -> *mut cmsghdr;
         pub fn cmsg_nxthdr(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr;
-        pub fn cmsg_space(length: c_uint) -> usize;
-        pub fn cmsg_len(length: c_uint) -> usize;
+        pub fn cmsg_space(length: size_t) -> size_t;
+        pub fn cmsg_len(length: size_t) -> size_t;
         pub fn cmsg_data(cmsg: *const cmsghdr) -> *mut c_uchar;
     }
 
@@ -47,8 +47,8 @@ mod t {
 
     #[test]
     fn test_cmsg_len() {
-        for l in 0..128 {
-            assert_eq!(libc::CMSG_LEN(l) as usize, unsafe { cmsg_len(l) });
+        for l in 0..128usize {
+            assert_eq!(libc::CMSG_LEN(l), unsafe { cmsg_len(l) });
         }
     }
 
@@ -79,8 +79,7 @@ mod t {
                 // alignment and payload padding.
                 while !current_cmsghdr_ptr.is_null() {
                     unsafe {
-                        (*current_cmsghdr_ptr).cmsg_len =
-                            libc::CMSG_LEN(cmsg_payload_len as _) as _;
+                        (*current_cmsghdr_ptr).cmsg_len = libc::CMSG_LEN(cmsg_payload_len) as _;
 
                         let libc_next = libc::CMSG_NXTHDR(&mhdr, current_cmsghdr_ptr);
                         let system_next = cmsg_nxthdr(&mhdr, current_cmsghdr_ptr);
@@ -105,7 +104,7 @@ mod t {
     #[test]
     fn test_cmsg_space() {
         for l in 0..128 {
-            assert_eq!(libc::CMSG_SPACE(l) as usize, unsafe { cmsg_space(l) });
+            assert_eq!(libc::CMSG_SPACE(l), unsafe { cmsg_space(l) });
         }
     }
 }

@@ -23,21 +23,15 @@ pub(crate) const fn align_impl(len: usize, align: usize) -> usize {
     (len + mask) & !mask
 }
 
-// TODO(#3240): consider changing signatures to `CMSG_{SPACE,LEN}(length: size_t) -> size_`
-
 /// Total length of a non-padded control message for a payload of size `length`.
 ///
 /// This function is almost exclusively used setting [`cmsghdr::cmsg_len`].
 /// It should *not* be used for determining the actual ancillary data buffer
 /// size. [`CMSG_SPACE`] should instead be for that.
 #[cfg(not(any(target_os = "illumos", target_os = "solaris")))]
-pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-    let length = length as size_t;
-
+pub const fn CMSG_LEN(length: size_t) -> size_t {
     // See `CMSG_SPACE` impl about this sometimes being a no-op.
-    let len = CMSG_ALIGN(size_of::<cmsghdr>()) + length;
-
-    len as c_uint
+    CMSG_ALIGN(size_of::<cmsghdr>()) + length
 }
 
 /// Total length of a padded control message for a payload of size `length`.
@@ -46,16 +40,12 @@ pub const fn CMSG_LEN(length: c_uint) -> c_uint {
 /// It should should *not* be used to initialize [cmsghdr::cmsg_len], given
 /// that the returned value includes padding bytes. Use instead [`CMSG_LEN`]
 /// for that.
-pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-    let length = length as size_t;
-
+pub const fn CMSG_SPACE(length: size_t) -> size_t {
     // NB: left hand side `align` is no-op when `size_of::<cmsghdr>() %
     // size_of::<__ALIGN_BOUNDARY>() == 0`. Such is the case on Linux, and
     // probably why some implementations there don't bother with the lhs
     // align.
-    let space = CMSG_ALIGN(size_of::<cmsghdr>()) + CMSG_ALIGN(length);
-
-    space as c_uint
+    CMSG_ALIGN(size_of::<cmsghdr>()) + CMSG_ALIGN(length)
 }
 
 /// Returns a pointer to the payload data array associated with for the provided header.
