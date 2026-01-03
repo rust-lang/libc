@@ -1483,7 +1483,7 @@ pub const NT_LWPSTATUS: c_int = 16;
 pub const NT_LWPSINFO: c_int = 17;
 pub const NT_PRFPXREG: c_int = 20;
 
-pub const MS_NOUSER: c_ulong = 0xffffffff80000000;
+pub const MS_NOUSER: c_ulong = 1 << 31;
 
 f! {
     pub fn CMSG_NXTHDR(
