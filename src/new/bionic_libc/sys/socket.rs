@@ -1,4 +1,6 @@
 //! Header: `sys/socket.h`
+//!
+//! <https://android.googlesource.com/platform/bionic/+/refs/heads/main/libc/include/sys/socket.h>
 
 use crate::prelude::*;
 
@@ -25,6 +27,15 @@ s! {
         pub gid: crate::gid_t,
     }
 }
+
+pub use crate::new::common::posix::sys::socket::{
+    CMSG_ALIGN,
+    CMSG_DATA,
+    CMSG_FIRSTHDR,
+    CMSG_LEN,
+    CMSG_NXTHDR,
+    CMSG_SPACE,
+};
 
 extern "C" {
     pub fn recvmmsg(

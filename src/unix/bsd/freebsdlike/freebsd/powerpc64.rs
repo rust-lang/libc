@@ -21,8 +21,6 @@ s! {
     }
 }
 
-pub(crate) const _ALIGNBYTES: usize = size_of::<c_long>() - 1;
-
 pub const BIOCSRTIMEOUT: c_ulong = 0x8010426d;
 pub const BIOCGRTIMEOUT: c_ulong = 0x4010426e;
 
