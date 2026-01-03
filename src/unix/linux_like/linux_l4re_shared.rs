@@ -1506,7 +1506,14 @@ f! {
             return core::ptr::null_mut();
         }
 
-        let max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+        let mut max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+
+        if cfg!(any(target_env = "musl", target_env = "ohos")) {
+            // musl and some of its descendants do `>= max_addr`
+            // comparisons in the if statement below.
+            // https://www.openwall.com/lists/musl/2025/12/27/1
+            max_addr -= 1;
+        }
 
         if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
             core::ptr::null_mut::<crate::cmsghdr>()
