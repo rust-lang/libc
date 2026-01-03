@@ -3,6 +3,7 @@
 //! <https://github.com/apple-oss-distributions/xnu/tree/main/bsd/sys>
 
 pub(crate) mod signal;
+pub(crate) mod socket;
 
 /// Directory: `sys/_types`
 ///

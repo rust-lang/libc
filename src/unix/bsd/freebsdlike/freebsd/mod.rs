@@ -1,8 +1,5 @@
+use crate::off_t;
 use crate::prelude::*;
-use crate::{
-    cmsghdr,
-    off_t,
-};
 
 pub type fflags_t = u32;
 
@@ -4178,36 +4175,7 @@ pub const fn MAP_ALIGNED(a: c_int) -> c_int {
     a << 24
 }
 
-const fn _ALIGN(p: usize) -> usize {
-    (p + _ALIGNBYTES) & !_ALIGNBYTES
-}
-
 f! {
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        _ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if cmsg.is_null() {
-            return crate::CMSG_FIRSTHDR(mhdr);
-        }
-        let next = cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize) + _ALIGN(size_of::<cmsghdr>());
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next > max {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            (cmsg as usize + _ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
-        }
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
-    }
-
     pub fn MALLOCX_ALIGN(lg: c_uint) -> c_int {
         ffsl(lg as c_long - 1)
     }
