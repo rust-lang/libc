@@ -121,6 +121,26 @@ s! {
         shm_ctime: crate::time_t,
     }
 
+    pub struct semid_ds {
+        pub sem_perm: crate::ipc_perm,
+        __sem_otime_lo: crate::c_ulong,
+        __sem_otime_hi: crate::c_ulong,
+        __sem_ctime_lo: crate::c_ulong,
+        __sem_ctime_hi: crate::c_ulong,
+        #[cfg(target_endian = "little")]
+        pub sem_nsems: crate::c_ushort,
+        #[cfg(target_endian = "little")]
+        __sem_nsems_pad: crate::c_char,
+        #[cfg(target_endian = "big")]
+        __sem_nsems_pad: crate::c_char,
+        #[cfg(target_endian = "big")]
+        pub sem_nsems: crate::c_ushort,
+        __unused3: crate::c_long,
+        __unused4: crate::c_long,
+        pub sem_otime: crate::time_t,
+        pub sem_ctime: crate::time_t,
+    }
+
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
 
