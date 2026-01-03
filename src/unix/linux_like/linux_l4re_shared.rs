@@ -1498,7 +1498,14 @@ f! {
         let next_cmsg = (cmsg.cast::<u8>())
             .add(super::CMSG_ALIGN((*cmsg).cmsg_len as usize))
             .cast::<crate::cmsghdr>();
-        let max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+
+        #[allow(unused_mut)]
+        let mut max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
+
+        #[cfg(any(target_env = "musl", target_env = "ohos"))]
+        {
+            max_addr -= 1;
+        }
 
         if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
             core::ptr::null_mut::<crate::cmsghdr>()
