@@ -10,7 +10,7 @@ repository = "https://github.com/rust-lang/libc"
 
 [dependencies]
 cfg-if = "1.0.4"
-libc = { path = "..", version = "1.0.0-alpha.1", default-features = false }
+libc = { path = "..", default-features = false }
 
 [dev-dependencies]
 syn = { version = "2.0.108", features = ["full", "visit"] }
