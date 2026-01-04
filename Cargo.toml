@@ -5,7 +5,6 @@ keywords = ["libc", "ffi", "bindings", "operating", "system"]
 categories = ["external-ffi-bindings", "no-std", "os"]
 exclude = ["/ci/*", "/.github/*", "/.cirrus.yml", "/triagebot.toml"]
 description = "Raw FFI bindings to platform libraries like libc."
-publish = false # On the main branch, we don't want to publish anything
 authors = ["The Rust Project Developers"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
