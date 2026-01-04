@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.178](https://github.com/rust-lang/libc/compare/0.2.177...0.2.178) - 2025-12-01
+## [0.2.179](https://github.com/rust-lang/libc/compare/0.2.178...0.2.179) - 2025-01-03
 
 With this release, we now have _unstable_ support for 64-bit `time_t` on 32-bit
 platforms with both Musl and Glibc. Testing is appreciated!
