@@ -102,7 +102,7 @@ checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
 name = "ctest"
-version = "0.5.0-beta.2"
+version = "0.5.0-beta.3"
 dependencies = [
  "askama",
  "cc",
@@ -120,7 +120,7 @@ version = "0.1.0"
 dependencies = [
  "cc",
  "ctest",
- "libc 1.0.0-alpha.1",
+ "libc 1.0.0-alpha.2",
 ]
 
 [[package]]
@@ -183,7 +183,7 @@ checksum = "2874a2af47a2325c2001a6e6fad9b16a53b802102b528163885171cf92b15976"
 
 [[package]]
 name = "libc"
-version = "1.0.0-alpha.1"
+version = "1.0.0-alpha.2"
 dependencies = [
  "rustc-std-workspace-core",
 ]
@@ -197,7 +197,7 @@ dependencies = [
  "cfg-if",
  "ctest",
  "glob",
- "libc 1.0.0-alpha.1",
+ "libc 1.0.0-alpha.2",
  "proc-macro2",
  "regex",
  "syn",
