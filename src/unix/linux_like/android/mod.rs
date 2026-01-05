@@ -1,10 +1,6 @@
 //! Android-specific definitions for linux-like values
 
 use crate::prelude::*;
-use crate::{
-    cmsghdr,
-    msghdr,
-};
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -3269,16 +3265,6 @@ cfg_if! {
 }
 
 f! {
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = (cmsg as usize + super::CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if (next.offset(1)) as usize > max {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            next as *mut cmsghdr
-        }
-    }
-
     pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = mem::zeroed();
         let size_in_bits = 8 * size_of_val(&_dummy.__bits[0]);

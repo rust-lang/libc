@@ -1418,44 +1418,6 @@ extern_ty! {
     pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
 }
 
-f! {
-    pub const fn CMSG_ALIGN(len: usize) -> usize {
-        len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = cmsg as usize
-            + CMSG_ALIGN((*cmsg).cmsg_len as usize)
-            + CMSG_ALIGN(size_of::<cmsghdr>());
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next <= max {
-            (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize > 0 {
-            (*mhdr).msg_control as *mut cmsghdr
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-}
-
 extern "C" {
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
