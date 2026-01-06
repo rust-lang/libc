@@ -187,6 +187,16 @@ pub const TIOCGICOUNT: Ioctl = 0x545D;
 pub const BLKSSZGET: Ioctl = 0x1268;
 
 cfg_if! {
+    if #[cfg(not(target_env = "uclibc"))] {
+        pub const NLMSG_NOOP: c_int = 0x1;
+        pub const NLMSG_ERROR: c_int = 0x2;
+        pub const NLMSG_DONE: c_int = 0x3;
+        pub const NLMSG_OVERRUN: c_int = 0x4;
+        pub const NLMSG_MIN_TYPE: c_int = 0x10;
+    }
+}
+
+cfg_if! {
     if #[cfg(target_env = "uclibc")] {
         mod uclibc;
         pub use self::uclibc::*;
