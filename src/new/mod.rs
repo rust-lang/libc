@@ -181,6 +181,7 @@ cfg_if! {
         pub use linux::can::raw::*;
         pub use linux::can::*;
         pub use linux::keyctl::*;
+        pub use linux::membarrier::*;
         pub use linux::netlink::*;
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
