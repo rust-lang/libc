@@ -73,6 +73,14 @@ mod t {
             mhdr.msg_controllen = (160 - trunc) as _;
 
             for cmsg_payload_len in 0..64 {
+                // AIX does not apply any alignment or padding to ancillary
+                // data and CMSG_ALIGN() is a noop. So only test addresses
+                // that are multiples of the size of cmsghdr here.
+                if cfg!(target_os = "aix") && cmsg_payload_len % std::mem::size_of::<cmsghdr>() != 0
+                {
+                    continue;
+                }
+
                 let mut current_cmsghdr_ptr = pcmsghdr;
                 assert!(!current_cmsghdr_ptr.is_null());
                 let mut count = 0;
