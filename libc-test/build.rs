@@ -1737,7 +1737,6 @@ fn test_dragonflybsd(target: &str) {
             "sem_t" => true,
             // mqd_t is a pointer on DragonFly
             "mqd_t" => true,
-
             _ => false,
         }
     });
@@ -4653,15 +4652,22 @@ fn test_linux(target: &str) {
     });
 
     let c_enums = [
-        "tpacket_versions",
-        "proc_cn_mcast_op",
-        "proc_cn_event",
+        "membarrier_cmd",
         "pid_type",
+        "proc_cn_event",
+        "proc_cn_mcast_op",
+        "tpacket_versions",
     ];
     cfg.alias_is_c_enum(move |e| c_enums.contains(&e));
 
     // FIXME(libc): `pid_type` and `proc_cn_event` is hidden.
     cfg.skip_c_enum(|e| e == "pid_type" || e == "proc_cn_event");
+
+    cfg.skip_signededness(move |c| match c {
+        // FIXME(1.0): uses the enum default signedness
+        "membarrier_cmd" => true,
+        _ => false,
+    });
 
     cfg.skip_fn(move |function| {
         let name = function.ident();
