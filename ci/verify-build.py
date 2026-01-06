@@ -281,7 +281,6 @@ def do_semver_checks(cfg: Cfg, target: Target) -> bool:
                 "semver-checks",
                 "--only-explicit-features",
                 "--features=std,extra_traits",
-                "--release-type=patch",
             ],
             check=True,
         )
