@@ -4,3 +4,4 @@
 
 pub(crate) mod can;
 pub(crate) mod keyctl;
+pub(crate) mod netlink;
