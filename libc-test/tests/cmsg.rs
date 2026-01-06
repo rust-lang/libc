@@ -3,11 +3,9 @@
 
 #[cfg(unix)]
 mod t {
-
     use std::mem;
 
     use libc::{
-        self,
         c_uchar,
         c_uint,
         c_void,
@@ -50,9 +48,7 @@ mod t {
     #[test]
     fn test_cmsg_len() {
         for l in 0..128 {
-            unsafe {
-                assert_eq!(libc::CMSG_LEN(l) as usize, cmsg_len(l));
-            }
+            assert_eq!(libc::CMSG_LEN(l) as usize, unsafe { cmsg_len(l) });
         }
     }
 
@@ -116,10 +112,8 @@ mod t {
 
     #[test]
     fn test_cmsg_space() {
-        unsafe {
-            for l in 0..128 {
-                assert_eq!(libc::CMSG_SPACE(l) as usize, cmsg_space(l));
-            }
+        for l in 0..128 {
+            assert_eq!(libc::CMSG_SPACE(l) as usize, unsafe { cmsg_space(l) });
         }
     }
 }

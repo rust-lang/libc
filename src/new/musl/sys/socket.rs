@@ -34,6 +34,18 @@ s! {
     }
 }
 
+pub use crate::new::common::posix::sys::socket::{
+    CMSG_ALIGN,
+    CMSG_DATA,
+    CMSG_FIRSTHDR,
+    CMSG_LEN,
+    CMSG_SPACE,
+};
+
+pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+    crate::new::common::posix::sys::socket::next_impl(mhdr, cmsg, false)
+}
+
 extern "C" {
     pub fn sendmmsg(
         sockfd: c_int,

@@ -2420,41 +2420,6 @@ pub const DEAD_PROCESS: c_short = 8;
 pub const ACCOUNTING: c_short = 9;
 
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control as *mut cmsghdr
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if cmsg.is_null() {
-            CMSG_FIRSTHDR(mhdr)
-        } else {
-            if (cmsg as usize + (*cmsg).cmsg_len as usize + size_of::<cmsghdr>())
-                > ((*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize)
-            {
-                core::ptr::null_mut::<cmsghdr>()
-            } else {
-                // AIX does not have any alignment/padding for ancillary data, so we don't need _CMSG_ALIGN here.
-                (cmsg as usize + (*cmsg).cmsg_len as usize) as *mut cmsghdr
-            }
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(size_of::<cmsghdr>() as isize)
-    }
-
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
-        size_of::<cmsghdr>() as c_uint + length
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        size_of::<cmsghdr>() as c_uint + length
-    }
-
     pub fn FD_ZERO(set: *mut fd_set) -> () {
         for slot in (*set).fds_bits.iter_mut() {
             *slot = 0;

@@ -3000,6 +3000,8 @@ pub const O_NOFOLLOW: c_int = 0x00000080;
 pub const HUGETLB_FLAG_ENCODE_SHIFT: u32 = 26;
 pub const MAP_HUGE_SHIFT: u32 = 26;
 
+// END_PUB_CONST
+
 // intentionally not public, only used for fd_set
 cfg_if! {
     if #[cfg(target_pointer_width = "32")] {
@@ -3010,8 +3012,6 @@ cfg_if! {
         // Unknown target_pointer_width
     }
 }
-
-// END_PUB_CONST
 
 f! {
     pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
@@ -3068,40 +3068,6 @@ f! {
 
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1) as *mut c_uchar
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        if ((*cmsg).cmsg_len as size_t) < size_of::<cmsghdr>() {
-            core::ptr::null_mut::<cmsghdr>()
-        } else if __CMSG_NEXT(cmsg).add(size_of::<cmsghdr>()) >= __MHDR_END(mhdr) {
-            core::ptr::null_mut::<cmsghdr>()
-        } else {
-            __CMSG_NEXT(cmsg).cast()
-        }
-    }
-
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as size_t >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast()
-        } else {
-            core::ptr::null_mut::<cmsghdr>()
-        }
-    }
-
-    pub const fn CMSG_ALIGN(len: size_t) -> size_t {
-        (len + size_of::<size_t>() - 1) & !(size_of::<size_t>() - 1)
-    }
-
-    pub const fn CMSG_SPACE(len: c_uint) -> c_uint {
-        (CMSG_ALIGN(len as size_t) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
-    }
-
-    pub const fn CMSG_LEN(len: c_uint) -> c_uint {
-        (CMSG_ALIGN(size_of::<cmsghdr>()) + len as size_t) as c_uint
     }
 }
 
@@ -3166,19 +3132,6 @@ safe_f! {
         minor |= (dev & 0x00000ffffff00000) >> 12;
         minor as c_uint
     }
-}
-
-fn __CMSG_LEN(cmsg: *const cmsghdr) -> ssize_t {
-    ((unsafe { (*cmsg).cmsg_len as size_t } + size_of::<c_long>() - 1) & !(size_of::<c_long>() - 1))
-        as ssize_t
-}
-
-fn __CMSG_NEXT(cmsg: *const cmsghdr) -> *mut c_uchar {
-    (unsafe { cmsg.offset(__CMSG_LEN(cmsg)) }) as *mut c_uchar
-}
-
-fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
-    unsafe { (*mhdr).msg_control.offset((*mhdr).msg_controllen as isize) }.cast()
 }
 
 // EXTERN_FN

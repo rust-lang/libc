@@ -1748,36 +1748,6 @@ f! {
     pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
     }
-
-    pub fn CMSG_LEN(length: c_uint) -> c_uint {
-        CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
-    }
-
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
-        (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
-    }
-
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
-        if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast()
-        } else {
-            core::ptr::null_mut()
-        }
-    }
-
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
-        let next = (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
-        let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
-        if next as usize + CMSG_ALIGN(size_of::<cmsghdr>()) as usize > max {
-            core::ptr::null_mut()
-        } else {
-            next
-        }
-    }
-
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1).cast_mut().cast()
-    }
 }
 
 safe_f! {
@@ -1826,10 +1796,6 @@ safe_f! {
     pub const fn WCOREDUMP(status: c_int) -> bool {
         WIFSIGNALED(status) && (status & 0x80) != 0
     }
-}
-
-const fn CMSG_ALIGN(len: usize) -> usize {
-    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
 }
 
 extern "C" {

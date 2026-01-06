@@ -4,4 +4,5 @@
 
 pub(crate) mod pthread;
 pub(crate) mod sched;
+pub(crate) mod sys;
 pub(crate) mod unistd;
