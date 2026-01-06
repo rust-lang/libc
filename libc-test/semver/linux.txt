@@ -4088,6 +4088,7 @@ madvise
 major
 makedev
 memalign
+membarrier_cmd
 memmem
 memrchr
 mincore
