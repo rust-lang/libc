@@ -117,7 +117,6 @@ LOGIN_PROCESS
 Lmid_t
 MADV_COLLAPSE
 MAXTC
-MAX_LINKS
 MINIX2_SUPER_MAGIC
 MINIX2_SUPER_MAGIC2
 MINIX3_SUPER_MAGIC
@@ -637,9 +636,6 @@ malloc_usable_size
 mallopt
 mempcpy
 mq_notify
-nl_mmap_hdr
-nl_mmap_req
-nl_pktinfo
 ntp_adjtime
 ntp_gettime
 ntptimeval

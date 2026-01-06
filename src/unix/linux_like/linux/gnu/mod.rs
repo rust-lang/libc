@@ -133,26 +133,6 @@ s! {
         pub keepcost: size_t,
     }
 
-    pub struct nl_pktinfo {
-        pub group: u32,
-    }
-
-    pub struct nl_mmap_req {
-        pub nm_block_size: c_uint,
-        pub nm_block_nr: c_uint,
-        pub nm_frame_size: c_uint,
-        pub nm_frame_nr: c_uint,
-    }
-
-    pub struct nl_mmap_hdr {
-        pub nm_status: c_uint,
-        pub nm_len: c_uint,
-        pub nm_group: u32,
-        pub nm_pid: u32,
-        pub nm_uid: u32,
-        pub nm_gid: u32,
-    }
-
     pub struct ntptimeval {
         pub time: crate::timeval,
         pub maxerror: c_long,
@@ -809,8 +789,6 @@ pub const NDA_SRC_VNI: c_ushort = 11;
 // linux/personality.h
 pub const UNAME26: c_int = 0x0020000;
 pub const FDPIC_FUNCPTRS: c_int = 0x0080000;
-
-pub const MAX_LINKS: c_int = 32;
 
 pub const GENL_UNS_ADMIN_PERM: c_int = 0x10;
 
