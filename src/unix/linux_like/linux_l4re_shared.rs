@@ -953,7 +953,7 @@ pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: c_int = 1;
 pub const PTHREAD_INHERIT_SCHED: c_int = 0;
 pub const PTHREAD_EXPLICIT_SCHED: c_int = 1;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
 // netinet/in.h
