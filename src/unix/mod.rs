@@ -44,7 +44,7 @@ extern_ty! {
 #[cfg(not(target_os = "nuttx"))]
 pub type locale_t = *mut c_void;
 
-s_no_extra_traits!{
+s_no_extra_traits! {
     pub union __c_anonymous_sigaction_handler{
         pub sa_handler: Option<extern "C" fn(c_int) -> ()>,
         pub sa_sigaction: Option<extern "C" fn(
@@ -263,7 +263,7 @@ cfg_if! {
         }
         impl Eq for __c_anonymous_sigaction_handler{}
         impl ::fmt::Debug for __c_anonymous_sigaction_handler {
-            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result 
+            fn fmt(&self, f: &mut ::fmt::Formatter) -> ::fmt::Result
             {
                 f.debug_struct("sigaction_t")
                    .field("value", unsafe{ &self.default })
@@ -271,19 +271,19 @@ cfg_if! {
             }
         }
         impl ::hash::Hash for __c_anonymous_sigaction_handler {
-            fn hash<H: ::hash::Hasher>(&self, _state: &mut H) {
+            fn hash<H: ::hash::Hasher>(&self, state: &mut H) {
                 unsafe{ self.default.hash(state) };
             }
-        }    
+        }
     }
 }
 
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
-pub const SIG_DFL: sighandler_t = sighandler_t { default:0 };
-pub const SIG_IGN: sighandler_t = sighandler_t { default:1 };
-pub const SIG_ERR: sighandler_t = sighandler_t { default:!0 };
+pub const SIG_DFL: sighandler_t = sighandler_t { default: 0 };
+pub const SIG_IGN: sighandler_t = sighandler_t { default: 1 };
+pub const SIG_ERR: sighandler_t = sighandler_t { default: !0 };
 
 cfg_if! {
     if #[cfg(all(not(target_os = "nto"), not(target_os = "aix")))] {
