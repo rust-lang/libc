@@ -258,12 +258,12 @@ cfg_if! {
     if #[cfg(feature = "extra_traits")] {
         impl PartialEq for __c_anonymous_sigaction_handler {
             fn eq(&self, other: &__c_anonymous_sigaction_handler) -> bool {
-                unsafe{ self.default == other.default };
+                unsafe{ self.default == other.default }
             }
         }
         impl Eq for __c_anonymous_sigaction_handler{}
         impl fmt::Debug for __c_anonymous_sigaction_handler {
-            fn fmt(&self, f: &mut fmt::Formatter) -> ::fmt::Result
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
             {
                 f.debug_struct("sigaction_t")
                    .field("value", unsafe{ &self.default })
