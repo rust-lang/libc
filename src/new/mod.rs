@@ -110,7 +110,7 @@ cfg_if! {
         // pub(crate) use redox::*;
     } else if #[cfg(target_os = "rtems")] {
         mod rtems;
-        pub(crate) use rtems::*;
+        // pub(crate) use rtems::*;
     } else if #[cfg(target_os = "solaris")] {
         mod solaris;
         pub(crate) use solaris::*;
