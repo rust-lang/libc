@@ -262,14 +262,6 @@ cfg_if! {
             }
         }
         impl Eq for __c_anonymous_sigaction_handler{}
-        impl fmt::Debug for __c_anonymous_sigaction_handler {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
-            {
-                f.debug_struct("sigaction_t")
-                   .field("value", unsafe{ &self.default })
-                   .finish()
-            }
-        }
         impl hash::Hash for __c_anonymous_sigaction_handler {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe{ self.default.hash(state) };
