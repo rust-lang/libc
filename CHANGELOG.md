@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.180](https://github.com/rust-lang/libc/compare/0.2.179...0.2.180) - 2026-01-08
+
+### Added
+
+- QNX: Add missing BPF and ifreq structures ([#4769](https://github.com/rust-lang/libc/pull/4769))
+
+### Fixed
+
+- Linux, L4Re: address soundness issues of `CMSG_NXTHDR` ([#4903](https://github.com/rust-lang/libc/pull/4903))
+- Linux-like: Handle zero-sized payload differences in `CMSG_NXTHDR` ([#4903](https://github.com/rust-lang/libc/pull/4903))
+- Musl: Fix incorrect definitions of struct stat on some 32-bit architectures ([#4914](https://github.com/rust-lang/libc/pull/4914))
+- NetBSD: RISC-V 64: Correct `mcontext` type definitions ([#4886](https://github.com/rust-lang/libc/pull/4886))
+- uClibc: Re-enable `__SIZEOF_PTHREAD_COND_T` on non-L4Re uclibc ([#4915](https://github.com/rust-lang/libc/pull/4915))
+- uClibc: Restructure Linux `netlink` module to resolve build errors ([#4915](https://github.com/rust-lang/libc/pull/4915))
+
+
 ## [0.2.179](https://github.com/rust-lang/libc/compare/0.2.178...0.2.179) - 2025-01-03
 
 With this release, we now have _unstable_ support for 64-bit `time_t` on 32-bit
