@@ -2340,6 +2340,7 @@ pub const MADV_ZERO_WIRED_PAGES: c_int = 6;
 pub const MADV_FREE_REUSABLE: c_int = 7;
 pub const MADV_FREE_REUSE: c_int = 8;
 pub const MADV_CAN_REUSE: c_int = 9;
+pub const MADV_ZERO: c_int = 11;
 
 pub const MINCORE_INCORE: c_int = 0x1;
 pub const MINCORE_REFERENCED: c_int = 0x2;
