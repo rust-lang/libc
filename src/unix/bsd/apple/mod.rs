@@ -1456,6 +1456,7 @@ s! {
         pub external_page_count: natural_t,
         pub internal_page_count: natural_t,
         pub total_uncompressed_pages_in_compressor: u64,
+        pub swapped_count: u64,
     }
 
     #[repr(packed(4))]
