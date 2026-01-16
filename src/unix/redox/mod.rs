@@ -6,7 +6,7 @@ pub type blkcnt_t = c_ulong;
 pub type blksize_t = c_long;
 pub type clock_t = c_long;
 pub type clockid_t = c_int;
-pub type dev_t = c_long;
+pub type dev_t = c_ulonglong;
 pub type fsblkcnt_t = c_ulong;
 pub type fsfilcnt_t = c_ulong;
 pub type ino_t = c_ulonglong;
@@ -1161,6 +1161,31 @@ safe_f! {
 
     pub const fn WCOREDUMP(status: c_int) -> bool {
         (status & 0x80) != 0
+    }
+
+    pub const fn makedev(major: c_uint, minor: c_uint) -> dev_t {
+        let major = major as dev_t;
+        let minor = minor as dev_t;
+        let mut dev = 0;
+        dev |= (major & 0x00000fff) << 8;
+        dev |= (major & 0xfffff000) << 32;
+        dev |= (minor & 0x000000ff) << 0;
+        dev |= (minor & 0xffffff00) << 12;
+        dev
+    }
+
+    pub const fn major(dev: dev_t) -> c_uint {
+        let mut major = 0;
+        major |= (dev & 0x00000000000fff00) >> 8;
+        major |= (dev & 0xfffff00000000000) >> 32;
+        major as c_uint
+    }
+
+    pub const fn minor(dev: dev_t) -> c_uint {
+        let mut minor = 0;
+        minor |= (dev & 0x00000000000000ff) >> 0;
+        minor |= (dev & 0x00000ffffff00000) >> 12;
+        minor as c_uint
     }
 }
 
