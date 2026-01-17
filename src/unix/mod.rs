@@ -2429,3 +2429,8 @@ cfg_if! {
         // Unknown target_os
     }
 }
+
+extern "C" {
+    #[cfg(not(aarch64_macos_15_5_or_newer))]
+    pub static mut environ: *mut *mut crate::c_char;
+}

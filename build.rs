@@ -31,6 +31,7 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `_REDIR_TIME64` in musl
     "musl32_time64",
     "vxworks_lt_25_09",
+    "aarch64_macos_15_5_or_newer",
 ];
 
 // Extra values to allow for check-cfg.
@@ -64,6 +65,20 @@ fn main() {
     let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
     let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
+
+    println!("cargo:rerun-if-env-changed=MACOSX_DEPLOYMENT_TARGET");
+
+    if target_os == "macos" && target_arch == "aarch64" {
+        if let Ok(deployment) = env::var("MACOSX_DEPLOYMENT_TARGET") {
+            let mut it = deployment.split('.');
+            let major = it.next().and_then(|x| x.parse::<u32>().ok()).unwrap_or(0);
+            let minor = it.next().and_then(|x| x.parse::<u32>().ok()).unwrap_or(0);
+
+            if (major, minor) >= (15, 5) {
+                set_cfg("aarch64_macos_15_5_or_newer");
+            }
+        }
+    }
 
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
