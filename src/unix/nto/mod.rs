@@ -795,6 +795,23 @@ s_no_extra_traits! {
         pub __owner: c_uint,
         pub __spare: c_uint,
     }
+
+    // There is no canonical definition of c_longdouble in Rust. For both AArch64 and x86_64,
+    // however, the size and alignment properties are that of the gcc __int128 which corresponds (at
+    // least on rustc 1.78+ with LLVM 18, see
+    // https://blog.rust-lang.org/2024/03/30/i128-layout-update/) to i128. Use this instead until we
+    // get native f128 support.
+    //
+    // The definition was taken from the definition of the _Maxalignt struct in the QNX SDK.
+    // However, on QNX7, there is a different definition of std::max_align_t (the C++ version of
+    // this type). In practice, this doesn't make a difference for the _alignment_ properties of the
+    // type - however, it changes the size, so using in in any other form than the zero-sized array
+    // form would be bogus and it would potentially change the size of the data type. On QNX8, this
+    // got fixed and both C and C++ are using the same definition.
+    pub struct max_align_t {
+        _ll: crate::c_longlong,
+        _ld: i128,
+    }
 }
 
 pub const _SYSNAME_SIZE: usize = 256 + 1;
