@@ -317,7 +317,7 @@ s! {
 
     pub struct xutsname {
         pub nid: c_uint,
-        pub reserved: c_int,
+        reserved: Padding<c_int>,
         pub longnid: c_ulonglong,
     }
 
@@ -368,7 +368,7 @@ s! {
     pub struct sched_param {
         pub sched_priority: c_int,
         pub sched_policy: c_int,
-        pub sched_reserved: [c_int; 6],
+        sched_reserved: Padding<[c_int; 6]>,
     }
 
     pub struct stack_t {
@@ -443,7 +443,7 @@ s! {
         pub re_esub: [*mut c_void; 24],
         pub re_map: *mut c_uchar,
         pub __maxsub: c_int,
-        pub __unused: [*mut c_void; 34],
+        __unused: Padding<[*mut c_void; 34]>,
     }
 
     pub struct rlimit64 {
@@ -465,8 +465,8 @@ s! {
         pub shm_extshm: c_int,
         pub shm_pagesize: crate::int64_t,
         pub shm_lba: crate::uint64_t,
-        pub shm_reserved0: crate::int64_t,
-        pub shm_reserved1: crate::int64_t,
+        shm_reserved0: Padding<crate::int64_t>,
+        shm_reserved1: Padding<crate::int64_t>,
     }
 
     pub struct stat64 {
@@ -488,7 +488,7 @@ s! {
         pub st_vfs: c_uint,
         pub st_type: c_uint,
         pub st_gen: c_uint,
-        pub st_reserved: [c_uint; 10],
+        st_reserved: Padding<[c_uint; 10]>,
         pub st_size: off64_t,
     }
 
@@ -508,7 +508,7 @@ s! {
         pub cgid: crate::gid_t,
         pub mode: mode_t,
         pub seq: c_ushort,
-        pub __reserved: c_ushort,
+        __reserved: Padding<c_ushort>,
         pub key: key_t,
     }
 
@@ -552,7 +552,7 @@ s! {
         pub events: c_short,
         pub fd: c_int,
         pub u: __poll_ctl_ext_u,
-        pub reserved64: [u64; 6],
+        reserved64: Padding<[u64; 6]>,
     }
 }
 

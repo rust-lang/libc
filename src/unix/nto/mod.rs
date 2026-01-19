@@ -80,7 +80,7 @@ s! {
     pub struct dirent_extra {
         pub d_datalen: u16,
         pub d_type: u16,
-        pub d_reserved: u32,
+        d_reserved: Padding<u32>,
     }
 
     pub struct stat {
@@ -182,14 +182,14 @@ s! {
     pub struct sched_param {
         pub sched_priority: c_int,
         pub sched_curpriority: c_int,
-        pub reserved: [c_int; 10],
+        reserved: Padding<[c_int; 10]>,
     }
 
     #[repr(align(8))]
     pub struct __sched_param {
         pub __sched_priority: c_int,
         pub __sched_curpriority: c_int,
-        pub reserved: [c_int; 10],
+        reserved: Padding<[c_int; 10]>,
     }
 
     pub struct Dl_info {
@@ -236,7 +236,7 @@ s! {
         pub _Yes: *mut c_char,
         pub _Nostr: *mut c_char,
         pub _Yesstr: *mut c_char,
-        pub _Reserved: [*mut c_char; 8],
+        _Reserved: Padding<[*mut c_char; 8]>,
     }
 
     // Does not exist in io-sock
@@ -694,9 +694,9 @@ s! {
 
     pub struct sigevent {
         pub sigev_notify: c_int,
-        pub __padding1: c_int,
+        __padding1: Padding<c_int>,
         pub sigev_signo: c_int, // union
-        pub __padding2: c_int,
+        __padding2: Padding<c_int>,
         pub sigev_value: crate::sigval,
         __sigev_un2: usize, // union
     }
