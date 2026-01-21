@@ -4647,6 +4647,9 @@ fn test_linux(target: &str) {
             // Linux 6.14
             "AT_EXECVE_CHECK" => true,
 
+            // FIXME(linux):  Requires >= 6.16 kernel headers.
+            "PTRACE_SET_SYSCALL_INFO" => true,
+
             _ => false,
         }
     });
