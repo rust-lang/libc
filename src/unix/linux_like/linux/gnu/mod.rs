@@ -752,8 +752,8 @@ pub const PTRACE_SYSCALL_INFO_NONE: crate::__u8 = 0;
 pub const PTRACE_SYSCALL_INFO_ENTRY: crate::__u8 = 1;
 pub const PTRACE_SYSCALL_INFO_EXIT: crate::__u8 = 2;
 pub const PTRACE_SYSCALL_INFO_SECCOMP: crate::__u8 = 3;
-pub const PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4210;
-pub const PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG: crate::__u8 = 0x4211;
+pub const PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG: c_uint = 0x4210;
+pub const PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG: c_uint = 0x4211;
 
 // linux/rtnetlink.h
 pub const TCA_PAD: c_ushort = 9;

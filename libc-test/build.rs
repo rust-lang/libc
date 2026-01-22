@@ -4475,10 +4475,6 @@ fn test_linux(target: &str) {
             "SO_DEVMEM_LINEAR" | "SO_DEVMEM_DMABUF" | "SO_DEVMEM_DONTNEED"
             | "SCM_DEVMEM_LINEAR" | "SCM_DEVMEM_DMABUF" => true,
 
-            // FIXME(linux): Requires >= 6.4 kernel headers.
-            "PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG"
-            | "PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG" => true,
-
             // FIXME(linux): Requires >= 6.14 kernel headers.
             "SECBIT_EXEC_DENY_INTERACTIVE"
             | "SECBIT_EXEC_DENY_INTERACTIVE_LOCKED"
