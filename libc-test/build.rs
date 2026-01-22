@@ -3664,6 +3664,13 @@ fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
 fn test_linux(target: &str) {
     assert!(target.contains("linux") || target.contains("l4re"));
 
+    // FIXME(linux32): Some 32 bit targets use old kernel headers because newer distros enforce 64
+    // bit time. Use this to avoid skipping test also on 64 bit targets.
+    let pointer_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH")
+        .unwrap_or_default()
+        .parse::<usize>()
+        .unwrap_or_default();
+
     // target_os
     let linux = target.contains("linux");
     let l4re = target.contains("l4re");
@@ -4106,14 +4113,17 @@ fn test_linux(target: &str) {
             "sctp_initmsg" | "sctp_sndrcvinfo" | "sctp_sndinfo" | "sctp_rcvinfo"
             | "sctp_nxtinfo" | "sctp_prinfo" | "sctp_authinfo" => true,
 
-            // FIXME(linux): Requires >= 6.8 kernel headers.
-            // A field was added in 6.8.
+            // FIXME(musl): A field was added in linux 6.8, not yet in musl
+            // FIXME(linux32): A field was added in linux 6.8
             // https://github.com/torvalds/linux/commit/341ac980eab90ac1f6c22ee9f9da83ed9604d899
             // The previous version of the struct was removed in 6.11 due to a bug.
             // https://github.com/torvalds/linux/commit/32654bbd6313b4cfc82297e6634fa9725c3c900f
-            "xdp_umem_reg" => true,
+            "xdp_umem_reg" if musl || pointer_width == 32 => true,
 
-            // FIXME(linux): Requires >= 6.8 kernel headers.
+            // FIXME(linux): A new field was added to `xsk_tx_metadata_request` in linux 6.15.
+            // https://github.com/torvalds/linux/commit/ca4419f15abd19ba8be1e109661b60f9f5b6c9f0
+            // When updating, consider giving the `__c_anonymous_` prefix to the enum variants
+            // `xsk_tx_metadata_request` and `xsk_tx_metadata_completion`.
             "xsk_tx_metadata" | "xsk_tx_metadata_request" | "xsk_tx_metadata_completion" => true,
 
             // A new field was added in kernel 5.4, this is the old version for backwards compatibility.
@@ -4422,17 +4432,22 @@ fn test_linux(target: &str) {
                 true
             }
 
-            // FIXME(linux): Requires >= 6.6 kernel headers.
-            "XDP_USE_SG" | "XDP_PKT_CONTD" => true,
+            // FIXME(linux32): Requires >= 6.6 kernel headers.
+            "XDP_USE_SG" | "XDP_PKT_CONTD" if pointer_width == 32 => true,
 
             // FIXME(linux): Missing only on this platform for some reason
             "PR_MDWE_NO_INHERIT" if gnueabihf => true,
 
-            // FIXME(linux): Requires >= 6.8 kernel headers.
+            // FIXME(musl): Not yet in musl
+            // FIXME(linux32): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"
             | "XDP_TXMD_FLAGS_TIMESTAMP"
             | "XDP_TXMD_FLAGS_CHECKSUM"
-            | "XDP_TX_METADATA" => true,
+            | "XDP_TX_METADATA"
+                if musl || pointer_width == 32 =>
+            {
+                true
+            }
 
             // FIXME(linux): Requires >= 6.11 kernel headers.
             "XDP_UMEM_TX_METADATA_LEN" => true,
@@ -4447,9 +4462,6 @@ fn test_linux(target: &str) {
             "MNT_NS_INFO_SIZE_VER0" | "NS_MNT_GET_INFO" | "NS_MNT_GET_NEXT" | "NS_MNT_GET_PREV" => {
                 true
             }
-
-            // FIXME(linux): Requires >= 6.6 kernel headers.
-            "SYS_fchmodat2" => true,
 
             // FIXME(linux): Requires >= 6.10 kernel headers.
             "SYS_mseal" => true,
