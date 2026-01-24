@@ -1986,7 +1986,31 @@ extern "C" {
         link_name = "cfsetospeed@GLIBC_2.16"
     )]
     pub fn cfsetospeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            any(target_arch = "mips", target_arch = "mips64", target_arch = "sparc"),
+        ),
+        link_name = "tcgetattr@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+        link_name = "tcgetattr@GLIBC_2.2"
+    )]
     pub fn tcgetattr(fd: c_int, termios: *mut crate::termios) -> c_int;
+    #[cfg_attr(
+        all(
+            target_os = "linux",
+            target_env = "gnu",
+            any(target_arch = "mips", target_arch = "mips64", target_arch = "sparc"),
+        ),
+        link_name = "tcsetattr@GLIBC_2.0"
+    )]
+    #[cfg_attr(
+        all(target_os = "linux", target_env = "gnu", target_arch = "sparc64"),
+        link_name = "tcsetattr@GLIBC_2.2"
+    )]
     pub fn tcsetattr(fd: c_int, optional_actions: c_int, termios: *const crate::termios) -> c_int;
     pub fn tcflow(fd: c_int, action: c_int) -> c_int;
     pub fn tcflush(fd: c_int, action: c_int) -> c_int;
