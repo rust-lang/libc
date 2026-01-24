@@ -3837,6 +3837,7 @@ fn test_linux(target: &str) {
     let ppc64 = target.contains("powerpc64");
     let ppc32 = ppc && !ppc64;
     let s390x = target.contains("s390x");
+    let sparc = target.contains("sparc");
     let sparc64 = target.contains("sparc64");
     let x32 = target.contains("x32");
     let x86_32 = target.contains("i686");
@@ -4979,6 +4980,9 @@ fn test_linux(target: &str) {
             ]
             .contains(&s)
         });
+        if mips || sparc {
+            cfg.skip_fn_ptrcheck(|s| ["tcgetattr", "tcsetattr"].contains(&s));
+        }
     }
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
