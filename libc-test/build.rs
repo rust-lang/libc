@@ -4046,7 +4046,7 @@ fn test_linux(target: &str) {
     cfg.skip_struct(move |struct_| {
         let ty = struct_.ident();
 
-        // FIXME(linux): CI has old headers
+        // FIXME(linux): Requires >= 6.12 kernel headers. CI has old headers
         if ty == "ptp_sys_offset_extended" {
             return true;
         }
