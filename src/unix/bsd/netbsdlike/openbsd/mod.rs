@@ -1164,7 +1164,7 @@ pub const EVFILT_SIGNAL: i16 = -6;
 pub const EVFILT_TIMER: i16 = -7;
 pub const EVFILT_DEVICE: i16 = -8;
 pub const EVFILT_EXCEPT: i16 = -9;
-
+pub const EVFILT_USER: i16 = -10;
 pub const EV_ADD: u16 = 0x1;
 pub const EV_DELETE: u16 = 0x2;
 pub const EV_ENABLE: u16 = 0x4;
@@ -1180,6 +1180,13 @@ pub const EV_EOF: u16 = 0x8000;
 #[deprecated(since = "0.2.113", note = "Not stable across OS versions")]
 pub const EV_SYSFLAGS: u16 = 0xf800;
 
+pub const NOTE_TRIGGER: u32 = 0x01000000;
+pub const NOTE_FFNOP: u32 = 0x00000000;
+pub const NOTE_FFAND: u32 = 0x40000000;
+pub const NOTE_FFOR: u32 = 0x80000000;
+pub const NOTE_FFCOPY: u32 = 0xc0000000;
+pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
+pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
 pub const NOTE_EOF: u32 = 0x00000002;
 pub const NOTE_OOB: u32 = 0x00000004;
