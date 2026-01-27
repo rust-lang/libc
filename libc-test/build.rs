@@ -3859,6 +3859,7 @@ fn test_linux(target: &str) {
             (gnu, "linux/aio_abi.h"),
             "linux/can.h",
             "linux/can/bcm.h",
+            "linux/can/error.h",
             "linux/can/raw.h",
             "linux/can/j1939.h",
             "linux/cn_proc.h",
