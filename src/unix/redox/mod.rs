@@ -609,8 +609,14 @@ pub const POLLWRNORM: c_short = 0x100;
 pub const POLLWRBAND: c_short = 0x200;
 
 // pthread.h
-pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
-pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
+pub const PTHREAD_MUTEX_DEFAULT: c_int = 0;
+pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 1;
+pub const PTHREAD_MUTEX_NORMAL: c_int = 2;
+pub const PTHREAD_MUTEX_RECURSIVE: c_int = 3;
+
+pub const PTHREAD_MUTEX_ROBUST: c_int = 0;
+pub const PTHREAD_MUTEX_STALLED: c_int = 1;
+
 pub const PTHREAD_MUTEX_INITIALIZER: crate::pthread_mutex_t = crate::pthread_mutex_t {
     bytes: [0; _PTHREAD_MUTEX_SIZE],
 };
