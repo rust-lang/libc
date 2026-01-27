@@ -535,6 +535,7 @@ s! {
 
     pub struct ptrace_thread_state {
         pub pts_tid: crate::pid_t,
+        pub pts_name: [c_char; PT_PTS_NAMELEN as usize],
     }
 
     // search.h
@@ -1505,6 +1506,8 @@ pub const PT_GET_PROCESS_STATE: c_int = 14;
 pub const PT_GET_THREAD_FIRST: c_int = 15;
 pub const PT_GET_THREAD_NEXT: c_int = 16;
 pub const PT_FIRSTMACH: c_int = 32;
+
+pub const PT_PTS_NAMELEN: c_int = 32;
 
 pub const SOCK_CLOEXEC: c_int = 0x8000;
 pub const SOCK_NONBLOCK: c_int = 0x4000;
