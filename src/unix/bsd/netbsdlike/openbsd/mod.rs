@@ -765,6 +765,23 @@ impl siginfo_t {
         }
         (*(self as *const siginfo_t).cast::<siginfo_timer>()).value
     }
+
+    pub unsafe fn si_status(&self) -> c_int {
+        #[repr(C)]
+        struct siginfo_proc {
+            _si_signo: c_int,
+            _si_errno: c_int,
+            _si_code: c_int,
+            #[cfg(target_pointer_width = "64")]
+            __pad1: Padding<c_int>,
+            _pid: crate::pid_t,
+            _uid: crate::uid_t,
+            _utime: crate::clock_t,
+            _stime: crate::clock_t,
+            _status: crate::c_int,
+        }
+        (*(self as *const siginfo_t as *const siginfo_proc))._status
+    }
 }
 
 s_no_extra_traits! {
