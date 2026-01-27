@@ -770,10 +770,9 @@ impl siginfo_t {
         #[repr(C)]
         struct siginfo_proc {
             _si_signo: c_int,
-            _si_errno: c_int,
             _si_code: c_int,
-            #[cfg(target_pointer_width = "64")]
-            __pad1: Padding<c_int>,
+            _si_errno: c_int,
+            _pad: Padding<[c_int; SI_PAD]>,
             _pid: crate::pid_t,
             _uid: crate::uid_t,
             _utime: crate::clock_t,
