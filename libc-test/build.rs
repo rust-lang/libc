@@ -3706,7 +3706,8 @@ fn test_linux(target: &str) {
     let mips32 = mips && !mips64;
 
     let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
-    if musl_v1_2_3 {
+    let musl_stat_timespec = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    if musl_v1_2_3 || musl_stat_timespec {
         assert!(musl);
     }
     let old_musl = musl && !musl_v1_2_3;
@@ -3718,6 +3719,9 @@ fn test_linux(target: &str) {
             cfg.cfg("musl32_time64", None);
             cfg.cfg("linux_time_bits64", None);
         }
+    }
+    if musl_stat_timespec {
+        cfg.cfg("musl_stat_timespec", None);
     }
     cfg.define("_GNU_SOURCE", None)
         // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
@@ -3971,9 +3975,9 @@ fn test_linux(target: &str) {
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct - this is fixed in musl_v1_2_3
+            // of a timeval struct - this is fixed in musl_stat_timespec
             ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if !musl_v1_2_3 && f.ends_with("_nsec") =>
+                if !musl_stat_timespec && f.ends_with("_nsec") =>
             {
                 Some(f.replace("e_nsec", ".tv_nsec"))
             }

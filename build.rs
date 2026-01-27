@@ -28,6 +28,7 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
+    "musl_stat_timespec",
     // Corresponds to `_REDIR_TIME64` in musl
     "musl32_time64",
     "vxworks_lt_25_09",
@@ -53,6 +54,9 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
 
 /// Musl architectures that set `#define _REDIR_TIME64 1`.
 const MUSL_REDIR_TIME64_ARCHES: &[&str] = &["arm", "mips", "powerpc", "x86"];
+
+/// Musl architectures that switched to out-of-line time fields in struct stat.
+const MUSL_STAT_TIMESPEC_ARCHES: &[&str] = &[];
 
 fn main() {
     // Avoid unnecessary re-building.
@@ -109,6 +113,10 @@ fn main() {
 
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
+
+    if musl && (musl_v1_2_3 || MUSL_STAT_TIMESPEC_ARCHES.contains(&target_arch.as_str())) {
+        set_cfg("musl_stat_timespec");
+    }
 
     // loongarch64 and ohos only exist with recent musl
     if target_arch == "loongarch64" || target_env == "ohos" {

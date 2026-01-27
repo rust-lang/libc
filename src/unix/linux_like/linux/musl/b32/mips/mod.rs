@@ -25,17 +25,17 @@ s! {
         #[cfg(musl32_time64)]
         __st_ctim32: Padding<__c_anonymous_timespec32>,
 
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_atime: crate::time_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_atime_nsec: c_long,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_mtime: crate::time_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_mtime_nsec: c_long,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_ctime: crate::time_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_ctime_nsec: c_long,
 
         pub st_blksize: crate::blksize_t,
