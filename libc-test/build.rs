@@ -2056,9 +2056,6 @@ fn test_android(target: &str) {
             // Needs a newer Android SDK for the definition
             "P_PIDFD" => true,
 
-            // Requires Linux kernel 5.6
-            "VMADDR_CID_LOCAL" => true,
-
             // FIXME(android): conflicts with standard C headers and is tested in
             // `linux_termios.rs` below:
             "BOTHER" => true,
@@ -2067,27 +2064,9 @@ fn test_android(target: &str) {
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
-            // linux 5.12 min
-            "MPOL_F_NUMA_BALANCING" => true,
 
             // GRND_INSECURE was added in platform-tools-30.0.0
             "GRND_INSECURE" => true,
-
-            // kernel 5.10 minimum required
-            "MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ" | "MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ" => true,
-
-            // kernel 5.18 minimum
-            | "MADV_COLD"
-            | "MADV_DONTNEED_LOCKED"
-            | "MADV_PAGEOUT"
-            | "MADV_POPULATE_READ"
-            | "MADV_POPULATE_WRITE" => true,
-
-            // kernel 5.6 minimum required
-            "IPPROTO_MPTCP" | "IPPROTO_ETHERNET" => true,
-
-            // kernel 6.2 minimum
-            "TUN_F_USO4" | "TUN_F_USO6" | "IFF_NO_CARRIER" => true,
 
             // FIXME(android): NDK r22 minimum required
             | "FDB_NOTIFY_BIT"
@@ -3665,7 +3644,7 @@ fn test_linux(target: &str) {
     assert!(target.contains("linux") || target.contains("l4re"));
 
     // FIXME(linux32): Some 32 bit targets use old kernel headers because newer distros enforce 64
-    // bit time. Use this to avoid skipping test also on 64 bit targets.
+    // bit time. Use this to avoid skipping tests also on 64 bit targets.
     let pointer_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH")
         .unwrap_or_default()
         .parse::<usize>()
