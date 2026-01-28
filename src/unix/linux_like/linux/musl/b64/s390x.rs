@@ -41,24 +41,24 @@ s! {
         pub st_rdev: crate::dev_t,
         pub st_size: off_t,
 
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_atime: crate::time_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_atime_nsec: c_long,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_mtime: crate::time_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_mtime_nsec: c_long,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_ctime: crate::time_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_stat_timespec))]
         pub st_ctime_nsec: c_long,
 
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_stat_timespec)]
         pub st_atim: crate::timespec,
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_stat_timespec)]
         pub st_mtim: crate::timespec,
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_stat_timespec)]
         pub st_ctim: crate::timespec,
 
         pub st_blksize: crate::blksize_t,
