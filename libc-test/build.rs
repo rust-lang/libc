@@ -4961,27 +4961,37 @@ fn test_linux(target: &str) {
     if gnu {
         // old constants, so tests fail if glibc is too new
         cfg.skip_const(|s| {
+            // grep -E -h '^B([0-9])*$' libc-test/semver/*
             [
-                "B50", "B75", "B110", "B134", "B150", "B200", "B300", "B600", "B1200", "B1800",
-                "B2400", "B4800", "B9600", "B19200", "B38400", "EXTA", "EXTB", "B57600", "B115200",
-                "B230400", "B460800", "B500000", "B576000", "B921600", "B1000000", "B1152000",
-                "B1500000", "B2000000", "B2500000", "B3000000", "B3500000", "B4000000",
+                "EXTA", "EXTB", "B0", "B1000000", "B110", "B115200", "B1152000", "B1200", "B134",
+                "B14400", "B150", "B1500000", "B153600", "B1800", "B19200", "B200", "B2000000",
+                "B230400", "B2400", "B2500000", "B28800", "B300", "B3000000", "B307200",
+                "B3500000", "B38400", "B4000000", "B460800", "B4800", "B50", "B500000", "B57600",
+                "B576000", "B600", "B614400", "B7200", "B75", "B76800", "B921600", "B9600",
             ]
             .contains(&s.ident())
         });
-        // old symbols, so tests fail if glibc is too new
-        cfg.skip_fn_ptrcheck(|s| {
-            [
-                "cfgetispeed",
-                "cfgetospeed",
-                "cfsetispeed",
-                "cfsetospeed",
-                "cfsetspeed",
-            ]
-            .contains(&s)
-        });
         if mips || sparc {
-            cfg.skip_fn_ptrcheck(|s| ["tcgetattr", "tcsetattr"].contains(&s));
+            cfg.skip_const(|s| s.ident() == "NCCS");
+        }
+        // old symbols, so tests fail if glibc is too new
+        // note: `skip_fn_ptrcheck` overrides the previous function
+        cfg.skip_fn_ptrcheck(move |s| {
+            let mut result = false;
+            result = result || s == "cfgetispeed";
+            result = result || s == "cfgetospeed";
+            result = result || s == "cfsetispeed";
+            result = result || s == "cfsetospeed";
+            result = result || s == "cfsetspeed";
+            if mips || sparc {
+                result = result || s == "tcgetattr";
+                result = result || s == "tcsetattr";
+            }
+            result
+        });
+        // old structs, so tests fail if glibc is too new
+        if mips || sparc {
+            cfg.skip_struct(|s| s.ident() == "termios");
         }
     }
 
