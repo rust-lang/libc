@@ -101,7 +101,7 @@ rm -rf "$musl"
 
 # Alpine follows stable kernel releases, 3.20 uses Linux 6.6 headers.
 alpine_version=3.20
-alpine_git=https://gitlab.alpinelinux.org/alpine/aports
+alpine_git=https://git.alpinelinux.org/aports
 
 # This routine piggybacks on: https://git.alpinelinux.org/aports/tree/main/linux-headers?h=3.20-stable
 git clone -n --depth=1 --filter=tree:0 -b "${alpine_version}-stable" "$alpine_git"
