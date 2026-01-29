@@ -21,7 +21,7 @@ task:
       freebsd_instance:
         image: freebsd-15-0-release-amd64-ufs
   setup_script:
-    - pkg install -y libnghttp2 curl
+    - pkg install -y libnghttp2 curl ca_root_nss
     - curl https://sh.rustup.rs -sSf --output rustup.sh
     - sh rustup.sh -y --default-toolchain nightly --profile=minimal
     - . $HOME/.cargo/env

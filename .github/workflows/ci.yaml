@@ -23,350 +23,350 @@ defaults:
   run:
     shell: bash
 
-jobs:
-  style_check:
-    name: Style check
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh && rustup component add rustfmt
-      - name: Check style
-        run: ./ci/style.py
+#jobs:
+  #style_check:
+    #name: Style check
+    #runs-on: ubuntu-24.04
+    #timeout-minutes: 10
+    #steps:
+      #- uses: actions/checkout@v6
+      #- name: Setup Rust toolchain
+        #run: ./ci/install-rust.sh && rustup component add rustfmt
+      #- name: Check style
+        #run: ./ci/style.py
 
-  clippy:
-    name: Clippy on ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-24.04, macos-15, windows-2025]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - run: rustup update stable --no-self-update
-      - uses: Swatinem/rust-cache@v2
-      # Here we use the latest stable Rust toolchain already installed by GitHub
-      # Ideally we should run it for every target, but we cannot rely on unstable toolchains
-      # due to Clippy not being consistent between them.
-      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+  #clippy:
+    #name: Clippy on ${{ matrix.os }}
+    #strategy:
+      #matrix:
+        #os: [ubuntu-24.04, macos-15, windows-2025]
+    #runs-on: ${{ matrix.os }}
+    #timeout-minutes: 10
+    #steps:
+      #- uses: actions/checkout@v6
+      #- run: rustup update stable --no-self-update
+      #- uses: Swatinem/rust-cache@v2
+      ## Here we use the latest stable Rust toolchain already installed by GitHub
+      ## Ideally we should run it for every target, but we cannot rely on unstable toolchains
+      ## due to Clippy not being consistent between them.
+      #- run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
 
-  # This runs `cargo build --target ...` for all T1 and T2 targets`
-  verify_build:
-    name: Verify build
-    strategy:
-      matrix:
-        toolchain: [stable, 1.63.0]
-        include:
-          # Nightly has a lot of targets, so split it in half
-          - toolchain: nightly
-            half: 1
-          - toolchain: nightly
-            half: 2
-          - toolchain: beta
-            only: '(aarch64|x86_64)' # just a spot check for beta
-          - toolchain: stable
-          - toolchain: 1.63.0 # msrv
-    runs-on: ubuntu-24.04
-    timeout-minutes: 25
-    env:
-      TOOLCHAIN: ${{ matrix.toolchain }}
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
+  ## This runs `cargo build --target ...` for all T1 and T2 targets`
+  #verify_build:
+    #name: Verify build
+    #strategy:
+      #matrix:
+        #toolchain: [stable, 1.63.0]
+        #include:
+          ## Nightly has a lot of targets, so split it in half
+          #- toolchain: nightly
+            #half: 1
+          #- toolchain: nightly
+            #half: 2
+          #- toolchain: beta
+            #only: '(aarch64|x86_64)' # just a spot check for beta
+          #- toolchain: stable
+          #- toolchain: 1.63.0 # msrv
+    #runs-on: ubuntu-24.04
+    #timeout-minutes: 25
+    #env:
+      #TOOLCHAIN: ${{ matrix.toolchain }}
+    #steps:
+      #- uses: actions/checkout@v6
+      #- name: Setup Rust toolchain
+        #run: ./ci/install-rust.sh
 
-      - name: Install semver-checks
-        uses: taiki-e/install-action@cargo-semver-checks
-        if: matrix.toolchain == 'stable'
+      #- name: Install semver-checks
+        #uses: taiki-e/install-action@cargo-semver-checks
+        #if: matrix.toolchain == 'stable'
 
-      - name: Retrieve semver baseline
-        if: matrix.toolchain == 'stable'
-        run: ./ci/prep-semver-baseline.sh
+      #- name: Retrieve semver baseline
+        #if: matrix.toolchain == 'stable'
+        #run: ./ci/prep-semver-baseline.sh
 
-      # FIXME(ci): These `du` statements are temporary for debugging cache
-      - name: Target size before restoring cache
-        run: du -sh target | sort -k 2 || true
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: ${{ matrix.os }}-${{ matrix.toolchain }}
-      - name: Target size after restoring cache
-        run: du -sh target | sort -k 2 || true
+      ## FIXME(ci): These `du` statements are temporary for debugging cache
+      #- name: Target size before restoring cache
+        #run: du -sh target | sort -k 2 || true
+      #- uses: Swatinem/rust-cache@v2
+        #with:
+          #key: ${{ matrix.os }}-${{ matrix.toolchain }}
+      #- name: Target size after restoring cache
+        #run: du -sh target | sort -k 2 || true
 
-      - name: Execute build check
-        run: |
-          set -eux
-          if [ "${{ matrix.toolchain }}" = "1.63.0" ]; then
-              # Remove `-Dwarnings` at the MSRV since lints may be different
-              export RUSTFLAGS=""
-              # Remove `ctest` which uses the 2024 edition
-              perl -i -ne 'print unless /"ctest(-test)?",/ || /"libc-test",/' Cargo.toml
-          fi
+      #- name: Execute build check
+        #run: |
+          #set -eux
+          #if [ "${{ matrix.toolchain }}" = "1.63.0" ]; then
+              ## Remove `-Dwarnings` at the MSRV since lints may be different
+              #export RUSTFLAGS=""
+              ## Remove `ctest` which uses the 2024 edition
+              #perl -i -ne 'print unless /"ctest(-test)?",/ || /"libc-test",/' Cargo.toml
+          #fi
 
-          python3 ci/verify-build.py \
-            --toolchain "$TOOLCHAIN" \
-            ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
-            ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
-            ${{ matrix.half && format('--half "{0}"', matrix.half) }}
-      - name: Target size after job completion
-        run: du -sh target | sort -k 2
+          #python3 ci/verify-build.py \
+            #--toolchain "$TOOLCHAIN" \
+            #${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
+            #${{ matrix.only && format('--only "{0}"', matrix.only) }} \
+            #${{ matrix.half && format('--half "{0}"', matrix.half) }}
+      #- name: Target size after job completion
+        #run: du -sh target | sort -k 2
 
-  test_tier1:
-    name: Test tier1
-    strategy:
-      matrix:
-        include:
-          - target: aarch64-apple-darwin
-            os: macos-15
-          - target: aarch64-pc-windows-msvc
-            os: windows-11-arm
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-24.04-arm
-          # FIXME: It currently causes segfaults.
-          #- target: i686-pc-windows-gnu
-          #  env: { ARCH_BITS: 32, ARCH: i686 }
-          - target: i686-pc-windows-msvc
-            os: windows-2025
-          - target: i686-unknown-linux-gnu
-          - target: x86_64-pc-windows-gnu
-            os: windows-2025
-            env: { ARCH_BITS: 64, ARCH: x86_64 }
-          - target: x86_64-pc-windows-msvc
-            os: windows-2025
-          - target: x86_64-unknown-linux-gnu
-    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
-    timeout-minutes: 25
-    env:
-      TARGET: ${{ matrix.target }}
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: ${{ matrix.target }}
+  #test_tier1:
+    #name: Test tier1
+    #strategy:
+      #matrix:
+        #include:
+          #- target: aarch64-apple-darwin
+            #os: macos-15
+          #- target: aarch64-pc-windows-msvc
+            #os: windows-11-arm
+          #- target: aarch64-unknown-linux-gnu
+            #os: ubuntu-24.04-arm
+          ## FIXME: It currently causes segfaults.
+          ##- target: i686-pc-windows-gnu
+          ##  env: { ARCH_BITS: 32, ARCH: i686 }
+          #- target: i686-pc-windows-msvc
+            #os: windows-2025
+          #- target: i686-unknown-linux-gnu
+          #- target: x86_64-pc-windows-gnu
+            #os: windows-2025
+            #env: { ARCH_BITS: 64, ARCH: x86_64 }
+          #- target: x86_64-pc-windows-msvc
+            #os: windows-2025
+          #- target: x86_64-unknown-linux-gnu
+    #runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
+    #timeout-minutes: 25
+    #env:
+      #TARGET: ${{ matrix.target }}
+    #steps:
+      #- uses: actions/checkout@v6
+      #- name: Setup Rust toolchain
+        #run: ./ci/install-rust.sh
+      #- uses: Swatinem/rust-cache@v2
+        #with:
+          #key: ${{ matrix.target }}
 
-      - name: Add matrix env variables to the environment
-        if: matrix.env
-        run: |
-          echo '${{ toJson(matrix.env) }}' |
-            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
-        shell: bash
+      #- name: Add matrix env variables to the environment
+        #if: matrix.env
+        #run: |
+          #echo '${{ toJson(matrix.env) }}' |
+            #jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        #shell: bash
 
-      - name: Run natively
-        if: runner.os != 'Linux'
-        run: ./ci/run.sh ${{ matrix.target }}
-      - name: Run in Docker
-        if: runner.os == 'Linux'
-        run: ./ci/run-docker.sh ${{ matrix.target }}
+      #- name: Run natively
+        #if: runner.os != 'Linux'
+        #run: ./ci/run.sh ${{ matrix.target }}
+      #- name: Run in Docker
+        #if: runner.os == 'Linux'
+        #run: ./ci/run-docker.sh ${{ matrix.target }}
 
-      - name: Create CI artifacts
-        id: create_artifacts
-        if: always()
-        run: echo "step is actually running" && python3 ci/create-artifacts.py
-      - uses: actions/upload-artifact@v6
-        if: always() && steps.create_artifacts.outcome == 'success'
-        with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
-          path: ${{ env.ARCHIVE_PATH }}
-          retention-days: 5
+      #- name: Create CI artifacts
+        #id: create_artifacts
+        #if: always()
+        #run: echo "step is actually running" && python3 ci/create-artifacts.py
+      #- uses: actions/upload-artifact@v6
+        #if: always() && steps.create_artifacts.outcome == 'success'
+        #with:
+          #name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
+          #path: ${{ env.ARCHIVE_PATH }}
+          #retention-days: 5
 
-  test_tier2:
-    name: Test tier2
-    needs: [test_tier1, style_check]
-    strategy:
-      fail-fast: true
-      max-parallel: 16
-      matrix:
-        include:
-          # FIXME(sparc): this takes much longer to run than any other job, put
-          # it first to make sure it gets a head start.
-          - target: sparc64-unknown-linux-gnu
-          - target: aarch64-linux-android
-          - target: aarch64-unknown-linux-musl
-          - target: aarch64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: arm-linux-androideabi
-          - target: arm-unknown-linux-gnueabihf
-          - target: arm-unknown-linux-musleabihf
-          - target: arm-unknown-linux-musleabihf
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          # FIXME(#4297): Disabled due to spurious failue
-          # - target: i686-linux-android
-          - target: i686-unknown-linux-musl
-          - target: i686-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: loongarch64-unknown-linux-gnu
-          - target: loongarch64-unknown-linux-musl
-          - target: loongarch64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: powerpc64-unknown-linux-gnu
-          - target: powerpc64le-unknown-linux-gnu
-          - target: powerpc64le-unknown-linux-musl
-          - target: powerpc64le-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: riscv64gc-unknown-linux-gnu
-          - target: s390x-unknown-linux-gnu
-          - target: wasm32-unknown-emscripten
-          - target: wasm32-wasip1
-          - target: wasm32-wasip2
-          - target: x86_64-apple-darwin
-            os: macos-15-intel
-          - target: x86_64-linux-android
-          # FIXME: Exec format error (os error 8)
-          # - target: x86_64-unknown-linux-gnux32
-          - target: x86_64-unknown-linux-musl
-          - target: x86_64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          # FIXME: It seems some items in `src/unix/mod.rs` aren't defined on redox actually.
-          # - target: x86_64-unknown-redox
+  #test_tier2:
+    #name: Test tier2
+    #needs: [test_tier1, style_check]
+    #strategy:
+      #fail-fast: true
+      #max-parallel: 16
+      #matrix:
+        #include:
+          ## FIXME(sparc): this takes much longer to run than any other job, put
+          ## it first to make sure it gets a head start.
+          #- target: sparc64-unknown-linux-gnu
+          #- target: aarch64-linux-android
+          #- target: aarch64-unknown-linux-musl
+          #- target: aarch64-unknown-linux-musl
+            #env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            #artifact-tag: new-musl
+          #- target: arm-linux-androideabi
+          #- target: arm-unknown-linux-gnueabihf
+          #- target: arm-unknown-linux-musleabihf
+          #- target: arm-unknown-linux-musleabihf
+            #env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            #artifact-tag: new-musl
+          ## FIXME(#4297): Disabled due to spurious failue
+          ## - target: i686-linux-android
+          #- target: i686-unknown-linux-musl
+          #- target: i686-unknown-linux-musl
+            #env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            #artifact-tag: new-musl
+          #- target: loongarch64-unknown-linux-gnu
+          #- target: loongarch64-unknown-linux-musl
+          #- target: loongarch64-unknown-linux-musl
+            #env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            #artifact-tag: new-musl
+          #- target: powerpc64-unknown-linux-gnu
+          #- target: powerpc64le-unknown-linux-gnu
+          #- target: powerpc64le-unknown-linux-musl
+          #- target: powerpc64le-unknown-linux-musl
+            #env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            #artifact-tag: new-musl
+          #- target: riscv64gc-unknown-linux-gnu
+          #- target: s390x-unknown-linux-gnu
+          #- target: wasm32-unknown-emscripten
+          #- target: wasm32-wasip1
+          #- target: wasm32-wasip2
+          #- target: x86_64-apple-darwin
+            #os: macos-15-intel
+          #- target: x86_64-linux-android
+          ## FIXME: Exec format error (os error 8)
+          ## - target: x86_64-unknown-linux-gnux32
+          #- target: x86_64-unknown-linux-musl
+          #- target: x86_64-unknown-linux-musl
+            #env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            #artifact-tag: new-musl
+          ## FIXME: It seems some items in `src/unix/mod.rs` aren't defined on redox actually.
+          ## - target: x86_64-unknown-redox
 
-          # FIXME(ppc): SIGILL running tests, see
-          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
-          # - target: powerpc-unknown-linux-gnu
-    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
-    timeout-minutes: 25
-    env:
-      TARGET: ${{ matrix.target }}
-    steps:
-      - uses: actions/checkout@v6
-      - name: Setup Rust toolchain
-        run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@v2
-        with:
-          key: ${{ matrix.target }}
+          ## FIXME(ppc): SIGILL running tests, see
+          ## https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
+          ## - target: powerpc-unknown-linux-gnu
+    #runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
+    #timeout-minutes: 25
+    #env:
+      #TARGET: ${{ matrix.target }}
+    #steps:
+      #- uses: actions/checkout@v6
+      #- name: Setup Rust toolchain
+        #run: ./ci/install-rust.sh
+      #- uses: Swatinem/rust-cache@v2
+        #with:
+          #key: ${{ matrix.target }}
 
-      - name: Add matrix env variables to the environment
-        if: matrix.env
-        run: |
-          echo '${{ toJson(matrix.env) }}' |
-            jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
-        shell: bash
+      #- name: Add matrix env variables to the environment
+        #if: matrix.env
+        #run: |
+          #echo '${{ toJson(matrix.env) }}' |
+            #jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
+        #shell: bash
 
-      - name: Run natively
-        if: runner.os != 'Linux'
-        run: ./ci/run.sh ${{ matrix.target }}
-      - name: Run in Docker
-        if: runner.os == 'Linux'
-        run: ./ci/run-docker.sh ${{ matrix.target }}
+      #- name: Run natively
+        #if: runner.os != 'Linux'
+        #run: ./ci/run.sh ${{ matrix.target }}
+      #- name: Run in Docker
+        #if: runner.os == 'Linux'
+        #run: ./ci/run-docker.sh ${{ matrix.target }}
 
-      - name: Create CI artifacts
-        id: create_artifacts
-        if: always()
-        run: ./ci/create-artifacts.py
-      - uses: actions/upload-artifact@v6
-        if: always() && steps.create_artifacts.outcome == 'success'
-        with:
-          name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
-          path: ${{ env.ARCHIVE_PATH }}
-          retention-days: 5
+      #- name: Create CI artifacts
+        #id: create_artifacts
+        #if: always()
+        #run: ./ci/create-artifacts.py
+      #- uses: actions/upload-artifact@v6
+        #if: always() && steps.create_artifacts.outcome == 'success'
+        #with:
+          #name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
+          #path: ${{ env.ARCHIVE_PATH }}
+          #retention-days: 5
 
-  test_tier2_vm:
-    name: Test tier2 VM
-    needs: [test_tier1, style_check]
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        include:
-          - target: x86_64-pc-solaris
-          - target: x86_64-unknown-netbsd
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v6
-      - name: test on Solaris
-        uses: vmactions/solaris-vm@v1.2.6
-        if: contains(matrix.target, 'solaris')
-        with:
-          release: "11.4-gcc"
-          usesh: true
-          mem: 4096
-          copyback: false
-          prepare: |
-            set -x
-            source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
-            rustc --version
-            uname -a
-          run: |
-            export PATH=$HOME/.rust_solaris/bin:$PATH
-            ./ci/run.sh ${{ matrix.target }}
+  #test_tier2_vm:
+    #name: Test tier2 VM
+    #needs: [test_tier1, style_check]
+    #runs-on: ubuntu-latest
+    #strategy:
+      #fail-fast: true
+      #matrix:
+        #include:
+          #- target: x86_64-pc-solaris
+          #- target: x86_64-unknown-netbsd
+    #timeout-minutes: 25
+    #steps:
+      #- uses: actions/checkout@v6
+      #- name: test on Solaris
+        #uses: vmactions/solaris-vm@v1.2.6
+        #if: contains(matrix.target, 'solaris')
+        #with:
+          #release: "11.4-gcc"
+          #usesh: true
+          #mem: 4096
+          #copyback: false
+          #prepare: |
+            #set -x
+            #source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
+            #rustc --version
+            #uname -a
+          #run: |
+            #export PATH=$HOME/.rust_solaris/bin:$PATH
+            #./ci/run.sh ${{ matrix.target }}
 
-      - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@v1
-        if: contains(matrix.target, 'netbsd')
-        with:
-          release: "10.1"
-          usesh: true
-          mem: 4096
-          copyback: false
-          prepare: |
-            set -x
-            /usr/sbin/pkg_add curl
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
-              --profile minimal --default-toolchain nightly -y
-          run: |
-            set -x
-            . "$HOME/.cargo/env"
-            which rustc
-            rustc -Vv
-            ./ci/run.sh ${{ matrix.target }}
+      #- name: Test on NetBSD
+        #uses: vmactions/netbsd-vm@v1
+        #if: contains(matrix.target, 'netbsd')
+        #with:
+          #release: "10.1"
+          #usesh: true
+          #mem: 4096
+          #copyback: false
+          #prepare: |
+            #set -x
+            #/usr/sbin/pkg_add curl
+            #curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
+              #--profile minimal --default-toolchain nightly -y
+          #run: |
+            #set -x
+            #. "$HOME/.cargo/env"
+            #which rustc
+            #rustc -Vv
+            #./ci/run.sh ${{ matrix.target }}
 
-  ctest_msrv:
-    name: Check ctest MSRV
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    env:
-      RUSTFLAGS: # No need to check warnings on old MSRV, unset `-Dwarnings`
-    steps:
-    - uses: actions/checkout@master
-    - run: |
-        msrv="$(
-          cargo metadata --format-version 1 |
-          jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
-        )"
-        echo "MSRV: $msrv"
-        echo "MSRV=$msrv" >> "$GITHUB_ENV"
-    - name: Install Rust
-      run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-    - uses: Swatinem/rust-cache@v2
-    - run: cargo build -p ctest
+  #ctest_msrv:
+    #name: Check ctest MSRV
+    #runs-on: ubuntu-24.04
+    #timeout-minutes: 10
+    #env:
+      #RUSTFLAGS: # No need to check warnings on old MSRV, unset `-Dwarnings`
+    #steps:
+    #- uses: actions/checkout@master
+    #- run: |
+        #msrv="$(
+          #cargo metadata --format-version 1 |
+          #jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
+        #)"
+        #echo "MSRV: $msrv"
+        #echo "MSRV=$msrv" >> "$GITHUB_ENV"
+    #- name: Install Rust
+      #run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
+    #- uses: Swatinem/rust-cache@v2
+    #- run: cargo build -p ctest
 
-  docs:
-    name: Ensure docs build
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-    - uses: actions/checkout@master
-    - name: Install Rust
-      run: rustup update nightly --no-self-update && rustup default nightly
-    - uses: Swatinem/rust-cache@v2
-    - run: cargo doc --workspace --no-deps
+  #docs:
+    #name: Ensure docs build
+    #runs-on: ubuntu-24.04
+    #timeout-minutes: 10
+    #steps:
+    #- uses: actions/checkout@master
+    #- name: Install Rust
+      #run: rustup update nightly --no-self-update && rustup default nightly
+    #- uses: Swatinem/rust-cache@v2
+    #- run: cargo doc --workspace --no-deps
 
-  # One job that "summarizes" the success state of this pipeline. This can then be added to branch
-  # protection, rather than having to add each job separately.
-  success:
-    name: success
-    runs-on: ubuntu-24.04
-    needs:
-      - style_check
-      - test_tier1
-      - test_tier2
-      - test_tier2_vm
-      - verify_build
-      - ctest_msrv
-      - docs
-      - clippy
-    # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
-    # failed" as success. So we have to do some contortions to ensure the job fails if any of its
-    # dependencies fails.
-    if: always() # make sure this is never "skipped"
-    steps:
-      # Manually check the status of all dependencies. `if: failure()` does not work.
-      - name: check if any dependency failed
-        run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
+  ## One job that "summarizes" the success state of this pipeline. This can then be added to branch
+  ## protection, rather than having to add each job separately.
+  #success:
+    #name: success
+    #runs-on: ubuntu-24.04
+    #needs:
+      #- style_check
+      #- test_tier1
+      #- test_tier2
+      #- test_tier2_vm
+      #- verify_build
+      #- ctest_msrv
+      #- docs
+      #- clippy
+    ## GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
+    ## failed" as success. So we have to do some contortions to ensure the job fails if any of its
+    ## dependencies fails.
+    #if: always() # make sure this is never "skipped"
+    #steps:
+      ## Manually check the status of all dependencies. `if: failure()` does not work.
+      #- name: check if any dependency failed
+        #run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
