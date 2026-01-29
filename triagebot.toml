@@ -42,6 +42,9 @@ trigger_files = ["*bsd*"]
 [autolabel."O-dragonfly"]
 trigger_files = ["*dragonfly*"]
 
+[autolabel."O-freebsd"]
+trigger_files = ["*freebsd*"]
+
 [autolabel."O-gnu"]
 trigger_files = ["*gnu*"]
 
