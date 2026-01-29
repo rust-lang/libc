@@ -181,7 +181,8 @@ TARGETS = [
     Target("powerpc-unknown-netbsd", dist=False),
     Target("powerpc-wrs-vxworks", dist=False),
     Target("powerpc-wrs-vxworks-spe", dist=False),
-    Target("powerpc64-ibm-aix", dist=False),
+    # FIXME(rust#151818) doesn't build with the 2026-01-28 nightly
+    # Target("powerpc64-ibm-aix", dist=False),
     Target("powerpc64-unknown-freebsd", dist=False),
     Target("powerpc64-wrs-vxworks", dist=False),
     Target("riscv32-wrs-vxworks", dist=False),
