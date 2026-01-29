@@ -24,167 +24,74 @@ check-commits = "uncanonicalized"
 trigger_files = [
     ".cirrus.yml",
     ".github",
-    "src/ci",
+    "ci",
 ]
 
 [autolabel."S-waiting-on-review"]
 new_pr = true
 
 [autolabel."O-android"]
-trigger_files = [
-    "src/new/bionic_libc",
-    "src/unix/linux_like/android",
-]
+trigger_files = ["*{android,bionic}*"]
 
 [autolabel."O-arm"]
-trigger_files = [
-    "src/solid/arm.rs",
-    "src/unix/bsd/freebsdlike/freebsd/arm.rs",
-    "src/unix/bsd/netbsdlike/netbsd/arm.rs",
-    "src/unix/bsd/netbsdlike/openbsd/arm.rs",
-    "src/unix/linux_like/android/b32/arm.rs",
-    "src/unix/linux_like/linux/gnu/b32/arm/",
-    "src/unix/linux_like/linux/musl/b32/arm/",
-    "src/unix/linux_like/linux/uclibc/arm/",
-    "src/unix/newlib/arm/",
-    "src/vxworks/arm.rs",
-]
+trigger_files = ["*arm*"]
 
 [autolabel."O-bsd"]
-trigger_files = ["src/unix/bsd/mod.rs"]
+trigger_files = ["*bsd*"]
 
 [autolabel."O-dragonfly"]
-trigger_files = ["src/unix/bsd/freebsdlike/dragonfly"]
+trigger_files = ["*dragonfly*"]
 
 [autolabel."O-gnu"]
-trigger_files = [
-    "src/unix/linux_like/linux/gnu",
-    "src/windows/gnu",
-]
+trigger_files = ["*gnu*"]
 
 [autolabel."O-illumos"]
-trigger_files = ["src/unix/solarish/illumos.rs"]
+trigger_files = ["*illumos*"]
 
 [autolabel."O-linux"]
-trigger_files = [
-    "src/unix/linux_like/linux",
-    "src/new/linux_uapi",
-]
+trigger_files = ["*linux*"]
 
 [autolabel."O-linux-like"]
-trigger_files = ["src/unix/linux_like/mod.rs"]
+trigger_files = ["*linux_like*"]
 
 [autolabel."O-macos"]
-trigger_files = [
-    "src/unix/bsd/apple",
-    "src/new/apple_lib",
-    "src/new/apple_xnu",
-]
+trigger_files = ["*apple*"]
 
 [autolabel."O-mips"]
-trigger_files = [
-    "src/unix/bsd/netbsdlike/netbsd/mips.rs",
-    "src/unix/bsd/netbsdlike/openbsd/mips64.rs",
-    "src/unix/linux_like/linux/arch/mips",
-    "src/unix/linux_like/linux/gnu/b32/mips",
-    "src/unix/linux_like/linux/gnu/b64/mips64",
-    "src/unix/linux_like/linux/musl/b32/mips",
-    "src/unix/linux_like/linux/musl/b64/mips64.rs",
-    "src/unix/linux_like/linux/uclibc/mips",
-]
+trigger_files = ["*mips*"]
 
 [autolabel."O-musl"]
-trigger_files = ["src/unix/linux_like/linux/musl"]
+trigger_files = ["*musl*"]
 
 [autolabel."O-newlib"]
-trigger_files = ["src/unix/newlib"]
+trigger_files = ["*newlib*"]
 
 [autolabel."O-powerpc"]
-trigger_files = [
-    "src/unix/aix/powerpc64.rs",
-    "src/unix/bsd/freebsdlike/freebsd/powerpc.rs",
-    "src/unix/bsd/freebsdlike/freebsd/powerpc64.rs",
-    "src/unix/bsd/netbsdlike/netbsd/powerpc.rs",
-    "src/unix/bsd/netbsdlike/openbsd/powerpc.rs",
-    "src/unix/bsd/netbsdlike/openbsd/powerpc64.rs",
-    "src/unix/linux_like/linux/arch/powerpc/",
-    "src/unix/linux_like/linux/gnu/b32/powerpc.rs",
-    "src/unix/linux_like/linux/gnu/b64/powerpc64/",
-    "src/unix/linux_like/linux/musl/b32/powerpc.rs",
-    "src/unix/linux_like/linux/musl/b64/powerpc64.rs",
-    "src/unix/newlib/powerpc/",
-    "src/vxworks/powerpc.rs",
-    "src/vxworks/powerpc64.rs",
-]
+trigger_files = ["*powerpc*"]
 
 [autolabel."O-redox"]
-trigger_files = ["src/unix/redox"]
+trigger_files = ["*redox*"]
 
 [autolabel."O-riscv"]
-trigger_files = [
-    "src/fuchsia/riscv64.rs",
-    "src/unix/bsd/freebsdlike/freebsd/riscv64.rs",
-    "src/unix/bsd/netbsdlike/netbsd/riscv64.rs",
-    "src/unix/bsd/netbsdlike/openbsd/riscv64.rs",
-    "src/unix/linux_like/android/b64/riscv64",
-    "src/unix/linux_like/linux/gnu/b32/riscv32",
-    "src/unix/linux_like/linux/gnu/b64/riscv64",
-    "src/unix/linux_like/linux/musl/b32/riscv32",
-    "src/unix/linux_like/linux/musl/b64/riscv64",
-    "src/vxworks/riscv32.rs",
-    "src/vxworks/riscv64.rs",
-]
+trigger_files = ["*riscv*"]
 
 [autolabel."O-solarish"]
-trigger_files = ["src/unix/solarish"]
+trigger_files = ["*solarish*"]
 
 [autolabel."O-sparc"]
-trigger_files = [
-    "src/unix/bsd/netbsdlike/netbsd/sparc64.rs",
-    "src/unix/bsd/netbsdlike/openbsd/sparc64.rs",
-    "src/unix/linux_like/linux/arch/sparc",
-    "src/unix/linux_like/linux/gnu/b32/sparc",
-    "src/unix/linux_like/linux/gnu/b64/sparc64",
-]
+trigger_files = ["*sparc*"]
 
 [autolabel."O-unix"]
-trigger_files = ["src/unix"]
+trigger_files = ["*unix*"]
 
 [autolabel."O-wasi"]
-trigger_files = ["src/wasi"]
+trigger_files = ["*{wasi,wasm}*"]
 
 [autolabel."O-windows"]
-trigger_files = ["src/windows"]
+trigger_files = ["*windows*"]
 
 [autolabel."O-x86"]
-trigger_files = [
-    "src/fuchsia/x86_64.rs",
-    "src/unix/bsd/apple/b64/x86_64",
-    "src/unix/bsd/freebsdlike/freebsd/freebsd12/x86_64.rs",
-    "src/unix/bsd/freebsdlike/freebsd/freebsd13/x86_64.rs",
-    "src/unix/bsd/freebsdlike/freebsd/freebsd14/x86_64.rs",
-    "src/unix/bsd/freebsdlike/freebsd/freebsd15/x86_64.rs",
-    "src/unix/bsd/freebsdlike/freebsd/x86.rs",
-    "src/unix/bsd/freebsdlike/freebsd/x86_64",
-    "src/unix/bsd/netbsdlike/netbsd/x86.rs",
-    "src/unix/bsd/netbsdlike/netbsd/x86_64.rs",
-    "src/unix/bsd/netbsdlike/openbsd/x86.rs",
-    "src/unix/bsd/netbsdlike/openbsd/x86_64.rs",
-    "src/unix/haiku/x86_64.rs",
-    "src/unix/linux_like/android/b32/x86",
-    "src/unix/linux_like/android/b64/x86_64",
-    "src/unix/linux_like/linux/gnu/b32/x86",
-    "src/unix/linux_like/linux/gnu/b64/x86_64",
-    "src/unix/linux_like/linux/musl/b32/x86",
-    "src/unix/linux_like/linux/musl/b64/x86_64",
-    "src/unix/linux_like/linux/uclibc/x86_64",
-    "src/unix/nto/x86_64.rs",
-    "src/unix/solarish/x86.rs",
-    "src/unix/solarish/x86_64.rs",
-    "src/unix/solarish/x86_common.rs",
-    "src/vxworks/x86.rs",
-    "src/vxworks/x86_64.rs",
-]
+trigger_files = ["*{x86,i?86}"]
 
 [autolabel.ctest]
 trigger_files = [
@@ -206,18 +113,18 @@ add_labels = ["S-waiting-on-review"]
 
 [shortcut]
 
-[mentions."src/unix/bsd/netbsdlike/openbsd"]
-message = "Some changes occurred in OpenBSD module"
+[mentions."*openbsd*"]
+message = "Some changes occurred in an OpenBSD module"
 cc = ["@semarie"]
 
-[mentions."src/unix/bsd/netbsdlike/mod.rs"]
-message = "Some changes occurred in OpenBSD module"
+[mentions."*netbsdlike*"]
+message = "Some changes occurred in a NetBSD-like module"
 cc = ["@semarie"]
 
-[mentions."src/unix/solarish"]
-message = "Some changes occurred in solarish module"
+[mentions."*solarish*"]
+message = "Some changes occurred in a solarish module"
 cc = ["@jclulow", "@pfmooney"]
 
-[mentions."src/unix/linux_like/android"]
-message = "Some changes occurred in the Android module"
+[mentions."*android*"]
+message = "Some changes occurred in an Android module"
 cc = ["@maurer"]
