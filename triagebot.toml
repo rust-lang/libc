@@ -13,7 +13,7 @@ contributing_url = "https://github.com/rust-lang/libc/blob/HEAD/CONTRIBUTING.md"
 
 # Ensure issue links link to this repo
 [issue-links]
-check-commits = false # don't forbid links to issues
+check-commits = "uncanonicalized"
 
 # Enable comments linking to triagebot range-diff when a PR is rebased
 # onto a different base commit
