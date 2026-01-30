@@ -977,6 +977,8 @@ pub const IPV6_PMTUDISC_PROBE: c_int = 3;
 pub const IPV6_PMTUDISC_INTERFACE: c_int = 4;
 pub const IPV6_PMTUDISC_OMIT: c_int = 5;
 
+pub const ICMP6_FILTER: c_int = 1;
+
 pub const TCP_NODELAY: c_int = 1;
 pub const TCP_MAXSEG: c_int = 2;
 pub const TCP_CORK: c_int = 3;
