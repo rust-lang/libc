@@ -219,6 +219,231 @@ s! {
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
     }
+
+    pub struct ip6_hbh {
+        pub ip6h_nxt: u8,
+        pub ip6h_len: u8,
+    }
+
+    pub struct ip6_dest {
+        pub ip6d_nxt: u8,
+        pub ip6d_len: u8,
+    }
+
+    pub struct ip6_rthdr {
+        pub ip6r_nxt: u8,
+        pub ip6r_len: u8,
+        pub ip6r_type: u8,
+        pub ip6r_segleft: u8,
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    #[cfg_attr(any(target_os = "linux", target_os = "emscripten"), repr(align(4)))]
+    pub struct ip6_rthdr0 {
+        pub ip6r0_nxt: u8,
+        pub ip6r0_len: u8,
+        pub ip6r0_type: u8,
+        pub ip6r0_segleft: u8,
+        #[cfg(not(any(target_os = "linux", target_os = "emscripten")))]
+        pub ip6r0_reserved: u32,
+        #[cfg(any(target_os = "linux", target_os = "emscripten"))]
+        pub ip6r0_reserved: u8,
+        #[cfg(any(target_os = "linux", target_os = "emscripten"))]
+        pub ip6r0_slmap: [u8; 3],
+        #[cfg(all(target_os = "linux", target_env = "gnu"))]
+        pub ip6r0_addr: [in6_addr; 0],
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    pub struct ip6_frag {
+        ip6f_nxt: u8,
+        ip6f_reserved: u8,
+        ip6f_offlg: u16,
+        ip6f_ident: u32,
+    }
+
+    pub struct icmp6_filter {
+        #[cfg(not(target_os = "solaris"))]
+        pub icmp6_filt: [u32; 8],
+        #[cfg(target_os = "solaris")]
+        pub __icmp6_filt: [u32; 8],
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    #[cfg_attr(
+        not(any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        )),
+        repr(align(4))
+    )]
+    pub struct icmp6_hdr {
+        pub icmp6_type: u8,
+        pub icmp6_code: u8,
+        pub icmp6_cksum: u16,
+        pub icmp6_data8: [u8; 4],
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    pub struct nd_router_solicit {
+        pub nd_rs_hdr: icmp6_hdr,
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    pub struct nd_router_advert {
+        pub nd_ra_hdr: icmp6_hdr,
+        pub nd_ra_reachable: u32,
+        pub nd_ra_retransmit: u32,
+    }
+
+    // FIXME(unix): Allow in6_addr to have packed alignment,
+    // or ignore alignment requirement for libc structs
+    // on these platforms.
+    #[cfg(not(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "openbsd",
+        target_os = "netbsd",
+        target_os = "dragonfly",
+        target_os = "macos"
+    )))]
+    pub struct nd_neighbor_solicit {
+        pub nd_ns_hdr: icmp6_hdr,
+        pub nd_ns_target: in6_addr,
+    }
+
+    #[cfg(not(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "openbsd",
+        target_os = "netbsd",
+        target_os = "dragonfly",
+        target_os = "macos"
+    )))]
+    pub struct nd_neighbor_advert {
+        pub nd_na_hdr: icmp6_hdr,
+        pub nd_na_target: in6_addr,
+    }
+
+    #[cfg(not(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "openbsd",
+        target_os = "netbsd",
+        target_os = "dragonfly",
+        target_os = "macos"
+    )))]
+    pub struct nd_redirect {
+        pub nd_rd_hdr: icmp6_hdr,
+        pub nd_rd_target: in6_addr,
+        pub nd_rd_dst: in6_addr,
+    }
+
+    pub struct nd_opt_hdr {
+        pub nd_opt_type: u8,
+        pub nd_opt_len: u8,
+    }
+
+    #[cfg(not(any(
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "openbsd",
+        target_os = "netbsd",
+        target_os = "dragonfly",
+        target_os = "macos"
+    )))]
+    pub struct nd_opt_prefix_info {
+        pub nd_opt_pi_type: u8,
+        pub nd_opt_pi_len: u8,
+        pub nd_opt_pi_prefix_len: u8,
+        pub nd_opt_pi_flags_reserved: u8,
+        pub nd_opt_pi_valid_time: u32,
+        pub nd_opt_pi_preferred_time: u32,
+        pub nd_opt_pi_reserved2: u32,
+        pub nd_opt_pi_prefix: in6_addr,
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    pub struct nd_opt_rd_hdr {
+        pub nd_opt_rh_type: u8,
+        pub nd_opt_rh_len: u8,
+        pub nd_opt_rh_reserved1: u16,
+        pub nd_opt_rh_reserved2: u32,
+    }
+
+    #[cfg_attr(
+        any(
+            target_os = "android",
+            target_os = "freebsd",
+            target_os = "openbsd",
+            target_os = "dragonfly",
+            target_os = "macos"
+        ),
+        repr(packed)
+    )]
+    pub struct nd_opt_mtu {
+        pub nd_opt_mtu_type: u8,
+        pub nd_opt_mtu_len: u8,
+        pub nd_opt_mtu_reserved: u16,
+        pub nd_opt_mtu_mtu: u32,
+    }
 }
 
 s_no_extra_traits! {
@@ -365,6 +590,81 @@ pub const ATF_COM: c_int = 0x02;
 pub const ATF_PERM: c_int = 0x04;
 pub const ATF_PUBL: c_int = 0x08;
 pub const ATF_USETRAILERS: c_int = 0x10;
+
+// IPv6 Extension Headers
+cfg_if! {
+    if #[cfg(all(not(target_os = "android"), target_endian = "big"))] {
+        pub const IP6F_OFF_MASK: u16 = 0xfff8;
+        pub const IP6F_RESERVED_MASK: u16 = 0x0006;
+        pub const IP6F_MORE_FRAG: u16 = 0x0001;
+    } else if #[cfg(not(target_os = "android"))] {
+        pub const IP6F_OFF_MASK: u16 = 0xf8ff;
+        pub const IP6F_RESERVED_MASK: u16 = 0x0600;
+        pub const IP6F_MORE_FRAG: u16 = 0x0100;
+    }
+}
+
+// ICMPv6 Type and Code Values
+pub const ICMP6_DST_UNREACH: u8 = 1;
+pub const ICMP6_PACKET_TOO_BIG: u8 = 2;
+pub const ICMP6_TIME_EXCEEDED: u8 = 3;
+pub const ICMP6_PARAM_PROB: u8 = 4;
+
+pub const ICMP6_INFOMSG_MASK: u8 = 0x80;
+
+pub const ICMP6_ECHO_REQUEST: u8 = 128;
+pub const ICMP6_ECHO_REPLY: u8 = 129;
+
+cfg_if! {
+    if #[cfg(not(any(target_os = "linux", target_os = "emscripten")))] {
+        pub const ICMP6_MEMBERSHIP_QUERY: u8 = 130;
+        pub const ICMP6_MEMBERSHIP_REPORT: u8 = 131;
+        pub const ICMP6_MEMBERSHIP_REDUCTION: u8 = 132;
+    }
+}
+
+pub const ICMP6_DST_UNREACH_NOROUTE: u8 = 0;
+pub const ICMP6_DST_UNREACH_ADMIN: u8 = 1;
+pub const ICMP6_DST_UNREACH_BEYONDSCOPE: u8 = 2;
+pub const ICMP6_DST_UNREACH_ADDR: u8 = 3;
+pub const ICMP6_DST_UNREACH_NOPORT: u8 = 4;
+
+pub const ICMP6_TIME_EXCEED_TRANSIT: u8 = 0;
+pub const ICMP6_TIME_EXCEED_REASSEMBLY: u8 = 1;
+
+pub const ICMP6_PARAMPROB_HEADER: u8 = 0;
+pub const ICMP6_PARAMPROB_NEXTHEADER: u8 = 1;
+pub const ICMP6_PARAMPROB_OPTION: u8 = 2;
+
+// ICMPv6 Neighbor Discovery Type and Code Values
+pub const ND_ROUTER_SOLICIT: u8 = 133;
+pub const ND_ROUTER_ADVERT: u8 = 134;
+pub const ND_NEIGHBOR_SOLICIT: u8 = 135;
+pub const ND_NEIGHBOR_ADVERT: u8 = 136;
+pub const ND_REDIRECT: u8 = 137;
+
+pub const ND_RA_FLAG_MANAGED: u8 = 0x80;
+pub const ND_RA_FLAG_OTHER: u8 = 0x40;
+
+cfg_if! {
+    if #[cfg(target_endian = "big")] {
+        pub const ND_NA_FLAG_ROUTER: u32 = 0x80000000;
+        pub const ND_NA_FLAG_SOLICITED: u32 = 0x40000000;
+        pub const ND_NA_FLAG_OVERRIDE: u32 = 0x20000000;
+    } else {
+        pub const ND_NA_FLAG_ROUTER: u32 = 0x00000080;
+        pub const ND_NA_FLAG_SOLICITED: u32 = 0x00000040;
+        pub const ND_NA_FLAG_OVERRIDE: u32 = 0x00000020;
+    }
+}
+
+pub const ND_OPT_SOURCE_LINKADDR: u8 = 1;
+pub const ND_OPT_TARGET_LINKADDR: u8 = 2;
+pub const ND_OPT_PREFIX_INFORMATION: u8 = 3;
+pub const ND_OPT_REDIRECTED_HEADER: u8 = 4;
+pub const ND_OPT_MTU: u8 = 5;
+pub const ND_OPT_PI_FLAG_ONLINK: u8 = 0x80;
+pub const ND_OPT_PI_FLAG_AUTO: u8 = 0x40;
 
 cfg_if! {
     if #[cfg(any(target_os = "nto", target_os = "aix"))] {
