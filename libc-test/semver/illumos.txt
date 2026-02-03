@@ -19,6 +19,7 @@ TFD_CLOEXEC
 TFD_NONBLOCK
 TFD_TIMER_ABSTIME
 TFD_TIMER_CANCEL_ON_SET
+_CS_PATH
 posix_fadvise
 posix_fallocate
 posix_spawn_file_actions_addfchdir_np
