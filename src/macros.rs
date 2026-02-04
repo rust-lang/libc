@@ -135,8 +135,10 @@ macro_rules! prelude {
     };
 }
 
-/// Implement `Clone` and `Copy` for a struct, as well as `Debug`, `Eq`, `Hash`, and
-/// `PartialEq` if the `extra_traits` feature is enabled.
+/// Implement `Clone`, `Copy`, and `Debug` for one or more structs, as well as `PartialEq`, `Eq`,
+/// and `Hash` if the `extra_traits` feature is enabled.
+///
+/// Also mark the type with `repr(C)`.
 ///
 /// Use [`s_no_extra_traits`] for structs where the `extra_traits` feature does not
 /// make sense, and for unions.
@@ -161,7 +163,7 @@ macro_rules! s {
         )]
         #[cfg_attr(
             feature = "extra_traits",
-            ::core::prelude::v1::derive(Eq, Hash, PartialEq)
+            ::core::prelude::v1::derive(PartialEq, Eq, Hash)
         )]
         #[allow(deprecated)]
         $(#[$attr])*
@@ -169,33 +171,36 @@ macro_rules! s {
     );
 }
 
-/// Implement `Clone` and `Copy` for a tuple struct, as well as `Debug`, `Eq`, `Hash`,
-/// and `PartialEq` if the `extra_traits` feature is enabled.
+/// Implement `Clone`, `Copy`, and `Debug` for a tuple struct, as well as `PartialEq`, `Eq`,
+/// and `Hash` if the `extra_traits` feature is enabled.
 ///
-/// This is the same as [`s`] but works for tuple structs.
+/// Unlike `s!`, this does *not* mark the type with `repr(C)`. Users should provide their own
+/// `repr` attribute via `$attr` as necessary.
 macro_rules! s_paren {
     ($(
         $(#[$attr:meta])*
-        pub struct $i:ident ( $($field:tt)* );
+        $pub:vis struct $i:ident ( $($field:tt)* );
     )*) => ($(
-        #[cfg_attr(
-            feature = "extra_traits",
-            ::core::prelude::v1::derive(Eq, Hash, PartialEq)
-        )]
         #[::core::prelude::v1::derive(
             ::core::clone::Clone,
             ::core::marker::Copy,
             ::core::fmt::Debug,
         )]
+        #[cfg_attr(
+            feature = "extra_traits",
+            ::core::prelude::v1::derive(PartialEq, Eq, Hash)
+        )]
         $(#[$attr])*
-        pub struct $i ( $($field)* );
+        $pub struct $i ( $($field)* );
     )*);
 }
 
-/// Implement `Clone`, `Copy`, and `Debug` since those can be derived, but exclude `PartialEq`,
+/// Implement `Clone`, `Copy`, and `Debug` for one or more structs/unions, but exclude `PartialEq`,
 /// `Eq`, and `Hash`.
 ///
-/// Most items will prefer to use [`s`].
+/// Also mark the type with `repr(C)`.
+///
+/// Most structs will prefer to use [`s`].
 macro_rules! s_no_extra_traits {
     ($(
         $(#[$attr:meta])*
@@ -206,7 +211,10 @@ macro_rules! s_no_extra_traits {
 
     (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
         #[repr(C)]
-        #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+        )]
         $(#[$attr])*
         $pub union $i { $($field)* }
 
