@@ -2194,12 +2194,6 @@ extern "C" {
         ts: *const crate::timespec,
         sigmask: *const crate::sigset_t,
     ) -> c_int;
-    pub fn ppoll(
-        fds: *mut crate::pollfd,
-        nfds: crate::nfds_t,
-        ts: *const crate::timespec,
-        sigmask: *const crate::sigset_t,
-    ) -> c_int;
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
 
     pub fn reboot(mode: c_int, bootstr: *mut c_char) -> c_int;
