@@ -153,21 +153,19 @@ macro_rules! s {
     );
 
     (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
-        __item! {
-            #[repr(C)]
-            #[::core::prelude::v1::derive(
-                ::core::clone::Clone,
-                ::core::marker::Copy,
-                ::core::fmt::Debug,
-            )]
-            #[cfg_attr(
-                feature = "extra_traits",
-                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
-            )]
-            #[allow(deprecated)]
-            $(#[$attr])*
-            $pub struct $i { $($field)* }
-        }
+        #[repr(C)]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+            ::core::fmt::Debug,
+        )]
+        #[cfg_attr(
+            feature = "extra_traits",
+            ::core::prelude::v1::derive(Eq, Hash, PartialEq)
+        )]
+        #[allow(deprecated)]
+        $(#[$attr])*
+        $pub struct $i { $($field)* }
     );
 }
 
@@ -180,19 +178,17 @@ macro_rules! s_paren {
         $(#[$attr:meta])*
         pub struct $i:ident ( $($field:tt)* );
     )*) => ($(
-        __item! {
-            #[cfg_attr(
-                feature = "extra_traits",
-                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
-            )]
-            #[::core::prelude::v1::derive(
-                ::core::clone::Clone,
-                ::core::marker::Copy,
-                ::core::fmt::Debug,
-            )]
-            $(#[$attr])*
-            pub struct $i ( $($field)* );
-        }
+        #[cfg_attr(
+            feature = "extra_traits",
+            ::core::prelude::v1::derive(Eq, Hash, PartialEq)
+        )]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+            ::core::fmt::Debug,
+        )]
+        $(#[$attr])*
+        pub struct $i ( $($field)* );
     )*);
 }
 
@@ -209,12 +205,10 @@ macro_rules! s_no_extra_traits {
     )*);
 
     (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
-        __item! {
-            #[repr(C)]
-            #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
-            $(#[$attr])*
-            $pub union $i { $($field)* }
-        }
+        #[repr(C)]
+        #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+        $(#[$attr])*
+        $pub union $i { $($field)* }
 
         impl ::core::fmt::Debug for $i {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
@@ -224,16 +218,14 @@ macro_rules! s_no_extra_traits {
     );
 
     (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
-        __item! {
-            #[repr(C)]
-            #[::core::prelude::v1::derive(
-                ::core::clone::Clone,
-                ::core::marker::Copy,
-                ::core::fmt::Debug,
-            )]
-            $(#[$attr])*
-            $pub struct $i { $($field)* }
-        }
+        #[repr(C)]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+            ::core::fmt::Debug,
+        )]
+        $(#[$attr])*
+        $pub struct $i { $($field)* }
     );
 }
 
@@ -268,19 +260,17 @@ macro_rules! e {
         $(#[$attr:meta])*
         pub enum $i:ident { $($field:tt)* }
     )*) => ($(
-        __item! {
-            #[cfg_attr(
-                feature = "extra_traits",
-                ::core::prelude::v1::derive(Eq, Hash, PartialEq)
-            )]
-            #[::core::prelude::v1::derive(
-                ::core::clone::Clone,
-                ::core::marker::Copy,
-                ::core::fmt::Debug,
-            )]
-            $(#[$attr])*
-            pub enum $i { $($field)* }
-        }
+        #[cfg_attr(
+            feature = "extra_traits",
+            ::core::prelude::v1::derive(Eq, Hash, PartialEq)
+        )]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+            ::core::fmt::Debug,
+        )]
+        $(#[$attr])*
+        pub enum $i { $($field)* }
     )*);
 }
 
@@ -405,12 +395,6 @@ macro_rules! safe_f {
         ($($arg: $argty),*) -> $ret
             $body
     )+};
-}
-
-macro_rules! __item {
-    ($i:item) => {
-        $i
-    };
 }
 
 // This macro is used to deprecate items that should be accessed via the mach2 crate
