@@ -17,7 +17,8 @@ env:
   RUSTDOCFLAGS: -Dwarnings
   RUSTFLAGS: -Dwarnings
   RUST_BACKTRACE: full
-  TARGET_REF: ${{ github.base_ref || github.event.merge_group.base_ref }}
+  # Base branch for PRs or for merges, current ref for cron runs on a branch.
+  TARGET_REF: ${{ github.base_ref || github.event.merge_group.base_ref || github.ref }}
 
 defaults:
   run:
