@@ -4142,6 +4142,10 @@ fn test_linux(target: &str) {
             // FIXME(musl): New fields in newer versions
             "utmpx" if !old_musl => true,
 
+            // FIXME(linux): Requires >= 6.16 kernel headers.
+            // On 64 bits the size did not change, skip only for 32 bits.
+            "ptrace_syscall_info" if pointer_width == 32 => true,
+
             _ => false,
         }
     });
@@ -4683,7 +4687,9 @@ fn test_linux(target: &str) {
                 true
             }
             // the `u` field is in fact an anonymous union
-            ("ptrace_syscall_info", "u" | "pad") if gnu => true,
+            ("ptrace_syscall_info", "u") if gnu => true,
+            // FIXME(linux): `flags` requires >= 6.16 kernel headers
+            ("ptrace_syscall_info", "flags") if gnu => true,
             // the vregs field is a `__uint128_t` C's type.
             ("user_fpsimd_struct", "vregs") => true,
             // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.

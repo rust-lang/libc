@@ -171,7 +171,7 @@ s! {
     }
 
     pub struct __c_anonymous_ptrace_syscall_info_exit {
-        pub sval: crate::__s64,
+        pub rval: crate::__s64,
         pub is_error: crate::__u8,
     }
 
@@ -179,11 +179,13 @@ s! {
         pub nr: crate::__u64,
         pub args: [crate::__u64; 6],
         pub ret_data: crate::__u32,
+        reserved2: Padding<crate::__u32>,
     }
 
     pub struct ptrace_syscall_info {
         pub op: crate::__u8,
-        pub pad: [crate::__u8; 3],
+        reserved: Padding<crate::__u8>,
+        pub flags: crate::__u16,
         pub arch: crate::__u32,
         pub instruction_pointer: crate::__u64,
         pub stack_pointer: crate::__u64,
