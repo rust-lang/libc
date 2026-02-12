@@ -678,6 +678,7 @@ sgetspent_r
 statx
 statx_timestamp
 tcp_info
+tgkill
 timex
 utmpname
 utmpx
