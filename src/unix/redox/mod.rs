@@ -1096,6 +1096,8 @@ pub const PRIO_PROCESS: c_int = 0;
 pub const PRIO_PGRP: c_int = 1;
 pub const PRIO_USER: c_int = 2;
 
+pub const RENAME_NOREPLACE: c_uint = 1;
+
 f! {
     //sys/socket.h
     pub const fn CMSG_ALIGN(len: size_t) -> size_t {
