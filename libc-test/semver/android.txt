@@ -4061,6 +4061,7 @@ tee
 telldir
 termios
 termios2
+tgkill
 time
 time_t
 timegm
