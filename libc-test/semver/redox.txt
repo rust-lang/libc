@@ -327,6 +327,7 @@ pipe2
 pthread_condattr_setclock
 qsort
 reallocarray
+renameat2
 rlim_t
 setgrent
 setpwent
