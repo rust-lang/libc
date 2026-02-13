@@ -12,7 +12,6 @@ from enum import Enum, IntEnum
 from pathlib import Path
 from typing import Optional, Sequence
 
-
 ESC_YELLOW = "\033[1;33m"
 ESC_CYAN = "\033[1;36m"
 ESC_END = "\033[0m"
@@ -120,11 +119,15 @@ TARGETS = [
     #
     # Tier 2 without host tools
     Target("aarch64-apple-ios"),
+    Target("aarch64-apple-tvos", min_toolchain=Toolchain.NIGHTLY),
+    Target("aarch64-apple-visionos", min_toolchain=Toolchain.NIGHTLY),
+    Target("aarch64-apple-watchos", min_toolchain=Toolchain.NIGHTLY),
     Target("aarch64-linux-android"),
     Target("aarch64-unknown-fuchsia", min_toolchain=Toolchain.STABLE),
     Target("arm-linux-androideabi"),
     Target("arm-unknown-linux-musleabi"),
     Target("arm-unknown-linux-musleabihf"),
+    Target("arm64ec-pc-windows-msvc", min_toolchain=Toolchain.STABLE),
     Target("armv5te-unknown-linux-gnueabi"),
     Target("armv5te-unknown-linux-musleabi"),
     Target("armv7-linux-androideabi"),
@@ -134,7 +137,11 @@ TARGETS = [
     Target("i686-linux-android"),
     Target("i686-unknown-freebsd"),
     Target("i686-unknown-linux-musl"),
+    Target("nvptx64-nvidia-cuda", min_toolchain=Toolchain.STABLE),
+    Target("riscv64gc-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
     Target("sparc64-unknown-linux-gnu"),
+    Target("thumbv7neon-linux-androideabi", min_toolchain=Toolchain.STABLE),
+    Target("thumbv7neon-unknown-linux-gnueabihf", min_toolchain=Toolchain.STABLE),
     Target("wasm32-unknown-emscripten"),
     Target("wasm32-unknown-unknown"),
     Target("wasm32-wasip1", min_toolchain=Toolchain.STABLE),
@@ -175,13 +182,13 @@ TARGETS = [
     Target("mips64el-unknown-linux-muslabi64", dist=False),
     Target("mipsel-unknown-linux-gnu", dist=False),
     Target("mipsel-unknown-linux-musl", dist=False),
-    Target("nvptx64-nvidia-cuda", dist=False),
     Target("powerpc-unknown-linux-gnuspe", dist=False),
     Target("powerpc-unknown-netbsd", dist=False),
     Target("powerpc-wrs-vxworks", dist=False),
     Target("powerpc-wrs-vxworks-spe", dist=False),
     Target("powerpc64-ibm-aix", dist=False),
     Target("powerpc64-unknown-freebsd", dist=False),
+    Target("powerpc64-unknown-linux-musl", dist=False),
     Target("powerpc64-wrs-vxworks", dist=False),
     Target("riscv32-wrs-vxworks", dist=False),
     Target("riscv32gc-unknown-linux-gnu", dist=False),
@@ -192,7 +199,6 @@ TARGETS = [
     Target("riscv64a23-unknown-linux-gnu", dist=False),
     Target("riscv64gc-unknown-freebsd", dist=False),
     Target("riscv64gc-unknown-hermit", dist=False),
-    Target("riscv64gc-unknown-linux-musl", dist=False),
     Target("riscv64gc-unknown-none-elf", dist=False),
     Target("riscv64imac-unknown-none-elf", dist=False),
     Target("s390x-unknown-linux-musl", dist=False),
@@ -200,8 +206,6 @@ TARGETS = [
     Target("sparc64-unknown-netbsd", dist=False),
     Target("thumbv7em-none-eabihf", dist=False),
     Target("thumbv7m-none-eabi", dist=False),
-    Target("thumbv7neon-linux-androideabi", dist=False),
-    Target("thumbv7neon-unknown-linux-gnueabihf", dist=False),
     Target("thumbv8m.main-none-eabi", dist=False),
     Target("x86_64-unknown-dragonfly", dist=False),
     Target("x86_64-unknown-haiku", dist=False),
@@ -288,10 +292,8 @@ def do_semver_checks(cfg: Cfg, target: Target) -> bool:
         # running on the host.
 
     if cfg.baseline_crate_dir is None:
-        eprint(
-            "Non-host target: --baseline-crate-dir must be specified to \
-            run semver-checks"
-        )
+        eprint("Non-host target: --baseline-crate-dir must be specified to \
+            run semver-checks")
         sys.exit(1)
 
     # Since semver-checks doesn't work with `--target`, we build the json ourself and
