@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.182](https://github.com/rust-lang/libc/compare/0.2.181...0.2.182) - 2026-02-13
+
+### Added
+
+- Android, Linux: Add `tgkill` ([#4970](https://github.com/rust-lang/libc/pull/4970))
+- Redox: Add `RENAME_NOREPLACE` ([#4968](https://github.com/rust-lang/libc/pull/4968))
+- Redox: Add `renameat2` ([#4968](https://github.com/rust-lang/libc/pull/4968))
+
+
 ## [0.2.181](https://github.com/rust-lang/libc/compare/0.2.180...0.2.181) - 2026-02-09
 
 ### Added
