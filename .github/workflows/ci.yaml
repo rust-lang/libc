@@ -53,7 +53,7 @@ jobs:
     name: Verify build
     strategy:
       matrix:
-        toolchain: [stable, 1.63.0]
+        toolchain: [stable, 1.65.0]
         include:
           # Nightly has a lot of targets, so split it in half
           - toolchain: nightly
@@ -63,7 +63,7 @@ jobs:
           - toolchain: beta
             only: '(aarch64|x86_64)' # just a spot check for beta
           - toolchain: stable
-          - toolchain: 1.63.0 # msrv
+          - toolchain: 1.65.0 # msrv
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
@@ -94,7 +94,7 @@ jobs:
         run: |
           set -eux
           # Remove `-Dwarnings` at the MSRV since lints may be different
-          [ "${{ matrix.toolchain }}" = "1.63.0" ] && export RUSTFLAGS=""
+          [ "${{ matrix.toolchain }}" = "1.65.0" ] && export RUSTFLAGS=""
           python3 ci/verify-build.py \
             --toolchain "$TOOLCHAIN" \
             ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
