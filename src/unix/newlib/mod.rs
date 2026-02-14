@@ -575,7 +575,7 @@ cfg_if! {
 }
 
 pub const AF_UNSPEC: c_int = 0;
-pub const AF_INET: c_int = 2;
+pub const AF_INET: sa_family_t = 2;
 
 pub const CLOCK_REALTIME: crate::clockid_t = 1;
 pub const CLOCK_MONOTONIC: crate::clockid_t = 4;
