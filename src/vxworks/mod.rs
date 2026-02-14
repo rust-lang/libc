@@ -158,6 +158,7 @@ s! {
     }
 
     // b_struct_timeval.h
+    #[derive(Default)]
     pub struct timeval {
         pub tv_sec: crate::time_t,
         pub tv_usec: crate::suseconds_t,
@@ -332,6 +333,7 @@ s! {
     }
 
     // b_struct_timespec.h
+    #[derive(Default)]
     pub struct timespec {
         pub tv_sec: crate::time_t,
         pub tv_nsec: c_long,
