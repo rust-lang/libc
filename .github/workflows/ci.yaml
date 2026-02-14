@@ -186,30 +186,30 @@ jobs:
           - target: aarch64-linux-android
           - target: aarch64-unknown-linux-musl
           - target: aarch64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           - target: arm-linux-androideabi
           - target: arm-unknown-linux-gnueabihf
           - target: arm-unknown-linux-musleabihf
           - target: arm-unknown-linux-musleabihf
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           # FIXME(#4297): Disabled due to spurious failue
           # - target: i686-linux-android
           - target: i686-unknown-linux-musl
           - target: i686-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           - target: loongarch64-unknown-linux-gnu
           - target: loongarch64-unknown-linux-musl
           - target: loongarch64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           - target: powerpc64-unknown-linux-gnu
           - target: powerpc64le-unknown-linux-gnu
           - target: powerpc64le-unknown-linux-musl
           - target: powerpc64le-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           - target: riscv64gc-unknown-linux-gnu
           - target: s390x-unknown-linux-gnu
@@ -223,7 +223,7 @@ jobs:
           # - target: x86_64-unknown-linux-gnux32
           - target: x86_64-unknown-linux-musl
           - target: x86_64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           # FIXME: It seems some items in `src/unix/mod.rs` aren't defined on redox actually.
           # - target: x86_64-unknown-redox

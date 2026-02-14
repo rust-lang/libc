@@ -242,8 +242,15 @@ def run(
     args: Sequence[str | Path],
     *,
     env: Optional[dict[str, str]] = None,
+    extra_rustflags: Optional[str] = None,
     check: bool = True,
 ) -> sp.CompletedProcess:
+    if env is None:
+        env = os.environ.copy()
+
+    if extra_rustflags is not None:
+        env["RUSTFLAGS"] = env.get("RUSTFLAGS", "") + " " + extra_rustflags
+
     xtrace(args, env=env)
     return sp.run(args, env=env, check=check)
 
@@ -358,7 +365,7 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     """Run tests for a single target."""
     start = time.time()
     env = os.environ.copy()
-    env.setdefault("RUSTFLAGS", "")
+    rustflags = ""
 
     tname = target.name
     target_cfg = check_output(["rustc", "--print=cfg", "--target", tname])
@@ -383,7 +390,7 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
         cmd += ["-Zbuild-std=core"]
         # FIXME: With `the build-std` feature, `compiler_builtins` emits a lot of
         # lint warnings.
-        env["RUSTFLAGS"] += " -Aimproper_ctypes_definitions"
+        rustflags += " -Aimproper_ctypes_definitions"
     else:
         run(["rustup", "target", "add", tname, "--toolchain", cfg.toolchain_name])
 
@@ -393,13 +400,16 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
 
     if "gnu" in target_env and target_bits == "32":
         # Equivalent of _FILE_OFFSET_BITS=64
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS": "64"})
+        run(
+            cmd,
+            extra_rustflags=rustflags + " libc_unstable_gnu_file_offset_bits='64'",
+        )
         # Equivalent of _TIME_BITS=64
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_TIME_BITS": "64"})
+        run(cmd, extra_rustflags=rustflags + " libc_unstable_gnu_time_bits='64'")
 
     if "musl" in target_env:
         # Check with breaking changes from musl, including 64-bit time_t on 32-bit
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": "1"})
+        run(cmd, extra_rustflags=rustflags + " libc_unstable_musl_v1_2_3")
 
     # Test again without default features, i.e. without `std`
     run([*cmd, "--no-default-features"])
@@ -413,10 +423,16 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     # if on nightly or stable
     if "freebsd" in tname and cfg.toolchain >= Toolchain.STABLE:
         for version in FREEBSD_VERSIONS:
-            run(cmd, env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)})
+
+            run(
+                cmd,
+                extra_rustflags=rustflags
+                + f" libc_unstable_freebsd_version = '{str(version)}'",
+            )
             run(
                 [*cmd, "--no-default-features"],
-                env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)},
+                extra_rustflags=rustflags
+                + f" libc_unstable_freebsd_version = '{str(version)}'",
             )
 
     if cfg.skip_semver:
