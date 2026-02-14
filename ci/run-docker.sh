@@ -36,15 +36,19 @@ run() {
         "ci/"
     )
 
+    # FIXME(ci): we could probably build both versions in the same dockerfile
+    # and test them both in `ci/run.sh` more similar to what we do with glibc,
+    # rather than needing two separate jobs.
     if [[ "$run_target" = *"musl"* ]]; then
-        if [ -n "${RUST_LIBC_UNSTABLE_MUSL_V1_2_3:-}" ]; then
+        if [ -n "${TEST_MUSL_V1_2_3:-}" ]; then
+            export RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_musl_v1_2_3"
             build_args+=("--build-arg=MUSL_VERSION=new")
         else
             build_args+=("--build-arg=MUSL_VERSION=old")
         fi
     fi
 
-    if [ -n "${TEST_UCLIBC_TIME64:-}" ]; then 
+    if [ -n "${TEST_UCLIBC_TIME64:-}" ]; then
         build_args+=("--build-arg=TEST_UCLIBC_TIME64=1")
         export RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_uclibc_time64"
     fi
@@ -67,9 +71,6 @@ run() {
         --env RUSTFLAGS \
         --env RUSTDOCFLAGS \
         --env RUST_BACKTRACE \
-        --env RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS \
-        --env RUST_LIBC_UNSTABLE_GNU_TIME_BITS \
-        --env RUST_LIBC_UNSTABLE_MUSL_V1_2_3 \
         --env CARGO_TERM_COLOR \
         --env CARGO_TERM_VERBOSE \
         --env CARGO_HOME=/cargo \
