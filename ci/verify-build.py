@@ -402,30 +402,18 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
         run(["rustup", "target", "add", tname, "--toolchain", cfg.toolchain_name])
 
     # Test with expected combinations of features
-    run(cmd, env=env, rustflags=rustflags)
-    run([*cmd, "--features=extra_traits"], env=env, rustflags=rustflags)
+    run(cmd, rustflags=rustflags)
+    run([*cmd, "--features=extra_traits"], rustflags=rustflags)
 
     if "gnu" in target_env and target_bits == "32":
         # Equivalent of _FILE_OFFSET_BITS=64
-        run(
-            cmd,
-            env=env | {"RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS": "64"},
-            rustflags=rustflags,
-        )
+        run(cmd, rustflags=f'{rustflags} --cfg=libc_unstable_gnu_file_offset_bits="64"')
         # Equivalent of _TIME_BITS=64
-        run(
-            cmd,
-            env=env | {"RUST_LIBC_UNSTABLE_GNU_TIME_BITS": "64"},
-            rustflags=rustflags,
-        )
+        run(cmd, rustflags=f'{rustflags} --cfg=libc_unstable_gnu_time_bits="64"')
 
     if "musl" in target_env:
         # Check with breaking changes from musl, including 64-bit time_t on 32-bit
-        run(
-            cmd,
-            env=env | {"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": "1"},
-            rustflags=rustflags,
-        )
+        run(cmd, rustflags=f"{rustflags} --cfg=libc_unstable_musl_v1_2_3")
 
     # Test again without default features, i.e. without `std`
     run([*cmd, "--no-default-features"], rustflags=rustflags)
