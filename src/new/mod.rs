@@ -184,6 +184,7 @@ cfg_if! {
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
         pub use linux::netlink::*;
+        pub use linux::pidfd::*;
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
