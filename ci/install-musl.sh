@@ -80,10 +80,21 @@ case ${1} in
             ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
-    powerpc64*)
+    powerpc64le)
         musl_arch=powerpc64
         kernel_arch=powerpc
-        CC="${1}-linux-gnu-gcc" CFLAGS="-mlong-double-64" \
+        CC=powerpc64le-linux-gnu-gcc CFLAGS="-mlong-double-64" \
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
+    powerpc64)
+        musl_arch=powerpc64
+        kernel_arch=powerpc
+        # Ubuntu's powerpc64 cross toolchain is for ELFv1, but we need a
+        # libgcc that's for ELFv2, which we can't trivially get.
+        # Luckily, compiler-builtins provides all the necessary symbols,
+        # so we resort to using that instead
+        CC=powerpc64-linux-gnu-gcc CFLAGS="-mlong-double-64 -mabi=elfv2" LIBCC="/compiler_builtins.rlib" \
             ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
