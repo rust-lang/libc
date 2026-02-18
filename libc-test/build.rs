@@ -1429,6 +1429,8 @@ fn test_netbsd(target: &str) {
             ("ifreq", "ifr_ifru") => true,
             ("utmpx", "ut_exit") => true,
             ("posix_spawn_file_actions_entry_t", "fae_data") => true,
+            ("kinfo_pcb", "ki_s") => true,
+            ("kinfo_pcb", "ki_d") => true,
 
             _ => false,
         }
