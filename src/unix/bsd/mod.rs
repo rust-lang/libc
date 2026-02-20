@@ -17,11 +17,13 @@ cfg_if! {
         pub type __darwin_pthread_t = *mut _opaque_pthread_t;
         pub type pthread_t = __darwin_pthread_t;
         s! {
+            #[non_exhaustive]
             pub struct __darwin_pthread_handler_rec {
                 __routine: Option<unsafe extern "C" fn(*mut c_void)>,
                 __arg: *mut c_void,
                 __next: *mut __darwin_pthread_handler_rec,
             }
+            #[non_exhaustive]
             pub struct _opaque_pthread_t {
                 __sig: c_long,
                 __cleanup_stack: *mut __darwin_pthread_handler_rec,
