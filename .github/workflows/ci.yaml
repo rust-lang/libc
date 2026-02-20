@@ -206,6 +206,10 @@ jobs:
             env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
           - target: powerpc64-unknown-linux-gnu
+          - target: powerpc64-unknown-linux-musl
+          - target: powerpc64-unknown-linux-musl
+            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
+            artifact-tag: new-musl
           - target: powerpc64le-unknown-linux-gnu
           - target: powerpc64le-unknown-linux-musl
           - target: powerpc64le-unknown-linux-musl
