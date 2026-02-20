@@ -7,30 +7,15 @@ pub type socklen_t = u32;
 pub type sa_family_t = u8;
 
 cfg_if! {
-    if #[cfg(any(
-        target_os = "macos",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos",
-    ))] {
-        pub type __darwin_pthread_t = *mut _opaque_pthread_t;
-        pub type pthread_t = __darwin_pthread_t;
-        s! {
-            #[non_exhaustive]
-            pub struct __darwin_pthread_handler_rec {
-                __routine: Option<unsafe extern "C" fn(*mut c_void)>,
-                __arg: *mut c_void,
-                __next: *mut __darwin_pthread_handler_rec,
-            }
-            #[non_exhaustive]
-            pub struct _opaque_pthread_t {
-                __sig: c_long,
-                __cleanup_stack: *mut __darwin_pthread_handler_rec,
-                __opaque: [c_char; __PTHREAD_SIZE__],
-            }
+    if #[cfg(target_vendor = "apple")] {
+        extern_ty! {
+            pub enum _opaque_pthread_t {}
         }
+
+        type __darwin_pthread_t = *mut _opaque_pthread_t;
+        pub type pthread_t = __darwin_pthread_t;
     } else {
+        // FIXME(1.0): verify other BSDs? Glancing around, other BSDs also look like a pointer
         pub type pthread_t = crate::uintptr_t;
     }
 }

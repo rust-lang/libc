@@ -53,7 +53,6 @@ s! {
 #[deprecated(since = "0.2.55")]
 pub const NET_RT_MAXID: c_int = 11;
 
-pub const __PTHREAD_SIZE__: usize = 8176;
 pub const __PTHREAD_MUTEX_SIZE__: usize = 56;
 pub const __PTHREAD_COND_SIZE__: usize = 40;
 pub const __PTHREAD_CONDATTR_SIZE__: usize = 8;
