@@ -2929,6 +2929,26 @@ pub const IFLA_INFO_XSTATS: c_ushort = 3;
 pub const IFLA_INFO_SLAVE_KIND: c_ushort = 4;
 pub const IFLA_INFO_SLAVE_DATA: c_ushort = 5;
 
+// malloc.h
+pub const M_DECAY_TIME: c_int = -100;
+pub const M_PURGE: c_int = -101;
+pub const M_MEMTAG_TUNING: c_int = -102;
+pub const M_THREAD_DISABLE_MEM_INIT: c_int = -103;
+pub const M_PURGE_ALL: c_int = -104;
+pub const M_CACHE_COUNT_MAX: c_int = -200;
+pub const M_CACHE_SIZE_MAX: c_int = -201;
+pub const M_TSDS_COUNT_MAX: c_int = -202;
+pub const M_BIONIC_ZERO_INIT: c_int = -203;
+pub const M_BIONIC_SET_HEAP_TAGGING_LEVEL: c_int = -204;
+
+pub const M_MEMTAG_TUNING_BUFFER_OVERFLOW: c_int = 0;
+pub const M_MEMTAG_TUNING_UAF: c_int = 1;
+
+pub const M_HEAP_TAGGING_LEVEL_NONE: i32 = 0;
+pub const M_HEAP_TAGGING_LEVEL_TBI: i32 = 1;
+pub const M_HEAP_TAGGING_LEVEL_ASYNC: i32 = 2;
+pub const M_HEAP_TAGGING_LEVEL_SYNC: i32 = 3;
+
 // linux/rtnetlink.h
 pub const TCA_UNSPEC: c_ushort = 0;
 pub const TCA_KIND: c_ushort = 1;
@@ -3419,6 +3439,9 @@ extern "C" {
     pub fn malloc_info(options: c_int, stream: *mut crate::FILE) -> c_int;
 
     pub fn malloc_usable_size(ptr: *const c_void) -> size_t;
+
+    // available from API level 26
+    pub fn mallopt(opt: c_int, arg: c_int) -> c_int;
 
     pub fn utmpname(name: *const c_char) -> c_int;
     pub fn setutent();
