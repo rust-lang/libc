@@ -131,6 +131,24 @@ impl siginfo_t {
     }
 }
 
+impl kinfo_pcb {
+    pub unsafe fn ki_src(&self) -> crate::sockaddr {
+        self.ki_s._kis_src
+    }
+
+    pub unsafe fn ki_dst(&self) -> crate::sockaddr {
+        self.ki_d._kid_dst
+    }
+
+    pub unsafe fn ki_spad(&self) -> &[c_char; 256 + 8] {
+        &self.ki_s._kis_pad
+    }
+
+    pub unsafe fn ki_dpad(&self) -> &[c_char; 256 + 8] {
+        &self.ki_d._kid_pad
+    }
+}
+
 s! {
     pub struct aiocb {
         pub aio_offset: off_t,
@@ -440,6 +458,58 @@ s! {
     pub struct Aux64Info {
         pub a_type: Elf64_Word,
         pub a_v: Elf64_Xword,
+    }
+
+    // sys/socket.h
+
+    pub struct kinfo_pcb {
+        pub ki_pcbaddr: u64,
+        pub ki_ppcbaddr: u64,
+        pub ki_sockaddr: u64,
+        pub ki_family: u32,
+        pub ki_type: u32,
+        pub ki_protocol: u32,
+        pub ki_pflags: u32,
+        pub ki_sostate: u32,
+        pub ki_prstate: u32,
+        pub ki_tstate: i32,
+        pub ki_tflags: u32,
+        pub ki_rcvq: u64,
+        pub ki_sndq: u64,
+        pub ki_s: __c_anonymous_pcb_sockaddr_src,
+        pub ki_d: __c_anonymous_pcb_sockaddr_dst,
+        pub ki_inode: u64,
+        pub ki_vnode: u64,
+        pub ki_conn: u64,
+        pub ki_refs: u64,
+        pub ki_nextref: u64,
+    }
+
+    // sys/sysctl.h
+
+    pub struct kinfo_file {
+        pub ki_fileaddr: u64,
+        pub ki_flag: u32,
+        pub ki_iflags: u32,
+        pub ki_ftype: u32,
+        pub ki_count: u32,
+        pub ki_msgcount: u32,
+        pub ki_usecount: u32,
+        pub ki_fucred: u64,
+        pub ki_fuid: u32,
+        pub ki_fgid: u32,
+        pub ki_fops: u64,
+        pub ki_foffset: u64,
+        pub ki_fdata: u64,
+        pub ki_vun: u64,
+        pub ki_vsize: u64,
+        pub ki_vtype: u32,
+        pub ki_vtag: u32,
+        pub ki_vdata: u64,
+        pub ki_pid: u32,
+        pub ki_fd: i32,
+        pub ki_ofileflags: u32,
+        pub _ki_padto64bits: u32,
     }
 
     // link.h
@@ -775,6 +845,16 @@ s_no_extra_traits! {
         pub open: __c_anonymous_posix_spawn_fae_open,
         pub dup2: __c_anonymous_posix_spawn_fae_dup2,
     }
+
+    pub union __c_anonymous_pcb_sockaddr_src {
+        pub _kis_src: crate::sockaddr,
+        pub _kis_pad: [c_char; 256 + 8],
+    }
+
+    pub union __c_anonymous_pcb_sockaddr_dst {
+        pub _kid_dst: crate::sockaddr,
+        pub _kid_pad: [c_char; 256 + 8],
+    }
 }
 
 cfg_if! {
@@ -790,6 +870,35 @@ cfg_if! {
                 unsafe {
                     self.open.hash(state);
                     self.dup2.hash(state);
+                }
+            }
+        }
+
+        impl Eq for __c_anonymous_pcb_sockaddr_src {}
+        impl PartialEq for __c_anonymous_pcb_sockaddr_src {
+            fn eq(&self, other: &__c_anonymous_pcb_sockaddr_src) -> bool {
+                unsafe { self._kis_src == other._kis_src || self._kis_pad == other._kis_pad }
+            }
+        }
+        impl hash::Hash for __c_anonymous_pcb_sockaddr_src {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self._kis_src.hash(state);
+                    self._kis_pad.hash(state);
+                }
+            }
+        }
+        impl Eq for __c_anonymous_pcb_sockaddr_dst {}
+        impl PartialEq for __c_anonymous_pcb_sockaddr_dst {
+            fn eq(&self, other: &__c_anonymous_pcb_sockaddr_dst) -> bool {
+                unsafe { self._kid_dst == other._kid_dst || self._kid_pad == other._kid_pad }
+            }
+        }
+        impl hash::Hash for __c_anonymous_pcb_sockaddr_dst {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe {
+                    self._kid_dst.hash(state);
+                    self._kid_pad.hash(state);
                 }
             }
         }
@@ -1676,6 +1785,18 @@ pub const UF_NODUMP: c_ulong = 0x00000001;
 pub const UF_OPAQUE: c_ulong = 0x00000008;
 pub const UF_SETTABLE: c_ulong = 0x0000ffff;
 
+// sys/file.h
+pub const DTYPE_VNODE: c_int = 1;
+pub const DTYPE_SOCKET: c_int = 2;
+pub const DTYPE_PIPE: c_int = 3;
+pub const DTYPE_KQUEUE: c_int = 4;
+pub const DTYPE_MISC: c_int = 5;
+pub const DTYPE_CRYPTO: c_int = 6;
+pub const DTYPE_MQUEUE: c_int = 7;
+pub const DTYPE_SEM: c_int = 8;
+pub const DTYPE_EVENTFD: c_int = 9;
+pub const DTYPE_TIMERFD: c_int = 10;
+
 // sys/sysctl.h
 pub const KVME_PROT_READ: c_int = 0x00000001;
 pub const KVME_PROT_WRITE: c_int = 0x00000002;
@@ -1696,6 +1817,10 @@ pub const KI_WMESGLEN: c_int = 8;
 pub const KI_MAXLOGNAME: c_int = 24;
 pub const KI_MAXEMULLEN: c_int = 16;
 pub const KI_LNAMELEN: c_int = 20;
+
+pub const KERN_FILE_BYFILE: c_int = 1;
+pub const KERN_FILE_BYPID: c_int = 2;
+pub const KERN_FILESLOP: c_int = 10;
 
 // sys/lwp.h
 pub const LSIDL: c_int = 1;
@@ -1772,6 +1897,10 @@ pub const TFD_CLOEXEC: i32 = crate::O_CLOEXEC;
 pub const TFD_NONBLOCK: i32 = crate::O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: i32 = crate::O_WRONLY;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = crate::O_RDWR;
+
+// sys/socket.h
+pub const PCB_SLOP: c_int = 20;
+pub const PCB_ALL: c_int = 0;
 
 const fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES
