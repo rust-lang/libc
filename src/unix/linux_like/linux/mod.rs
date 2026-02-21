@@ -1263,6 +1263,14 @@ s! {
         pub sched_deadline: crate::__u64,
         pub sched_period: crate::__u64,
     }
+
+    // linux/fcntl.h
+
+    pub struct file_handle {
+        pub handle_bytes: c_uint,
+        pub handle_type: c_int,
+        pub f_handle: [c_uchar; 0],
+    }
 }
 
 cfg_if! {
@@ -1397,6 +1405,11 @@ pub const IFF_ECHO: c_int = 0x40000;
 
 // linux/fcntl.h
 pub const AT_EXECVE_CHECK: c_int = 0x10000;
+
+pub const MAX_HANDLE_SZ: c_int = 128;
+pub const AT_HANDLE_FID: c_int = 0x200;
+pub const AT_HANDLE_MNT_ID_UNIQUE: c_int = 0x001;
+pub const AT_HANDLE_CONNECTABLE: c_int = 0x002;
 
 // linux/if_addr.h
 pub const IFA_UNSPEC: c_ushort = 0;
@@ -4366,6 +4379,15 @@ extern "C" {
     pub fn gethostid() -> c_long;
 
     pub fn klogctl(syslog_type: c_int, bufp: *mut c_char, len: c_int) -> c_int;
+
+    pub fn name_to_handle_at(
+        dirfd: c_int,
+        path: *const c_char,
+        handle: *mut file_handle,
+        mount_id: *mut c_int,
+        flags: c_int,
+    ) -> c_int;
+    pub fn open_by_handle_at(mount_fd: c_int, handle: *mut file_handle, flags: c_int) -> c_int;
 }
 
 // LFS64 extensions
