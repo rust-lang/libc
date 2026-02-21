@@ -167,6 +167,9 @@ AT_EXECVE_CHECK
 AT_FDCWD
 AT_FLAGS
 AT_GID
+AT_HANDLE_CONNECTABLE
+AT_HANDLE_FID
+AT_HANDLE_MNT_ID_UNIQUE
 AT_HWCAP
 AT_HWCAP2
 AT_HWCAP3
@@ -1705,6 +1708,7 @@ MAP_STACK
 MAP_TYPE
 MAXTTL
 MAX_ADDR_LEN
+MAX_HANDLE_SZ
 MAX_IPOPTLEN
 MAX_LINKS
 MCAST_BLOCK_SOURCE
@@ -4026,6 +4030,7 @@ ff_trigger
 fgetpos64
 fgetxattr
 file_clone_range
+file_handle
 flistxattr
 fmemopen
 fopen64
@@ -4189,6 +4194,7 @@ msgrcv
 msgsnd
 msqid_ds
 name_t
+name_to_handle_at
 newlocale
 nice
 nl_item
@@ -4203,6 +4209,7 @@ nlmsghdr
 nrand48
 off64_t
 open64
+open_by_handle_at
 open_how
 open_memstream
 openat
