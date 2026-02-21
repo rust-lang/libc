@@ -37,7 +37,8 @@ run() {
     )
 
     if [[ "$run_target" = *"musl"* ]]; then
-        if [ -n "${RUST_LIBC_UNSTABLE_MUSL_V1_2_3:-}" ]; then
+        if [ -n "${TEST_MUSL_V1_2_3:-}" ]; then
+            export RUSTFLAGS="$RUSTFLAGS libc_unstable_musl_v1_2_3"
             build_args+=("--build-arg=MUSL_VERSION=new")
         else
             build_args+=("--build-arg=MUSL_VERSION=old")
@@ -62,9 +63,6 @@ run() {
         --env RUSTFLAGS \
         --env RUSTDOCFLAGS \
         --env RUST_BACKTRACE \
-        --env RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS \
-        --env RUST_LIBC_UNSTABLE_GNU_TIME_BITS \
-        --env RUST_LIBC_UNSTABLE_MUSL_V1_2_3 \
         --env CARGO_TERM_COLOR \
         --env CARGO_TERM_VERBOSE \
         --env CARGO_HOME=/cargo \
