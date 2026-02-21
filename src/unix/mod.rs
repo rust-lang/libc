@@ -17,7 +17,7 @@ pub type ssize_t = isize;
 pub type pid_t = i32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
-pub type sighandler_t = size_t;
+pub type sighandler_t = __c_anonymous_sigaction_handler;
 pub type cc_t = c_uchar;
 
 cfg_if! {
@@ -43,6 +43,18 @@ extern_ty! {
 
 #[cfg(not(target_os = "nuttx"))]
 pub type locale_t = *mut c_void;
+
+s_no_extra_traits! {
+    pub union __c_anonymous_sigaction_handler{
+        pub sa_handler: Option<extern "C" fn(c_int) -> ()>,
+        pub sa_sigaction: Option<extern "C" fn(
+            c_int,
+            *mut siginfo_t,
+            *mut c_void
+        ) -> ()>,
+        pub default: size_t,
+    }
+}
 
 s! {
     pub struct group {
@@ -244,12 +256,28 @@ cfg_if! {
     }
 }
 
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for __c_anonymous_sigaction_handler {
+            fn eq(&self, other: &__c_anonymous_sigaction_handler) -> bool {
+                unsafe{ self.default == other.default }
+            }
+        }
+        impl Eq for __c_anonymous_sigaction_handler{}
+        impl hash::Hash for __c_anonymous_sigaction_handler {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe{ self.default.hash(state) };
+            }
+        }
+    }
+}
+
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
-pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
-pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
-pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
+pub const SIG_DFL: sighandler_t = sighandler_t { default: 0 };
+pub const SIG_IGN: sighandler_t = sighandler_t { default: 1 };
+pub const SIG_ERR: sighandler_t = sighandler_t { default: !0 };
 
 cfg_if! {
     if #[cfg(all(not(target_os = "nto"), not(target_os = "aix")))] {
