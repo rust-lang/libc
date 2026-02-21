@@ -620,8 +620,6 @@ pub const PF_NFC: c_int = AF_NFC;
 pub const PF_VSOCK: c_int = AF_VSOCK;
 pub const PF_XDP: c_int = AF_XDP;
 
-pub const SIGEV_THREAD_ID: c_int = 4;
-
 pub const BUFSIZ: c_uint = 8192;
 pub const TMP_MAX: c_uint = 238328;
 pub const FOPEN_MAX: c_uint = 16;
