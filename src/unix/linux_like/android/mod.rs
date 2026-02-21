@@ -193,7 +193,7 @@ s! {
     pub struct genlmsghdr {
         pub cmd: u8,
         pub version: u8,
-        pub reserved: u16,
+        reserved: Padding<u16>,
     }
 
     pub struct nlmsghdr {
@@ -270,7 +270,7 @@ s! {
 
     pub struct sockaddr_vm {
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
         pub svm_zero: [u8; 4],
