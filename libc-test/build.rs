@@ -4316,9 +4316,6 @@ fn test_linux(target: &str) {
             // FIXME(value): IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
             "IPPROTO_MAX" => true,
 
-            // FIXME(linux): Not yet implemented on sparc64
-            "SYS_clone3" if sparc64 => true,
-
             // FIXME(linux): Not defined on ARM, gnueabihf, mips, musl, PowerPC, riscv64, s390x, and sparc64.
             "SYS_memfd_secret"
                 if arm | gnueabihf | mips | musl | ppc | riscv64 | s390x | sparc64 =>
