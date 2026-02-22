@@ -502,9 +502,7 @@ pub const F_GETFD: c_int = 1;
 pub const F_SETFD: c_int = 2;
 pub const F_GETFL: c_int = 3;
 pub const F_SETFL: c_int = 4;
-// FIXME(redox): relibc {
-pub const F_DUPFD_CLOEXEC: c_int = crate::F_DUPFD;
-// }
+pub const F_DUPFD_CLOEXEC: c_int = 1030;
 pub const FD_CLOEXEC: c_int = 0x0100_0000;
 pub const O_RDONLY: c_int = 0x0001_0000;
 pub const O_WRONLY: c_int = 0x0002_0000;
@@ -574,7 +572,9 @@ pub const IPV6_MULTICAST_IF: c_int = 17;
 pub const IPV6_MULTICAST_HOPS: c_int = 18;
 pub const IPV6_MULTICAST_LOOP: c_int = 19;
 pub const IPV6_ADD_MEMBERSHIP: c_int = 20;
+pub const IPV6_JOIN_GROUP: c_int = 20;
 pub const IPV6_DROP_MEMBERSHIP: c_int = 21;
+pub const IPV6_LEAVE_GROUP: c_int = 21;
 pub const IPV6_V6ONLY: c_int = 26;
 pub const IP_MULTICAST_IF: c_int = 32;
 pub const IP_MULTICAST_TTL: c_int = 33;
@@ -582,7 +582,7 @@ pub const IP_MULTICAST_LOOP: c_int = 34;
 pub const IP_ADD_MEMBERSHIP: c_int = 35;
 pub const IP_DROP_MEMBERSHIP: c_int = 36;
 pub const IP_TOS: c_int = 1;
-pub const IP_RECVTOS: c_int = 2;
+pub const IP_RECVTOS: c_int = 13;
 pub const IPPROTO_IGMP: c_int = 2;
 pub const IPPROTO_PUP: c_int = 12;
 pub const IPPROTO_IDP: c_int = 22;
@@ -592,9 +592,7 @@ pub const IPPROTO_MAX: c_int = 255;
 
 // netinet/tcp.h
 pub const TCP_NODELAY: c_int = 1;
-// FIXME(redox): relibc {
-pub const TCP_KEEPIDLE: c_int = 1;
-// }
+pub const TCP_KEEPIDLE: c_int = 4;
 
 // poll.h
 pub const POLLIN: c_short = 0x001;
