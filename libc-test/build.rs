@@ -3671,6 +3671,7 @@ fn test_linux(target: &str) {
     }
 
     let arm = target.contains("arm");
+    let eabihf = target.contains("eabihf");
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
@@ -4142,6 +4143,10 @@ fn test_linux(target: &str) {
             // FIXME(musl): New fields in newer versions
             "utmpx" if !old_musl => true,
 
+            // FIXME(musl): This struct is contains a flexible array field that causes the size
+            // check to fail
+            "file_handle" if musl => true,
+
             _ => false,
         }
     });
@@ -4486,6 +4491,16 @@ fn test_linux(target: &str) {
 
             // FIXME(linux):  Requires >= 6.16 kernel headers.
             "PTRACE_SET_SYSCALL_INFO" => true,
+
+            // FIXME(linux): Requires >= 6.13 kernel headers.
+            "AT_HANDLE_CONNECTABLE" => true,
+
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "AT_HANDLE_MNT_ID_UNIQUE" => true,
+
+            // FIXME(musl): This value is not yet in musl.
+            // eabihf targets are tested using an older version of glibc
+            "AT_HANDLE_FID" if musl || eabihf => true,
 
             _ => false,
         }
