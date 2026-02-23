@@ -644,6 +644,7 @@ extern "C" {
     )]
     pub fn telldir(dirp: *mut crate::DIR) -> c_long;
     pub fn madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
+    pub fn minherit(addr: *mut c_void, len: size_t, inherit: c_int) -> c_int;
 
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
