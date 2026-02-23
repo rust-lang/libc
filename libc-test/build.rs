@@ -3685,6 +3685,7 @@ fn test_linux(target: &str) {
     let gnueabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
+    let hexagon = target.contains("hexagon");
     let loongarch64 = target.contains("loongarch64");
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
@@ -3699,9 +3700,9 @@ fn test_linux(target: &str) {
     let old_musl = musl && !musl_v1_2_3;
 
     let mut cfg = ctest_cfg();
-    if (musl_v1_2_3 || loongarch64) && musl {
+    if (musl_v1_2_3 || loongarch64 || hexagon) && musl {
         cfg.cfg("musl_v1_2_3", None);
-        if arm || ppc32 || x86_32 || mips32 {
+        if arm || hexagon || ppc32 || x86_32 || mips32 {
             cfg.cfg("musl32_time64", None);
             cfg.cfg("linux_time_bits64", None);
         }
