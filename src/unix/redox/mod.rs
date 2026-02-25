@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 pub type wchar_t = i32;
 
-pub type blkcnt_t = c_ulong;
+pub type blkcnt_t = c_longlong;
 pub type blksize_t = c_long;
 pub type clock_t = c_long;
 pub type clockid_t = c_int;
