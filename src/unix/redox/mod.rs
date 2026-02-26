@@ -794,8 +794,8 @@ pub const RUSAGE_THREAD: c_int = 1;
 pub const FD_SETSIZE: c_int = 1024;
 
 // sys/socket.h
-pub const AF_INET: c_int = 2;
-pub const AF_INET6: c_int = 10;
+pub const AF_INET: sa_family_t = 2;
+pub const AF_INET6: sa_family_t = 10;
 pub const AF_UNIX: c_int = 1;
 pub const AF_UNSPEC: c_int = 0;
 pub const PF_INET: c_int = 2;
