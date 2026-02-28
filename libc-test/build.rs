@@ -2275,7 +2275,7 @@ fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
     let mut cfg = ctest_cfg();
 
-    let freebsd_ver = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+    let freebsd_ver = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION") {
         let vers = version.parse().unwrap();
         println!("cargo:warning=setting FreeBSD version to {vers}");
         Some(vers)
@@ -3607,25 +3607,33 @@ fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
     {
         let defaultbits = "32".to_string();
         let (timebits, filebits) = match (
-            env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
-            env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS"),
+            env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
         ) {
-            (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            (Ok(_), Ok(_)) => panic!(
+                "Do not set both `libc_unstable_gnu_time_bits` and \
+                `libc_unstable_gnu_file_offset_bits`"
+            ),
             (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
             (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
             (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
-            (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
+            (Ok(_), Err(_)) => {
+                panic!("Invalid value for libc_unstable_gnu_time_bits, must be 32 or 64")
+            }
             (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
-            (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
+            (Err(_), Ok(_)) => {
+                panic!("Invalid value for `libc_unstable_gnu_file_offset_bits`, must be 32 or 64")
+            }
         };
         let valid_bits = ["32", "64"];
         assert!(
             valid_bits.contains(&filebits.as_str()) && valid_bits.contains(&timebits.as_str()),
-            "Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS or RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32, 64 or unset"
+            "Invalid value for `libc_unstable_gnu_time_bits` or `libc_unstable_gnu_file_offset_bits`, \
+            must be 32, 64 or unset"
         );
         assert!(
             !(filebits == "32" && timebits == "64"),
-            "RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS must be 64 or unset if RUST_LIBC_UNSTABLE_GNU_TIME_BITS is 64"
+            "`libc_unstable_gnu_file_offset_bits` must be 64 or unset if `libc_unstable_gnu_time_bits` is 64"
         );
         if timebits == "64" {
             cfg.define("_TIME_BITS", Some("64"));
@@ -3693,7 +3701,7 @@ fn test_linux(target: &str) {
     let mips64 = target.contains("mips64");
     let mips32 = mips && !mips64;
 
-    let musl_v1_2_3 = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
+    let musl_v1_2_3 = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     if musl_v1_2_3 {
         assert!(musl);
     }
