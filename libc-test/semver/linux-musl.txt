@@ -86,6 +86,8 @@ pututxline
 pwritev2
 pwritev64
 reallocarray
+semid_ds
+seminfo
 setutxent
 tcp_info
 timex

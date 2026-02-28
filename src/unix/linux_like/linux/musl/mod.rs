@@ -287,6 +287,19 @@ s! {
         pub ch_addralign: crate::Elf32_Word,
     }
 
+    pub struct seminfo {
+        pub semmap: c_int,
+        pub semmni: c_int,
+        pub semmns: c_int,
+        pub semmnu: c_int,
+        pub semmsl: c_int,
+        pub semopm: c_int,
+        pub semume: c_int,
+        pub semusz: c_int,
+        pub semvmx: c_int,
+        pub semaem: c_int,
+    }
+
     pub struct timex {
         pub modes: c_uint,
         pub offset: c_long,
