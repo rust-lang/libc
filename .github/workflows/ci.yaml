@@ -156,7 +156,7 @@ jobs:
         id: create_artifacts
         if: always()
         run: python3 ci/create-artifacts.py
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
           name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
@@ -253,7 +253,7 @@ jobs:
         id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
           name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
