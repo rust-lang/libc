@@ -2148,6 +2148,41 @@ fn test_android(target: &str) {
             | "PF_SUSPEND_TASK" => true,
 
             // FIXME(android): Requires >= 6.12 kernel headers.
+            | "PIDFD_NONBLOCK"
+            | "PIDFD_THREAD"
+            | "PIDFD_SIGNAL_THREAD"
+            | "PIDFD_SIGNAL_THREAD_GROUP"
+            | "PIDFD_SIGNAL_PROCESS_GROUP"
+            | "PIDFD_GET_CGROUP_NAMESPACE"
+            | "PIDFD_GET_IPC_NAMESPACE"
+            | "PIDFD_GET_MNT_NAMESPACE"
+            | "PIDFD_GET_NET_NAMESPACE"
+            | "PIDFD_GET_PID_NAMESPACE"
+            | "PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE"
+            | "PIDFD_GET_TIME_NAMESPACE"
+            | "PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE"
+            | "PIDFD_GET_USER_NAMESPACE"
+            | "PIDFD_GET_UTS_NAMESPACE"
+            | "PIDFD_GET_INFO"
+            | "PIDFD_INFO_PID"
+            | "PIDFD_INFO_CREDS"
+            | "PIDFD_INFO_CGROUPID"
+            | "PIDFD_INFO_EXIT"
+            | "PIDFD_INFO_COREDUMP"
+            | "PIDFD_INFO_SUPPORTED_MASK"
+            | "PIDFD_INFO_COREDUMP_SIGNAL"
+            | "PIDFD_INFO_SIZE_VER0"
+            | "PIDFD_INFO_SIZE_VER1"
+            | "PIDFD_INFO_SIZE_VER2"
+            | "PIDFD_SELF"
+            | "PIDFD_SELF_PROCESS"
+            | "PIDFS_IOCTL_MAGIC"
+            | "PIDFD_COREDUMPED"
+            | "PIDFD_COREDUMP_SKIP"
+            | "PIDFD_COREDUMP_USER"
+            | "PIDFD_COREDUMP_ROOT" => true,
+
+            // FIXME(android): Requires >= 6.12 kernel headers.
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
 
             // FIXME(android): Requires >= 6.9 kernel headers.
@@ -4374,7 +4409,19 @@ fn test_linux(target: &str) {
             | "PIDFD_INFO_CGROUPID"
             | "PIDFD_INFO_SIZE_VER0" => true,
             // Linux >= 6.15
-            "PIDFD_INFO_EXIT" | "PIDFD_SELF" | "PIDFD_SELF_PROCESS" => true,
+            "PIDFD_INFO_EXIT"
+            | "PIDFD_SELF"
+            | "PIDFD_SELF_PROCESS"
+            | "PIDFS_IOCTL_MAGIC"
+            | "PIDFD_COREDUMPED"
+            | "PIDFD_COREDUMP_SKIP"
+            | "PIDFD_COREDUMP_USER"
+            | "PIDFD_COREDUMP_ROOT"
+            | "PIDFD_INFO_SUPPORTED_MASK"
+            | "PIDFD_INFO_COREDUMP"
+            | "PIDFD_INFO_COREDUMP_SIGNAL"
+            | "PIDFD_INFO_SIZE_VER1"
+            | "PIDFD_INFO_SIZE_VER2" => true,
 
             // is a private value for kernel usage normally
             "FUSE_SUPER_MAGIC" => true,
