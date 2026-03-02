@@ -571,7 +571,7 @@ s! {
         pub pipe_state: u32,
         pub kq_count: u32,
         pub kq_state: u32,
-        pub __unused1: u32,
+        __unused1: Padding<u32>,
         pub p_pid: u32,
         pub fd_fd: i32,
         pub fd_ofileflags: u32,
