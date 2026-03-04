@@ -210,6 +210,8 @@ cfg_if! {
     } else if #[cfg(target_os = "nto")] {
         pub use net::bpf::*;
         pub use net::if_::*;
+    } else if #[cfg(target_os = "freebsd")] {
+        pub use sys::file::*;
     }
 }
 
