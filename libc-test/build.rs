@@ -2875,6 +2875,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 15
             "AT_HWCAP3" | "AT_HWCAP4" if Some(15) > freebsd_ver => true,
 
+            // Added in FreeBSD 15
+            "DTYPE_INOTIFY" | "DTYPE_JAILDESC" if Some(15) > freebsd_ver => true,
+
             _ => false,
         }
     });
