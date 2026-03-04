@@ -128,6 +128,11 @@ jobs:
           #  env: { ARCH_BITS: 32, ARCH: i686 }
           - target: i686-pc-windows-msvc
             os: windows-2025
+            env: { ARCH_BITS: 32, ARCH: i686 }
+          - target: i686-pc-windows-msvc
+            os: windows-2025
+            env: { ARCH_BITS: 32, ARCH: i686, RUST_LIBC_UNSTABLE_WINDOWS_TIME32: 1 }
+            artifact-tag: windows_time32
           - target: i686-unknown-linux-gnu
           - target: x86_64-pc-windows-gnu
             os: windows-2025

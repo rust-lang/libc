@@ -19,7 +19,12 @@ pub type clock_t = i32;
 pub type errno_t = c_int;
 
 cfg_if! {
-    if #[cfg(all(target_arch = "x86", target_env = "gnu"))] {
+    if #[cfg(windows_use_time32)] {
+        pub type time_t = c_long;
+    } else if #[cfg(all(
+        any(target_arch = "x86", target_arch = "arm"),
+        target_env = "gnu"
+    ))] {
         pub type time_t = i32;
     } else {
         pub type time_t = i64;
@@ -39,7 +44,6 @@ pub type time64_t = i64;
 pub type SOCKET = crate::uintptr_t;
 
 s! {
-    // note this is the struct called stat64 in Windows. Not stat, nor stati64.
     pub struct stat {
         pub st_dev: dev_t,
         pub st_ino: ino_t,
@@ -48,16 +52,15 @@ s! {
         pub st_uid: c_short,
         pub st_gid: c_short,
         pub st_rdev: dev_t,
-        pub st_size: i64,
-        pub st_atime: time64_t,
-        pub st_mtime: time64_t,
-        pub st_ctime: time64_t,
+        pub st_size: off_t,
+        pub st_atime: time_t,
+        pub st_mtime: time_t,
+        pub st_ctime: time_t,
     }
 
-    // note that this is called utimbuf64 in Windows
     pub struct utimbuf {
-        pub actime: time64_t,
-        pub modtime: time64_t,
+        pub actime: time_t,
+        pub modtime: time_t,
     }
 
     pub struct tm {
@@ -379,9 +382,32 @@ extern "C" {
     pub fn raise(signum: c_int) -> c_int;
 
     pub fn clock() -> clock_t;
+    #[cfg_attr(windows_use_time32, link_name = "_ctime32")]
+    #[cfg_attr(not(windows_use_time32), link_name = "_ctime64")]
+    #[cfg_attr(
+        target_env = "msvc",
+        deprecated(
+            since = "0.2.184",
+            note = "This function, among other older functions in the CRT, were marked deprecated \
+                    and have more secure variants with the same symbols but `_s`-suffixed. If you \
+                    use this specific routine, we're requesting comments at #PENDING."
+        )
+    )]
     pub fn ctime(sourceTime: *const time_t) -> *mut c_char;
+    #[cfg_attr(windows_use_time32, link_name = "_difftime32")]
+    #[cfg_attr(not(windows_use_time32), link_name = "_difftime64")]
+    #[cfg_attr(
+        target_env = "msvc",
+        deprecated(
+            since = "0.2.184",
+            note = "This function, among other older functions in the CRT, were marked deprecated \
+                    and have more secure variants with the same symbols but `_s`-suffixed. If you \
+                    use this specific routine, we're requesting comments at #PENDING."
+        )
+    )]
     pub fn difftime(timeEnd: time_t, timeStart: time_t) -> c_double;
-    #[link_name = "_gmtime64_s"]
+    #[cfg_attr(windows_use_time32, link_name = "_gmtime32_s")]
+    #[cfg_attr(not(windows_use_time32), link_name = "_gmtime64_s")]
     pub fn gmtime_s(destTime: *mut tm, srcTime: *const time_t) -> c_int;
     #[link_name = "_get_daylight"]
     pub fn get_daylight(hours: *mut c_int) -> errno_t;
@@ -396,9 +422,11 @@ extern "C" {
         size_in_bytes: size_t,
         index: c_int,
     ) -> errno_t;
-    #[link_name = "_localtime64_s"]
+    #[cfg_attr(windows_use_time32, link_name = "_localtime32_s")]
+    #[cfg_attr(not(windows_use_time32), link_name = "_localtime64_s")]
     pub fn localtime_s(tmDest: *mut tm, sourceTime: *const time_t) -> crate::errno_t;
-    #[link_name = "_time64"]
+    #[cfg_attr(windows_use_time32, link_name = "_time32")]
+    #[cfg_attr(not(windows_use_time32), link_name = "_time64")]
     pub fn time(destTime: *mut time_t) -> time_t;
     #[link_name = "_tzset"]
     pub fn tzset();
@@ -410,13 +438,13 @@ extern "C" {
     pub fn mkdir(path: *const c_char) -> c_int;
     #[link_name = "_wrmdir"]
     pub fn wrmdir(path: *const wchar_t) -> c_int;
-    #[link_name = "_fstat64"]
+    #[link_name = "_fstat"]
     pub fn fstat(fildes: c_int, buf: *mut stat) -> c_int;
-    #[link_name = "_stat64"]
+    #[link_name = "_stat"]
     pub fn stat(path: *const c_char, buf: *mut stat) -> c_int;
-    #[link_name = "_wstat64"]
+    #[link_name = "_wstat"]
     pub fn wstat(path: *const wchar_t, buf: *mut stat) -> c_int;
-    #[link_name = "_wutime64"]
+    #[link_name = "_wutime"]
     pub fn wutime(file: *const wchar_t, buf: *mut utimbuf) -> c_int;
     #[link_name = "_popen"]
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut crate::FILE;

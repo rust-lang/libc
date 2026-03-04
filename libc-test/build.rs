@@ -735,7 +735,6 @@ fn test_cygwin(target: &str) {
 fn test_windows(target: &str) {
     assert!(target.contains("windows"));
     let gnu = target.contains("gnu");
-    let i686 = target.contains("i686");
 
     let mut cfg = ctest_cfg();
 
@@ -743,6 +742,11 @@ fn test_windows(target: &str) {
         cfg.flag("/wd4324");
     }
     cfg.define("_WIN32_WINNT", Some("0x8000"));
+
+    if env::var("RUST_LIBC_UNSTABLE_WINDOWS_TIME32").is_ok() {
+        cfg.define("_USE_32BIT_TIME_T", None);
+        cfg.cfg("windows_use_time32", None);
+    }
 
     headers!(
         cfg,
@@ -772,23 +776,18 @@ fn test_windows(target: &str) {
             // Just pass all these through, no need for a "struct" prefix
             "FILE" | "DIR" | "Dl_info" => ty.to_string().into(),
             t if t.ends_with("_t") => t.to_string().into(),
-            // Windows uppercase structs don't have `struct` in fr.into()ont:
+            // Windows uppercase structs don't have `struct` in front:
             t if ty.chars().next().unwrap().is_uppercase() => t.to_string().into(),
-            "stat" => "struct __stat64".to_string().into(),
-            "utimbuf" => "struct __utimbuf64".to_string().into(),
             _ => None,
         }
     });
-    cfg.rename_type(move |ty| {
-        match ty {
-            // FIXME(windows): these don't exist:
-            "time64_t" => "__time64_t".to_string().into(),
-            "ssize_t" => "SSIZE_T".to_string().into(),
 
-            "sighandler_t" if !gnu => "_crt_signal_t".to_string().into(),
-            "sighandler_t" if gnu => "__p_sig_fn_t".to_string().into(),
-            _ => None,
-        }
+    cfg.rename_type(move |ty| match ty {
+        "time64_t" => "__time64_t".to_string().into(),
+        "ssize_t" => "SSIZE_T".to_string().into(),
+        "sighandler_t" if !gnu => "_crt_signal_t".to_string().into(),
+        "sighandler_t" if gnu => "__p_sig_fn_t".to_string().into(),
+        _ => None,
     });
 
     cfg.rename_fn(move |func| {
@@ -800,17 +799,7 @@ fn test_windows(target: &str) {
     cfg.skip_alias(move |alias| match alias.ident() {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
-        // FIXME(windows): The size and alignment of this type are incorrect
-        "time_t" if gnu && i686 => true,
         _ => false,
-    });
-
-    cfg.skip_struct(move |struct_| {
-        match struct_.ident() {
-            // FIXME(windows): The size and alignment of this struct are incorrect
-            "timespec" if gnu && i686 => true,
-            _ => false,
-        }
     });
 
     cfg.skip_const(move |constant| {
@@ -1380,7 +1369,6 @@ fn test_netbsd(target: &str) {
     });
 
     cfg.skip_fn(move |func| {
-        #[expect(clippy::wildcard_in_or_patterns)]
         match func.ident() {
             // FIXME(netbsd): Look into setting `_POSIX_C_SOURCE` to enable this
             "qsort_r" => true,
@@ -3085,11 +3073,8 @@ fn test_emscripten(target: &str) {
     });
 
     cfg.skip_alias(|ty| {
-        match ty.ident() {
-            // LFS64 types have been removed in Emscripten 3.1.44
-            // https://github.com/emscripten-core/emscripten/pull/19812
-            ty => ty.ends_with("64") || ty.ends_with("64_t"),
-        }
+        let ty = ty.ident();
+        ty.ends_with("64") || ty.ends_with("64_t")
     });
 
     cfg.skip_struct(move |struct_| {
