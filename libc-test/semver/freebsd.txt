@@ -2434,4 +2434,5 @@ vmtotal
 wait4
 waitid
 xallocx
+xfile
 xucred
