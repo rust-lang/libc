@@ -927,6 +927,10 @@ impl TestGenerator {
     ///
     /// # Examples
     ///
+    /// This method can be used to remove the `struct` keyword from types in the
+    /// generated tests. For example, the code below will generate tests for
+    /// `timeval_t` rather than `struct timeval`.
+    ///
     /// ```no_run
     /// use ctest::TestGenerator;
     ///
@@ -949,6 +953,10 @@ impl TestGenerator {
     /// Configures how a Rust union type is translated to a C union type.
     ///
     /// # Examples
+    ///
+    /// This method can be used to remove the `union` keyword from types in the
+    /// generated tests. For example, the code below will generate tests for
+    /// `__T1Union` rather than `union T1Union`.
     ///
     /// ```no_run
     /// use ctest::TestGenerator;
