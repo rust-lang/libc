@@ -116,10 +116,10 @@ s! {
         pub maxerror: c_long,
         pub esterror: c_long,
         pub tai: c_long,
-        pub __glibc_reserved1: c_long,
-        pub __glibc_reserved2: c_long,
-        pub __glibc_reserved3: c_long,
-        pub __glibc_reserved4: c_long,
+        __glibc_reserved1: Padding<c_long>,
+        __glibc_reserved2: Padding<c_long>,
+        __glibc_reserved3: Padding<c_long>,
+        __glibc_reserved4: Padding<c_long>,
     }
 
     pub struct regex_t {
@@ -135,7 +135,7 @@ s! {
 
     pub struct Elf64_Chdr {
         pub ch_type: crate::Elf64_Word,
-        pub ch_reserved: crate::Elf64_Word,
+        ch_reserved: Padding<crate::Elf64_Word>,
         pub ch_size: crate::Elf64_Xword,
         pub ch_addralign: crate::Elf64_Xword,
     }

@@ -46,7 +46,7 @@ s! {
     }
 
     pub struct __darwin_x86_float_state64 {
-        pub __fpu_reserved: [c_int; 2],
+        __fpu_reserved: Padding<[c_int; 2]>,
         __fpu_fcw: c_short,
         __fpu_fsw: c_short,
         pub __fpu_ftw: u8,
@@ -87,6 +87,6 @@ s! {
         // FIXME(apple): this field is actually [u8; 96], but defining it with a bigger type allows
         // us to auto-implement traits for it since the length of the array is less than 32
         __fpu_rsrv4: [u32; 24],
-        pub __fpu_reserved1: c_int,
+        __fpu_reserved1: Padding<c_int>,
     }
 }
