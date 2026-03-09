@@ -11,6 +11,7 @@ pub type nfds_t = c_uint;
 pub type regoff_t = c_int;
 #[cfg(not(target_os = "dragonfly"))]
 pub type regoff_t = off_t;
+pub type sig_t = Option<unsafe extern "C" fn(crate::c_int)>;
 
 s! {
     pub struct sockaddr {

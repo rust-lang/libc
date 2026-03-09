@@ -2155,6 +2155,7 @@ shmctl
 shmdt
 shmget
 shmid_ds
+sig_t
 sigevent
 siginfo_t
 sigsuspend
