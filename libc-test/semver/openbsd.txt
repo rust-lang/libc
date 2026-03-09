@@ -1332,6 +1332,7 @@ shmctl
 shmdt
 shmget
 shmid_ds
+sig_t
 sigaltstack
 siginfo_t
 sigsuspend
