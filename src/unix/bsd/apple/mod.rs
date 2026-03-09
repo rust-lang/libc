@@ -326,9 +326,11 @@ s! {
         _pad: Padding<[usize; 9]>,
     }
 
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigaction {
         // FIXME(union): this field is actually a union
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: crate::sig_t,
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
     }
