@@ -179,6 +179,7 @@ cfg_if! {
         pub use linux::can::bcm::*;
         pub use linux::can::error::*;
         pub use linux::can::j1939::*;
+        pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
         pub use linux::can::*;
         pub use linux::keyctl::*;

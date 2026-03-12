@@ -3851,8 +3851,9 @@ fn test_linux(target: &str) {
             "linux/can.h",
             "linux/can/bcm.h",
             "linux/can/error.h",
-            "linux/can/raw.h",
             "linux/can/j1939.h",
+            "linux/can/netlink.h",
+            "linux/can/raw.h",
             "linux/cn_proc.h",
             "linux/connector.h",
             "linux/dccp.h",
@@ -4506,6 +4507,7 @@ fn test_linux(target: &str) {
     });
 
     let c_enums = [
+        "can_state",
         "membarrier_cmd",
         "pid_type",
         "proc_cn_event",
