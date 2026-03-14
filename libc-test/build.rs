@@ -332,6 +332,9 @@ fn test_apple(target: &str) {
 
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_introspection_t" if x86_64 => true,
+
+            // FIXME(macos): The size is changed in macOS 26.
+            "vm_statistics64" => true,
             _ => false,
         }
     });
@@ -346,6 +349,21 @@ fn test_apple(target: &str) {
             // https://github.com/apple-oss-distributions/xnu/commit/e6231be02a03711ca404e5121a151b24afbff733
             "TIOCREMOTE" => true,
 
+            // FIXME(macos): bumped up on macOS 26
+            // https://github.com/apple-oss-distributions/xnu/commit/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea
+            "ELAST" => true,
+
+            // FIXME(macos): bumped up on macOS 26, it's sizeof `vm_statistics64_data_t`
+            "HOST_VM_INFO64_COUNT" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
+            // FIXME(macos): The size is changed in macOS 26.
+            "vm_statistics64_data_t" => true,
             _ => false,
         }
     });
