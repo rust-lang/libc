@@ -84,12 +84,16 @@ pub type uint64_t = u64;
 cfg_if! {
     if #[cfg(all(target_arch = "aarch64", not(target_os = "windows")))] {
         /// C `__int128` (a GCC extension that's part of many ABIs)
+        #[deprecated(since = "0.2.184", note = "Use i128 instead.")]
         pub type __int128 = i128;
         /// C `unsigned __int128` (a GCC extension that's part of many ABIs)
+        #[deprecated(since = "0.2.184", note = "Use u128 instead.")]
         pub type __uint128 = u128;
         /// C __int128_t (alternate name for [__int128][])
+        #[deprecated(since = "0.2.184", note = "Use i128 instead.")]
         pub type __int128_t = i128;
         /// C __uint128_t (alternate name for [__uint128][])
+        #[deprecated(since = "0.2.184", note = "Use u128 instead.")]
         pub type __uint128_t = u128;
     }
 }
