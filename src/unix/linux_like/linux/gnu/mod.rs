@@ -172,7 +172,7 @@ s! {
     }
 
     pub struct __c_anonymous_ptrace_syscall_info_exit {
-        pub sval: crate::__s64,
+        pub rval: crate::__s64,
         pub is_error: crate::__u8,
     }
 
