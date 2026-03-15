@@ -209,6 +209,15 @@ pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
+// minherit syscall inherit values
+pub const MAP_INHERIT_SHARE: c_int = 0;
+pub const MAP_INHERIT_COPY: c_int = 1;
+pub const MAP_INHERIT_NONE: c_int = 2;
+#[cfg(target_os = "netbsd")]
+pub const MAP_INHERIT_DONATE_COPY: c_int = 3;
+#[cfg(target_os = "netbsd")]
+pub const MAP_INHERIT_ZERO: c_int = 4;
+
 pub const IPC_CREAT: c_int = 0o001000;
 pub const IPC_EXCL: c_int = 0o002000;
 pub const IPC_NOWAIT: c_int = 0o004000;
