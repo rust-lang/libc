@@ -70,9 +70,8 @@ fn main() {
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
     // Allow overriding the default version for testing
-    let which_freebsd = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+    let which_freebsd = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION") {
         let vers = version.parse().unwrap();
         println!("cargo:warning=setting FreeBSD version to {vers}");
         vers
@@ -104,8 +103,7 @@ fn main() {
         _ => (),
     }
 
-    let mut musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
+    let mut musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3");
 
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
@@ -123,13 +121,6 @@ fn main() {
         }
     }
 
-    let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
-    if linux_time_bits64 {
-        set_cfg("linux_time_bits64");
-    }
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_GNU_TIME_BITS");
     if target_env == "gnu"
         && target_os == "linux"
         && target_ptr_width == "32"
@@ -138,25 +129,33 @@ fn main() {
     {
         let defaultbits = "32".to_string();
         let (timebits, filebits) = match (
-            env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
-            env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS"),
+            env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
         ) {
-            (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
+            (Ok(_), Ok(_)) => panic!(
+                "Do not set both `libc_unstable_gnu_time_bits` and \
+                `libc_unstable_gnu_file_offset_bits`"
+            ),
             (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
             (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
             (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
-            (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
+            (Ok(_), Err(_)) => {
+                panic!("Invalid value for libc_unstable_gnu_time_bits, must be 32 or 64")
+            }
             (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
-            (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
+            (Err(_), Ok(_)) => {
+                panic!("Invalid value for `libc_unstable_gnu_file_offset_bits`, must be 32 or 64")
+            }
         };
         let valid_bits = ["32", "64"];
         assert!(
             valid_bits.contains(&filebits.as_str()) && valid_bits.contains(&timebits.as_str()),
-            "Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS or RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32, 64 or unset"
+            "Invalid value for `libc_unstable_gnu_time_bits` or `libc_unstable_gnu_file_offset_bits`, \
+            must be 32, 64 or unset"
         );
         assert!(
             !(filebits == "32" && timebits == "64"),
-            "RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS must be 64 or unset if RUST_LIBC_UNSTABLE_GNU_TIME_BITS is 64"
+            "`libc_unstable_gnu_file_offset_bits` must be 64 or unset if `libc_unstable_gnu_time_bits` is 64"
         );
         if timebits == "64" {
             set_cfg("linux_time_bits64");
