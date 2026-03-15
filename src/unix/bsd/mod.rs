@@ -5,7 +5,21 @@ pub type useconds_t = u32;
 pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type pthread_t = crate::uintptr_t;
+
+cfg_if! {
+    if #[cfg(target_vendor = "apple")] {
+        extern_ty! {
+            pub enum _opaque_pthread_t {}
+        }
+
+        type __darwin_pthread_t = *mut _opaque_pthread_t;
+        pub type pthread_t = __darwin_pthread_t;
+    } else {
+        // FIXME(1.0): verify other BSDs? Glancing around, other BSDs also look like a pointer
+        pub type pthread_t = crate::uintptr_t;
+    }
+}
+
 pub type nfds_t = c_uint;
 pub type regoff_t = off_t;
 
