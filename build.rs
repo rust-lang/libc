@@ -31,6 +31,8 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `_REDIR_TIME64` in musl
     "musl32_time64",
     "vxworks_lt_25_09",
+    // Corresponds to `_USE_32BIT_TIME_T` in Windows CRT
+    "windows_use_time32",
 ];
 
 // Extra values to allow for check-cfg.
@@ -123,6 +125,11 @@ fn main() {
         }
     }
 
+    let windows_use_time32 = env::var("RUST_LIBC_UNSTABLE_WINDOWS_TIME32").is_ok();
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_WINDOWS_TIME32");
+    if windows_use_time32 {
+        set_cfg("windows_use_time32");
+    }
     let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {

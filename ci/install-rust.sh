@@ -38,7 +38,7 @@ if [ -n "${INSTALL_RUST_SRC:-}" ]; then
 fi
 
 if [ "$os" = "windows" ]; then
-    if [ "${ARCH_BITS:-}" = "i686" ]; then
+    if [ "${ARCH:-}" = "i686" ]; then
         echo "Install MinGW32"
         choco install mingw --x86 --force
     fi
