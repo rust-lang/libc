@@ -1606,6 +1606,7 @@ shmat
 shmctl
 shmdt
 shmget
+sig_t
 sigaltstack
 sigevent
 siginfo_t
