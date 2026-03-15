@@ -4150,6 +4150,7 @@ if_freenameindex
 if_nameindex
 ifaddrs
 ifconf
+ifinfomsg
 ifreq
 in6_ifreq
 in6_pktinfo
