@@ -176,7 +176,7 @@ pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 c_enum! {
