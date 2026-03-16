@@ -333,6 +333,8 @@ fn test_apple(target: &str) {
 
     cfg.skip_struct(move |s| {
         match s.ident() {
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "timezone" => true,
             // FIXME(union): actually a union
             "sigval" => true,
             // FIXME(macos): The size is changed in recent macOSes.
@@ -636,6 +638,15 @@ fn test_openbsd(target: &str) {
     cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
     cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
 
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" => true,
+
+            _ => false,
+        }
+    });
+
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // conflicting with `p_type` macro from <resolve.h>.
@@ -760,6 +771,15 @@ fn test_cygwin(target: &str) {
         "sighandler_t" => true,
 
         _ => false,
+    });
+
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" => true,
+
+            _ => false,
+        }
     });
 
     cfg.rename_struct_field(move |struct_, field| {
@@ -897,6 +917,8 @@ fn test_windows(target: &str) {
         match struct_.ident() {
             // FIXME(windows): The size and alignment of this struct are incorrect
             "timespec" if gnu && i686 => true,
+            // Extern types
+            "FILE" | "fpos_t" | "timezone" => true,
             _ => false,
         }
     });
@@ -1167,15 +1189,17 @@ fn test_solarish(target: &str) {
         false
     });
     cfg.skip_struct(move |struct_| {
-        // the union handling is a mess
-        if struct_.ident().contains("door_desc_t_") {
-            return true;
-        }
         match struct_.ident() {
             // union, not a struct
             "sigval" => true,
+            // the union handling is a mess
+            x if x.contains("door_desc_t_") => true,
             // a bunch of solaris-only fields
             "utmpx" if is_illumos => true,
+
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "timezone" | "ucred_t" => true,
+
             _ => false,
         }
     });
@@ -1450,6 +1474,8 @@ fn test_netbsd(target: &str) {
             "ptrace_lwpinfo" => true,
             // ABI change in NetBSD10, with symbol versioning.
             "statvfs" if !netbsd9 => true,
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "timezone" | "_cpuset" | "sem" => true,
             _ => false,
         }
     });
@@ -1744,6 +1770,9 @@ fn test_dragonflybsd(target: &str) {
             // structs.
             "termios2" => true,
 
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" => true,
+
             _ => false,
         }
     });
@@ -1892,6 +1921,14 @@ fn test_wasi(target: &str) {
         "SO_BROADCAST" | "SO_LINGER" => true,
 
         _ => false,
+    });
+
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
+            // Extern types
+            "DIR" | "FILE" | "__locale_struct" => true,
+            _ => false,
+        }
     });
 
     cfg.skip_fn(|f| match f.ident() {
@@ -2145,6 +2182,9 @@ fn test_android(target: &str) {
             "inotify_event" => true,
             // FIXME(android): The field has been changed:
             "sockaddr_vm" => true,
+
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "timezone" => true,
 
             _ => false,
         }
@@ -2974,6 +3014,9 @@ fn test_freebsd(target: &str) {
             // Those are introduced in FreeBSD 15.
             "xktls_session_onedir" | "xktls_session" if Some(15) > freebsd_ver => true,
 
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "timezone" => true,
+
             _ => false,
         }
     });
@@ -3278,6 +3321,9 @@ fn test_emscripten(target: &str) {
             "pthread_condattr_t" => true,
             "pthread_mutexattr_t" => true,
 
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "fpos64_t" | "timezone" => true,
+
             // No epoll support
             // https://github.com/emscripten-core/emscripten/issues/5033
             ty if ty.starts_with("epoll") => true,
@@ -3560,6 +3606,9 @@ fn test_neutrino(target: &str) {
 
             // union
             "_channel_connect_attr" => true,
+
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" => true,
 
             _ => false,
         }
@@ -4370,9 +4419,10 @@ fn test_linux(target: &str) {
             // On 64 bits the size did not change, skip only for 32 bits.
             "ptrace_syscall_info" if pointer_width == 32 => true,
 
+            // not in sys/fanotify.h in uclibc
+            "fanotify_event_info_header" | "fanotify_event_info_fid" if uclibc => true,
+
             "canxl_frame"
-            | "fanotify_event_info_header" // not in sys/fanotify.h in uclibc
-            | "fanotify_event_info_fid"  // not in sys/fanotify.h in uclibc
             | "tls12_crypto_info_sm4_gcm"
             | "tls12_crypto_info_sm4_ccm"
             | "tls12_crypto_info_aria_gcm_128"
@@ -4381,6 +4431,9 @@ fn test_linux(target: &str) {
             {
                 true
             }
+
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" | "timezone" => true,
 
             _ => false,
         }
@@ -5912,6 +5965,9 @@ fn test_aix(target: &str) {
             // These structures are guarded by the `_KERNEL` macro in the AIX
             // header.
             "fileops_t" | "file" => true,
+
+            // Extern types
+            "DIR" | "FILE" | "fpos_t" => true,
 
             _ => false,
         }

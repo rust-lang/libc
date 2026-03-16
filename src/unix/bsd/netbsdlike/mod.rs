@@ -17,8 +17,8 @@ pub type sem_t = *mut sem;
 pub type key_t = c_long;
 
 extern_ty! {
-    pub enum timezone {}
-    pub enum sem {}
+    pub type timezone;
+    pub type sem;
 }
 
 s! {
