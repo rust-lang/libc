@@ -397,8 +397,8 @@ pub const SIGUSR2: c_int = 31;
 pub const SIGPWR: c_int = 32;
 
 extern_ty! {
-    pub enum FILE {}
-    pub enum fpos_t {}
+    pub type FILE;
+    pub type fpos_t;
 }
 
 extern "C" {

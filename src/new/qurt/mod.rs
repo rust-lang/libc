@@ -63,7 +63,7 @@ pub type in_port_t = c_ushort;
 
 // Standard C library types
 extern_ty! {
-    pub enum FILE {}
+    pub type FILE;
 }
 pub type fpos_t = c_long;
 pub type clock_t = c_long;
