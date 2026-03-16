@@ -180,7 +180,7 @@ deprecated_mach! {
 }
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 #[derive(Debug)]

@@ -35,7 +35,7 @@ pub type iconv_t = *mut c_void;
 cfg_if! {
     if #[cfg(not(target_env = "gnu"))] {
         extern_ty! {
-            pub enum fpos64_t {} // FIXME(linux): fill this out with a struct
+            pub type fpos64_t; // FIXME(linux): fill this out with a struct
         }
     }
 }

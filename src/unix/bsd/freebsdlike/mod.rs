@@ -60,7 +60,7 @@ cfg_if! {
 // link.h
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 impl siginfo_t {

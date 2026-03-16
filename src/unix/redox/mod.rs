@@ -32,7 +32,7 @@ pub type uid_t = c_int;
 pub type gid_t = c_int;
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 s! {

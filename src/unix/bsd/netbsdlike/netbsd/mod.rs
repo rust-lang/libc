@@ -46,7 +46,7 @@ e! {
 }
 
 extern_ty! {
-    pub enum _cpuset {}
+    pub type _cpuset;
 }
 
 cfg_if! {
