@@ -38,7 +38,7 @@ cfg_if! {
 }
 
 extern_ty! {
-    pub enum DIR {}
+    pub type DIR;
 }
 
 #[cfg(not(target_os = "nuttx"))]
@@ -602,13 +602,13 @@ cfg_if! {
 cfg_if! {
     if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
         extern_ty! {
-            pub enum fpos_t {} // FIXME(unix): fill this out with a struct
+            pub type fpos_t; // FIXME(unix): fill this out with a struct
         }
     }
 }
 
 extern_ty! {
-    pub enum FILE {}
+    pub type FILE;
 }
 
 extern "C" {

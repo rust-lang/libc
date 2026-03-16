@@ -31,7 +31,7 @@ pub type dev_t = u32;
 pub type ino_t = u16;
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 pub type time64_t = i64;
@@ -246,8 +246,8 @@ pub const L_tmpnam: c_uint = 260;
 pub const TMP_MAX: c_uint = 0x7fff_ffff;
 
 extern_ty! {
-    pub enum FILE {}
-    pub enum fpos_t {} // FIXME(windows): fill this out with a struct
+    pub type FILE;
+    pub type fpos_t; // FIXME(windows): fill this out with a struct
 }
 
 // Special handling for all print and scan type functions because of https://github.com/rust-lang/libc/issues/2860

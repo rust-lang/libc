@@ -10,7 +10,7 @@ pub type key_t = c_int;
 pub type id_t = c_uint;
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 s! {

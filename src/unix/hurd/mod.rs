@@ -226,8 +226,8 @@ pub type nl_item = c_int;
 pub type iconv_t = *mut c_void;
 
 extern_ty! {
-    pub enum fpos64_t {} // FIXME(hurd): fill this out with a struct
-    pub enum timezone {}
+    pub type fpos64_t; // FIXME(hurd): fill this out with a struct
+    pub type timezone;
 }
 
 // structs

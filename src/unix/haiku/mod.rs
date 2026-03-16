@@ -81,7 +81,7 @@ pub type posix_spawnattr_t = *mut c_void;
 pub type posix_spawn_file_actions_t = *mut c_void;
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 impl siginfo_t {

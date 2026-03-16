@@ -41,7 +41,7 @@ pub type statvfs64 = crate::statvfs;
 pub type dirent64 = crate::dirent;
 
 extern_ty! {
-    pub enum fpos64_t {} // FIXME(emscripten): fill this out with a struct
+    pub type fpos64_t; // FIXME(emscripten): fill this out with a struct
 }
 
 s! {
