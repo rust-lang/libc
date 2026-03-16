@@ -102,8 +102,13 @@ jobs:
       - name: Execute build check
         run: |
           set -eux
-          # Remove `-Dwarnings` at the MSRV since lints may be different
-          [ "${{ matrix.toolchain }}" = "1.65.0" ] && export RUSTFLAGS=""
+          if [ "${{ matrix.toolchain }}" = "1.65.0" ]; then
+              # Remove `-Dwarnings` at the MSRV since lints may be different, and allow
+              # `improper_ctypes` since pointers to ZSTs got the warning prior to 1.72.
+              # FIXME(msrv): remove this flag when possible.
+              export RUSTFLAGS="-Aimproper_ctypes"
+          fi
+
           python3 ci/verify-build.py \
             --toolchain "$TOOLCHAIN" \
             ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
