@@ -16,7 +16,7 @@ task:
         image: freebsd-15-0-release-amd64-ufs
     - name: nightly freebsd-14 x86_64
       freebsd_instance:
-        image: freebsd-14-3-release-amd64-ufs
+        image: freebsd-14-4-release-amd64-ufs
     - name: nightly freebsd-15 x86_64
       freebsd_instance:
         image: freebsd-15-0-release-amd64-ufs
