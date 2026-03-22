@@ -80,3 +80,4 @@ TIOCSRS485
 flock64
 fsblkcnt64_t
 fsfilcnt64_t
+max_align_t
