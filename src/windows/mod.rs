@@ -19,7 +19,13 @@ pub type clock_t = i32;
 pub type errno_t = c_int;
 
 cfg_if! {
-    if #[cfg(all(target_arch = "x86", target_env = "gnu"))] {
+    // FIXME(1.0): Windows GNU has 64-bit `time_t` by default. In x86 this is
+    // wrongly bound.
+    if #[cfg(all(
+        target_arch = "x86",
+        target_env = "gnu",
+        not(gnu_time_bits64)
+    ))] {
         pub type time_t = i32;
     } else {
         pub type time_t = i64;
@@ -403,7 +409,11 @@ extern "C" {
     // Under Windows x86 with GNU, `time_t` is still 32-bit wide on stable, so
     // these routines have to link with their 32-bit variants.
     cfg_if! {
-        if #[cfg(all(target_arch = "x86", target_env = "gnu"))] {
+        if #[cfg(all(
+            target_arch = "x86",
+            target_env = "gnu",
+            not(gnu_time_bits64),
+        ))] {
             #[link_name = "_ctime32"]
             pub fn ctime(sourceTime: *const time_t) -> *mut c_char;
             #[link_name = "_difftime32"]
