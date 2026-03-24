@@ -784,6 +784,23 @@ fn test_windows(target: &str) {
     }
     cfg.define("_WIN32_WINNT", Some("0x8000"));
 
+    let win_gnu_x86_time64 = match env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS") {
+        Ok(v) if v == "64" => true,
+        Ok(v) if v == "32" => false,
+        Ok(_) => {
+            panic!("Invalid value for `libc_unstable_gnu_time_bits`. Must be 32, 64 or unset.");
+        }
+        Err(_) => false,
+    };
+
+    // Needed for the Windows `time_t` test.
+    println!("cargo::rustc-check-cfg=cfg(gnu_time_bits64)");
+
+    if i686 && gnu && win_gnu_x86_time64 {
+        cfg.cfg("gnu_time_bits64", None);
+        println!("cargo::rustc-cfg=gnu_time_bits64");
+    }
+
     headers!(
         cfg,
         "direct.h",
@@ -841,7 +858,7 @@ fn test_windows(target: &str) {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
         // FIXME(windows): The size and alignment of this type are incorrect
-        "time_t" if gnu && i686 => true,
+        "time_t" if gnu && i686 && !win_gnu_x86_time64 => true,
         _ => false,
     });
 
