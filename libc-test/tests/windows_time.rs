@@ -11,7 +11,11 @@
 /// functions that expect it as a parameter.
 #[test]
 fn test_bitwidth_store() {
-    if cfg!(all(target_arch = "x86", target_env = "gnu")) {
+    if cfg!(all(
+        target_arch = "x86",
+        target_env = "gnu",
+        not(gnu_time_bits64),
+    )) {
         assert_eq!(size_of::<libc::time_t>(), 4);
     } else {
         assert_eq!(size_of::<libc::time_t>(), 8);
