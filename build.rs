@@ -24,7 +24,8 @@ const ALLOWED_CFGS: &[&str] = &[
     "freebsd15",
     // Corresponds to `_FILE_OFFSET_BITS=64` in glibc
     "gnu_file_offset_bits64",
-    // Corresponds to `_TIME_BITS=64` in glibc
+    // Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with
+    // GNU to expose a 64-bit `time_t`.
     "gnu_time_bits64",
     "libc_deny_warnings",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
@@ -157,7 +158,7 @@ fn main() {
     }
 
     if target_env == "gnu"
-        && target_os == "linux"
+        && matches!(target_os.as_str(), "linux" | "windows")
         && target_ptr_width == "32"
         && target_arch != "riscv32"
         && target_arch != "x86_64"
@@ -186,7 +187,7 @@ fn main() {
         let (timebits, filebits) = match (tb_env.as_deref(), fb_env.as_deref()) {
             (Ok(_), Ok(_)) => panic!(
                 "Do not set both libc_unstable_gnu_time_bits and \
-                libc_unstable_gnu_file_offset_bits"
+                 libc_unstable_gnu_file_offset_bits"
             ),
             (Err(_), Err(_)) => (defaultbits, defaultbits),
             (Ok(tb), Err(_)) if tb == "64" => (tb, tb),
