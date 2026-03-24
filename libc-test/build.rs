@@ -753,7 +753,6 @@ fn test_cygwin(target: &str) {
 fn test_windows(target: &str) {
     assert!(target.contains("windows"));
     let gnu = target.contains("gnu");
-    let i686 = target.contains("i686");
 
     let mut cfg = ctest_cfg();
 
@@ -818,17 +817,7 @@ fn test_windows(target: &str) {
     cfg.skip_alias(move |alias| match alias.ident() {
         "SSIZE_T" if !gnu => true,
         "ssize_t" if !gnu => true,
-        // FIXME(windows): The size and alignment of this type are incorrect
-        "time_t" if gnu && i686 => true,
         _ => false,
-    });
-
-    cfg.skip_struct(move |struct_| {
-        match struct_.ident() {
-            // FIXME(windows): The size and alignment of this struct are incorrect
-            "timespec" if gnu && i686 => true,
-            _ => false,
-        }
     });
 
     cfg.skip_const(move |constant| {
