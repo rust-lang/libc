@@ -13,6 +13,8 @@ use std::{
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &[&str] = &[
     "emscripten_old_stat_abi",
+    // Should be enabled by users if esp-idf (>=6.0) is build with picolibc instead of newlib.
+    "espidf_picolibc",
     "espidf_time32",
     "freebsd10",
     "freebsd11",
