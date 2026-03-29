@@ -353,6 +353,7 @@ pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 // dlfcn.h
 pub const RTLD_LAZY: c_int = 0x0001;
 pub const RTLD_NOW: c_int = 0x0002;
+pub const RTLD_NOLOAD: c_int = 0x0004;
 pub const RTLD_GLOBAL: c_int = 0x0100;
 pub const RTLD_LOCAL: c_int = 0x0000;
 
@@ -528,13 +529,13 @@ pub const O_NOFOLLOW: c_int = -0x8000_0000;
 pub const O_NOCTTY: c_int = 0x00000200;
 
 // locale.h
-pub const LC_ALL: c_int = 0;
-pub const LC_COLLATE: c_int = 1;
-pub const LC_CTYPE: c_int = 2;
-pub const LC_MESSAGES: c_int = 3;
-pub const LC_MONETARY: c_int = 4;
-pub const LC_NUMERIC: c_int = 5;
-pub const LC_TIME: c_int = 6;
+pub const LC_COLLATE: c_int = 0;
+pub const LC_CTYPE: c_int = 1;
+pub const LC_MESSAGES: c_int = 2;
+pub const LC_MONETARY: c_int = 3;
+pub const LC_NUMERIC: c_int = 4;
+pub const LC_TIME: c_int = 5;
+pub const LC_ALL: c_int = 6;
 
 // netdb.h
 pub const AI_PASSIVE: c_int = 0x0001;
@@ -592,7 +593,10 @@ pub const IPPROTO_MAX: c_int = 255;
 
 // netinet/tcp.h
 pub const TCP_NODELAY: c_int = 1;
+pub const TCP_MAXSEG: c_int = 2;
 pub const TCP_KEEPIDLE: c_int = 4;
+pub const TCP_KEEPINTVL: c_int = 5;
+pub const TCP_KEEPCNT: c_int = 6;
 
 // poll.h
 pub const POLLIN: c_short = 0x001;
