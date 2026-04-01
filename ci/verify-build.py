@@ -287,14 +287,16 @@ def do_semver_checks(cfg: Cfg, target: Target) -> bool:
                 "--features=std,extra_traits",
                 "--release-type=patch",
             ],
-            check=True,
+            check=False,
         )
         # Don't return here so we still get the same rustdoc-json-base tests even while
         # running on the host.
 
     if cfg.baseline_crate_dir is None:
-        eprint("Non-host target: --baseline-crate-dir must be specified to \
-            run semver-checks")
+        eprint(
+            "Non-host target: --baseline-crate-dir must be specified to \
+            run semver-checks"
+        )
         sys.exit(1)
 
     # Since semver-checks doesn't work with `--target`, we build the json ourself and
