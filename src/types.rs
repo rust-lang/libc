@@ -28,16 +28,6 @@ impl<T: Copy> Padding<T> {
     pub(crate) const fn new(val: T) -> Self {
         Self(MaybeUninit::new(val))
     }
-
-    /// Const constructor for uninitialized padding in const contexts.
-    // FIXME(msrv): Change this into zeroed() and use MaybeUninit::zeroed()
-    // when we depend on rustc 1.75.0.
-    #[allow(dead_code)]
-    pub(crate) const fn uninit() -> Self {
-        // We can still safely use uninit here, since padding is something
-        // that is not meant to be read or written anyways.
-        Self(MaybeUninit::uninit())
-    }
 }
 
 impl<T: Copy> fmt::Debug for Padding<T> {
