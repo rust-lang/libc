@@ -3776,7 +3776,7 @@ fn test_linux(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
-        (x86_64 || s390x, "netiucv/iucv.h"),
+        (!musl && (x86_64 || s390x), "netiucv/iucv.h"),
         (l4re, "netpacket/packet.h"),
         "poll.h",
         "pthread.h",

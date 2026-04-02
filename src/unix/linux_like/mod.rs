@@ -236,7 +236,7 @@ s! {
 }
 
 cfg_if! {
-    if #[cfg(any(target_arch = "x86_64", target_arch = "s390x"))] {
+    if #[cfg(all(any(target_arch = "x86_64", target_arch = "s390x"), not(target_env = "musl")))] {
         s! {
             pub struct sockaddr_iucv {
                 pub siucv_family: crate::sa_family_t,
