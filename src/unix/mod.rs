@@ -282,9 +282,9 @@ s! {
 
     pub struct icmp6_filter {
         #[cfg(not(target_os = "solaris"))]
-        pub icmp6_filt: [u32; 8],
+        icmp6_filt: [u32; 8],
         #[cfg(target_os = "solaris")]
-        pub __icmp6_filt: [u32; 8],
+        __icmp6_filt: [u32; 8],
     }
 
     #[cfg_attr(
@@ -450,6 +450,46 @@ s_no_extra_traits! {
     pub union sigval {
         pub sival_int: c_int,
         pub sival_ptr: *mut c_void,
+    }
+}
+
+f! {
+    pub fn ICMP6_FILTER_SETPASSALL(filt: &mut icmp6_filter) -> () {
+        #[cfg(not(target_os = "solaris"))]
+        for i in &mut filt.icmp6_filt {
+            *i = u32::MAX;
+        }
+        #[cfg(target_os = "solaris")]
+        for i in &mut filt.__icmp6_filt {
+            *i = u32::MAX;
+        }
+    }
+
+    pub fn ICMP6_FILTER_SETBLOCKALL(filt: &mut icmp6_filter) -> () {
+        #[cfg(not(target_os = "solaris"))]
+        for i in &mut filt.icmp6_filt {
+            *i = 0;
+        }
+        #[cfg(target_os = "solaris")]
+        for i in &mut filt.__icmp6_filt {
+            *i = 0;
+        }
+    }
+
+    pub fn ICMP6_FILTER_SETPASS(msg: u8, filt: &mut icmp6_filter) -> () {
+        #[cfg(not(target_os = "solaris"))]
+        let filt = &mut filt.icmp6_filt;
+        #[cfg(target_os = "solaris")]
+        let filt = &mut filt.__icmp6_filt;
+        filt[(msg >> 5) as usize] |= 1 << (msg & 31);
+    }
+
+    pub fn ICMP6_FILTER_SETBLOCK(msg: u8, filt: &mut icmp6_filter) -> () {
+        #[cfg(not(target_os = "solaris"))]
+        let filt = &mut filt.icmp6_filt;
+        #[cfg(target_os = "solaris")]
+        let filt = &mut filt.__icmp6_filt;
+        filt[(msg >> 5) as usize] &= !(1 << (msg & 31));
     }
 }
 
