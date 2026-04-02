@@ -57,6 +57,22 @@ fn do_cc() {
     {
         cc::Build::new().file("src/sigrt.c").compile("sigrt");
     }
+    if (target.contains("linux") && !target.contains("wasm32"))
+        || target.contains("android")
+        || target.contains("apple")
+        || target.contains("dragonfly")
+        || target.contains("emscripten")
+        || target.contains("freebsd")
+        || target.contains("fuschia")
+        || target.contains("illumos")
+        || target.contains("netbsd")
+        || target.contains("openbsd")
+        || target.contains("solaris")
+    {
+        cc::Build::new()
+            .file("src/icmp6_filter.c")
+            .compile("icmp6_filter");
+    }
 }
 
 fn do_ctest() {
@@ -192,6 +208,7 @@ fn test_apple(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet6/in6_var.h",
         "os/clock.h",
         "os/lock.h",
@@ -417,6 +434,7 @@ fn test_openbsd(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "net/bpf.h",
         "regex.h",
         "resolv.h",
@@ -950,6 +968,7 @@ fn test_solarish(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "port.h",
         "pthread.h",
@@ -1243,6 +1262,7 @@ fn test_netbsd(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "pthread.h",
         "pwd.h",
@@ -1544,6 +1564,7 @@ fn test_dragonflybsd(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "pthread.h",
         "pthread_np.h",
@@ -2011,6 +2032,7 @@ fn test_android(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netpacket/packet.h",
         "poll.h",
         "pthread.h",
@@ -2560,6 +2582,7 @@ fn test_freebsd(target: &str) {
         "netinet/sctp.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet6/in6_var.h",
         "poll.h",
         "pthread.h",
@@ -3207,6 +3230,7 @@ fn test_emscripten(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netpacket/packet.h",
         "poll.h",
         "pthread.h",
@@ -3480,6 +3504,7 @@ fn test_neutrino(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet/ip_var.h",
         "sys/poll.h",
         "pthread.h",
@@ -3763,6 +3788,7 @@ fn test_vxworks(target: &str) {
         "sys/mman.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet/in.h",
         "netinet6/in6.h",
         "syslog.h",
@@ -4016,6 +4042,7 @@ fn test_linux(target: &str) {
         "netinet/tcp.h",
         "netinet/udp.h",
         (gnu, "netiucv/iucv.h"),
+        "netinet/icmp6.h",
         (l4re, "netpacket/packet.h"),
         "poll.h",
         "pthread.h",
