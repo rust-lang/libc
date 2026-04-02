@@ -3776,7 +3776,7 @@ fn test_linux(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
-        "netiucv/iucv.h",
+        (!ppc32, "netiucv/iucv.h"),
         (l4re, "netpacket/packet.h"),
         "poll.h",
         "pthread.h",
