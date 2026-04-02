@@ -238,7 +238,7 @@ s! {
 cfg_if! {
     if #[cfg(all(
         any(target_arch = "x86_64", target_arch = "s390x"),
-        not(target_env = "musl")
+        not(any(target_env = "musl", target_os = "android"))
     ))] {
         s! {
             pub struct sockaddr_iucv {
