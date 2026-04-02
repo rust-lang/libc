@@ -233,6 +233,10 @@ s! {
         pub if_index: c_uint,
         pub if_name: *mut c_char,
     }
+
+    pub struct icmp6_filter {
+        icmp6_filt: [u32; 8],
+    }
 }
 
 cfg_if! {
@@ -996,6 +1000,8 @@ pub const IPV6_PMTUDISC_DO: c_int = 2;
 pub const IPV6_PMTUDISC_PROBE: c_int = 3;
 pub const IPV6_PMTUDISC_INTERFACE: c_int = 4;
 pub const IPV6_PMTUDISC_OMIT: c_int = 5;
+
+pub const ICMP6_FILTER: c_int = 1;
 
 pub const TCP_NODELAY: c_int = 1;
 pub const TCP_MAXSEG: c_int = 2;
@@ -1929,6 +1935,34 @@ safe_f! {
     #[allow(ellipsis_inclusive_range_patterns)]
     pub const fn KERNEL_VERSION(a: u32, b: u32, c: u32) -> u32 {
         ((a << 16) + (b << 8)) + if c > 255 { 255 } else { c }
+    }
+
+    pub const fn ICMP6_FILTER_WILLPASS(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) == 0
+    }
+
+    pub const fn ICMP6_FILTER_WILLBLOCK(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) != 0
+    }
+
+    pub fn ICMP6_FILTER_SETPASS(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.icmp6_filt[(typ >> 5) as usize] &= !(1 << (typ & 31));
+    }
+
+    pub fn ICMP6_FILTER_SETBLOCK(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.icmp6_filt[(typ >> 5) as usize] |= 1 << (typ & 31);
+    }
+
+    pub fn ICMP6_FILTER_SETPASSALL(filt: &mut icmp6_filter) -> () {
+        for i in &mut filt.icmp6_filt {
+            *i = 0;
+        }
+    }
+
+    pub fn ICMP6_FILTER_SETBLOCKALL(filt: &mut icmp6_filter) -> () {
+        for i in &mut filt.icmp6_filt {
+            *i = u32::MAX;
+        }
     }
 }
 
