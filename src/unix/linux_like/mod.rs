@@ -211,15 +211,6 @@ s! {
         pub sun_path: [c_char; 108],
     }
 
-    pub struct sockaddr_iucv {
-        pub siucv_family: crate::sa_family_t,
-        pub siucv_port: crate::in_port_t,
-        pub siucv_addr: crate::in_addr_t,
-        pub siucv_nodeid: [c_char; 8],
-        pub siucv_user_id: [c_char; 8],
-        pub siucv_name: [c_char; 8],
-    }
-
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
         #[cfg(target_pointer_width = "32")]
@@ -241,6 +232,21 @@ s! {
     pub struct if_nameindex {
         pub if_index: c_uint,
         pub if_name: *mut c_char,
+    }
+}
+
+cfg_if! {
+    if #[cfg(any(target_arch = "x86_64", target_arch = "s390x"))] {
+        s! {
+            pub struct sockaddr_iucv {
+                pub siucv_family: crate::sa_family_t,
+                pub siucv_port: crate::in_port_t,
+                pub siucv_addr: crate::in_addr_t,
+                pub siucv_nodeid: [c_char; 8],
+                pub siucv_user_id: [c_char; 8],
+                pub siucv_name: [c_char; 8],
+            }
+        }
     }
 }
 
