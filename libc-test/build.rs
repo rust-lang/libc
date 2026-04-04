@@ -3723,12 +3723,17 @@ fn test_linux(target: &str) {
     }
     let old_musl = musl && !musl_v1_2_3;
 
+    let b32 = arm || target.contains("hexagon") || mips32 || ppc32 || x86_32;
+
     let mut cfg = ctest_cfg();
     if (musl_v1_2_3 || loongarch64 || hexagon) && musl {
         cfg.cfg("musl_v1_2_3", None);
-        if arm || hexagon || ppc32 || x86_32 || mips32 {
+        if b32 {
             cfg.cfg("musl32_time64", None);
             cfg.cfg("linux_time_bits64", None);
+        }
+        if arm || ppc32 || x86_32 || mips32 {
+            cfg.cfg("musl_redir_time64", None);
         }
     }
     cfg.define("_GNU_SOURCE", None)
@@ -4215,6 +4220,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("STATX_")
                 || name.starts_with("SW_")
                 || name.starts_with("SYS_")
+                || name.starts_with("SYS3264_")
                 || name.starts_with("TCP_")
                 || name.starts_with("UINPUT_")
                 || name.starts_with("VMADDR_")
