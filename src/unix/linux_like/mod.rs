@@ -236,24 +236,6 @@ s! {
 }
 
 cfg_if! {
-    if #[cfg(all(
-        any(target_arch = "x86_64", target_arch = "s390x"),
-        not(any(target_env = "musl", target_os = "android"))
-    ))] {
-        s! {
-            pub struct sockaddr_iucv {
-                pub siucv_family: crate::sa_family_t,
-                pub siucv_port: crate::in_port_t,
-                pub siucv_addr: crate::in_addr_t,
-                pub siucv_nodeid: [c_char; 8],
-                pub siucv_user_id: [c_char; 8],
-                pub siucv_name: [c_char; 8],
-            }
-        }
-    }
-}
-
-cfg_if! {
     if #[cfg(not(any(target_os = "emscripten", target_os = "l4re")))] {
         s! {
             pub struct file_clone_range {
