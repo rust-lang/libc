@@ -298,7 +298,6 @@ s! {
         __state: crate::mbstate_t,
     }
 
-
     // net/iucv/iucv.h
 
     pub struct sockaddr_iucv {

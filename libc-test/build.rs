@@ -3776,6 +3776,7 @@ fn test_linux(target: &str) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        (gnu, "netiucv/iucv.h"),
         (l4re, "netpacket/packet.h"),
         "poll.h",
         "pthread.h",
@@ -3913,7 +3914,6 @@ fn test_linux(target: &str) {
             "linux/netfilter_ipv6.h",
             "linux/netfilter_ipv6/ip6_tables.h",
             "linux/netlink.h",
-            (gnu, "linux/netiucv/iucv.h")
             "linux/nsfs.h",
             "linux/openat2.h",
             // FIXME(linux): some items require Linux >= 5.6:
