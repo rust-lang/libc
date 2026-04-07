@@ -805,11 +805,9 @@ pub const EM_M32R: u16 = 88;
 pub const EM_MN10300: u16 = 89;
 pub const EM_MN10200: u16 = 90;
 pub const EM_PJ: u16 = 91;
-#[cfg(not(target_env = "uclibc"))]
 pub const EM_OPENRISC: u16 = 92;
 #[cfg(target_env = "uclibc")]
 pub const EM_OR1K: u16 = 92;
-#[cfg(not(target_env = "uclibc"))]
 pub const EM_ARC_A5: u16 = 93;
 pub const EM_XTENSA: u16 = 94;
 pub const EM_AARCH64: u16 = 183;
@@ -884,7 +882,6 @@ pub const AT_EXECFN: c_ulong = 31;
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
 // wherever it is defined.
 pub const AT_SYSINFO_EHDR: c_ulong = 33;
-#[cfg(not(target_env = "uclibc"))]
 pub const AT_MINSIGSTKSZ: c_ulong = 51;
 
 pub const GLOB_ERR: c_int = 1 << 0;
@@ -939,21 +936,16 @@ pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
-#[cfg(not(target_env = "uclibc"))]
 pub const PTHREAD_MUTEX_STALLED: c_int = 0;
-#[cfg(not(target_env = "uclibc"))]
 pub const PTHREAD_MUTEX_ROBUST: c_int = 1;
-#[cfg(not(target_env = "uclibc"))]
 pub const PTHREAD_PRIO_NONE: c_int = 0;
-#[cfg(not(target_env = "uclibc"))]
 pub const PTHREAD_PRIO_INHERIT: c_int = 1;
-#[cfg(not(target_env = "uclibc"))]
 pub const PTHREAD_PRIO_PROTECT: c_int = 2;
 pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: c_int = 1;
 pub const PTHREAD_INHERIT_SCHED: c_int = 0;
 pub const PTHREAD_EXPLICIT_SCHED: c_int = 1;
-#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
+#[cfg(not(target_os = "l4re"))]
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
 // netinet/in.h
@@ -1196,26 +1188,22 @@ pub const CMSPAR: crate::tcflag_t = 0o10000000000;
 pub const MFD_CLOEXEC: c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: c_uint = 0x0002;
 pub const MFD_HUGETLB: c_uint = 0x0004;
-cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
-        pub const MFD_NOEXEC_SEAL: c_uint = 0x0008;
-        pub const MFD_EXEC: c_uint = 0x0010;
-        pub const MFD_HUGE_64KB: c_uint = 0x40000000;
-        pub const MFD_HUGE_512KB: c_uint = 0x4c000000;
-        pub const MFD_HUGE_1MB: c_uint = 0x50000000;
-        pub const MFD_HUGE_2MB: c_uint = 0x54000000;
-        pub const MFD_HUGE_8MB: c_uint = 0x5c000000;
-        pub const MFD_HUGE_16MB: c_uint = 0x60000000;
-        pub const MFD_HUGE_32MB: c_uint = 0x64000000;
-        pub const MFD_HUGE_256MB: c_uint = 0x70000000;
-        pub const MFD_HUGE_512MB: c_uint = 0x74000000;
-        pub const MFD_HUGE_1GB: c_uint = 0x78000000;
-        pub const MFD_HUGE_2GB: c_uint = 0x7c000000;
-        pub const MFD_HUGE_16GB: c_uint = 0x88000000;
-        pub const MFD_HUGE_MASK: c_uint = 63;
-        pub const MFD_HUGE_SHIFT: c_uint = 26;
-    }
-}
+pub const MFD_NOEXEC_SEAL: c_uint = 0x0008;
+pub const MFD_EXEC: c_uint = 0x0010;
+pub const MFD_HUGE_64KB: c_uint = 0x40000000;
+pub const MFD_HUGE_512KB: c_uint = 0x4c000000;
+pub const MFD_HUGE_1MB: c_uint = 0x50000000;
+pub const MFD_HUGE_2MB: c_uint = 0x54000000;
+pub const MFD_HUGE_8MB: c_uint = 0x5c000000;
+pub const MFD_HUGE_16MB: c_uint = 0x60000000;
+pub const MFD_HUGE_32MB: c_uint = 0x64000000;
+pub const MFD_HUGE_256MB: c_uint = 0x70000000;
+pub const MFD_HUGE_512MB: c_uint = 0x74000000;
+pub const MFD_HUGE_1GB: c_uint = 0x78000000;
+pub const MFD_HUGE_2GB: c_uint = 0x7c000000;
+pub const MFD_HUGE_16GB: c_uint = 0x88000000;
+pub const MFD_HUGE_MASK: c_uint = 63;
+pub const MFD_HUGE_SHIFT: c_uint = 26;
 
 // linux/if_packet.h
 pub const PACKET_HOST: c_uchar = 0;

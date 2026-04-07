@@ -87,37 +87,6 @@ s! {
         pub nr: crate::__s32,
     }
 
-    #[cfg_attr(
-        any(
-            target_pointer_width = "32",
-            target_arch = "x86_64",
-            target_arch = "powerpc64",
-            target_arch = "mips64",
-            target_arch = "s390x",
-            target_arch = "sparc64"
-        ),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        not(any(
-            target_pointer_width = "32",
-            target_arch = "x86_64",
-            target_arch = "powerpc64",
-            target_arch = "mips64",
-            target_arch = "s390x",
-            target_arch = "sparc64"
-        )),
-        repr(align(8))
-    )]
-    pub struct pthread_mutexattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_MUTEXATTR_T],
-    }
-
-    #[repr(align(4))]
-    pub struct pthread_condattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
-    }
-
     pub struct tcp_info {
         pub tcpi_state: u8,
         pub tcpi_ca_state: u8,
@@ -297,64 +266,6 @@ pub const ENOTSUP: c_int = EOPNOTSUPP;
 pub const IPV6_JOIN_GROUP: c_int = 20;
 pub const IPV6_LEAVE_GROUP: c_int = 21;
 
-// These are different from GNU
-pub const ABDAY_1: crate::nl_item = 0x300;
-pub const ABDAY_2: crate::nl_item = 0x301;
-pub const ABDAY_3: crate::nl_item = 0x302;
-pub const ABDAY_4: crate::nl_item = 0x303;
-pub const ABDAY_5: crate::nl_item = 0x304;
-pub const ABDAY_6: crate::nl_item = 0x305;
-pub const ABDAY_7: crate::nl_item = 0x306;
-pub const DAY_1: crate::nl_item = 0x307;
-pub const DAY_2: crate::nl_item = 0x308;
-pub const DAY_3: crate::nl_item = 0x309;
-pub const DAY_4: crate::nl_item = 0x30A;
-pub const DAY_5: crate::nl_item = 0x30B;
-pub const DAY_6: crate::nl_item = 0x30C;
-pub const DAY_7: crate::nl_item = 0x30D;
-pub const ABMON_1: crate::nl_item = 0x30E;
-pub const ABMON_2: crate::nl_item = 0x30F;
-pub const ABMON_3: crate::nl_item = 0x310;
-pub const ABMON_4: crate::nl_item = 0x311;
-pub const ABMON_5: crate::nl_item = 0x312;
-pub const ABMON_6: crate::nl_item = 0x313;
-pub const ABMON_7: crate::nl_item = 0x314;
-pub const ABMON_8: crate::nl_item = 0x315;
-pub const ABMON_9: crate::nl_item = 0x316;
-pub const ABMON_10: crate::nl_item = 0x317;
-pub const ABMON_11: crate::nl_item = 0x318;
-pub const ABMON_12: crate::nl_item = 0x319;
-pub const MON_1: crate::nl_item = 0x31A;
-pub const MON_2: crate::nl_item = 0x31B;
-pub const MON_3: crate::nl_item = 0x31C;
-pub const MON_4: crate::nl_item = 0x31D;
-pub const MON_5: crate::nl_item = 0x31E;
-pub const MON_6: crate::nl_item = 0x31F;
-pub const MON_7: crate::nl_item = 0x320;
-pub const MON_8: crate::nl_item = 0x321;
-pub const MON_9: crate::nl_item = 0x322;
-pub const MON_10: crate::nl_item = 0x323;
-pub const MON_11: crate::nl_item = 0x324;
-pub const MON_12: crate::nl_item = 0x325;
-pub const AM_STR: crate::nl_item = 0x326;
-pub const PM_STR: crate::nl_item = 0x327;
-pub const D_T_FMT: crate::nl_item = 0x328;
-pub const D_FMT: crate::nl_item = 0x329;
-pub const T_FMT: crate::nl_item = 0x32A;
-pub const T_FMT_AMPM: crate::nl_item = 0x32B;
-pub const ERA: crate::nl_item = 0x32C;
-pub const ERA_D_FMT: crate::nl_item = 0x32E;
-pub const ALT_DIGITS: crate::nl_item = 0x32F;
-pub const ERA_D_T_FMT: crate::nl_item = 0x330;
-pub const ERA_T_FMT: crate::nl_item = 0x331;
-pub const CODESET: crate::nl_item = 10;
-pub const CRNCYSTR: crate::nl_item = 0x215;
-pub const RADIXCHAR: crate::nl_item = 0x100;
-pub const THOUSEP: crate::nl_item = 0x101;
-pub const NOEXPR: crate::nl_item = 0x501;
-pub const YESSTR: crate::nl_item = 0x502;
-pub const NOSTR: crate::nl_item = 0x503;
-
 // Different than Gnu.
 pub const FILENAME_MAX: c_uint = 4095;
 
@@ -418,7 +329,6 @@ pub const SOCK_PACKET: c_int = 10;
 pub const TCP_COOKIE_TRANSACTIONS: c_int = 15;
 pub const UDP_GRO: c_int = 104;
 pub const UDP_SEGMENT: c_int = 103;
-pub const YESEXPR: c_int = ((5) << 8) | (0);
 
 extern "C" {
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut crate::timezone) -> c_int;
