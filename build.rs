@@ -131,6 +131,11 @@ fn main() {
         }
     }
 
+    let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
+    if target_env == "uclibc" && uclibc_use_time64 {
+        set_cfg("linux_time_bits64");
+    }
+
     let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64");
     if linux_time_bits64 {

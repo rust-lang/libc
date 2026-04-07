@@ -3736,6 +3736,12 @@ fn test_linux(target: &str) {
             cfg.cfg("musl_redir_time64", None);
         }
     }
+    let uclibc_use_time64 = env::var("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64")
+        .map(|val| val != "0")
+        .unwrap_or(false);
+    if uclibc && uclibc_use_time64 {
+        cfg.cfg("linux_time_bits64", None);
+    }
     cfg.define("_GNU_SOURCE", None)
         // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
         // deprecated since glibc >= 2.29. This allows Rust binaries to link against
@@ -3939,8 +3945,7 @@ fn test_linux(target: &str) {
             "linux/wait.h",
             "linux/wireless.h",
             "sys/fanotify.h",
-            // <sys/auxv.h> is not present on uclibc
-            (!uclibc, "sys/auxv.h"),
+            "sys/auxv.h",
             (gnu || musl, "linux/close_range.h"),
         );
     }
@@ -4177,6 +4182,18 @@ fn test_linux(target: &str) {
             // On 64 bits the size did not change, skip only for 32 bits.
             "ptrace_syscall_info" if pointer_width == 32 => true,
 
+            "canxl_frame"
+            | "fanotify_event_info_header" // not in sys/fanotify.h in uclibc
+            | "fanotify_event_info_fid"  // not in sys/fanotify.h in uclibc
+            | "tls12_crypto_info_sm4_gcm"
+            | "tls12_crypto_info_sm4_ccm"
+            | "tls12_crypto_info_aria_gcm_128"
+            | "tls12_crypto_info_aria_gcm_256"
+                if uclibc =>
+            {
+                true
+            }
+
             _ => false,
         }
     });
@@ -4365,18 +4382,159 @@ fn test_linux(target: &str) {
             // Skip as this signal codes and trap reasons need newer headers
             "TRAP_PERF" => true,
 
-            // kernel constants not available in uclibc 1.0.34
-            "EXTPROC"
+            // constants not available in uclibc 1.0.45
+            // but defined outside the uclibc library,
+            // e.g. file format constants or kernel-defined
+            // constants.
+            "ALG_SET_KEY_BY_KEY_SERIAL"
+            | "AT_MINSIGSTKSZ"
+            | "BUS_MCEERR_AO"
+            | "BUS_MCEERR_AR"
+            | "CAN_BUS_OFF_THRESHOLD"
+            | "CAN_CTRLMODE_TDC_AUTO"
+            | "CAN_CTRLMODE_TDC_MANUAL"
+            | "CAN_ERR_CNT"
+            | "CAN_ERROR_PASSIVE_THRESHOLD"
+            | "CAN_ERROR_WARNING_THRESHOLD"
+            | "CAN_RAW_XL_FRAMES"
+            | "CANXL_HDR_SIZE"
+            | "CANXL_MAX_DLC_MASK"
+            | "CANXL_MAX_DLC"
+            | "CANXL_MAX_DLEN"
+            | "CANXL_MAX_MTU"
+            | "CANXL_MIN_DLC"
+            | "CANXL_MIN_DLEN"
+            | "CANXL_MIN_MTU"
+            | "CANXL_MTU"
+            | "CANXL_PRIO_BITS"
+            | "CANXL_PRIO_MASK"
+            | "CANXL_SEC"
+            | "CANXL_XLF"
+            | "CLOSE_RANGE_CLOEXEC"
+            | "CLOSE_RANGE_UNSHARE"
+            | "EM_ARC_A5"
+            | "EM_OPENRISC"
+            | "EM_TILEGX"
+            | "EM_TILEPRO"
+            | "EXTPROC"
+            | "FAN_ATTRIB"
+            | "FAN_AUDIT"
+            | "FAN_CREATE"
+            | "FAN_DELETE_SELF"
+            | "FAN_DELETE"
+            | "FAN_ENABLE_AUDIT"
+            | "FAN_EPIDFD"
+            | "FAN_EVENT_INFO_TYPE_DFID_NAME"
+            | "FAN_EVENT_INFO_TYPE_DFID"
+            | "FAN_EVENT_INFO_TYPE_ERROR"
+            | "FAN_EVENT_INFO_TYPE_FID"
+            | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME"
+            | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME"
+            | "FAN_EVENT_INFO_TYPE_PIDFD"
+            | "FAN_FS_ERROR"
+            | "FAN_INFO"
+            | "FAN_MARK_EVICTABLE"
+            | "FAN_MARK_FILESYSTEM"
+            | "FAN_MARK_IGNORE_SURV"
+            | "FAN_MARK_IGNORE"
+            | "FAN_MARK_INODE"
+            | "FAN_MOVE_SELF"
+            | "FAN_MOVE"
+            | "FAN_MOVED_FROM"
+            | "FAN_MOVED_TO"
+            | "FAN_NOPIDFD"
+            | "FAN_OPEN_EXEC_PERM"
+            | "FAN_OPEN_EXEC"
+            | "FAN_RENAME"
+            | "FAN_REPORT_DFID_NAME_TARGET"
+            | "FAN_REPORT_DFID_NAME"
+            | "FAN_REPORT_DIR_FID"
+            | "FAN_REPORT_FID"
+            | "FAN_REPORT_NAME"
+            | "FAN_REPORT_PIDFD"
+            | "FAN_REPORT_TARGET_FID"
+            | "FAN_REPORT_TID"
+            | "FAN_RESPONSE_INFO_AUDIT_RULE"
+            | "FAN_RESPONSE_INFO_NONE"
+            | "IFF_NO_CARRIER"
+            | "IN_MASK_CREATE"
             | "IPPROTO_BEETPH"
+            | "IPPROTO_ETHERNET"
             | "IPPROTO_MPLS"
+            | "IPPROTO_MPTCP"
             | "IPV6_HDRINCL"
             | "IPV6_MULTICAST_ALL"
             | "IPV6_PMTUDISC_INTERFACE"
             | "IPV6_PMTUDISC_OMIT"
             | "IPV6_ROUTER_ALERT_ISOLATE"
+            | "MADV_DONTNEED_LOCKED"
+            | "MFD_EXEC"
+            | "MFD_NOEXEC_SEAL"
+            | "NF_NETDEV_EGRESS"
+            | "NFQA_PRIORITY"
+            | "NLM_F_BULK"
+            | "NT_PRFPREG"
+            | "PACKET_FANOUT_FLAG_IGNORE_OUTGOING"
             | "PACKET_MR_UNICAST"
+            | "PACKET_VNET_HDR_SZ"
+            | "POSIX_SPAWN_SETSID"
+            | "PR_GET_MDWE"
+            | "PR_MDWE_NO_INHERIT"
+            | "PR_MDWE_REFUSE_EXEC_GAIN"
+            | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
+            | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
+            | "PR_SCHED_CORE_SCOPE_THREAD"
+            | "PR_SET_MDWE"
+            | "PR_SET_VMA_ANON_NAME"
+            | "PR_SET_VMA"
+            | "RTNLGRP_MCTP_IFADDR"
+            | "RTNLGRP_STATS"
+            | "RTNLGRP_TUNNEL"
             | "RUSAGE_THREAD"
+            | "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"
+            | "SEM_STAT_ANY"
             | "SHM_EXEC"
+            | "SI_DETHREAD"
+            | "SO_PASSPIDFD"
+            | "SO_PEERPIDFD"
+            | "SO_RCVMARK"
+            | "SO_RESERVE_MEM"
+            | "SO_TXREHASH"
+            | "SOF_TIMESTAMPING_OPT_ID_TCP"
+            | "TFD_TIMER_CANCEL_ON_SET"
+            | "TLS_CIPHER_ARIA_GCM_128_IV_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_128_KEY_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_128_SALT_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_128_TAG_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_128"
+            | "TLS_CIPHER_ARIA_GCM_256_IV_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_256_KEY_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_256_SALT_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_256_TAG_SIZE"
+            | "TLS_CIPHER_ARIA_GCM_256"
+            | "TLS_CIPHER_SM4_CCM_IV_SIZE"
+            | "TLS_CIPHER_SM4_CCM_KEY_SIZE"
+            | "TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE"
+            | "TLS_CIPHER_SM4_CCM_SALT_SIZE"
+            | "TLS_CIPHER_SM4_CCM_TAG_SIZE"
+            | "TLS_CIPHER_SM4_CCM"
+            | "TLS_CIPHER_SM4_GCM_IV_SIZE"
+            | "TLS_CIPHER_SM4_GCM_KEY_SIZE"
+            | "TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE"
+            | "TLS_CIPHER_SM4_GCM_SALT_SIZE"
+            | "TLS_CIPHER_SM4_GCM_TAG_SIZE"
+            | "TLS_CIPHER_SM4_GCM"
+            | "TLS_INFO_RX_NO_PAD"
+            | "TLS_INFO_ZC_RO_TX"
+            | "TLS_RX_EXPECT_NO_PAD"
+            | "TLS_TX_ZEROCOPY_RO"
+            | "TRAP_BRANCH"
+            | "TRAP_HWBKPT"
+            | "TRAP_UNK"
+            | "TUN_F_USO4"
+            | "TUN_F_USO6"
             | "UDP_GRO"
             | "UDP_SEGMENT"
                 if uclibc =>
@@ -4423,6 +4581,10 @@ fn test_linux(target: &str) {
 
             // value changed
             "NF_NETDEV_NUMHOOKS" if sparc64 => true,
+
+            // Canonical uclibc latest from toolchains.bootlin.com is based on kernel 5.15,
+            // so opt out of tests for constants which are different in later kernels.
+            "NF_NETDEV_NUMHOOKS" | "RLIM_NLIMITS" | "NFT_MSG_MAX" if uclibc => true,
 
             // kernel 6.9 minimum
             "RWF_NOAPPEND" => true,
@@ -4633,8 +4795,9 @@ fn test_linux(target: &str) {
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
 
-            // Not defined in uclibc as of 1.0.34
+            // Not defined in uclibc as of 1.0.45
             "gettid" if uclibc => true,
+            "getauxval" if uclibc => true,
 
             // There are two versions of basename(3) on Linux with glibc, see
             //
@@ -4766,7 +4929,7 @@ fn test_linux(target: &str) {
             // FIXME(linux): `max_phase_adj` requires >= 5.19 kernel headers
             // the rsv field shrunk when those fields got added, so is omitted too
             ("ptp_clock_caps", "adjust_phase" | "max_phase_adj" | "rsv")
-                if loongarch64 || sparc64 =>
+                if loongarch64 || sparc64 || uclibc =>
             {
                 true
             }
@@ -4783,7 +4946,7 @@ fn test_linux(target: &str) {
             ("bcm_msg_head", "frames") => true,
             // FAM
             ("af_alg_iv", "iv") => true,
-            ("file_handle", "f_handle") if musl => true,
+            ("file_handle", "f_handle") if musl || uclibc => true,
             // FIXME(ctest): ctest does not translate the rust code which computes the padding size
             ("pthread_cond_t", "__padding") if l4re => true,
             _ => false,
