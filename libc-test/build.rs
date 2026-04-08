@@ -3947,6 +3947,12 @@ fn test_linux(target: &str) {
             "sys/fanotify.h",
             "sys/auxv.h",
             (gnu || musl, "linux/close_range.h"),
+            (uclibc, "linux/fanotify.h"),
+            (uclibc, "linux/auxvec.h"),
+            (uclibc, "linux/close_range.h"),
+            (uclibc, "linux/if_packet.h"),
+            (uclibc, "linux/elf-em.h"),
+            (uclibc, "sys/resource.h"),
         );
     }
 
@@ -4319,6 +4325,170 @@ fn test_linux(target: &str) {
             }
         }
 
+        if uclibc {
+            match name {
+                // The canonical uClibc toolchain, bootlin bleeding-edge-2024.02-1,
+                // uses linux 5.15, so several constants are not available.
+
+                // requires linux 5.16
+                "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
+                | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
+                | "PR_SCHED_CORE_SCOPE_THREAD"
+                | "NF_NETDEV_EGRESS"
+                | "SO_RESERVE_MEM" => return true,
+
+                // TLS_CIPHER_SM4_[GC]CM requires linux 5.16
+                "TLS_CIPHER_SM4_CCM_IV_SIZE"
+                | "TLS_CIPHER_SM4_CCM_KEY_SIZE"
+                | "TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE"
+                | "TLS_CIPHER_SM4_CCM_SALT_SIZE"
+                | "TLS_CIPHER_SM4_CCM_TAG_SIZE"
+                | "TLS_CIPHER_SM4_CCM"
+                | "TLS_CIPHER_SM4_GCM_IV_SIZE"
+                | "TLS_CIPHER_SM4_GCM_KEY_SIZE"
+                | "TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE"
+                | "TLS_CIPHER_SM4_GCM_SALT_SIZE"
+                | "TLS_CIPHER_SM4_GCM_TAG_SIZE"
+                | "TLS_CIPHER_SM4_GCM" => return true,
+
+                // requires linux 5.17
+                "PR_SET_VMA_ANON_NAME"
+                | "PR_SET_VMA"
+                | "RTNLGRP_MCTP_IFADDR" => return true,
+
+                // requires linux 5.18
+                "RTNLGRP_STATS"
+                | "RTNLGRP_TUNNEL"
+                | "TLS_TX_ZEROCOPY_RO"
+                | "MADV_DONTNEED_LOCKED"
+                | "NFQA_PRIORITY"
+                | "SO_TXREHASH" => return true,
+
+                // requires linux 5.19
+                "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" 
+                | "NLM_F_BULK"
+                | "SO_RCVMARK"
+                | "TLS_INFO_ZC_RO_TX" => return true,
+
+                // CAN_* consts requiring linux 6.0
+                "CAN_BUS_OFF_THRESHOLD"
+                | "CAN_CTRLMODE_TDC_AUTO"
+                | "CAN_CTRLMODE_TDC_MANUAL"
+                | "CAN_ERR_CNT"
+                | "CAN_ERROR_PASSIVE_THRESHOLD"
+                | "CAN_ERROR_WARNING_THRESHOLD" => return true,
+
+                // requires linux 6.0
+                "IFF_NO_CARRIER"
+                | "TLS_INFO_RX_NO_PAD"
+                | "TLS_RX_EXPECT_NO_PAD" => return true,
+
+                // CAN_* consts requiring linux 6.1
+                "CAN_RAW_XL_FRAMES"
+                | "CANXL_HDR_SIZE"
+                | "CANXL_MAX_DLC_MASK"
+                | "CANXL_MAX_DLC"
+                | "CANXL_MAX_DLEN"
+                | "CANXL_MAX_MTU"
+                | "CANXL_MIN_DLC"
+                | "CANXL_MIN_DLEN"
+                | "CANXL_MIN_MTU"
+                | "CANXL_MTU"
+                | "CANXL_PRIO_BITS"
+                | "CANXL_PRIO_MASK"
+                | "CANXL_SEC"
+                | "CANXL_XLF" => return true,
+
+                // TLS_CIPHER_ARIA_GCM_* requires linux 6.1
+                "TLS_CIPHER_ARIA_GCM_128_IV_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_128_KEY_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_128_SALT_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_128_TAG_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_128"
+                | "TLS_CIPHER_ARIA_GCM_256_IV_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_256_KEY_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_256_SALT_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_256_TAG_SIZE"
+                | "TLS_CIPHER_ARIA_GCM_256" => return true,
+
+                // requires linux 6.2
+                "ALG_SET_KEY_BY_KEY_SERIAL"
+                | "PACKET_FANOUT_FLAG_IGNORE_OUTGOING"
+                | "SOF_TIMESTAMPING_OPT_ID_TCP"
+                | "TUN_F_USO4"
+                | "TUN_F_USO6" => return true,
+
+                // FAN_* consts require kernel 6.3
+                "FAN_INFO"
+                | "FAN_RESPONSE_INFO_AUDIT_RULE"
+                | "FAN_RESPONSE_INFO_NONE" => return true,
+
+                // requires linux 6.3
+                "MFD_EXEC"
+                | "MFD_NOEXEC_SEAL"
+                | "PR_GET_MDWE"
+                | "PR_SET_MDWE" => return true,
+
+                // requires linux 6.4
+                "PACKET_VNET_HDR_SZ" => return true,
+
+                // requires linux 6.5
+                "SO_PASSPIDFD"
+                | "SO_PEERPIDFD" => return true,
+
+                // requires linux 6.6
+                "PR_MDWE_NO_INHERIT"
+                | "PR_MDWE_REFUSE_EXEC_GAIN" => return true,
+
+                // defined as a synonym for EM_ARC_COMPACT in gnu but not uclibc
+                "EM_ARC_A5" => return true,
+
+                /*
+                Here are a list of kernel UAPI constants which appear in linux/ headers,
+                but cannot be imported due to conflicts with the uclibc headers.
+                The conflicting linux/ header is noted.
+                 */
+                // linux/signal.h
+                "BUS_MCEERR_AO"
+                | "BUS_MCEERR_AR"
+                // linux/termios.h
+                | "EXTPROC"
+                // linux/inotify.h
+                | "IN_MASK_CREATE"
+                // linux/in.h
+                | "IPPROTO_BEETPH"
+                | "IPPROTO_ETHERNET"
+                | "IPPROTO_MPLS"
+                | "IPPROTO_MPTCP"
+                // linux/in6.h
+                | "IPV6_HDRINCL"
+                | "IPV6_MULTICAST_ALL"
+                | "IPV6_PMTUDISC_INTERFACE"
+                | "IPV6_PMTUDISC_OMIT"
+                | "IPV6_ROUTER_ALERT_ISOLATE"
+                // linux/elf.h
+                | "NT_PRFPREG" 
+                // linux/sem.h
+                | "SEM_STAT_ANY"
+                // linux/shm.h
+                | "SHM_EXEC"
+                // linux/signal.h
+                | "SI_DETHREAD"
+                | "TRAP_BRANCH"
+                | "TRAP_HWBKPT"
+                | "TRAP_UNK"
+                // linux/timerfd.h
+                | "TFD_TIMER_CANCEL_ON_SET"
+                // linux/udp.h
+                | "UDP_GRO"
+                | "UDP_SEGMENT" => return true,
+
+                _ => (),
+            }
+        }
+
         match name {
             // These constants are not available if gnu headers have been included
             // and can therefore not be tested here
@@ -4381,166 +4551,6 @@ fn test_linux(target: &str) {
 
             // Skip as this signal codes and trap reasons need newer headers
             "TRAP_PERF" => true,
-
-            // constants not available in uclibc 1.0.45
-            // but defined outside the uclibc library,
-            // e.g. file format constants or kernel-defined
-            // constants.
-            "ALG_SET_KEY_BY_KEY_SERIAL"
-            | "AT_MINSIGSTKSZ"
-            | "BUS_MCEERR_AO"
-            | "BUS_MCEERR_AR"
-            | "CAN_BUS_OFF_THRESHOLD"
-            | "CAN_CTRLMODE_TDC_AUTO"
-            | "CAN_CTRLMODE_TDC_MANUAL"
-            | "CAN_ERR_CNT"
-            | "CAN_ERROR_PASSIVE_THRESHOLD"
-            | "CAN_ERROR_WARNING_THRESHOLD"
-            | "CAN_RAW_XL_FRAMES"
-            | "CANXL_HDR_SIZE"
-            | "CANXL_MAX_DLC_MASK"
-            | "CANXL_MAX_DLC"
-            | "CANXL_MAX_DLEN"
-            | "CANXL_MAX_MTU"
-            | "CANXL_MIN_DLC"
-            | "CANXL_MIN_DLEN"
-            | "CANXL_MIN_MTU"
-            | "CANXL_MTU"
-            | "CANXL_PRIO_BITS"
-            | "CANXL_PRIO_MASK"
-            | "CANXL_SEC"
-            | "CANXL_XLF"
-            | "CLOSE_RANGE_CLOEXEC"
-            | "CLOSE_RANGE_UNSHARE"
-            | "EM_ARC_A5"
-            | "EM_OPENRISC"
-            | "EM_TILEGX"
-            | "EM_TILEPRO"
-            | "EXTPROC"
-            | "FAN_ATTRIB"
-            | "FAN_AUDIT"
-            | "FAN_CREATE"
-            | "FAN_DELETE_SELF"
-            | "FAN_DELETE"
-            | "FAN_ENABLE_AUDIT"
-            | "FAN_EPIDFD"
-            | "FAN_EVENT_INFO_TYPE_DFID_NAME"
-            | "FAN_EVENT_INFO_TYPE_DFID"
-            | "FAN_EVENT_INFO_TYPE_ERROR"
-            | "FAN_EVENT_INFO_TYPE_FID"
-            | "FAN_EVENT_INFO_TYPE_NEW_DFID_NAME"
-            | "FAN_EVENT_INFO_TYPE_OLD_DFID_NAME"
-            | "FAN_EVENT_INFO_TYPE_PIDFD"
-            | "FAN_FS_ERROR"
-            | "FAN_INFO"
-            | "FAN_MARK_EVICTABLE"
-            | "FAN_MARK_FILESYSTEM"
-            | "FAN_MARK_IGNORE_SURV"
-            | "FAN_MARK_IGNORE"
-            | "FAN_MARK_INODE"
-            | "FAN_MOVE_SELF"
-            | "FAN_MOVE"
-            | "FAN_MOVED_FROM"
-            | "FAN_MOVED_TO"
-            | "FAN_NOPIDFD"
-            | "FAN_OPEN_EXEC_PERM"
-            | "FAN_OPEN_EXEC"
-            | "FAN_RENAME"
-            | "FAN_REPORT_DFID_NAME_TARGET"
-            | "FAN_REPORT_DFID_NAME"
-            | "FAN_REPORT_DIR_FID"
-            | "FAN_REPORT_FID"
-            | "FAN_REPORT_NAME"
-            | "FAN_REPORT_PIDFD"
-            | "FAN_REPORT_TARGET_FID"
-            | "FAN_REPORT_TID"
-            | "FAN_RESPONSE_INFO_AUDIT_RULE"
-            | "FAN_RESPONSE_INFO_NONE"
-            | "IFF_NO_CARRIER"
-            | "IN_MASK_CREATE"
-            | "IPPROTO_BEETPH"
-            | "IPPROTO_ETHERNET"
-            | "IPPROTO_MPLS"
-            | "IPPROTO_MPTCP"
-            | "IPV6_HDRINCL"
-            | "IPV6_MULTICAST_ALL"
-            | "IPV6_PMTUDISC_INTERFACE"
-            | "IPV6_PMTUDISC_OMIT"
-            | "IPV6_ROUTER_ALERT_ISOLATE"
-            | "MADV_DONTNEED_LOCKED"
-            | "MFD_EXEC"
-            | "MFD_NOEXEC_SEAL"
-            | "NF_NETDEV_EGRESS"
-            | "NFQA_PRIORITY"
-            | "NLM_F_BULK"
-            | "NT_PRFPREG"
-            | "PACKET_FANOUT_FLAG_IGNORE_OUTGOING"
-            | "PACKET_MR_UNICAST"
-            | "PACKET_VNET_HDR_SZ"
-            | "POSIX_SPAWN_SETSID"
-            | "PR_GET_MDWE"
-            | "PR_MDWE_NO_INHERIT"
-            | "PR_MDWE_REFUSE_EXEC_GAIN"
-            | "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
-            | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
-            | "PR_SCHED_CORE_SCOPE_THREAD"
-            | "PR_SET_MDWE"
-            | "PR_SET_VMA_ANON_NAME"
-            | "PR_SET_VMA"
-            | "RTNLGRP_MCTP_IFADDR"
-            | "RTNLGRP_STATS"
-            | "RTNLGRP_TUNNEL"
-            | "RUSAGE_THREAD"
-            | "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"
-            | "SEM_STAT_ANY"
-            | "SHM_EXEC"
-            | "SI_DETHREAD"
-            | "SO_PASSPIDFD"
-            | "SO_PEERPIDFD"
-            | "SO_RCVMARK"
-            | "SO_RESERVE_MEM"
-            | "SO_TXREHASH"
-            | "SOF_TIMESTAMPING_OPT_ID_TCP"
-            | "TFD_TIMER_CANCEL_ON_SET"
-            | "TLS_CIPHER_ARIA_GCM_128_IV_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_128_KEY_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_128_SALT_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_128_TAG_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_128"
-            | "TLS_CIPHER_ARIA_GCM_256_IV_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_256_KEY_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_256_SALT_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_256_TAG_SIZE"
-            | "TLS_CIPHER_ARIA_GCM_256"
-            | "TLS_CIPHER_SM4_CCM_IV_SIZE"
-            | "TLS_CIPHER_SM4_CCM_KEY_SIZE"
-            | "TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE"
-            | "TLS_CIPHER_SM4_CCM_SALT_SIZE"
-            | "TLS_CIPHER_SM4_CCM_TAG_SIZE"
-            | "TLS_CIPHER_SM4_CCM"
-            | "TLS_CIPHER_SM4_GCM_IV_SIZE"
-            | "TLS_CIPHER_SM4_GCM_KEY_SIZE"
-            | "TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE"
-            | "TLS_CIPHER_SM4_GCM_SALT_SIZE"
-            | "TLS_CIPHER_SM4_GCM_TAG_SIZE"
-            | "TLS_CIPHER_SM4_GCM"
-            | "TLS_INFO_RX_NO_PAD"
-            | "TLS_INFO_ZC_RO_TX"
-            | "TLS_RX_EXPECT_NO_PAD"
-            | "TLS_TX_ZEROCOPY_RO"
-            | "TRAP_BRANCH"
-            | "TRAP_HWBKPT"
-            | "TRAP_UNK"
-            | "TUN_F_USO4"
-            | "TUN_F_USO6"
-            | "UDP_GRO"
-            | "UDP_SEGMENT"
-                if uclibc =>
-            {
-                true
-            }
 
             // headers conflicts with linux/pidfd.h
             "PIDFD_NONBLOCK" => true,
