@@ -19,6 +19,8 @@ env:
   RUST_BACKTRACE: full
   # Base branch for PRs or for merges, current ref for cron runs on a branch.
   TARGET_REF: ${{ github.base_ref || github.event.merge_group.base_ref || github.ref }}
+  # FIXME(ci): Unpin once <https://github.com/rust-lang/rust/issues/154878> is resolved.
+  TOOLCHAIN: nightly-2026-04-01
 
 defaults:
   run:
