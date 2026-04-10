@@ -1128,6 +1128,14 @@ s! {
         pub ifi_flags: c_uint,
         pub ifi_change: c_uint,
     }
+
+    // netdb.h
+    pub struct netent {
+        pub n_name: *mut c_char,
+        pub n_aliases: *mut *mut c_char,
+        pub n_addrtype: c_int,
+        pub n_net: u32,
+    }
 }
 
 cfg_if! {
@@ -4088,6 +4096,11 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
     pub fn open_by_handle_at(mount_fd: c_int, handle: *mut file_handle, flags: c_int) -> c_int;
+    pub fn getnetbyname(name: *const c_char) -> *mut netent;
+    pub fn getnetbyaddr(net: u32, type_: c_int) -> *mut netent;
+    pub fn getnetent() -> *mut netent;
+    pub fn setnetent(stayopen: c_int);
+    pub fn endnetent();
 }
 
 // LFS64 extensions
