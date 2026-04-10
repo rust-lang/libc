@@ -125,15 +125,13 @@ jobs:
             os: windows-11-arm
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-24.04-arm
-          # FIXME: It currently causes segfaults.
-          #- target: i686-pc-windows-gnu
-          #  env: { ARCH_BITS: 32, ARCH: i686 }
+          - target: i686-pc-windows-gnu
+            os: windows-2025
           - target: i686-pc-windows-msvc
             os: windows-2025
           - target: i686-unknown-linux-gnu
           - target: x86_64-pc-windows-gnu
             os: windows-2025
-            env: { ARCH_BITS: 64, ARCH: x86_64 }
           - target: x86_64-pc-windows-msvc
             os: windows-2025
           - target: x86_64-unknown-linux-gnu
