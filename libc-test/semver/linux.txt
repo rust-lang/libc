@@ -4071,6 +4071,7 @@ dup3
 duplocale
 endgrent
 endmntent
+endnetent
 endpwent
 endservent
 endspent
@@ -4150,6 +4151,9 @@ getifaddrs
 getline
 getmntent
 getnameinfo
+getnetbyaddr
+getnetbyname
+getnetent
 getopt_long
 getpriority
 getpwent
@@ -4279,6 +4283,7 @@ msgsnd
 msqid_ds
 name_t
 name_to_handle_at
+netent
 newlocale
 nice
 nl_item
@@ -4469,6 +4474,7 @@ setgrent
 setgroups
 sethostname
 setmntent
+setnetent
 setns
 setpriority
 setpwent
