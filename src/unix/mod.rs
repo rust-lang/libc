@@ -206,6 +206,13 @@ s! {
         pub s_proto: *mut c_char,
     }
 
+    pub struct netent {
+        n_name: *mut c_char,
+        n_aliases: *mut *mut c_char,
+        n_addrtype:c_int,
+        n_net: u32,
+    }
+
     pub struct protoent {
         pub p_name: *mut c_char,
         pub p_aliases: *mut *mut c_char,
@@ -1521,6 +1528,11 @@ extern "C" {
     pub fn getservbyport(port: c_int, proto: *const c_char) -> *mut servent;
     pub fn getservent() -> *mut servent;
     pub fn setservent(stayopen: c_int);
+    pub fn getnetent() -> *mut netent;
+    pub fn getnetbyname(name: *const c_char) -> *mut netent;
+    pub fn getnetbyaddr(net: u32, type_: c_int) -> *mut netent;
+    pub fn setnetent(stayopen: c_int);
+    pub fn endnetent();
     pub fn getprotobyname(name: *const c_char) -> *mut protoent;
     pub fn getprotobynumber(proto: c_int) -> *mut protoent;
     pub fn chroot(name: *const c_char) -> c_int;
