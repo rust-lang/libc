@@ -206,6 +206,13 @@ s! {
         pub s_proto: *mut c_char,
     }
 
+    pub struct netent {
+        pub n_name: *mut c_char,
+        pub n_aliases: *mut *mut c_char,
+        pub n_addrtype: c_int,
+        pub n_net: u32,
+    }
+
     pub struct protoent {
         pub p_name: *mut c_char,
         pub p_aliases: *mut *mut c_char,
@@ -1534,6 +1541,14 @@ extern "C" {
     pub fn getservbyport(port: c_int, proto: *const c_char) -> *mut servent;
     pub fn getservent() -> *mut servent;
     pub fn setservent(stayopen: c_int);
+    pub fn getnetbyname(name: *const c_char) -> *mut netent;
+    pub fn getnetbyaddr(net: u32, type_: c_int) -> *mut netent;
+    #[cfg(not(target_os = "android"))]
+    pub fn getnetent() -> *mut netent;
+    #[cfg(not(target_os = "android"))]
+    pub fn setnetent(stayopen: c_int);
+    #[cfg(not(target_os = "android"))]
+    pub fn endnetent();
     pub fn getprotobyname(name: *const c_char) -> *mut protoent;
     pub fn getprotobynumber(proto: c_int) -> *mut protoent;
     pub fn chroot(name: *const c_char) -> c_int;

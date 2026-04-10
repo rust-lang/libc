@@ -505,6 +505,7 @@ dlopen
 dlsym
 dup
 dup2
+endnetent
 execl
 execle
 execlp
@@ -567,6 +568,9 @@ getgid
 getgroups
 gethostname
 getlogin
+getnetbyaddr
+getnetbyname
+getnetent
 getopt
 getpeername
 getpgid
@@ -660,6 +664,7 @@ munlock
 munlockall
 munmap
 nanosleep
+netent
 nfds_t
 nlink_t
 ntohl
@@ -775,6 +780,7 @@ seteuid
 setgid
 setlocale
 setlogmask
+setnetent
 setpgid
 setregid
 setreuid
