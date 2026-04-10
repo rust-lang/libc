@@ -209,7 +209,7 @@ s! {
     pub struct netent {
         n_name: *mut c_char,
         n_aliases: *mut *mut c_char,
-        n_addrtype:c_int,
+        n_addrtype: c_int,
         n_net: u32,
     }
 
