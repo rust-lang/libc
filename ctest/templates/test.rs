@@ -188,19 +188,19 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         {# /* SAFETY: we assume the field access doesn't wrap */ #}
-        let ty_ptr = unsafe { &raw const (*uninit_ty).{{ item.field.ident() }}   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).{{ item.field.rust_ident() }}   };
         {# /* SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
             * test should be skipped. */ #}
         let val = unsafe { ty_ptr.read_unaligned() };
 
         {# /* SAFETY: FFI call with no preconditions */ #}
         let ctest_field_offset = unsafe { ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() };
-        check_same(offset_of!({{ item.id }}, {{ item.field.ident() }}) as u64, ctest_field_offset,
-            "field offset `{{ item.field.ident() }}` of `{{ item.id }}`");
+        check_same(offset_of!({{ item.id }}, {{ item.field.rust_ident() }}) as u64, ctest_field_offset,
+            "field offset `{{ item.field.rust_ident() }}` of `{{ item.id }}`");
         {# /* SAFETY: FFI call with no preconditions */ #}
         let ctest_field_size = unsafe { ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
-            "field size `{{ item.field.ident() }}` of `{{ item.id }}`");
+            "field size `{{ item.field.rust_ident() }}` of `{{ item.id }}`");
     }
 {%- endfor +%}
 
@@ -217,12 +217,12 @@ mod generated_tests {
         let ty_ptr = uninit_ty.as_ptr();
         // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
         // The assumption is made that this does not wrap the address space.
-        let field_ptr = unsafe { &raw const ((*ty_ptr).{{ item.field.ident() }}) };
+        let field_ptr = unsafe { &raw const ((*ty_ptr).{{ item.field.rust_ident() }}) };
 
         // SAFETY: FFI call with no preconditions
         let ctest_field_ptr = unsafe { ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
-            "field pointer access `{{ item.field.ident() }}` of `{{ item.id }}`");
+            "field pointer access `{{ item.field.rust_ident() }}` of `{{ item.id }}`");
     }
 
 {%- endfor +%}
@@ -254,11 +254,11 @@ mod generated_tests {
         let bar = bar.as_ptr();
         {%- for field in item.fields +%}
 
-        let ty_ptr = unsafe { &raw const ((*bar).{{ field.ident() }}) };
+        let ty_ptr = unsafe { &raw const ((*bar).{{ field.rust_ident() }}) };
         let val = unsafe { ty_ptr.read_unaligned() };
 
         let size = size_of_val(&val);
-        let off = offset_of!({{ item.id }}, {{ field.ident() }});
+        let off = offset_of!({{ item.id }}, {{ field.rust_ident() }});
         v.push((off, size));
         {%- endfor +%}
         {# /* This vector contains `true` if the byte is padding and `false` if the byte is not
