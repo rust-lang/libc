@@ -96,10 +96,17 @@ fn collect_fields(fields: &Punctuated<syn::Field, syn::Token![,]>) -> Vec<Field>
     fields
         .iter()
         .filter_map(|field| {
-            field.ident.as_ref().map(|ident| Field {
-                public: is_visible(&field.vis),
-                ident: ident.to_string().into_boxed_str(),
-                ty: field.ty.clone(),
+            field.ident.as_ref().map(|ident| {
+                let ident = ident.to_string();
+                Field {
+                    public: is_visible(&field.vis),
+                    ident: ident
+                        .strip_prefix("r#")
+                        .unwrap_or(&ident)
+                        .to_string()
+                        .into_boxed_str(),
+                    ty: field.ty.clone(),
+                }
             })
         })
         .collect()
