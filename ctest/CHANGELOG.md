@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.1 (2026-04-13)
+
+- Add support for using raw keywords, like `r#type`
+
+## 0.5.0 (2026-01-29)
+
+Initial release of the redesigned `ctest`.
+
 ## 0.4.11 (2024-04-11)
 
 - Clean up some `ctest` internals
@@ -619,4 +627,3 @@
     - Add an option to skip the pointer check ([`b1d0e03`](https://github.com/JohnTitor/ctest2/commit/b1d0e03b10d7087c0d41b3cb00ac31a0ca471a6b))
     - Initial commit ([`d15487c`](https://github.com/JohnTitor/ctest2/commit/d15487c557d6deb6a05e426da3e2bf11ee5cb936))
 </details>
-
