@@ -389,11 +389,36 @@ extern "C" {
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(signum: c_int) -> c_int;
 
+    // By default, the following link to 64-bit variants where the expected
+    // `time_t` is also 64-bits.
+    //
+    // Under Windows x86 with GNU, `time_t` is still 32-bit wide on stable, so
+    // these routines have to link with their 32-bit variants.
+    //
+    // FIXME(#5062): once that PR gets merged, add `not(windows_gnu_time64)` to
+    // the below predicate, within the `all()` clause.
+    cfg_if! {
+        if #[cfg(all(target_arch = "x86", target_env = "gnu"))] {
+            #[link_name = "_ctime32"]
+            pub fn ctime(sourceTime: *const time_t) -> *mut c_char;
+            #[link_name = "_difftime32"]
+            pub fn difftime(timeEnd: time_t, timeStart: time_t) -> c_double;
+            #[link_name = "_gmtime32_s"]
+            pub fn gmtime_s(destTime: *mut tm, srcTime: *const time_t) -> c_int;
+            #[link_name = "_localtime32_s"]
+            pub fn localtime_s(tmDest: *mut tm, sourceTime: *const time_t) -> crate::errno_t;
+            #[link_name = "_time32"]
+            pub fn time(destTime: *mut time_t) -> time_t;
+        } else {
+            pub fn ctime(sourceTime: *const time_t) -> *mut c_char;
+            pub fn difftime(timeEnd: time_t, timeStart: time_t) -> c_double;
+            pub fn gmtime_s(destTime: *mut tm, srcTime: *const time_t) -> c_int;
+            pub fn localtime_s(tmDest: *mut tm, sourceTime: *const time_t) -> crate::errno_t;
+            pub fn time(destTime: *mut time_t) -> time_t;
+        }
+    }
+
     pub fn clock() -> clock_t;
-    pub fn ctime(sourceTime: *const time_t) -> *mut c_char;
-    pub fn difftime(timeEnd: time_t, timeStart: time_t) -> c_double;
-    #[link_name = "_gmtime64_s"]
-    pub fn gmtime_s(destTime: *mut tm, srcTime: *const time_t) -> c_int;
     #[link_name = "_get_daylight"]
     pub fn get_daylight(hours: *mut c_int) -> errno_t;
     #[link_name = "_get_dstbias"]
@@ -407,10 +432,6 @@ extern "C" {
         size_in_bytes: size_t,
         index: c_int,
     ) -> errno_t;
-    #[link_name = "_localtime64_s"]
-    pub fn localtime_s(tmDest: *mut tm, sourceTime: *const time_t) -> crate::errno_t;
-    #[link_name = "_time64"]
-    pub fn time(destTime: *mut time_t) -> time_t;
     #[link_name = "_tzset"]
     pub fn tzset();
     #[link_name = "_chmod"]
