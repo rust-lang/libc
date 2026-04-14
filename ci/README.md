@@ -20,9 +20,8 @@ First up, let's talk about the files in this directory:
 
 # CI Systems
 
-Currently this repository leverages a combination of GitHub Actions and Cirrus
-CI for running tests. You can find tested triples in [Actions config] or
-[Cirrus config].
+Currently this repository uses GitHub Actions workflows for running tests. You
+can find tested triples in [Actions config].
 
 The Windows triples are all pretty standard, they just set up their environment
 then run tests, no need for downloading any extra target libs (we just download
@@ -44,7 +43,6 @@ The remaining architectures look like:
   and compile/run tests. More information on that below.
 
 [Actions config]: https://github.com/rust-lang/libc/tree/HEAD/.github/workflows
-[Cirrus config]: https://github.com/rust-lang/libc/blob/HEAD/.cirrus.yml
 [android-docker]: https://github.com/rust-lang/libc/blob/HEAD/ci/docker/x86_64-linux-android/Dockerfile
 
 ## QEMU
