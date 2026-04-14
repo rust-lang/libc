@@ -22,7 +22,6 @@ check-commits = "uncanonicalized"
 
 [autolabel."A-CI"]
 trigger_files = [
-    ".cirrus.yml",
     ".github",
     "ci",
 ]
