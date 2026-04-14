@@ -274,11 +274,40 @@ jobs:
       fail-fast: true
       matrix:
         include:
+          # FIXME(#4740): FreeBSD 13 tests are extremely flaky and fail most of the time
+          # - release: "13.4"
+          #   target: x86_64-unknown-freebsd
+          - release: "15.0"
+            target: i686-unknown-freebsd
+          - release: "14.4"
+            target: x86_64-unknown-freebsd
+          - release: "15.0"
+            target: x86_64-unknown-freebsd
           - target: x86_64-pc-solaris
           - target: x86_64-unknown-netbsd
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v6
+      - name: Test on FreeBSD
+        uses: vmactions/freebsd-vm@v1.4.5
+        if: contains(matrix.target, 'freebsd')
+        with:
+          release: ${{ matrix.release }}
+          usesh: true
+          copyback: false
+          prepare: |
+            set -ex
+            pkg install -y libnghttp2 curl
+            curl https://sh.rustup.rs -sSf --output rustup.sh
+            sh rustup.sh -y --default-toolchain nightly --profile=minimal
+            . "$HOME/.cargo/env"
+            rustup target add ${{ matrix.target }}
+          run: |
+            set -ex
+            . "$HOME/.cargo/env"
+            LIBC_CI=1 ./ci/run.sh ${{ matrix.target }}
+            ./ci/run.sh ${{ matrix.target }}
+
       - name: test on Solaris
         uses: vmactions/solaris-vm@v1.3.2
         if: contains(matrix.target, 'solaris')
@@ -288,7 +317,7 @@ jobs:
           mem: 4096
           copyback: false
           prepare: |
-            set -x
+            set -ex
             source <(curl -s https://raw.githubusercontent.com/psumbera/solaris-rust/refs/heads/main/sh.rust-web-install)
             rustc --version
             uname -a
@@ -305,12 +334,12 @@ jobs:
           mem: 4096
           copyback: false
           prepare: |
-            set -x
+            set -ex
             /usr/sbin/pkg_add curl
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
               --profile minimal --default-toolchain nightly -y
           run: |
-            set -x
+            set -ex
             . "$HOME/.cargo/env"
             which rustc
             rustc -Vv
