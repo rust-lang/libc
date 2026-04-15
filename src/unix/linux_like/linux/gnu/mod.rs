@@ -298,17 +298,6 @@ s! {
         __state: crate::mbstate_t,
     }
 
-    // net/iucv/iucv.h
-
-    pub struct sockaddr_iucv {
-        pub siucv_family: crate::sa_family_t,
-        pub siucv_port: crate::in_port_t,
-        pub siucv_addr: crate::in_addr_t,
-        pub siucv_nodeid: [c_char; 8],
-        pub siucv_user_id: [c_char; 8],
-        pub siucv_name: [c_char; 8],
-    }
-
     // linux x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
     #[derive(Default)]
