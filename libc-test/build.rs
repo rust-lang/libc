@@ -4422,6 +4422,8 @@ fn test_linux(target: &str) {
                 | "PR_MDWE_NO_INHERIT"
                 | "PR_MDWE_REFUSE_EXEC_GAIN"
                 | "PR_SET_MDWE"
+                | "PR_GET_MEMORY_MERGE"
+                | "PR_SET_MEMORY_MERGE"
                 | "IPPROTO_ETHERNET"
                 | "IPPROTO_MPTCP"
                 | "SI_DETHREAD"
