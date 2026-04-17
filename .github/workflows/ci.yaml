@@ -301,7 +301,10 @@ jobs:
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --default-toolchain nightly --profile=minimal
             . "$HOME/.cargo/env"
-            rustup target add ${{ matrix.target }}
+            # i686-unknown-freebsd runs on x86_64 using 32-bit compatibility, so the target must be added explicitly.
+            if [ "${{ matrix.target }}" = "i686-unknown-freebsd" ]; then
+                rustup target add i686-unknown-freebsd
+            fi
           run: |
             set -ex
             . "$HOME/.cargo/env"
