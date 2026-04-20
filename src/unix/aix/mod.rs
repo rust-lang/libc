@@ -3352,6 +3352,9 @@ extern "C" {
     pub fn _Errno() -> *mut c_int;
 }
 
+mod compat;
+pub use self::compat::*;
+
 cfg_if! {
     if #[cfg(target_arch = "powerpc64")] {
         mod powerpc64;
