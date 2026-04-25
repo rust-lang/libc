@@ -297,6 +297,7 @@ jobs:
           copyback: false
           prepare: |
             set -ex
+            pkg update -f
             pkg install -y libnghttp2 curl
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --default-toolchain nightly --profile=minimal
