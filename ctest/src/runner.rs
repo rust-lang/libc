@@ -172,7 +172,7 @@ pub fn __run_test<P: AsRef<Path>>(test_binary: P) -> Result<String> {
         let mut args = runner.split_whitespace();
         cmd = Command::new(args.next().unwrap());
         cmd.args(args);
-    };
+    }
 
     cmd.arg(test_binary.as_ref());
     let output = cmd.output()?;

@@ -305,9 +305,7 @@ impl<'a> Translator<'a> {
 
 /// Translate mutability from Rust to C.
 fn translate_mut(mutability: Option<syn::Token![mut]>) -> Constness {
-    mutability
-        .map(|_| Constness::Mut)
-        .unwrap_or(Constness::Const)
+    mutability.map_or(Constness::Const, |_| Constness::Mut)
 }
 
 /// Translate a Rust primitive type into its C equivalent.

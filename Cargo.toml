@@ -175,14 +175,11 @@ members = [
     "libc-test",
 ]
 
-# FIXME(msrv): These should be renamed as `[workspace.lints.*]` once MSRV is above 1.64
-#       This way all crates can use it with `[lints] workspace=true` section
-
-[lints.rust]
+[workspace.lints.rust]
 # FIXME(cleanup): make ident usage consistent in each file
 unused_qualifications = "allow"
 
-[lints.clippy]
+[workspace.lints.clippy]
 # Enable pedantic lints - use this manually once in a while, but don't enable by default
 # pedantic = { level = "warn", priority = -1 }
 
@@ -201,6 +198,9 @@ expl_impl_clone_on_copy = "allow"
 uninlined_format_args = "allow"
 unnecessary_cast = "allow"  # some casts like `as usize` are only needed for some targets
 used_underscore_binding = "allow"
+
+[lints]
+workspace = true
 
 [package.metadata.cargo-semver-checks.lints]
 # Alignment is an internal detail that users must not rely upon

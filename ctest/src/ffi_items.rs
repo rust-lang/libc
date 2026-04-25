@@ -241,8 +241,7 @@ impl<'ast> Visit<'ast> for FfiItems {
             .abi
             .name
             .clone()
-            .map(|s| Abi::from(s.value().as_str()))
-            .unwrap_or_else(|| Abi::C);
+            .map_or(Abi::C, |s| Abi::from(s.value().as_str()));
 
         for item in &i.items {
             match item {
