@@ -4291,6 +4291,8 @@ fn test_linux(target: &str) {
                 | "PR_SCHED_CORE_SHARE_TO" => return true,
 
                 /* Added in versions more recent than what we test */
+                // Since 1.2.0
+                "SO_DETACH_REUSEPORT_BPF" => return true,
                 // Since 1.2.3
                 "SO_BUSY_POLL_BUDGET" | "SO_PREFER_BUSY_POLL" => return true,
 
