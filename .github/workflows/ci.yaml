@@ -1,4 +1,5 @@
 name: CI
+permissions: {}
 
 on:
   merge_group:
@@ -30,7 +31,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh && rustup component add rustfmt
       - name: Check style
@@ -44,9 +47,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - run: rustup update stable --no-self-update
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
@@ -73,13 +78,17 @@ jobs:
     env:
       TOOLCHAIN: ${{ matrix.toolchain }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
 
       - name: Install semver-checks
-        uses: taiki-e/install-action@cargo-semver-checks
+        uses: taiki-e/install-action@787505cde8a44ea468a00478fe52baf23b15bccd # v2.75.21
         if: matrix.toolchain == 'stable'
+        with:
+          tool: cargo-semver-checks
 
       - name: Retrieve semver baseline
         if: matrix.toolchain == 'stable'
@@ -88,7 +97,7 @@ jobs:
       # FIXME(ci): These `du` statements are temporary for debugging cache
       - name: Target size before restoring cache
         run: du -sh target | sort -k 2 || true
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
       - name: Target size after restoring cache
@@ -138,10 +147,12 @@ jobs:
     env:
       TARGET: ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
           key: ${{ matrix.target }}
 
@@ -163,7 +174,7 @@ jobs:
         id: create_artifacts
         if: always()
         run: echo "step is actually running" && python3 ci/create-artifacts.py
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
           name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
@@ -234,10 +245,12 @@ jobs:
     env:
       TARGET: ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
           key: ${{ matrix.target }}
 
@@ -259,7 +272,7 @@ jobs:
         id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
           name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
@@ -287,9 +300,11 @@ jobs:
           - target: x86_64-unknown-netbsd
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Test on FreeBSD
-        uses: vmactions/freebsd-vm@v1.4.5
+        uses: vmactions/freebsd-vm@d1e65811565151536c0c894fff74f06351ed26e6 # v1.4.5
         if: contains(matrix.target, 'freebsd')
         with:
           release: ${{ matrix.release }}
@@ -309,7 +324,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: test on Solaris
-        uses: vmactions/solaris-vm@v1.3.3
+        uses: vmactions/solaris-vm@c20562b2c69737b06be9e828915761703e487373 # v1.3.3
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
@@ -326,7 +341,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@v1
+        uses: vmactions/netbsd-vm@eb3ba840926911ccf17dc9de235335cb27a02ba0 # v1.3.8
         if: contains(matrix.target, 'netbsd')
         with:
           release: "10.1"
@@ -352,7 +367,9 @@ jobs:
     env:
       RUSTFLAGS: # No need to check warnings on old MSRV, unset `-Dwarnings`
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
     - run: |
         msrv="$(
           cargo metadata --format-version 1 |
@@ -362,7 +379,7 @@ jobs:
         echo "MSRV=$msrv" >> "$GITHUB_ENV"
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-    - uses: Swatinem/rust-cache@v2
+    - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
     - run: cargo build -p ctest
 
   docs:
@@ -370,10 +387,12 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
     - name: Install Rust
       run: rustup update nightly --no-self-update && rustup default nightly
-    - uses: Swatinem/rust-cache@v2
+    - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
     - run: cargo doc --workspace --no-deps
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
@@ -394,7 +413,9 @@ jobs:
     # failed" as success. So we have to do some contortions to ensure the job fails if any of its
     # dependencies fails.
     if: always() # make sure this is never "skipped"
+    env:
+      NEEDS: ${{ toJson(needs) }}
     steps:
       # Manually check the status of all dependencies. `if: failure()` does not work.
       - name: check if any dependency failed
-        run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
+        run: jq --exit-status 'all(.result == "success")' <<< "$NEEDS"
