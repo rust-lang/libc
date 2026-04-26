@@ -1176,7 +1176,7 @@ const fn _CMSG_ALIGN(n: usize) -> usize {
 
 f! {
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(_CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const fn CMSG_LEN(length: c_uint) -> c_uint {
@@ -1206,13 +1206,11 @@ f! {
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         cpuset.ary[idx] |= 1 << offset;
-        ()
     }
 
     pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         cpuset.ary[idx] &= !(1 << offset);
-        ()
     }
 
     pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
