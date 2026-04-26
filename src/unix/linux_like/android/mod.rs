@@ -3467,7 +3467,7 @@ f! {
     pub unsafe fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = size_of_val(&cpuset.__bits[0]);
-        for i in cpuset.__bits[..(size / size_of_mask)].iter() {
+        for i in &cpuset.__bits[..(size / size_of_mask)] {
             s += i.count_ones();
         }
         s as c_int
