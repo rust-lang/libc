@@ -1470,7 +1470,7 @@ f! {
         if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
             ptr::null_mut()
         } else {
-            next_cmsg as *mut crate::cmsghdr
+            next_cmsg.cast_mut()
         }
     }
 
