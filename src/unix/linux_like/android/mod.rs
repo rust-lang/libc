@@ -3296,9 +3296,7 @@ f! {
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        for slot in cpuset.__bits.iter_mut() {
-            *slot = 0;
-        }
+        cpuset.__bits.fill(0);
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
