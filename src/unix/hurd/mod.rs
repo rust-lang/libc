@@ -3363,7 +3363,7 @@ const fn CMSG_ALIGN(len: usize) -> usize {
 f! {
     pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
-            (*mhdr).msg_control.cast::<cmsghdr>()
+            (*mhdr).msg_control.cast()
         } else {
             core::ptr::null_mut::<cmsghdr>()
         }
@@ -3392,7 +3392,7 @@ f! {
         {
             core::ptr::null_mut::<cmsghdr>()
         } else {
-            next.cast::<cmsghdr>()
+            next.cast()
         }
     }
 

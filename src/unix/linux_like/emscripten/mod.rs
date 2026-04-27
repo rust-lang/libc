@@ -1267,7 +1267,7 @@ f! {
         if (next.offset(1)) as usize >= max {
             core::ptr::null_mut::<cmsghdr>()
         } else {
-            next as *mut cmsghdr
+            next.cast()
         }
     }
 
