@@ -1234,6 +1234,8 @@ pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 pub const EAI_OVERFLOW: c_int = 12;
 
+pub const AI_CANONNAME: c_int = 0x0010;
+
 pub const NI_NOFQDN: c_uint = 0x0001;
 pub const NI_NUMERICHOST: c_uint = 0x0002;
 pub const NI_NAMEREQD: c_uint = 0x0004;
