@@ -4321,7 +4321,7 @@ f! {
     }
 
     pub fn uname(buf: *mut crate::utsname) -> c_int {
-        __xuname(256, buf as *mut c_void)
+        __xuname(256, buf.cast())
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpuset_t) -> () {

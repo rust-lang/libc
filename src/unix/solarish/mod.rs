@@ -2223,7 +2223,7 @@ f! {
         if ((*mhdr).msg_controllen as usize) < size_of::<cmsghdr>() {
             core::ptr::null_mut::<cmsghdr>()
         } else {
-            (*mhdr).msg_control as *mut cmsghdr
+            (*mhdr).msg_control.cast::<cmsghdr>()
         }
     }
 
