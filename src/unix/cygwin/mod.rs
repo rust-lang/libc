@@ -534,7 +534,7 @@ impl siginfo_t {
             _si_errno: c_int,
             si_addr: *mut c_void,
         }
-        (*(self as *const siginfo_t as *const siginfo_si_addr)).si_addr
+        (*(self as *const siginfo_t).cast::<siginfo_si_addr>()).si_addr
     }
 
     pub unsafe fn si_status(&self) -> c_int {
@@ -547,7 +547,7 @@ impl siginfo_t {
             _si_errno: c_int,
             si_status: c_int,
         }
-        (*(self as *const siginfo_t as *const siginfo_sigchld)).si_status
+        (*(self as *const siginfo_t).cast::<siginfo_sigchld>()).si_status
     }
 
     pub unsafe fn si_pid(&self) -> pid_t {
@@ -568,7 +568,7 @@ impl siginfo_t {
             _si_errno: c_int,
             si_value: sigval,
         }
-        (*(self as *const siginfo_t as *const siginfo_si_value)).si_value
+        (*(self as *const siginfo_t).cast::<siginfo_si_value>()).si_value
     }
 }
 
