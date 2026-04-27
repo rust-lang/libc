@@ -1828,9 +1828,7 @@ f! {
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in &mut (*set).fds_bits {
-            *slot = 0;
-        }
+        (*set).fds_bits.fill(0);
     }
 }
 
