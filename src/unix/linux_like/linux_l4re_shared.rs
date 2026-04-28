@@ -1485,7 +1485,7 @@ f! {
         cmsg: *const crate::cmsghdr,
     ) -> *mut crate::cmsghdr {
         if ((*cmsg).cmsg_len as usize) < size_of::<crate::cmsghdr>() {
-            return core::ptr::null_mut::<crate::cmsghdr>();
+            return ptr::null_mut();
         }
 
         // FIXME(msrv): `.wrapping_byte_add()` stabilized in 1.75
@@ -1497,7 +1497,7 @@ f! {
         // In case the addition wrapped. `next_addr > max_addr`
         // would otherwise not work as intended.
         if (next_cmsg as usize) < (cmsg as usize) {
-            return core::ptr::null_mut();
+            return ptr::null_mut();
         }
 
         let mut max_addr = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
@@ -1510,7 +1510,7 @@ f! {
         }
 
         if next_cmsg as usize + size_of::<crate::cmsghdr>() > max_addr {
-            core::ptr::null_mut::<crate::cmsghdr>()
+            ptr::null_mut()
         } else {
             next_cmsg as *mut crate::cmsghdr
         }
