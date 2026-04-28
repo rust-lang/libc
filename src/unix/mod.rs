@@ -18,6 +18,18 @@ pub type pid_t = i32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
 pub type sighandler_t = size_t;
+#[cfg(any(
+    target_os = "macos",
+    target_os = "ios",
+    target_os = "tvos",
+    target_os = "watchos",
+    target_os = "visionos",
+    target_os = "freebsd",
+    target_os = "dragonfly",
+    target_os = "openbsd",
+    target_os = "netbsd"
+))]
+pub type sig_t = sighandler_t;
 pub type cc_t = c_uchar;
 
 cfg_if! {
