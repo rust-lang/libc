@@ -590,6 +590,12 @@ pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
+// minherit syscall inherit values
+pub const INHERIT_SHARE: c_int = 0;
+pub const INHERIT_COPY: c_int = 1;
+pub const INHERIT_NONE: c_int = 2;
+pub const INHERIT_ZERO: c_int = 3;
+
 pub const MCL_CURRENT: c_int = 0x0001;
 pub const MCL_FUTURE: c_int = 0x0002;
 
