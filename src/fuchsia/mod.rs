@@ -3076,9 +3076,9 @@ f! {
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as size_t) < size_of::<cmsghdr>() {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         } else if __CMSG_NEXT(cmsg).add(size_of::<cmsghdr>()) >= __MHDR_END(mhdr) {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         } else {
             __CMSG_NEXT(cmsg).cast()
         }
@@ -3088,7 +3088,7 @@ f! {
         if (*mhdr).msg_controllen as size_t >= size_of::<cmsghdr>() {
             (*mhdr).msg_control.cast()
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         }
     }
 
