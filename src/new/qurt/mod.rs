@@ -236,7 +236,7 @@ pub const FOPEN_MAX: c_uint = 20;
 pub const EOK: c_int = 0;
 
 // Semaphore constants
-pub const SEM_FAILED: *mut sem_t = 0 as *mut sem_t;
+pub const SEM_FAILED: *mut sem_t = ptr::null_mut();
 
 // Page size constants (hexagon-specific)
 pub const PAGESIZE: size_t = 4096;

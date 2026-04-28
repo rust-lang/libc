@@ -1799,7 +1799,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= size_of::<crate::cmsghdr>() {
             (*mhdr).msg_control.cast()
         } else {
-            core::ptr::null_mut::<crate::cmsghdr>()
+            ptr::null_mut()
         }
     }
 
