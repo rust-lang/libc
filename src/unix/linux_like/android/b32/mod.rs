@@ -39,12 +39,9 @@ s! {
         pub st_size: c_longlong,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: c_ulonglong,
-        pub st_atime: c_long,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: c_long,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: c_long,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         pub st_ino: c_ulonglong,
     }
 
@@ -61,12 +58,9 @@ s! {
         pub st_size: c_longlong,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: c_ulonglong,
-        pub st_atime: c_long,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: c_long,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: c_long,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         pub st_ino: c_ulonglong,
     }
 

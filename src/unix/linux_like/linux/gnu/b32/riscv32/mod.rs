@@ -36,12 +36,9 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub __pad2: c_int,
         pub st_blocks: crate::blkcnt64_t,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         __unused: Padding<[c_int; 2]>,
     }
 

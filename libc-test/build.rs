@@ -540,14 +540,7 @@ fn test_openbsd(target: &str) {
     cfg.rename_struct_field(|struct_, field_| {
         let struct_ = struct_.ident();
         let replacement = match field_.ident() {
-            "st_birthtime" if struct_.starts_with("stat") => "__st_birthtime".to_string(),
-            "st_birthtime_nsec" if struct_.starts_with("stat") => "__st_birthtimensec".to_string(),
-
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
-            }
+            "st_birthtim" if struct_.starts_with("stat") => "__st_birthtim".to_string(),
 
             "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
 
@@ -694,12 +687,6 @@ fn test_cygwin(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
-
             // FIXME(cygwin): sigaction actually contains a union with two variants:
             // a sa_sigaction with type: (*)(int, struct __siginfo *, void *)
             // a sa_handler with type sig_t
@@ -1046,10 +1033,6 @@ fn test_solarish(target: &str) {
         match struct_.ident() {
             // rust struct was committed with typo for Solaris
             "door_arg_t" if field.ident() == "dec_num" => Some("desc_num".to_string()),
-            "stat" if field.ident().ends_with("_nsec") => {
-                // expose stat.Xtim.tv_nsec fields
-                Some(field.ident().trim_end_matches("e_nsec").to_string() + ".tv_nsec")
-            }
             _ => None,
         }
     });
@@ -1322,17 +1305,6 @@ fn test_netbsd(target: &str) {
         | "Elf64_Chdr" => Some(ty.to_string()),
         t if t.ends_with("_t") => Some(t.to_string()),
         _ => None,
-    });
-
-    cfg.rename_struct_field(move |struct_, field| {
-        match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
-            _ => None,
-        }
     });
 
     cfg.alias_is_c_enum(|ty| ty == "fae_action");
@@ -1619,11 +1591,6 @@ fn test_dragonflybsd(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
             "type_" if struct_.ident() == "rtprio" => Some("type".to_string()),
@@ -1984,13 +1951,6 @@ fn test_android(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if f.ends_with("_nsec") =>
-            {
-                Some(f.to_string())
-            }
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
@@ -2481,11 +2441,6 @@ fn test_freebsd(target: &str) {
     cfg.rename_struct_field(|struct_, field_| {
         let struct_ = struct_.ident();
         let replacement = match field_.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
-                s.replace("e_nsec", ".tv_nsec")
-            }
             // Field is named `type` in C but that is a Rust keyword,
             // so these fields are translated to `type_` in the bindings.
             "type_" if struct_ == "rtprio" => "type".to_string(),
@@ -3064,17 +3019,6 @@ fn test_emscripten(target: &str) {
 
             // typedefs don't need any keywords
             t if t.ends_with("_t") => Some(t.to_string()),
-            _ => None,
-        }
-    });
-
-    cfg.rename_struct_field(move |struct_, field| {
-        match field.ident() {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct
-            s if s.ends_with("_nsec") && struct_.ident().starts_with("stat") => {
-                Some(s.replace("e_nsec", ".tv_nsec"))
-            }
             _ => None,
         }
     });
@@ -3989,14 +3933,6 @@ fn test_linux(target: &str) {
 
     cfg.rename_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // Our stat *_nsec fields normally don't actually exist but are part
-            // of a timeval struct - this is fixed in musl_v1_2_3
-            ("stat" | "statfs" | "statvfs" | "stat64" | "statfs64" | "statvfs64", f)
-                if !musl_v1_2_3 && f.ends_with("_nsec") =>
-            {
-                Some(f.replace("e_nsec", ".tv_nsec"))
-            }
-
             // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
@@ -5264,17 +5200,6 @@ fn test_haiku(target: &str) {
 
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // FIXME(time): the stat struct actually has timespec members, whereas
-            //        the current representation has these unpacked.
-            ("stat", "st_atime") => true,
-            ("stat", "st_atime_nsec") => true,
-            ("stat", "st_mtime") => true,
-            ("stat", "st_mtime_nsec") => true,
-            ("stat", "st_ctime") => true,
-            ("stat", "st_ctime_nsec") => true,
-            ("stat", "st_crtime") => true,
-            ("stat", "st_crtime_nsec") => true,
-
             // these are actually unions, but we cannot represent it well
             ("sem_t", "named_sem_id") => true,
             ("sigaction", "sa_sigaction") => true,
