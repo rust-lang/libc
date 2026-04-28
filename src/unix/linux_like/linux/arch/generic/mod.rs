@@ -53,7 +53,11 @@ cfg_if! {
     if #[cfg(all(
         linux_time_bits64,
         any(target_arch = "arm", target_arch = "x86"),
-        not(any(target_env = "musl", target_env = "ohos"))
+        not(any(
+            target_env = "musl",
+            target_env = "ohos",
+            target_env = "pauthtest"
+        ))
     ))] {
         pub const SO_TIMESTAMP: c_int = SO_TIMESTAMP_NEW;
         pub const SO_TIMESTAMPNS: c_int = SO_TIMESTAMPNS_NEW;
@@ -63,7 +67,11 @@ cfg_if! {
     } else if #[cfg(all(
         linux_time_bits64,
         any(target_arch = "arm", target_arch = "x86"),
-        any(target_env = "musl", target_env = "ohos")
+        any(
+            target_env = "musl",
+            target_env = "ohos",
+            target_env = "pauthtest"
+        )
     ))] {
         pub const SO_TIMESTAMP: c_int = 63;
         pub const SO_TIMESTAMPNS: c_int = 64;
@@ -136,7 +144,11 @@ cfg_if! {
         // of inheriting them from the kernel headers.
         // For new constants you might need consider updating
         // musl in the CI as well.
-        not(any(target_env = "musl", target_env = "ohos"))
+        not(any(
+            target_env = "musl",
+            target_env = "ohos",
+            target_env = "pauthtest"
+        ))
     ))] {
         pub const SO_TIMESTAMP_NEW: c_int = 63;
         pub const SO_TIMESTAMPNS_NEW: c_int = 64;
@@ -298,7 +310,11 @@ cfg_if! {
         #[allow(deprecated)]
         #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
         pub const RLIMIT_NLIMITS: crate::__rlimit_resource_t = RLIM_NLIMITS;
-    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+    } else if #[cfg(any(
+        target_env = "musl",
+        target_env = "ohos",
+        target_env = "pauthtest"
+    ))] {
         pub const RLIMIT_CPU: c_int = 0;
         pub const RLIMIT_FSIZE: c_int = 1;
         pub const RLIMIT_DATA: c_int = 2;

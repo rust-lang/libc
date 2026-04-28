@@ -47,7 +47,15 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
     ),
     (
         "target_env",
-        &["illumos", "wasi", "aix", "ohos", "nto71_iosock", "nto80"],
+        &[
+            "illumos",
+            "wasi",
+            "aix",
+            "ohos",
+            "pauthtest",
+            "nto71_iosock",
+            "nto80",
+        ],
     ),
     (
         "target_arch",
@@ -112,11 +120,15 @@ fn main() {
     let mut musl_v1_2_3 = env_flag("RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
     println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_MUSL_V1_2_3");
 
-    // OpenHarmony uses a fork of the musl libc
-    let musl = target_env == "musl" || target_env == "ohos";
+    // OpenHarmony and pauthtest use a fork of the musl libc
+    let musl = target_env == "musl" || target_env == "ohos" || target_env == "pauthtest";
 
-    // loongarch64, hexagon, and ohos only exist with recent musl
-    if target_arch == "loongarch64" || target_arch == "hexagon" || target_env == "ohos" {
+    // loongarch64, hexagon, ohos and pauthtest only exist with recent musl
+    if target_arch == "loongarch64"
+        || target_arch == "hexagon"
+        || target_env == "ohos"
+        || target_env == "pauthtest"
+    {
         musl_v1_2_3 = true;
     }
 
