@@ -2415,7 +2415,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         }
     }
 
@@ -2426,7 +2426,7 @@ f! {
             if (cmsg as usize + (*cmsg).cmsg_len as usize + size_of::<cmsghdr>())
                 > ((*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize)
             {
-                core::ptr::null_mut::<cmsghdr>()
+                ptr::null_mut()
             } else {
                 // AIX does not have any alignment/padding for ancillary data, so we don't need _CMSG_ALIGN here.
                 (cmsg as usize + (*cmsg).cmsg_len as usize) as *mut cmsghdr
