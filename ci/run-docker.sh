@@ -44,6 +44,11 @@ run() {
         fi
     fi
 
+    if [ -n "${TEST_UCLIBC_TIIME64:-}" ]; then 
+        build_args+=("--build-arg=TEST_UCLIBC_TIIME64=1")
+        export RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_uclibc_time64"
+    fi
+
     # use -f so we can use ci/ as build context
     docker build "${build_args[@]}"
 
