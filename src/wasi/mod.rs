@@ -45,15 +45,11 @@ s_no_extra_traits! {
     }
 }
 
-#[allow(missing_copy_implementations)]
-#[derive(Debug)]
-pub enum FILE {}
-#[allow(missing_copy_implementations)]
-#[derive(Debug)]
-pub enum DIR {}
-#[allow(missing_copy_implementations)]
-#[derive(Debug)]
-pub enum __locale_struct {}
+extern_ty! {
+    pub type FILE;
+    pub type DIR;
+    pub type __locale_struct;
+}
 
 s_paren! {
     // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),

@@ -49,7 +49,7 @@ pub type vm_map_entry_t = *mut vm_map_entry;
 pub type pmap = __c_anonymous_pmap;
 
 extern_ty! {
-    pub enum sem {}
+    pub type sem;
 }
 
 c_enum! {

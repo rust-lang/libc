@@ -98,8 +98,10 @@ jobs:
         run: |
           set -eux
           if [ "${{ matrix.toolchain }}" = "1.65.0" ]; then
-              # Remove `-Dwarnings` at the MSRV since lints may be different
-              export RUSTFLAGS=""
+              # Remove `-Dwarnings` at the MSRV since lints may be different, and allow
+              # `improper_ctypes` since pointers to ZSTs got the warning prior to 1.72.
+              # FIXME(msrv): remove this flag when possible.
+              export RUSTFLAGS="-Aimproper_ctypes"
               # Remove `ctest` which uses the 2024 edition
               perl -i -ne 'print unless /"ctest(-test)?",/ || /"libc-test",/' Cargo.toml
           fi
