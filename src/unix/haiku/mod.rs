@@ -814,11 +814,11 @@ pub const IFF_CONFIGURING: c_int = 0x4000;
 pub const IFF_MULTICAST: c_int = 0x8000; // supports multicast
 
 pub const AF_UNSPEC: c_int = 0;
-pub const AF_INET: c_int = 1;
+pub const AF_INET: crate::sa_family_t = 1;
 pub const AF_APPLETALK: c_int = 2;
 pub const AF_ROUTE: c_int = 3;
 pub const AF_LINK: c_int = 4;
-pub const AF_INET6: c_int = 5;
+pub const AF_INET6: crate::sa_family_t = 5;
 pub const AF_DLI: c_int = 6;
 pub const AF_IPX: c_int = 7;
 pub const AF_NOTIFY: c_int = 8;
@@ -827,10 +827,10 @@ pub const AF_UNIX: c_int = AF_LOCAL;
 pub const AF_BLUETOOTH: c_int = 10;
 
 pub const PF_UNSPEC: c_int = AF_UNSPEC;
-pub const PF_INET: c_int = AF_INET;
+pub const PF_INET: c_int = AF_INET as _;
 pub const PF_ROUTE: c_int = AF_ROUTE;
 pub const PF_LINK: c_int = AF_LINK;
-pub const PF_INET6: c_int = AF_INET6;
+pub const PF_INET6: c_int = AF_INET6 as _;
 pub const PF_LOCAL: c_int = AF_LOCAL;
 pub const PF_UNIX: c_int = AF_UNIX;
 pub const PF_BLUETOOTH: c_int = AF_BLUETOOTH;
