@@ -35,6 +35,9 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `_REDIR_TIME64` in musl: symbol redirects to __*_time64
     "musl_redir_time64",
     "vxworks_lt_25_09",
+    // Exists for Windows x86 GNU to use a 64-bit wide `time_t` instead of the
+    // incorrect 32-bit wide `time_t` that we have on stable.
+    "windows_gnu_time64",
 ];
 
 // Extra values to allow for check-cfg.
@@ -129,6 +132,14 @@ fn main() {
         if MUSL_REDIR_TIME64_ARCHES.contains(&target_arch.as_str()) {
             set_cfg("musl_redir_time64");
         }
+    }
+
+    if target_arch == "x86"
+        && target_os == "windows"
+        && target_env == "gnu"
+        && env_flag("CARGO_CFG_LIBC_UNSTABLE_WINDOWS_GNU_TIME64")
+    {
+        set_cfg("windows_gnu_time64");
     }
 
     let linux_time_bits64 = env::var("RUST_LIBC_UNSTABLE_LINUX_TIME_BITS64").is_ok();
