@@ -456,7 +456,7 @@ pub const __LOCK_INITIALIZER: _pthread_fastlock = _pthread_fastlock {
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __m_reserved: 0,
     __m_count: 0,
-    __m_owner: core::ptr::null_mut(),
+    __m_owner: ptr::null_mut(),
     __m_kind: PTHREAD_MUTEX_TIMED_NP,
     __m_lock: __LOCK_INITIALIZER,
 };
@@ -468,7 +468,7 @@ const PTHREAD_COND_PADDING_SIZE: usize = 48
 
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     __c_lock: __LOCK_INITIALIZER,
-    __c_waiting: core::ptr::null_mut(),
+    __c_waiting: ptr::null_mut(),
     __padding: [0; PTHREAD_COND_PADDING_SIZE],
     __align: 0,
 };
@@ -476,9 +476,9 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __rw_lock: __LOCK_INITIALIZER,
     __rw_readers: 0,
-    __rw_writer: core::ptr::null_mut(),
-    __rw_read_waiting: core::ptr::null_mut(),
-    __rw_write_waiting: core::ptr::null_mut(),
+    __rw_writer: ptr::null_mut(),
+    __rw_read_waiting: ptr::null_mut(),
+    __rw_write_waiting: ptr::null_mut(),
     __rw_kind: PTHREAD_RWLOCK_DEFAULT_NP,
     __rw_pshared: crate::PTHREAD_PROCESS_PRIVATE,
 };

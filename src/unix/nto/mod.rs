@@ -2429,7 +2429,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         }
     }
 
@@ -2437,7 +2437,7 @@ f! {
         let msg = _CMSG_ALIGN((*cmsg).cmsg_len as usize);
         let next = cmsg as usize + msg + _CMSG_ALIGN(size_of::<cmsghdr>());
         if next > (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         } else {
             (cmsg as usize + msg) as *mut cmsghdr
         }
@@ -3145,7 +3145,7 @@ pub unsafe fn atexit(cb: extern "C" fn()) -> c_int {
         static __dso_handle: *mut c_void;
         pub fn __cxa_atexit(cb: extern "C" fn(), __arg: *mut c_void, __dso: *mut c_void) -> c_int;
     }
-    __cxa_atexit(cb, 0 as *mut c_void, __dso_handle)
+    __cxa_atexit(cb, ptr::null_mut(), __dso_handle)
 }
 
 impl siginfo_t {
