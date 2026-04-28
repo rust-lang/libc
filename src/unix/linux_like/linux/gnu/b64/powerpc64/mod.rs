@@ -254,7 +254,7 @@ s_no_extra_traits! {
         pub gp_regs: crate::gregset_t,
         pub fp_regs: crate::fpregset_t,
         pub v_regs: *mut vrregset_t,
-        pub vmx_reserve: [c_long; __NVRREG + __NVRREG + 1],
+        vmx_reserve: Padding<[c_long; __NVRREG + __NVRREG + 1]>,
     }
 
     #[repr(align(16))]

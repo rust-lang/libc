@@ -347,10 +347,10 @@ s! {
     }
 
     pub struct fpunchhole_t {
-        pub fp_flags: c_uint, /* unused */
-        pub reserved: c_uint, /* (to maintain 8-byte alignment) */
-        pub fp_offset: off_t, /* IN: start of the region */
-        pub fp_length: off_t, /* IN: size of the region */
+        pub fp_flags: c_uint,      /* unused */
+        reserved: Padding<c_uint>, /* (to maintain 8-byte alignment) */
+        pub fp_offset: off_t,      /* IN: start of the region */
+        pub fp_length: off_t,      /* IN: size of the region */
     }
 
     pub struct ftrimactivefile_t {
@@ -360,7 +360,7 @@ s! {
 
     pub struct fspecread_t {
         pub fsr_flags: c_uint,
-        pub reserved: c_uint,
+        reserved: Padding<c_uint>,
         pub fsr_offset: off_t,
         pub fsr_length: off_t,
     }
@@ -499,7 +499,7 @@ s! {
         pub rtm_addrs: c_int,
         pub rtm_refcnt: i32,
         pub rtm_parentflags: c_int,
-        pub rtm_reserved: c_int,
+        rtm_reserved: Padding<c_int>,
         pub rtm_use: c_int,
         pub rtm_inits: u32,
         pub rtm_rmx: rt_metrics,
@@ -683,7 +683,7 @@ s! {
         pub ss_sysaddr: u16,
         pub sc_id: u32,
         pub sc_unit: u32,
-        pub sc_reserved: [u32; 5],
+        sc_reserved: Padding<[u32; 5]>,
     }
 
     pub struct in_pktinfo {
@@ -1029,7 +1029,7 @@ s! {
 
     pub struct attrlist {
         pub bitmapcount: c_ushort,
-        pub reserved: u16,
+        reserved: Padding<u16>,
         pub commonattr: attrgroup_t,
         pub volattr: attrgroup_t,
         pub dirattr: attrgroup_t,
@@ -1299,7 +1299,7 @@ s! {
         pub f_mntonname: [c_char; 1024],
         pub f_mntfromname: [c_char; 1024],
         pub f_flags_ext: u32,
-        pub f_reserved: [u32; 7],
+        f_reserved: Padding<[u32; 7]>,
     }
 
     pub struct dirent {
@@ -1406,7 +1406,7 @@ s! {
         pub ifi_hdrlen: c_uchar,
         pub ifi_recvquota: c_uchar,
         pub ifi_xmitquota: c_uchar,
-        pub ifi_unused1: c_uchar,
+        ifi_unused1: Padding<c_uchar>,
         pub ifi_mtu: u32,
         pub ifi_metric: u32,
         pub ifi_baudrate: u64,
@@ -1498,7 +1498,7 @@ s! {
     pub struct sockaddr_vm {
         pub svm_len: c_uchar,
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
     }
