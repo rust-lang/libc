@@ -882,6 +882,7 @@ pub const IPV6_MULTICAST_IF: c_int = 0x6;
 pub const IPV6_MULTICAST_HOPS: c_int = 0x7;
 pub const IPV6_MULTICAST_LOOP: c_int = 0x8;
 pub const IPV6_PKTINFO: c_int = 0xb;
+pub const IPV6_HOPLIMIT: c_int = 0xc;
 pub const IPV6_RECVPKTINFO: c_int = 0x12;
 pub const IPV6_RECVTCLASS: c_int = 0x19;
 pub const IPV6_DONTFRAG: c_int = 0x21;
