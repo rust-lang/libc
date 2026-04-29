@@ -207,6 +207,10 @@ pub const B4000000: crate::speed_t = 31;
 // sys/systeminfo.h
 pub const SI_ADDRESS_WIDTH: c_int = 520;
 
+// netinet/in.h
+pub const IP_MINTTL: c_int = 0x1c;
+pub const IPV6_MINHOPCOUNT: c_int = 0x2f;
+
 // sys/timerfd.h
 pub const TFD_CLOEXEC: i32 = 0o2000000;
 pub const TFD_NONBLOCK: i32 = 0o4000;
