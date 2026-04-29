@@ -152,7 +152,7 @@ pub const WNOHANG: c_int = 1;
 
 pub const POLLIN: c_int = 0x0001;
 pub const POLLPRI: c_int = 0x0002;
-pub const POLLOUT: c_int = 0x0004;
+pub const POLLOUT: c_int = 0x0008;
 pub const POLLRDNORM: c_int = 0x0040;
 pub const POLLWRNORM: c_int = POLLOUT;
 pub const POLLRDBAND: c_int = 0x0080;
