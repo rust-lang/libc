@@ -94,7 +94,9 @@ MAX_CANON
 MAX_INPUT
 MCL_CURRENT
 MCL_FUTURE
+MQ_PRIO_DEFAULT
 NAME_MAX
+NBBY
 NFDBITS
 OPEN_MAX
 O_DSYNC
@@ -362,6 +364,16 @@ ldiv_t
 llabs
 lldiv
 lldiv_t
+mq_attr
+mq_close
+mq_getattr
+mq_open
+mq_receive
+mq_send
+mq_setattr
+mq_timedreceive
+mq_timedsend
+mq_unlink
 mqd_t
 pthread_attr_getaffinity_np
 pthread_attr_getdetachstate
