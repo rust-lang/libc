@@ -244,20 +244,6 @@ extern "C" {
     pub fn mkdir(path: *const c_char, mode: mode_t) -> c_int;
 }
 
-// Additional pthread functions
-extern "C" {
-    pub fn pthread_attr_getstack(
-        attr: *const pthread_attr_t,
-        stackaddr: *mut *mut c_void,
-        stacksize: *mut size_t,
-    ) -> c_int;
-    pub fn pthread_attr_setstack(
-        attr: *mut pthread_attr_t,
-        stackaddr: *mut c_void,
-        stacksize: size_t,
-    ) -> c_int;
-}
-
 // Additional time functions
 extern "C" {
     pub fn clock_getcpuclockid(pid: pid_t, clock_id: *mut clockid_t) -> c_int;
