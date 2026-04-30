@@ -447,6 +447,7 @@ sem_getvalue
 sem_init
 sem_open
 sem_unlink
+setpgrp
 sigevent
 siginfo_t
 sigsuspend

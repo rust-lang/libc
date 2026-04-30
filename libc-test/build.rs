@@ -5830,9 +5830,13 @@ fn test_qurt(target: &str) {
             | "setenv" | "unsetenv" | "atoi" | "atol" | "atoll" | "strtol" | "strtoul"
             | "strtoll" | "strtoull" | "strtod" | "strtof" | "rand" | "srand" | "qsort"
             | "bsearch" | "abs" | "labs" | "llabs" | "div" | "ldiv" | "lldiv" => true,
-            // Skip unistd functions
+            // Skip unistd functions: QuRT has no standard unistd.h in its POSIX
+            // headers; these are declared via sys/types.h -> hooks/unistd.h or the
+            // toolchain's own sys/unistd.h, neither of which ctest traverses.
             "access" | "close" | "lseek" | "read" | "write" | "ftruncate" | "unlink" | "getcwd"
-            | "rmdir" | "getpid" | "sleep" | "sysconf" => true,
+            | "rmdir" | "getpid" | "getppid" | "getpgid" | "getpgrp" | "getuid" | "geteuid"
+            | "getgid" | "getegid" | "seteuid" | "setuid" | "setpgid" | "setpgrp" | "setsid"
+            | "fsync" | "pathconf" | "sleep" | "sysconf" => true,
             // Skip dlfcn functions
             "dlopen" | "dlclose" | "dlsym" | "dlerror" => true,
             // Skip mman functions
