@@ -5,15 +5,19 @@
 use super::*;
 use crate::prelude::*;
 
-// Thread creation attributes
-pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
-pub const PTHREAD_CREATE_DETACHED: c_int = 1;
+// Thread creation attributes (QuRT values differ from POSIX/Linux defaults)
+pub const PTHREAD_CREATE_DETACHED: c_int = 0;
+pub const PTHREAD_CREATE_JOINABLE: c_int = 1;
 
-// Mutex types
-pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
-pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
-pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
-pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
+// Mutex types (QuRT values differ from POSIX/Linux defaults)
+pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 0;
+pub const PTHREAD_MUTEX_NORMAL: c_int = 1;
+pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
+pub const PTHREAD_MUTEX_DEFAULT: c_int = 3;
+
+// Process sharing
+pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
+pub const PTHREAD_PROCESS_SHARED: c_int = 1;
 
 // Mutex protocol
 pub const PTHREAD_PRIO_NONE: c_int = 0;
@@ -27,6 +31,7 @@ pub const PTHREAD_MAX_PRIORITY: c_int = 255;
 // Initializer constants
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = 0xFFFFFFFF;
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = 0xFFFFFFFF;
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = !0usize as pthread_rwlock_t;
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 
 // Stack size
@@ -36,8 +41,9 @@ pub const PTHREAD_STACK_MIN: size_t = 8192;
 pub const PTHREAD_SCOPE_SYSTEM: c_int = 0;
 pub const PTHREAD_SCOPE_PROCESS: c_int = 1;
 
-pub const PTHREAD_INHERIT_SCHED: c_int = 0;
-pub const PTHREAD_EXPLICIT_SCHED: c_int = 1;
+// Scheduler inheritance (QuRT values differ from POSIX/Linux defaults)
+pub const PTHREAD_EXPLICIT_SCHED: c_int = 0;
+pub const PTHREAD_INHERIT_SCHED: c_int = 1;
 
 extern "C" {
     // Thread management
@@ -51,7 +57,7 @@ extern "C" {
     pub fn pthread_detach(thread: pthread_t) -> c_int;
     pub fn pthread_exit(retval: *mut c_void) -> !;
     pub fn pthread_self() -> pthread_t;
-    pub fn pthread_equal(t1: pthread_t, t2: pthread_t) -> c_int;
+    // Note: pthread_equal is static inline in QuRT pthread.h, no linkable symbol
 
     // Thread attributes
     pub fn pthread_attr_init(attr: *mut pthread_attr_t) -> c_int;
