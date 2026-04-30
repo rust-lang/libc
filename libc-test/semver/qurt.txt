@@ -455,6 +455,10 @@ sigwait
 srand
 strftime
 strptime
+timer_create
+timer_delete
+timer_gettime
+timer_settime
 timer_t
 useconds_t
 va_list
