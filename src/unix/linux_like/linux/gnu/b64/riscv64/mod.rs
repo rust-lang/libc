@@ -4,6 +4,7 @@ use crate::prelude::*;
 use crate::{
     off64_t,
     off_t,
+    pthread_mutex_t,
 };
 
 pub type wchar_t = c_int;
@@ -292,6 +293,49 @@ s_no_extra_traits! {
         priv_: [f32; 8],
     }
 }
+
+#[cfg(target_endian = "little")]
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "little")]
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "little")]
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
+#[cfg(target_endian = "big")]
+pub const PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP: pthread_mutex_t = pthread_mutex_t {
+    size: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+};
 
 pub const POSIX_FADV_DONTNEED: c_int = 4;
 pub const POSIX_FADV_NOREUSE: c_int = 5;
