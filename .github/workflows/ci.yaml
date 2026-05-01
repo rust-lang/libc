@@ -278,9 +278,6 @@ jobs:
       fail-fast: false # Speed up 0.2 backport CI
       matrix:
         include:
-          # FIXME(#4740): FreeBSD 13 tests are extremely flaky and fail most of the time
-          # - release: "13.4"
-          #   target: x86_64-unknown-freebsd
           - release: "15.0"
             target: i686-unknown-freebsd
           - release: "14.4"
