@@ -981,6 +981,12 @@ cfg_if! {
         pub const SO_OVERFLOWED: c_int = 0x1009;
     } else {
         pub const SCM_CREDS: c_int = 0x03;
+        // io-sock keepalive options (BSD-style; replaces nto70/71's
+        // single-value TCP_KEEPALIVE). Values verified against
+        // QNX 8.0 SDP /usr/include/netinet/tcp.h.
+        pub const TCP_KEEPIDLE: c_int = 256;
+        pub const TCP_KEEPINTVL: c_int = 512;
+        pub const TCP_KEEPCNT: c_int = 1024;
         pub const AF_INET6: c_int = 28;
         pub const AF_BLUETOOTH: c_int = 36;
         pub const pseudo_AF_KEY: c_int = 27;
