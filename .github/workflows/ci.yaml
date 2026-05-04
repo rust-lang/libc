@@ -85,7 +85,7 @@ jobs:
         run: ./ci/install-rust.sh
 
       - name: Install semver-checks
-        uses: taiki-e/install-action@787505cde8a44ea468a00478fe52baf23b15bccd # v2.75.21
+        uses: taiki-e/install-action@711e1c3275189d76dcc4d34ddea63bf96ac49090 # v2.76.0
         if: matrix.toolchain == 'stable'
         with:
           tool: cargo-semver-checks
