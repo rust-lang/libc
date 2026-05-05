@@ -242,8 +242,12 @@ def run(
     args: Sequence[str | Path],
     *,
     env: Optional[dict[str, str]] = None,
+    extra_rustflags: Optional[str] = None,
     check: bool = True,
 ) -> sp.CompletedProcess:
+    if extra_rustflags is not None:
+        env["RUSTFLAGS"] = env.get("RUSTFLAGS", "") + " " + extra_rustflags
+
     xtrace(args, env=env)
     return sp.run(args, env=env, check=check)
 
@@ -396,6 +400,9 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
         run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS": "64"})
         # Equivalent of _TIME_BITS=64
         run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_TIME_BITS": "64"})
+        # For Windows x86 GNU to test out a backwards-incompatible 64-bit wide
+        # `time_t`
+        run(cmd, env=env, extra_rustflags="--cfg=libc_unstable_windows_gnu_time64=\"1\"")
 
     if "musl" in target_env:
         # Check with breaking changes from musl, including 64-bit time_t on 32-bit
