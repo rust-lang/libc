@@ -865,7 +865,7 @@ impl siginfo_t {
             _stime: crate::clock_t,
             _status: crate::c_int,
         }
-        (*(self as *const siginfo_t as *const siginfo_proc))._status
+        (*(self as *const siginfo_t).cast::<siginfo_proc>())._status
     }
 }
 
