@@ -4068,7 +4068,7 @@ f! {
         let next = cmsg as usize + __DARWIN_ALIGN32(cmsg_len);
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next + __DARWIN_ALIGN32(size_of::<cmsghdr>()) > max {
-            core::ptr::null_mut()
+            ptr::null_mut()
         } else {
             next as *mut cmsghdr
         }
