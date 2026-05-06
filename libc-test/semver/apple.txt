@@ -2206,6 +2206,7 @@ shmctl
 shmdt
 shmget
 shmid_ds
+sig_t
 sigaltstack
 sigevent
 siginfo_t
