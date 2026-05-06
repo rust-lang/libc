@@ -135,7 +135,12 @@ s! {
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         __pad14: Padding<u32>,
 
-        #[cfg(any(target_env = "musl", target_env = "ohos", target_os = "emscripten"))]
+        #[cfg(any(
+            target_env = "musl",
+            target_env = "ohos",
+            target_env = "pauthtest",
+            target_os = "emscripten"
+        ))]
         __reserved: Padding<[c_long; 16]>,
     }
 
@@ -514,7 +519,11 @@ cfg_if! {
         #[link(name = "dl", cfg(not(target_feature = "crt-static")))]
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
         extern "C" {}
-    } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+    } else if #[cfg(any(
+        target_env = "musl",
+        target_env = "ohos",
+        target_env = "pauthtest"
+    ))] {
         #[cfg_attr(
             feature = "rustc-dep-of-std",
             link(
@@ -1444,7 +1453,7 @@ extern "C" {
         any(
             all(
                 target_os = "linux",
-                not(any(target_env = "musl", target_env = "ohos"))
+                not(any(target_env = "musl", target_env = "ohos", target_env = "pauthtest"))
             ),
             target_os = "freebsd",
             target_os = "cygwin",
