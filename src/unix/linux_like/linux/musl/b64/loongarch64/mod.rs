@@ -67,7 +67,7 @@ s! {
         pub orig_a0: u64,
         pub csr_era: u64,
         pub csr_badv: u64,
-        pub reserved: [u64; 10],
+        reserved: Padding<[u64; 10]>,
     }
 
     pub struct user_fp_struct {
