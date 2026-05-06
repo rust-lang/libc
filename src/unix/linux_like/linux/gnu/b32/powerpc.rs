@@ -77,18 +77,9 @@ s! {
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
-        pub st_atime: crate::time_t,
-        #[cfg(gnu_time_bits64)]
-        _atime_pad: Padding<c_int>,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        #[cfg(gnu_time_bits64)]
-        _mtime_pad: Padding<c_int>,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        #[cfg(gnu_time_bits64)]
-        _ctime_pad: Padding<c_int>,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         #[cfg(not(gnu_time_bits64))]
         __glibc_reserved4: Padding<c_ulong>,
         #[cfg(not(gnu_time_bits64))]
@@ -108,18 +99,9 @@ s! {
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt64_t,
-        pub st_atime: crate::time_t,
-        #[cfg(gnu_time_bits64)]
-        _atime_pad: Padding<c_int>,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        #[cfg(gnu_time_bits64)]
-        _mtime_pad: Padding<c_int>,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        #[cfg(gnu_time_bits64)]
-        _ctime_pad: Padding<c_int>,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         #[cfg(not(gnu_time_bits64))]
         __glibc_reserved4: Padding<c_ulong>,
         #[cfg(not(gnu_time_bits64))]

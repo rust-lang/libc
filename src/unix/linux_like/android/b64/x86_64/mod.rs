@@ -18,12 +18,9 @@ s! {
         pub st_size: off64_t,
         pub st_blksize: c_long,
         pub st_blocks: c_long,
-        pub st_atime: c_long,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: c_long,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: c_long,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         __unused: Padding<[c_long; 3]>,
     }
 
@@ -38,12 +35,9 @@ s! {
         pub st_size: off64_t,
         pub st_blksize: c_long,
         pub st_blocks: c_long,
-        pub st_atime: c_long,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: c_long,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: c_long,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         __unused: Padding<[c_long; 3]>,
     }
 

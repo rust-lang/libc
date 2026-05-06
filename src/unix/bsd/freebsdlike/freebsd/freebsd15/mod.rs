@@ -249,20 +249,16 @@ s! {
         pub st_rdev: crate::dev_t,
         #[cfg(target_arch = "x86")]
         st_atim_ext: i32,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
+        pub st_atim: crate::timespec,
         #[cfg(target_arch = "x86")]
         st_mtim_ext: i32,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
+        pub st_mtim: crate::timespec,
         #[cfg(target_arch = "x86")]
         st_ctim_ext: i32,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_ctim: crate::timespec,
         #[cfg(target_arch = "x86")]
         st_btim_ext: i32,
-        pub st_birthtime: crate::time_t,
-        pub st_birthtime_nsec: c_long,
+        pub st_birthtim: crate::timespec,
         pub st_size: off_t,
         pub st_blocks: crate::blkcnt_t,
         pub st_blksize: crate::blksize_t,
