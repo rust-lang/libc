@@ -79,9 +79,9 @@ pub type fsfilcnt_t = c_ulonglong;
 pub type rlim_t = c_ulonglong;
 
 extern_ty! {
-    pub enum timezone {}
-    pub enum DIR {}
-    pub enum fpos64_t {} // FIXME(fuchsia): fill this out with a struct
+    pub type timezone;
+    pub type DIR;
+    pub type fpos64_t; // FIXME(fuchsia): fill this out with a struct
 }
 
 // PUB_STRUCT
@@ -3188,8 +3188,8 @@ fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
 extern "C" {}
 
 extern_ty! {
-    pub enum FILE {}
-    pub enum fpos_t {} // FIXME(fuchsia): fill this out with a struct
+    pub type FILE;
+    pub type fpos_t; // FIXME(fuchsia): fill this out with a struct
 }
 
 extern "C" {
