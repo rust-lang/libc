@@ -907,7 +907,7 @@ cfg_if! {
     if #[cfg(any(target_env = "nto70", target_env = "nto71"))] {
         pub const SCM_CREDS: c_int = 0x04;
         pub const IFF_NOTRAILERS: c_int = 0x00000020;
-        pub const AF_INET6: c_int = 24;
+        pub const AF_INET6: sa_family_t = 24;
         pub const AF_BLUETOOTH: c_int = 31;
         pub const pseudo_AF_KEY: c_int = 29;
         pub const MSG_NOSIGNAL: c_int = 0x0800;
@@ -981,7 +981,7 @@ cfg_if! {
         pub const SO_OVERFLOWED: c_int = 0x1009;
     } else {
         pub const SCM_CREDS: c_int = 0x03;
-        pub const AF_INET6: c_int = 28;
+        pub const AF_INET6: sa_family_t = 28;
         pub const AF_BLUETOOTH: c_int = 36;
         pub const pseudo_AF_KEY: c_int = 27;
         pub const MSG_NOSIGNAL: c_int = 0x20000;
@@ -1036,7 +1036,7 @@ pub const IFF_MULTICAST: c_int = 0x00008000;
 pub const AF_UNSPEC: c_int = 0;
 pub const AF_UNIX: c_int = AF_LOCAL;
 pub const AF_LOCAL: c_int = 1;
-pub const AF_INET: c_int = 2;
+pub const AF_INET: sa_family_t = 2;
 pub const AF_IPX: c_int = 23;
 pub const AF_APPLETALK: c_int = 16;
 pub const AF_ROUTE: c_int = 17;
@@ -1047,10 +1047,10 @@ pub const AF_ISDN: c_int = 26;
 pub const PF_UNSPEC: c_int = AF_UNSPEC;
 pub const PF_UNIX: c_int = PF_LOCAL;
 pub const PF_LOCAL: c_int = AF_LOCAL;
-pub const PF_INET: c_int = AF_INET;
+pub const PF_INET: c_int = AF_INET as _;
 pub const PF_IPX: c_int = AF_IPX;
 pub const PF_APPLETALK: c_int = AF_APPLETALK;
-pub const PF_INET6: c_int = AF_INET6;
+pub const PF_INET6: c_int = AF_INET6 as _;
 pub const PF_KEY: c_int = pseudo_AF_KEY;
 pub const PF_ROUTE: c_int = AF_ROUTE;
 pub const PF_SNA: c_int = AF_SNA;
