@@ -1148,6 +1148,30 @@ extern "C" {
         buflen: size_t,
         result: *mut *mut crate::group,
     ) -> c_int;
+    pub fn getnetent_r(
+        result_buf: *mut crate::netent,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut crate::netent,
+        h_errnop: *mut c_int,
+    ) -> c_int;
+    pub fn getnetbyname_r(
+        name: *const c_char,
+        result_buf: *mut crate::netent,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut crate::netent,
+        h_errnop: *mut c_int,
+    ) -> c_int;
+    pub fn getnetbyaddr_r(
+        net: u32,
+        type_: c_int,
+        result_buf: *mut crate::netent,
+        buf: *mut c_char,
+        buflen: size_t,
+        result: *mut *mut crate::netent,
+        h_errnop: *mut c_int,
+    ) -> c_int;
 
     pub fn putpwent(p: *const crate::passwd, stream: *mut crate::FILE) -> c_int;
     pub fn putgrent(grp: *const crate::group, stream: *mut crate::FILE) -> c_int;

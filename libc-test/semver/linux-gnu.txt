@@ -610,6 +610,9 @@ getentropy
 getgrent_r
 getloadavg
 getmntent_r
+getnetbyaddr_r
+getnetbyname_r
+getnetent_r
 getpt
 getpwent_r
 getpwnam_r
