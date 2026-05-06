@@ -14,11 +14,9 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         qemu-user \
         xz-utils
 
-RUN mkdir /toolchain
-
-RUN curl --retry 5 -L https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/armv7-eabihf--uclibc--bleeding-edge-2021.11-1.tar.bz2 | \
-    tar xjf - -C /toolchain --strip-components=1
-RUN /toolchain/relocate-sdk.sh
+ARG TEST_UCLIBC_TIIME64
+COPY install-uclibc.sh /
+RUN /install-uclibc.sh "$TEST_UCLIBC_TIIME64"
 
 ENV PATH=$PATH:/rust/bin:/toolchain/bin \
     STAGING_DIR=/toolchain/armv7-buildroot-linux-uclibceabihf/sysroot \
