@@ -2057,7 +2057,7 @@ pub const S_IPTRANS: mode_t = 0o1000_0000;
 pub const S_IATRANS: mode_t = 0o2000_0000;
 pub const S_IROOT: mode_t = 0o4000_0000;
 pub const S_ITRANS: mode_t = 0o7000_0000;
-pub const S_IMMAP0: mode_t = 0o10000_0000;
+pub const S_IMMAP0: mode_t = 0o1_0000_0000;
 pub const CMASK: mode_t = 18;
 pub const UF_SETTABLE: c_uint = 65535;
 pub const UF_NODUMP: c_uint = 1;
@@ -3336,19 +3336,19 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     __lock: __PTHREAD_SPIN_LOCK_INITIALIZER,
-    __queue: 0i64 as *mut __pthread,
-    __attr: 0i64 as *mut __pthread_condattr,
+    __queue: ptr::null_mut::<__pthread>(),
+    __attr: ptr::null_mut::<__pthread_condattr>(),
     __wrefs: 0,
-    __data: 0i64 as *mut c_void,
+    __data: ptr::null_mut::<c_void>(),
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __held: __PTHREAD_SPIN_LOCK_INITIALIZER,
     __lock: __PTHREAD_SPIN_LOCK_INITIALIZER,
     __readers: 0,
-    __readerqueue: 0i64 as *mut __pthread,
-    __writerqueue: 0i64 as *mut __pthread,
-    __attr: 0i64 as *mut __pthread_rwlockattr,
-    __data: 0i64 as *mut c_void,
+    __readerqueue: ptr::null_mut::<__pthread>(),
+    __writerqueue: ptr::null_mut::<__pthread>(),
+    __attr: ptr::null_mut::<__pthread_rwlockattr>(),
+    __data: ptr::null_mut::<c_void>(),
 };
 pub const PTHREAD_STACK_MIN: size_t = 0;
 
@@ -3365,12 +3365,12 @@ f! {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
             (*mhdr).msg_control.cast::<cmsghdr>()
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut::<cmsghdr>()
         }
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
@@ -3383,14 +3383,14 @@ f! {
 
     pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if ((*cmsg).cmsg_len as usize) < size_of::<cmsghdr>() {
-            return core::ptr::null_mut::<cmsghdr>();
+            return ptr::null_mut::<cmsghdr>();
         }
         let next = (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if (next.offset(1)) as usize > max
             || next as usize + CMSG_ALIGN((*next).cmsg_len as usize) > max
         {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut::<cmsghdr>()
         } else {
             next.cast::<cmsghdr>()
         }
@@ -3427,7 +3427,7 @@ f! {
     pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = size_of_val(&cpuset.bits[0]);
-        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+        for i in &cpuset.bits[..(size / size_of_mask)] {
             s += i.count_ones();
         }
         s as c_int

@@ -185,12 +185,15 @@ unused_qualifications = "allow"
 
 # We are okay with the current state of these lints
 explicit_iter_loop = "warn"
+borrow_as_ptr = "warn"
 identity_op = "allow"  # some expressions like `0 | x` are clearer for bit ops
 manual_assert = "warn"
 map_unwrap_or = "warn"
 missing_safety_doc = "allow"  # safety? in libc? seriously?
 non_minimal_cfg = "allow"  # for some reason cfg_if! sometimes trigger this
 ptr_as_ptr = "warn"
+ptr_cast_constness = "warn"
+ref_as_ptr = "warn"
 unnecessary_semicolon = "warn"
 
 # FIXME(clippy): these should be fixed if possible
