@@ -7,8 +7,8 @@ use crate::prelude::*;
 pub const CHAR_BIT: c_uint = 8;
 pub const CHAR_MAX: c_char = 255; // unsigned char on Hexagon
 pub const CHAR_MIN: c_char = 0;
-pub const SCHAR_MAX: c_schar = 127;
-pub const SCHAR_MIN: c_schar = -128;
+pub const SCHAR_MAX: i8 = 127;
+pub const SCHAR_MIN: i8 = -128;
 pub const UCHAR_MAX: c_uchar = 255;
 
 // Integer properties

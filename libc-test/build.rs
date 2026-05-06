@@ -20,7 +20,7 @@ use std::{
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
     if cfg!(unix) || target.contains("cygwin") {
-        let exclude = ["redox", "wasi", "wali"];
+        let exclude = ["redox", "wasi", "wali", "qurt"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
 
@@ -76,6 +76,8 @@ fn do_ctest() {
         t if t.contains("windows") => test_windows(t),
         t if t.contains("vxworks") => test_vxworks(t),
         t if t.contains("nto-qnx") => test_neutrino(t),
+        // QuRT ctest requires a sched_yield stub (static inline in SDK).
+        t if t.contains("qurt") => return,
         t if t.contains("aix") => return test_aix(t),
         t => panic!("unknown target {t}"),
     }
@@ -5637,6 +5639,246 @@ fn test_aix(target: &str) {
 
     let c_enums = ["uio_rw"];
     cfg.alias_is_c_enum(move |e| c_enums.contains(&e));
+
+    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+}
+
+// QuRT ctest is disabled: sched_yield is static inline in the SDK (no
+// linkable symbol).  A stub or --defsym is needed.  The semver test works.
+#[allow(dead_code)]
+fn test_qurt(target: &str) {
+    assert!(target.contains("qurt"));
+
+    let mut cfg = ctest_cfg();
+    cfg.flag("-Wno-deprecated-declarations");
+
+    // QuRT POSIX headers are in the SDK, include paths are set via
+    // CFLAGS_hexagon_unknown_qurt in the test runner script.
+    headers!(
+        cfg,
+        "pthread.h",
+        "pthread_types.h",
+        "semaphore.h",
+        "signal.h",
+        "time.h",
+        "fcntl.h",
+        "sys/types.h",
+        "sys/sched.h",
+        "sys/errno.h",
+        "mqueue.h",
+    );
+
+    // QuRT doesn't have all the standard unix types/structs
+    cfg.skip_struct(|s| {
+        match s.ident() {
+            // These are compatibility stubs in libc, not from QuRT headers
+            "stat" | "tm" | "timespec" | "timeval" | "itimerspec" | "dirent" | "DIR"
+            | "termios" | "rlimit" | "rusage" | "flock" | "div_t" | "ldiv_t" | "lldiv_t" => true,
+            // sigaction: sa_handler/sa_sigaction are a union in C but separate fields in Rust
+            "sigaction" => true,
+            // sem_t is typedef of anonymous struct in C (no struct tag)
+            "sem_t" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(|ty| {
+        match ty.ident() {
+            // Skip types not defined in QuRT POSIX headers
+            "intptr_t" | "uintptr_t" | "ptrdiff_t" | "size_t" | "ssize_t" | "time_t"
+            | "suseconds_t" | "useconds_t" | "timer_t" | "dev_t" | "ino_t" | "mode_t"
+            | "nlink_t" | "off_t" | "blkcnt_t" | "blksize_t" | "uid_t" | "gid_t" | "socklen_t"
+            | "sa_family_t" | "in_addr_t" | "in_port_t" | "fpos_t" | "clock_t" | "nfds_t"
+            | "va_list" | "c_schar" | "wchar_t" | "errno_t" | "rlim_t" | "speed_t" | "tcflag_t"
+            | "sighandler_t" => true,
+            // fd_set is defined in mqueue.h as a struct, but libc has it as c_ulong
+            "fd_set" => true,
+            // sem_t is a struct in QuRT but an alias in libc
+            "sem_t" => true,
+            // Skip internal/compatibility types
+            "FILE" => true,
+            // These are libc internal types
+            t if t.starts_with("__c_anonymous_") => true,
+            t if t.starts_with("__uint") => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_const(|c| {
+        let name = c.ident();
+        match name {
+            // Skip constants not from QuRT POSIX headers
+            "EOK" | "PAGESIZE" | "PAGE_SIZE" | "L_tmpnam" | "TMP_MAX" | "FOPEN_MAX" => true,
+            // Skip DT_* directory entry constants (not in QuRT POSIX headers)
+            _ if name.starts_with("DT_") => true,
+            // Skip CLOCK_* that aren't in the QuRT time.h directly
+            "CLOCK_MONOTONIC_RAW"
+            | "CLOCK_REALTIME_COARSE"
+            | "CLOCK_MONOTONIC_COARSE"
+            | "CLOCK_BOOTTIME" => true,
+            // Skip signal constants not defined in QuRT signal.h
+            _ if name.starts_with("SIG")
+                && !matches!(
+                    name,
+                    "SIGKILL"
+                        | "SIGRTMIN"
+                        | "SIGRTMAX"
+                        | "SIGEV_NONE"
+                        | "SIGEV_SIGNAL"
+                        | "SIGEV_THREAD"
+                        | "SIG_BLOCK"
+                        | "SIG_UNBLOCK"
+                        | "SIG_SETMASK"
+                ) =>
+            {
+                true
+            }
+            "SA_SIGINFO" => false,
+            // Skip SIG_DFL, SIG_IGN, SIG_ERR (function pointers, not simple ints)
+            "SIG_DFL" | "SIG_IGN" | "SIG_ERR" => true,
+            // Skip POSIX_MSG/POSIX_NOTIF
+            "POSIX_MSG" | "POSIX_NOTIF" => true,
+            // Skip errno constants (they come from toolchain errno.h, not QuRT-specific)
+            _ if name.starts_with("E")
+                && name.len() > 1
+                && name
+                    .chars()
+                    .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit()) =>
+            {
+                true
+            }
+            // Skip O_* constants that use POSIX_ prefix in QuRT
+            _ if name.starts_with("O_") => true,
+            // Skip F_* fcntl constants
+            _ if name.starts_with("F_") && !name.starts_with("FD_") => true,
+            "FD_CLOEXEC" => true,
+            // Skip limits constants not in QuRT headers
+            _ if name.starts_with("CHAR_")
+                || name.starts_with("SCHAR_")
+                || name.starts_with("UCHAR_") =>
+            {
+                true
+            }
+            _ if name.starts_with("INT_") || name.starts_with("UINT_") => true,
+            _ if name.starts_with("LONG_") || name.starts_with("ULONG_") => true,
+            _ if name.starts_with("SHRT_") || name.starts_with("USHRT_") => true,
+            "CHAR_BIT" | "IOV_MAX" => true,
+            _ if name.starts_with("ARG_MAX")
+                || name.starts_with("CHILD_MAX")
+                || name.starts_with("LINK_MAX")
+                || name.starts_with("MAX_")
+                || name.starts_with("NAME_MAX")
+                || name.starts_with("OPEN_MAX")
+                || name.starts_with("PATH_MAX")
+                || name.starts_with("PIPE_BUF")
+                || name.starts_with("STREAM_MAX")
+                || name.starts_with("TZNAME_MAX") =>
+            {
+                true
+            }
+            // Skip stdio constants
+            "BUFSIZ" | "FILENAME_MAX" | "EOF" => true,
+            // Skip stdlib constants
+            "EXIT_SUCCESS" | "EXIT_FAILURE" | "RAND_MAX" => true,
+            // Skip dlfcn constants
+            _ if name.starts_with("RTLD_") || name == "DL_LAZY" => true,
+            // Skip mman constants
+            _ if name.starts_with("PROT_")
+                || name.starts_with("MAP_")
+                || name.starts_with("MS_")
+                || name.starts_with("MCL_") =>
+            {
+                true
+            }
+            // Skip stat constants
+            _ if name.starts_with("S_I") || name == "S_IFMT" => true,
+            // Skip unistd constants
+            _ if name.starts_with("_PC_") || name.starts_with("_SC_") => true,
+            "F_OK" | "X_OK" | "W_OK" | "R_OK" => true,
+            "SEEK_SET" | "SEEK_CUR" | "SEEK_END" => true,
+            "STDIN_FILENO" | "STDOUT_FILENO" | "STDERR_FILENO" => true,
+            // Skip TIME_CONV_SCLK_FREQ (QuRT-specific, not a standard C constant)
+            "TIME_CONV_SCLK_FREQ" => true,
+            // Skip SEM_FAILED (null pointer constant)
+            "SEM_FAILED" => true,
+            // Skip MAP_FAILED
+            "MAP_FAILED" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(|func| {
+        let name = func.ident();
+        match name {
+            // Skip functions not from QuRT POSIX headers we're testing
+            "strlen" | "strcpy" | "strncpy" | "strcat" | "strncat" | "strcmp" | "strncmp"
+            | "strcoll" | "strxfrm" | "strchr" | "strrchr" | "strspn" | "strcspn" | "strpbrk"
+            | "strstr" | "strtok" | "strerror" | "memchr" | "memcmp" | "memcpy" | "memmove"
+            | "memset" => true,
+            // Skip ctype functions
+            "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
+            | "ispunct" | "isspace" | "isupper" | "isxdigit" | "tolower" | "toupper" => true,
+            // Skip stdio functions
+            "fopen" | "freopen" | "fclose" | "fflush" | "fread" | "fwrite" | "fgetc" | "fputc"
+            | "getchar" | "putchar" | "ungetc" | "fgets" | "fputs" | "gets" | "puts" | "printf"
+            | "fprintf" | "sprintf" | "snprintf" | "vprintf" | "vfprintf" | "vsprintf"
+            | "vsnprintf" | "scanf" | "fscanf" | "sscanf" | "fseek" | "ftell" | "rewind"
+            | "fgetpos" | "fsetpos" | "clearerr" | "feof" | "ferror" | "perror" | "remove"
+            | "rename" | "tmpfile" | "tmpnam" | "setvbuf" | "setbuf" => true,
+            // Skip stdlib functions
+            "malloc" | "calloc" | "realloc" | "free" | "abort" | "exit" | "atexit" | "getenv"
+            | "setenv" | "unsetenv" | "atoi" | "atol" | "atoll" | "strtol" | "strtoul"
+            | "strtoll" | "strtoull" | "strtod" | "strtof" | "rand" | "srand" | "qsort"
+            | "bsearch" | "abs" | "labs" | "llabs" | "div" | "ldiv" | "lldiv" => true,
+            // Skip unistd functions: QuRT has no standard unistd.h in its POSIX
+            // headers; these are declared via sys/types.h -> hooks/unistd.h or the
+            // toolchain's own sys/unistd.h, neither of which ctest traverses.
+            "access" | "close" | "lseek" | "read" | "write" | "ftruncate" | "unlink" | "getcwd"
+            | "rmdir" | "getpid" | "getppid" | "getpgid" | "getpgrp" | "getuid" | "geteuid"
+            | "getgid" | "getegid" | "seteuid" | "setuid" | "setpgid" | "setpgrp" | "setsid"
+            | "fsync" | "pathconf" | "sleep" | "sysconf" => true,
+            // Skip dlfcn functions
+            "dlopen" | "dlclose" | "dlsym" | "dlerror" => true,
+            // Skip mman functions
+            "mmap" | "munmap" | "mprotect" | "mlock" | "munlock" | "mlockall" | "munlockall"
+            | "msync" => true,
+            // Skip stat functions
+            "stat" | "fstat" => true,
+            // Skip time functions (some are in generic headers, not QuRT posix)
+            "time" | "clock" | "difftime" | "mktime" | "gmtime" | "gmtime_r" | "localtime"
+            | "localtime_r" | "asctime" | "asctime_r" | "ctime" | "ctime_r" | "strftime"
+            | "strptime" | "nanosleep" => true,
+            // Skip signal functions that use sigaction (it's a macro in QuRT)
+            "sigaction" => true,
+            // Skip signal functions from generic toolchain headers
+            "signal" | "raise" => true,
+            // Skip dir functions
+            "opendir" | "readdir" | "closedir" | "mkdir" => true,
+            // Skip aligned_alloc / posix_memalign
+            "aligned_alloc" | "posix_memalign" => true,
+            // Skip clock_getcpuclockid
+            "clock_getcpuclockid" => true,
+            // Skip sem_open/sem_close/sem_unlink
+            "sem_open" | "sem_close" | "sem_unlink" => true,
+            // Skip __errno_location (QuRT-specific)
+            "__errno_location" => true,
+            // Skip _sigaction (internal)
+            "_sigaction" => true,
+            // pthread_equal is a static inline in QuRT
+            "pthread_equal" => true,
+            // sigtimedwait is not in QuRT POSIX libraries
+            "sigtimedwait" => true,
+            _ => false,
+        }
+    });
+
+    // Skip field checks for opaque types
+    cfg.skip_struct_field(|s, f| {
+        // pthread_attr_t bitfield can't be checked directly
+        s.ident() == "pthread_attr_t" && f.ident() == "__bitfield"
+    });
+
+    cfg.skip_roundtrip(|_| true);
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }

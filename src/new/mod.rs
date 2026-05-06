@@ -104,7 +104,6 @@ cfg_if! {
         pub(crate) use openbsd::*;
     } else if #[cfg(target_os = "qurt")] {
         pub mod qurt;
-        pub use qurt::*;
     } else if #[cfg(target_os = "redox")] {
         mod redox;
         // pub(crate) use redox::*;
