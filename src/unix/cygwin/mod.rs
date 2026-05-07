@@ -1709,7 +1709,7 @@ f! {
         s as c_int
     }
 
-    pub fn CPU_ZERO(cpuset: &mut cpuset_t) -> () {
+    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         cpuset.bits.fill(0);
     }
 
