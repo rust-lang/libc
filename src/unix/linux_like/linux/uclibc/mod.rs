@@ -269,9 +269,9 @@ pub const IPV6_LEAVE_GROUP: c_int = 21;
 // Different than Gnu.
 pub const FILENAME_MAX: c_uint = 4095;
 
-pub const PRIO_PROCESS: c_int = 0;
-pub const PRIO_PGRP: c_int = 1;
-pub const PRIO_USER: c_int = 2;
+pub const PRIO_PROCESS: crate::__priority_which_t = 0;
+pub const PRIO_PGRP: crate::__priority_which_t = 1;
+pub const PRIO_USER: crate::__priority_which_t = 2;
 
 pub const SOMAXCONN: c_int = 128;
 
