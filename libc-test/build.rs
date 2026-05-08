@@ -4437,6 +4437,8 @@ fn test_linux(target: &str) {
 
                 // requires linux 6.4
                 "PACKET_VNET_HDR_SZ" => return true,
+                "PR_GET_MEMORY_MERGE" => return true,
+                "PR_SET_MEMORY_MERGE" => return true,
 
                 // requires linux 6.5
                 "SO_PASSPIDFD"
