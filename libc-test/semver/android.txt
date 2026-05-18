@@ -4075,6 +4075,11 @@ tgkill
 time
 time_t
 timegm
+timer_create
+timer_delete
+timer_getoverrun
+timer_gettime
+timer_settime
 timerfd_create
 timerfd_gettime
 timerfd_settime
