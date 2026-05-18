@@ -3501,6 +3501,20 @@ extern "C" {
         new_value: *const itimerspec,
         old_value: *mut itimerspec,
     ) -> c_int;
+    pub fn timer_create(
+        clockid: crate::clockid_t,
+        sevp: *mut crate::sigevent,
+        timerid: *mut crate::timer_t,
+    ) -> c_int;
+    pub fn timer_delete(timerid: crate::timer_t) -> c_int;
+    pub fn timer_getoverrun(timerid: crate::timer_t) -> c_int;
+    pub fn timer_gettime(timerid: crate::timer_t, curr_value: *mut crate::itimerspec) -> c_int;
+    pub fn timer_settime(
+        timerid: crate::timer_t,
+        flags: c_int,
+        new_value: *const crate::itimerspec,
+        old_value: *mut crate::itimerspec,
+    ) -> c_int;
     pub fn syscall(num: c_long, ...) -> c_long;
     pub fn sched_getaffinity(
         pid: crate::pid_t,
