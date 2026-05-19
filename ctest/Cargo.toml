@@ -1,6 +1,6 @@
 [package]
 name = "ctest"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2024"
 description = "Automated testing of FFI bindings in Rust."
 rust-version = "1.88"
@@ -15,6 +15,9 @@ proc-macro2 = { version = "1.0.103", features = ["span-locations"] }
 quote = "1.0.41"
 syn = { version = "2.0.108", features = ["full", "visit", "extra-traits"] }
 thiserror = "2.0.17"
+
+[lints]
+workspace = true
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"

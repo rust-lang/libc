@@ -1470,6 +1470,7 @@ s! {
         pub external_page_count: natural_t,
         pub internal_page_count: natural_t,
         pub total_uncompressed_pages_in_compressor: u64,
+        pub swapped_count: u64,
     }
 
     #[repr(packed(4))]
@@ -2112,7 +2113,8 @@ pub const ENOPOLICY: c_int = 103;
 pub const ENOTRECOVERABLE: c_int = 104;
 pub const EOWNERDEAD: c_int = 105;
 pub const EQFULL: c_int = 106;
-pub const ELAST: c_int = 106;
+pub const ENOTCAPABLE: c_int = 107;
+pub const ELAST: c_int = 107;
 
 pub const EAI_AGAIN: c_int = 2;
 pub const EAI_BADFLAGS: c_int = 3;
@@ -2979,6 +2981,7 @@ pub const EVFILT_MACHPORT: i16 = -8;
 pub const EVFILT_FS: i16 = -9;
 pub const EVFILT_USER: i16 = -10;
 pub const EVFILT_VM: i16 = -12;
+pub const EVFILT_EXCEPT: i16 = -15;
 
 pub const EV_ADD: u16 = 0x1;
 pub const EV_DELETE: u16 = 0x2;
@@ -2988,6 +2991,9 @@ pub const EV_ONESHOT: u16 = 0x10;
 pub const EV_CLEAR: u16 = 0x20;
 pub const EV_RECEIPT: u16 = 0x40;
 pub const EV_DISPATCH: u16 = 0x80;
+pub const EV_UDATA_SPECIFIC: u16 = 0x0100;
+pub const EV_DISPATCH2: u16 = EV_DISPATCH | EV_UDATA_SPECIFIC;
+pub const EV_VANISHED: u16 = 0x0200;
 pub const EV_FLAG0: u16 = 0x1000;
 pub const EV_POLL: u16 = 0x1000;
 pub const EV_FLAG1: u16 = 0x2000;
@@ -2995,6 +3001,10 @@ pub const EV_OOBAND: u16 = 0x2000;
 pub const EV_ERROR: u16 = 0x4000;
 pub const EV_EOF: u16 = 0x8000;
 pub const EV_SYSFLAGS: u16 = 0xf000;
+
+pub const KEVENT_FLAG_NONE: c_uint = 0x000000;
+pub const KEVENT_FLAG_IMMEDIATE: c_uint = 0x000001;
+pub const KEVENT_FLAG_ERROR_EVENTS: c_uint = 0x000002;
 
 pub const NOTE_TRIGGER: u32 = 0x01000000;
 pub const NOTE_FFNOP: u32 = 0x00000000;
@@ -3004,6 +3014,7 @@ pub const NOTE_FFCOPY: u32 = 0xc0000000;
 pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
 pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
+pub const NOTE_OOB: u32 = 0x00000002;
 pub const NOTE_DELETE: u32 = 0x00000001;
 pub const NOTE_WRITE: u32 = 0x00000002;
 pub const NOTE_EXTEND: u32 = 0x00000004;
@@ -3012,6 +3023,9 @@ pub const NOTE_LINK: u32 = 0x00000010;
 pub const NOTE_RENAME: u32 = 0x00000020;
 pub const NOTE_REVOKE: u32 = 0x00000040;
 pub const NOTE_NONE: u32 = 0x00000080;
+pub const NOTE_FUNLOCK: u32 = 0x00000100;
+pub const NOTE_LEASE_DOWNGRADE: u32 = 0x00000200;
+pub const NOTE_LEASE_RELEASE: u32 = 0x00000400;
 pub const NOTE_EXIT: u32 = 0x80000000;
 pub const NOTE_FORK: u32 = 0x40000000;
 pub const NOTE_EXEC: u32 = 0x20000000;

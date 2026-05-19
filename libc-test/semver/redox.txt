@@ -337,6 +337,14 @@ qsort
 reallocarray
 renameat2
 rlim_t
+sem_clockwait
+sem_destroy
+sem_getvalue
+sem_init
+sem_post
+sem_timedwait
+sem_trywait
+sem_wait
 setgrent
 setpwent
 setresgid
