@@ -603,6 +603,35 @@ s! {
         pub pbi_start_tvusec: u64,
     }
 
+    pub struct proc_bsdshortinfo {
+        /// Process ID.
+        pub pbsi_pid: u32,
+        /// Process parent ID.
+        pub pbsi_ppid: u32,
+        /// Process perp ID.
+        pub pbsi_pgid: u32,
+        /// `p_stat` value: `SZOMB`, `SRUN`, etc.
+        pub pbsi_status: u32,
+        /// Up to 16 characters of process name.
+        pub pbsi_comm: [c_char; MAXCOMLEN],
+        /// 64bit, emulated, etc.
+        pub pbsi_flags: u32,
+        /// Current UID on process.
+        pub pbsi_uid: crate::uid_t,
+        /// Current GID on process.
+        pub pbsi_gid: crate::gid_t,
+        /// Current RUID on process.
+        pub pbsi_ruid: crate::uid_t,
+        /// Current RGID on process.
+        pub pbsi_rgid: crate::gid_t,
+        /// Current SVUID on process.
+        pub pbsi_svuid: crate::uid_t,
+        /// Current SVGID on process.
+        pub pbsi_svgid: crate::gid_t,
+        /// Reserved for future use.
+        pub pbsi_rfu: u32,
+    }
+
     pub struct proc_taskallinfo {
         pub pbsd: proc_bsdinfo,
         pub ptinfo: proc_taskinfo,
@@ -3506,6 +3535,7 @@ pub const PROC_PIDTBSDINFO: c_int = 3;
 pub const PROC_PIDTASKINFO: c_int = 4;
 pub const PROC_PIDTHREADINFO: c_int = 5;
 pub const PROC_PIDVNODEPATHINFO: c_int = 9;
+pub const PROC_PIDT_SHORTBSDINFO: c_int = 13;
 pub const PROC_PIDPATHINFO_MAXSIZE: c_int = 4096;
 
 pub const PROC_PIDLISTFDS: c_int = 1;
