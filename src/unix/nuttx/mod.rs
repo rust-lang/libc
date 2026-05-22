@@ -501,9 +501,13 @@ pub const SO_LINGER: i32 = 6;
 pub const SO_RCVTIMEO: i32 = 0xa;
 pub const SO_SNDTIMEO: i32 = 0xe;
 pub const SO_BROADCAST: i32 = 1;
+pub const SO_KEEPALIVE: i32 = 5;
 
 // netinet/tcp.h
 pub const TCP_NODELAY: i32 = 0x10;
+pub const TCP_KEEPIDLE: i32 = 0x11;
+pub const TCP_KEEPINTVL: i32 = 0x12;
+pub const TCP_KEEPCNT: i32 = 0x13;
 
 // nuttx/fs/ioctl.h
 pub const FIONBIO: i32 = 0x30a;
