@@ -86,6 +86,7 @@ pututxline
 pwritev2
 pwritev64
 reallocarray
+renameat2
 setutxent
 tcp_info
 timex

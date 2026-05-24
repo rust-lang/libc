@@ -4633,6 +4633,8 @@ fn test_linux(target: &str) {
             "preadv2" | "pwritev2" if musl => true,
             // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
             "statx" if musl => true,
+            // FIXME(musl): Supported since musl 1.2.6 but not yet in CI.
+            "renameat2" if musl => true,
 
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
