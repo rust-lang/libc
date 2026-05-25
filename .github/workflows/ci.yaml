@@ -312,7 +312,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: test on Solaris
-        uses: vmactions/solaris-vm@c20562b2c69737b06be9e828915761703e487373 # v1.3.3
+        uses: vmactions/solaris-vm@ccfaaeedda3686a8c26cfaee9aadd1c32c30b439 # v1.3.5
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
