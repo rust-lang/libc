@@ -691,7 +691,9 @@ pub const CTL_P1003_1B_SIGQUEUE_MAX: c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: c_int = 25;
 pub const CTL_P1003_1B_MAXID: c_int = 26;
 
-pub const CPUCTL_RSMSR: c_int = 0xc0106301;
+pub const CPUCTL_RDMSR: c_int = 0xc0106301;
+#[deprecated(since = "1.0", note = "Replaced on DragonFly by CPUCTL_RDMSR")]
+pub const CPUCTL_RSMSR: c_int = CPUCTL_RDMSR;
 pub const CPUCTL_WRMSR: c_int = 0xc0106302;
 pub const CPUCTL_CPUID: c_int = 0xc0106303;
 pub const CPUCTL_UPDATE: c_int = 0xc0106304;
@@ -1076,7 +1078,9 @@ pub const DOWNTIME: c_short = 11;
 // utmpx database types
 pub const UTX_DB_UTMPX: c_uint = 0;
 pub const UTX_DB_WTMPX: c_uint = 1;
-pub const UTX_DB_LASTLOG: c_uint = 2;
+pub const UTX_DB_LASTLOGX: c_uint = 2;
+#[deprecated(since = "1.0", note = "Replaced on DragonFly by UTX_DB_LASTLOGX")]
+pub const UTX_DB_LASTLOG: c_uint = UTX_DB_LASTLOGX;
 pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_IDSIZE: usize = 4;
