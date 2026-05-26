@@ -730,6 +730,42 @@ pub const CPUCTL_CPUID_COUNT: c_int = u32_cast_int(0xc0106307);
 
 pub const CPU_SETSIZE: size_t = size_of::<crate::cpumask_t>() * 8;
 
+pub const REG_BASIC: c_int = 0o0000;
+pub const REG_EXTENDED: c_int = 0o0001;
+pub const REG_ICASE: c_int = 0o0002;
+pub const REG_NOSUB: c_int = 0x8;
+pub const REG_NEWLINE: c_int = 0x4;
+pub const REG_NOSPEC: c_int = 0o0020;
+pub const REG_PEND: c_int = 0x80;
+pub const REG_DUMP: c_int = 0o0200;
+
+pub const REG_NOMATCH: c_int = 1;
+pub const REG_BADPAT: c_int = 2;
+pub const REG_ECOLLATE: c_int = 3;
+pub const REG_ECTYPE: c_int = 4;
+pub const REG_EESCAPE: c_int = 5;
+pub const REG_ESUBREG: c_int = 6;
+pub const REG_EBRACK: c_int = 7;
+pub const REG_EPAREN: c_int = 8;
+pub const REG_EBRACE: c_int = 9;
+pub const REG_BADBR: c_int = 10;
+pub const REG_ERANGE: c_int = 11;
+pub const REG_ESPACE: c_int = 12;
+pub const REG_BADRPT: c_int = 13;
+pub const REG_EMPTY: c_int = 14;
+pub const REG_ASSERT: c_int = 15;
+pub const REG_INVARG: c_int = 15;
+pub const REG_ILLSEQ: c_int = 16;
+pub const REG_ATOI: c_int = 255;
+pub const REG_ITOA: c_int = 0o0400;
+
+pub const REG_NOTBOL: c_int = 0o00001;
+pub const REG_NOTEOL: c_int = 0o00002;
+pub const REG_STARTEND: c_int = 0o00004;
+pub const REG_TRACE: c_int = 0o00400;
+pub const REG_LARGE: c_int = 0o01000;
+pub const REG_BACKR: c_int = 0x8;
+
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
 pub const EVFILT_AIO: i16 = -3;
@@ -1103,6 +1139,10 @@ pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_IDSIZE: usize = 4;
 pub const _UTX_HOSTSIZE: usize = 256;
+
+pub const GRND_NONBLOCK: c_uint = 0x2;
+pub const GRND_RANDOM: c_uint = 0x1;
+pub const GRND_INSECURE: c_uint = 0x4;
 
 pub const LC_COLLATE_MASK: c_int = 1 << 0;
 pub const LC_CTYPE_MASK: c_int = 1 << 1;
