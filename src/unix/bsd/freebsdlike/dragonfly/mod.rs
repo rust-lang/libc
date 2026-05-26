@@ -695,11 +695,11 @@ pub const CPUCTL_RDMSR: c_int = 0xc0106301;
 #[deprecated(since = "1.0", note = "Replaced on DragonFly by CPUCTL_RDMSR")]
 pub const CPUCTL_RSMSR: c_int = CPUCTL_RDMSR;
 pub const CPUCTL_WRMSR: c_int = 0xc0106302;
-pub const CPUCTL_CPUID: c_int = 0xc0106303;
+pub const CPUCTL_CPUID: c_int = 0xc0146303;
 pub const CPUCTL_UPDATE: c_int = 0xc0106304;
 pub const CPUCTL_MSRSBIT: c_int = 0xc0106305;
 pub const CPUCTL_MSRCBIT: c_int = 0xc0106306;
-pub const CPUCTL_CPUID_COUNT: c_int = 0xc0106307;
+pub const CPUCTL_CPUID_COUNT: c_int = 0xc0186307;
 
 pub const CPU_SETSIZE: size_t = size_of::<crate::cpumask_t>() * 8;
 
@@ -733,8 +733,8 @@ pub const EV_NODATA: u16 = 0x1000;
 pub const EV_FLAG1: u16 = 0x2000;
 pub const EV_ERROR: u16 = 0x4000;
 pub const EV_EOF: u16 = 0x8000;
-pub const EV_HUP: u16 = 0x8000;
-pub const EV_SYSFLAGS: u16 = 0xf000;
+pub const EV_HUP: u16 = 0x0800;
+pub const EV_SYSFLAGS: u16 = 0xF800;
 
 pub const FIODNAME: c_ulong = 0x80106678;
 

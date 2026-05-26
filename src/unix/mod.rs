@@ -395,6 +395,7 @@ cfg_if! {
     if #[cfg(any(
         target_os = "macos",
         target_os = "freebsd",
+        target_os = "dragonfly",
         target_os = "android",
         target_os = "openbsd",
         target_os = "cygwin",
@@ -410,6 +411,7 @@ cfg_if! {
     if #[cfg(any(
         target_os = "macos",
         target_os = "freebsd",
+        target_os = "dragonfly",
         target_os = "android",
         target_os = "openbsd",
         target_os = "netbsd",
