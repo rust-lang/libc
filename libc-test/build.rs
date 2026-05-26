@@ -42,6 +42,7 @@ fn do_cc() {
             || target.contains("android")
             || target.contains("emscripten")
             || target.contains("fuchsia")
+            || target.contains("dragonfly")
             || target.contains("bsd")
             || target.contains("cygwin")
         {
@@ -1631,6 +1632,14 @@ fn test_dragonflybsd(target: &str) {
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
+    let dragonfly_version = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_DRAGONFLY_VERSION") {
+        let vers = parse_dragonfly_version(&version).unwrap();
+        println!("cargo:warning=setting DragonFly version to {vers}");
+        vers
+    } else {
+        which_dragonfly().unwrap_or(600_200)
+    };
+
     headers!(
         cfg,
         "aio.h",
@@ -1672,6 +1681,7 @@ fn test_dragonflybsd(target: &str) {
         "sched.h",
         "semaphore.h",
         "signal.h",
+        "spawn.h",
         "stddef.h",
         "stdint.h",
         "stdio.h",
@@ -1682,6 +1692,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/ioctl.h",
         "sys/cpuctl.h",
         "sys/eui64.h",
+        "sys/extattr.h",
         "sys/ipc.h",
         "sys/kinfo.h",
         "sys/ktrace.h",
@@ -1691,6 +1702,7 @@ fn test_dragonflybsd(target: &str) {
         "sys/procctl.h",
         "sys/ptrace.h",
         "sys/reboot.h",
+        "sys/random.h",
         "sys/resource.h",
         "sys/rtprio.h",
         "sys/sched.h",
@@ -1716,8 +1728,8 @@ fn test_dragonflybsd(target: &str) {
         "util.h",
         "utime.h",
         "utmpx.h",
+        "vm/vm.h",
         "vfs/ufs/quota.h",
-        "vm/vm_map.h",
         "wchar.h",
         "iconv.h",
     );
@@ -1742,6 +1754,12 @@ fn test_dragonflybsd(target: &str) {
         match ty {
             // FIXME(dragonflybsd): OSX calls this something else
             "sighandler_t" => Some("sig_t".to_string()),
+            "lwpstat" => Some("enum lwpstat".to_string()),
+            "procstat" => Some("enum procstat".to_string()),
+            "vm_map_t" => Some("struct vm_map *".to_string()),
+            "vm_map_entry_t" => Some("struct vm_map_entry *".to_string()),
+            "vm_eflags_t" => Some("unsigned int".to_string()),
+            "vm_subsys_t" => Some("int".to_string()),
             _ => None,
         }
     });
@@ -1777,7 +1795,7 @@ fn test_dragonflybsd(target: &str) {
             "termios2" => true,
 
             // Extern types
-            "DIR" | "FILE" | "fpos_t" => true,
+            "DIR" | "FILE" | "fpos_t" | "sem" | "timezone" => true,
 
             _ => false,
         }
@@ -1796,10 +1814,61 @@ fn test_dragonflybsd(target: &str) {
             _ => false,
         }
     });
+    cfg.alias_is_c_enum(move |e| match e {
+        "lwpstat" | "procstat" => true,
+        _ => false,
+    });
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+
+            // Kernel-only symbols in DragonFly headers.
+            "DTYPE_VNODE" | "DTYPE_SOCKET" | "DTYPE_PIPE" | "DTYPE_FIFO" | "DTYPE_KQUEUE"
+            | "DTYPE_CRYPTO" | "DTYPE_MQUEUE" | "DTYPE_DMABUF" => true,
+
+            // Not exposed by current DragonFly userland headers.
+            "REG_DUMP"
+            | "REG_ASSERT"
+            | "REG_ATOI"
+            | "REG_ITOA"
+            | "REG_TRACE"
+            | "REG_LARGE"
+            | "IP_ADD_SOURCE_MEMBERSHIP"
+            | "IP_DROP_SOURCE_MEMBERSHIP"
+            | "IP_BLOCK_SOURCE"
+            | "IP_UNBLOCK_SOURCE"
+            | "MAP_RENAME"
+            | "MAP_NORESERVE"
+            | "CTL_UNSPEC"
+            | "KERN_PROF"
+            | "CTL_P1003_1B_UNUSED1"
+            | "CTL_P1003_1B_SEM_VALUE_MAX"
+            | "DOWNTIME"
+            | "SF_CACHE" => true,
+
+            // libc exposes the 6.0-compatible value for this version-dependent mask.
+            "KERN_PROC_FLAGMASK" => true,
+
+            // Renamed in current DragonFly headers.
+            "CPUCTL_RSMSR" | "UTX_DB_LASTLOG" => true,
+
+            // Introduced after DragonFly 5.8.
+            "AF_ARP"
+            | "PF_ARP"
+            | "IP_SENDSRCADDR"
+            | "F_GETPATH"
+            | "ENOTRECOVERABLE"
+            | "EOWNERDEAD"
+            | "SO_PASSCRED"
+            | "PROC_PDEATHSIG_CTL"
+            | "PROC_PDEATHSIG_STATUS"
+            | "KERN_STATIC_TLS_EXTRA"
+            | "KERN_MAXID"
+                if dragonfly_version < 600_000 =>
+            {
+                true
+            }
 
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
@@ -1823,6 +1892,58 @@ fn test_dragonflybsd(target: &str) {
             "prlimit" | "prlimit64"        // non-int in 2nd arg
              => true,
 
+            // These are exposed unconditionally by libc, but older DragonFly
+            // headers cannot validate them.
+            "clock_nanosleep" | "pthread_getname_np" | "pthread_setname_np"
+                if dragonfly_version < 600_000 => true,
+            "pthread_getaffinity_np" | "pthread_setaffinity_np" if dragonfly_version < 600_000 => {
+                true
+            },
+            "fdatasync" | "getentropy" | "posix_fallocate" if dragonfly_version < 600_200 => true,
+            "malloc_usable_size" if dragonfly_version < 600_400 => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
+            // sighandler_t is crazy across platforms
+            "sighandler_t" => true,
+            // Kernel-only or opaque types in userland.
+            "kvm_t" | "pmap" | "umtx_t" | "Elf32_Lword" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
+            // FIXME(dragonflybsd): These are tested as part of the linux_fcntl tests since
+            // there are header conflicts when including them with all the other
+            // structs.
+            "termios2" => true,
+
+            // Not available as userland-complete structs on DragonFly.
+            "ip_mreq_source" | "vm_map_entry" | "vmspace" => true,
+            "ip_mreqn" if dragonfly_version < 600_000 => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
+            // this is actually a union on linux, so we can't represent it well and
+            // just insert some padding.
+            ("siginfo_t", "_pad") => true,
+            // sigev_notify_thread_id is actually part of a sigev_un union
+            ("sigevent", "sigev_notify_thread_id") => true,
+            // Current DragonFly headers use these names instead.
+            ("kinfo_cputime", "cp_idel") => true,
+            // conflicting with `p_type` macro from <resolve.h>.
+            ("Elf32_Phdr", "p_type") | ("Elf64_Phdr", "p_type") => true,
+            ("kinfo_lwp", "kl_stat") | ("kinfo_proc", "kp_stat") => true,
+            ("utmpx", "ut_type") => true,
+            ("mcontext_t", "mc_fpregs") => true,
             _ => false,
         }
     });
@@ -1841,18 +1962,52 @@ fn test_dragonflybsd(target: &str) {
         }
     });
 
-    cfg.skip_struct_field(move |struct_, field| {
-        match (struct_.ident(), field.ident()) {
-            // this is actually a union on linux, so we can't represent it well and
-            // just insert some padding.
-            ("siginfo_t", "_pad") => true,
-            // sigev_notify_thread_id is actually part of a sigev_un union
-            ("sigevent", "sigev_notify_thread_id") => true,
-            _ => false,
-        }
+    cfg.skip_roundtrip(move |ty| {
+        matches!(
+            ty,
+            "kvm_t"
+                | "posix_spawnattr_t"
+                | "posix_spawn_file_actions_t"
+                | "umtx_t"
+                | "pmap"
+                | "ip_mreq_source"
+        )
     });
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+}
+
+fn parse_dragonfly_version(version: &str) -> Option<u32> {
+    let version = version.trim();
+
+    if let Ok(version) = version.parse::<u32>() {
+        // DragonFly's __DragonFly_version uses major * 100_000 + minor * 100.
+        // Accept compact test override spellings like 58, 60, 62, and 602.
+        return Some(match version {
+            0..=9 => version * 100_000,
+            10..=99 => (version / 10) * 100_000 + (version % 10) * 100,
+            100..=999 => (version / 100) * 100_000 + (version % 100) * 100,
+            _ => version,
+        });
+    }
+
+    let mut pieces = version.split(['.', '-']);
+    let major = pieces.next()?.parse::<u32>().ok()?;
+    let minor = pieces.next()?.parse::<u32>().ok()?;
+    Some(major * 100_000 + minor * 100)
+}
+
+fn which_dragonfly() -> Option<u32> {
+    if env::var("CARGO_CFG_TARGET_OS").ok()?.as_str() != "dragonfly" {
+        return None;
+    }
+
+    if try_command_output("uname", &["-s"])?.trim() != "DragonFly" {
+        return None;
+    }
+
+    let stdout = try_command_output("uname", &["-r"])?;
+    parse_dragonfly_version(stdout.trim())
 }
 
 fn test_wasi(target: &str) {
