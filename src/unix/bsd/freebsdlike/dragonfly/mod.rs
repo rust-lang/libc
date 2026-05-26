@@ -543,10 +543,24 @@ pub const MADV_INVAL: c_int = 10;
 pub const MADV_SETMAP: c_int = 11;
 pub const O_CLOEXEC: c_int = 0x00020000;
 pub const O_DIRECTORY: c_int = 0x08000000;
+pub const O_FBLOCKING: c_int = 0x00040000;
+pub const O_FNONBLOCKING: c_int = 0x00080000;
+pub const O_FAPPEND: c_int = 0x00100000;
+pub const O_FOFFSET: c_int = 0x00200000;
+pub const O_FSYNCWRITE: c_int = 0x00400000;
+pub const O_FASYNCWRITE: c_int = 0x00800000;
+pub const O_FMASK: c_int =
+    O_FBLOCKING | O_FNONBLOCKING | O_FAPPEND | O_FOFFSET | O_FSYNCWRITE | O_FASYNCWRITE;
 pub const F_GETLK: c_int = 7;
 pub const F_SETLK: c_int = 8;
 pub const F_SETLKW: c_int = 9;
 pub const F_GETPATH: c_int = 19;
+pub const POSIX_FADV_NORMAL: c_int = 0;
+pub const POSIX_FADV_SEQUENTIAL: c_int = 1;
+pub const POSIX_FADV_RANDOM: c_int = 2;
+pub const POSIX_FADV_WILLNEED: c_int = 3;
+pub const POSIX_FADV_DONTNEED: c_int = 4;
+pub const POSIX_FADV_NOREUSE: c_int = 5;
 pub const ENOMEDIUM: c_int = 93;
 pub const ENOTRECOVERABLE: c_int = 94;
 pub const EOWNERDEAD: c_int = 95;
@@ -607,7 +621,8 @@ pub const KERN_USRSTACK: c_int = 33;
 pub const KERN_LOGSIGEXIT: c_int = 34;
 pub const KERN_IOV_MAX: c_int = 35;
 pub const KERN_MAXPOSIXLOCKSPERUID: c_int = 36;
-pub const KERN_MAXID: c_int = 37;
+pub const KERN_STATIC_TLS_EXTRA: c_int = 37;
+pub const KERN_MAXID: c_int = 38;
 pub const KERN_PROC_ALL: c_int = 0;
 pub const KERN_PROC_PID: c_int = 1;
 pub const KERN_PROC_PGRP: c_int = 2;
@@ -787,6 +802,7 @@ pub const IFF_NOARP: c_int = 0x80; // no address resolution protocol
 pub const IFF_PROMISC: c_int = 0x100; // receive all packets
 pub const IFF_ALLMULTI: c_int = 0x200; // receive all multicast packets
 pub const IFF_OACTIVE_COMPAT: c_int = 0x400; // was transmission in progress
+pub const IFF_OACTIVE: c_int = IFF_OACTIVE_COMPAT;
 pub const IFF_SIMPLEX: c_int = 0x800; // can't hear own transmissions
 pub const IFF_LINK0: c_int = 0x1000; // per link layer defined bit
 pub const IFF_LINK1: c_int = 0x2000; // per link layer defined bit
@@ -1034,8 +1050,10 @@ pub const TCP_FASTKEEP: c_int = 128;
 pub const AF_BLUETOOTH: c_int = 33;
 pub const AF_MPLS: c_int = 34;
 pub const AF_IEEE80211: c_int = 35;
+pub const AF_ARP: c_int = 36;
 
 pub const PF_BLUETOOTH: c_int = AF_BLUETOOTH;
+pub const PF_ARP: c_int = AF_ARP;
 
 pub const NET_RT_DUMP: c_int = 1;
 pub const NET_RT_FLAGS: c_int = 2;
@@ -1086,8 +1104,22 @@ pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_IDSIZE: usize = 4;
 pub const _UTX_HOSTSIZE: usize = 256;
 
+pub const EXTATTR_NAMESPACE_EMPTY: c_int = 0;
+pub const EXTATTR_NAMESPACE_USER: c_int = 1;
+pub const EXTATTR_NAMESPACE_SYSTEM: c_int = 2;
+
 pub const GRND_NONBLOCK: c_uint = 0x2;
 pub const GRND_RANDOM: c_uint = 0x1;
+
+pub const NI_NOFQDN: c_int = 0x00000001;
+pub const NI_NUMERICHOST: c_int = 0x00000002;
+pub const NI_NAMEREQD: c_int = 0x00000004;
+pub const NI_NUMERICSERV: c_int = 0x00000008;
+pub const NI_DGRAM: c_int = 0x00000010;
+pub const NI_NUMERICSCOPE: c_int = 0x00000040;
+
+pub const B460800: crate::speed_t = 460800;
+pub const B921600: crate::speed_t = 921600;
 
 pub const LC_COLLATE_MASK: c_int = 1 << 0;
 pub const LC_CTYPE_MASK: c_int = 1 << 1;
@@ -1112,6 +1144,8 @@ pub const TIOCMODG: c_ulong = 0x40047403;
 pub const TIOCMODS: c_ulong = 0x80047404;
 pub const TIOCREMOTE: c_ulong = 0x80047469;
 pub const TIOCTIMESTAMP: c_ulong = 0x40107459;
+pub const BIOCSRTIMEOUT: c_ulong = 0x8010426d;
+pub const BIOCGRTIMEOUT: c_ulong = 0x4010426e;
 
 // Constants used by "at" family of system calls.
 pub const AT_FDCWD: c_int = 0xFFFAFDCD; // invalid file descriptor
@@ -1124,8 +1158,6 @@ pub const VCHECKPT: usize = 19;
 
 pub const _PC_2_SYMLINKS: c_int = 22;
 pub const _PC_TIMESTAMP_RESOLUTION: c_int = 23;
-
-pub const _CS_PATH: c_int = 1;
 
 pub const _SC_V7_ILP32_OFF32: c_int = 122;
 pub const _SC_V7_ILP32_OFFBIG: c_int = 123;
