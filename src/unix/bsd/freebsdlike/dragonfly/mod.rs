@@ -701,6 +701,13 @@ pub const CPUCTL_CPUID_COUNT: c_int = 0xc0106307;
 
 pub const CPU_SETSIZE: size_t = size_of::<crate::cpumask_t>() * 8;
 
+pub const REG_NOSUB: c_int = 0x8;
+pub const REG_NEWLINE: c_int = 0x4;
+pub const REG_PEND: c_int = 0x80;
+pub const REG_INVARG: c_int = 15;
+pub const REG_BACKR: c_int = 0x8;
+pub const REG_ILLSEQ: c_int = 16;
+
 pub const EVFILT_READ: i16 = -1;
 pub const EVFILT_WRITE: i16 = -2;
 pub const EVFILT_AIO: i16 = -3;
@@ -1074,6 +1081,9 @@ pub const _UTX_LINESIZE: usize = 32;
 pub const _UTX_USERSIZE: usize = 32;
 pub const _UTX_IDSIZE: usize = 4;
 pub const _UTX_HOSTSIZE: usize = 256;
+
+pub const GRND_NONBLOCK: c_uint = 0x2;
+pub const GRND_RANDOM: c_uint = 0x1;
 
 pub const LC_COLLATE_MASK: c_int = 1 << 0;
 pub const LC_CTYPE_MASK: c_int = 1 << 1;

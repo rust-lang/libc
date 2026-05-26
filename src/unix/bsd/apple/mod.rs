@@ -1821,6 +1821,12 @@ pub const ABMON_10: crate::nl_item = 42;
 pub const ABMON_11: crate::nl_item = 43;
 pub const ABMON_12: crate::nl_item = 44;
 
+pub const REG_NOSUB: c_int = 0o0004;
+pub const REG_NEWLINE: c_int = 0o0010;
+pub const REG_PEND: c_int = 0o0040;
+pub const REG_INVARG: c_int = 16;
+pub const REG_BACKR: c_int = 0o02000;
+
 pub const CLOCK_REALTIME: crate::clockid_t = 0;
 pub const CLOCK_MONOTONIC_RAW: crate::clockid_t = 4;
 pub const CLOCK_MONOTONIC_RAW_APPROX: crate::clockid_t = 5;
