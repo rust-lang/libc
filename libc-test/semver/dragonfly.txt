@@ -286,11 +286,11 @@ EV_ONESHOT
 EV_RECEIPT
 EV_SYSFLAGS
 EXTA
-EXTB
-EXTPROC
 EXTATTR_NAMESPACE_EMPTY
 EXTATTR_NAMESPACE_SYSTEM
 EXTATTR_NAMESPACE_USER
+EXTB
+EXTPROC
 Elf32_Addr
 Elf32_Half
 Elf32_Lword
@@ -1451,8 +1451,8 @@ initgroups
 ipc_perm
 issetugid
 jrand48
-key_t
 kevent
+key_t
 killpg
 kinfo_cputime
 kinfo_file
@@ -1657,9 +1657,9 @@ setutxent
 sf_hdtr
 shmat
 shmctl
-shmid_ds
 shmdt
 shmget
+shmid_ds
 sigaltstack
 sigevent
 siginfo_t

@@ -1505,9 +1505,7 @@ fn test_netbsd(target: &str) {
 fn test_dragonflybsd(target: &str) {
     assert!(target.contains("dragonfly"));
     let mut cfg = ctest_cfg();
-    cfg.flag("-Wno-deprecated-declarations")
-        .flag_if_supported("-Wno-address-of-packed-member")
-        .flag_if_supported("-Wno-unknown-warning-option");
+    cfg.flag("-Wno-deprecated-declarations");
 
     let dragonfly_version = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_DRAGONFLY_VERSION") {
         let vers = parse_dragonfly_version(&version).unwrap();
@@ -1694,11 +1692,24 @@ fn test_dragonflybsd(target: &str) {
             | "DTYPE_CRYPTO" | "DTYPE_MQUEUE" | "DTYPE_DMABUF" => true,
 
             // Not exposed by current DragonFly userland headers.
-            "REG_DUMP" | "REG_ASSERT" | "REG_ATOI" | "REG_ITOA" | "REG_TRACE" | "REG_LARGE"
-            | "IP_ADD_SOURCE_MEMBERSHIP" | "IP_DROP_SOURCE_MEMBERSHIP" | "IP_BLOCK_SOURCE"
-            | "IP_UNBLOCK_SOURCE" | "MAP_RENAME" | "MAP_NORESERVE" | "CTL_UNSPEC"
-            | "KERN_PROF" | "CTL_P1003_1B_UNUSED1" | "CTL_P1003_1B_SEM_VALUE_MAX"
-            | "DOWNTIME" | "SF_CACHE" => true,
+            "REG_DUMP"
+            | "REG_ASSERT"
+            | "REG_ATOI"
+            | "REG_ITOA"
+            | "REG_TRACE"
+            | "REG_LARGE"
+            | "IP_ADD_SOURCE_MEMBERSHIP"
+            | "IP_DROP_SOURCE_MEMBERSHIP"
+            | "IP_BLOCK_SOURCE"
+            | "IP_UNBLOCK_SOURCE"
+            | "MAP_RENAME"
+            | "MAP_NORESERVE"
+            | "CTL_UNSPEC"
+            | "KERN_PROF"
+            | "CTL_P1003_1B_UNUSED1"
+            | "CTL_P1003_1B_SEM_VALUE_MAX"
+            | "DOWNTIME"
+            | "SF_CACHE" => true,
 
             // libc exposes the 6.0-compatible value for this version-dependent mask.
             "KERN_PROC_FLAGMASK" => true,
@@ -1707,9 +1718,21 @@ fn test_dragonflybsd(target: &str) {
             "CPUCTL_RSMSR" | "UTX_DB_LASTLOG" => true,
 
             // Introduced after DragonFly 5.8.
-            "AF_ARP" | "PF_ARP" | "IP_SENDSRCADDR" | "F_GETPATH" | "ENOTRECOVERABLE" | "EOWNERDEAD"
-            | "SO_PASSCRED" | "PROC_PDEATHSIG_CTL" | "PROC_PDEATHSIG_STATUS"
-            | "KERN_STATIC_TLS_EXTRA" | "KERN_MAXID" if dragonfly_version < 600_000 => true,
+            "AF_ARP"
+            | "PF_ARP"
+            | "IP_SENDSRCADDR"
+            | "F_GETPATH"
+            | "ENOTRECOVERABLE"
+            | "EOWNERDEAD"
+            | "SO_PASSCRED"
+            | "PROC_PDEATHSIG_CTL"
+            | "PROC_PDEATHSIG_STATUS"
+            | "KERN_STATIC_TLS_EXTRA"
+            | "KERN_MAXID"
+                if dragonfly_version < 600_000 =>
+            {
+                true
+            }
 
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
