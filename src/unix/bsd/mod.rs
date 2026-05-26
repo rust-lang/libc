@@ -7,6 +7,9 @@ pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = crate::uintptr_t;
 pub type nfds_t = c_uint;
+#[cfg(target_os = "dragonfly")]
+pub type regoff_t = c_int;
+#[cfg(not(target_os = "dragonfly"))]
 pub type regoff_t = off_t;
 
 s! {
@@ -57,7 +60,7 @@ s! {
         pub ifa_netmask: *mut crate::sockaddr,
         pub ifa_dstaddr: *mut crate::sockaddr,
         pub ifa_data: *mut c_void,
-        #[cfg(target_os = "netbsd")]
+        #[cfg(any(target_os = "dragonfly", target_os = "netbsd"))]
         pub ifa_addrflags: c_uint,
     }
 
