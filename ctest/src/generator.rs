@@ -62,6 +62,7 @@ pub struct TestGenerator {
     pub(crate) includes: Vec<PathBuf>,
     out_dir: Option<PathBuf>,
     pub(crate) flags: Vec<String>,
+    pub(crate) flags_if_supported: Vec<String>,
     pub(crate) global_defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     mapped_names: Vec<MappedName>,
@@ -667,6 +668,15 @@ impl TestGenerator {
     /// ```
     pub fn flag(&mut self, flag: &str) -> &mut Self {
         self.flags.push(flag.to_string());
+        self
+    }
+
+    /// Add a flag to the C compiler invocation if the compiler supports it.
+    ///
+    /// This is useful for warning suppressions that are only available on some
+    /// compiler families or versions.
+    pub fn flag_if_supported(&mut self, flag: &str) -> &mut Self {
+        self.flags_if_supported.push(flag.to_string());
         self
     }
 
