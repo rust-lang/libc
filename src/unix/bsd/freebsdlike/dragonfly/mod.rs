@@ -1387,6 +1387,7 @@ extern "C" {
 
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
+    pub fn fdatasync(fd: c_int) -> c_int;
     pub fn uname(buf: *mut crate::utsname) -> c_int;
     pub fn memmem(
         haystack: *const c_void,
@@ -1394,11 +1395,35 @@ extern "C" {
         needle: *const c_void,
         needlelen: size_t,
     ) -> *mut c_void;
+    pub fn dlvsym(
+        handle: *mut c_void,
+        symbol: *const c_char,
+        version: *const c_char,
+    ) -> *mut c_void;
+    pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
+    pub fn qsort_r(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        arg: *mut c_void,
+        compar: Option<unsafe extern "C" fn(*mut c_void, *const c_void, *const c_void) -> c_int>,
+    );
     pub fn pthread_spin_init(lock: *mut pthread_spinlock_t, pshared: c_int) -> c_int;
     pub fn pthread_spin_destroy(lock: *mut pthread_spinlock_t) -> c_int;
     pub fn pthread_spin_lock(lock: *mut pthread_spinlock_t) -> c_int;
     pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> c_int;
     pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> c_int;
+
+    pub fn pthread_getaffinity_np(
+        td: crate::pthread_t,
+        cpusetsize: size_t,
+        cpusetp: *mut cpuset_t,
+    ) -> c_int;
+    pub fn pthread_setaffinity_np(
+        td: crate::pthread_t,
+        cpusetsize: size_t,
+        cpusetp: *const cpuset_t,
+    ) -> c_int;
 
     pub fn sched_getaffinity(pid: crate::pid_t, cpusetsize: size_t, mask: *mut cpu_set_t) -> c_int;
     pub fn sched_setaffinity(
@@ -1409,6 +1434,7 @@ extern "C" {
     pub fn sched_getcpu() -> c_int;
     pub fn setproctitle(fmt: *const c_char, ...);
 
+    pub fn ftok(path: *const c_char, id: c_int) -> crate::key_t;
     pub fn shmget(key: crate::key_t, size: size_t, shmflg: c_int) -> c_int;
     pub fn shmat(shmid: c_int, shmaddr: *const c_void, shmflg: c_int) -> *mut c_void;
     pub fn shmdt(shmaddr: *const c_void) -> c_int;
@@ -1441,6 +1467,27 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
 
+    pub fn extattr_delete_file(
+        path: *const c_char,
+        attrnamespace: c_int,
+        attrname: *const c_char,
+    ) -> c_int;
+    pub fn extattr_get_file(
+        path: *const c_char,
+        attrnamespace: c_int,
+        attrname: *const c_char,
+        data: *mut c_void,
+        nbytes: size_t,
+    ) -> ssize_t;
+    pub fn extattr_set_file(
+        path: *const c_char,
+        attrnamespace: c_int,
+        attrname: *const c_char,
+        data: *const c_void,
+        nbytes: size_t,
+    ) -> c_int;
+
+    pub fn dup3(src: c_int, dst: c_int, flags: c_int) -> c_int;
     pub fn closefrom(lowfd: c_int) -> c_int;
 }
 
