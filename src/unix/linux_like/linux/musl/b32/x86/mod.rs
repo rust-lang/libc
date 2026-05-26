@@ -131,6 +131,18 @@ s! {
         shm_ctime: crate::time_t,
     }
 
+    pub struct semid_ds {
+        pub sem_perm: crate::ipc_perm,
+        pub sem_otime: crate::time_t,
+        __unused1: crate::c_longlong,
+        pub sem_ctime: crate::time_t,
+        __unused2: crate::c_longlong,
+        pub sem_nsems: crate::c_ushort,
+        __sem_nsems_pad: crate::c_char,
+        __unused3: crate::c_longlong,
+        __unused4: crate::c_longlong,
+    }
+
     pub struct msqid_ds {
         pub msg_perm: crate::ipc_perm,
 
