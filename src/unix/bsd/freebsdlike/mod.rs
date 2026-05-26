@@ -1408,7 +1408,6 @@ pub const TIME_WAIT: c_int = 4;
 pub const TIME_ERROR: c_int = 5;
 
 pub const REG_ENOSYS: c_int = -1;
-pub const REG_ILLSEQ: c_int = 17;
 
 pub const IPC_PRIVATE: crate::key_t = 0;
 pub const IPC_CREAT: c_int = 0o1000;
@@ -1450,11 +1449,6 @@ pub const RB_POWEROFF: c_int = 0x4000;
 pub const RB_GDB: c_int = 0x8000;
 pub const RB_MUTE: c_int = 0x10000;
 pub const RB_SELFTEST: c_int = 0x20000;
-
-// For getrandom()
-pub const GRND_NONBLOCK: c_uint = 0x1;
-pub const GRND_RANDOM: c_uint = 0x2;
-pub const GRND_INSECURE: c_uint = 0x4;
 
 // DIFF(main): changed to `c_short` in f62eb023ab
 pub const POSIX_SPAWN_RESETIDS: c_int = 0x01;
