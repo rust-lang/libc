@@ -31,11 +31,11 @@ pub type cpu_set_t = cpumask_t;
 
 pub type register_t = c_long;
 pub type umtx_t = c_int;
-pub type pthread_barrierattr_t = c_int;
-pub type pthread_barrier_t = crate::uintptr_t;
+pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
+pub type pthread_barrier_t = *mut __c_anonymous_pthread_barrier;
 pub type pthread_spinlock_t = crate::uintptr_t;
 
-pub type segsz_t = usize;
+pub type segsz_t = isize;
 
 pub type vm_prot_t = u8;
 pub type vm_maptype_t = u8;
@@ -50,6 +50,8 @@ pub type pmap = __c_anonymous_pmap;
 
 extern_ty! {
     pub enum sem {}
+    pub enum __c_anonymous_pthread_barrier {}
+    pub enum __c_anonymous_pthread_barrierattr {}
 }
 
 c_enum! {
@@ -191,9 +193,9 @@ s! {
         pub ifm_msglen: c_ushort,
         pub ifm_version: c_uchar,
         pub ifm_type: c_uchar,
-        pub ifm_addrs: c_int,
-        pub ifm_flags: c_int,
         pub ifm_index: c_ushort,
+        pub ifm_flags: c_int,
+        pub ifm_addrs: c_int,
         pub ifm_data: if_data,
     }
 
@@ -259,7 +261,7 @@ s! {
         pub cp_nice: u64,
         pub cp_sys: u64,
         pub cp_intr: u64,
-        pub cp_idel: u64,
+        pub cp_idle: u64,
         cp_unused01: Padding<u64>,
         cp_unused02: Padding<u64>,
         pub cp_sample_pc: u64,
@@ -481,6 +483,7 @@ s! {
         __unused3: Padding<*mut c_void>, //actually a function pointer
     }
 
+    #[repr(align(64))]
     pub struct mcontext_t {
         pub mc_onstack: register_t,
         pub mc_rdi: register_t,
