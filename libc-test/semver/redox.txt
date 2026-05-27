@@ -4,7 +4,12 @@ ATF_COM
 ATF_PERM
 ATF_PUBL
 ATF_USETRAILERS
+AT_EACCESS
+AT_EMPTY_PATH
 AT_FDCWD
+AT_REMOVEDIR
+AT_SYMLINK_FOLLOW
+AT_SYMLINK_NOFOLLOW
 B1000000
 B1152000
 B1500000
@@ -140,6 +145,7 @@ O_NOCTTY
 O_PATH
 O_SHLOCK
 O_SYMLINK
+O_SYNC
 PTHREAD_MUTEX_DEFAULT
 PTHREAD_MUTEX_ERRORCHECK
 PTHREAD_MUTEX_ROBUST
@@ -199,6 +205,8 @@ TCSETS
 TIOCGPGRP
 TIOCSCTTY
 TIOCSPGRP
+UTIME_NOW
+UTIME_OMIT
 UTSLENGTH
 VDISCARD
 VLNEXT
@@ -291,6 +299,8 @@ __errno_location
 bsearch
 chroot
 clearerr
+clock_getres
+clock_gettime
 difftime
 dirfd
 endgrent
@@ -302,7 +312,9 @@ epoll_ctl
 epoll_event
 epoll_wait
 explicit_bzero
+faccessat
 fchdir
+fdopendir
 fmemopen
 getdtablesize
 getgrent
@@ -325,11 +337,14 @@ lockf
 login_tty
 madvise
 memalign
+mkdirat
+mknodat
 mkostemp
 mkostemps
 nice
 open_memstream
 open_wmemstream
+openat
 openpty
 pipe2
 pthread_condattr_setclock
@@ -337,6 +352,7 @@ qsort
 reallocarray
 renameat2
 rlim_t
+seekdir
 sem_clockwait
 sem_destroy
 sem_getvalue
@@ -363,3 +379,4 @@ strncasecmp
 strndup
 strsignal
 ttyname_r
+utimensat
