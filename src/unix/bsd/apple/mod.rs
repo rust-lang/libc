@@ -2143,6 +2143,12 @@ pub const ENOTRECOVERABLE: c_int = 104;
 pub const EOWNERDEAD: c_int = 105;
 pub const EQFULL: c_int = 106;
 pub const ENOTCAPABLE: c_int = 107;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const ELAST: c_int = 107;
 
 pub const EAI_AGAIN: c_int = 2;

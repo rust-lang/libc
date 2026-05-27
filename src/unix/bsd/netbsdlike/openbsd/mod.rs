@@ -945,6 +945,12 @@ pub const EBADMSG: c_int = 92;
 pub const ENOTRECOVERABLE: c_int = 93;
 pub const EOWNERDEAD: c_int = 94;
 pub const EPROTO: c_int = 95;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const ELAST: c_int = 95;
 
 pub const F_DUPFD_CLOEXEC: c_int = 10;
