@@ -957,6 +957,15 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
     pub fn opendir(dirname: *const c_char) -> *mut crate::DIR;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86_64"),
+        link_name = "fdopendir$INODE64"
+    )]
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "fdopendir$INODE64$UNIX2003"
+    )]
+    pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
 
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
@@ -994,6 +1003,8 @@ extern "C" {
         group: crate::gid_t,
         flags: c_int,
     ) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
+    pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "fstatat$INODE64"
@@ -1018,6 +1029,8 @@ extern "C" {
         newpath: *const c_char,
         flags: c_int,
     ) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
+    pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     #[cfg(not(target_os = "l4re"))]
     pub fn renameat(
         olddirfd: c_int,
@@ -2201,22 +2214,6 @@ cfg_if! {
                 link_name = "pause$UNIX2003"
             )]
             pub fn pause() -> c_int;
-
-            #[cfg(not(target_os = "l4re"))]
-            pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
-            #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
-            pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
-
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86_64"),
-                link_name = "fdopendir$INODE64"
-            )]
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86"),
-                link_name = "fdopendir$INODE64$UNIX2003"
-            )]
-            pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
-
             #[cfg_attr(
                 all(target_os = "macos", not(target_arch = "aarch64")),
                 link_name = "readdir_r$INODE64"
