@@ -132,6 +132,12 @@ pub const F_DUPFD_CLOFORK: c_int = 49;
 pub const F_DUP2FD_CLOEXEC: c_int = 48;
 pub const F_DUP2FD_CLOFORK: c_int = 50;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const _PC_LAST: c_int = 102;
 
 pub const PRIV_PROC_SENSITIVE: c_uint = 0x0008;

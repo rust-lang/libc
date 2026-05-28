@@ -1736,7 +1736,18 @@ pub const LC_NUMERIC_MASK: c_int = 1 << crate::LC_NUMERIC;
 pub const LC_TIME_MASK: c_int = 1 << crate::LC_TIME;
 pub const LC_MESSAGES_MASK: c_int = 1 << crate::LC_MESSAGES;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 const _LC_LAST: c_int = 7;
+// NOTE: the constant is meant to be marked for deprecation, but its dependent
+// uses are not. This constant is used as a bitmask where all bits for the above
+// `LC_*` constants are on, and so it relies on `_LC_LAST` to more easily
+// accomplish that.
+#[allow(deprecated)]
 pub const LC_ALL_MASK: c_int = (1 << _LC_LAST) - 2;
 
 pub const LC_GLOBAL_LOCALE: crate::locale_t = -1isize as crate::locale_t;
