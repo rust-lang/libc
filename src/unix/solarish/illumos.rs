@@ -152,6 +152,8 @@ pub const LOCK_EX: c_int = 2;
 pub const LOCK_NB: c_int = 4;
 pub const LOCK_UN: c_int = 8;
 
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const _PC_LAST: c_int = 101;
 
 pub const _CS_PATH: c_int = 65;

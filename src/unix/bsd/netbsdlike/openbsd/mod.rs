@@ -947,7 +947,7 @@ pub const EOWNERDEAD: c_int = 94;
 pub const EPROTO: c_int = 95;
 
 /// This symbols is prone to change across releases upstream.
-/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const ELAST: c_int = 95;
 
 pub const F_DUPFD_CLOEXEC: c_int = 10;
@@ -1739,7 +1739,10 @@ pub const LC_NUMERIC_MASK: c_int = 1 << crate::LC_NUMERIC;
 pub const LC_TIME_MASK: c_int = 1 << crate::LC_TIME;
 pub const LC_MESSAGES_MASK: c_int = 1 << crate::LC_MESSAGES;
 
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 const _LC_LAST: c_int = 7;
+
 pub const LC_ALL_MASK: c_int = (1 << _LC_LAST) - 2;
 
 pub const LC_GLOBAL_LOCALE: crate::locale_t = -1isize as crate::locale_t;
