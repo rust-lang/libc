@@ -1678,6 +1678,9 @@ pub const NFNL_SUBSYS_CTHELPER: c_int = 9;
 pub const NFNL_SUBSYS_NFTABLES: c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: c_int = 11;
 pub const NFNL_SUBSYS_HOOK: c_int = 12;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const NFNL_SUBSYS_COUNT: c_int = 13;
 
 pub const NFNL_MSG_BATCH_BEGIN: c_int = crate::NLMSG_MIN_TYPE;
