@@ -259,6 +259,12 @@ s! {
 }
 
 pub const ELAST: c_int = 96;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RAND_MAX: c_int = 0x7fff_fffd;
 pub const KI_NSPARE_PTR: usize = 6;
 pub const MINCORE_SUPER: c_int = 0x20;
