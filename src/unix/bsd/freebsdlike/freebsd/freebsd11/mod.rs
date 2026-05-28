@@ -258,11 +258,14 @@ s! {
     }
 }
 
-/// This symbols is prone to change across releases upstream.
+/// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate::#usage-guidelines) for details and use.
 pub const ELAST: c_int = 96;
 
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
 pub const RAND_MAX: c_int = 0x7fff_fffd;
+
 pub const KI_NSPARE_PTR: usize = 6;
 pub const MINCORE_SUPER: c_int = 0x20;
 /// max length of devicename
