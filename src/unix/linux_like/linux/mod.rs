@@ -1899,6 +1899,12 @@ pub const NFNL_SUBSYS_CTHELPER: c_int = 9;
 pub const NFNL_SUBSYS_NFTABLES: c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: c_int = 11;
 pub const NFNL_SUBSYS_HOOK: c_int = 12;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NFNL_SUBSYS_COUNT: c_int = 13;
 
 pub const NFNL_MSG_BATCH_BEGIN: c_int = crate::NLMSG_MIN_TYPE;
