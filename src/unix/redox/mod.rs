@@ -333,6 +333,8 @@ cfg_if! {
 }
 
 // limits.h
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const PATH_MAX: c_int = 4096;
 
 // fcntl.h

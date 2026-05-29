@@ -109,7 +109,11 @@ pub const FD_CLOFORK: c_int = 2;
 pub const FIL_ATTACH: c_int = 0x1;
 pub const FIL_DETACH: c_int = 0x2;
 pub const FIL_LIST: c_int = 0x3;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const FILNAME_MAX: c_int = 32;
+
 pub const FILF_PROG: c_int = 0x1;
 pub const FILF_AUTO: c_int = 0x2;
 pub const FILF_BYPASS: c_int = 0x4;
