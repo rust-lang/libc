@@ -57,4 +57,6 @@ s! {
     }
 }
 
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const J1939_FILTER_MAX: c_int = 512;

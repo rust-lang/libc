@@ -3,6 +3,9 @@
 pub use crate::linux::can::*;
 
 pub const SOL_CAN_RAW: c_int = SOL_CAN_BASE + CAN_RAW;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const CAN_RAW_FILTER_MAX: c_int = 512;
 
 // FIXME(cleanup): use `c_enum!`, which needs to be adapted to allow omitting a type.
