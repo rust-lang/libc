@@ -1175,6 +1175,12 @@ pub const PR_SCHED_CORE_GET: c_int = 0;
 pub const PR_SCHED_CORE_CREATE: c_int = 1;
 pub const PR_SCHED_CORE_SHARE_TO: c_int = 2;
 pub const PR_SCHED_CORE_SHARE_FROM: c_int = 3;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PR_SCHED_CORE_MAX: c_int = 4;
 pub const PR_SCHED_CORE_SCOPE_THREAD: c_int = 0;
 pub const PR_SCHED_CORE_SCOPE_THREAD_GROUP: c_int = 1;
@@ -1365,6 +1371,12 @@ pub const RT_CLASS_UNSPEC: u8 = 0;
 pub const RT_CLASS_DEFAULT: u8 = 253;
 pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RT_CLASS_MAX: u8 = 255;
 
 pub const MAX_ADDR_LEN: usize = 7;

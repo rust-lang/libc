@@ -50,6 +50,12 @@ pub const SIG_SETMASK: c_int = 3;
 pub const POSIX_MSG: c_int = 7;
 pub const POSIX_NOTIF: c_int = 8;
 pub const SIGRTMIN: c_int = 10;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const SIGRTMAX: c_int = 32;
 
 // Notification types (from QuRT signal.h)

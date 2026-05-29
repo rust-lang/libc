@@ -1507,6 +1507,12 @@ pub const ISOFSMNT_EXTATT: c_int = 0x4; // enable extended attr
 pub const ISOFSMNT_NOJOLIET: c_int = 0x8; // disable Joliet Ext
 pub const ISOFSMNT_SESS: c_int = 0x10; // use iso_args.sess
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NFS_ARGSVERSION: c_int = 4; // change when nfs_args changes
 
 pub const NFSMNT_RESVPORT: c_int = 0; // always use reserved ports
@@ -1814,6 +1820,12 @@ pub const RTAX_BFD: c_int = 11;
 pub const RTAX_DNS: c_int = 12;
 pub const RTAX_STATIC: c_int = 13;
 pub const RTAX_SEARCH: c_int = 14;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RTAX_MAX: c_int = 15;
 
 const fn _ALIGN(p: usize) -> usize {

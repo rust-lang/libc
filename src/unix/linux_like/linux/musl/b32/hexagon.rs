@@ -103,6 +103,12 @@ s! {
 
 pub const AF_FILE: c_int = 1;
 pub const AF_KCM: c_int = 41;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const AF_MAX: c_int = 43;
 pub const AF_QIPCRTR: c_int = 42;
 pub const EADDRINUSE: c_int = 98;
@@ -236,6 +242,12 @@ pub const O_SYNC: c_int = 1052672;
 pub const O_RSYNC: c_int = 1052672;
 pub const PF_FILE: c_int = 1;
 pub const PF_KCM: c_int = 41;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PF_MAX: c_int = 43;
 pub const PF_QIPCRTR: c_int = 42;
 pub const SA_ONSTACK: c_int = 0x08000000;

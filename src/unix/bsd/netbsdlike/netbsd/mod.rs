@@ -1715,6 +1715,12 @@ pub const KVME_FLAG_PAGEABLE: c_int = 0x000000008;
 pub const KVME_FLAG_GROWS_UP: c_int = 0x000000010;
 pub const KVME_FLAG_GROWS_DOWN: c_int = 0x000000020;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NGROUPS_MAX: c_int = 16;
 
 pub const KI_NGROUPS: c_int = 16;
@@ -1791,6 +1797,12 @@ pub const RTM_CHGADDR: c_int = 0x18;
 pub const RTA_TAG: c_int = 0x100;
 
 pub const RTAX_TAG: c_int = 8;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RTAX_MAX: c_int = 9;
 
 // For eventfd

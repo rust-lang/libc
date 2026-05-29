@@ -163,7 +163,17 @@ pub const FIOASYNC: c_ulong = 0x8004667d;
 pub const FIOSETOWN: c_ulong = 0x8004667c;
 pub const FIOGETOWN: c_ulong = 0x4004667b;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PATH_MAX: c_int = 1024;
+// FIXME(msrv): when we bump past the MSRV where `expect` and the `reason`
+// parameter to that attribute got stabilized, use that to justfiy that this is
+// not meant to be deprecated, but the value it relies on should be deprecated.
+#[allow(deprecated)]
 pub const MAXPATHLEN: c_int = PATH_MAX;
 
 pub const IOV_MAX: c_int = 1024;

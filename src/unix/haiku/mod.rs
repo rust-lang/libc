@@ -902,6 +902,12 @@ pub const MINSIGSTKSZ: size_t = 8192;
 pub const SIGSTKSZ: size_t = 16384;
 
 pub const IOV_MAX: c_int = 1024;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PATH_MAX: c_int = 1024;
 
 pub const SA_NOCLDSTOP: c_int = 0x01;

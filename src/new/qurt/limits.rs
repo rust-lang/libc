@@ -27,11 +27,29 @@ pub const USHRT_MAX: c_ushort = 65535;
 // POSIX Limits
 pub const ARG_MAX: c_int = 4096;
 pub const CHILD_MAX: c_int = 25;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const LINK_MAX: c_int = 8;
 pub const MAX_CANON: c_int = 255;
 pub const MAX_INPUT: c_int = 255;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NAME_MAX: c_int = 255;
 pub const OPEN_MAX: c_int = 20;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PATH_MAX: c_int = 260;
 pub const PIPE_BUF: c_int = 512;
 pub const STREAM_MAX: c_int = 20;
