@@ -932,7 +932,11 @@ pub const RTAX_IFP: c_int = 4;
 pub const RTAX_IFA: c_int = 5;
 pub const RTAX_AUTHOR: c_int = 6;
 pub const RTAX_BRD: c_int = 7;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const RTAX_MAX: c_int = 8;
+
 pub const RTF_UP: c_int = 0x1;
 pub const RTF_GATEWAY: c_int = 0x2;
 pub const RTF_HOST: c_int = 0x4;
@@ -1445,7 +1449,11 @@ pub const L_GETPROCINFO: c_int = 7;
 pub const L_GETXINFO: c_int = 8;
 
 // sys/limits.h
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const PATH_MAX: c_int = 1023;
+
 pub const PAGESIZE: c_int = 4096;
 pub const IOV_MAX: c_int = 16;
 pub const AIO_LISTIO_MAX: c_int = 4096;
@@ -1454,14 +1462,37 @@ pub const OPEN_MAX: c_int = 65534;
 pub const MAX_INPUT: c_int = 512;
 pub const MAX_CANON: c_int = 256;
 pub const ARG_MAX: c_int = 1048576;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const BC_BASE_MAX: c_int = 99;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const BC_DIM_MAX: c_int = 0x800;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const BC_SCALE_MAX: c_int = 99;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const BC_STRING_MAX: c_int = 0x800;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const CHARCLASS_NAME_MAX: c_int = 14;
+
 pub const CHILD_MAX: c_int = 128;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const COLL_WEIGHTS_MAX: c_int = 4;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const EXPR_NEST_MAX: c_int = 32;
+
 pub const NZERO: c_int = 20;
 
 // sys/lockf.h
@@ -1541,7 +1572,11 @@ pub const MAXPATHLEN: c_int = PATH_MAX + 1;
 pub const MAXSYMLINKS: c_int = 20;
 pub const MAXHOSTNAMELEN: c_int = 256;
 pub const MAXUPRC: c_int = 128;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const NGROUPS_MAX: c_ulong = 2048;
+
 pub const NGROUPS: c_ulong = NGROUPS_MAX;
 pub const NOFILE: c_int = OPEN_MAX;
 
@@ -1739,7 +1774,11 @@ pub const SIGXCPU: c_int = 24;
 pub const SIGXFSZ: c_int = 25;
 pub const SIGTRAP: c_int = 5;
 pub const SIGCLD: c_int = 20;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const SIGRTMAX: c_int = 57;
+
 pub const SIGRTMIN: c_int = 50;
 pub const SI_USER: c_int = 0;
 pub const SI_UNDEFINED: c_int = 8;
@@ -1817,7 +1856,11 @@ pub const AF_INET6: c_int = 24;
 pub const AF_INTF: c_int = 20;
 pub const AF_RIF: c_int = 21;
 pub const AF_NDD: c_int = 23;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const AF_MAX: c_int = 30;
+
 pub const PF_UNSPEC: c_int = AF_UNSPEC;
 pub const PF_UNIX: c_int = AF_UNIX;
 pub const PF_INET: c_int = AF_INET;
@@ -1843,7 +1886,11 @@ pub const PF_RIF: c_int = AF_RIF;
 pub const PF_INTF: c_int = AF_INTF;
 pub const PF_NDD: c_int = AF_NDD;
 pub const PF_INET6: c_int = AF_INET6;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const PF_MAX: c_int = AF_MAX;
+
 pub const SF_CLOSE: c_int = 1;
 pub const SF_REUSE: c_int = 2;
 pub const SF_DONT_CACHE: c_int = 4;

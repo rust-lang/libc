@@ -1510,6 +1510,8 @@ pub const ISOFSMNT_EXTATT: c_int = 0x4; // enable extended attr
 pub const ISOFSMNT_NOJOLIET: c_int = 0x8; // disable Joliet Ext
 pub const ISOFSMNT_SESS: c_int = 0x10; // use iso_args.sess
 
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const NFS_ARGSVERSION: c_int = 4; // change when nfs_args changes
 
 pub const NFSMNT_RESVPORT: c_int = 0; // always use reserved ports
@@ -1820,6 +1822,9 @@ pub const RTAX_BFD: c_int = 11;
 pub const RTAX_DNS: c_int = 12;
 pub const RTAX_STATIC: c_int = 13;
 pub const RTAX_SEARCH: c_int = 14;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const RTAX_MAX: c_int = 15;
 
 const fn _ALIGN(p: usize) -> usize {
