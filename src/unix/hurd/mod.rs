@@ -1230,7 +1230,11 @@ pub const PF_IPX: c_int = 23;
 pub const PF_SIP: c_int = 24;
 pub const PF_PIP: c_int = 25;
 pub const PF_INET6: c_int = 26;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const PF_MAX: c_int = 27;
+
 pub const AF_UNSPEC: c_int = 0;
 pub const AF_LOCAL: c_int = 1;
 pub const AF_UNIX: c_int = 1;
@@ -1260,7 +1264,11 @@ pub const AF_IPX: c_int = 23;
 pub const AF_SIP: c_int = 24;
 pub const pseudo_AF_PIP: c_int = 25;
 pub const AF_INET6: c_int = 26;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const AF_MAX: c_int = 27;
+
 pub const SOMAXCONN: c_int = 4096;
 pub const _SS_SIZE: usize = 128;
 pub const CMGROUP_MAX: usize = 16;
@@ -1526,8 +1534,15 @@ pub const _POSIX_QLIMIT: usize = 1;
 pub const _POSIX_HIWAT: usize = 512;
 pub const _POSIX_UIO_MAXIOV: usize = 16;
 pub const _POSIX_CLOCKRES_MIN: usize = 20000000;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const NAME_MAX: usize = 255;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const NGROUPS_MAX: usize = 256;
+
 pub const _POSIX_THREAD_KEYS_MAX: usize = 128;
 pub const _POSIX_THREAD_DESTRUCTOR_ITERATIONS: usize = 4;
 pub const _POSIX_THREAD_THREADS_MAX: usize = 64;
@@ -3207,6 +3222,9 @@ pub const RTLD_DI_PROFILEOUT: c_int = 8;
 pub const RTLD_DI_TLS_MODID: c_int = 9;
 pub const RTLD_DI_TLS_DATA: c_int = 10;
 pub const RTLD_DI_PHDR: c_int = 11;
+
+/// This symbol is prone to change across releases upstream.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const RTLD_DI_MAX: c_int = 11;
 
 pub const SI_ASYNCIO: c_int = -4;
