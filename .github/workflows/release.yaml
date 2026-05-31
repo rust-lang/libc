@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Install Rust (rustup)
-        run: rustup update stable --no-self-update && rustup default stable
+        run: rustup update stable --no-self-update && rustup override set stable
       - name: Run release-plz
         uses: release-plz/action@064f4d1e36c843611ddf013be726beaa4ad804db # v0.5.129
         env:

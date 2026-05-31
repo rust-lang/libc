@@ -26,6 +26,7 @@ fi
 rustup set profile minimal
 rustup update --force "$toolchain" --no-self-update
 rustup default "$toolchain"
+rustup override set "$toolchain"
 
 if [ -n "${TARGET:-}" ]; then
     echo "Install target"

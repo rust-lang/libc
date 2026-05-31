@@ -55,7 +55,7 @@ jobs:
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
-      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+      - run: cargo +stable clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
 
   # This runs `cargo build --target ...` for all T1 and T2 targets`
   verify_build:
@@ -380,7 +380,7 @@ jobs:
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
     - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
-    - run: cargo build -p ctest
+    - run: cargo +"$MSRV" build -p ctest
 
   docs:
     name: Ensure docs build
