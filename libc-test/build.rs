@@ -4206,6 +4206,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("EPOLL")
                 || name.starts_with("F_")
                 || name.starts_with("FALLOC_FL_")
+                || name.starts_with("FUTEX2_")
                 || name.starts_with("IFLA_")
                 || name.starts_with("KEXEC_")
                 || name.starts_with("MS_")
@@ -4358,6 +4359,9 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): Not yet implemented on sparc64
             "SYS_clone3" if sparc64 => true,
+
+            // FIXME(linux): Requires >= 6.9 kernel headers.
+            n if (arm || ppc32) && n.starts_with("FUTEX2_") => true,
 
             // FIXME(linux): Not defined on ARM, gnueabihf, mips, musl, PowerPC, riscv64, s390x, and sparc64.
             "SYS_memfd_secret"
