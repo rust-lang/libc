@@ -58,7 +58,12 @@ pub type pthread_key_t = c_ulong;
 
 // From b_off_t.h
 pub type off_t = c_longlong;
-pub type off64_t = off_t;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Kernel mode definitions are unsupported. Use `off_t` instead."
+)]
+pub type off64_t = c_longlong;
 
 // From b_BOOL.h
 pub type BOOL = c_int;
@@ -2412,14 +2417,6 @@ safe_f! {
     pub const fn WSTOPSIG(status: c_int) -> c_int {
         (status >> 16) & 0xFF
     }
-}
-
-pub unsafe fn pread(_fd: c_int, _buf: *mut c_void, _count: size_t, _offset: off64_t) -> ssize_t {
-    -1
-}
-
-pub unsafe fn pwrite(_fd: c_int, _buf: *const c_void, _count: size_t, _offset: off64_t) -> ssize_t {
-    -1
 }
 
 pub unsafe fn posix_memalign(memptr: *mut *mut c_void, align: size_t, size: size_t) -> c_int {
