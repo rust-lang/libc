@@ -1104,7 +1104,7 @@ pub const FD_CLOEXEC: c_int = 0x1;
 pub const USRQUOTA: c_int = 0;
 pub const GRPQUOTA: c_int = 1;
 
-pub const SIGIOT: c_int = 6;
+pub const SIGIOT: c_int = SIGABRT;
 
 pub const S_ISUID: mode_t = 0o4000;
 pub const S_ISGID: mode_t = 0o2000;
