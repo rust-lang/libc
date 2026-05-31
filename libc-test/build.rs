@@ -4164,8 +4164,8 @@ fn test_linux(target: &str) {
             // FIXME(linux): Requires >= 6.12 kernel headers.
             "mnt_ns_info" => true,
 
-            // FIXME(musl): Struct has changed for new musl versions
-            "tcp_info" if musl => true,
+            // FIXME(linux): Struct has changed in newer headers.
+            "tcp_info" if gnu || musl => true,
 
             // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
             "statx" | "statx_timestamp" if musl => true,
@@ -4338,6 +4338,15 @@ fn test_linux(target: &str) {
             // FIXME(deprecated): SIGUNUSED was removed in glibc 2.26
             // Users should use SIGSYS instead.
             "SIGUNUSED" => true,
+
+            // FIXME(linux): Deprecated sysctl constants removed from newer kernel headers.
+            "KERN_REALROOTDEV" | "VM_LAPTOP_MODE" => true,
+
+            // FIXME(linux): Values changed in newer kernel headers.
+            "SW_MAX" | "SW_CNT" => true,
+
+            // FIXME(linux): glibc exposes this without sign-extension in newer headers.
+            "MS_NOUSER" if gnu => true,
 
             // FIXME(linux): conflicts with glibc headers and is tested in
             // `linux_termios.rs` below:
