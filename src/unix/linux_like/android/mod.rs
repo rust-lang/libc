@@ -2622,6 +2622,16 @@ pub const FUTEX_PRIVATE_FLAG: c_int = 128;
 pub const FUTEX_CLOCK_REALTIME: c_int = 256;
 pub const FUTEX_CMD_MASK: c_int = !(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME);
 
+pub const FUTEX2_SIZE_U8: c_int = 0x00;
+pub const FUTEX2_SIZE_U16: c_int = 0x01;
+pub const FUTEX2_SIZE_U32: c_int = 0x02;
+pub const FUTEX2_SIZE_U64: c_int = 0x03;
+pub const FUTEX2_NUMA: c_int = 0x04;
+pub const FUTEX2_PRIVATE: c_int = FUTEX_PRIVATE_FLAG;
+pub const FUTEX2_SIZE_MASK: c_int = 0x03;
+pub const FUTEX_32: c_int = FUTEX2_SIZE_U32;
+pub const FUTEX_WAITV_MAX: c_int = 128;
+
 // linux/errqueue.h
 pub const SO_EE_ORIGIN_NONE: u8 = 0;
 pub const SO_EE_ORIGIN_LOCAL: u8 = 1;
