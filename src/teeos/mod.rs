@@ -41,7 +41,7 @@ pub type pthread_spinlock_t = c_int;
 
 pub type off_t = i64;
 
-pub type time_t = c_long;
+pub type time_t = i64;
 
 pub type clock_t = c_long;
 
