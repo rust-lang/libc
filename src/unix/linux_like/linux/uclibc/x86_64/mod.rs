@@ -14,8 +14,6 @@ pub type nlink_t = c_uint;
 pub type off_t = c_long;
 // [uClibc docs] Note stat64 has the same shape as stat for x86-64.
 pub type stat64 = stat;
-pub type suseconds_t = c_long;
-pub type time_t = c_int;
 pub type wchar_t = c_int;
 pub type pthread_t = c_ulong;
 
