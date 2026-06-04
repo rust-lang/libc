@@ -151,10 +151,10 @@ fn main() {
         ) {
             (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
             (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
-            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
+            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb),
             (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
             (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
-            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
+            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits, fb),
             (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
         };
         let valid_bits = ["32", "64"];
