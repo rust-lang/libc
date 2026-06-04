@@ -805,11 +805,11 @@ pub const IP_TRANSPARENT: c_int = 19;
 pub const IP_ORIGDSTADDR: c_int = 20;
 pub const IP_RECVORIGDSTADDR: c_int = IP_ORIGDSTADDR;
 pub const IP_MINTTL: c_int = 21;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IP_NODEFRAG: c_int = 22;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IP_CHECKSUM: c_int = 23;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IP_BIND_ADDRESS_NO_PORT: c_int = 24;
 pub const IP_MULTICAST_IF: c_int = 32;
 pub const IP_MULTICAST_TTL: c_int = 33;
@@ -831,9 +831,9 @@ pub const IP_PMTUDISC_DONT: c_int = 0;
 pub const IP_PMTUDISC_WANT: c_int = 1;
 pub const IP_PMTUDISC_DO: c_int = 2;
 pub const IP_PMTUDISC_PROBE: c_int = 3;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IP_PMTUDISC_INTERFACE: c_int = 4;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IP_PMTUDISC_OMIT: c_int = 5;
 
 // IPPROTO_IP defined in src/unix/mod.rs
@@ -943,16 +943,16 @@ pub const IPV6_RECVRTHDR: c_int = 56;
 pub const IPV6_RTHDR: c_int = 57;
 pub const IPV6_RECVDSTOPTS: c_int = 58;
 pub const IPV6_DSTOPTS: c_int = 59;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IPV6_RECVPATHMTU: c_int = 60;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IPV6_PATHMTU: c_int = 61;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
 pub const IPV6_DONTFRAG: c_int = 62;
 pub const IPV6_RECVTCLASS: c_int = 66;
 pub const IPV6_TCLASS: c_int = 67;
 cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
+    if #[cfg(not(all(target_os = "l4re", target_env = "uclibc")))] {
         pub const IPV6_AUTOFLOWLABEL: c_int = 70;
         pub const IPV6_ADDR_PREFERENCES: c_int = 72;
         pub const IPV6_MINHOPCOUNT: c_int = 73;
@@ -1220,7 +1220,7 @@ pub const __WALL: c_int = 0x40000000;
 pub const __WCLONE: c_int = 0x80000000;
 
 cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
+    if #[cfg(not(all(target_os = "l4re", target_env = "uclibc")))] {
         pub const SPLICE_F_MOVE: c_uint = 0x01;
         pub const SPLICE_F_NONBLOCK: c_uint = 0x02;
         pub const SPLICE_F_MORE: c_uint = 0x04;
