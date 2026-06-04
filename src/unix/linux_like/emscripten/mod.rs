@@ -28,20 +28,39 @@ pub type fsfilcnt_t = u32;
 pub type rlim_t = u64;
 pub type nlink_t = u32;
 
-pub type ino64_t = crate::ino_t;
-pub type off64_t = off_t;
-pub type blkcnt64_t = crate::blkcnt_t;
-pub type rlim64_t = crate::rlim_t;
+// FIXME(1.0,deprecate): lfs binding to be removed
+pub type ino64_t = ino_t;
 
+// FIXME(1.0,deprecate): lfs binding to be removed
+pub type off64_t = off_t;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type blkcnt64_t = blkcnt_t;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type rlim64_t = rlim_t;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
 pub type rlimit64 = crate::rlimit;
-pub type flock64 = crate::flock;
-pub type stat64 = crate::stat;
-pub type statfs64 = crate::statfs;
-pub type statvfs64 = crate::statvfs;
-pub type dirent64 = crate::dirent;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type flock64 = flock;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type stat64 = stat;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type statfs64 = statfs;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type statvfs64 = statvfs;
+
+//FIXME(1.0,deprecate): lfs binding to be removed
+pub type dirent64 = dirent;
 
 extern_ty! {
-    pub type fpos64_t; // FIXME(emscripten): fill this out with a struct
+    //FIXME(1.0,deprecate): lfs binding to be removed
+    pub type fpos64_t;
 }
 
 s! {
@@ -1462,4 +1481,6 @@ extern "C" {
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
 mod lfs64;
+
+// FIXME(1.0,deprecate): lfs bindings to be removed
 pub use self::lfs64::*;
