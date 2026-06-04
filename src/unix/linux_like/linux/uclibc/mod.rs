@@ -4,6 +4,7 @@
 use crate::off64_t;
 use crate::prelude::*;
 
+pub type time_t = c_long;
 pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
