@@ -525,6 +525,7 @@ cfg_if! {
     if #[cfg(target_os = "android")] {
         pub const RLIM64_INFINITY: c_ulonglong = !0;
     } else {
+        #[cfg_attr(target_os = "emscripten", allow(deprecated))]
         pub const RLIM64_INFINITY: crate::rlim64_t = !0;
     }
 }

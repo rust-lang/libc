@@ -28,19 +28,44 @@ pub type fsfilcnt_t = u32;
 pub type rlim_t = u64;
 pub type nlink_t = u32;
 
-pub type ino64_t = crate::ino_t;
-pub type off64_t = off_t;
-pub type blkcnt64_t = crate::blkcnt_t;
-pub type rlim64_t = crate::rlim_t;
+macro_rules! deprecate_lfs64 {
+    ($($it:item)+) => {
+        $(
+            #[cfg_attr(
+                not(gnu_file_offset_bits64),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use the unsuffixed variant instead. This type is meant to provide an \
+                            LFS64-compliant interface that was once exposed through \
+                            `_LARGEFIL64_SOURCE` but is currently exposed through \
+                            `FILE_OFFSET_BITS=64`",
+                )
+            )]
+            $it
+        )+
+    };
+}
 
-pub type rlimit64 = crate::rlimit;
-pub type flock64 = crate::flock;
-pub type stat64 = crate::stat;
-pub type statfs64 = crate::statfs;
-pub type statvfs64 = crate::statvfs;
-pub type dirent64 = crate::dirent;
+deprecate_lfs64! {
+    pub type off64_t = off_t;
+    pub type blkcnt64_t = crate::blkcnt_t;
+    pub type rlim64_t = crate::rlim_t;
+
+    pub type rlimit64 = crate::rlimit;
+    pub type flock64 = crate::flock;
+    pub type stat64 = crate::stat;
+    pub type statfs64 = crate::statfs;
+    pub type statvfs64 = crate::statvfs;
+    pub type dirent64 = crate::dirent;
+}
 
 extern_ty! {
+    #[cfg_attr(not(gnu_file_offset_bits64), deprecated(
+        since = "0.2.187",
+        note = "Use `fpos_t`. This type is meant to provide a suffixed 64-bit alternative for \
+                32-bit systems where handling files larger than 2 GiB is not possible without \
+                compatibility shims."
+    ))]
     pub enum fpos64_t {} // FIXME(emscripten): fill this out with a struct
 }
 
@@ -1449,5 +1474,24 @@ extern "C" {
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
+#[cfg(not(gnu_file_offset_bits64))]
+#[allow(deprecated)]
+#[deprecated(
+    since = "0.2.187",
+    note = "This module was previously accessed by any emscripten user, but that is only \
+                possible when the `_GNU_SOURCE` and `_LARGEFILE64_SOURCE` feature test macros are \
+                defined. Note the latter is deprecated and instead should be issued to this crate \
+                with the `gnu_file_offset_bits64` `cfg` option."
+)]
 mod lfs64;
+
+#[cfg(not(gnu_file_offset_bits64))]
+#[allow(deprecated)]
+#[deprecated(
+    since = "0.2.187",
+    note = "This module was previously accessed by any emscripten user, but that is only \
+                possible when the `_GNU_SOURCE` and `_LARGEFILE64_SOURCE` feature test macros are \
+                defined. Note the latter is deprecated and instead should be issued to this crate \
+                with the `gnu_file_offset_bits64` `cfg` option."
+)]
 pub use self::lfs64::*;
