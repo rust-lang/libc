@@ -3106,7 +3106,28 @@ pub const IN_NONBLOCK: c_int = O_NONBLOCK;
 
 // uapi/linux/mount.h
 pub const OPEN_TREE_CLONE: c_uint = 0x01;
+pub const OPEN_TREE_NAMESPACE: c_uint = 0x02;
 pub const OPEN_TREE_CLOEXEC: c_uint = O_CLOEXEC as c_uint;
+
+pub const FSOPEN_CLOEXEC: c_uint = 0x00000001;
+
+pub const FSPICK_CLOEXEC: c_uint = 0x00000001;
+pub const FSPICK_SYMLINK_NOFOLLOW: c_uint = 0x00000002;
+pub const FSPICK_NO_AUTOMOUNT: c_uint = 0x00000004;
+pub const FSPICK_EMPTY_PATH: c_uint = 0x00000008;
+
+pub const FSMOUNT_CLOEXEC: c_uint = 0x00000001;
+
+// enum fsconfig_command
+pub const FSCONFIG_SET_FLAG: c_uint = 0;
+pub const FSCONFIG_SET_STRING: c_uint = 1;
+pub const FSCONFIG_SET_BINARY: c_uint = 2;
+pub const FSCONFIG_SET_PATH: c_uint = 3;
+pub const FSCONFIG_SET_PATH_EMPTY: c_uint = 4;
+pub const FSCONFIG_SET_FD: c_uint = 5;
+pub const FSCONFIG_CMD_CREATE: c_uint = 6;
+pub const FSCONFIG_CMD_RECONFIGURE: c_uint = 7;
+pub const FSCONFIG_CMD_CREATE_EXCL: c_uint = 8;
 
 // uapi/linux/netfilter/nf_tables.h
 pub const NFT_TABLE_MAXNAMELEN: c_int = 256;
