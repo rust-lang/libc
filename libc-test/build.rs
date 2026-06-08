@@ -2501,7 +2501,13 @@ fn test_android(target: &str) {
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
 
             // FIXME(android): Requires >= 6.9 kernel headers.
-            "AT_HWCAP3" | "AT_HWCAP4" => true,
+            "AT_HWCAP3" | "AT_HWCAP4" | "RWF_NOAPPEND" => true,
+
+            // FIXME(android): Requires >= 6.11 kernel headers.
+            "RWF_ATOMIC" => true,
+
+            // FIXME(android): Requires >= 6.14 kernel headers.
+            "RWF_DONTCACHE" => true,
 
             _ => false,
         }
@@ -2537,6 +2543,9 @@ fn test_android(target: &str) {
 
             // Added in API level 30, but tests use level 28.
             "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp" => true,
+
+            // Added in API level 33, but tests use level 28.
+            "preadv2" | "pwritev2" => true,
 
             // Added in glibc 2.25.
             "getentropy" => true,
