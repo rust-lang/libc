@@ -1154,8 +1154,6 @@ pub const LOCK_UN: c_int = 0x8;
 pub const SS_ONSTACK: c_int = 1;
 pub const SS_DISABLE: c_int = 2;
 
-pub const PATH_MAX: c_int = 1024;
-
 pub const UIO_MAXIOV: c_int = 1024;
 
 pub const FD_SETSIZE: c_int = 256;
@@ -2340,14 +2338,6 @@ pub const TIOCSTOP: c_int = 29807;
 pub const TIOCSWINSZ: c_int = -2146929561;
 
 pub const USER_CS_PATH: c_int = 1;
-pub const USER_BC_BASE_MAX: c_int = 2;
-pub const USER_BC_DIM_MAX: c_int = 3;
-pub const USER_BC_SCALE_MAX: c_int = 4;
-pub const USER_BC_STRING_MAX: c_int = 5;
-pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
-pub const USER_EXPR_NEST_MAX: c_int = 7;
-pub const USER_LINE_MAX: c_int = 8;
-pub const USER_RE_DUP_MAX: c_int = 9;
 pub const USER_POSIX2_VERSION: c_int = 10;
 pub const USER_POSIX2_C_BIND: c_int = 11;
 pub const USER_POSIX2_C_DEV: c_int = 12;

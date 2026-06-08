@@ -932,7 +932,6 @@ pub const RTAX_IFP: c_int = 4;
 pub const RTAX_IFA: c_int = 5;
 pub const RTAX_AUTHOR: c_int = 6;
 pub const RTAX_BRD: c_int = 7;
-pub const RTAX_MAX: c_int = 8;
 pub const RTF_UP: c_int = 0x1;
 pub const RTF_GATEWAY: c_int = 0x2;
 pub const RTF_HOST: c_int = 0x4;

@@ -56,5 +56,3 @@ s! {
         pub addr_mask: u8,
     }
 }
-
-pub const J1939_FILTER_MAX: c_int = 512;

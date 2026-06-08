@@ -561,16 +561,6 @@ s! {
         pub ff_effects_max: crate::__u32,
     }
 
-    pub struct uinput_user_dev {
-        pub name: [c_char; UINPUT_MAX_NAME_SIZE],
-        pub id: input_id,
-        pub ff_effects_max: crate::__u32,
-        pub absmax: [crate::__s32; ABS_CNT],
-        pub absmin: [crate::__s32; ABS_CNT],
-        pub absfuzz: [crate::__s32; ABS_CNT],
-        pub absflat: [crate::__s32; ABS_CNT],
-    }
-
     pub struct prop_info {
         __name: [c_char; 32],
         __serial: c_uint,
@@ -1681,7 +1671,6 @@ pub const NFQA_CFG_F_CONNTRACK: c_int = 0x0002;
 pub const NFQA_CFG_F_GSO: c_int = 0x0004;
 pub const NFQA_CFG_F_UID_GID: c_int = 0x0008;
 pub const NFQA_CFG_F_SECCTX: c_int = 0x0010;
-pub const NFQA_CFG_F_MAX: c_int = 0x0020;
 
 pub const NFQA_SKB_CSUMNOTREADY: c_int = 0x0001;
 pub const NFQA_SKB_GSO: c_int = 0x0002;
@@ -2001,7 +1990,6 @@ pub const NFT_REG_1: c_int = 1;
 pub const NFT_REG_2: c_int = 2;
 pub const NFT_REG_3: c_int = 3;
 pub const NFT_REG_4: c_int = 4;
-pub const __NFT_REG_MAX: c_int = 5;
 pub const NFT_REG32_00: c_int = 8;
 pub const NFT_REG32_01: c_int = 9;
 pub const NFT_REG32_02: c_int = 10;
@@ -2050,7 +2038,6 @@ pub const NFT_MSG_NEWOBJ: c_int = 18;
 pub const NFT_MSG_GETOBJ: c_int = 19;
 pub const NFT_MSG_DELOBJ: c_int = 20;
 pub const NFT_MSG_GETOBJ_RESET: c_int = 21;
-pub const NFT_MSG_MAX: c_int = 25;
 
 pub const NFT_SET_ANONYMOUS: c_int = 0x1;
 pub const NFT_SET_CONSTANT: c_int = 0x2;
@@ -2179,34 +2166,6 @@ pub const NFT_TRACETYPE_RULE: c_int = 3;
 
 pub const NFT_NG_INCREMENTAL: c_int = 0;
 pub const NFT_NG_RANDOM: c_int = 1;
-
-// linux/input.h
-pub const FF_MAX: crate::__u16 = 0x7f;
-pub const FF_CNT: usize = FF_MAX as usize + 1;
-
-// linux/input-event-codes.h
-pub const INPUT_PROP_MAX: crate::__u16 = 0x1f;
-pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
-pub const EV_MAX: crate::__u16 = 0x1f;
-pub const EV_CNT: usize = EV_MAX as usize + 1;
-pub const SYN_MAX: crate::__u16 = 0xf;
-pub const SYN_CNT: usize = SYN_MAX as usize + 1;
-pub const KEY_MAX: crate::__u16 = 0x2ff;
-pub const KEY_CNT: usize = KEY_MAX as usize + 1;
-pub const REL_MAX: crate::__u16 = 0x0f;
-pub const REL_CNT: usize = REL_MAX as usize + 1;
-pub const ABS_MAX: crate::__u16 = 0x3f;
-pub const ABS_CNT: usize = ABS_MAX as usize + 1;
-pub const SW_MAX: crate::__u16 = 0x0f;
-pub const SW_CNT: usize = SW_MAX as usize + 1;
-pub const MSC_MAX: crate::__u16 = 0x07;
-pub const MSC_CNT: usize = MSC_MAX as usize + 1;
-pub const LED_MAX: crate::__u16 = 0x0f;
-pub const LED_CNT: usize = LED_MAX as usize + 1;
-pub const REP_MAX: crate::__u16 = 0x01;
-pub const REP_CNT: usize = REP_MAX as usize + 1;
-pub const SND_MAX: crate::__u16 = 0x07;
-pub const SND_CNT: usize = SND_MAX as usize + 1;
 
 // linux/uinput.h
 pub const UINPUT_VERSION: c_uint = 5;
@@ -2835,7 +2794,6 @@ pub const PR_SCHED_CORE_GET: c_int = 0;
 pub const PR_SCHED_CORE_CREATE: c_int = 1;
 pub const PR_SCHED_CORE_SHARE_TO: c_int = 2;
 pub const PR_SCHED_CORE_SHARE_FROM: c_int = 3;
-pub const PR_SCHED_CORE_MAX: c_int = 4;
 pub const PR_SCHED_CORE_SCOPE_THREAD: c_int = 0;
 pub const PR_SCHED_CORE_SCOPE_THREAD_GROUP: c_int = 1;
 pub const PR_SCHED_CORE_SCOPE_PROCESS_GROUP: c_int = 2;
@@ -3138,7 +3096,6 @@ pub const KERN_S390_USER_DEBUG_LOGGING: c_int = 51;
 pub const KERN_CORE_USES_PID: c_int = 52;
 pub const KERN_TAINTED: c_int = 53;
 pub const KERN_CADPID: c_int = 54;
-pub const KERN_PIDMAX: c_int = 55;
 pub const KERN_CORE_PATTERN: c_int = 56;
 pub const KERN_PANIC_ON_OOPS: c_int = 57;
 pub const KERN_HPPA_PWRSW: c_int = 58;
@@ -3146,7 +3103,6 @@ pub const KERN_HPPA_UNALIGNED: c_int = 59;
 pub const KERN_PRINTK_RATELIMIT: c_int = 60;
 pub const KERN_PRINTK_RATELIMIT_BURST: c_int = 61;
 pub const KERN_PTY: c_int = 62;
-pub const KERN_NGROUPS_MAX: c_int = 63;
 pub const KERN_SPARC_SCONS_PWROFF: c_int = 64;
 pub const KERN_HZ_TIMER: c_int = 65;
 pub const KERN_UNKNOWN_NMI_PANIC: c_int = 66;

@@ -50,7 +50,6 @@ pub const SIG_SETMASK: c_int = 3;
 pub const POSIX_MSG: c_int = 7;
 pub const POSIX_NOTIF: c_int = 8;
 pub const SIGRTMIN: c_int = 10;
-pub const SIGRTMAX: c_int = 32;
 
 // Notification types (from QuRT signal.h)
 pub const SIGEV_NONE: c_int = 0;

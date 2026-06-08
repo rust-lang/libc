@@ -371,14 +371,6 @@ s! {
         pub sc_groups: [crate::gid_t; 1],
     }
 
-    pub struct uucred {
-        cr_unused: Padding<c_ushort>,
-        pub cr_uid: crate::uid_t,
-        pub cr_gid: crate::gid_t,
-        pub cr_ngroups: c_short,
-        pub cr_groups: [crate::gid_t; NGROUPS_MAX as usize],
-    }
-
     pub struct unpcbid {
         pub unp_pid: crate::pid_t,
         pub unp_euid: crate::uid_t,
@@ -613,29 +605,6 @@ s! {
         pub l_pctcpu: u32,
         pub l_pid: u32,
         pub l_name: [c_char; KI_LNAMELEN as usize],
-    }
-
-    pub struct kinfo_vmentry {
-        pub kve_start: u64,
-        pub kve_end: u64,
-        pub kve_offset: u64,
-        pub kve_type: u32,
-        pub kve_flags: u32,
-        pub kve_count: u32,
-        pub kve_wired_count: u32,
-        pub kve_advice: u32,
-        pub kve_attributes: u32,
-        pub kve_protection: u32,
-        pub kve_max_protection: u32,
-        pub kve_ref_count: u32,
-        pub kve_inheritance: u32,
-        pub kve_vn_fileid: u64,
-        pub kve_vn_size: u64,
-        pub kve_vn_fsid: u64,
-        pub kve_vn_rdev: u64,
-        pub kve_vn_type: u32,
-        pub kve_vn_mode: u32,
-        pub kve_path: [c_char; crate::PATH_MAX as usize],
     }
 
     pub struct __c_anonymous_posix_spawn_fae_open {
@@ -1715,8 +1684,6 @@ pub const KVME_FLAG_PAGEABLE: c_int = 0x000000008;
 pub const KVME_FLAG_GROWS_UP: c_int = 0x000000010;
 pub const KVME_FLAG_GROWS_DOWN: c_int = 0x000000020;
 
-pub const NGROUPS_MAX: c_int = 16;
-
 pub const KI_NGROUPS: c_int = 16;
 pub const KI_MAXCOMLEN: c_int = 24;
 pub const KI_WMESGLEN: c_int = 8;
@@ -1791,7 +1758,6 @@ pub const RTM_CHGADDR: c_int = 0x18;
 pub const RTA_TAG: c_int = 0x100;
 
 pub const RTAX_TAG: c_int = 8;
-pub const RTAX_MAX: c_int = 9;
 
 // For eventfd
 pub const EFD_SEMAPHORE: c_int = crate::O_RDWR;
@@ -2437,8 +2403,6 @@ extern "C" {
         clrp: *mut c_ulong,
     ) -> c_int;
     pub fn flags_to_string(flags: c_ulong, def: *const c_char) -> c_int;
-
-    pub fn kinfo_getvmmap(pid: crate::pid_t, cntp: *mut size_t) -> *mut kinfo_vmentry;
 }
 
 #[link(name = "execinfo")]

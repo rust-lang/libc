@@ -384,42 +384,6 @@ s! {
         b_destroying: c_int,
     }
 
-    pub struct kinfo_vmentry {
-        pub kve_structsize: c_int,
-        pub kve_type: c_int,
-        pub kve_start: u64,
-        pub kve_end: u64,
-        pub kve_offset: u64,
-        pub kve_vn_fileid: u64,
-        #[cfg(not(freebsd11))]
-        pub kve_vn_fsid_freebsd11: u32,
-        #[cfg(freebsd11)]
-        pub kve_vn_fsid: u32,
-        pub kve_flags: c_int,
-        pub kve_resident: c_int,
-        pub kve_private_resident: c_int,
-        pub kve_protection: c_int,
-        pub kve_ref_count: c_int,
-        pub kve_shadow_count: c_int,
-        pub kve_vn_type: c_int,
-        pub kve_vn_size: u64,
-        #[cfg(not(freebsd11))]
-        pub kve_vn_rdev_freebsd11: u32,
-        #[cfg(freebsd11)]
-        pub kve_vn_rdev: u32,
-        pub kve_vn_mode: u16,
-        pub kve_status: u16,
-        #[cfg(not(freebsd11))]
-        pub kve_vn_fsid: u64,
-        #[cfg(not(freebsd11))]
-        pub kve_vn_rdev: u64,
-        #[cfg(not(freebsd11))]
-        _kve_is_spare: [c_int; 8],
-        #[cfg(freebsd11)]
-        _kve_is_spare: [c_int; 12],
-        pub kve_path: [c_char; crate::PATH_MAX as usize],
-    }
-
     pub struct __c_anonymous_filestat {
         pub stqe_next: *mut filestat,
     }
@@ -954,11 +918,6 @@ s! {
         pub psk: [u8; crate::TCP_FASTOPEN_PSK_LEN as usize],
     }
 
-    pub struct tcp_function_set {
-        pub function_set_name: [c_char; crate::TCP_FUNCTION_NAME_LEN_MAX as usize],
-        pub pcbcnt: u32,
-    }
-
     // Note: this structure will change in a backwards-incompatible way in
     // FreeBSD 15.
     pub struct tcp_info {
@@ -1465,12 +1424,6 @@ s! {
         pub __ifi_lastchange: __c_anonymous_ifi_lastchange,
     }
 
-    pub struct ifstat {
-        /// if name, e.g. "en0"
-        pub ifs_name: [c_char; crate::IFNAMSIZ as usize],
-        pub ascii: [c_char; crate::IFSTATMAX as usize + 1],
-    }
-
     pub struct ifrsskey {
         /// if name, e.g. "en0"
         pub ifrk_name: [c_char; crate::IFNAMSIZ as usize],
@@ -1568,23 +1521,6 @@ s! {
     pub struct sctp_error_auth_invalid_hmac {
         pub cause: sctp_error_cause,
         pub hmac_id: u16,
-    }
-
-    pub struct kinfo_file {
-        pub kf_structsize: c_int,
-        pub kf_type: c_int,
-        pub kf_fd: c_int,
-        pub kf_ref_count: c_int,
-        pub kf_flags: c_int,
-        _kf_pad0: Padding<c_int>,
-        pub kf_offset: i64,
-        _priv: [u8; 304], // FIXME(freebsd): this is really a giant union
-        pub kf_status: u16,
-        _kf_pad1: Padding<u16>,
-        _kf_ispare0: c_int,
-        pub kf_cap_rights: crate::cap_rights_t,
-        _kf_cap_spare: u64,
-        pub kf_path: [c_char; crate::PATH_MAX as usize],
     }
 }
 
@@ -2320,14 +2256,6 @@ pub const HW_MACHINE_ARCH: c_int = 11;
 pub const HW_REALMEM: c_int = 12;
 
 pub const USER_CS_PATH: c_int = 1;
-pub const USER_BC_BASE_MAX: c_int = 2;
-pub const USER_BC_DIM_MAX: c_int = 3;
-pub const USER_BC_SCALE_MAX: c_int = 4;
-pub const USER_BC_STRING_MAX: c_int = 5;
-pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
-pub const USER_EXPR_NEST_MAX: c_int = 7;
-pub const USER_LINE_MAX: c_int = 8;
-pub const USER_RE_DUP_MAX: c_int = 9;
 pub const USER_POSIX2_VERSION: c_int = 10;
 pub const USER_POSIX2_C_BIND: c_int = 11;
 pub const USER_POSIX2_C_DEV: c_int = 12;
@@ -2444,7 +2372,6 @@ pub const SO_TS_BINTIME: c_int = 1;
 pub const SO_TS_REALTIME: c_int = 2;
 pub const SO_TS_MONOTONIC: c_int = 3;
 pub const SO_TS_DEFAULT: c_int = SO_TS_REALTIME_MICRO;
-pub const SO_TS_CLOCK_MAX: c_int = SO_TS_MONOTONIC;
 
 pub const LOCAL_CREDS: c_int = 2;
 pub const LOCAL_CREDS_PERSISTENT: c_int = 3;
@@ -2723,8 +2650,6 @@ pub const IFNET_SLOWHZ: c_int = 1;
 
 pub const IFAN_ARRIVAL: c_int = 0;
 pub const IFAN_DEPARTURE: c_int = 1;
-
-pub const IFSTATMAX: c_int = 800;
 
 pub const RSS_FUNC_NONE: c_int = 0;
 pub const RSS_FUNC_PRIVATE: c_int = 1;
@@ -3061,7 +2986,6 @@ pub const TCP_PCAP_IN: c_int = 4096;
 pub const TCP_FUNCTION_BLK: c_int = 8192;
 pub const TCP_FUNCTION_ALIAS: c_int = 8193;
 pub const TCP_FASTOPEN_PSK_LEN: c_int = 16;
-pub const TCP_FUNCTION_NAME_LEN_MAX: c_int = 32;
 
 pub const TCP_REUSPORT_LB_NUMA: c_int = 1026;
 pub const TCP_RACK_MBUF_QUEUE: c_int = 1050;
@@ -3428,7 +3352,6 @@ pub const KKST_STATE_RUNNING: c_int = 2;
 
 // Constants about priority.
 pub const PRI_MIN: c_int = 0;
-pub const PRI_MAX: c_int = 255;
 pub const PRI_MIN_ITHD: c_int = PRI_MIN;
 #[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
 #[allow(deprecated)]
@@ -3493,7 +3416,6 @@ pub const PRI_MAX_TIMESHARE: c_int = PRI_MIN_IDLE - 1;
 #[allow(deprecated)]
 pub const PUSER: c_int = PRI_MIN_TIMESHARE;
 pub const PRI_MIN_IDLE: c_int = 224;
-pub const PRI_MAX_IDLE: c_int = PRI_MAX;
 
 pub const NZERO: c_int = 0;
 
@@ -3510,16 +3432,12 @@ cfg_if! {
 pub const CHILD_MAX: c_int = 40;
 /// max command name remembered
 pub const MAXCOMLEN: usize = 19;
-/// max interpreter file name length
-pub const MAXINTERP: c_int = crate::PATH_MAX;
 /// max login name length (incl. NUL)
 pub const MAXLOGNAME: c_int = 33;
 /// max simultaneous processes
 pub const MAXUPRC: c_int = CHILD_MAX;
 /// max bytes for an exec function
 pub const NCARGS: c_int = ARG_MAX;
-///  /* max number groups
-pub const NGROUPS: c_int = NGROUPS_MAX + 1;
 /// max open files per process
 pub const NOFILE: c_int = OPEN_MAX;
 /// marker for empty group set member
@@ -3530,11 +3448,7 @@ pub const MAXHOSTNAMELEN: c_int = 256;
 pub const MAX_CANON: c_int = 255;
 /// max bytes in terminal input
 pub const MAX_INPUT: c_int = 255;
-/// max bytes in a file name
-pub const NAME_MAX: c_int = 255;
 pub const MAXSYMLINKS: c_int = 32;
-/// max supplemental group id's
-pub const NGROUPS_MAX: c_int = 1023;
 /// max open files per process
 pub const OPEN_MAX: c_int = 64;
 
@@ -3546,25 +3460,6 @@ pub const _POSIX_NAME_MAX: c_int = 14;
 pub const _POSIX_PIPE_BUF: c_int = 512;
 pub const _POSIX_SSIZE_MAX: c_int = 32767;
 pub const _POSIX_STREAM_MAX: c_int = 8;
-
-/// max ibase/obase values in bc(1)
-pub const BC_BASE_MAX: c_int = 99;
-/// max array elements in bc(1)
-pub const BC_DIM_MAX: c_int = 2048;
-/// max scale value in bc(1)
-pub const BC_SCALE_MAX: c_int = 99;
-/// max const string length in bc(1)
-pub const BC_STRING_MAX: c_int = 1000;
-/// max character class name size
-pub const CHARCLASS_NAME_MAX: c_int = 14;
-/// max weights for order keyword
-pub const COLL_WEIGHTS_MAX: c_int = 10;
-/// max expressions nested in expr(1)
-pub const EXPR_NEST_MAX: c_int = 32;
-/// max bytes in an input line
-pub const LINE_MAX: c_int = 2048;
-/// max RE's in interval notation
-pub const RE_DUP_MAX: c_int = 255;
 
 pub const _POSIX2_BC_BASE_MAX: c_int = 99;
 pub const _POSIX2_BC_DIM_MAX: c_int = 2048;
@@ -3971,8 +3866,6 @@ pub const RTF_FIXEDMTU: c_int = 0x80000;
 
 pub const RTM_VERSION: c_int = 5;
 
-pub const RTAX_MAX: c_int = 8;
-
 // sys/signal.h
 pub const SIGTHR: c_int = 32;
 pub const SIGLWP: c_int = SIGTHR;
@@ -4018,7 +3911,6 @@ pub const SCTP_PR_SCTP_TTL: c_int = 0x0001;
 pub const SCTP_PR_SCTP_PRIO: c_int = 0x0002;
 pub const SCTP_PR_SCTP_BUF: c_int = SCTP_PR_SCTP_PRIO;
 pub const SCTP_PR_SCTP_RTX: c_int = 0x0003;
-pub const SCTP_PR_SCTP_MAX: c_int = SCTP_PR_SCTP_RTX;
 pub const SCTP_PR_SCTP_ALL: c_int = 0x000f;
 
 pub const SCTP_INIT: c_int = 0x0001;
@@ -4100,7 +3992,6 @@ pub const SCTP_ASSOC_SUPPORTS_ASCONF: c_int = 0x03;
 pub const SCTP_ASSOC_SUPPORTS_MULTIBUF: c_int = 0x04;
 pub const SCTP_ASSOC_SUPPORTS_RE_CONFIG: c_int = 0x05;
 pub const SCTP_ASSOC_SUPPORTS_INTERLEAVING: c_int = 0x06;
-pub const SCTP_ASSOC_SUPPORTS_MAX: c_int = 0x06;
 
 pub const SCTP_ADDR_AVAILABLE: c_int = 0x0001;
 pub const SCTP_ADDR_UNREACHABLE: c_int = 0x0002;
@@ -4315,14 +4206,6 @@ safe_f! {
 
     pub const fn PR_SCTP_RTX_ENABLED(x: c_int) -> bool {
         PR_SCTP_POLICY(x) == SCTP_PR_SCTP_RTX
-    }
-
-    pub const fn PR_SCTP_INVALID_POLICY(x: c_int) -> bool {
-        PR_SCTP_POLICY(x) > SCTP_PR_SCTP_MAX
-    }
-
-    pub const fn PR_SCTP_VALID_POLICY(x: c_int) -> bool {
-        PR_SCTP_POLICY(x) <= SCTP_PR_SCTP_MAX
     }
 }
 
@@ -4877,8 +4760,6 @@ extern "C" {
     pub fn kld_isloaded(name: *const c_char) -> c_int;
     pub fn kld_load(name: *const c_char) -> c_int;
 
-    pub fn kinfo_getvmmap(pid: crate::pid_t, cntp: *mut c_int) -> *mut kinfo_vmentry;
-
     pub fn hexdump(ptr: *const c_void, length: c_int, hdr: *const c_char, flags: c_int);
     pub fn humanize_number(
         buf: *mut c_char,
@@ -4922,12 +4803,6 @@ extern "C" {
         count: *mut c_uint,
     ) -> *mut kinfo_proc;
     pub fn procstat_freeprocs(procstat: *mut procstat, p: *mut kinfo_proc);
-    pub fn procstat_getvmmap(
-        procstat: *mut procstat,
-        kp: *mut kinfo_proc,
-        count: *mut c_uint,
-    ) -> *mut kinfo_vmentry;
-    pub fn procstat_freevmmap(procstat: *mut procstat, vmmap: *mut kinfo_vmentry);
     pub fn procstat_close(procstat: *mut procstat);
     pub fn procstat_freeargv(procstat: *mut procstat);
     pub fn procstat_freeenvv(procstat: *mut procstat);

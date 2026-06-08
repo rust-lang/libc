@@ -1507,8 +1507,6 @@ pub const ISOFSMNT_EXTATT: c_int = 0x4; // enable extended attr
 pub const ISOFSMNT_NOJOLIET: c_int = 0x8; // disable Joliet Ext
 pub const ISOFSMNT_SESS: c_int = 0x10; // use iso_args.sess
 
-pub const NFS_ARGSVERSION: c_int = 4; // change when nfs_args changes
-
 pub const NFSMNT_RESVPORT: c_int = 0; // always use reserved ports
 pub const NFSMNT_SOFT: c_int = 0x1; // soft mount (hard is default)
 pub const NFSMNT_WSIZE: c_int = 0x2; // set write size
@@ -1814,7 +1812,6 @@ pub const RTAX_BFD: c_int = 11;
 pub const RTAX_DNS: c_int = 12;
 pub const RTAX_STATIC: c_int = 13;
 pub const RTAX_SEARCH: c_int = 14;
-pub const RTAX_MAX: c_int = 15;
 
 const fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES

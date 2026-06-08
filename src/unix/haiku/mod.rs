@@ -902,7 +902,6 @@ pub const MINSIGSTKSZ: size_t = 8192;
 pub const SIGSTKSZ: size_t = 16384;
 
 pub const IOV_MAX: c_int = 1024;
-pub const PATH_MAX: c_int = 1024;
 
 pub const SA_NOCLDSTOP: c_int = 0x01;
 pub const SA_NOCLDWAIT: c_int = 0x02;

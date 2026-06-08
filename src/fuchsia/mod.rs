@@ -1592,8 +1592,6 @@ pub const LOCK_UN: c_int = 8;
 pub const SS_ONSTACK: c_int = 1;
 pub const SS_DISABLE: c_int = 2;
 
-pub const PATH_MAX: c_int = 4096;
-
 pub const FD_SETSIZE: c_int = 1024;
 
 pub const EPOLLIN: c_int = 0x1;

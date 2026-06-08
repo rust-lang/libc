@@ -390,28 +390,6 @@ s! {
         pub fsh_name: [c_char; B_OS_NAME_LENGTH],
     }
 
-    // kernel/image.h
-    // FIXME(1.0): This should not implement `PartialEq`
-    #[allow(unpredictable_function_pointer_comparisons)]
-    pub struct image_info {
-        pub id: image_id,
-        pub image_type: c_int,
-        pub sequence: i32,
-        pub init_order: i32,
-        // FIXME(1.0): these should be made optional
-        pub init_routine: extern "C" fn(),
-        pub term_routine: extern "C" fn(),
-        pub device: crate::dev_t,
-        pub node: crate::ino_t,
-        pub name: [c_char; crate::PATH_MAX as usize],
-        pub text: *mut c_void,
-        pub data: *mut c_void,
-        pub text_size: i32,
-        pub data_size: i32,
-        pub api_version: i32,
-        pub abi: i32,
-    }
-
     pub struct __c_anonymous_eax_0 {
         pub max_eax: u32,
         pub vendor_id: [c_char; 12],
@@ -629,7 +607,6 @@ pub const B_SYMBOL_TYPE_ANY: i32 = 0x5;
 // storage/StorageDefs.h
 pub const B_DEV_NAME_LENGTH: usize = 128;
 pub const B_FILE_NAME_LENGTH: usize = crate::FILENAME_MAX as usize;
-pub const B_PATH_NAME_LENGTH: usize = crate::PATH_MAX as usize;
 pub const B_ATTR_NAME_LENGTH: usize = B_FILE_NAME_LENGTH - 1;
 pub const B_MIME_TYPE_LENGTH: usize = B_ATTR_NAME_LENGTH - 15;
 pub const B_MAX_SYMLINKS: usize = 16;
@@ -1219,13 +1196,6 @@ extern "C" {
         symbolLocation: *mut *mut c_void,
     ) -> status_t;
     pub fn clear_caches(address: *mut c_void, length: size_t, flags: u32);
-    pub fn _get_image_info(image: image_id, info: *mut image_info, size: size_t) -> status_t;
-    pub fn _get_next_image_info(
-        team: team_id,
-        cookie: *mut i32,
-        info: *mut image_info,
-        size: size_t,
-    ) -> status_t;
     pub fn find_path(
         codePointer: *const c_void,
         baseDirectory: path_base_directory,
@@ -1372,19 +1342,4 @@ pub unsafe fn get_next_thread_info(
     info: *mut thread_info,
 ) -> status_t {
     _get_next_thread_info(team, cookie, info, size_of::<thread_info>() as size_t)
-}
-
-// kernel/image.h
-#[inline]
-pub unsafe fn get_image_info(image: image_id, info: *mut image_info) -> status_t {
-    _get_image_info(image, info, size_of::<image_info>() as size_t)
-}
-
-#[inline]
-pub unsafe fn get_next_image_info(
-    team: team_id,
-    cookie: *mut i32,
-    info: *mut image_info,
-) -> status_t {
-    _get_next_image_info(team, cookie, info, size_of::<image_info>() as size_t)
 }
