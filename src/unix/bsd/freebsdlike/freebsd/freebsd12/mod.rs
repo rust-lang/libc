@@ -304,7 +304,6 @@ s! {
 }
 
 pub const RAND_MAX: c_int = 0x7fff_fffd;
-pub const ELAST: c_int = 97;
 
 /// max length of devicename
 pub const SPECNAMELEN: c_int = 63;

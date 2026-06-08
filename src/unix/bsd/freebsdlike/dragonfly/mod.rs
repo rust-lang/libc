@@ -548,7 +548,6 @@ pub const ENOMEDIUM: c_int = 93;
 pub const ENOTRECOVERABLE: c_int = 94;
 pub const EOWNERDEAD: c_int = 95;
 pub const EASYNC: c_int = 99;
-pub const ELAST: c_int = 99;
 pub const RLIMIT_POSIXLOCKS: c_int = 11;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: crate::rlim_t = 12;

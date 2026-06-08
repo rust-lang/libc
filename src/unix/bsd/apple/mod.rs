@@ -2143,7 +2143,6 @@ pub const ENOTRECOVERABLE: c_int = 104;
 pub const EOWNERDEAD: c_int = 105;
 pub const EQFULL: c_int = 106;
 pub const ENOTCAPABLE: c_int = 107;
-pub const ELAST: c_int = 107;
 
 pub const EAI_AGAIN: c_int = 2;
 pub const EAI_BADFLAGS: c_int = 3;
