@@ -1017,22 +1017,6 @@ extern "C" {
         dirfd: c_int,
         path: *const c_char,
     ) -> c_int;
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "preadv64v2")]
-    pub fn preadv2(
-        fd: c_int,
-        iov: *const crate::iovec,
-        iovcnt: c_int,
-        offset: off_t,
-        flags: c_int,
-    ) -> ssize_t;
-    #[cfg_attr(gnu_file_offset_bits64, link_name = "pwritev64v2")]
-    pub fn pwritev2(
-        fd: c_int,
-        iov: *const crate::iovec,
-        iovcnt: c_int,
-        offset: off_t,
-        flags: c_int,
-    ) -> ssize_t;
     pub fn preadv64v2(
         fd: c_int,
         iov: *const crate::iovec,

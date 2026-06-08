@@ -4070,6 +4070,24 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
     pub fn open_by_handle_at(mount_fd: c_int, handle: *mut file_handle, flags: c_int) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "preadv64v2")]
+    #[cfg(not(target_env = "uclibc"))]
+    pub fn preadv2(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: off_t,
+        flags: c_int,
+    ) -> ssize_t;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "pwritev64v2")]
+    #[cfg(not(target_env = "uclibc"))]
+    pub fn pwritev2(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: off_t,
+        flags: c_int,
+    ) -> ssize_t;
 }
 
 // LFS64 extensions
