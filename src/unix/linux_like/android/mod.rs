@@ -3443,6 +3443,16 @@ pub const AT_MINSIGSTKSZ: c_ulong = 51;
 pub const SI_DETHREAD: c_int = -7;
 pub const TRAP_PERF: c_int = 6;
 
+// Flags for preadv2/pwritev2
+pub const RWF_HIPRI: c_int = 0x00000001;
+pub const RWF_DSYNC: c_int = 0x00000002;
+pub const RWF_SYNC: c_int = 0x00000004;
+pub const RWF_NOWAIT: c_int = 0x00000008;
+pub const RWF_APPEND: c_int = 0x00000010;
+pub const RWF_NOAPPEND: c_int = 0x00000020;
+pub const RWF_ATOMIC: c_int = 0x00000040;
+pub const RWF_DONTCACHE: c_int = 0x00000080;
+
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.
@@ -3917,6 +3927,20 @@ extern "C" {
         newpath: *const c_char,
         flags: c_uint,
     ) -> c_int;
+    pub fn preadv2(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: off_t,
+        flags: c_int,
+    ) -> ssize_t;
+    pub fn pwritev2(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: off_t,
+        flags: c_int,
+    ) -> ssize_t;
 }
 
 cfg_if! {
