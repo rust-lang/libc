@@ -353,9 +353,6 @@ fn test_apple(target: &str) {
             // https://github.com/apple-oss-distributions/xnu/commit/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea
             "ELAST" => true,
 
-            // FIXME(macos): bumped up on macOS 26, it's sizeof `vm_statistics64_data_t`
-            "HOST_VM_INFO64_COUNT" => true,
-
             _ => false,
         }
     });
@@ -2126,7 +2123,6 @@ fn test_android(target: &str) {
 
             // FIXME(android): Something has been changed on r26b:
             | "IPPROTO_MAX"
-            | "NFNL_SUBSYS_COUNT"
             | "NF_NETDEV_NUMHOOKS"
             | "NFT_MSG_MAX"
             | "SW_MAX"
