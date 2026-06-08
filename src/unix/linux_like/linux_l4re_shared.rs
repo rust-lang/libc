@@ -690,7 +690,6 @@ pub const EI_CLASS: usize = 4;
 pub const ELFCLASSNONE: u8 = 0;
 pub const ELFCLASS32: u8 = 1;
 pub const ELFCLASS64: u8 = 2;
-pub const ELFCLASSNUM: usize = 3;
 
 pub const EI_DATA: usize = 5;
 pub const ELFDATANONE: u8 = 0;
