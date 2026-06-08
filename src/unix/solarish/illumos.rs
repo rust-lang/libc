@@ -42,12 +42,6 @@ s! {
         pub shm_pad4: [i64; 4],
     }
 
-    pub struct fil_info {
-        pub fi_flags: c_int,
-        pub fi_pos: c_int,
-        pub fi_name: [c_char; crate::FILNAME_MAX as usize],
-    }
-
     #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed(4)))]
     pub struct epoll_event {
         pub events: u32,
@@ -109,7 +103,6 @@ pub const FD_CLOFORK: c_int = 2;
 pub const FIL_ATTACH: c_int = 0x1;
 pub const FIL_DETACH: c_int = 0x2;
 pub const FIL_LIST: c_int = 0x3;
-pub const FILNAME_MAX: c_int = 32;
 pub const FILF_PROG: c_int = 0x1;
 pub const FILF_AUTO: c_int = 0x2;
 pub const FILF_BYPASS: c_int = 0x4;

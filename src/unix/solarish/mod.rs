@@ -823,8 +823,6 @@ pub const NOEXPR: crate::nl_item = 57;
 pub const _DATE_FMT: crate::nl_item = 58;
 pub const MAXSTRMSG: crate::nl_item = 58;
 
-pub const PATH_MAX: c_int = 1024;
-
 pub const SA_ONSTACK: c_int = 0x00000001;
 pub const SA_RESETHAND: c_int = 0x00000002;
 pub const SA_RESTART: c_int = 0x00000004;

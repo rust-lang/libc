@@ -935,7 +935,6 @@ RLIM_INFINITY
 RLIM_NLIMITS
 RLIM_SAVED_CUR
 RLIM_SAVED_MAX
-RTAX_MAX
 RTAX_TAG
 RTA_TAG
 RTF_ANNOUNCE
@@ -1399,11 +1398,9 @@ kevent
 key_t
 killpg
 kinfo_file
-kinfo_getvmmap
 kinfo_lwp
 kinfo_pcb
 kinfo_proc2
-kinfo_vmentry
 kqueue
 kqueue1
 labs
@@ -1646,6 +1643,5 @@ utmpname
 utmpx
 utmpxname
 utrace
-uucred
 wait4
 waitid

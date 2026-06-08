@@ -1175,7 +1175,6 @@ pub const PR_SCHED_CORE_GET: c_int = 0;
 pub const PR_SCHED_CORE_CREATE: c_int = 1;
 pub const PR_SCHED_CORE_SHARE_TO: c_int = 2;
 pub const PR_SCHED_CORE_SHARE_FROM: c_int = 3;
-pub const PR_SCHED_CORE_MAX: c_int = 4;
 pub const PR_SCHED_CORE_SCOPE_THREAD: c_int = 0;
 pub const PR_SCHED_CORE_SCOPE_THREAD_GROUP: c_int = 1;
 pub const PR_SCHED_CORE_SCOPE_PROCESS_GROUP: c_int = 2;
@@ -1365,7 +1364,6 @@ pub const RT_CLASS_UNSPEC: u8 = 0;
 pub const RT_CLASS_DEFAULT: u8 = 253;
 pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
-pub const RT_CLASS_MAX: u8 = 255;
 
 pub const MAX_ADDR_LEN: usize = 7;
 pub const ARPD_UPDATE: c_ushort = 0x01;
