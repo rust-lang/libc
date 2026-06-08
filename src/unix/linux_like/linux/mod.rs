@@ -2180,7 +2180,6 @@ pub const NF_BR_PRI_BRNF: c_int = 0;
 pub const NF_BR_PRI_NAT_DST_OTHER: c_int = 100;
 pub const NF_BR_PRI_FILTER_OTHER: c_int = 200;
 pub const NF_BR_PRI_NAT_SRC: c_int = 300;
-pub const NF_BR_PRI_LAST: c_int = crate::INT_MAX;
 
 // linux/netfilter_ipv4.h
 pub const NF_IP_PRE_ROUTING: c_int = 0;
@@ -2204,7 +2203,6 @@ pub const NF_IP_PRI_NAT_SRC: c_int = 100;
 pub const NF_IP_PRI_SELINUX_LAST: c_int = 225;
 pub const NF_IP_PRI_CONNTRACK_HELPER: c_int = 300;
 pub const NF_IP_PRI_CONNTRACK_CONFIRM: c_int = crate::INT_MAX;
-pub const NF_IP_PRI_LAST: c_int = crate::INT_MAX;
 
 // linux/netfilter_ipv6.h
 pub const NF_IP6_PRE_ROUTING: c_int = 0;
@@ -2227,7 +2225,6 @@ pub const NF_IP6_PRI_SECURITY: c_int = 50;
 pub const NF_IP6_PRI_NAT_SRC: c_int = 100;
 pub const NF_IP6_PRI_SELINUX_LAST: c_int = 225;
 pub const NF_IP6_PRI_CONNTRACK_HELPER: c_int = 300;
-pub const NF_IP6_PRI_LAST: c_int = crate::INT_MAX;
 
 // linux/netfilter_ipv6/ip6_tables.h
 pub const IP6T_SO_ORIGINAL_DST: c_int = 80;
@@ -2304,10 +2301,8 @@ pub const SIOCGIWENCODEEXT: c_ulong = 0x8B35;
 pub const SIOCSIWPMKSA: c_ulong = 0x8B36;
 
 pub const SIOCIWFIRSTPRIV: c_ulong = 0x8BE0;
-pub const SIOCIWLASTPRIV: c_ulong = 0x8BFF;
 
 pub const SIOCIWFIRST: c_ulong = 0x8B00;
-pub const SIOCIWLAST: c_ulong = SIOCIWLASTPRIV;
 
 pub const IWEVTXDROP: c_ulong = 0x8C00;
 pub const IWEVQUAL: c_ulong = 0x8C01;
