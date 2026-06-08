@@ -394,7 +394,6 @@ ELF64_R_TYPE
 ELFCLASS32
 ELFCLASS64
 ELFCLASSNONE
-ELFCLASSNUM
 ELFDATA2LSB
 ELFDATA2MSB
 ELFDATANONE
@@ -2300,7 +2299,7 @@ mntent
 mode_t
 mount
 mprotect
-msghdr 
+msghdr
 msync
 munlock
 munlockall
