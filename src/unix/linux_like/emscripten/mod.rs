@@ -188,7 +188,8 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [u32; 11],
+        // 11 pointer-width words: 44 bytes on wasm32, 88 on wasm64 (MEMORY64).
+        __size: [usize; 11],
     }
 
     pub struct sigset_t {
@@ -1064,8 +1065,14 @@ pub const SO_RXQ_OVFL: c_int = 40;
 pub const SO_PEEK_OFF: c_int = 42;
 pub const SO_BUSY_POLL: c_int = 46;
 
+#[cfg(target_pointer_width = "32")]
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 32;
+#[cfg(target_pointer_width = "64")]
+pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+#[cfg(target_pointer_width = "32")]
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 24;
+#[cfg(target_pointer_width = "64")]
+pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 
 pub const O_DIRECT: c_int = 0x4000;
 pub const O_DIRECTORY: c_int = 0x10000;
