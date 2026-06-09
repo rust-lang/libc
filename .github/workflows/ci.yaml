@@ -240,6 +240,11 @@ jobs:
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
+          - target: aarch64-apple-ios-sim
+            os: macos-26
+            cargo-apple-runner: true
+            simulator: "iPhone 17"
+            env: { CARGO_TARGET_AARCH64_APPLE_IOS_SIM_RUNNER: cargo-apple-runner }
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
@@ -260,6 +265,16 @@ jobs:
           echo '${{ toJson(matrix.env) }}' |
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
+
+      - name: Install `cargo-apple-runner`
+        if: matrix.cargo-apple-runner
+        uses: taiki-e/install-action@0631aa6515c7d545823c67cfae7ef4fc7f490154 # v2.81.8
+        with:
+          tool: cargo-apple-runner
+
+      - name: Start simulator
+        if: matrix.simulator
+        run: xcrun simctl boot "${{ matrix.simulator }}"
 
       - name: Run natively
         if: runner.os != 'Linux'
