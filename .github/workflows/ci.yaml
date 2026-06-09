@@ -243,6 +243,15 @@ jobs:
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
+
+          # Testing iOS and tvOS should give us reasonably good coverage for Apple platforms.
+          # (watchOS is similar to tvOS, and visionOS is similar to iOS).
+          - target: aarch64-apple-ios-sim
+            os: macos-26
+            cargo-apple-runner: true
+          - target: aarch64-apple-tvos-sim
+            os: macos-26
+            cargo-apple-runner: true
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
@@ -264,12 +273,21 @@ jobs:
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
+      - name: Install `cargo-apple-runner`
+        if: matrix.cargo-apple-runner
+        uses: taiki-e/install-action@6c6fd71fe4fb72c3697d269963d0e15df8adedad # v2.85.10
+        with:
+          tool: cargo-apple-runner
+
       - name: Run natively
-        if: runner.os != 'Linux'
+        if: runner.os != 'Linux' && !matrix.cargo-apple-runner
         run: ./ci/run.sh ${{ matrix.target }}
       - name: Run in Docker
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && !matrix.cargo-apple-runner
         run: ./ci/run-docker.sh ${{ matrix.target }}
+      - name: Run on Apple's simulator
+        if: matrix.cargo-apple-runner
+        run: ./ci/run-apple-simulator.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
         id: create_artifacts
