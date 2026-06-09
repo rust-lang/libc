@@ -35,6 +35,15 @@ pub type iconv_t = *mut c_void;
 cfg_if! {
     if #[cfg(not(target_env = "gnu"))] {
         extern_ty! {
+            #[cfg_attr(
+                any(target_env = "musl", target_env = "ohos"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fpos_t` instead. This type is defined as an alias to the \
+                            unsuffixed type upstream, and support for suffixed types in the `libc` \
+                            crate is phasing out."
+                )
+            )]
             pub type fpos64_t; // FIXME(linux): fill this out with a struct
         }
     }
@@ -283,6 +292,15 @@ s! {
         pub val: c_int,
     }
 
+    #[cfg_attr(
+        any(target_env = "musl", target_env = "ohos"),
+        deprecated(
+            since = "0.2.187",
+            note = "Use `rlimit` instead. This type is defined upstream as an alias to the \
+                    unsuffixed type, and support for suffixed types is phasing out in the `libc` \
+                    crate."
+        )
+    )]
     pub struct rlimit64 {
         pub rlim_cur: crate::rlim64_t,
         pub rlim_max: crate::rlim64_t,
@@ -305,6 +323,14 @@ s! {
         pub d_name: [c_char; 256],
     }
 
+    #[cfg_attr(
+        any(target_env = "musl", target_env = "ohos"),
+        deprecated(
+            since = "0.2.187",
+            note = "Use `dirent` instead. This type is defined in upstream musl as an alias to the \
+                    unsuffixed variant and the `libc` crate is phasing out support for these."
+        )
+    )]
     pub struct dirent64 {
         pub d_ino: crate::ino64_t,
         pub d_off: crate::off64_t,
@@ -1912,12 +1938,22 @@ extern "C" {
         longindex: *mut c_int,
     ) -> c_int;
 
-    #[cfg(not(target_env = "uclibc"))]
+    #[cfg(not(any(target_env = "uclibc", target_env = "musl", target_env = "ohos")))]
     pub fn copy_file_range(
         fd_in: c_int,
         off_in: *mut crate::off64_t,
         fd_out: c_int,
         off_out: *mut crate::off64_t,
+        len: size_t,
+        flags: c_uint,
+    ) -> ssize_t;
+
+    #[cfg(any(target_env = "musl", target_env = "ohos"))]
+    pub fn copy_file_range(
+        fd_in: c_int,
+        off_in: *mut crate::off_t,
+        fd_out: c_int,
+        off_out: *mut crate::off_t,
         len: size_t,
         flags: c_uint,
     ) -> ssize_t;

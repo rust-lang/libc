@@ -1,7 +1,6 @@
 use crate::prelude::*;
 
 pub type wchar_t = u32;
-pub type stat64 = crate::stat;
 
 s! {
     pub struct stat {

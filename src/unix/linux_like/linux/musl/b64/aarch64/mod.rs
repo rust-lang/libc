@@ -7,8 +7,6 @@ pub type wchar_t = u32;
 pub type nlink_t = u32;
 pub type blksize_t = c_int;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,

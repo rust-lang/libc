@@ -8,8 +8,6 @@ pub type __u64 = c_ulonglong;
 pub type __s64 = c_longlong;
 pub type greg_t = i64;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,

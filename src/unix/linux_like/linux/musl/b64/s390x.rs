@@ -7,8 +7,13 @@ pub type wchar_t = i32;
 pub type greg_t = u64;
 pub type __u64 = u64;
 pub type __s64 = i64;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `statfs` instead. This type is defined as an alias to the unsuffixed type \
+            upstream, and support for suffixed types is phasing out in the `libc` crate."
+)]
 pub type statfs64 = statfs;
-pub type stat64 = stat;
 
 s! {
     pub struct ipc_perm {
