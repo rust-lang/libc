@@ -3,8 +3,6 @@ use crate::prelude::*;
 
 pub type wchar_t = u32;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
