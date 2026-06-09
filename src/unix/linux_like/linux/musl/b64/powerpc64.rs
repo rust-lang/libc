@@ -5,8 +5,6 @@ pub type wchar_t = i32;
 pub type nlink_t = u64;
 pub type blksize_t = c_long;
 
-pub type stat64 = stat;
-
 s! {
     pub struct termios {
         pub c_iflag: crate::tcflag_t,
