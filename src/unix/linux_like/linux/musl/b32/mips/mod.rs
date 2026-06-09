@@ -3,8 +3,6 @@ use crate::prelude::*;
 
 pub type wchar_t = c_int;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
@@ -140,6 +138,7 @@ s! {
         pub f_spare: [c_ulong; 5],
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct statfs64 {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,

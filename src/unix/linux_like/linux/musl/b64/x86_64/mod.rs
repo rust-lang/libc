@@ -6,8 +6,6 @@ pub type nlink_t = u64;
 pub type blksize_t = c_long;
 pub type greg_t = i64;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
