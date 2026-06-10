@@ -1,25 +1,32 @@
 //! Definitions for uclibc on 64bit systems
 
-use crate::off64_t;
 use crate::prelude::*;
 
-pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type clock_t = i64;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
-pub type fsword_t = c_long;
-pub type ino_t = c_ulong;
 pub type nlink_t = c_uint;
-pub type off_t = c_long;
-// [uClibc docs] Note stat64 has the same shape as stat for x86-64.
-pub type stat64 = stat;
 pub type suseconds_t = c_long;
 pub type time_t = c_int;
 pub type wchar_t = c_int;
 pub type pthread_t = c_ulong;
 
+// [uClibc docs] Note stat64 has the same shape as stat for x86-64.
+pub type stat64 = stat;
+pub type statfs64 = statfs;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsblkcnt_t` instead. The unsuffixed type is defined in terms of the suffixed type \
+            in all default builds of upstream uClibc, and the `libc` crate is itself phasing out \
+            support for suffixed variants in favor of a single unsuffixed, fixed-width type."
+)]
 pub type fsblkcnt64_t = u64;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsfilcnt_t` instead. The unsuffixed type is defined in terms of the suffixed type \
+            in all default builds of upstream uClibc, and the `libc` crate is itself phasing out \
+            support for suffixed variants in favor of a single unsuffixed, fixed-width type."
+)]
 pub type fsfilcnt64_t = u64;
 pub type __u64 = c_ulong;
 pub type __s64 = c_long;
@@ -119,8 +126,9 @@ s! {
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulong, // dev_t
-        pub st_size: off_t,   // file size
+        __pad0: Padding<c_int>,
+        pub st_rdev: crate::dev_t, // dev_t
+        pub st_size: crate::off_t, // file size
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,
@@ -129,7 +137,7 @@ s! {
         pub st_mtime_nsec: c_ulong,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_ulong,
-        st_pad4: Padding<[c_long; 3]>,
+        __uclibc_unused: Padding<[c_long; 3]>,
     }
 
     // FIXME(1.0): This should not implement `PartialEq`
@@ -150,48 +158,19 @@ s! {
 
     pub struct statfs {
         // FIXME(ulibc)
-        pub f_type: fsword_t,
-        pub f_bsize: fsword_t,
+        pub f_type: c_long,
+        pub f_bsize: c_long,
         pub f_blocks: crate::fsblkcnt_t,
         pub f_bfree: crate::fsblkcnt_t,
         pub f_bavail: crate::fsblkcnt_t,
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: fsword_t,
-        pub f_frsize: fsword_t,
-        f_spare: [fsword_t; 5],
-    }
 
-    pub struct statfs64 {
-        pub f_type: c_int,
-        pub f_bsize: c_int,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_files: crate::fsfilcnt64_t,
-        pub f_ffree: crate::fsfilcnt64_t,
         pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_int,
-        pub f_frsize: c_int,
-        pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
-        pub f_fsid: c_ulong,
-        __f_unused: Padding<c_int>,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_namelen: c_long,
+        pub f_frsize: c_long,
+        pub f_flags: c_long,
+        f_spare: [c_long; 4],
     }
 
     pub struct msghdr {
@@ -238,19 +217,6 @@ s! {
         pub _f: [c_char; 0],
     }
 
-    pub struct glob_t {
-        // FIXME(ulibc)
-        pub gl_pathc: size_t,
-        pub gl_pathv: *mut *mut c_char,
-        pub gl_offs: size_t,
-        pub gl_flags: c_int,
-        __unused1: Padding<*mut c_void>,
-        __unused2: Padding<*mut c_void>,
-        __unused3: Padding<*mut c_void>,
-        __unused4: Padding<*mut c_void>,
-        __unused5: Padding<*mut c_void>,
-    }
-
     pub struct cpu_set_t {
         // FIXME(ulibc)
         #[cfg(target_pointer_width = "32")]
@@ -277,16 +243,6 @@ s! {
         pub cmsg_len: size_t,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
-    }
-}
-
-s_no_extra_traits! {
-    pub struct dirent {
-        pub d_ino: crate::ino64_t,
-        pub d_off: off64_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [c_char; 256],
     }
 }
 

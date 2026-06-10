@@ -1,63 +1,35 @@
-use crate::off64_t;
 use crate::prelude::*;
 
-pub type blkcnt_t = i64;
 pub type blksize_t = i64;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
-pub type ino_t = u64;
 pub type nlink_t = u64;
-pub type off_t = i64;
 pub type suseconds_t = i64;
 pub type time_t = i64;
 pub type wchar_t = i32;
 
+pub type stat64 = stat;
+
 s! {
     pub struct stat {
-        pub st_dev: c_ulong,
-        st_pad1: Padding<[c_long; 2]>,
+        pub st_dev: c_uint,
+        st_pad1: Padding<[c_int; 3]>,
         pub st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulong,
-        st_pad2: Padding<[c_ulong; 1]>,
-        pub st_size: off_t,
-        st_pad3: Padding<c_long>,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
-        pub st_blksize: crate::blksize_t,
-        st_pad4: Padding<c_long>,
+        pub st_rdev: c_uint,
+        st_pad2: Padding<[c_uint; 3]>,
+        pub st_size: crate::off_t,
+        pub st_atime: c_int,
+        pub st_atime_nsec: c_int,
+        pub st_mtime: c_int,
+        pub st_mtime_nsec: c_int,
+        pub st_ctime: c_int,
+        pub st_ctime_nsec: c_int,
+        pub st_blksize: c_int,
+        st_pad3: Padding<c_int>,
         pub st_blocks: crate::blkcnt_t,
-        st_pad5: Padding<[c_long; 7]>,
-    }
-
-    pub struct stat64 {
-        pub st_dev: c_ulong,
-        st_pad1: Padding<[c_long; 2]>,
-        pub st_ino: crate::ino64_t,
-        pub st_mode: crate::mode_t,
-        pub st_nlink: crate::nlink_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulong,
-        st_pad2: Padding<[c_long; 2]>,
-        pub st_size: off64_t,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
-        pub st_blksize: crate::blksize_t,
-        st_pad3: Padding<c_long>,
-        pub st_blocks: crate::blkcnt64_t,
-        st_pad5: Padding<[c_long; 7]>,
+        st_pad4: Padding<[c_int; 14]>,
     }
 
     pub struct pthread_attr_t {
@@ -127,21 +99,6 @@ s! {
         pub msg_lrpid: crate::pid_t,
         __glibc_reserved4: Padding<c_ulong>,
         __glibc_reserved5: Padding<c_ulong>,
-    }
-
-    pub struct statfs {
-        pub f_type: c_long,
-        pub f_bsize: c_long,
-        pub f_frsize: c_long,
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_files: crate::fsblkcnt_t,
-        pub f_ffree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_fsid: crate::fsid_t,
-
-        pub f_namelen: c_long,
-        f_spare: [c_long; 6],
     }
 
     pub struct msghdr {
