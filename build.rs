@@ -40,6 +40,8 @@ const ALLOWED_CFGS: &[&str] = &[
     "musl_redir_time64",
     "vxworks_lt_25_09",
     "libc_pauthtest",
+    // Corresponds with `__USE_FILE_OFFSET64` in uClibc.
+    "uclibc_file_offset_bits64",
 ];
 
 // Extra values to allow for check-cfg.
@@ -236,6 +238,13 @@ fn main() {
             set_cfg("gnu_file_offset_bits64");
             set_cfg("gnu_time_bits64");
         }
+    }
+
+    if target_env == "uclibc"
+        && target_ptr_width == "32"
+        && env::var("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_OFF64").is_ok()
+    {
+        set_cfg("uclibc_file_offset_bits64")
     }
 
     // On CI: deny all warnings
