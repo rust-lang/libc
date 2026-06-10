@@ -3,15 +3,8 @@ use crate::prelude::*;
 
 pub type clock_t = i32;
 pub type wchar_t = i32;
-pub type off_t = i32;
-pub type ino_t = u32;
-pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
-pub type fsblkcnt64_t = u64;
-pub type fsfilcnt64_t = u64;
 
 s! {
     pub struct stat {
@@ -24,7 +17,7 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         pub st_pad2: [c_long; 1],
-        pub st_size: off_t,
+        pub st_size: crate::off_t,
         st_pad3: Padding<c_long>,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
@@ -227,8 +220,8 @@ s! {
     pub struct flock {
         pub l_type: c_short,
         pub l_whence: c_short,
-        pub l_start: off_t,
-        pub l_len: off_t,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
         pub l_sysid: c_long,
         pub l_pid: crate::pid_t,
         pad: Padding<[c_long; 4]>,
