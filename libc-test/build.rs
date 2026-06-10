@@ -2234,6 +2234,9 @@ fn test_android(target: &str) {
             "endgrent" => true,
 
             // Added in API level 26, but some tests use level 24.
+            "getpwent" | "setpwent" | "endpwent" => true,
+
+            // Added in API level 26, but some tests use level 24.
             "getdomainname" | "setdomainname" => true,
 
             // FIXME(android): bad function pointers:

@@ -3437,6 +3437,7 @@ dup
 dup2
 duplocale
 endgrent
+endpwent
 endservent
 epoll_create
 epoll_create1
@@ -3568,6 +3569,7 @@ getppid
 getpriority
 getprotobyname
 getprotobynumber
+getpwent
 getpwnam
 getpwnam_r
 getpwuid
@@ -3955,6 +3957,7 @@ setlogmask
 setns
 setpgid
 setpriority
+setpwent
 setregid
 setresgid
 setresuid
