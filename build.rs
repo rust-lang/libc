@@ -35,6 +35,8 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `_REDIR_TIME64` in musl: symbol redirects to __*_time64
     "musl_redir_time64",
     "vxworks_lt_25_09",
+    // Corresponds with `__USE_FILE_OFFSET64` in uClibc.
+    "uclibc_file_offset_bits64",
 ];
 
 // Extra values to allow for check-cfg.
@@ -204,6 +206,13 @@ fn main() {
         if filebits == "64" {
             set_cfg("gnu_file_offset_bits64");
         }
+    }
+
+    if target_env == "uclibc"
+        && target_ptr_width == "32"
+        && env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_FILE_OFFSET_BITS")
+    {
+        set_cfg("uclibc_file_offset_bits64");
     }
 
     // On CI: deny all warnings

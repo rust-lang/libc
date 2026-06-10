@@ -3848,6 +3848,13 @@ fn test_linux(target: &str) {
         // glibc versions older than 2.29.
         .define("__GLIBC_USE_DEPRECATED_SCANF", None);
 
+    if uclibc
+        && pointer_width == 32
+        && env::var("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_FILE_OFFSET_BITS").is_ok()
+    {
+        cfg.cfg("uclibc_file_offset_bits64", None);
+    }
+
     config_gnu_bits(target, &mut cfg);
     // The L4Re libc headers contain some L4Re helper functions which are not needed for the libc
     // interface and must not be added to the libc crate

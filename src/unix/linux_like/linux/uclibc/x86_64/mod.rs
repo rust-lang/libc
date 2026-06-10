@@ -3,13 +3,8 @@
 use crate::off64_t;
 use crate::prelude::*;
 
-pub type blkcnt_t = i64;
 pub type blksize_t = i64;
 pub type clock_t = i64;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
-pub type fsword_t = c_long;
-pub type ino_t = c_ulong;
 pub type nlink_t = c_uint;
 pub type off_t = c_long;
 // [uClibc docs] Note stat64 has the same shape as stat for x86-64.
@@ -17,8 +12,6 @@ pub type stat64 = stat;
 pub type wchar_t = c_int;
 pub type pthread_t = c_ulong;
 
-pub type fsblkcnt64_t = u64;
-pub type fsfilcnt64_t = u64;
 pub type __u64 = c_ulong;
 pub type __s64 = c_long;
 

@@ -3,17 +3,10 @@ use crate::prelude::*;
 
 pub type clock_t = i32;
 pub type wchar_t = i32;
-pub type off_t = i32;
-pub type ino_t = u32;
-pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
 pub type __u64 = c_ulonglong;
 pub type __s64 = c_longlong;
-pub type fsblkcnt64_t = u64;
-pub type fsfilcnt64_t = u64;
 
 s! {
     pub struct stat {
