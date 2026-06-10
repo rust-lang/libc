@@ -8,7 +8,6 @@ pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
 pub type regoff_t = c_int;
-pub type rlim_t = c_ulong;
 pub type __rlimit_resource_t = c_ulong;
 pub type __priority_which_t = c_uint;
 
@@ -22,6 +21,29 @@ cfg_if! {
         pub type suseconds_t = c_long;
     }
 }
+
+cfg_if! {
+    if #[cfg(uclibc_file_offset_bits64)] {
+        pub type ino_t = u64;
+        pub type off_t = i64;
+        pub type rlim_t = u64;
+        pub type blkcnt_t = i64;
+        pub type fsblkcnt_t = u64;
+        pub type fsfilcnt_t = u64;
+    } else {
+        pub type ino_t = c_ulong;
+        pub type off_t = c_long;
+        pub type rlim_t = c_ulong;
+        pub type blkcnt_t = c_long;
+        pub type fsblkcnt_t = c_ulong;
+        pub type fsfilcnt_t = c_ulong;
+    }
+}
+
+// Other LFS types have definitions provided by top-level modules (i.e. `unix`,
+// `linux_like` and `linux`.)
+pub type fsblkcnt64_t = u64;
+pub type fsfilcnt64_t = u64;
 
 cfg_if! {
     if #[cfg(doc)] {
