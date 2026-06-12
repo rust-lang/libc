@@ -455,7 +455,7 @@ cfg_if! {
         pub const YESSTR: crate::nl_item = 0x50002;
         pub const NOSTR: crate::nl_item = 0x50003;
     } else if #[cfg(target_env = "uclibc")] {
-        pub const CODESET: crate::nl_item = 10;
+        pub const CODESET: crate::nl_item = 329;
         pub const CRNCYSTR: crate::nl_item = 0x215;
         pub const RADIXCHAR: crate::nl_item = 0x100;
         pub const THOUSEP: crate::nl_item = 0x101;
