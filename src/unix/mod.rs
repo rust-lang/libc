@@ -247,6 +247,8 @@ cfg_if! {
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
+pub const SSIZE_MAX: ssize_t = ssize_t::MAX;
+
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
