@@ -91,12 +91,9 @@ s! {
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: i64,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: i64,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: i64,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         __unused: Padding<[i64; 3]>,
     }
 
@@ -112,12 +109,9 @@ s! {
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt64_t,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: i64,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: i64,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: i64,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
         __reserved: Padding<[i64; 3]>,
     }
 
