@@ -19,7 +19,7 @@ pub type clock_t = i32;
 pub type errno_t = c_int;
 
 cfg_if! {
-    if #[cfg(all(target_arch = "x86", target_env = "gnu"))] {
+    if #[cfg(all(target_arch = "x86", target_env = "gnu", not(windows_gnu_time64)))] {
         pub type time_t = i32;
     } else {
         pub type time_t = i64;
@@ -34,6 +34,12 @@ extern_ty! {
     pub enum timezone {}
 }
 
+#[deprecated(
+    since = "1.0.0",
+    note = "This time-related value, among others, is part of the shift \
+            towards using a single, 64-bit-sized `time_t`. See #PENDING for \
+            discussion."
+)]
 pub type time64_t = i64;
 
 pub type SOCKET = crate::uintptr_t;
