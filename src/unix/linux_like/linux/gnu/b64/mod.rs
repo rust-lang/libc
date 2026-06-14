@@ -98,6 +98,17 @@ s! {
         __glibc_reserved4: Padding<crate::__syscall_ulong_t>,
     }
 
+    // net/iucv/iucv.h
+
+    pub struct sockaddr_iucv {
+        pub siucv_family: crate::sa_family_t,
+        pub siucv_port: crate::in_port_t,
+        pub siucv_addr: crate::in_addr_t,
+        pub siucv_nodeid: [c_char; 8],
+        pub siucv_user_id: [c_char; 8],
+        pub siucv_name: [c_char; 8],
+    }
+
     pub struct timex {
         pub modes: c_uint,
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
