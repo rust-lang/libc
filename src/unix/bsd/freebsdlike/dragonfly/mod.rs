@@ -548,6 +548,12 @@ pub const ENOMEDIUM: c_int = 93;
 pub const ENOTRECOVERABLE: c_int = 94;
 pub const EOWNERDEAD: c_int = 95;
 pub const EASYNC: c_int = 99;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const ELAST: c_int = 99;
 pub const RLIMIT_POSIXLOCKS: c_int = 11;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]

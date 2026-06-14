@@ -304,6 +304,12 @@ s! {
 }
 
 pub const RAND_MAX: c_int = 0x7fff_fffd;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const ELAST: c_int = 97;
 
 /// max length of devicename
