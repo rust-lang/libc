@@ -219,6 +219,12 @@ pub const LC_MONETARY: c_int = 3;
 pub const LC_NUMERIC: c_int = 4;
 pub const LC_TIME: c_int = 5;
 pub const LC_MESSAGES: c_int = 6;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const _LC_LAST: c_int = 7;
 
 pub const EPERM: c_int = 1;
