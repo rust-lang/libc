@@ -14,9 +14,9 @@ RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
         qemu-user \
         xz-utils
 
-ARG TEST_UCLIBC_TIIME64
+ARG TEST_UCLIBC_TIME64
 COPY install-uclibc.sh /
-RUN /install-uclibc.sh "$TEST_UCLIBC_TIIME64"
+RUN /install-uclibc.sh "$TEST_UCLIBC_TIME64"
 
 ENV PATH=$PATH:/rust/bin:/toolchain/bin \
     STAGING_DIR=/toolchain/armv7-buildroot-linux-uclibceabihf/sysroot \
