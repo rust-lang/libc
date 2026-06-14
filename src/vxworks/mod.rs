@@ -60,6 +60,11 @@ pub type pthread_key_t = c_ulong;
 
 // From b_off_t.h
 pub type off_t = c_longlong;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `off_t` instead. The `libc` crate is on track to supporting solely non-suffixed \
+            variants of time and file offset types. See #PENDING for details and discussion."
+)]
 pub type off64_t = off_t;
 
 // From b_BOOL.h
@@ -2416,10 +2421,18 @@ safe_f! {
     }
 }
 
+// FIXME(msrv): once we bump MSRV enough to reach stabilization of `expect` and
+// the `reason` attribute parameter, use that to mention that this is not really
+// a routine that's part of VxWorks.
+#[allow(deprecated)]
 pub unsafe fn pread(_fd: c_int, _buf: *mut c_void, _count: size_t, _offset: off64_t) -> ssize_t {
     -1
 }
 
+// FIXME(msrv): once we bump MSRV enough to reach stabilization of `expect` and
+// the `reason` attribute parameter, use that to mention that this is not really
+// a routine that's part of VxWorks.
+#[allow(deprecated)]
 pub unsafe fn pwrite(_fd: c_int, _buf: *const c_void, _count: size_t, _offset: off64_t) -> ssize_t {
     -1
 }
