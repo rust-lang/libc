@@ -1899,7 +1899,6 @@ pub const NFNL_SUBSYS_CTHELPER: c_int = 9;
 pub const NFNL_SUBSYS_NFTABLES: c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: c_int = 11;
 pub const NFNL_SUBSYS_HOOK: c_int = 12;
-pub const NFNL_SUBSYS_COUNT: c_int = 13;
 
 pub const NFNL_MSG_BATCH_BEGIN: c_int = crate::NLMSG_MIN_TYPE;
 pub const NFNL_MSG_BATCH_END: c_int = crate::NLMSG_MIN_TYPE + 1;
