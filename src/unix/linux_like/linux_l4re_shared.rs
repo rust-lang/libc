@@ -690,6 +690,12 @@ pub const EI_CLASS: usize = 4;
 pub const ELFCLASSNONE: u8 = 0;
 pub const ELFCLASS32: u8 = 1;
 pub const ELFCLASS64: u8 = 2;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const ELFCLASSNUM: usize = 3;
 
 pub const EI_DATA: usize = 5;
@@ -821,6 +827,12 @@ pub const EM_ALPHA: u16 = 0x9026;
 // elf.h - Legal values for e_version (version).
 pub const EV_NONE: u32 = 0;
 pub const EV_CURRENT: u32 = 1;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const EV_NUM: u32 = 2;
 
 // elf.h - Legal values for p_type (segment type).
