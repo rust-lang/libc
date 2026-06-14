@@ -87,7 +87,7 @@ s! {
 }
 
 pub const AF_UNIX: c_int = 1;
-pub const AF_INET6: c_int = 24;
+pub const AF_INET6: crate::sa_family_t = 24;
 
 pub const SOCK_RAW: c_int = 3;
 pub const SOCK_RDM: c_int = 4;
