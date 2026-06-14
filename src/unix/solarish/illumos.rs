@@ -186,6 +186,12 @@ pub const PRIV_USER: c_uint = PRIV_DEBUG
     | PRIV_AWARE_RESET
     | PRIV_PFEXEC;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const LGRP_RSRC_COUNT: crate::lgrp_rsrc_t = 2;
 pub const LGRP_RSRC_CPU: crate::lgrp_rsrc_t = 0;
 pub const LGRP_RSRC_MEM: crate::lgrp_rsrc_t = 1;
