@@ -389,7 +389,7 @@ macro_rules! offset_of {
     ($Ty:path, $field:ident) => {{
         // Taken from bytemuck, avoids accidentally calling on deref
         #[allow(clippy::unneeded_field_pattern)]
-        let $Ty { $field: _, .. };
+        let $Ty { .. };
         let data = core::mem::MaybeUninit::<$Ty>::uninit();
         let ptr = data.as_ptr();
         // nested unsafe, see f!
