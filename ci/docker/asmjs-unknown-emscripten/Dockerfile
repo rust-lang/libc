@@ -1,4 +1,4 @@
-FROM ubuntu:25.04
+FROM ubuntu:26.04
 
 # This is a workaround to avoid the interaction with tzdata.
 ENV DEBIAN_FRONTEND=noninteractive

@@ -1,4 +1,4 @@
-FROM ubuntu:25.04
+FROM ubuntu:26.04
 
 COPY wasi.sh /
 RUN /wasi.sh
