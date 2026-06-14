@@ -2079,6 +2079,17 @@ pub const POSIX_FADV_WILLNEED: c_int = 3;
 pub const POSIX_FADV_DONTNEED: c_int = 4;
 pub const POSIX_FADV_NOREUSE: c_int = 5;
 
+pub const REG_NOSUB: c_int = 0o0004;
+pub const REG_NEWLINE: c_int = 0o0010;
+pub const REG_PEND: c_int = 0o0040;
+pub const REG_INVARG: c_int = 16;
+pub const REG_ILLSEQ: c_int = 17;
+pub const REG_BACKR: c_int = 0o02000;
+
+// For getrandom()
+pub const GRND_NONBLOCK: c_uint = 0x1;
+pub const GRND_RANDOM: c_uint = 0x2;
+
 pub const POLLINIGNEOF: c_short = 0x2000;
 pub const POLLRDHUP: c_short = 0x4000;
 

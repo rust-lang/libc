@@ -7,6 +7,9 @@ pub type socklen_t = u32;
 pub type sa_family_t = u8;
 pub type pthread_t = crate::uintptr_t;
 pub type nfds_t = c_uint;
+#[cfg(target_os = "dragonfly")]
+pub type regoff_t = c_int;
+#[cfg(not(target_os = "dragonfly"))]
 pub type regoff_t = off_t;
 
 s! {
@@ -57,7 +60,7 @@ s! {
         pub ifa_netmask: *mut crate::sockaddr,
         pub ifa_dstaddr: *mut crate::sockaddr,
         pub ifa_data: *mut c_void,
-        #[cfg(target_os = "netbsd")]
+        #[cfg(any(target_os = "dragonfly", target_os = "netbsd"))]
         pub ifa_addrflags: c_uint,
     }
 
@@ -406,10 +409,7 @@ cfg_if! {
 pub const REG_BASIC: c_int = 0o0000;
 pub const REG_EXTENDED: c_int = 0o0001;
 pub const REG_ICASE: c_int = 0o0002;
-pub const REG_NOSUB: c_int = 0o0004;
-pub const REG_NEWLINE: c_int = 0o0010;
 pub const REG_NOSPEC: c_int = 0o0020;
-pub const REG_PEND: c_int = 0o0040;
 pub const REG_DUMP: c_int = 0o0200;
 
 pub const REG_NOMATCH: c_int = 1;
@@ -427,7 +427,6 @@ pub const REG_ESPACE: c_int = 12;
 pub const REG_BADRPT: c_int = 13;
 pub const REG_EMPTY: c_int = 14;
 pub const REG_ASSERT: c_int = 15;
-pub const REG_INVARG: c_int = 16;
 pub const REG_ATOI: c_int = 255;
 pub const REG_ITOA: c_int = 0o0400;
 
@@ -436,7 +435,6 @@ pub const REG_NOTEOL: c_int = 0o00002;
 pub const REG_STARTEND: c_int = 0o00004;
 pub const REG_TRACE: c_int = 0o00400;
 pub const REG_LARGE: c_int = 0o01000;
-pub const REG_BACKR: c_int = 0o02000;
 
 pub const TIOCCBRK: c_uint = 0x2000747a;
 pub const TIOCSBRK: c_uint = 0x2000747b;

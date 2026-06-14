@@ -133,6 +133,12 @@ pub const CRNCYSTR: crate::nl_item = 50;
 
 pub const CODESET: crate::nl_item = 51;
 
+pub const REG_NOSUB: c_int = 0o0004;
+pub const REG_NEWLINE: c_int = 0o0010;
+pub const REG_PEND: c_int = 0o0040;
+pub const REG_INVARG: c_int = 16;
+pub const REG_BACKR: c_int = 0o02000;
+
 pub const EXIT_FAILURE: c_int = 1;
 pub const EXIT_SUCCESS: c_int = 0;
 pub const RAND_MAX: c_int = 2147483647;
