@@ -132,8 +132,6 @@ pub const F_DUPFD_CLOFORK: c_int = 49;
 pub const F_DUP2FD_CLOEXEC: c_int = 48;
 pub const F_DUP2FD_CLOFORK: c_int = 50;
 
-pub const _PC_LAST: c_int = 102;
-
 pub const PRIV_PROC_SENSITIVE: c_uint = 0x0008;
 pub const PRIV_PFEXEC_AUTH: c_uint = 0x0200;
 pub const PRIV_PROC_TPD: c_uint = 0x0400;

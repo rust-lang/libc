@@ -1736,9 +1736,6 @@ pub const LC_NUMERIC_MASK: c_int = 1 << crate::LC_NUMERIC;
 pub const LC_TIME_MASK: c_int = 1 << crate::LC_TIME;
 pub const LC_MESSAGES_MASK: c_int = 1 << crate::LC_MESSAGES;
 
-const _LC_LAST: c_int = 7;
-pub const LC_ALL_MASK: c_int = (1 << _LC_LAST) - 2;
-
 pub const LC_GLOBAL_LOCALE: crate::locale_t = -1isize as crate::locale_t;
 
 // sys/reboot.h
