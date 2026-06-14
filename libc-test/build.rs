@@ -4184,6 +4184,13 @@ fn test_linux(target: &str) {
     cfg.skip_const(move |constant| {
         let name = constant.ident();
 
+        // FIXME(linux): Requires newer kernel headers than CI has, even on glibc,
+        // so skip on every libc until CI catches up. OPEN_TREE_NAMESPACE landed in
+        // v7.0, FSCONFIG_CMD_CREATE_EXCL in v6.6.
+        if name == "OPEN_TREE_NAMESPACE" || name == "FSCONFIG_CMD_CREATE_EXCL" {
+            return true;
+        }
+
         // L4Re requires a min stack size of 64k; that isn't defined in uClibc, but
         // somewhere in the core libraries. uClibc wants 16k, but that's not enough.
         if l4re && name == "PTHREAD_STACK_MIN" {
@@ -4206,6 +4213,10 @@ fn test_linux(target: &str) {
                 || name.starts_with("EPOLL")
                 || name.starts_with("F_")
                 || name.starts_with("FALLOC_FL_")
+                || name.starts_with("FSCONFIG_")
+                || name.starts_with("FSMOUNT_")
+                || name.starts_with("FSOPEN_")
+                || name.starts_with("FSPICK_")
                 || name.starts_with("IFLA_")
                 || name.starts_with("KEXEC_")
                 || name.starts_with("MS_")
