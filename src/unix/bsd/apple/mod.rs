@@ -79,13 +79,7 @@ pub type ledger_array_t = *mut crate::ledger_t;
 
 pub type iconv_t = *mut c_void;
 
-// mach/host_info.h
-pub type host_cpu_load_info_t = *mut host_cpu_load_info;
-pub type host_cpu_load_info_data_t = host_cpu_load_info;
-
 // mach/processor_info.h
-pub type processor_cpu_load_info_t = *mut processor_cpu_load_info;
-pub type processor_cpu_load_info_data_t = processor_cpu_load_info;
 pub type processor_basic_info_t = *mut processor_basic_info;
 pub type processor_basic_info_data_t = processor_basic_info;
 pub type processor_set_basic_info_data_t = processor_set_basic_info;
@@ -892,16 +886,6 @@ s! {
         pub vi_fsid: crate::fsid_t,
     }
 
-    pub struct vnode_info_path {
-        pub vip_vi: vnode_info,
-        pub vip_path: [c_char; crate::MAXPATHLEN as usize],
-    }
-
-    pub struct proc_vnodepathinfo {
-        pub pvi_cdir: vnode_info_path,
-        pub pvi_rdir: vnode_info_path,
-    }
-
     pub struct vm_statistics {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -1204,11 +1188,6 @@ s! {
         pub ifs6_out_mlddone: crate::u_quad_t,
     }
 
-    // mach/host_info.h
-    pub struct host_cpu_load_info {
-        pub cpu_ticks: [crate::natural_t; CPU_STATE_MAX as usize],
-    }
-
     // net/if_mib.h
     pub struct ifmibdata {
         /// Name of interface
@@ -1365,9 +1344,6 @@ s! {
         pub sigev_value: crate::sigval,
         __unused1: Padding<*mut c_void>, //actually a function pointer
         pub sigev_notify_attributes: *mut crate::pthread_attr_t,
-    }
-    pub struct processor_cpu_load_info {
-        pub cpu_ticks: [c_uint; CPU_STATE_MAX as usize],
     }
 
     pub struct processor_basic_info {
@@ -2014,7 +1990,6 @@ pub const CPU_STATE_USER: c_int = 0;
 pub const CPU_STATE_SYSTEM: c_int = 1;
 pub const CPU_STATE_IDLE: c_int = 2;
 pub const CPU_STATE_NICE: c_int = 3;
-pub const CPU_STATE_MAX: c_int = 4;
 
 pub const PROCESSOR_BASIC_INFO: c_int = 1;
 pub const PROCESSOR_CPU_LOAD_INFO: c_int = 2;
@@ -3396,14 +3371,6 @@ pub const HW_TARGET: c_int = 26;
 pub const HW_PRODUCT: c_int = 27;
 pub const HW_MAXID: c_int = 28;
 pub const USER_CS_PATH: c_int = 1;
-pub const USER_BC_BASE_MAX: c_int = 2;
-pub const USER_BC_DIM_MAX: c_int = 3;
-pub const USER_BC_SCALE_MAX: c_int = 4;
-pub const USER_BC_STRING_MAX: c_int = 5;
-pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
-pub const USER_EXPR_NEST_MAX: c_int = 7;
-pub const USER_LINE_MAX: c_int = 8;
-pub const USER_RE_DUP_MAX: c_int = 9;
 pub const USER_POSIX2_VERSION: c_int = 10;
 pub const USER_POSIX2_C_BIND: c_int = 11;
 pub const USER_POSIX2_C_DEV: c_int = 12;
@@ -3525,8 +3492,6 @@ pub const RTV_SPIPE: c_int = 0x10;
 pub const RTV_SSTHRESH: c_int = 0x20;
 pub const RTV_RTT: c_int = 0x40;
 pub const RTV_RTTVAR: c_int = 0x80;
-
-pub const RTAX_MAX: c_int = 8;
 
 pub const KERN_PROCARGS2: c_int = 49;
 

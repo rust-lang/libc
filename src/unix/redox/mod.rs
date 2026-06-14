@@ -332,9 +332,6 @@ cfg_if! {
     }
 }
 
-// limits.h
-pub const PATH_MAX: c_int = 4096;
-
 // fcntl.h
 pub const F_GETLK: c_int = 5;
 pub const F_SETLK: c_int = 6;

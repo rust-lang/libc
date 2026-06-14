@@ -5188,7 +5188,7 @@ fn test_haiku(target: &str) {
             "dirent" => true,
             // The following structs contain function pointers, which cannot be initialized
             // with mem::zeroed(), so skip the automated test
-            "image_info" | "thread_info" => true,
+            "thread_info" => true,
 
             "Elf64_Phdr" => true,
 
@@ -5288,7 +5288,6 @@ fn test_haiku(target: &str) {
 
             // skip these enum-type fields
             ("thread_info", "state") => true,
-            ("image_info", "image_type") => true,
             _ => false,
         }
     });
@@ -5319,7 +5318,6 @@ fn test_haiku(target: &str) {
             | "cpu_info"
             | "system_info"
             | "object_wait_info"
-            | "image_info"
             | "attr_info"
             | "index_info"
             | "fs_info"
@@ -5347,7 +5345,6 @@ fn test_haiku(target: &str) {
             "type_" if struct_ == "attr_info" => Some("type".to_string()),
             "type_" if struct_ == "index_info" => Some("type".to_string()),
             "type_" if struct_ == "cpu_topology_node_info" => Some("type".to_string()),
-            "image_type" if struct_ == "image_info" => Some("type".to_string()),
             _ => None,
         }
     });

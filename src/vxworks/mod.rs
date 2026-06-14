@@ -1,7 +1,5 @@
 //! Interface to VxWorks C library
 
-use core::ptr::null_mut;
-
 use crate::prelude::*;
 
 extern_ty! {
@@ -128,33 +126,12 @@ s! {
         pub condAttrClockId: crate::clockid_t,
     }
 
-    // b_pthread_cond_t.h
-    pub struct pthread_cond_t {
-        pub condSemId: crate::_Vx_SEM_ID,
-        pub condValid: c_int,
-        pub condInitted: c_int,
-        pub condRefCount: c_int,
-        pub condMutex: *mut crate::pthread_mutex_t,
-        pub condAttr: crate::pthread_condattr_t,
-        pub condSemName: [c_char; _PTHREAD_SHARED_SEM_NAME_MAX],
-    }
-
     // b_pthread_rwlockattr_t.h
     pub struct pthread_rwlockattr_t {
         pub rwlockAttrStatus: c_int,
         pub rwlockAttrPshared: c_int,
         pub rwlockAttrMaxReaders: c_uint,
         pub rwlockAttrConformOpt: c_uint,
-    }
-
-    // b_pthread_rwlock_t.h
-    pub struct pthread_rwlock_t {
-        pub rwlockSemId: crate::_Vx_SEM_ID,
-        pub rwlockReadersRefCount: c_uint,
-        pub rwlockValid: c_int,
-        pub rwlockInitted: c_int,
-        pub rwlockAttr: crate::pthread_rwlockattr_t,
-        pub rwlockSemName: [c_char; _PTHREAD_SHARED_SEM_NAME_MAX],
     }
 
     // b_struct_timeval.h
@@ -334,18 +311,6 @@ s! {
         mutexAttrProtocol: c_int,
         mutexAttrPrioceiling: c_int,
         mutexAttrType: c_int,
-    }
-
-    // pthread.h (krnl)
-    // b_pthread_mutex_t.h (usr)
-    pub struct pthread_mutex_t {
-        pub mutexSemId: crate::_Vx_SEM_ID, /*_Vx_SEM_ID ..*/
-        pub mutexValid: c_int,
-        pub mutexInitted: c_int,
-        pub mutexCondRefCount: c_int,
-        pub mutexSavPriority: c_int,
-        pub mutexAttr: crate::pthread_mutexattr_t,
-        pub mutexSemName: [c_char; _PTHREAD_SHARED_SEM_NAME_MAX],
     }
 
     // b_struct_timespec.h
@@ -577,12 +542,6 @@ s! {
 
 s_no_extra_traits! {
     // dirent.h
-    pub struct dirent {
-        pub d_ino: crate::ino_t,
-        pub d_name: [c_char; _PARM_NAME_MAX as usize + 1],
-        pub d_type: c_uchar,
-    }
-
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
@@ -704,7 +663,6 @@ pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_STACK_MIN: usize = 4096;
-pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
 //sched.h
 pub const SCHED_FIFO: c_int = 0x01;
@@ -1043,7 +1001,6 @@ pub const AF_SOCKDEV: c_int = 31;
 pub const AF_TIPC: c_int = 33;
 pub const AF_MIPC: c_int = 34;
 pub const AF_MIPC_SAFE: c_int = 35;
-pub const AF_MAX: c_int = 39;
 
 // termios.h
 pub const B0: crate::speed_t = 0;
@@ -1173,7 +1130,6 @@ pub const FIOGETNAME: c_int = 18;
 pub const FIONBIO: c_int = 0x90040010;
 
 // limits.h
-pub const PATH_MAX: c_int = _PARM_PATH_MAX;
 pub const _POSIX_PATH_MAX: c_int = 256;
 
 // Some poll stuff
@@ -1316,61 +1272,10 @@ pub const AT_SYMLINK_NOFOLLOW: c_int = 0x100;
 pub const AT_REMOVEDIR: c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x400;
 
-// vxParams.h definitions
-pub const _PARM_NAME_MAX: c_int = 255;
-pub const _PARM_PATH_MAX: c_int = 1024;
-
 // WAIT STUFF
 pub const WNOHANG: c_int = 0x01;
 pub const WUNTRACED: c_int = 0x02;
 pub const WCONTINUED: c_int = 0x04;
-
-const PTHREAD_MUTEXATTR_INITIALIZER: pthread_mutexattr_t = pthread_mutexattr_t {
-    mutexAttrStatus: PTHREAD_INITIALIZED_OBJ,
-    mutexAttrProtocol: PTHREAD_PRIO_NONE,
-    mutexAttrPrioceiling: 0,
-    mutexAttrType: PTHREAD_MUTEX_DEFAULT,
-    mutexAttrPshared: 1,
-};
-pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    mutexSemId: null_mut(),
-    mutexValid: PTHREAD_VALID_OBJ,
-    mutexInitted: PTHREAD_UNUSED_YET_OBJ,
-    mutexCondRefCount: 0,
-    mutexSavPriority: -1,
-    mutexAttr: PTHREAD_MUTEXATTR_INITIALIZER,
-    mutexSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
-};
-
-const PTHREAD_CONDATTR_INITIALIZER: pthread_condattr_t = pthread_condattr_t {
-    condAttrStatus: 0xf70990ef,
-    condAttrPshared: 1,
-    condAttrClockId: CLOCK_REALTIME,
-};
-pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    condSemId: null_mut(),
-    condValid: PTHREAD_VALID_OBJ,
-    condInitted: PTHREAD_UNUSED_YET_OBJ,
-    condRefCount: 0,
-    condMutex: null_mut(),
-    condAttr: PTHREAD_CONDATTR_INITIALIZER,
-    condSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
-};
-
-const PTHREAD_RWLOCKATTR_INITIALIZER: pthread_rwlockattr_t = pthread_rwlockattr_t {
-    rwlockAttrStatus: PTHREAD_INITIALIZED_OBJ,
-    rwlockAttrPshared: 1,
-    rwlockAttrMaxReaders: 0,
-    rwlockAttrConformOpt: 1,
-};
-pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    rwlockSemId: null_mut(),
-    rwlockReadersRefCount: 0,
-    rwlockValid: PTHREAD_VALID_OBJ,
-    rwlockInitted: PTHREAD_UNUSED_YET_OBJ,
-    rwlockAttr: PTHREAD_RWLOCKATTR_INITIALIZER,
-    rwlockSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
-};
 
 pub const SEEK_SET: c_int = 0;
 pub const SEEK_CUR: c_int = 1;
@@ -1776,27 +1681,6 @@ extern "C" {
         -> c_int;
 
     // pthread.h
-    pub fn pthread_mutex_init(
-        mutex: *mut pthread_mutex_t,
-        attr: *const pthread_mutexattr_t,
-    ) -> c_int;
-
-    // pthread.h
-    pub fn pthread_mutex_destroy(mutex: *mut pthread_mutex_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_mutex_lock(mutex: *mut pthread_mutex_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_mutex_trylock(mutex: *mut pthread_mutex_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_mutex_timedlock(attr: *mut pthread_mutex_t, spec: *const timespec) -> c_int;
-
-    // pthread.h
-    pub fn pthread_mutex_unlock(mutex: *mut pthread_mutex_t) -> c_int;
-
-    // pthread.h
     pub fn pthread_attr_setname(pAttr: *mut crate::pthread_attr_t, name: *mut c_char) -> c_int;
 
     // pthread.h
@@ -1868,16 +1752,6 @@ extern "C" {
     pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
 
     // dirent.h
-    pub fn readdir_r(
-        pDir: *mut crate::DIR,
-        entry: *mut crate::dirent,
-        result: *mut *mut crate::dirent,
-    ) -> c_int;
-
-    // dirent.h
-    pub fn readdir(pDir: *mut crate::DIR) -> *mut crate::dirent;
-
-    // dirent.h
     pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
 
     // dirent.h
@@ -1912,27 +1786,6 @@ extern "C" {
     ) -> c_int;
 
     // pthread.h
-    pub fn pthread_cond_init(
-        cond: *mut crate::pthread_cond_t,
-        attr: *const crate::pthread_condattr_t,
-    ) -> c_int;
-
-    // pthread.h
-    pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_cond_signal(cond: *mut crate::pthread_cond_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_cond_broadcast(cond: *mut crate::pthread_cond_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_cond_wait(
-        cond: *mut crate::pthread_cond_t,
-        mutex: *mut crate::pthread_mutex_t,
-    ) -> c_int;
-
-    // pthread.h
     pub fn pthread_rwlockattr_init(attr: *mut crate::pthread_rwlockattr_t) -> c_int;
 
     // pthread.h
@@ -1943,42 +1796,6 @@ extern "C" {
         attr: *mut crate::pthread_rwlockattr_t,
         attr2: c_uint,
     ) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_init(
-        attr: *mut crate::pthread_rwlock_t,
-        host: *const crate::pthread_rwlockattr_t,
-    ) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_destroy(attr: *mut crate::pthread_rwlock_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_rdlock(attr: *mut crate::pthread_rwlock_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_tryrdlock(attr: *mut crate::pthread_rwlock_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_timedrdlock(
-        attr: *mut crate::pthread_rwlock_t,
-        host: *const crate::timespec,
-    ) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_wrlock(attr: *mut crate::pthread_rwlock_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_trywrlock(attr: *mut crate::pthread_rwlock_t) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_timedwrlock(
-        attr: *mut crate::pthread_rwlock_t,
-        host: *const crate::timespec,
-    ) -> c_int;
-
-    // pthread.h
-    pub fn pthread_rwlock_unlock(attr: *mut crate::pthread_rwlock_t) -> c_int;
 
     // pthread.h
     pub fn pthread_key_create(
@@ -1994,13 +1811,6 @@ extern "C" {
 
     // pthread.h
     pub fn pthread_getspecific(key: crate::pthread_key_t) -> *mut c_void;
-
-    // pthread.h
-    pub fn pthread_cond_timedwait(
-        cond: *mut crate::pthread_cond_t,
-        mutex: *mut crate::pthread_mutex_t,
-        abstime: *const crate::timespec,
-    ) -> c_int;
 
     // pthread.h
     pub fn pthread_attr_getname(attr: *mut crate::pthread_attr_t, name: *mut *mut c_char) -> c_int;
