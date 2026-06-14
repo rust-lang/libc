@@ -1,16 +1,23 @@
 // FIXME(ulibc): this module has definitions that are redundant with the parent
 #![allow(dead_code)]
 
-use crate::off64_t;
 use crate::prelude::*;
 
 pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
 pub type regoff_t = c_int;
-pub type rlim_t = c_ulong;
 pub type __rlimit_resource_t = c_ulong;
 pub type __priority_which_t = c_uint;
+pub type ino_t = u64;
+pub type off_t = i64;
+pub type rlim_t = u64;
+pub type blkcnt_t = i64;
+pub type fsblkcnt_t = u64;
+pub type fsfilcnt_t = u64;
+
+pub type flock64 = flock;
+pub type statvfs64 = statvfs;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -23,6 +30,14 @@ cfg_if! {
 }
 
 s! {
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
+        pub l_pid: crate::pid_t,
+    }
+
     pub struct statvfs {
         // Different than GNU!
         pub f_bsize: c_ulong,
@@ -33,12 +48,9 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
-        #[cfg(target_endian = "little")]
         pub f_fsid: c_ulong,
         #[cfg(target_pointer_width = "32")]
         __f_unused: Padding<c_int>,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
         __f_spare: [c_int; 6],
@@ -472,8 +484,18 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
 
-    pub fn pwritev(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off64_t) -> ssize_t;
-    pub fn preadv(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off64_t) -> ssize_t;
+    pub fn pwritev(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: crate::off64_t,
+    ) -> ssize_t;
+    pub fn preadv(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: crate::off64_t,
+    ) -> ssize_t;
 
     pub fn sethostid(hostid: c_long) -> c_int;
     pub fn fanotify_mark(
@@ -483,7 +505,23 @@ extern "C" {
         dirfd: c_int,
         path: *const c_char,
     ) -> c_int;
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `getrlimit` instead. The unsuffixed routine is defined upstream in terms of \
+                the suffixed routine under default builds of uclibc-ng, and the `libc` crate is \
+                itself phasing out support for suffixed variants in favor of a single fixed-width \
+                unsuffixed variant. The `rlimit` type is also defined in terms of its 64-bit \
+                suffixed type."
+    )]
     pub fn getrlimit64(resource: crate::__rlimit_resource_t, rlim: *mut crate::rlimit64) -> c_int;
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `setrlimit` instead. The unsuffixed routine is defined upstream in terms of \
+                the suffixed routine under default builds of uclibc-ng, and the `libc` crate is \
+                itself phasing out support for suffixed variants in favor of a single fixed-width \
+                unsuffixed variant. The `rlimit` type is also defined in terms of its 64-bit \
+                suffixed type."
+    )]
     pub fn setrlimit64(resource: crate::__rlimit_resource_t, rlim: *const crate::rlimit64)
         -> c_int;
     pub fn getrlimit(resource: crate::__rlimit_resource_t, rlim: *mut crate::rlimit) -> c_int;

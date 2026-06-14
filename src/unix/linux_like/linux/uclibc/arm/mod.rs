@@ -1,22 +1,31 @@
-use crate::off64_t;
 use crate::prelude::*;
 
 pub type wchar_t = c_uint;
 pub type time_t = c_long;
 
 pub type clock_t = c_long;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
-pub type ino_t = c_ulong;
-pub type off_t = c_long;
 pub type pthread_t = c_ulong;
 pub type suseconds_t = c_long;
 
 pub type nlink_t = c_uint;
 pub type blksize_t = c_long;
-pub type blkcnt_t = c_long;
 
+pub type statfs64 = statfs;
+pub type stat64 = stat;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsblkcnt_t` instead. The unsuffixed type is defined in terms of the suffixed type \
+            in default builds of upstream uclibc-ng, and the `libc` crate is itself phasing out \
+            support for suffixed variants in favor of a single fixed-width unsuffixed type."
+)]
 pub type fsblkcnt64_t = u64;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsfilcnt_t` instead. The unsuffixed type is defined in terms of the suffixed type \
+            in default builds of upstream uclibc-ng, and the `libc` crate is itself phasing out \
+            support for suffixed variants in favor of a single fixed-width unsuffixed type."
+)]
 pub type fsfilcnt64_t = u64;
 pub type __u64 = c_ulonglong;
 pub type __s64 = c_longlong;
@@ -43,56 +52,25 @@ s! {
     }
 
     pub struct stat {
-        pub st_dev: c_ulonglong,
-        __pad1: Padding<c_ushort>,
-        pub st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
-        pub st_nlink: crate::nlink_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulonglong,
-        __pad2: Padding<c_ushort>,
-        pub st_size: off_t,
-        pub st_blksize: crate::blksize_t,
-        pub st_blocks: crate::blkcnt_t,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
-        __unused4: Padding<c_ulong>,
-        __unused5: Padding<c_ulong>,
-    }
-
-    pub struct stat64 {
-        pub st_dev: c_ulonglong,
-        pub __pad1: c_uint,
+        pub st_dev: crate::dev_t,
+        __pad1: Padding<c_uint>,
         pub __st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulonglong,
-        pub __pad2: c_uint,
-        pub st_size: off64_t,
+        pub st_rdev: crate::dev_t,
+        __pad2: Padding<c_uint>,
+        pub st_size: crate::off_t,
         pub st_blksize: crate::blksize_t,
-        pub st_blocks: crate::blkcnt64_t,
+        pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
+        pub st_atime_nsec: c_ulong,
         pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
+        pub st_mtime_nsec: c_ulong,
         pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
-        pub st_ino: crate::ino64_t,
-    }
-
-    pub struct flock {
-        pub l_type: c_short,
-        pub l_whence: c_short,
-        pub l_start: off_t,
-        pub l_len: off_t,
-        pub l_pid: crate::pid_t,
+        pub st_ctime_nsec: c_ulong,
+        pub st_ino: crate::ino_t,
     }
 
     pub struct sysinfo {
@@ -126,37 +104,6 @@ s! {
         pub f_frsize: c_int,
         pub f_flags: c_int,
         pub f_spare: [c_int; 4],
-    }
-
-    pub struct statfs64 {
-        pub f_type: c_int,
-        pub f_bsize: c_int,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_files: crate::fsfilcnt64_t,
-        pub f_ffree: crate::fsfilcnt64_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_int,
-        pub f_frsize: c_int,
-        pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
-        pub f_fsid: c_ulong,
-        __f_unused: Padding<c_int>,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
     }
 
     pub struct sigset_t {

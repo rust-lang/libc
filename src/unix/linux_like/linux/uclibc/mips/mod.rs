@@ -2,6 +2,26 @@ use crate::prelude::*;
 
 pub type pthread_t = c_ulong;
 
+pub type statfs64 = statfs;
+
+s! {
+    pub struct statfs {
+        pub f_type: c_long,
+        pub f_bsize: c_long,
+        pub f_frsize: c_long,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_files: crate::fsblkcnt_t,
+        pub f_ffree: crate::fsblkcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
+
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_long,
+        pub f_flags: c_long,
+        f_spare: [c_long; 5],
+    }
+}
+
 pub const SFD_CLOEXEC: c_int = 0x080000;
 
 pub const NCCS: usize = 32;
