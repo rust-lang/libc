@@ -181,7 +181,6 @@ cfg_if! {
         pub use linux::can::j1939::*;
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
-        pub use linux::can::*;
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
         pub use linux::netlink::*;
@@ -189,7 +188,6 @@ cfg_if! {
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
-        pub use pthread::*;
         pub use pthread_::introspection::*;
         pub use pthread_::pthread_spis::*;
         pub use pthread_::spawn::*;

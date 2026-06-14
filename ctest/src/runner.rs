@@ -38,6 +38,7 @@ pub fn generate_test(
     let mut cfg = cc::Build::new();
     cfg.file(output_file_path.with_extension(generator.language.extension()));
     cfg.host(&host);
+    cfg.target(&target);
 
     if target.contains("msvc") {
         cfg.flag("/W3")
@@ -63,10 +64,12 @@ pub fn generate_test(
             .flag("-Werror")
             .flag("-Wno-unused-parameter")
             .flag("-Wno-type-limits")
-            // allow taking address of packed struct members:
-            .flag("-Wno-address-of-packed-member")
-            .flag("-Wno-unknown-warning-option")
-            .flag("-Wno-deprecated-declarations"); // allow deprecated items
+            .flag("-Wno-deprecated-declarations") // allow deprecated items
+            // Probe support instead of assuming a compiler family. This keeps
+            // the suppression on newer GCC/Clang while avoiding regressions on
+            // older toolchains that reject these flags.
+            .flag_if_supported("-Wno-address-of-packed-member")
+            .flag_if_supported("-Wno-unknown-warning-option");
     }
 
     for p in &generator.includes {
@@ -77,6 +80,10 @@ pub fn generate_test(
         cfg.flag(flag);
     }
 
+    for flag in &generator.flags_if_supported {
+        cfg.flag_if_supported(flag);
+    }
+
     for (k, v) in &generator.global_defines {
         cfg.define(k, v.as_ref().map(|s| &s[..]));
     }
@@ -84,8 +91,7 @@ pub fn generate_test(
     cfg.cpp(matches!(generator.language, Language::CXX));
 
     let stem: &str = output_file_path.file_stem().unwrap().to_str().unwrap();
-    cfg.target(&target)
-        .out_dir(output_file_path.parent().unwrap())
+    cfg.out_dir(output_file_path.parent().unwrap())
         .compile(stem);
 
     Ok(output_file_path)
