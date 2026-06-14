@@ -6,4 +6,3 @@ getgrnam
 getgrnam_r
 getpwnam_r
 getpwuid_r
-posix_fallocate64
