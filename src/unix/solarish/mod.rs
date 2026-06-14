@@ -882,6 +882,7 @@ pub const IPV6_MULTICAST_IF: c_int = 0x6;
 pub const IPV6_MULTICAST_HOPS: c_int = 0x7;
 pub const IPV6_MULTICAST_LOOP: c_int = 0x8;
 pub const IPV6_PKTINFO: c_int = 0xb;
+pub const IPV6_HOPLIMIT: c_int = 0xc;
 pub const IPV6_RECVPKTINFO: c_int = 0x12;
 pub const IPV6_RECVTCLASS: c_int = 0x19;
 pub const IPV6_DONTFRAG: c_int = 0x21;
@@ -1233,6 +1234,8 @@ pub const EAI_SERVICE: c_int = 9;
 pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 pub const EAI_OVERFLOW: c_int = 12;
+
+pub const AI_CANONNAME: c_int = 0x0010;
 
 pub const NI_NOFQDN: c_uint = 0x0001;
 pub const NI_NUMERICHOST: c_uint = 0x0002;
@@ -2263,9 +2266,7 @@ f! {
     }
 
     pub fn FD_ZERO(set: *mut fd_set) -> () {
-        for slot in (*set).fds_bits.iter_mut() {
-            *slot = 0;
-        }
+        (*set).fds_bits.fill(0);
     }
 }
 

@@ -179,15 +179,15 @@ cfg_if! {
         pub use linux::can::bcm::*;
         pub use linux::can::error::*;
         pub use linux::can::j1939::*;
+        pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
-        pub use linux::can::*;
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
         pub use linux::netlink::*;
+        pub use linux::pidfd::*;
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
-        pub use pthread::*;
         pub use pthread_::introspection::*;
         pub use pthread_::pthread_spis::*;
         pub use pthread_::spawn::*;
@@ -195,7 +195,9 @@ cfg_if! {
         pub use signal::*;
     } else if #[cfg(target_os = "netbsd")] {
         pub use net::if_::*;
+        pub use sys::file::*;
         pub use sys::ipc::*;
+        pub use sys::socket::*;
         pub use sys::statvfs::*;
         pub use sys::time::*;
         pub use sys::timex::*;
@@ -207,6 +209,8 @@ cfg_if! {
     } else if #[cfg(target_os = "nto")] {
         pub use net::bpf::*;
         pub use net::if_::*;
+    } else if #[cfg(target_os = "freebsd")] {
+        pub use sys::file::*;
     }
 }
 

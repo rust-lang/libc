@@ -13,6 +13,8 @@ use std::{
 // make sure to add it to this list as well.
 const ALLOWED_CFGS: &[&str] = &[
     "emscripten_old_stat_abi",
+    // Should be enabled by users if esp-idf (>=6.0) is build with picolibc instead of newlib.
+    "espidf_picolibc",
     "espidf_time32",
     "freebsd10",
     "freebsd11",
@@ -28,8 +30,10 @@ const ALLOWED_CFGS: &[&str] = &[
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
-    // Corresponds to `_REDIR_TIME64` in musl
+    // musl v1.2.3+ && 32-bit: time_t is i64, struct layouts change
     "musl32_time64",
+    // Corresponds to `_REDIR_TIME64` in musl: symbol redirects to __*_time64
+    "musl_redir_time64",
     "vxworks_lt_25_09",
 ];
 
@@ -51,7 +55,8 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
     ),
 ];
 
-/// Musl architectures that set `#define _REDIR_TIME64 1`.
+/// Musl architectures that define `_REDIR_TIME64` (i.e. those that transitioned
+/// from 32-bit to 64-bit `time_t` and need `__*_time64` symbol redirects).
 const MUSL_REDIR_TIME64_ARCHES: &[&str] = &["arm", "mips", "powerpc", "x86"];
 
 fn main() {
@@ -110,16 +115,19 @@ fn main() {
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
 
-    // loongarch64 and ohos only exist with recent musl
-    if target_arch == "loongarch64" || target_env == "ohos" {
+    // loongarch64, hexagon, and ohos only exist with recent musl
+    if target_arch == "loongarch64" || target_arch == "hexagon" || target_env == "ohos" {
         musl_v1_2_3 = true;
     }
 
     if musl && musl_v1_2_3 {
         set_cfg("musl_v1_2_3");
-        if MUSL_REDIR_TIME64_ARCHES.contains(&target_arch.as_str()) {
+        if target_ptr_width == "32" {
             set_cfg("musl32_time64");
             set_cfg("linux_time_bits64");
+        }
+        if MUSL_REDIR_TIME64_ARCHES.contains(&target_arch.as_str()) {
+            set_cfg("musl_redir_time64");
         }
     }
 
@@ -143,10 +151,10 @@ fn main() {
         ) {
             (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
             (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
-            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
+            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb),
             (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
             (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
-            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
+            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits, fb),
             (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
         };
         let valid_bits = ["32", "64"];

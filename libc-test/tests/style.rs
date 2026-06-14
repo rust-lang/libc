@@ -23,7 +23,9 @@ use style_lib::{
 const SKIP_PREFIXES: &[&str] = &[
     // Don't run the style checker on the reorganized portion of the crate while we figure
     // out what style we want.
-    "new/", "types.rs",
+    "new/",
+    "primitives.rs",
+    "types.rs",
 ];
 
 #[test]

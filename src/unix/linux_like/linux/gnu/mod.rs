@@ -7,6 +7,7 @@ pub type __rlimit_resource_t = c_uint;
 pub type Lmid_t = c_long;
 pub type regoff_t = c_int;
 pub type __kernel_rwf_t = c_int;
+pub type __be16 = crate::__u16;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -171,7 +172,7 @@ s! {
     }
 
     pub struct __c_anonymous_ptrace_syscall_info_exit {
-        pub sval: crate::__s64,
+        pub rval: crate::__s64,
         pub is_error: crate::__u8,
     }
 
@@ -179,11 +180,13 @@ s! {
         pub nr: crate::__u64,
         pub args: [crate::__u64; 6],
         pub ret_data: crate::__u32,
+        reserved2: Padding<crate::__u32>,
     }
 
     pub struct ptrace_syscall_info {
         pub op: crate::__u8,
-        pub pad: [crate::__u8; 3],
+        reserved: Padding<crate::__u8>,
+        pub flags: crate::__u16,
         pub arch: crate::__u32,
         pub instruction_pointer: crate::__u64,
         pub stack_pointer: crate::__u64,
@@ -403,6 +406,15 @@ s_no_extra_traits! {
         ))]
         __pad: Padding<[c_char; 4]>,
         __glibc_reserved: Padding<[c_char; 32]>,
+    }
+
+    // linux/if_ether.h
+
+    #[repr(C, packed)]
+    pub struct ethhdr {
+        pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_source: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_proto: crate::__be16,
     }
 
     // Internal, for casts to access union fields

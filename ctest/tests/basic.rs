@@ -174,3 +174,38 @@ fn test_entrypoint_invalid_syntax() {
 
     assert!(fails)
 }
+
+#[test]
+fn test_raw_identifier_field() {
+    let include_path = PathBuf::from("tests/input");
+    let crate_path = include_path.join("raw_ident.rs");
+    let library_path = "raw_ident.out.a";
+
+    let (mut gen_, out_dir) = default_generator(1, Some("raw_ident.h")).unwrap();
+    gen_.rename_struct_ty(|ty| Some(ty.to_string()));
+    let output_file = gen_.generate_files(&crate_path, library_path).unwrap();
+
+    let rust_output = fs::read_to_string(output_file.with_extension("rs")).unwrap();
+    let c_output = fs::read_to_string(output_file.with_extension("c")).unwrap();
+
+    assert!(rust_output.contains("(*uninit_ty).r#type"));
+    assert!(rust_output.contains("offset_of!(RawIdent, r#type)"));
+    assert!(rust_output.contains("ctest_offset_of__RawIdent__type"));
+    assert!(rust_output.contains("ctest_field_ptr__RawIdent__type"));
+
+    assert!(c_output.contains(", type)"));
+    assert!(c_output.contains("->type"));
+    assert!(!c_output.contains("r#type"));
+    assert!(c_output.contains("ctest_offset_of__RawIdent__type"));
+    assert!(c_output.contains("ctest_field_ptr__RawIdent__type"));
+
+    if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
+        generate_test(&mut gen_, &crate_path, library_path).unwrap();
+        let test_binary = __compile_test(&out_dir, crate_path, library_path).unwrap();
+        let result = __run_test(test_binary);
+        if let Err(err) = &result {
+            eprintln!("Test failed: {err:?}");
+        }
+        assert!(result.is_ok());
+    }
+}

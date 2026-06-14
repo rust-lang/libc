@@ -1011,24 +1011,6 @@ s! {
 
     // linux/pidfd.h
 
-    #[non_exhaustive]
-    pub struct pidfd_info {
-        pub mask: crate::__u64,
-        pub cgroupid: crate::__u64,
-        pub pid: crate::__u32,
-        pub tgid: crate::__u32,
-        pub ppid: crate::__u32,
-        pub ruid: crate::__u32,
-        pub rgid: crate::__u32,
-        pub euid: crate::__u32,
-        pub egid: crate::__u32,
-        pub suid: crate::__u32,
-        pub sgid: crate::__u32,
-        pub fsuid: crate::__u32,
-        pub fsgid: crate::__u32,
-        pub exit_code: crate::__s32,
-    }
-
     // linux/uio.h
 
     pub struct dmabuf_cmsg {
@@ -1263,6 +1245,24 @@ s! {
         pub sched_deadline: crate::__u64,
         pub sched_period: crate::__u64,
     }
+
+    // linux/fcntl.h
+
+    pub struct file_handle {
+        pub handle_bytes: c_uint,
+        pub handle_type: c_int,
+        pub f_handle: [c_uchar; 0],
+    }
+
+    // include/uapi/linux/rtnetlink.h
+    pub struct ifinfomsg {
+        pub ifi_family: c_uchar,
+        __ifi_pad: Padding<c_uchar>,
+        pub ifi_type: c_ushort,
+        pub ifi_index: c_int,
+        pub ifi_flags: c_uint,
+        pub ifi_change: c_uint,
+    }
 }
 
 cfg_if! {
@@ -1397,6 +1397,11 @@ pub const IFF_ECHO: c_int = 0x40000;
 
 // linux/fcntl.h
 pub const AT_EXECVE_CHECK: c_int = 0x10000;
+
+pub const MAX_HANDLE_SZ: c_int = 128;
+pub const AT_HANDLE_FID: c_int = 0x200;
+pub const AT_HANDLE_MNT_ID_UNIQUE: c_int = 0x001;
+pub const AT_HANDLE_CONNECTABLE: c_int = 0x002;
 
 // linux/if_addr.h
 pub const IFA_UNSPEC: c_ushort = 0;
@@ -1599,38 +1604,12 @@ pub const NS_MNT_GET_INFO: Ioctl = _IOR::<mnt_ns_info>(NSIO, 10);
 pub const NS_MNT_GET_NEXT: Ioctl = _IOR::<mnt_ns_info>(NSIO, 11);
 pub const NS_MNT_GET_PREV: Ioctl = _IOR::<mnt_ns_info>(NSIO, 12);
 
-// linux/pidfd.h
-pub const PIDFD_NONBLOCK: c_uint = O_NONBLOCK as c_uint;
-pub const PIDFD_THREAD: c_uint = O_EXCL as c_uint;
-
-pub const PIDFD_SIGNAL_THREAD: c_uint = 1 << 0;
-pub const PIDFD_SIGNAL_THREAD_GROUP: c_uint = 1 << 1;
-pub const PIDFD_SIGNAL_PROCESS_GROUP: c_uint = 1 << 2;
-
-pub const PIDFD_INFO_PID: c_uint = 1 << 0;
-pub const PIDFD_INFO_CREDS: c_uint = 1 << 1;
-pub const PIDFD_INFO_CGROUPID: c_uint = 1 << 2;
-pub const PIDFD_INFO_EXIT: c_uint = 1 << 3;
-
-pub const PIDFD_INFO_SIZE_VER0: c_uint = 64;
-
-const PIDFS_IOCTL_MAGIC: c_uint = 0xFF;
-pub const PIDFD_GET_CGROUP_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 1);
-pub const PIDFD_GET_IPC_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 2);
-pub const PIDFD_GET_MNT_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 3);
-pub const PIDFD_GET_NET_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 4);
-pub const PIDFD_GET_PID_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 5);
-pub const PIDFD_GET_PID_FOR_CHILDREN_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 6);
-pub const PIDFD_GET_TIME_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 7);
-pub const PIDFD_GET_TIME_FOR_CHILDREN_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 8);
-pub const PIDFD_GET_USER_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 9);
-pub const PIDFD_GET_UTS_NAMESPACE: Ioctl = _IO(PIDFS_IOCTL_MAGIC, 10);
-pub const PIDFD_GET_INFO: Ioctl = _IOWR::<pidfd_info>(PIDFS_IOCTL_MAGIC, 11);
-
 pub const PR_SET_MDWE: c_int = 65;
 pub const PR_GET_MDWE: c_int = 66;
 pub const PR_MDWE_REFUSE_EXEC_GAIN: c_uint = 1 << 0;
 pub const PR_MDWE_NO_INHERIT: c_uint = 1 << 1;
+pub const PR_SET_MEMORY_MERGE: c_int = 67;
+pub const PR_GET_MEMORY_MERGE: c_int = 68;
 
 pub const GRND_NONBLOCK: c_uint = 0x0001;
 pub const GRND_RANDOM: c_uint = 0x0002;
@@ -4033,7 +4012,7 @@ cfg_if! {
                 msg_prio: *mut c_uint,
             ) -> ssize_t;
             #[cfg_attr(
-                any(gnu_time_bits64, musl32_time64),
+                any(gnu_time_bits64, musl_redir_time64),
                 link_name = "__mq_timedreceive_time64"
             )]
             pub fn mq_timedreceive(
@@ -4050,7 +4029,7 @@ cfg_if! {
                 msg_prio: c_uint,
             ) -> c_int;
             #[cfg_attr(
-                any(gnu_time_bits64, musl32_time64),
+                any(gnu_time_bits64, musl_redir_time64),
                 link_name = "__mq_timedsend_time64"
             )]
             pub fn mq_timedsend(
@@ -4076,7 +4055,7 @@ extern "C" {
     pub fn lcong48(p: *mut c_ushort);
 
     #[cfg_attr(gnu_time_bits64, link_name = "__lutimes64")]
-    #[cfg_attr(musl32_time64, link_name = "__lutimes_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__lutimes_time64")]
     pub fn lutimes(file: *const c_char, times: *const crate::timeval) -> c_int;
 
     pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
@@ -4152,9 +4131,15 @@ extern "C" {
     pub fn fremovexattr(filedes: c_int, name: *const c_char) -> c_int;
     pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
     pub fn timerfd_create(clockid: crate::clockid_t, flags: c_int) -> c_int;
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__timerfd_gettime64")]
+    #[cfg_attr(
+        any(gnu_time_bits64, musl_redir_time64),
+        link_name = "__timerfd_gettime64"
+    )]
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut crate::itimerspec) -> c_int;
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__timerfd_settime64")]
+    #[cfg_attr(
+        any(gnu_time_bits64, musl_redir_time64),
+        link_name = "__timerfd_settime64"
+    )]
     pub fn timerfd_settime(
         fd: c_int,
         flags: c_int,
@@ -4171,7 +4156,7 @@ extern "C" {
     ) -> c_int;
     pub fn dup3(oldfd: c_int, newfd: c_int, flags: c_int) -> c_int;
     #[cfg_attr(gnu_time_bits64, link_name = "__sigtimedwait64")]
-    #[cfg_attr(musl32_time64, link_name = "__sigtimedwait_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__sigtimedwait_time64")]
     pub fn sigtimedwait(
         set: *const sigset_t,
         info: *mut siginfo_t,
@@ -4234,7 +4219,7 @@ extern "C" {
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 
     #[cfg_attr(gnu_time_bits64, link_name = "__sched_rr_get_interval64")]
-    #[cfg_attr(musl32_time64, link_name = "__sched_rr_get_interval_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__sched_rr_get_interval_time64")]
     pub fn sched_rr_get_interval(pid: crate::pid_t, tp: *mut crate::timespec) -> c_int;
     pub fn sched_setparam(pid: crate::pid_t, param: *const crate::sched_param) -> c_int;
     pub fn setns(fd: c_int, nstype: c_int) -> c_int;
@@ -4252,7 +4237,7 @@ extern "C" {
     ) -> c_int;
     pub fn sched_getscheduler(pid: crate::pid_t) -> c_int;
     #[cfg_attr(
-        any(gnu_time_bits64, musl32_time64),
+        any(gnu_time_bits64, musl_redir_time64),
         link_name = "__clock_nanosleep_time64"
     )]
     pub fn clock_nanosleep(
@@ -4366,6 +4351,15 @@ extern "C" {
     pub fn gethostid() -> c_long;
 
     pub fn klogctl(syslog_type: c_int, bufp: *mut c_char, len: c_int) -> c_int;
+
+    pub fn name_to_handle_at(
+        dirfd: c_int,
+        path: *const c_char,
+        handle: *mut file_handle,
+        mount_id: *mut c_int,
+        flags: c_int,
+    ) -> c_int;
+    pub fn open_by_handle_at(mount_fd: c_int, handle: *mut file_handle, flags: c_int) -> c_int;
 }
 
 // LFS64 extensions

@@ -252,7 +252,11 @@ pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
 
 cfg_if! {
-    if #[cfg(all(not(target_os = "nto"), not(target_os = "aix")))] {
+    if #[cfg(all(
+        not(target_os = "nto"),
+        not(target_os = "aix"),
+        not(target_os = "espidf")
+    ))] {
         pub const DT_UNKNOWN: u8 = 0;
         pub const DT_FIFO: u8 = 1;
         pub const DT_CHR: u8 = 2;
@@ -908,7 +912,7 @@ extern "C" {
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
         link_name = "fstat64"
     )]
-    #[cfg_attr(musl32_time64, link_name = "__fstat_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__fstat_time64")]
     pub fn fstat(fildes: c_int, buf: *mut stat) -> c_int;
 
     pub fn mkdir(path: *const c_char, mode: mode_t) -> c_int;
@@ -927,7 +931,7 @@ extern "C" {
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
         link_name = "stat64"
     )]
-    #[cfg_attr(musl32_time64, link_name = "__stat_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__stat_time64")]
     pub fn stat(path: *const c_char, buf: *mut stat) -> c_int;
 
     pub fn pclose(stream: *mut crate::FILE) -> c_int;
@@ -971,6 +975,15 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__opendir30")]
     pub fn opendir(dirname: *const c_char) -> *mut crate::DIR;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86_64"),
+        link_name = "fdopendir$INODE64"
+    )]
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "fdopendir$INODE64$UNIX2003"
+    )]
+    pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
 
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
@@ -1008,6 +1021,8 @@ extern "C" {
         group: crate::gid_t,
         flags: c_int,
     ) -> c_int;
+    #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
+    pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", not(target_arch = "aarch64")),
         link_name = "fstatat$INODE64"
@@ -1022,7 +1037,7 @@ extern "C" {
         link_name = "fstatat64"
     )]
     #[cfg(not(target_os = "l4re"))]
-    #[cfg_attr(musl32_time64, link_name = "__fstatat_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__fstatat_time64")]
     pub fn fstatat(dirfd: c_int, pathname: *const c_char, buf: *mut stat, flags: c_int) -> c_int;
     #[cfg(not(target_os = "l4re"))]
     pub fn linkat(
@@ -1032,6 +1047,8 @@ extern "C" {
         newpath: *const c_char,
         flags: c_int,
     ) -> c_int;
+    #[cfg(not(target_os = "l4re"))]
+    pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     #[cfg(not(target_os = "l4re"))]
     pub fn renameat(
         olddirfd: c_int,
@@ -1127,7 +1144,7 @@ extern "C" {
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__nanosleep50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__nanosleep64")]
-    #[cfg_attr(musl32_time64, link_name = "__nanosleep_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__nanosleep_time64")]
     pub fn nanosleep(rqtp: *const timespec, rmtp: *mut timespec) -> c_int;
     pub fn tcgetpgrp(fd: c_int) -> pid_t;
     pub fn tcsetpgrp(fd: c_int, pgrp: crate::pid_t) -> c_int;
@@ -1172,7 +1189,7 @@ extern "C" {
     pub fn umask(mask: mode_t) -> mode_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utime50")]
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__utime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__utime64")]
     pub fn utime(file: *const c_char, buf: *const utimbuf) -> c_int;
 
     #[cfg_attr(
@@ -1227,7 +1244,7 @@ extern "C" {
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
         link_name = "lstat64"
     )]
-    #[cfg_attr(musl32_time64, link_name = "__lstat_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__lstat_time64")]
     pub fn lstat(path: *const c_char, buf: *mut stat) -> c_int;
 
     #[cfg_attr(
@@ -1259,7 +1276,7 @@ extern "C" {
 
     #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__getrusage64")]
-    #[cfg_attr(musl32_time64, link_name = "__getrusage_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__getrusage_time64")]
     pub fn getrusage(resource: c_int, usage: *mut rusage) -> c_int;
 
     #[cfg_attr(
@@ -1342,7 +1359,7 @@ extern "C" {
         link_name = "pthread_cond_timedwait$UNIX2003"
     )]
     #[cfg_attr(gnu_time_bits64, link_name = "__pthread_cond_timedwait64")]
-    #[cfg_attr(musl32_time64, link_name = "__pthread_cond_timedwait_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__pthread_cond_timedwait_time64")]
     pub fn pthread_cond_timedwait(
         cond: *mut crate::pthread_cond_t,
         lock: *mut crate::pthread_mutex_t,
@@ -1411,11 +1428,11 @@ extern "C" {
 
     #[cfg_attr(target_os = "netbsd", link_name = "__utimes50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__utimes64")]
-    #[cfg_attr(musl32_time64, link_name = "__utimes_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__utimes_time64")]
     pub fn utimes(filename: *const c_char, times: *const crate::timeval) -> c_int;
     pub fn dlopen(filename: *const c_char, flag: c_int) -> *mut c_void;
     pub fn dlerror() -> *mut c_char;
-    #[cfg_attr(musl32_time64, link_name = "__dlsym_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__dlsym_time64")]
     pub fn dlsym(handle: *mut c_void, symbol: *const c_char) -> *mut c_void;
     pub fn dlclose(handle: *mut c_void) -> c_int;
 
@@ -1466,42 +1483,42 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime_r50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__gmtime64_r")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
-    #[cfg_attr(musl32_time64, link_name = "__gmtime64_r")]
+    #[cfg_attr(musl_redir_time64, link_name = "__gmtime64_r")]
     pub fn gmtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__localtime_r50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__localtime64_r")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
-    #[cfg_attr(musl32_time64, link_name = "__localtime64_r")]
+    #[cfg_attr(musl_redir_time64, link_name = "__localtime64_r")]
     pub fn localtime_r(time_p: *const time_t, result: *mut tm) -> *mut tm;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "mktime$UNIX2003"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__mktime50")]
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__mktime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__mktime64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
     pub fn mktime(tm: *mut tm) -> time_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__time50")]
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__time64")]
+    #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__time64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
     pub fn time(time: *mut time_t) -> time_t;
     #[cfg_attr(target_os = "netbsd", link_name = "__gmtime50")]
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__gmtime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__gmtime64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
     pub fn gmtime(time_p: *const time_t) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__locatime50")]
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__localtime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__localtime64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
     pub fn localtime(time_p: *const time_t) -> *mut tm;
     #[cfg_attr(target_os = "netbsd", link_name = "__difftime50")]
-    #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__difftime64")]
+    #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__difftime64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
     pub fn difftime(time1: time_t, time0: time_t) -> c_double;
     #[cfg(not(target_os = "aix"))]
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__timegm64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
-    #[cfg_attr(musl32_time64, link_name = "__timegm_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__timegm_time64")]
     pub fn timegm(tm: *mut crate::tm) -> time_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__mknod50")]
@@ -1562,7 +1579,7 @@ extern "C" {
     #[cfg_attr(target_os = "netbsd", link_name = "__select50")]
     #[cfg_attr(target_os = "aix", link_name = "__fd_select")]
     #[cfg_attr(gnu_time_bits64, link_name = "__select64")]
-    #[cfg_attr(musl32_time64, link_name = "__select_time64")]
+    #[cfg_attr(musl_redir_time64, link_name = "__select_time64")]
     pub fn select(
         nfds: c_int,
         readfds: *mut fd_set,
@@ -2127,7 +2144,7 @@ cfg_if! {
     )))] {
         extern "C" {
             #[cfg_attr(target_os = "netbsd", link_name = "__adjtime50")]
-            #[cfg_attr(any(gnu_time_bits64, musl32_time64), link_name = "__adjtime64")]
+            #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__adjtime64")]
             pub fn adjtime(delta: *const timeval, olddelta: *mut timeval) -> c_int;
         }
     } else if #[cfg(target_os = "solaris")] {
@@ -2210,22 +2227,6 @@ cfg_if! {
                 link_name = "pause$UNIX2003"
             )]
             pub fn pause() -> c_int;
-
-            #[cfg(not(target_os = "l4re"))]
-            pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
-            #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
-            pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
-
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86_64"),
-                link_name = "fdopendir$INODE64"
-            )]
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86"),
-                link_name = "fdopendir$INODE64$UNIX2003"
-            )]
-            pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
-
             #[cfg_attr(
                 all(target_os = "macos", not(target_arch = "aarch64")),
                 link_name = "readdir_r$INODE64"
@@ -2305,7 +2306,7 @@ cfg_if! {
             )]
             #[cfg_attr(target_os = "netbsd", link_name = "__pselect50")]
             #[cfg_attr(gnu_time_bits64, link_name = "__pselect64")]
-            #[cfg_attr(musl32_time64, link_name = "__pselect_time64")]
+            #[cfg_attr(musl_redir_time64, link_name = "__pselect_time64")]
             pub fn pselect(
                 nfds: c_int,
                 readfds: *mut fd_set,

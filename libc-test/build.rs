@@ -332,6 +332,9 @@ fn test_apple(target: &str) {
 
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_introspection_t" if x86_64 => true,
+
+            // FIXME(macos): The size is changed in macOS 26.
+            "vm_statistics64" => true,
             _ => false,
         }
     });
@@ -346,6 +349,21 @@ fn test_apple(target: &str) {
             // https://github.com/apple-oss-distributions/xnu/commit/e6231be02a03711ca404e5121a151b24afbff733
             "TIOCREMOTE" => true,
 
+            // FIXME(macos): bumped up on macOS 26
+            // https://github.com/apple-oss-distributions/xnu/commit/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea
+            "ELAST" => true,
+
+            // FIXME(macos): bumped up on macOS 26, it's sizeof `vm_statistics64_data_t`
+            "HOST_VM_INFO64_COUNT" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
+            // FIXME(macos): The size is changed in macOS 26.
+            "vm_statistics64_data_t" => true,
             _ => false,
         }
     });
@@ -1429,6 +1447,8 @@ fn test_netbsd(target: &str) {
             ("ifreq", "ifr_ifru") => true,
             ("utmpx", "ut_exit") => true,
             ("posix_spawn_file_actions_entry_t", "fae_data") => true,
+            ("kinfo_pcb", "ki_s") => true,
+            ("kinfo_pcb", "ki_d") => true,
 
             _ => false,
         }
@@ -2745,6 +2765,9 @@ fn test_freebsd(target: &str) {
             // Added in FreeBSD 15
             "AT_HWCAP3" | "AT_HWCAP4" if Some(15) > freebsd_ver => true,
 
+            // Added in FreeBSD 15
+            "DTYPE_INOTIFY" | "DTYPE_JAILDESC" if Some(15) > freebsd_ver => true,
+
             _ => false,
         }
     });
@@ -3612,10 +3635,10 @@ fn config_gnu_bits(target: &str, cfg: &mut ctest::TestGenerator) {
         ) {
             (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
             (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
-            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb.clone()),
+            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb),
             (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
             (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
-            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits.clone(), fb),
+            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits, fb),
             (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
         };
         let valid_bits = ["32", "64"];
@@ -3671,6 +3694,7 @@ fn test_linux(target: &str) {
     }
 
     let arm = target.contains("arm");
+    let eabihf = target.contains("eabihf");
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
@@ -3685,6 +3709,7 @@ fn test_linux(target: &str) {
     let gnueabihf = target.contains("gnueabihf");
     let x86_64_gnux32 = target.contains("gnux32") && x86_64;
     let riscv64 = target.contains("riscv64");
+    let hexagon = target.contains("hexagon");
     let loongarch64 = target.contains("loongarch64");
     let wasm32 = target.contains("wasm32");
     let uclibc = target.contains("uclibc");
@@ -3698,12 +3723,17 @@ fn test_linux(target: &str) {
     }
     let old_musl = musl && !musl_v1_2_3;
 
+    let b32 = arm || target.contains("hexagon") || mips32 || ppc32 || x86_32;
+
     let mut cfg = ctest_cfg();
-    if (musl_v1_2_3 || loongarch64) && musl {
+    if (musl_v1_2_3 || loongarch64 || hexagon) && musl {
         cfg.cfg("musl_v1_2_3", None);
-        if arm || ppc32 || x86_32 || mips32 {
+        if b32 {
             cfg.cfg("musl32_time64", None);
             cfg.cfg("linux_time_bits64", None);
+        }
+        if arm || ppc32 || x86_32 || mips32 {
+            cfg.cfg("musl_redir_time64", None);
         }
     }
     cfg.define("_GNU_SOURCE", None)
@@ -3847,8 +3877,9 @@ fn test_linux(target: &str) {
             "linux/can.h",
             "linux/can/bcm.h",
             "linux/can/error.h",
-            "linux/can/raw.h",
             "linux/can/j1939.h",
+            "linux/can/netlink.h",
+            "linux/can/raw.h",
             "linux/cn_proc.h",
             "linux/connector.h",
             "linux/dccp.h",
@@ -4142,6 +4173,10 @@ fn test_linux(target: &str) {
             // FIXME(musl): New fields in newer versions
             "utmpx" if !old_musl => true,
 
+            // FIXME(linux): Requires >= 6.16 kernel headers.
+            // On 64 bits the size did not change, skip only for 32 bits.
+            "ptrace_syscall_info" if pointer_width == 32 => true,
+
             _ => false,
         }
     });
@@ -4185,6 +4220,7 @@ fn test_linux(target: &str) {
                 || name.starts_with("STATX_")
                 || name.starts_with("SW_")
                 || name.starts_with("SYS_")
+                || name.starts_with("SYS3264_")
                 || name.starts_with("TCP_")
                 || name.starts_with("UINPUT_")
                 || name.starts_with("VMADDR_")
@@ -4237,6 +4273,8 @@ fn test_linux(target: &str) {
                 | "PR_MDWE_NO_INHERIT"
                 | "PR_MDWE_REFUSE_EXEC_GAIN"
                 | "PR_SET_MDWE"
+                | "PR_GET_MEMORY_MERGE"
+                | "PR_SET_MEMORY_MERGE"
                 | "IPPROTO_ETHERNET"
                 | "IPPROTO_MPTCP"
                 | "SI_DETHREAD"
@@ -4253,6 +4291,8 @@ fn test_linux(target: &str) {
                 | "PR_SCHED_CORE_SHARE_TO" => return true,
 
                 /* Added in versions more recent than what we test */
+                // Since 1.2.0
+                "SO_DETACH_REUSEPORT_BPF" => return true,
                 // Since 1.2.3
                 "SO_BUSY_POLL_BUDGET" | "SO_PREFER_BUSY_POLL" => return true,
 
@@ -4487,11 +4527,22 @@ fn test_linux(target: &str) {
             // FIXME(linux):  Requires >= 6.16 kernel headers.
             "PTRACE_SET_SYSCALL_INFO" => true,
 
+            // FIXME(linux): Requires >= 6.13 kernel headers.
+            "AT_HANDLE_CONNECTABLE" => true,
+
+            // FIXME(linux): Requires >= 6.12 kernel headers.
+            "AT_HANDLE_MNT_ID_UNIQUE" => true,
+
+            // FIXME(musl): This value is not yet in musl.
+            // eabihf targets are tested using an older version of glibc
+            "AT_HANDLE_FID" if musl || eabihf => true,
+
             _ => false,
         }
     });
 
     let c_enums = [
+        "can_state",
         "membarrier_cmd",
         "pid_type",
         "proc_cn_event",
@@ -4582,6 +4633,8 @@ fn test_linux(target: &str) {
             "preadv2" | "pwritev2" if musl => true,
             // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
             "statx" if musl => true,
+            // FIXME(musl): Supported since musl 1.2.6 but not yet in CI.
+            "renameat2" if musl => true,
 
             // Needs glibc 2.33 or later.
             "mallinfo2" => true,
@@ -4683,7 +4736,9 @@ fn test_linux(target: &str) {
                 true
             }
             // the `u` field is in fact an anonymous union
-            ("ptrace_syscall_info", "u" | "pad") if gnu => true,
+            ("ptrace_syscall_info", "u") if gnu => true,
+            // FIXME(linux): `flags` requires >= 6.16 kernel headers
+            ("ptrace_syscall_info", "flags") if gnu => true,
             // the vregs field is a `__uint128_t` C's type.
             ("user_fpsimd_struct", "vregs") => true,
             // Linux >= 5.11 tweaked the `svm_zero` field of the `sockaddr_vm` struct.
@@ -4734,6 +4789,7 @@ fn test_linux(target: &str) {
             ("bcm_msg_head", "frames") => true,
             // FAM
             ("af_alg_iv", "iv") => true,
+            ("file_handle", "f_handle") if musl => true,
             // FIXME(ctest): ctest does not translate the rust code which computes the padding size
             ("pthread_cond_t", "__padding") if l4re => true,
             _ => false,

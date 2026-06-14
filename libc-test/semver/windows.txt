@@ -212,6 +212,7 @@ fputs
 fread
 free
 freopen
+fscanf
 fseek
 fsetpos
 fstat
@@ -286,6 +287,7 @@ remove
 rename
 rewind
 rmdir
+scanf
 sendto
 setbuf
 setlocale
@@ -294,9 +296,12 @@ setvbuf
 sighandler_t
 signal
 size_t
+snprintf
 sockaddr
 socket
+sprintf
 srand
+sscanf
 ssize_t
 stat
 strcat

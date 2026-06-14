@@ -11,7 +11,7 @@ use crate::prelude::*;
 // This is restricted to `Copy` types since that's a loose indicator that zeros is actually
 // a valid bitpattern. There is no technical reason this is required, though, so it could be
 // lifted in the future if it becomes a problem.
-#[allow(unused)]
+#[allow(dead_code)]
 #[repr(transparent)]
 #[derive(Clone, Copy)]
 pub(crate) struct Padding<T: Copy>(MaybeUninit<T>);
@@ -23,20 +23,16 @@ impl<T: Copy> Default for Padding<T> {
 }
 
 impl<T: Copy> Padding<T> {
-    /// Const constructor for uninitialized padding in const contexts.
-    // FIXME: Change this into zeroed() and use MaybeUninit::zeroed()
-    // when we depend on rustc 1.75.0.
-    #[allow(unused)]
-    pub(crate) const fn uninit() -> Self {
-        // We can still safely use uninit here, since padding is something
-        // that is not meant to be read or written anyways.
-        Self(MaybeUninit::uninit())
+    /// Create a `Padding` initialized with the given value.
+    #[allow(dead_code)]
+    pub(crate) const fn new(val: T) -> Self {
+        Self(MaybeUninit::new(val))
     }
 }
 
 impl<T: Copy> fmt::Debug for Padding<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Taken frmo `MaybeUninit`'s debug implementation
+        // Taken from `MaybeUninit`'s debug implementation
         // NB: there is no `.pad_fmt` so we can't use a simpler `format_args!("Padding<{..}>").
         let full_name = core::any::type_name::<Self>();
         let prefix_len = full_name.find("Padding").unwrap();

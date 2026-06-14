@@ -46,6 +46,7 @@ pub type __u16 = c_ushort;
 pub type __s16 = c_short;
 pub type __u32 = c_uint;
 pub type __s32 = c_int;
+pub type __be16 = __u16;
 
 // linux/elf.h
 
@@ -615,6 +616,15 @@ s_no_extra_traits! {
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
 
+    // linux/if_ether.h
+
+    #[repr(C, packed)]
+    pub struct ethhdr {
+        pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_source: [c_uchar; crate::ETH_ALEN as usize],
+        pub h_proto: crate::__be16,
+    }
+
     // Internal, for casts to access union fields
     struct sifields_sigchld {
         si_pid: crate::pid_t,
@@ -694,6 +704,15 @@ pub const FILENAME_MAX: c_uint = 4096;
 pub const FOPEN_MAX: c_uint = 20;
 pub const POSIX_FADV_DONTNEED: c_int = 4;
 pub const POSIX_FADV_NOREUSE: c_int = 5;
+pub const POSIX_SPAWN_RESETIDS: c_short = 1;
+pub const POSIX_SPAWN_SETPGROUP: c_short = 2;
+pub const POSIX_SPAWN_SETSIGDEF: c_short = 4;
+pub const POSIX_SPAWN_SETSIGMASK: c_short = 8;
+pub const POSIX_SPAWN_SETSCHEDPARAM: c_short = 16;
+pub const POSIX_SPAWN_SETSCHEDULER: c_short = 32;
+pub const POSIX_SPAWN_USEVFORK: c_short = 64;
+pub const POSIX_SPAWN_SETSID: c_short = 128;
+pub const POSIX_SPAWN_CLOEXEC_DEFAULT: c_short = 256;
 pub const L_tmpnam: c_uint = 4096;
 pub const TMP_MAX: c_uint = 308915776;
 pub const _PC_LINK_MAX: c_int = 1;
@@ -3286,9 +3305,7 @@ f! {
     }
 
     pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        for slot in cpuset.__bits.iter_mut() {
-            *slot = 0;
-        }
+        cpuset.__bits.fill(0);
     }
 
     pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
@@ -3483,6 +3500,20 @@ extern "C" {
         flags: c_int,
         new_value: *const itimerspec,
         old_value: *mut itimerspec,
+    ) -> c_int;
+    pub fn timer_create(
+        clockid: crate::clockid_t,
+        sevp: *mut crate::sigevent,
+        timerid: *mut crate::timer_t,
+    ) -> c_int;
+    pub fn timer_delete(timerid: crate::timer_t) -> c_int;
+    pub fn timer_getoverrun(timerid: crate::timer_t) -> c_int;
+    pub fn timer_gettime(timerid: crate::timer_t, curr_value: *mut crate::itimerspec) -> c_int;
+    pub fn timer_settime(
+        timerid: crate::timer_t,
+        flags: c_int,
+        new_value: *const crate::itimerspec,
+        old_value: *mut crate::itimerspec,
     ) -> c_int;
     pub fn syscall(num: c_long, ...) -> c_long;
     pub fn sched_getaffinity(

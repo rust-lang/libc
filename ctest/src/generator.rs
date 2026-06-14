@@ -62,6 +62,7 @@ pub struct TestGenerator {
     pub(crate) includes: Vec<PathBuf>,
     out_dir: Option<PathBuf>,
     pub(crate) flags: Vec<String>,
+    pub(crate) flags_if_supported: Vec<String>,
     pub(crate) global_defines: Vec<(String, Option<String>)>,
     cfg: Vec<(String, Option<String>)>,
     mapped_names: Vec<MappedName>,
@@ -670,6 +671,15 @@ impl TestGenerator {
         self
     }
 
+    /// Add a flag to the C compiler invocation if the compiler supports it.
+    ///
+    /// This is useful for warning suppressions that are only available on some
+    /// compiler families or versions.
+    pub fn flag_if_supported(&mut self, flag: &str) -> &mut Self {
+        self.flags_if_supported.push(flag.to_string());
+        self
+    }
+
     /// Set a `-D` flag for the C compiler being called.
     ///
     /// This can be used to define various global variables to configure how header
@@ -927,6 +937,10 @@ impl TestGenerator {
     ///
     /// # Examples
     ///
+    /// This method can be used to remove the `struct` keyword from types in the
+    /// generated tests. For example, the code below will generate tests for
+    /// `timeval_t` rather than `struct timeval`.
+    ///
     /// ```no_run
     /// use ctest::TestGenerator;
     ///
@@ -949,6 +963,10 @@ impl TestGenerator {
     /// Configures how a Rust union type is translated to a C union type.
     ///
     /// # Examples
+    ///
+    /// This method can be used to remove the `union` keyword from types in the
+    /// generated tests. For example, the code below will generate tests for
+    /// `__T1Union` rather than `union T1Union`.
     ///
     /// ```no_run
     /// use ctest::TestGenerator;
