@@ -38,6 +38,11 @@ pub type socklen_t = u32;
 pub type pthread_t = c_ulong;
 pub type mode_t = u32;
 pub type ino64_t = u64;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `off_t` instead. The `libc` crate is on track to solely supporting 64-bit types, \
+            so the suffixed variants are to be deprecated. See #PENDING for details and discussion."
+)]
 pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
@@ -3797,6 +3802,11 @@ extern "C" {
 
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    // FIXME(msrv): once we bump MSRV past stabilization of `expect` and the
+    // `reason` attribute parameter, mention that this symbol is not meant for
+    // deprecation, but one of its parameters just may be (pending further
+    // discussion.)
+    #[allow(deprecated)]
     pub fn readahead(fd: c_int, offset: off64_t, count: size_t) -> ssize_t;
     pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
     pub fn timerfd_create(clockid: c_int, flags: c_int) -> c_int;
@@ -3837,6 +3847,11 @@ extern "C" {
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
+    // FIXME(msrv): once we bump MSRV past stabilization of `expect` and the
+    // `reason` attribute parameter, mention that this symbol is not meant for
+    // deprecation, but one of its parameters just may be (pending further
+    // discussion.)
+    #[allow(deprecated)]
     pub fn sync_file_range(fd: c_int, offset: off64_t, nbytes: off64_t, flags: c_uint) -> c_int;
     pub fn getifaddrs(ifap: *mut *mut crate::ifaddrs) -> c_int;
     pub fn freeifaddrs(ifa: *mut crate::ifaddrs);
