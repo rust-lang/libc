@@ -6,14 +6,15 @@ pub type blksize_t = i32;
 pub type clockid_t = c_ulong;
 
 cfg_if! {
-    if #[cfg(any(target_os = "espidf"))] {
+    if #[cfg(any(
+        target_os = "espidf",
+        target_os = "vita",
+        target_os = "rtems",
+        target_arch = "aarch64"
+    ))] {
         pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_long;
-    } else if #[cfg(any(target_os = "vita"))] {
-        pub type dev_t = c_short;
-        pub type ino_t = c_ushort;
-        pub type off_t = c_int;
     } else {
         pub type dev_t = u32;
         pub type ino_t = u32;
@@ -54,13 +55,10 @@ cfg_if! {
 pub type useconds_t = u32;
 
 cfg_if! {
-    if #[cfg(any(
-        target_os = "horizon",
-        all(target_os = "espidf", not(espidf_time32))
-    ))] {
-        pub type time_t = c_longlong;
-    } else {
+    if #[cfg(all(target_os = "espidf", espidf_time32))] {
         pub type time_t = i32;
+    } else {
+        pub type time_t = i64;
     }
 }
 
