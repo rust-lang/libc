@@ -577,6 +577,10 @@ s! {
 
 s_no_extra_traits! {
     // dirent.h
+    // FIXME(msrv): once we bump MSRV past stabilization of `expect` and
+    // `reason`, use those to mention this value is not meant for deprecation,
+    // but the value it relies on is.
+    #[allow(deprecated)]
     pub struct dirent {
         pub d_ino: crate::ino_t,
         pub d_name: [c_char; _PARM_NAME_MAX as usize + 1],
@@ -704,6 +708,12 @@ pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_STACK_MIN: usize = 4096;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
 //sched.h
@@ -1043,6 +1053,12 @@ pub const AF_SOCKDEV: c_int = 31;
 pub const AF_TIPC: c_int = 33;
 pub const AF_MIPC: c_int = 34;
 pub const AF_MIPC_SAFE: c_int = 35;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const AF_MAX: c_int = 39;
 
 // termios.h
@@ -1173,6 +1189,16 @@ pub const FIOGETNAME: c_int = 18;
 pub const FIONBIO: c_int = 0x90040010;
 
 // limits.h
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
+// FIXME(msrv): once we bump MSRV past stabilization of `expect` and `reason`,
+// use those to mention this value is both meant for deprecation and relies on a
+// deprecated value.
+#[allow(deprecated)]
 pub const PATH_MAX: c_int = _PARM_PATH_MAX;
 pub const _POSIX_PATH_MAX: c_int = 256;
 
@@ -1317,7 +1343,19 @@ pub const AT_REMOVEDIR: c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x400;
 
 // vxParams.h definitions
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const _PARM_NAME_MAX: c_int = 255;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const _PARM_PATH_MAX: c_int = 1024;
 
 // WAIT STUFF
@@ -1332,6 +1370,10 @@ const PTHREAD_MUTEXATTR_INITIALIZER: pthread_mutexattr_t = pthread_mutexattr_t {
     mutexAttrType: PTHREAD_MUTEX_DEFAULT,
     mutexAttrPshared: 1,
 };
+// FIXME(msrv): once we bump MSRV past stabilization of `expect` and `reason`,
+// use those to mention this value is not meant for deprecation, but the value
+// it relies on is.
+#[allow(deprecated)]
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     mutexSemId: null_mut(),
     mutexValid: PTHREAD_VALID_OBJ,
@@ -1347,6 +1389,10 @@ const PTHREAD_CONDATTR_INITIALIZER: pthread_condattr_t = pthread_condattr_t {
     condAttrPshared: 1,
     condAttrClockId: CLOCK_REALTIME,
 };
+// FIXME(msrv): once we bump MSRV past stabilization of `expect` and `reason`,
+// use those to mention this value is not meant for deprecation, but the value
+// it relies on is.
+#[allow(deprecated)]
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     condSemId: null_mut(),
     condValid: PTHREAD_VALID_OBJ,
@@ -1363,6 +1409,10 @@ const PTHREAD_RWLOCKATTR_INITIALIZER: pthread_rwlockattr_t = pthread_rwlockattr_
     rwlockAttrMaxReaders: 0,
     rwlockAttrConformOpt: 1,
 };
+// FIXME(msrv): once we bump MSRV past stabilization of `expect` and `reason`,
+// use those to mention this value is not meant for deprecation, but the value
+// it relies on is.
+#[allow(deprecated)]
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     rwlockSemId: null_mut(),
     rwlockReadersRefCount: 0,

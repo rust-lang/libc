@@ -897,8 +897,20 @@ pub const ARG_MAX: c_int = 32000;
 pub const CHILD_MAX: c_int = 256;
 pub const IOV_MAX: c_int = 1024;
 pub const PTHREAD_STACK_MIN: size_t = 65536;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PATH_MAX: c_int = 4096;
 pub const PIPE_BUF: usize = 4096;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NGROUPS_MAX: c_int = 1024;
 
 pub const FILENAME_MAX: c_int = 4096;

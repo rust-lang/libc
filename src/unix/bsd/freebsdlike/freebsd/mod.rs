@@ -2320,13 +2320,61 @@ pub const HW_MACHINE_ARCH: c_int = 11;
 pub const HW_REALMEM: c_int = 12;
 
 pub const USER_CS_PATH: c_int = 1;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_BASE_MAX: c_int = 2;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_DIM_MAX: c_int = 3;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_SCALE_MAX: c_int = 4;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_STRING_MAX: c_int = 5;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_EXPR_NEST_MAX: c_int = 7;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_LINE_MAX: c_int = 8;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_RE_DUP_MAX: c_int = 9;
 pub const USER_POSIX2_VERSION: c_int = 10;
 pub const USER_POSIX2_C_BIND: c_int = 11;
@@ -2444,6 +2492,12 @@ pub const SO_TS_BINTIME: c_int = 1;
 pub const SO_TS_REALTIME: c_int = 2;
 pub const SO_TS_MONOTONIC: c_int = 3;
 pub const SO_TS_DEFAULT: c_int = SO_TS_REALTIME_MICRO;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const SO_TS_CLOCK_MAX: c_int = SO_TS_MONOTONIC;
 
 pub const LOCAL_CREDS: c_int = 2;
@@ -2724,6 +2778,12 @@ pub const IFNET_SLOWHZ: c_int = 1;
 pub const IFAN_ARRIVAL: c_int = 0;
 pub const IFAN_DEPARTURE: c_int = 1;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const IFSTATMAX: c_int = 800;
 
 pub const RSS_FUNC_NONE: c_int = 0;
@@ -3061,6 +3121,12 @@ pub const TCP_PCAP_IN: c_int = 4096;
 pub const TCP_FUNCTION_BLK: c_int = 8192;
 pub const TCP_FUNCTION_ALIAS: c_int = 8193;
 pub const TCP_FASTOPEN_PSK_LEN: c_int = 16;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const TCP_FUNCTION_NAME_LEN_MAX: c_int = 32;
 
 pub const TCP_REUSPORT_LB_NUMA: c_int = 1026;
@@ -3428,6 +3494,12 @@ pub const KKST_STATE_RUNNING: c_int = 2;
 
 // Constants about priority.
 pub const PRI_MIN: c_int = 0;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PRI_MAX: c_int = 255;
 pub const PRI_MIN_ITHD: c_int = PRI_MIN;
 #[deprecated(since = "0.2.133", note = "Not stable across OS versions")]
@@ -3493,6 +3565,10 @@ pub const PRI_MAX_TIMESHARE: c_int = PRI_MIN_IDLE - 1;
 #[allow(deprecated)]
 pub const PUSER: c_int = PRI_MIN_TIMESHARE;
 pub const PRI_MIN_IDLE: c_int = 224;
+// FIXME(msrv): once we bump MSRV past stabilization of `expect` and `reason`,
+// use those to mention this value is not meant for deprecation, but the value
+// it relies on is.
+#[allow(deprecated)]
 pub const PRI_MAX_IDLE: c_int = PRI_MAX;
 
 pub const NZERO: c_int = 0;
@@ -3511,6 +3587,11 @@ pub const CHILD_MAX: c_int = 40;
 /// max command name remembered
 pub const MAXCOMLEN: usize = 19;
 /// max interpreter file name length
+// FIXME(msrv): switch this to use an `expect` and the `reason` attribute
+// parameter once we reach an MSRV were those are stabilized. this is not meant
+// for deprecation, but reading straight from the value that this depends on is
+// considered deprecated behavior.
+#[allow(deprecated)]
 pub const MAXINTERP: c_int = crate::PATH_MAX;
 /// max login name length (incl. NUL)
 pub const MAXLOGNAME: c_int = 33;
@@ -3519,6 +3600,10 @@ pub const MAXUPRC: c_int = CHILD_MAX;
 /// max bytes for an exec function
 pub const NCARGS: c_int = ARG_MAX;
 ///  /* max number groups
+// FIXME(msrv): once we bump MSRV past stabilization of `expect` and `reason`,
+// use those to mention this value is not meant for deprecation, but the value
+// it relies on is.
+#[allow(deprecated)]
 pub const NGROUPS: c_int = NGROUPS_MAX + 1;
 /// max open files per process
 pub const NOFILE: c_int = OPEN_MAX;
@@ -3531,9 +3616,21 @@ pub const MAX_CANON: c_int = 255;
 /// max bytes in terminal input
 pub const MAX_INPUT: c_int = 255;
 /// max bytes in a file name
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NAME_MAX: c_int = 255;
 pub const MAXSYMLINKS: c_int = 32;
 /// max supplemental group id's
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const NGROUPS_MAX: c_int = 1023;
 /// max open files per process
 pub const OPEN_MAX: c_int = 64;
@@ -3548,22 +3645,76 @@ pub const _POSIX_SSIZE_MAX: c_int = 32767;
 pub const _POSIX_STREAM_MAX: c_int = 8;
 
 /// max ibase/obase values in bc(1)
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const BC_BASE_MAX: c_int = 99;
 /// max array elements in bc(1)
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const BC_DIM_MAX: c_int = 2048;
 /// max scale value in bc(1)
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const BC_SCALE_MAX: c_int = 99;
 /// max const string length in bc(1)
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const BC_STRING_MAX: c_int = 1000;
 /// max character class name size
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const CHARCLASS_NAME_MAX: c_int = 14;
 /// max weights for order keyword
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const COLL_WEIGHTS_MAX: c_int = 10;
 /// max expressions nested in expr(1)
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const EXPR_NEST_MAX: c_int = 32;
 /// max bytes in an input line
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const LINE_MAX: c_int = 2048;
 /// max RE's in interval notation
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RE_DUP_MAX: c_int = 255;
 
 pub const _POSIX2_BC_BASE_MAX: c_int = 99;
@@ -3971,6 +4122,12 @@ pub const RTF_FIXEDMTU: c_int = 0x80000;
 
 pub const RTM_VERSION: c_int = 5;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RTAX_MAX: c_int = 8;
 
 // sys/signal.h
@@ -4018,6 +4175,12 @@ pub const SCTP_PR_SCTP_TTL: c_int = 0x0001;
 pub const SCTP_PR_SCTP_PRIO: c_int = 0x0002;
 pub const SCTP_PR_SCTP_BUF: c_int = SCTP_PR_SCTP_PRIO;
 pub const SCTP_PR_SCTP_RTX: c_int = 0x0003;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const SCTP_PR_SCTP_MAX: c_int = SCTP_PR_SCTP_RTX;
 pub const SCTP_PR_SCTP_ALL: c_int = 0x000f;
 
@@ -4100,6 +4263,12 @@ pub const SCTP_ASSOC_SUPPORTS_ASCONF: c_int = 0x03;
 pub const SCTP_ASSOC_SUPPORTS_MULTIBUF: c_int = 0x04;
 pub const SCTP_ASSOC_SUPPORTS_RE_CONFIG: c_int = 0x05;
 pub const SCTP_ASSOC_SUPPORTS_INTERLEAVING: c_int = 0x06;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const SCTP_ASSOC_SUPPORTS_MAX: c_int = 0x06;
 
 pub const SCTP_ADDR_AVAILABLE: c_int = 0x0001;
@@ -4317,10 +4486,18 @@ safe_f! {
         PR_SCTP_POLICY(x) == SCTP_PR_SCTP_RTX
     }
 
+    // FIXME(msrv): once we bump MSRV past stabilization of `expect` and
+    // `reason`, use those to mention this value is not meant for deprecation,
+    // but the value it relies on is.
+    #[allow(deprecated)]
     pub const fn PR_SCTP_INVALID_POLICY(x: c_int) -> bool {
         PR_SCTP_POLICY(x) > SCTP_PR_SCTP_MAX
     }
 
+    // FIXME(msrv): once we bump MSRV past stabilization of `expect` and
+    // `reason`, use those to mention this value is not meant for deprecation,
+    // but the value it relies on is.
+    #[allow(deprecated)]
     pub const fn PR_SCTP_VALID_POLICY(x: c_int) -> bool {
         PR_SCTP_POLICY(x) <= SCTP_PR_SCTP_MAX
     }

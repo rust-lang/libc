@@ -56,6 +56,12 @@ pub const SIGWINCH: c_int = 24;
 pub const SIGUSR1: c_int = 25;
 pub const SIGUSR2: c_int = 26;
 pub const SIGRTMIN: c_int = 27;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const SIGRTMAX: c_int = 31;
 pub const SIGXCPU: c_int = 24;
 pub const SIGXFSZ: c_int = 25;

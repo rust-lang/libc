@@ -629,6 +629,11 @@ pub const B_SYMBOL_TYPE_ANY: i32 = 0x5;
 // storage/StorageDefs.h
 pub const B_DEV_NAME_LENGTH: usize = 128;
 pub const B_FILE_NAME_LENGTH: usize = crate::FILENAME_MAX as usize;
+// FIXME(msrv): replace this with an `expect` and a `reason` parameter once we
+// reach an MSRV where those are stable. This constant does not require
+// deprecation, but reading straight from the value that it is defined as is not
+// a good idea.
+#[allow(deprecated)]
 pub const B_PATH_NAME_LENGTH: usize = crate::PATH_MAX as usize;
 pub const B_ATTR_NAME_LENGTH: usize = B_FILE_NAME_LENGTH - 1;
 pub const B_MIME_TYPE_LENGTH: usize = B_ATTR_NAME_LENGTH - 15;

@@ -641,13 +641,61 @@ pub const HW_MACHINE_PLATFORM: c_int = 12;
 pub const HW_SENSORS: c_int = 13;
 pub const HW_MAXID: c_int = 14;
 pub const USER_CS_PATH: c_int = 1;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_BASE_MAX: c_int = 2;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_DIM_MAX: c_int = 3;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_SCALE_MAX: c_int = 4;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_BC_STRING_MAX: c_int = 5;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_EXPR_NEST_MAX: c_int = 7;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_LINE_MAX: c_int = 8;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const USER_RE_DUP_MAX: c_int = 9;
 pub const USER_POSIX2_VERSION: c_int = 10;
 pub const USER_POSIX2_C_BIND: c_int = 11;
@@ -1168,6 +1216,12 @@ pub const RTM_VERSION: c_int = 7;
 pub const RTAX_MPLS1: c_int = 8;
 pub const RTAX_MPLS2: c_int = 9;
 pub const RTAX_MPLS3: c_int = 10;
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const RTAX_MAX: c_int = 11;
 
 const fn _CMSG_ALIGN(n: usize) -> usize {

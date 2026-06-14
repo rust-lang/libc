@@ -333,6 +333,12 @@ cfg_if! {
 }
 
 // limits.h
+#[deprecated(
+    since = "0.2.187",
+    note = "This constant, among others often used in C for the purposes of denoting the latest \
+            value or limit in a set of constants, has been deprecated. See #3131 for details and \
+            discussion."
+)]
 pub const PATH_MAX: c_int = 4096;
 
 // fcntl.h
