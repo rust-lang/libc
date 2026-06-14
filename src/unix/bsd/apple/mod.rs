@@ -461,6 +461,7 @@ s! {
         pub ifmam_refcount: i32,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct rt_metrics {
         pub rmx_locks: u32,
         pub rmx_mtu: u32,
@@ -475,6 +476,7 @@ s! {
         pub rmx_filler: [u32; 4],
     }
 
+    #[cfg(target_os = "macos")]
     pub struct rt_msghdr {
         pub rtm_msglen: c_ushort,
         pub rtm_version: c_uchar,
@@ -490,6 +492,7 @@ s! {
         pub rtm_rmx: rt_metrics,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct rt_msghdr2 {
         pub rtm_msglen: c_ushort,
         pub rtm_version: c_uchar,
@@ -557,6 +560,7 @@ s! {
         pub int_n_sign_posn: c_char,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct proc_taskinfo {
         pub pti_virtual_size: u64,
         pub pti_resident_size: u64,
@@ -578,6 +582,7 @@ s! {
         pub pti_priority: i32,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct proc_bsdinfo {
         pub pbi_flags: u32,
         pub pbi_status: u32,
@@ -603,6 +608,7 @@ s! {
         pub pbi_start_tvusec: u64,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct proc_bsdshortinfo {
         /// Process ID.
         pub pbsi_pid: u32,
@@ -632,6 +638,7 @@ s! {
         pub pbsi_rfu: u32,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct proc_taskallinfo {
         pub pbsd: proc_bsdinfo,
         pub ptinfo: proc_taskinfo,
@@ -696,6 +703,7 @@ s! {
         pub sdl_data: [c_char; 12],
     }
 
+    #[cfg(target_os = "macos")]
     pub struct sockaddr_inarp {
         pub sin_len: c_uchar,
         pub sin_family: c_uchar,
@@ -706,6 +714,7 @@ s! {
         pub sin_other: c_ushort,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct sockaddr_ctl {
         pub sc_len: c_uchar,
         pub sc_family: c_uchar,
@@ -739,15 +748,14 @@ s! {
     }
 
     // sys/sem.h
-
     pub struct sembuf {
         pub sem_num: c_ushort,
         pub sem_op: c_short,
         pub sem_flg: c_short,
     }
 
-    // sys/shm.h
-
+    // sys/if_arp.h
+    #[cfg(target_os = "macos")]
     pub struct arphdr {
         pub ar_hrd: u16,
         pub ar_pro: u16,
@@ -761,6 +769,7 @@ s! {
     }
 
     // net/ndrv.h
+    #[cfg(target_os = "macos")]
     pub struct sockaddr_ndrv {
         pub snd_len: c_uchar,
         pub snd_family: c_uchar,
@@ -861,6 +870,7 @@ s! {
         pub size: crate::vm_size_t,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct vinfo_stat {
         pub vst_dev: u32,
         pub vst_mode: u16,
@@ -885,6 +895,7 @@ s! {
         pub vst_qspare: [i64; 2],
     }
 
+    #[cfg(target_os = "macos")]
     pub struct vnode_info {
         pub vi_stat: vinfo_stat,
         pub vi_type: c_int,
@@ -892,11 +903,13 @@ s! {
         pub vi_fsid: crate::fsid_t,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct vnode_info_path {
         pub vip_vi: vnode_info,
         pub vip_path: [c_char; crate::MAXPATHLEN as usize],
     }
 
+    #[cfg(target_os = "macos")]
     pub struct proc_vnodepathinfo {
         pub pvi_cdir: vnode_info_path,
         pub pvi_rdir: vnode_info_path,
@@ -1132,6 +1145,7 @@ s! {
         pub tcpi_rxretransmitpackets: u64,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct in6_addrlifetime {
         pub ia6t_expire: time_t,
         pub ia6t_preferred: time_t,
@@ -1139,6 +1153,7 @@ s! {
         pub ia6t_pltime: u32,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct in6_ifstat {
         pub ifs6_in_receive: crate::u_quad_t,
         pub ifs6_in_hdrerr: crate::u_quad_t,
@@ -1167,6 +1182,7 @@ s! {
         pub ifs6_defrtr_expiry_cnt: crate::u_quad_t,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct icmp6_ifstat {
         pub ifs6_in_msg: crate::u_quad_t,
         pub ifs6_in_error: crate::u_quad_t,
@@ -1210,6 +1226,7 @@ s! {
     }
 
     // net/if_mib.h
+    #[cfg(target_os = "macos")]
     pub struct ifmibdata {
         /// Name of interface
         pub ifmd_name: [c_char; crate::IFNAMSIZ],
@@ -1229,6 +1246,7 @@ s! {
         pub ifmd_data: if_data64,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct ifs_iso_8802_3 {
         pub dot3StatsAlignmentErrors: u32,
         pub dot3StatsFCSErrors: u32,
@@ -1249,12 +1267,14 @@ s! {
     }
 
     // kern_control.h
+    #[cfg(target_os = "macos")]
     pub struct ctl_info {
         pub ctl_id: u32,
         pub ctl_name: [c_char; MAX_KCTL_NAME],
     }
 
     // sys/proc_info.h
+    #[cfg(target_os = "macos")]
     pub struct proc_fdinfo {
         pub proc_fd: i32,
         pub proc_fdtype: u32,
@@ -1297,6 +1317,7 @@ s! {
         pub shm_internal: *mut c_void,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct proc_threadinfo {
         pub pth_user_time: u64,
         pub pth_system_time: u64,
@@ -1551,6 +1572,7 @@ s! {
         pub ifr_ifru: __c_anonymous_ifr_ifru,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct in6_ifreq {
         pub ifr_name: [c_char; crate::IFNAMSIZ],
         pub ifr_ifru: __c_anonymous_ifr_ifru6,
@@ -1591,19 +1613,25 @@ s_no_extra_traits! {
         pub ifcu_buf: *mut c_char,
         pub ifcu_req: *mut ifreq,
     }
+}
 
-    pub union __c_anonymous_ifr_ifru6 {
-        pub ifru_addr: crate::sockaddr_in6,
-        pub ifru_dstaddr: crate::sockaddr_in6,
-        pub ifru_flags: c_int,
-        pub ifru_flags6: c_int,
-        pub ifru_metrics: c_int,
-        pub ifru_intval: c_int,
-        pub ifru_data: *mut c_char,
-        pub ifru_lifetime: in6_addrlifetime,
-        pub ifru_stat: in6_ifstat,
-        pub ifru_icmp6stat: icmp6_ifstat,
-        pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        s_no_extra_traits! {
+            pub union __c_anonymous_ifr_ifru6 {
+                pub ifru_addr: crate::sockaddr_in6,
+                pub ifru_dstaddr: crate::sockaddr_in6,
+                pub ifru_flags: c_int,
+                pub ifru_flags6: c_int,
+                pub ifru_metrics: c_int,
+                pub ifru_intval: c_int,
+                pub ifru_data: *mut c_char,
+                pub ifru_lifetime: in6_addrlifetime,
+                pub ifru_stat: in6_ifstat,
+                pub ifru_icmp6stat: icmp6_ifstat,
+                pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
+            }
+        }
     }
 }
 
@@ -1731,6 +1759,7 @@ cfg_if! {
             }
         }
 
+        #[cfg(target_os = "macos")]
         impl PartialEq for __c_anonymous_ifr_ifru6 {
             fn eq(&self, other: &__c_anonymous_ifr_ifru6) -> bool {
                 unsafe {
@@ -1750,8 +1779,10 @@ cfg_if! {
             }
         }
 
+        #[cfg(target_os = "macos")]
         impl Eq for __c_anonymous_ifr_ifru6 {}
 
+        #[cfg(target_os = "macos")]
         impl hash::Hash for __c_anonymous_ifr_ifru6 {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
@@ -1983,25 +2014,30 @@ pub const PROT_READ: c_int = 1;
 pub const PROT_WRITE: c_int = 2;
 pub const PROT_EXEC: c_int = 4;
 
-pub const PT_TRACE_ME: c_int = 0;
-pub const PT_READ_I: c_int = 1;
-pub const PT_READ_D: c_int = 2;
-pub const PT_READ_U: c_int = 3;
-pub const PT_WRITE_I: c_int = 4;
-pub const PT_WRITE_D: c_int = 5;
-pub const PT_WRITE_U: c_int = 6;
-pub const PT_CONTINUE: c_int = 7;
-pub const PT_KILL: c_int = 8;
-pub const PT_STEP: c_int = 9;
-pub const PT_ATTACH: c_int = 10;
-pub const PT_DETACH: c_int = 11;
-pub const PT_SIGEXC: c_int = 12;
-pub const PT_THUPDATE: c_int = 13;
-pub const PT_ATTACHEXC: c_int = 14;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // ptrace.h
+        pub const PT_TRACE_ME: c_int = 0;
+        pub const PT_READ_I: c_int = 1;
+        pub const PT_READ_D: c_int = 2;
+        pub const PT_READ_U: c_int = 3;
+        pub const PT_WRITE_I: c_int = 4;
+        pub const PT_WRITE_D: c_int = 5;
+        pub const PT_WRITE_U: c_int = 6;
+        pub const PT_CONTINUE: c_int = 7;
+        pub const PT_KILL: c_int = 8;
+        pub const PT_STEP: c_int = 9;
+        pub const PT_ATTACH: c_int = 10;
+        pub const PT_DETACH: c_int = 11;
+        pub const PT_SIGEXC: c_int = 12;
+        pub const PT_THUPDATE: c_int = 13;
+        pub const PT_ATTACHEXC: c_int = 14;
 
-pub const PT_FORCEQUOTA: c_int = 30;
-pub const PT_DENY_ATTACH: c_int = 31;
-pub const PT_FIRSTMACH: c_int = 32;
+        pub const PT_FORCEQUOTA: c_int = 30;
+        pub const PT_DENY_ATTACH: c_int = 31;
+        pub const PT_FIRSTMACH: c_int = 32;
+    }
+}
 
 pub const MAP_FILE: c_int = 0x0000;
 pub const MAP_SHARED: c_int = 0x0001;
@@ -2266,12 +2302,17 @@ pub const TIOCSETA: c_ulong = 0x80487414;
 pub const TIOCSETAW: c_ulong = 0x80487415;
 pub const TIOCSETAF: c_ulong = 0x80487416;
 
-pub const BIOCGRSIG: c_ulong = 0x40044272;
-pub const BIOCSRSIG: c_ulong = 0x80044273;
-pub const BIOCSDLT: c_ulong = 0x80044278;
-pub const BIOCGSEESENT: c_ulong = 0x40044276;
-pub const BIOCSSEESENT: c_ulong = 0x80044277;
-pub const BIOCGDLTLIST: c_ulong = 0xc00c4279;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // net/bpf.h
+        pub const BIOCGRSIG: c_ulong = 0x40044272;
+        pub const BIOCSRSIG: c_ulong = 0x80044273;
+        pub const BIOCSDLT: c_ulong = 0x80044278;
+        pub const BIOCGSEESENT: c_ulong = 0x40044276;
+        pub const BIOCSSEESENT: c_ulong = 0x80044277;
+        pub const BIOCGDLTLIST: c_ulong = 0xc00c4279;
+    }
+}
 
 pub const FIODTYPE: c_ulong = 0x4004667a;
 
@@ -2393,7 +2434,11 @@ pub const MINCORE_MODIFIED: c_int = 0x4;
 pub const MINCORE_REFERENCED_OTHER: c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: c_int = 0x10;
 
-pub const CTLIOCGINFO: c_ulong = 0xc0644e03;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        pub const CTLIOCGINFO: c_ulong = 0xc0644e03;
+    }
+}
 
 //
 // sys/netinet/in.h
@@ -2653,10 +2698,15 @@ pub const pseudo_AF_HDRCMPLT: c_int = 35;
 pub const AF_IEEE80211: c_int = 37;
 pub const AF_UTUN: c_int = 38;
 pub const AF_VSOCK: c_int = 40;
-pub const AF_SYS_CONTROL: u16 = 2;
 
-pub const SYSPROTO_EVENT: c_int = 1;
-pub const SYSPROTO_CONTROL: c_int = 2;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // sys/sys_domain.h
+        pub const AF_SYS_CONTROL: u16 = 2;
+        pub const SYSPROTO_EVENT: c_int = 1;
+        pub const SYSPROTO_CONTROL: c_int = 2;
+    }
+}
 
 pub const PF_UNSPEC: c_int = AF_UNSPEC;
 pub const PF_LOCAL: c_int = AF_LOCAL;
@@ -3479,82 +3529,93 @@ pub const XATTR_SHOWCOMPRESSION: c_int = 0x0020;
 
 pub const NET_RT_IFLIST2: c_int = 0x0006;
 
-// net/route.h
-pub const RTF_DELCLONE: c_int = 0x80;
-pub const RTF_CLONING: c_int = 0x100;
-pub const RTF_XRESOLVE: c_int = 0x200;
-pub const RTF_LLINFO: c_int = 0x400;
-pub const RTF_NOIFREF: c_int = 0x2000;
-pub const RTF_PRCLONING: c_int = 0x10000;
-pub const RTF_WASCLONED: c_int = 0x20000;
-pub const RTF_PROTO3: c_int = 0x40000;
-pub const RTF_PINNED: c_int = 0x100000;
-pub const RTF_LOCAL: c_int = 0x200000;
-pub const RTF_BROADCAST: c_int = 0x400000;
-pub const RTF_MULTICAST: c_int = 0x800000;
-pub const RTF_IFSCOPE: c_int = 0x1000000;
-pub const RTF_CONDEMNED: c_int = 0x2000000;
-pub const RTF_IFREF: c_int = 0x4000000;
-pub const RTF_PROXY: c_int = 0x8000000;
-pub const RTF_ROUTER: c_int = 0x10000000;
-pub const RTF_DEAD: c_int = 0x20000000;
-pub const RTF_GLOBAL: c_int = 0x40000000;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // net/route.h
+        pub const RTF_DELCLONE: c_int = 0x80;
+        pub const RTF_CLONING: c_int = 0x100;
+        pub const RTF_XRESOLVE: c_int = 0x200;
+        pub const RTF_LLINFO: c_int = 0x400;
+        pub const RTF_NOIFREF: c_int = 0x2000;
+        pub const RTF_PRCLONING: c_int = 0x10000;
+        pub const RTF_WASCLONED: c_int = 0x20000;
+        pub const RTF_PROTO3: c_int = 0x40000;
+        pub const RTF_PINNED: c_int = 0x100000;
+        pub const RTF_LOCAL: c_int = 0x200000;
+        pub const RTF_BROADCAST: c_int = 0x400000;
+        pub const RTF_MULTICAST: c_int = 0x800000;
+        pub const RTF_IFSCOPE: c_int = 0x1000000;
+        pub const RTF_CONDEMNED: c_int = 0x2000000;
+        pub const RTF_IFREF: c_int = 0x4000000;
+        pub const RTF_PROXY: c_int = 0x8000000;
+        pub const RTF_ROUTER: c_int = 0x10000000;
+        pub const RTF_DEAD: c_int = 0x20000000;
+        pub const RTF_GLOBAL: c_int = 0x40000000;
 
-pub const RTM_VERSION: c_int = 5;
+        pub const RTM_VERSION: c_int = 5;
 
-// Message types
-pub const RTM_LOCK: c_int = 0x8;
-pub const RTM_OLDADD: c_int = 0x9;
-pub const RTM_OLDDEL: c_int = 0xa;
-pub const RTM_RESOLVE: c_int = 0xb;
-pub const RTM_NEWADDR: c_int = 0xc;
-pub const RTM_DELADDR: c_int = 0xd;
-pub const RTM_IFINFO: c_int = 0xe;
-pub const RTM_NEWMADDR: c_int = 0xf;
-pub const RTM_DELMADDR: c_int = 0x10;
-pub const RTM_IFINFO2: c_int = 0x12;
-pub const RTM_NEWMADDR2: c_int = 0x13;
-pub const RTM_GET2: c_int = 0x14;
+        // Message types
+        pub const RTM_LOCK: c_int = 0x8;
+        pub const RTM_OLDADD: c_int = 0x9;
+        pub const RTM_OLDDEL: c_int = 0xa;
+        pub const RTM_RESOLVE: c_int = 0xb;
+        pub const RTM_NEWADDR: c_int = 0xc;
+        pub const RTM_DELADDR: c_int = 0xd;
+        pub const RTM_IFINFO: c_int = 0xe;
+        pub const RTM_NEWMADDR: c_int = 0xf;
+        pub const RTM_DELMADDR: c_int = 0x10;
+        pub const RTM_IFINFO2: c_int = 0x12;
+        pub const RTM_NEWMADDR2: c_int = 0x13;
+        pub const RTM_GET2: c_int = 0x14;
 
-// Bitmask values for rtm_inits and rmx_locks.
-pub const RTV_MTU: c_int = 0x1;
-pub const RTV_HOPCOUNT: c_int = 0x2;
-pub const RTV_EXPIRE: c_int = 0x4;
-pub const RTV_RPIPE: c_int = 0x8;
-pub const RTV_SPIPE: c_int = 0x10;
-pub const RTV_SSTHRESH: c_int = 0x20;
-pub const RTV_RTT: c_int = 0x40;
-pub const RTV_RTTVAR: c_int = 0x80;
+        // Bitmask values for rtm_inits and rmx_locks.
+        pub const RTV_MTU: c_int = 0x1;
+        pub const RTV_HOPCOUNT: c_int = 0x2;
+        pub const RTV_EXPIRE: c_int = 0x4;
+        pub const RTV_RPIPE: c_int = 0x8;
+        pub const RTV_SPIPE: c_int = 0x10;
+        pub const RTV_SSTHRESH: c_int = 0x20;
+        pub const RTV_RTT: c_int = 0x40;
+        pub const RTV_RTTVAR: c_int = 0x80;
 
-pub const RTAX_MAX: c_int = 8;
+        pub const RTAX_MAX: c_int = 8;
+    }
+}
 
 pub const KERN_PROCARGS2: c_int = 49;
 
-pub const PROC_PIDTASKALLINFO: c_int = 2;
-pub const PROC_PIDTBSDINFO: c_int = 3;
-pub const PROC_PIDTASKINFO: c_int = 4;
-pub const PROC_PIDTHREADINFO: c_int = 5;
-pub const PROC_PIDVNODEPATHINFO: c_int = 9;
-pub const PROC_PIDT_SHORTBSDINFO: c_int = 13;
-pub const PROC_PIDPATHINFO_MAXSIZE: c_int = 4096;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // sys/proc_info.h
+        pub const PROC_PIDTASKALLINFO: c_int = 2;
+        pub const PROC_PIDTBSDINFO: c_int = 3;
+        pub const PROC_PIDTASKINFO: c_int = 4;
+        pub const PROC_PIDTHREADINFO: c_int = 5;
+        pub const PROC_PIDVNODEPATHINFO: c_int = 9;
+        pub const PROC_PIDT_SHORTBSDINFO: c_int = 13;
+        pub const PROC_PIDPATHINFO_MAXSIZE: c_int = 4096;
 
-pub const PROC_PIDLISTFDS: c_int = 1;
-pub const PROC_PIDLISTFD_SIZE: c_int = size_of::<proc_fdinfo>() as c_int;
-pub const PROX_FDTYPE_ATALK: c_int = 0;
-pub const PROX_FDTYPE_VNODE: c_int = 1;
-pub const PROX_FDTYPE_SOCKET: c_int = 2;
-pub const PROX_FDTYPE_PSHM: c_int = 3;
-pub const PROX_FDTYPE_PSEM: c_int = 4;
-pub const PROX_FDTYPE_KQUEUE: c_int = 5;
-pub const PROX_FDTYPE_PIPE: c_int = 6;
-pub const PROX_FDTYPE_FSEVENTS: c_int = 7;
-pub const PROX_FDTYPE_NETPOLICY: c_int = 9;
-pub const PROX_FDTYPE_CHANNEL: c_int = 10;
-pub const PROX_FDTYPE_NEXUS: c_int = 11;
+        pub const PROC_PIDLISTFDS: c_int = 1;
+        pub const PROC_PIDLISTFD_SIZE: c_int = size_of::<proc_fdinfo>() as c_int;
+        pub const PROX_FDTYPE_ATALK: c_int = 0;
+        pub const PROX_FDTYPE_VNODE: c_int = 1;
+        pub const PROX_FDTYPE_SOCKET: c_int = 2;
+        pub const PROX_FDTYPE_PSHM: c_int = 3;
+        pub const PROX_FDTYPE_PSEM: c_int = 4;
+        pub const PROX_FDTYPE_KQUEUE: c_int = 5;
+        pub const PROX_FDTYPE_PIPE: c_int = 6;
+        pub const PROX_FDTYPE_FSEVENTS: c_int = 7;
+        pub const PROX_FDTYPE_NETPOLICY: c_int = 9;
+        pub const PROX_FDTYPE_CHANNEL: c_int = 10;
+        pub const PROX_FDTYPE_NEXUS: c_int = 11;
 
-pub const PROC_CSM_ALL: c_uint = 0x0001;
-pub const PROC_CSM_NOSMT: c_uint = 0x0002;
-pub const PROC_CSM_TECS: c_uint = 0x0004;
+        // libproc.h
+        pub const PROC_CSM_ALL: c_uint = 0x0001;
+        pub const PROC_CSM_NOSMT: c_uint = 0x0002;
+        pub const PROC_CSM_TECS: c_uint = 0x0004;
+    }
+}
+
 pub const MAXCOMLEN: usize = 16;
 pub const MAXTHREADNAMESIZE: usize = 64;
 
@@ -3566,29 +3627,33 @@ pub const LC_SEGMENT_64: u32 = 0x19;
 pub const MH_MAGIC: u32 = 0xfeedface;
 pub const MH_MAGIC_64: u32 = 0xfeedfacf;
 
-// net/if_utun.h
-pub const UTUN_OPT_FLAGS: c_int = 1;
-pub const UTUN_OPT_IFNAME: c_int = 2;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // net/if_utun.h
+        pub const UTUN_OPT_FLAGS: c_int = 1;
+        pub const UTUN_OPT_IFNAME: c_int = 2;
 
-// net/bpf.h
-pub const DLT_NULL: c_uint = 0; // no link-layer encapsulation
-pub const DLT_EN10MB: c_uint = 1; // Ethernet (10Mb)
-pub const DLT_EN3MB: c_uint = 2; // Experimental Ethernet (3Mb)
-pub const DLT_AX25: c_uint = 3; // Amateur Radio AX.25
-pub const DLT_PRONET: c_uint = 4; // Proteon ProNET Token Ring
-pub const DLT_CHAOS: c_uint = 5; // Chaos
-pub const DLT_IEEE802: c_uint = 6; // IEEE 802 Networks
-pub const DLT_ARCNET: c_uint = 7; // ARCNET
-pub const DLT_SLIP: c_uint = 8; // Serial Line IP
-pub const DLT_PPP: c_uint = 9; // Point-to-point Protocol
-pub const DLT_FDDI: c_uint = 10; // FDDI
-pub const DLT_ATM_RFC1483: c_uint = 11; // LLC/SNAP encapsulated atm
-pub const DLT_RAW: c_uint = 12; // raw IP
-pub const DLT_LOOP: c_uint = 108;
+        // net/bpf.h
+        pub const DLT_NULL: c_uint = 0; // no link-layer encapsulation
+        pub const DLT_EN10MB: c_uint = 1; // Ethernet (10Mb)
+        pub const DLT_EN3MB: c_uint = 2; // Experimental Ethernet (3Mb)
+        pub const DLT_AX25: c_uint = 3; // Amateur Radio AX.25
+        pub const DLT_PRONET: c_uint = 4; // Proteon ProNET Token Ring
+        pub const DLT_CHAOS: c_uint = 5; // Chaos
+        pub const DLT_IEEE802: c_uint = 6; // IEEE 802 Networks
+        pub const DLT_ARCNET: c_uint = 7; // ARCNET
+        pub const DLT_SLIP: c_uint = 8; // Serial Line IP
+        pub const DLT_PPP: c_uint = 9; // Point-to-point Protocol
+        pub const DLT_FDDI: c_uint = 10; // FDDI
+        pub const DLT_ATM_RFC1483: c_uint = 11; // LLC/SNAP encapsulated atm
+        pub const DLT_RAW: c_uint = 12; // raw IP
+        pub const DLT_LOOP: c_uint = 108;
 
-// https://github.com/apple/darwin-xnu/blob/HEAD/bsd/net/bpf.h#L100
-// sizeof(i32)
-pub const BPF_ALIGNMENT: c_int = 4;
+        // https://github.com/apple/darwin-xnu/blob/HEAD/bsd/net/bpf.h#L100
+        // sizeof(i32)
+        pub const BPF_ALIGNMENT: c_int = 4;
+    }
+}
 
 // sys/mount.h
 pub const MNT_NODEV: c_int = 0x00000010;
@@ -4062,34 +4127,38 @@ pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
 pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
     (size_of::<vm_statistics64_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 
-// bsd/net/if_mib.h
-/// Non-interface-specific
-pub const IFMIB_SYSTEM: c_int = 1;
-/// Per-interface data table
-pub const IFMIB_IFDATA: c_int = 2;
-/// All interfaces data at once
-pub const IFMIB_IFALLDATA: c_int = 3;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        // bsd/net/if_mib.h
+        /// Non-interface-specific
+        pub const IFMIB_SYSTEM: c_int = 1;
+        /// Per-interface data table
+        pub const IFMIB_IFDATA: c_int = 2;
+        /// All interfaces data at once
+        pub const IFMIB_IFALLDATA: c_int = 3;
 
-/// Generic stats for all kinds of ifaces
-pub const IFDATA_GENERAL: c_int = 1;
-/// Specific to the type of interface
-pub const IFDATA_LINKSPECIFIC: c_int = 2;
-/// Addresses assigned to interface
-pub const IFDATA_ADDRS: c_int = 3;
-/// Multicast addresses assigned to interface
-pub const IFDATA_MULTIADDRS: c_int = 4;
+        /// Generic stats for all kinds of ifaces
+        pub const IFDATA_GENERAL: c_int = 1;
+        /// Specific to the type of interface
+        pub const IFDATA_LINKSPECIFIC: c_int = 2;
+        /// Addresses assigned to interface
+        pub const IFDATA_ADDRS: c_int = 3;
+        /// Multicast addresses assigned to interface
+        pub const IFDATA_MULTIADDRS: c_int = 4;
 
-/// Number of interfaces configured
-pub const IFMIB_IFCOUNT: c_int = 1;
+        /// Number of interfaces configured
+        pub const IFMIB_IFCOUNT: c_int = 1;
 
-/// Functions not specific to a type of iface
-pub const NETLINK_GENERIC: c_int = 0;
+        /// Functions not specific to a type of iface
+        pub const NETLINK_GENERIC: c_int = 0;
 
-pub const DOT3COMPLIANCE_STATS: c_int = 1;
-pub const DOT3COMPLIANCE_COLLS: c_int = 2;
+        pub const DOT3COMPLIANCE_STATS: c_int = 1;
+        pub const DOT3COMPLIANCE_COLLS: c_int = 2;
 
-// kern_control.h
-pub const MAX_KCTL_NAME: usize = 96;
+        // kern_control.h
+        pub const MAX_KCTL_NAME: usize = 96;
+    }
+}
 
 f! {
     pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
@@ -4429,6 +4498,7 @@ extern "C" {
         data: *mut c_void,
     ) -> c_int;
     pub fn fmount(src: *const c_char, fd: c_int, flags: c_int, data: *mut c_void) -> c_int;
+    #[cfg(target_os = "macos")]
     pub fn ptrace(request: c_int, pid: crate::pid_t, addr: *mut c_char, data: c_int) -> c_int;
     pub fn quotactl(special: *const c_char, cmd: c_int, id: c_int, data: *mut c_char) -> c_int;
     pub fn sethostname(name: *const c_char, len: c_int) -> c_int;
@@ -4726,49 +4796,6 @@ extern "C" {
     ) -> *mut c_void;
     pub fn malloc_zone_free(zone: *mut crate::malloc_zone_t, ptr: *mut c_void);
 
-    pub fn proc_listpids(t: u32, typeinfo: u32, buffer: *mut c_void, buffersize: c_int) -> c_int;
-    pub fn proc_listallpids(buffer: *mut c_void, buffersize: c_int) -> c_int;
-    pub fn proc_listpgrppids(pgrpid: crate::pid_t, buffer: *mut c_void, buffersize: c_int)
-        -> c_int;
-    pub fn proc_listchildpids(ppid: crate::pid_t, buffer: *mut c_void, buffersize: c_int) -> c_int;
-    pub fn proc_pidinfo(
-        pid: c_int,
-        flavor: c_int,
-        arg: u64,
-        buffer: *mut c_void,
-        buffersize: c_int,
-    ) -> c_int;
-    pub fn proc_pidfdinfo(
-        pid: c_int,
-        fd: c_int,
-        flavor: c_int,
-        buffer: *mut c_void,
-        buffersize: c_int,
-    ) -> c_int;
-    pub fn proc_pidfileportinfo(
-        pid: c_int,
-        fileport: u32,
-        flavor: c_int,
-        buffer: *mut c_void,
-        buffersize: c_int,
-    ) -> c_int;
-    pub fn proc_pidpath(pid: c_int, buffer: *mut c_void, buffersize: u32) -> c_int;
-    pub fn proc_name(pid: c_int, buffer: *mut c_void, buffersize: u32) -> c_int;
-    pub fn proc_regionfilename(
-        pid: c_int,
-        address: u64,
-        buffer: *mut c_void,
-        buffersize: u32,
-    ) -> c_int;
-    pub fn proc_kmsgbuf(buffer: *mut c_void, buffersize: u32) -> c_int;
-    pub fn proc_libversion(major: *mut c_int, minor: *mut c_int) -> c_int;
-    pub fn proc_pid_rusage(pid: c_int, flavor: c_int, buffer: *mut rusage_info_t) -> c_int;
-
-    // Available from Big Sur
-    pub fn proc_set_no_smt() -> c_int;
-    pub fn proc_setthread_no_smt() -> c_int;
-    pub fn proc_set_csm(flags: u32) -> c_int;
-    pub fn proc_setthread_csm(flags: u32) -> c_int;
     /// # Notes
     ///
     /// `id` is of type [`uuid_t`].
@@ -4936,6 +4963,62 @@ cfg_if! {
     if #[cfg(target_os = "macos")] {
         extern "C" {
             pub fn clock_settime(clock_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
+
+            // libproc.h
+            pub fn proc_listpids(
+                t: u32,
+                typeinfo: u32,
+                buffer: *mut c_void,
+                buffersize: c_int,
+            ) -> c_int;
+            pub fn proc_listallpids(buffer: *mut c_void, buffersize: c_int) -> c_int;
+            pub fn proc_listpgrppids(
+                pgrpid: crate::pid_t,
+                buffer: *mut c_void,
+                buffersize: c_int,
+            ) -> c_int;
+            pub fn proc_listchildpids(
+                ppid: crate::pid_t,
+                buffer: *mut c_void,
+                buffersize: c_int,
+            ) -> c_int;
+            pub fn proc_pidinfo(
+                pid: c_int,
+                flavor: c_int,
+                arg: u64,
+                buffer: *mut c_void,
+                buffersize: c_int,
+            ) -> c_int;
+            pub fn proc_pidfdinfo(
+                pid: c_int,
+                fd: c_int,
+                flavor: c_int,
+                buffer: *mut c_void,
+                buffersize: c_int,
+            ) -> c_int;
+            pub fn proc_pidfileportinfo(
+                pid: c_int,
+                fileport: u32,
+                flavor: c_int,
+                buffer: *mut c_void,
+                buffersize: c_int,
+            ) -> c_int;
+            pub fn proc_pidpath(pid: c_int, buffer: *mut c_void, buffersize: u32) -> c_int;
+            pub fn proc_name(pid: c_int, buffer: *mut c_void, buffersize: u32) -> c_int;
+            pub fn proc_regionfilename(
+                pid: c_int,
+                address: u64,
+                buffer: *mut c_void,
+                buffersize: u32,
+            ) -> c_int;
+            pub fn proc_kmsgbuf(buffer: *mut c_void, buffersize: u32) -> c_int;
+            pub fn proc_libversion(major: *mut c_int, minor: *mut c_int) -> c_int;
+            pub fn proc_pid_rusage(pid: c_int, flavor: c_int, buffer: *mut rusage_info_t) -> c_int;
+            // Available from Big Sur
+            pub fn proc_set_no_smt() -> c_int;
+            pub fn proc_setthread_no_smt() -> c_int;
+            pub fn proc_set_csm(flags: u32) -> c_int;
+            pub fn proc_setthread_csm(flags: u32) -> c_int;
         }
     }
 }
