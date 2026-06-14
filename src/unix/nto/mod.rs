@@ -73,7 +73,7 @@ pub type sem_t = sync_t;
 pub type nl_item = c_int;
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 s! {

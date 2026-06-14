@@ -5,7 +5,7 @@ use core::ptr::null_mut;
 use crate::prelude::*;
 
 extern_ty! {
-    pub enum DIR {}
+    pub type DIR;
 }
 
 pub type intmax_t = i64;
@@ -95,7 +95,7 @@ pub type sa_family_t = c_uchar;
 pub type mqd_t = c_int;
 
 extern_ty! {
-    pub enum _Vx_semaphore {}
+    pub type _Vx_semaphore;
 }
 
 impl siginfo_t {
@@ -1435,8 +1435,8 @@ pub const TIOCGWINSZ: c_int = 0x1740087468;
 pub const TIOCSWINSZ: c_int = -0x7ff78b99;
 
 extern_ty! {
-    pub enum FILE {}
-    pub enum fpos_t {} // FIXME(vxworks): fill this out with a struct
+    pub type FILE;
+    pub type fpos_t; // FIXME(vxworks): fill this out with a struct
 }
 
 f! {

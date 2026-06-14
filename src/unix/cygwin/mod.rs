@@ -29,7 +29,7 @@ pub type suseconds_t = c_long;
 pub type useconds_t = c_ulong;
 
 extern_ty! {
-    pub enum timezone {}
+    pub type timezone;
 }
 
 pub type sigset_t = c_ulong;
@@ -71,7 +71,7 @@ pub type nfds_t = c_uint;
 pub type sem_t = *mut sem;
 
 extern_ty! {
-    pub enum sem {}
+    pub type sem;
 }
 
 pub type tcflag_t = c_uint;

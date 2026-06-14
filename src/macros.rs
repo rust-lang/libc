@@ -246,9 +246,25 @@ macro_rules! s_no_extra_traits {
 macro_rules! extern_ty {
     ($(
         $(#[$attr:meta])*
-        pub enum $i:ident {}
+        pub type $i:ident;
     )*) => ($(
         $(#[$attr])*
+        /// This is an extern type ("opaque" or "incomplete" type in C).
+        ///
+        /// <div class="warning">
+        /// This type's current representation allows inspecting some properties, such as via
+        /// <code>size_of</code>, and it is technically possible to construct the type within
+        /// <code>MaybeUninit</code>, However, this <strong>MUST NOT</strong> be relied upon
+        /// because a future version of <code>libc</code> may switch to a proper
+        /// <a href="https://rust-lang.github.io/rfcs/1861-extern-types.html">extern type</a>
+        /// representation when available.
+        /// </div>
+        // ^ unfortunately warning blocks currently don't render markdown so we need to
+        // use raw HTML.
+        //
+        // Representation based on the Nomicon:
+        // <https://doc.rust-lang.org/nomicon/ffi.html#representing-opaque-structs>.
+        //
         // FIXME(1.0): the type is uninhabited so these traits are unreachable and could be
         // removed.
         #[::core::prelude::v1::derive(
@@ -256,7 +272,11 @@ macro_rules! extern_ty {
             ::core::marker::Copy,
             ::core::fmt::Debug,
         )]
-        pub enum $i { }
+        #[repr(C)]
+        pub struct $i {
+            _data: (),
+            _marker: ::core::marker::PhantomData<(*mut u8, ::core::marker::PhantomPinned)>,
+        }
     )*);
 }
 
