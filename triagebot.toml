@@ -4,6 +4,7 @@ allow-unauthenticated = [
     "O-*",
     "S-*",
     "ctest",
+    "has-merge-commits",
     "stable-nominated",
 ]
 
@@ -112,6 +113,10 @@ reviewed_label = "S-waiting-on-author"
 remove_labels = ["S-waiting-on-author"]
 # Those labels are added when PR author requests a review from an assignee
 add_labels = ["S-waiting-on-review"]
+
+[no-merges]
+exclude_titles = ["[0.2]"]
+labels = ["has-merge-commits", "S-waiting-on-author"]
 
 [shortcut]
 
