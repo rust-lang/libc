@@ -1097,7 +1097,7 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     flags: 0,
     unused: Padding::new(0),
-    mutex: 0 as *mut _,
+    mutex: ptr::null_mut(),
     waiter_count: 0,
     lock: 0,
 };
@@ -1108,7 +1108,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     lock_count: 0,
     reader_count: 0,
     writer_count: 0,
-    waiters: [0 as *mut _; 2],
+    waiters: [ptr::null_mut(); 2],
 };
 
 pub const PTHREAD_MUTEX_DEFAULT: c_int = 0;
@@ -1377,7 +1377,7 @@ pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
 pub const POSIX_SPAWN_SETSID: c_short = 0x40;
 
 const fn CMSG_ALIGN(len: usize) -> usize {
-    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
+    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
 }
 
 f! {
@@ -1390,7 +1390,7 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const fn CMSG_SPACE(length: c_uint) -> c_uint {

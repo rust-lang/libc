@@ -2417,7 +2417,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 };
 
 const fn _CMSG_ALIGN(len: usize) -> usize {
-    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
+    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
 }
 
 const fn _ALIGN(p: usize, b: usize) -> usize {
@@ -2444,7 +2444,7 @@ f! {
     }
 
     pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(_CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const fn CMSG_LEN(length: c_uint) -> c_uint {
@@ -2480,7 +2480,7 @@ f! {
     }
 
     pub fn _DEXTRA_FIRST(_d: *const dirent) -> *mut crate::dirent_extra {
-        let _f = &((*(_d)).d_name) as *const _;
+        let _f = core::ptr::addr_of!(((*(_d)).d_name));
         let _s = _d as usize;
 
         _ALIGN(_s + _f as usize - _s + (*_d).d_namelen as usize + 1, 8) as *mut crate::dirent_extra
@@ -2490,11 +2490,7 @@ f! {
         let sz = _x as usize - _d as usize + size_of::<crate::dirent_extra>();
         let rsz = (*_d).d_reclen as usize;
 
-        if sz > rsz || sz + (*_x).d_datalen as usize > rsz {
-            false
-        } else {
-            true
-        }
+        !(sz > rsz || sz + (*_x).d_datalen as usize > rsz)
     }
 
     pub fn _DEXTRA_NEXT(_x: *const crate::dirent_extra) -> *mut crate::dirent_extra {
@@ -3145,7 +3141,7 @@ pub unsafe fn atexit(cb: extern "C" fn()) -> c_int {
         static __dso_handle: *mut c_void;
         pub fn __cxa_atexit(cb: extern "C" fn(), __arg: *mut c_void, __dso: *mut c_void) -> c_int;
     }
-    __cxa_atexit(cb, 0 as *mut c_void, __dso_handle)
+    __cxa_atexit(cb, core::ptr::null_mut::<c_void>(), __dso_handle)
 }
 
 impl siginfo_t {
