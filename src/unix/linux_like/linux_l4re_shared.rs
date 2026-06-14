@@ -1197,7 +1197,7 @@ pub const MFD_CLOEXEC: c_uint = 0x0001;
 pub const MFD_ALLOW_SEALING: c_uint = 0x0002;
 pub const MFD_HUGETLB: c_uint = 0x0004;
 cfg_if! {
-    if #[cfg(not(target_env = "uclibc"))] {
+    if #[cfg(not(all(target_os = "l4re", target_env = "uclibc")))] {
         pub const MFD_NOEXEC_SEAL: c_uint = 0x0008;
         pub const MFD_EXEC: c_uint = 0x0010;
         pub const MFD_HUGE_64KB: c_uint = 0x40000000;
