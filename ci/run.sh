@@ -25,6 +25,9 @@ case "$target" in
     # FIXME(android): unit tests fail to start on Android
     *android*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
     *s390x*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
+    # ctest's own tests don't work on Apple devices, since these don't have
+    # host tooling such as `rustc` or a C compiler.
+    *ios|tvos|watchos|visionos*) cmd="$cmd --workspace --exclude ctest" ;;
     # For all other platforms, test everything in the workspace
     *) cmd="$cmd --workspace" ;;
 esac
