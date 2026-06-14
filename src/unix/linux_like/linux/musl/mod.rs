@@ -780,20 +780,6 @@ extern "C" {
         dirfd: c_int,
         path: *const c_char,
     ) -> c_int;
-    pub fn preadv2(
-        fd: c_int,
-        iov: *const crate::iovec,
-        iovcnt: c_int,
-        offset: off_t,
-        flags: c_int,
-    ) -> ssize_t;
-    pub fn pwritev2(
-        fd: c_int,
-        iov: *const crate::iovec,
-        iovcnt: c_int,
-        offset: off_t,
-        flags: c_int,
-    ) -> ssize_t;
     pub fn getauxval(type_: c_ulong) -> c_ulong;
     pub fn renameat2(
         olddirfd: c_int,
