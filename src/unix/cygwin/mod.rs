@@ -1020,7 +1020,7 @@ pub const LC_TIME_MASK: c_int = 1 << 5;
 pub const LC_MESSAGES_MASK: c_int = 1 << 6;
 pub const LC_GLOBAL_LOCALE: locale_t = -1isize as locale_t;
 
-pub const SEM_FAILED: *mut sem_t = core::ptr::null_mut();
+pub const SEM_FAILED: *mut sem_t = ptr::null_mut();
 
 pub const ST_RDONLY: c_ulong = 0x80000;
 pub const ST_NOSUID: c_ulong = 0;
@@ -1759,7 +1759,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
             (*mhdr).msg_control.cast()
         } else {
-            core::ptr::null_mut()
+            ptr::null_mut()
         }
     }
 
@@ -1767,7 +1767,7 @@ f! {
         let next = (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next as usize + CMSG_ALIGN(size_of::<cmsghdr>()) as usize > max {
-            core::ptr::null_mut()
+            ptr::null_mut()
         } else {
             next
         }

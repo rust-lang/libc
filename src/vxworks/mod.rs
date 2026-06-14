@@ -1,7 +1,5 @@
 //! Interface to VxWorks C library
 
-use core::ptr::null_mut;
-
 use crate::prelude::*;
 
 extern_ty! {
@@ -1333,7 +1331,7 @@ const PTHREAD_MUTEXATTR_INITIALIZER: pthread_mutexattr_t = pthread_mutexattr_t {
     mutexAttrPshared: 1,
 };
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    mutexSemId: null_mut(),
+    mutexSemId: ptr::null_mut(),
     mutexValid: PTHREAD_VALID_OBJ,
     mutexInitted: PTHREAD_UNUSED_YET_OBJ,
     mutexCondRefCount: 0,
@@ -1348,11 +1346,11 @@ const PTHREAD_CONDATTR_INITIALIZER: pthread_condattr_t = pthread_condattr_t {
     condAttrClockId: CLOCK_REALTIME,
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    condSemId: null_mut(),
+    condSemId: ptr::null_mut(),
     condValid: PTHREAD_VALID_OBJ,
     condInitted: PTHREAD_UNUSED_YET_OBJ,
     condRefCount: 0,
-    condMutex: null_mut(),
+    condMutex: ptr::null_mut(),
     condAttr: PTHREAD_CONDATTR_INITIALIZER,
     condSemName: [0; _PTHREAD_SHARED_SEM_NAME_MAX],
 };
@@ -1364,7 +1362,7 @@ const PTHREAD_RWLOCKATTR_INITIALIZER: pthread_rwlockattr_t = pthread_rwlockattr_
     rwlockAttrConformOpt: 1,
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    rwlockSemId: null_mut(),
+    rwlockSemId: ptr::null_mut(),
     rwlockReadersRefCount: 0,
     rwlockValid: PTHREAD_VALID_OBJ,
     rwlockInitted: PTHREAD_UNUSED_YET_OBJ,
@@ -1452,7 +1450,7 @@ f! {
         if next <= max {
             (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         }
     }
 
@@ -1460,7 +1458,7 @@ f! {
         if (*mhdr).msg_controllen as usize > 0 {
             (*mhdr).msg_control as *mut cmsghdr
         } else {
-            core::ptr::null_mut::<cmsghdr>()
+            ptr::null_mut()
         }
     }
 

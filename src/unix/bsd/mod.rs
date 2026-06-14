@@ -497,7 +497,7 @@ f! {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
             (*mhdr).msg_control.cast::<cmsghdr>()
         } else {
-            core::ptr::null_mut()
+            ptr::null_mut()
         }
     }
 
