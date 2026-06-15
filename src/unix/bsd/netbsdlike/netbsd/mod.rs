@@ -2233,7 +2233,7 @@ extern "C" {
     pub fn _lwp_park(
         clock: crate::clockid_t,
         flags: c_int,
-        ts: *const crate::timespec,
+        ts: *mut crate::timespec,
         unpark: crate::lwpid_t,
         hint: *const c_void,
         unparkhint: *mut c_void,
