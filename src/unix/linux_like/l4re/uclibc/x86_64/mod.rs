@@ -17,49 +17,40 @@ pub type suseconds_t = c_long;
 pub type blksize_t = c_long;
 pub type blkcnt_t = c_long;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsblkcnt_t` instead. LFS64 are being phased out. See #4805."
+)]
 pub type fsblkcnt64_t = c_ulong;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsfilcnt_t` instead. LFS64 are being phased out. See #4805."
+)]
 pub type fsfilcnt64_t = c_ulong;
 
 pub type __u32 = c_uint;
 pub type __u64 = c_ulong;
 
+pub type stat64 = stat;
+pub type flock64 = flock;
+
 s! {
     pub struct stat {
-        pub st_dev: c_ulong,
-        pub st_ino: crate::ino_t,
-        // According to uclibc/libc/sysdeps/linux/x86_64/bits/stat.h, order of
-        // nlink and mode are swapped on 64 bit systems.
-        pub st_nlink: nlink_t,
-        pub st_mode: crate::mode_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        __pad0: c_int,
-        pub st_rdev: c_ulong,
-        pub st_size: crate::off_t,
-        pub st_blksize: crate::blksize_t,
-        pub st_blocks: crate::blkcnt64_t,
-        pub st_atim: crate::timespec,
-        pub st_mtim: crate::timespec,
-        pub st_ctim: crate::timespec,
-        __uclibc_unused: [c_long; 3],
-    }
-
-    pub struct stat64 {
-        pub st_dev: c_ulong,
+        pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
         pub st_nlink: nlink_t,
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        __pad0: c_int,
-        pub st_rdev: c_ulong,
+        __pad0: Padding<c_int>,
+        pub st_rdev: crate::dev_t,
         pub st_size: crate::off_t,
         pub st_blksize: crate::blksize_t,
-        pub st_blocks: crate::blkcnt64_t,
+        pub st_blocks: crate::blkcnt_t,
         pub st_atim: crate::timespec,
         pub st_mtim: crate::timespec,
         pub st_ctim: crate::timespec,
-        st_pad4: [c_long; 3],
+        __uclibc_unused: Padding<[c_long; 3]>,
     }
 
     pub struct shmid_ds {
@@ -71,8 +62,8 @@ s! {
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: crate::shmatt_t,
-        __unused4: c_ulong,
-        __unused5: c_ulong,
+        __unused4: Padding<c_ulong>,
+        __unused5: Padding<c_ulong>,
     }
 
     #[allow(unpredictable_function_pointer_comparisons)]
