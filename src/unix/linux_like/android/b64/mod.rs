@@ -4,6 +4,7 @@ use crate::prelude::*;
 // but may be wrong for mips64
 
 pub type mode_t = u32;
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type off64_t = i64;
 pub type socklen_t = u32;
 
@@ -21,6 +22,7 @@ s! {
         pub sa_restorer: Option<extern "C" fn()>,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct rlimit64 {
         pub rlim_cur: c_ulonglong,
         pub rlim_max: c_ulonglong,
@@ -78,6 +80,7 @@ s! {
         pub _f: [c_char; 0],
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct statfs64 {
         pub f_type: u64,
         pub f_bsize: u64,
@@ -93,6 +96,7 @@ s! {
         pub f_spare: [u64; 4],
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct statvfs64 {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
@@ -135,6 +139,7 @@ s! {
         __reserved: Padding<[c_char; 36]>,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct sigset64_t {
         __bits: [c_ulong; 1],
     }
