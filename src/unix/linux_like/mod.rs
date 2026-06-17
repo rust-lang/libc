@@ -2099,26 +2099,135 @@ cfg_if! {
         target_os = "emscripten",
     )))] {
         extern "C" {
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                )
+            )]
             pub fn creat64(path: *const c_char, mode: mode_t) -> c_int;
             #[cfg_attr(gnu_time_bits64, link_name = "__fstat64_time64")]
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn fstat64(fildes: c_int, buf: *mut stat64) -> c_int;
             #[cfg_attr(gnu_time_bits64, link_name = "__fstatat64_time64")]
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn fstatat64(
                 dirfd: c_int,
                 pathname: *const c_char,
                 buf: *mut stat64,
                 flags: c_int,
             ) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn ftruncate64(fd: c_int, length: off64_t) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
             #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn mmap64(
                 addr: *mut c_void,
                 len: size_t,
@@ -2127,22 +2236,90 @@ cfg_if! {
                 fd: c_int,
                 offset: off64_t,
             ) -> *mut c_void;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                )
+            )]
             pub fn open64(path: *const c_char, oflag: c_int, ...) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                )
+            )]
             pub fn openat64(fd: c_int, path: *const c_char, oflag: c_int, ...) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn posix_fadvise64(
                 fd: c_int,
                 offset: off64_t,
                 len: off64_t,
                 advise: c_int,
             ) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn pread64(fd: c_int, buf: *mut c_void, count: size_t, offset: off64_t) -> ssize_t;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn pwrite64(
                 fd: c_int,
                 buf: *const c_void,
                 count: size_t,
                 offset: off64_t,
             ) -> ssize_t;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                )
+            )]
+            #[allow(deprecated)]
             pub fn readdir64(dirp: *mut crate::DIR) -> *mut crate::dirent64;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                )
+            )]
+            #[allow(deprecated)]
             pub fn readdir64_r(
                 dirp: *mut crate::DIR,
                 entry: *mut crate::dirent64,
@@ -2150,7 +2327,27 @@ cfg_if! {
             ) -> c_int;
             #[cfg_attr(gnu_time_bits64, link_name = "__stat64_time64")]
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. Under 64-bit ABIs, Android aliases these \
+                            routines, and the `libc` crate is phasing out support for suffixed \
+                            types in favor of a single unsuffixed type with a fixed bit width."
+                ),
+                allow(deprecated)
+            )]
             pub fn truncate64(path: *const c_char, length: off64_t) -> c_int;
         }
     }
@@ -2164,12 +2361,32 @@ cfg_if! {
         target_os = "emscripten",
     )))] {
         extern "C" {
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `preadv` instead. Under 64-bit ABIs, Android aliases these types, \
+                            and the `libc` crate is phasing out support for suffixed variants in \
+                            favor of a single fixed-width unsuffixed type."
+                ),
+                allow(deprecated)
+            )]
             pub fn preadv64(
                 fd: c_int,
                 iov: *const crate::iovec,
                 iovcnt: c_int,
                 offset: off64_t,
             ) -> ssize_t;
+            #[cfg_attr(
+                all(target_os = "android", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `pwritev` instead. Under 64-bit ABIs, Android aliases these types, \
+                            and the `libc` crate is phasing out support for suffixed variants in \
+                            favor of a single fixed-width unsuffixed type."
+                ),
+                allow(deprecated)
+            )]
             pub fn pwritev64(
                 fd: c_int,
                 iov: *const crate::iovec,

@@ -1,4 +1,3 @@
-use crate::off64_t;
 use crate::prelude::*;
 
 pub type wchar_t = u32;
@@ -15,7 +14,7 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         __pad1: Padding<c_ulong>,
-        pub st_size: off64_t,
+        pub st_size: crate::off_t,
         pub st_blksize: c_int,
         __pad2: Padding<c_int>,
         pub st_blocks: c_long,
@@ -29,6 +28,12 @@ s! {
         __unused5: Padding<c_uint>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `stat` instead. Under 64-bit ABIs, Android aliases these types, and the `libc` \
+                crate is phasing out support for suffixed types in favor of a single, fixed-width unsuffixed type."
+    )]
+    #[allow(deprecated)]
     pub struct stat64 {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -38,7 +43,7 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         __pad1: Padding<c_ulong>,
-        pub st_size: off64_t,
+        pub st_size: crate::off64_t,
         pub st_blksize: c_int,
         __pad2: Padding<c_int>,
         pub st_blocks: c_long,
