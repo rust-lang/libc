@@ -654,7 +654,7 @@ s! {
         /// Current SVGID on process.
         pub pbsi_svgid: crate::gid_t,
         /// Reserved for future use.
-        pub pbsi_rfu: u32,
+        pbsi_rfu: u32,
     }
 
     pub struct proc_taskallinfo {
