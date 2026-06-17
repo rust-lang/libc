@@ -36,6 +36,7 @@ pub type nfds_t = c_uint;
 pub type rlim_t = c_ulong;
 pub type dev_t = c_ulong;
 pub type ino_t = c_ulong;
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type ino64_t = u64;
 pub type __CPU_BITTYPE = c_ulong;
 pub type idtype_t = c_int;
@@ -114,6 +115,7 @@ s! {
         pub l_pid: crate::pid_t,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct flock64 {
         pub l_type: c_short,
         pub l_whence: c_short,
@@ -534,6 +536,7 @@ s! {
         pub d_name: [c_char; 256],
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct dirent64 {
         pub d_ino: u64,
         pub d_off: i64,
@@ -3508,7 +3511,9 @@ extern "C" {
     pub fn setgrent();
     pub fn endgrent();
     pub fn getgrent() -> *mut crate::group;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn getrlimit64(resource: c_int, rlim: *mut rlimit64) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn setrlimit64(resource: c_int, rlim: *const rlimit64) -> c_int;
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
@@ -3518,6 +3523,7 @@ extern "C" {
         new_limit: *const crate::rlimit,
         old_limit: *mut crate::rlimit,
     ) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn prlimit64(
         pid: crate::pid_t,
         resource: c_int,
@@ -3578,8 +3584,10 @@ extern "C" {
     pub fn seekdir(dirp: *mut crate::DIR, loc: c_long);
     pub fn telldir(dirp: *mut crate::DIR) -> c_long;
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn fallocate64(fd: c_int, mode: c_int, offset: off64_t, len: off64_t) -> c_int;
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn posix_fallocate64(fd: c_int, offset: off64_t, len: off64_t) -> c_int;
     pub fn getxattr(
         path: *const c_char,
@@ -3736,6 +3744,7 @@ extern "C" {
         param: *const crate::sched_param,
     ) -> c_int;
     pub fn sendfile(out_fd: c_int, in_fd: c_int, offset: *mut off_t, count: size_t) -> ssize_t;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn sendfile64(out_fd: c_int, in_fd: c_int, offset: *mut off64_t, count: size_t) -> ssize_t;
     pub fn setfsgid(gid: crate::gid_t) -> c_int;
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
