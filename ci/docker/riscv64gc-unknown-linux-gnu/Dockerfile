@@ -1,4 +1,4 @@
-FROM ubuntu:25.04
+FROM ubuntu:26.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc-riscv64-linux-gnu \
     libc6-dev \
     libc6-dev-riscv64-cross \
-    qemu-system-riscv64 \
+    qemu-system-riscv \
     qemu-user
 
 ENV CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER=riscv64-linux-gnu-gcc \

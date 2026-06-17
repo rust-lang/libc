@@ -1,4 +1,4 @@
-FROM ubuntu:25.04
+FROM ubuntu:26.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc-sparc64-linux-gnu \
     libc6-dev \
     libc6-dev-sparc64-cross \
-    qemu-system-sparc64 \
+    qemu-system-sparc \
     qemu-user
 
 ENV CARGO_TARGET_SPARC64_UNKNOWN_LINUX_GNU_LINKER=sparc64-linux-gnu-gcc \
