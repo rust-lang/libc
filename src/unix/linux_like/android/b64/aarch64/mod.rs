@@ -27,6 +27,7 @@ s! {
         __unused5: Padding<c_uint>,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct stat64 {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
