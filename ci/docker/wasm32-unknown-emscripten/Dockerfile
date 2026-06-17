@@ -1,4 +1,4 @@
-FROM ubuntu:25.04
+FROM ubuntu:26.04
 
 # This is a workaround to avoid the interaction with tzdata.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gdb \
     git \
     libc6-dev \
-    libxml2 \
     make \
     python3 \
     tzdata \
