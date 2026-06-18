@@ -209,6 +209,9 @@ fn test_apple(target: &str) {
     assert!(target.contains("apple"));
     let x86_64 = target.contains("x86_64");
     let i686 = target.contains("i686");
+    let macos = target.contains("darwin") || target.contains("macos");
+    let tvos = target.contains("tvos");
+    let watchos = target.contains("watchos");
 
     let mut cfg = ctest_cfg();
 
@@ -236,27 +239,29 @@ fn test_apple(target: &str) {
         "ifaddrs.h",
         "langinfo.h",
         "libgen.h",
-        "libproc.h",
+        (macos, "libproc.h"),
         "limits.h",
         "locale.h",
+        "mach/mach.h",
         "malloc/malloc.h",
-        "net/bpf.h",
-        "net/dlil.h",
+        (macos, "net/bpf.h"),
+        (macos, "net/dlil.h"),
         "net/if.h",
-        "net/if_arp.h",
+        (macos, "net/if_arp.h"),
         "net/if_dl.h",
-        "net/if_mib.h",
-        "net/if_utun.h",
+        (macos, "net/if_mib.h"),
+        (macos, "net/if_utun.h"),
         "net/if_var.h",
-        "net/ndrv.h",
-        "net/route.h",
+        (macos, "net/ndrv.h"),
+        (macos, "net/route.h"),
         "netdb.h",
-        "netinet/if_ether.h",
+        (macos, "netinet/if_ether.h"),
         "netinet/in.h",
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
-        "netinet6/in6_var.h",
+        "netinet6/scope6_var.h",
+        (macos, "netinet6/in6_var.h"),
         "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
@@ -287,20 +292,20 @@ fn test_apple(target: &str) {
         "sys/file.h",
         "sys/ioctl.h",
         "sys/ipc.h",
-        "sys/kern_control.h",
+        (macos, "sys/kern_control.h"),
         "sys/mman.h",
         "sys/mount.h",
-        "sys/proc_info.h",
-        "sys/ptrace.h",
+        (macos, "sys/proc_info.h"),
+        (macos, "sys/ptrace.h"),
         "sys/quota.h",
-        "sys/random.h",
+        (macos, "sys/random.h"),
         "sys/resource.h",
         "sys/sem.h",
         "sys/shm.h",
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
-        "sys/sys_domain.h",
+        (macos, "sys/sys_domain.h"),
         "sys/sysctl.h",
         "sys/time.h",
         "sys/times.h",
@@ -321,7 +326,7 @@ fn test_apple(target: &str) {
         "utmpx.h",
         "wchar.h",
         "xlocale.h",
-        (x86_64, "crt_externs.h"),
+        "crt_externs.h",
     );
 
     cfg.skip_struct(move |s| {
@@ -377,6 +382,26 @@ fn test_apple(target: &str) {
             "close" if x86_64 => true,
             // FIXME(1.0): std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
             "res_init" => true,
+            // Marked available everywhere, but the `sys/random.h` header only
+            // exists on the macOS SDK.
+            // FIXME(madsmtm): Filed as FB23000895.
+            "getentropy" => !macos,
+            // Prohibited on iOS, tvOS, watchOS and visionOS.
+            // FIXME(madsmtm): Perhaps we should just not expose this symbol?
+            "system" => !macos,
+            // Marked unavailable on iOS, tvOS, watchOS and visionOS.
+            // FIXME(madsmtm): Perhaps we should just not expose these symbols?
+            "pthread_jit_write_protect_np"
+            | "pthread_jit_write_protect_supported_np"
+            | "pthread_jit_write_with_callback_np"
+            | "pthread_jit_write_freeze_callbacks_np"
+            | "gethostuuid" => !macos,
+            // Marked as unavailable on tvOS and watchOS.
+            // FIXME(madsmtm): Perhaps we should just not expose this symbol?
+            "execl" | "execle" | "execlp" | "execv" | "execve" | "execvp" | "execvP" | "fork"
+            | "sigaltstack" | "syscall" | "daemon" | "brk" | "sbrk" | "task_set_info"
+            | "exchangedata" => tvos || watchos,
+            ident if ident.starts_with("posix_spawn") => tvos || watchos,
             _ => false,
         }
     });
