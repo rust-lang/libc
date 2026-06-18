@@ -402,6 +402,21 @@ macro_rules! offset_of {
     }};
 }
 
+/// Defines constants with an accompanying doc comment pointing out their
+/// instability, and links to the crate documentation for usage guidelines.
+macro_rules! ct {
+    ($($it:item)+) => {
+$(
+/// This constant, among others often used in C for the purposes of denoting the
+/// latest value or limit in a set of constants, is likely to change upstream.
+/// For correct usage, see the [crate-level documentation][docs].
+///
+/// [docs]: index.html#usage-recommendations
+$it
+)+
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use core::any::TypeId;
