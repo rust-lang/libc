@@ -28,7 +28,7 @@ defaults:
 jobs:
   style_check:
     name: Style check
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -43,7 +43,7 @@ jobs:
     name: Clippy on ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-26, windows-2025]
+        os: [ubuntu-26.04, macos-26, windows-2025]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -73,7 +73,7 @@ jobs:
             only: '(aarch64|x86_64)' # just a spot check for beta
           - toolchain: stable
           - toolchain: 1.65.0 # msrv
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 25
     env:
       TOOLCHAIN: ${{ matrix.toolchain }}
@@ -131,7 +131,7 @@ jobs:
           - target: aarch64-pc-windows-msvc
             os: windows-11-arm
           - target: aarch64-unknown-linux-gnu
-            os: ubuntu-24.04-arm
+            os: ubuntu-26.04-arm
           - target: i686-pc-windows-gnu
             os: windows-2025
           - target: i686-pc-windows-msvc
@@ -142,7 +142,7 @@ jobs:
           - target: x86_64-pc-windows-msvc
             os: windows-2025
           - target: x86_64-unknown-linux-gnu
-    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
+    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
@@ -240,7 +240,7 @@ jobs:
           # FIXME(ppc): SIGILL running tests, see
           # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
           # - target: powerpc-unknown-linux-gnu
-    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-24.04' }}
+    runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
@@ -362,7 +362,7 @@ jobs:
 
   ctest_msrv:
     name: Check ctest MSRV
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     env:
       RUSTFLAGS: "" # No need to check warnings on old MSRV, clear `-Dwarnings`
@@ -384,7 +384,7 @@ jobs:
 
   docs:
     name: Ensure docs build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -399,7 +399,7 @@ jobs:
   # protection, rather than having to add each job separately.
   success:
     name: success
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs:
       - style_check
       - test_tier1
