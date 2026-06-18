@@ -13,8 +13,9 @@ export RUSTFLAGS="${EXTRA_RUSTFLAGS:-} ${RUSTFLAGS:-}"
 
 echo "RUSTFLAGS: '$RUSTFLAGS'"
 
-# For logging
+# Print system and libc version for logging if available
 uname -a
+dpkg -l | grep libc- || true
 
 cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
 test_flags="--skip check_style"
