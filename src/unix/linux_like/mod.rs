@@ -598,6 +598,7 @@ pub const MS_NODIRATIME: c_ulong = 0x0800;
 pub const MS_BIND: c_ulong = 0x1000;
 pub const MS_MOVE: c_ulong = 0x2000;
 pub const MS_REC: c_ulong = 0x4000;
+// MS_VERBOSE is deprecated
 pub const MS_SILENT: c_ulong = 0x8000;
 pub const MS_POSIXACL: c_ulong = 0x010000;
 pub const MS_UNBINDABLE: c_ulong = 0x020000;
