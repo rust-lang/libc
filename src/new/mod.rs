@@ -180,6 +180,7 @@ cfg_if! {
         pub use linux::can::j1939::*;
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
+        pub use linux::if_packet::*;
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
         pub use linux::mount::*;
@@ -193,6 +194,8 @@ cfg_if! {
         pub use pthread_::spawn::*;
         pub use pthread_::stack_np::*;
         pub use signal::*;
+    } else if #[cfg(target_os = "l4re")] {
+        pub use l4re::packet::*;
     } else if #[cfg(target_os = "netbsd")] {
         pub use net::if_::*;
         pub use sys::file::*;

@@ -85,13 +85,6 @@ s! {
         __val: [c_int; 2],
     }
 
-    pub struct packet_mreq {
-        pub mr_ifindex: c_int,
-        pub mr_type: c_ushort,
-        pub mr_alen: c_ushort,
-        pub mr_address: [c_uchar; 8],
-    }
-
     pub struct cpu_set_t {
         #[cfg(all(target_pointer_width = "32", not(target_arch = "x86_64")))]
         bits: [u32; 32],
@@ -1216,43 +1209,6 @@ cfg_if! {
         pub const MFD_HUGE_SHIFT: c_uint = 26;
     }
 }
-
-// linux/if_packet.h
-pub const PACKET_HOST: c_uchar = 0;
-pub const PACKET_BROADCAST: c_uchar = 1;
-pub const PACKET_MULTICAST: c_uchar = 2;
-pub const PACKET_OTHERHOST: c_uchar = 3;
-pub const PACKET_OUTGOING: c_uchar = 4;
-pub const PACKET_LOOPBACK: c_uchar = 5;
-#[cfg(not(target_os = "l4re"))]
-pub const PACKET_USER: c_uchar = 6;
-#[cfg(not(target_os = "l4re"))]
-pub const PACKET_KERNEL: c_uchar = 7;
-
-pub const PACKET_ADD_MEMBERSHIP: c_int = 1;
-pub const PACKET_DROP_MEMBERSHIP: c_int = 2;
-pub const PACKET_RECV_OUTPUT: c_int = 3;
-pub const PACKET_RX_RING: c_int = 5;
-pub const PACKET_STATISTICS: c_int = 6;
-cfg_if! {
-    if #[cfg(not(target_os = "l4re"))] {
-        pub const PACKET_COPY_THRESH: c_int = 7;
-        pub const PACKET_AUXDATA: c_int = 8;
-        pub const PACKET_ORIGDEV: c_int = 9;
-        pub const PACKET_VERSION: c_int = 10;
-        pub const PACKET_HDRLEN: c_int = 11;
-        pub const PACKET_RESERVE: c_int = 12;
-        pub const PACKET_TX_RING: c_int = 13;
-        pub const PACKET_LOSS: c_int = 14;
-        pub const PACKET_VNET_HDR: c_int = 15;
-        pub const PACKET_TX_TIMESTAMP: c_int = 16;
-        pub const PACKET_TIMESTAMP: c_int = 17;
-    }
-}
-
-pub const PACKET_MR_MULTICAST: c_int = 0;
-pub const PACKET_MR_PROMISC: c_int = 1;
-pub const PACKET_MR_ALLMULTI: c_int = 2;
 
 pub const SIOCADDRT: c_ulong = 0x0000890B;
 pub const SIOCDELRT: c_ulong = 0x0000890C;
