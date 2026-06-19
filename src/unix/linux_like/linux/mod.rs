@@ -37,15 +37,6 @@ pub type sctp_assoc_t = __s32;
 
 pub type eventfd_t = u64;
 
-e! {
-    #[repr(u32)]
-    pub enum tpacket_versions {
-        TPACKET_V1,
-        TPACKET_V2,
-        TPACKET_V3,
-    }
-}
-
 c_enum! {
     pub enum pid_type {
         pub PIDTYPE_PID,
@@ -92,126 +83,6 @@ s! {
         pub ssi_call_addr: u64,
         pub ssi_arch: u32,
         _pad: Padding<[u8; 28]>,
-    }
-
-    pub struct fanout_args {
-        #[cfg(target_endian = "little")]
-        pub id: __u16,
-        pub type_flags: __u16,
-        #[cfg(target_endian = "big")]
-        pub id: __u16,
-        pub max_num_members: __u32,
-    }
-
-    #[deprecated(since = "0.2.70", note = "sockaddr_ll type must be used instead")]
-    pub struct sockaddr_pkt {
-        pub spkt_family: c_ushort,
-        pub spkt_device: [c_uchar; 14],
-        pub spkt_protocol: c_ushort,
-    }
-
-    pub struct tpacket_auxdata {
-        pub tp_status: __u32,
-        pub tp_len: __u32,
-        pub tp_snaplen: __u32,
-        pub tp_mac: __u16,
-        pub tp_net: __u16,
-        pub tp_vlan_tci: __u16,
-        pub tp_vlan_tpid: __u16,
-    }
-
-    pub struct tpacket_hdr {
-        pub tp_status: c_ulong,
-        pub tp_len: c_uint,
-        pub tp_snaplen: c_uint,
-        pub tp_mac: c_ushort,
-        pub tp_net: c_ushort,
-        pub tp_sec: c_uint,
-        pub tp_usec: c_uint,
-    }
-
-    pub struct tpacket_hdr_variant1 {
-        pub tp_rxhash: __u32,
-        pub tp_vlan_tci: __u32,
-        pub tp_vlan_tpid: __u16,
-        pub tp_padding: __u16,
-    }
-
-    pub struct tpacket2_hdr {
-        pub tp_status: __u32,
-        pub tp_len: __u32,
-        pub tp_snaplen: __u32,
-        pub tp_mac: __u16,
-        pub tp_net: __u16,
-        pub tp_sec: __u32,
-        pub tp_nsec: __u32,
-        pub tp_vlan_tci: __u16,
-        pub tp_vlan_tpid: __u16,
-        pub tp_padding: [__u8; 4],
-    }
-
-    pub struct tpacket_req {
-        pub tp_block_size: c_uint,
-        pub tp_block_nr: c_uint,
-        pub tp_frame_size: c_uint,
-        pub tp_frame_nr: c_uint,
-    }
-
-    pub struct tpacket_req3 {
-        pub tp_block_size: c_uint,
-        pub tp_block_nr: c_uint,
-        pub tp_frame_size: c_uint,
-        pub tp_frame_nr: c_uint,
-        pub tp_retire_blk_tov: c_uint,
-        pub tp_sizeof_priv: c_uint,
-        pub tp_feature_req_word: c_uint,
-    }
-
-    #[repr(align(8))]
-    pub struct tpacket_rollover_stats {
-        pub tp_all: crate::__u64,
-        pub tp_huge: crate::__u64,
-        pub tp_failed: crate::__u64,
-    }
-
-    pub struct tpacket_stats {
-        pub tp_packets: c_uint,
-        pub tp_drops: c_uint,
-    }
-
-    pub struct tpacket_stats_v3 {
-        pub tp_packets: c_uint,
-        pub tp_drops: c_uint,
-        pub tp_freeze_q_cnt: c_uint,
-    }
-
-    pub struct tpacket3_hdr {
-        pub tp_next_offset: __u32,
-        pub tp_sec: __u32,
-        pub tp_nsec: __u32,
-        pub tp_snaplen: __u32,
-        pub tp_len: __u32,
-        pub tp_status: __u32,
-        pub tp_mac: __u16,
-        pub tp_net: __u16,
-        pub hv1: crate::tpacket_hdr_variant1,
-        pub tp_padding: [__u8; 8],
-    }
-
-    pub struct tpacket_bd_ts {
-        pub ts_sec: c_uint,
-        pub ts_usec: c_uint,
-    }
-
-    #[repr(align(8))]
-    pub struct tpacket_hdr_v1 {
-        pub block_status: __u32,
-        pub num_pkts: __u32,
-        pub offset_to_first_pkt: __u32,
-        pub blk_len: __u32,
-        pub seq_num: crate::__u64,
-        pub ts_first_pkt: crate::tpacket_bd_ts,
-        pub ts_last_pkt: crate::tpacket_bd_ts,
     }
 
     // System V IPC
@@ -1295,21 +1166,6 @@ s_no_extra_traits! {
         pub iv: [c_uchar; 0],
     }
 
-    pub union tpacket_req_u {
-        pub req: crate::tpacket_req,
-        pub req3: crate::tpacket_req3,
-    }
-
-    pub union tpacket_bd_header_u {
-        pub bh1: crate::tpacket_hdr_v1,
-    }
-
-    pub struct tpacket_block_desc {
-        pub version: __u32,
-        pub offset_to_priv: __u32,
-        pub hdr: crate::tpacket_bd_header_u,
-    }
-
     // linux/net_tstamp.h
     pub struct sock_txtime {
         pub clockid: crate::clockid_t,
@@ -2090,60 +1946,6 @@ pub const CTRL_ATTR_OP_FLAGS: c_int = 2;
 pub const CTRL_ATTR_MCAST_GRP_UNSPEC: c_int = 0;
 pub const CTRL_ATTR_MCAST_GRP_NAME: c_int = 1;
 pub const CTRL_ATTR_MCAST_GRP_ID: c_int = 2;
-
-pub const PACKET_FANOUT: c_int = 18;
-pub const PACKET_TX_HAS_OFF: c_int = 19;
-pub const PACKET_QDISC_BYPASS: c_int = 20;
-pub const PACKET_ROLLOVER_STATS: c_int = 21;
-pub const PACKET_FANOUT_DATA: c_int = 22;
-pub const PACKET_IGNORE_OUTGOING: c_int = 23;
-pub const PACKET_VNET_HDR_SZ: c_int = 24;
-
-pub const PACKET_FANOUT_HASH: c_uint = 0;
-pub const PACKET_FANOUT_LB: c_uint = 1;
-pub const PACKET_FANOUT_CPU: c_uint = 2;
-pub const PACKET_FANOUT_ROLLOVER: c_uint = 3;
-pub const PACKET_FANOUT_RND: c_uint = 4;
-pub const PACKET_FANOUT_QM: c_uint = 5;
-pub const PACKET_FANOUT_CBPF: c_uint = 6;
-pub const PACKET_FANOUT_EBPF: c_uint = 7;
-pub const PACKET_FANOUT_FLAG_ROLLOVER: c_uint = 0x1000;
-pub const PACKET_FANOUT_FLAG_UNIQUEID: c_uint = 0x2000;
-pub const PACKET_FANOUT_FLAG_IGNORE_OUTGOING: c_uint = 0x4000;
-pub const PACKET_FANOUT_FLAG_DEFRAG: c_uint = 0x8000;
-
-pub const TP_STATUS_KERNEL: __u32 = 0;
-pub const TP_STATUS_USER: __u32 = 1 << 0;
-pub const TP_STATUS_COPY: __u32 = 1 << 1;
-pub const TP_STATUS_LOSING: __u32 = 1 << 2;
-pub const TP_STATUS_CSUMNOTREADY: __u32 = 1 << 3;
-pub const TP_STATUS_VLAN_VALID: __u32 = 1 << 4;
-pub const TP_STATUS_BLK_TMO: __u32 = 1 << 5;
-pub const TP_STATUS_VLAN_TPID_VALID: __u32 = 1 << 6;
-pub const TP_STATUS_CSUM_VALID: __u32 = 1 << 7;
-
-pub const TP_STATUS_AVAILABLE: __u32 = 0;
-pub const TP_STATUS_SEND_REQUEST: __u32 = 1 << 0;
-pub const TP_STATUS_SENDING: __u32 = 1 << 1;
-pub const TP_STATUS_WRONG_FORMAT: __u32 = 1 << 2;
-
-pub const TP_STATUS_TS_SOFTWARE: __u32 = 1 << 29;
-pub const TP_STATUS_TS_SYS_HARDWARE: __u32 = 1 << 30;
-pub const TP_STATUS_TS_RAW_HARDWARE: __u32 = 1 << 31;
-
-pub const TP_FT_REQ_FILL_RXHASH: __u32 = 1;
-
-pub const TPACKET_ALIGNMENT: usize = 16;
-
-pub const TPACKET_HDRLEN: usize = ((size_of::<crate::tpacket_hdr>() + TPACKET_ALIGNMENT - 1)
-    & !(TPACKET_ALIGNMENT - 1))
-    + size_of::<crate::sockaddr_ll>();
-pub const TPACKET2_HDRLEN: usize = ((size_of::<crate::tpacket2_hdr>() + TPACKET_ALIGNMENT - 1)
-    & !(TPACKET_ALIGNMENT - 1))
-    + size_of::<crate::sockaddr_ll>();
-pub const TPACKET3_HDRLEN: usize = ((size_of::<crate::tpacket3_hdr>() + TPACKET_ALIGNMENT - 1)
-    & !(TPACKET_ALIGNMENT - 1))
-    + size_of::<crate::sockaddr_ll>();
 
 // linux/netfilter.h
 pub const NF_DROP: c_int = 0;
@@ -3931,10 +3733,6 @@ f! {
 
     pub fn SO_EE_OFFENDER(ee: *const crate::sock_extended_err) -> *mut crate::sockaddr {
         ee.offset(1) as *mut crate::sockaddr
-    }
-
-    pub fn TPACKET_ALIGN(x: usize) -> usize {
-        (x + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1)
     }
 
     pub fn BPF_CLASS(code: __u32) -> __u32 {
