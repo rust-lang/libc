@@ -507,8 +507,6 @@ pub const MAP_HUGE_1GB: c_int = 30 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_2GB: c_int = 31 << MAP_HUGE_SHIFT;
 pub const MAP_HUGE_16GB: c_int = 34 << MAP_HUGE_SHIFT;
 
-pub const MS_RMT_MASK: c_ulong = 0x02800051;
-
 // include/utmpx.h
 pub const EMPTY: c_short = 0;
 pub const RUN_LVL: c_short = 1;

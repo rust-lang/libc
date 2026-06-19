@@ -994,15 +994,6 @@ s! {
         pub csum_offset: __u16,
     }
 
-    // linux/mount.h
-
-    pub struct mount_attr {
-        pub attr_set: crate::__u64,
-        pub attr_clr: crate::__u64,
-        pub propagation: crate::__u64,
-        pub userns_fd: crate::__u64,
-    }
-
     // linux/nsfs.h
     pub struct mnt_ns_info {
         pub size: crate::__u32,
@@ -3141,34 +3132,6 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
 pub const IN_CLOEXEC: c_int = O_CLOEXEC;
 pub const IN_NONBLOCK: c_int = O_NONBLOCK;
 
-// uapi/linux/mount.h
-pub const OPEN_TREE_CLONE: c_uint = 0x01;
-pub const OPEN_TREE_NAMESPACE: c_uint = 0x02;
-pub const OPEN_TREE_CLOEXEC: c_uint = O_CLOEXEC as c_uint;
-
-pub const FSOPEN_CLOEXEC: c_uint = 0x00000001;
-
-pub const FSPICK_CLOEXEC: c_uint = 0x00000001;
-pub const FSPICK_SYMLINK_NOFOLLOW: c_uint = 0x00000002;
-pub const FSPICK_NO_AUTOMOUNT: c_uint = 0x00000004;
-pub const FSPICK_EMPTY_PATH: c_uint = 0x00000008;
-
-pub const FSMOUNT_CLOEXEC: c_uint = 0x00000001;
-
-c_enum! {
-    pub enum fsconfig_command {
-        pub FSCONFIG_SET_FLAG,
-        pub FSCONFIG_SET_STRING,
-        pub FSCONFIG_SET_BINARY,
-        pub FSCONFIG_SET_PATH,
-        pub FSCONFIG_SET_PATH_EMPTY,
-        pub FSCONFIG_SET_FD,
-        pub FSCONFIG_CMD_CREATE,
-        pub FSCONFIG_CMD_RECONFIGURE,
-        pub FSCONFIG_CMD_CREATE_EXCL,
-    }
-}
-
 // uapi/linux/netfilter/nf_tables.h
 pub const NFT_TABLE_MAXNAMELEN: c_int = 256;
 pub const NFT_CHAIN_MAXNAMELEN: c_int = 256;
@@ -3933,21 +3896,6 @@ pub const XDP_TXMD_FLAGS_CHECKSUM: crate::__u32 = 1 << 1;
 pub const XDP_TX_METADATA: crate::__u32 = 1 << 1;
 
 pub const SOL_XDP: c_int = 283;
-
-// linux/mount.h
-pub const MOUNT_ATTR_RDONLY: crate::__u64 = 0x00000001;
-pub const MOUNT_ATTR_NOSUID: crate::__u64 = 0x00000002;
-pub const MOUNT_ATTR_NODEV: crate::__u64 = 0x00000004;
-pub const MOUNT_ATTR_NOEXEC: crate::__u64 = 0x00000008;
-pub const MOUNT_ATTR__ATIME: crate::__u64 = 0x00000070;
-pub const MOUNT_ATTR_RELATIME: crate::__u64 = 0x00000000;
-pub const MOUNT_ATTR_NOATIME: crate::__u64 = 0x00000010;
-pub const MOUNT_ATTR_STRICTATIME: crate::__u64 = 0x00000020;
-pub const MOUNT_ATTR_NODIRATIME: crate::__u64 = 0x00000080;
-pub const MOUNT_ATTR_IDMAP: crate::__u64 = 0x00100000;
-pub const MOUNT_ATTR_NOSYMFOLLOW: crate::__u64 = 0x00200000;
-
-pub const MOUNT_ATTR_SIZE_VER0: c_int = 32;
 
 pub const SCHED_FLAG_KEEP_ALL: c_int = SCHED_FLAG_KEEP_POLICY | SCHED_FLAG_KEEP_PARAMS;
 
