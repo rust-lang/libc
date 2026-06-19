@@ -17,7 +17,7 @@ s! {
         pub ifi_hdrlen: c_uchar,
         pub ifi_recvquota: c_uchar,
         pub ifi_xmitquota: c_uchar,
-        pub ifi_unused1: c_uchar,
+        ifi_unused1: Padding<c_uchar>,
         pub ifi_mtu: u32,
         pub ifi_metric: u32,
         pub ifi_baudrate: u32,
@@ -35,10 +35,10 @@ s! {
         pub ifi_recvtiming: u32,
         pub ifi_xmittiming: u32,
         pub ifi_lastchange: timeval32,
-        pub ifi_unused2: u32,
+        ifi_unused2: Padding<u32>,
         pub ifi_hwassist: u32,
-        pub ifi_reserved1: u32,
-        pub ifi_reserved2: u32,
+        ifi_reserved1: Padding<u32>,
+        ifi_reserved2: Padding<u32>,
     }
 
     pub struct bpf_hdr {
