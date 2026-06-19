@@ -1291,76 +1291,85 @@ pub const RWF_ATOMIC: c_int = 0x00000040;
 pub const RWF_DONTCACHE: c_int = 0x00000080;
 
 // linux/if_link.h
-pub const IFLA_UNSPEC: c_ushort = 0;
-pub const IFLA_ADDRESS: c_ushort = 1;
-pub const IFLA_BROADCAST: c_ushort = 2;
-pub const IFLA_IFNAME: c_ushort = 3;
-pub const IFLA_MTU: c_ushort = 4;
-pub const IFLA_LINK: c_ushort = 5;
-pub const IFLA_QDISC: c_ushort = 6;
-pub const IFLA_STATS: c_ushort = 7;
-pub const IFLA_COST: c_ushort = 8;
-pub const IFLA_PRIORITY: c_ushort = 9;
-pub const IFLA_MASTER: c_ushort = 10;
-pub const IFLA_WIRELESS: c_ushort = 11;
-pub const IFLA_PROTINFO: c_ushort = 12;
-pub const IFLA_TXQLEN: c_ushort = 13;
-pub const IFLA_MAP: c_ushort = 14;
-pub const IFLA_WEIGHT: c_ushort = 15;
-pub const IFLA_OPERSTATE: c_ushort = 16;
-pub const IFLA_LINKMODE: c_ushort = 17;
-pub const IFLA_LINKINFO: c_ushort = 18;
-pub const IFLA_NET_NS_PID: c_ushort = 19;
-pub const IFLA_IFALIAS: c_ushort = 20;
-pub const IFLA_NUM_VF: c_ushort = 21;
-pub const IFLA_VFINFO_LIST: c_ushort = 22;
-pub const IFLA_STATS64: c_ushort = 23;
-pub const IFLA_VF_PORTS: c_ushort = 24;
-pub const IFLA_PORT_SELF: c_ushort = 25;
-pub const IFLA_AF_SPEC: c_ushort = 26;
-pub const IFLA_GROUP: c_ushort = 27;
-pub const IFLA_NET_NS_FD: c_ushort = 28;
-pub const IFLA_EXT_MASK: c_ushort = 29;
-pub const IFLA_PROMISCUITY: c_ushort = 30;
-pub const IFLA_NUM_TX_QUEUES: c_ushort = 31;
-pub const IFLA_NUM_RX_QUEUES: c_ushort = 32;
-pub const IFLA_CARRIER: c_ushort = 33;
-pub const IFLA_PHYS_PORT_ID: c_ushort = 34;
-pub const IFLA_CARRIER_CHANGES: c_ushort = 35;
-pub const IFLA_PHYS_SWITCH_ID: c_ushort = 36;
-pub const IFLA_LINK_NETNSID: c_ushort = 37;
-pub const IFLA_PHYS_PORT_NAME: c_ushort = 38;
-pub const IFLA_PROTO_DOWN: c_ushort = 39;
-pub const IFLA_GSO_MAX_SEGS: c_ushort = 40;
-pub const IFLA_GSO_MAX_SIZE: c_ushort = 41;
-pub const IFLA_PAD: c_ushort = 42;
-pub const IFLA_XDP: c_ushort = 43;
-pub const IFLA_EVENT: c_ushort = 44;
-pub const IFLA_NEW_NETNSID: c_ushort = 45;
-pub const IFLA_IF_NETNSID: c_ushort = 46;
-pub const IFLA_TARGET_NETNSID: c_ushort = IFLA_IF_NETNSID;
-pub const IFLA_CARRIER_UP_COUNT: c_ushort = 47;
-pub const IFLA_CARRIER_DOWN_COUNT: c_ushort = 48;
-pub const IFLA_NEW_IFINDEX: c_ushort = 49;
-pub const IFLA_MIN_MTU: c_ushort = 50;
-pub const IFLA_MAX_MTU: c_ushort = 51;
-pub const IFLA_PROP_LIST: c_ushort = 52;
-pub const IFLA_ALT_IFNAME: c_ushort = 53;
-pub const IFLA_PERM_ADDRESS: c_ushort = 54;
-pub const IFLA_PROTO_DOWN_REASON: c_ushort = 55;
-pub const IFLA_PARENT_DEV_NAME: c_ushort = 56;
-pub const IFLA_PARENT_DEV_BUS_NAME: c_ushort = 57;
-pub const IFLA_GRO_MAX_SIZE: c_ushort = 58;
-pub const IFLA_TSO_MAX_SIZE: c_ushort = 59;
-pub const IFLA_TSO_MAX_SEGS: c_ushort = 60;
-pub const IFLA_ALLMULTI: c_ushort = 61;
+c_enum! {
+    #[repr(c_ushort)]
+    pub enum #anon {
+        pub IFLA_UNSPEC,
+        pub IFLA_ADDRESS,
+        pub IFLA_BROADCAST,
+        pub IFLA_IFNAME,
+        pub IFLA_MTU,
+        pub IFLA_LINK,
+        pub IFLA_QDISC,
+        pub IFLA_STATS,
+        pub IFLA_COST,
+        pub IFLA_PRIORITY,
+        pub IFLA_MASTER,
+        pub IFLA_WIRELESS,
+        pub IFLA_PROTINFO,
+        pub IFLA_TXQLEN,
+        pub IFLA_MAP,
+        pub IFLA_WEIGHT,
+        pub IFLA_OPERSTATE,
+        pub IFLA_LINKMODE,
+        pub IFLA_LINKINFO,
+        pub IFLA_NET_NS_PID,
+        pub IFLA_IFALIAS,
+        pub IFLA_NUM_VF,
+        pub IFLA_VFINFO_LIST,
+        pub IFLA_STATS64,
+        pub IFLA_VF_PORTS,
+        pub IFLA_PORT_SELF,
+        pub IFLA_AF_SPEC,
+        pub IFLA_GROUP,
+        pub IFLA_NET_NS_FD,
+        pub IFLA_EXT_MASK,
+        pub IFLA_PROMISCUITY,
+        pub IFLA_NUM_TX_QUEUES,
+        pub IFLA_NUM_RX_QUEUES,
+        pub IFLA_CARRIER,
+        pub IFLA_PHYS_PORT_ID,
+        pub IFLA_CARRIER_CHANGES,
+        pub IFLA_PHYS_SWITCH_ID,
+        pub IFLA_LINK_NETNSID,
+        pub IFLA_PHYS_PORT_NAME,
+        pub IFLA_PROTO_DOWN,
+        pub IFLA_GSO_MAX_SEGS,
+        pub IFLA_GSO_MAX_SIZE,
+        pub IFLA_PAD,
+        pub IFLA_XDP,
+        pub IFLA_EVENT,
+        pub IFLA_NEW_NETNSID,
+        pub IFLA_IF_NETNSID,
+        pub IFLA_TARGET_NETNSID = IFLA_IF_NETNSID,
+        pub IFLA_CARRIER_UP_COUNT,
+        pub IFLA_CARRIER_DOWN_COUNT,
+        pub IFLA_NEW_IFINDEX,
+        pub IFLA_MIN_MTU,
+        pub IFLA_MAX_MTU,
+        pub IFLA_PROP_LIST,
+        pub IFLA_ALT_IFNAME,
+        pub IFLA_PERM_ADDRESS,
+        pub IFLA_PROTO_DOWN_REASON,
 
-pub const IFLA_INFO_UNSPEC: c_ushort = 0;
-pub const IFLA_INFO_KIND: c_ushort = 1;
-pub const IFLA_INFO_DATA: c_ushort = 2;
-pub const IFLA_INFO_XSTATS: c_ushort = 3;
-pub const IFLA_INFO_SLAVE_KIND: c_ushort = 4;
-pub const IFLA_INFO_SLAVE_DATA: c_ushort = 5;
+        pub IFLA_PARENT_DEV_NAME,
+        pub IFLA_PARENT_DEV_BUS_NAME,
+        pub IFLA_GRO_MAX_SIZE,
+        pub IFLA_TSO_MAX_SIZE,
+        pub IFLA_TSO_MAX_SEGS,
+        pub IFLA_ALLMULTI,
+    }
+
+    #[repr(c_ushort)]
+    pub enum #anon {
+        pub IFLA_INFO_UNSPEC,
+        pub IFLA_INFO_KIND,
+        pub IFLA_INFO_DATA,
+        pub IFLA_INFO_XSTATS,
+        pub IFLA_INFO_SLAVE_KIND,
+        pub IFLA_INFO_SLAVE_DATA,
+    }
+}
 
 // Since Linux 3.1
 pub const SEEK_DATA: c_int = 3;
