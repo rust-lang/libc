@@ -545,8 +545,6 @@ pub const PRIO_PROCESS: crate::__priority_which_t = 0;
 pub const PRIO_PGRP: crate::__priority_which_t = 1;
 pub const PRIO_USER: crate::__priority_which_t = 2;
 
-pub const MS_RMT_MASK: c_ulong = 0x02800051;
-
 pub const __UT_LINESIZE: usize = 32;
 pub const __UT_NAMESIZE: usize = 32;
 pub const __UT_HOSTSIZE: usize = 256;
@@ -831,16 +829,6 @@ pub const M_ARENA_TEST: c_int = -7;
 pub const M_ARENA_MAX: c_int = -8;
 
 pub const SOMAXCONN: c_int = 4096;
-
-// linux/mount.h
-pub const MOVE_MOUNT_F_SYMLINKS: c_uint = 0x00000001;
-pub const MOVE_MOUNT_F_AUTOMOUNTS: c_uint = 0x00000002;
-pub const MOVE_MOUNT_F_EMPTY_PATH: c_uint = 0x00000004;
-pub const MOVE_MOUNT_T_SYMLINKS: c_uint = 0x00000010;
-pub const MOVE_MOUNT_T_AUTOMOUNTS: c_uint = 0x00000020;
-pub const MOVE_MOUNT_T_EMPTY_PATH: c_uint = 0x00000040;
-pub const MOVE_MOUNT_SET_GROUP: c_uint = 0x00000100;
-pub const MOVE_MOUNT_BENEATH: c_uint = 0x00000200;
 
 // sys/timex.h
 pub const ADJ_OFFSET: c_uint = 0x0001;
