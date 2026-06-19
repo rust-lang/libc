@@ -288,10 +288,6 @@ pub const LC_MESSAGES: c_int = 5;
 pub const LC_ALL: c_int = 6;
 // end different section
 
-// MS_ flags for mount(2)
-pub const MS_RMT_MASK: c_ulong =
-    crate::MS_RDONLY | crate::MS_SYNCHRONOUS | crate::MS_MANDLOCK | crate::MS_I_VERSION;
-
 pub const ENOTSUP: c_int = EOPNOTSUPP;
 
 pub const IPV6_JOIN_GROUP: c_int = 20;
