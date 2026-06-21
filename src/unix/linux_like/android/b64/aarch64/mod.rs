@@ -63,7 +63,10 @@ s! {
         pub uc_flags: c_ulong,
         pub uc_link: *mut ucontext_t,
         pub uc_stack: crate::stack_t,
-        pub uc_sigmask: crate::sigset_t,
+        pub uc_sigmask__c_anonymous_union: __c_anonymous_uc_sigmask,
+        /* The kernel adds extra padding after uc_sigmask to match
+         * glibc sigset_t on ARM64. */
+        __padding: Padding<[c_char; 128 - size_of::<crate::sigset_t>()]>,
         pub uc_mcontext: mcontext_t,
     }
 
@@ -85,9 +88,30 @@ s! {
 }
 
 s_no_extra_traits! {
+    pub union __c_anonymous_uc_sigmask {
+        uc_sigmask: crate::sigset_t,
+        uc_sigmask64: crate::sigset64_t,
+    }
+
     #[repr(align(16))]
     pub struct max_align_t {
         priv_: [f32; 8],
+    }
+}
+
+cfg_if! {
+    if #[cfg(feature = "extra_traits")] {
+        impl PartialEq for __c_anonymous_uc_sigmask {
+            fn eq(&self, other: &__c_anonymous_uc_sigmask) -> bool {
+                unsafe { self.uc_sigmask == other.uc_sigmask }
+            }
+        }
+        impl Eq for __c_anonymous_uc_sigmask {}
+        impl hash::Hash for __c_anonymous_uc_sigmask {
+            fn hash<H: hash::Hasher>(&self, state: &mut H) {
+                unsafe { self.uc_sigmask.hash(state) }
+            }
+        }
     }
 }
 
