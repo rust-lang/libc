@@ -11,10 +11,17 @@ use std::path::{
     Path,
     PathBuf,
 };
+use std::process::{
+    Command,
+    Stdio,
+};
+use std::sync::LazyLock;
 use std::{
     env,
     io,
 };
+
+use regex::Regex;
 
 fn do_cc() {
     let target = env::var("TARGET").unwrap();
@@ -176,6 +183,8 @@ fn process_semver_file<W: Write, P: AsRef<Path>>(output: &mut W, path: &mut Path
 fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
+    // Ensure version checking works, even if we don't use it.
+    LazyLock::force(&VERSIONS);
 
     do_cc();
     do_ctest();
@@ -1310,10 +1319,7 @@ fn test_netbsd(target: &str) {
     let mut cfg = ctest_cfg();
 
     // Assume netbsd10 but check for netbsd9 for test config.
-    let netbsd9 = match try_command_output("uname", &["-sr"]) {
-        Some(s) if s.starts_with("NetBSD 9.") => true,
-        _ => false,
-    };
+    let netbsd9 = matches!(VERSIONS.netbsd, Some((9, _)));
 
     cfg.flag("-Wno-deprecated-declarations");
     cfg.define("_NETBSD_SOURCE", Some("1"));
@@ -3960,6 +3966,8 @@ fn test_linux(target: &str) {
     let mips = target.contains("mips");
     let mips64 = target.contains("mips64");
     let mips32 = mips && !mips64;
+    let versions = &*VERSIONS;
+    let kernel = versions.linux.unwrap_or((0, 0));
 
     let musl_v1_2_3 = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     if musl_v1_2_3 {
@@ -4313,11 +4321,6 @@ fn test_linux(target: &str) {
     cfg.skip_struct(move |struct_| {
         let ty = struct_.ident();
 
-        // FIXME(linux): Requires >= 6.12 kernel headers. CI has old headers
-        if ty == "ptp_sys_offset_extended" {
-            return true;
-        }
-
         // LFS64 types have been removed in musl 1.2.4+
         if musl && (ty.ends_with("64") || ty.ends_with("64_t")) {
             return true;
@@ -4414,14 +4417,14 @@ fn test_linux(target: &str) {
             // kernel so we can drop this and test the type once this new version is used in CI.
             "sched_attr" => true,
 
-            // FIXME(linux): Requires >= 6.9 kernel headers.
-            "epoll_params" => true,
+            // Recent additions
+            "ptp_sys_offset_extended" if kernel < (6, 12) => true,
+            "epoll_params" => kernel < (6, 9),
+            "mnt_ns_info" => kernel < (6, 12),
 
-            // FIXME(linux): Requires >= 6.12 kernel headers.
+            // FIXME(linux): Only requires >= 6.12 kernel headers, but including `uio.h` creates
+            // a conflict with the `iovec` definition.
             "dmabuf_cmsg" | "dmabuf_token" => true,
-
-            // FIXME(linux): Requires >= 6.12 kernel headers.
-            "mnt_ns_info" => true,
 
             // FIXME(musl): Struct has changed for new musl versions
             "tcp_info" if musl => true,
@@ -4813,8 +4816,8 @@ fn test_linux(target: &str) {
             // FIXME(linux): Not yet implemented on sparc64
             "SYS_clone3" if sparc64 => true,
 
-            // FIXME(linux): Requires >= 6.9 kernel headers.
-            n if (arm || ppc32) && n.starts_with("FUTEX2_") => true,
+            // Requires >= 6.9 kernel headers.
+            n if (arm || ppc32) && n.starts_with("FUTEX2_") => kernel < (6, 9),
 
             // FIXME(linux): Not defined on ARM, gnueabihf, mips, musl, PowerPC, riscv64, s390x, and sparc64.
             "SYS_memfd_secret"
@@ -4826,7 +4829,8 @@ fn test_linux(target: &str) {
             // Skip as this signal codes and trap reasons need newer headers
             "TRAP_PERF" => true,
 
-            // headers conflicts with linux/pidfd.h
+            // FIXME(linux): linux/pidfd.h includes linux/flock.h which conflicts with flock.h,
+            // so pidfd isn't currently tested.
             "PIDFD_NONBLOCK" => true,
             // Linux >= 6.9
             "PIDFD_THREAD"
@@ -4873,14 +4877,10 @@ fn test_linux(target: &str) {
             // DIFF(main): fixed in 1.0 with e9abac9ac2
             "CLONE_CLEAR_SIGHAND" | "CLONE_INTO_CGROUP" => true,
 
-            // kernel 6.9 minimum
-            "RWF_NOAPPEND" => true,
-
-            // kernel 6.11 minimum
-            "RWF_ATOMIC" => true,
-
-            // kernel 6.14 minimum
-            "RWF_DONTCACHE" => true,
+            // Recent additions
+            "RWF_NOAPPEND" => kernel < (6, 9),
+            "RWF_ATOMIC" => kernel < (6, 11),
+            "RWF_DONTCACHE" => kernel < (6, 14),
 
             // musl doesn't use <linux/fanotify.h> in <sys/fanotify.h>
             "FAN_REPORT_PIDFD"
@@ -4898,7 +4898,7 @@ fn test_linux(target: &str) {
             }
 
             // FIXME(linux32): Requires >= 6.6 kernel headers.
-            "XDP_USE_SG" | "XDP_PKT_CONTD" if pointer_width == 32 => true,
+            "XDP_USE_SG" | "XDP_PKT_CONTD" if pointer_width == 32 => kernel < (6, 6),
 
             // FIXME(linux): Missing only on this platform for some reason
             "PR_MDWE_NO_INHERIT" if gnueabihf => true,
@@ -4911,25 +4911,19 @@ fn test_linux(target: &str) {
             | "XDP_TX_METADATA"
                 if musl || pointer_width == 32 =>
             {
-                true
+                musl || kernel < (6, 8)
             }
 
-            // FIXME(linux): Requires >= 6.11 kernel headers.
-            "XDP_UMEM_TX_METADATA_LEN" => true,
-
-            // FIXME(linux): Requires >= 6.11 kernel headers.
+            "XDP_UMEM_TX_METADATA_LEN" => kernel < (6, 11),
             "NS_GET_MNTNS_ID"
             | "NS_GET_PID_FROM_PIDNS"
             | "NS_GET_TGID_FROM_PIDNS"
             | "NS_GET_PID_IN_PIDNS"
-            | "NS_GET_TGID_IN_PIDNS" => true,
-            // FIXME(linux): Requires >= 6.12 kernel headers.
+            | "NS_GET_TGID_IN_PIDNS" => kernel < (6, 11),
             "MNT_NS_INFO_SIZE_VER0" | "NS_MNT_GET_INFO" | "NS_MNT_GET_NEXT" | "NS_MNT_GET_PREV" => {
-                true
+                kernel < (6, 12)
             }
-
-            // FIXME(linux): Requires >= 6.10 kernel headers.
-            "SYS_mseal" => true,
+            "SYS_mseal" => kernel < (6, 10),
 
             // FIXME(linux): seems to not be available all the time (from <include/linux/sched.h>:
             "PF_VCPU" | "PF_IDLE" | "PF_EXITING" | "PF_POSTCOREDUMP" | "PF_IO_WORKER"
@@ -4940,43 +4934,35 @@ fn test_linux(target: &str) {
             | "PF_RANDOMIZE" | "PF_NO_SETAFFINITY" | "PF_MCE_EARLY" | "PF_MEMALLOC_PIN"
             | "PF_BLOCK_TS" | "PF_SUSPEND_TASK" => true,
 
-            // FIXME(linux): Requires >= 6.9 kernel headers.
-            "EPIOCSPARAMS" | "EPIOCGPARAMS" => true,
+            "EPIOCSPARAMS" | "EPIOCGPARAMS" => kernel < (6, 9),
+            "MAP_DROPPABLE" => kernel < (6, 11),
+            "SOF_TIMESTAMPING_OPT_RX_FILTER" => kernel < (6, 12),
 
-            // FIXME(linux): Requires >= 6.11 kernel headers.
-            "MAP_DROPPABLE" => true,
-
-            // FIXME(linux): Requires >= 6.12 kernel headers.
-            "SOF_TIMESTAMPING_OPT_RX_FILTER" => true,
-
-            // FIXME(linux): Requires >= 6.12 kernel headers.
             "SO_DEVMEM_LINEAR" | "SO_DEVMEM_DMABUF" | "SO_DEVMEM_DONTNEED"
-            | "SCM_DEVMEM_LINEAR" | "SCM_DEVMEM_DMABUF" => true,
+            | "SCM_DEVMEM_LINEAR" | "SCM_DEVMEM_DMABUF" => kernel < (6, 12),
 
-            // FIXME(linux): Requires >= 6.14 kernel headers.
             "SECBIT_EXEC_DENY_INTERACTIVE"
             | "SECBIT_EXEC_DENY_INTERACTIVE_LOCKED"
             | "SECBIT_EXEC_RESTRICT_FILE"
             | "SECBIT_EXEC_RESTRICT_FILE_LOCKED"
-            | "SECURE_ALL_UNPRIVILEGED" => true,
+            | "SECURE_ALL_UNPRIVILEGED" => kernel < (6, 14),
 
-            // FIXME(linux): Value changed in 6.14
-            "SECURE_ALL_BITS" | "SECURE_ALL_LOCKS" => true,
+            // Value changed in 6.14
+            "SECURE_ALL_BITS" | "SECURE_ALL_LOCKS" => kernel < (6, 14),
 
-            // FIXME(linux): Requires >= 6.9 kernel headers.
-            "AT_HWCAP3" | "AT_HWCAP4" => true,
+            // Recent additions
+            "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
+            "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
 
-            // Linux 6.14
-            "AT_EXECVE_CHECK" => true,
-
-            // FIXME(linux):  Requires >= 6.16 kernel headers.
-            "PTRACE_SET_SYSCALL_INFO" => true,
-
-            // FIXME(linux): Requires >= 6.13 kernel headers.
-            "AT_HANDLE_CONNECTABLE" => true,
-
-            // FIXME(linux): Requires >= 6.12 kernel headers.
-            "AT_HANDLE_MNT_ID_UNIQUE" => true,
+            // Added in kernel versions 6.12..6.14 but we can't include `linux/fcntl.h`
+            // (conflicts), so these need to wait on glibc's redefinition in 2.44-2.43.
+            "AT_HANDLE_CONNECTABLE" | "AT_HANDLE_MNT_ID_UNIQUE" | "AT_EXECVE_CHECK" => {
+                if gnu {
+                    versions.glibc.unwrap() < (2, 43)
+                } else {
+                    true
+                }
+            }
 
             // FIXME(musl): This value is not yet in musl.
             // eabihf targets are tested using an older version of glibc
@@ -6360,10 +6346,134 @@ fn test_qurt(target: &str) {
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
 }
 
+/// Platform versions for checking expected support. These are extracted from headers so should be
+/// accurate for the target we are building, rather than the host (which `uname` would provide).
+static VERSIONS: LazyLock<Versions> = LazyLock::new(Versions::init_from_cc);
+
+#[derive(Clone, Copy, Debug, Default)]
+struct Versions {
+    linux: Option<(u32, u32)>,
+    glibc: Option<(u32, u32)>,
+    freebsd: Option<(u32, u32)>,
+    openbsd: Option<(u32, u32)>,
+    netbsd: Option<(u32, u32)>,
+    macos: Option<(u32, u32)>,
+}
+
+impl Versions {
+    fn init_from_cc() -> Self {
+        let src = r#"
+            #ifdef __linux__
+            /* Defines LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL (integers) */
+            #include "linux/version.h"
+            #endif
+
+            /* Including a libc header will define __GLIBC__ */
+            #include <stdio.h>
+
+            #ifdef __GLIBC__
+            /* Provides __GLIBC__, __GLIBC_MINOR__ (integers) */
+            #include "gnu/libc-version.h"
+            #endif
+
+            #if defined(__FreeBSD__) \
+                || defined(__NetBSD__) \
+                || defined(__OpenBSD__) \
+                || defined(__APPLE__)
+            /* FreeBSD: __FreeBSD_version (MMmmRxx string, e.g. 1600018)
+             * NetBSD: __NetBSD_Version__ (MMmmrrpp00 string, e.g. 1001000000)
+             * OpenBSD: OpenBSD (release date, e.g. 202510) and OpenBSDM_m (e.g. OpenBSD7_8)
+             * Apple: __MAC_OS_X_VERSION_MAX_ALLOWED __MAC_M_m (e.g. __MAC_26_5)
+             */
+            #include "sys/param.h"
+            #endif
+        "#;
+
+        let mut ret = Versions::default();
+
+        let compiler = cc::Build::new().get_compiler();
+
+        if !(compiler.is_like_gnu() || compiler.is_like_clang()) {
+            println!("cargo:warning=unsupported compiler for version detection, skipping");
+            return ret;
+        }
+
+        // `-dM -E` invokes the preprocessor and prints all `#define`s. `cc` automatically
+        // sets target-specific flags.
+        let mut cmd = compiler.to_command();
+        cmd.stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .args(["-dM", "-E", "-"]);
+        let mut child = cmd.spawn().expect("failed to spawn compiler");
+        child
+            .stdin
+            .take()
+            .unwrap()
+            .write_all(src.as_bytes())
+            .expect("failed to send stdin");
+        let out = child.wait_with_output().expect("failed to wait on child");
+        let out = String::from_utf8_lossy(&out.stdout);
+
+        // Allow spaces everywhere so we match things like `\n  # define foo bar \n`.
+        let re = Regex::new(r"^\s*#\s*define\s+(\w+)\s+(.*?)\s*$").unwrap();
+        let obsd_re = Regex::new(r"^OpenBSD(\d+)_(\d+)$").unwrap();
+        let mac_re = Regex::new(r"^__MAC_(\d+)_(\d+)").unwrap();
+
+        for line in out.lines() {
+            let Some(caps) = re.captures(line) else {
+                continue;
+            };
+            let name = &caps[1];
+            let value = &caps[2];
+
+            match name {
+                "LINUX_VERSION_MAJOR" => {
+                    ret.linux.get_or_insert_default().0 = value.parse().unwrap()
+                }
+                "LINUX_VERSION_PATCHLEVEL" => {
+                    ret.linux.get_or_insert_default().1 = value.parse().unwrap()
+                }
+                "__GLIBC__" => ret.glibc.get_or_insert_default().0 = value.parse().unwrap(),
+                "__GLIBC_MINOR__" => ret.glibc.get_or_insert_default().1 = value.parse().unwrap(),
+                "__MAC_OS_X_VERSION_MAX_ALLOWED" => {
+                    let caps = mac_re.captures(value).unwrap();
+                    let major: u32 = caps[1].parse().unwrap();
+                    let minor: u32 = caps[2].parse().unwrap();
+                    ret.macos = Some((major, minor));
+                }
+                "__FreeBSD_version" => {
+                    // Format: MmmRxx where M is major (possibly multi-digit), mm is minor, R
+                    // indicates release status, xx is some sequence.
+                    let major: u32 = value[..(value.len() - 5)].parse().unwrap();
+                    let minor: u32 = value[(value.len() - 5)..(value.len() - 3)].parse().unwrap();
+                    ret.freebsd = Some((major, minor));
+                }
+                "__NetBSD_Version__" => {
+                    // Format: MMmmrrpp00 where M is major (possibly multi-digit), mm is minor, r
+                    // and p are patch level.
+                    let major: u32 = value[..(value.len() - 8)].parse().unwrap();
+                    let minor: u32 = value[(value.len() - 8)..(value.len() - 6)].parse().unwrap();
+                    ret.netbsd = Some((major, minor));
+                }
+                x if obsd_re.is_match(x) => {
+                    let caps = obsd_re.captures(name).expect("is_match checked");
+                    let major: u32 = caps[1].parse().unwrap();
+                    let minor: u32 = caps[2].parse().unwrap();
+                    ret.openbsd = Some((major, minor));
+                }
+                _ => (),
+            }
+        }
+
+        println!("cargo:warning=detected versions: {ret:?}");
+        ret
+    }
+}
+
 /// Attempt to execute a command and collect its output, If the command fails for whatever
 /// reason, return `None`.
 fn try_command_output(cmd: &str, args: &[&str]) -> Option<String> {
-    let output = std::process::Command::new(cmd).args(args).output().ok()?;
+    let output = Command::new(cmd).args(args).output().ok()?;
 
     if !output.status.success() {
         return None;
