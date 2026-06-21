@@ -4179,6 +4179,8 @@ pub const KCMP_FILES: c_int = 102;
 pub const KCMP_SIGHAND: c_int = 103;
 pub const KCMP_VM: c_int = 104;
 
+pub const SOL_LOCAL: c_int = 0;
+
 pub const fn MAP_ALIGNED(a: c_int) -> c_int {
     a << 24
 }
