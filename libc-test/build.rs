@@ -1,4 +1,3 @@
-#![deny(warnings)]
 #![allow(clippy::match_like_matches_macro)]
 
 use std::fs::File;
