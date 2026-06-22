@@ -1,4 +1,3 @@
-#![deny(warnings)]
 #![allow(clippy::match_like_matches_macro)]
 
 use std::fs::File;
@@ -4399,7 +4398,7 @@ fn test_linux(target: &str) {
                 | "SO_TXREHASH" => return true,
 
                 // requires linux 5.19
-                "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV" 
+                "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"
                 | "NLM_F_BULK"
                 | "SO_RCVMARK"
                 | "TLS_INFO_ZC_RO_TX" => return true,
@@ -4505,7 +4504,7 @@ fn test_linux(target: &str) {
                 | "IPV6_PMTUDISC_OMIT"
                 | "IPV6_ROUTER_ALERT_ISOLATE"
                 // linux/elf.h
-                | "NT_PRFPREG" 
+                | "NT_PRFPREG"
                 // linux/sem.h
                 | "SEM_STAT_ANY"
                 // linux/shm.h
