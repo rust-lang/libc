@@ -301,7 +301,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Test on FreeBSD
-        uses: vmactions/freebsd-vm@a6de9343ef5747433d9c25784c90e84998b9d69a # v1.4.6
+        uses: vmactions/freebsd-vm@b84ab5559b5a1bb4b8ee2737d2506a16e1737636 # v1.4.8
         if: contains(matrix.target, 'freebsd')
         with:
           release: ${{ matrix.release }}
