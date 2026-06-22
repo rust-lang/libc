@@ -3770,6 +3770,9 @@ fn test_linux(target: &str) {
         cfg.flag("-Wno-unused-function");
     }
 
+    // HACK:
+    cfg.define("HAVE_ARCH_STRUCT_FLOCK", None);
+
     headers!(
         cfg,
         "ctype.h",
@@ -3930,6 +3933,7 @@ fn test_linux(target: &str) {
             "linux/module.h",
             "linux/mount.h",
             "linux/net_tstamp.h",
+            "linux/pidfd.h",
             "linux/netfilter/nfnetlink.h",
             "linux/netfilter/nfnetlink_log.h",
             "linux/netfilter/nfnetlink_queue.h",
@@ -4591,7 +4595,7 @@ fn test_linux(target: &str) {
             "TRAP_PERF" => true,
 
             // headers conflicts with linux/pidfd.h
-            "PIDFD_NONBLOCK" => true,
+            // "PIDFD_NONBLOCK" => true,
             // Linux >= 6.9
             "PIDFD_THREAD"
             | "PIDFD_SIGNAL_THREAD"
