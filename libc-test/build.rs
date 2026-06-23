@@ -3823,7 +3823,7 @@ fn test_linux(target: &str) {
     let mips64 = target.contains("mips64");
     let mips32 = mips && !mips64;
     let versions = &*VERSIONS;
-    let kernel = versions.linux.unwrap_or((0, 0));
+    let kernel = versions.linux.unwrap();
 
     let musl_v1_2_3 = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok();
     if musl_v1_2_3 {
