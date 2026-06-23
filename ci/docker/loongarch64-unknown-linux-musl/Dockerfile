@@ -9,13 +9,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6-dev \
     make \
     patch \
-    qemu-user \
     rsync \
+    qemu-user \
     xz-utils
 
 ARG MUSL_VERSION
-COPY install-musl.sh /
-RUN /install-musl.sh loongarch64 "$MUSL_VERSION"
+COPY . /ci
+RUN ci/install-musl.sh loongarch64 "$MUSL_VERSION"
 
 ENV CC_loongarch64_unknown_linux_musl=musl-gcc \
     CFLAGS_loongarch64_unknown_linux_musl="-mabi=lp64d -fPIC" \
