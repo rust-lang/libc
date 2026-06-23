@@ -242,8 +242,18 @@ def run(
     args: Sequence[str | Path],
     *,
     env: Optional[dict[str, str]] = None,
+    rustflags: Optional[str] = None,
     check: bool = True,
 ) -> sp.CompletedProcess:
+    """Run a command. `env` will replace the environment and `rustflags` will replace
+    `RUSTFLAGS` (they do not append).
+    """
+    if env is None:
+        env = os.environ.copy()
+
+    if rustflags is not None:
+        env["RUSTFLAGS"] = rustflags
+
     xtrace(args, env=env)
     return sp.run(args, env=env, check=check)
 
@@ -361,10 +371,12 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     """Run tests for a single target."""
     start = time.time()
     env = os.environ.copy()
-    env.setdefault("RUSTFLAGS", "")
+    rustflags = env.get("RUSTFLAGS") or ""
 
     tname = target.name
-    target_cfg = check_output(["rustc", "--print=cfg", "--target", tname])
+    target_cfg = check_output(
+        ["rustc", f"+{cfg.toolchain_name}", "--print=cfg", "--target", tname]
+    )
     target_env = re.findall(r'target_env="(.*)"', target_cfg)
     target_os = re.findall(r'target_os="(.*)"', target_cfg)
     target_bits = re.findall(r'target_pointer_width="(.*)"', target_cfg)[0]
@@ -386,40 +398,60 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
         cmd += ["-Zbuild-std=core"]
         # FIXME: With `the build-std` feature, `compiler_builtins` emits a lot of
         # lint warnings.
-        env["RUSTFLAGS"] += " -Aimproper_ctypes_definitions"
+        rustflags += " -Aimproper_ctypes_definitions"
     else:
         run(["rustup", "target", "add", tname, "--toolchain", cfg.toolchain_name])
 
     # Test with expected combinations of features
-    run(cmd, env=env)
-    run([*cmd, "--features=extra_traits"], env=env)
+    run(cmd, env=env, rustflags=rustflags)
+    run([*cmd, "--features=extra_traits"], env=env, rustflags=rustflags)
 
     if "gnu" in target_env and target_bits == "32":
         # Equivalent of _FILE_OFFSET_BITS=64
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS": "64"})
+        run(
+            cmd,
+            env=env | {"RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS": "64"},
+            rustflags=rustflags,
+        )
         # Equivalent of _TIME_BITS=64
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_GNU_TIME_BITS": "64"})
+        run(
+            cmd,
+            env=env | {"RUST_LIBC_UNSTABLE_GNU_TIME_BITS": "64"},
+            rustflags=rustflags,
+        )
 
     if "musl" in target_env:
         # Check with breaking changes from musl, including 64-bit time_t on 32-bit
-        run(cmd, env=env | {"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": "1"})
+        run(
+            cmd,
+            env=env | {"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": "1"},
+            rustflags=rustflags,
+        )
 
     # Test again without default features, i.e. without `std`
-    run([*cmd, "--no-default-features"])
-    run([*cmd, "--no-default-features", "--features=extra_traits"])
+    run([*cmd, "--no-default-features"], rustflags=rustflags)
+    run([*cmd, "--no-default-features", "--features=extra_traits"], rustflags=rustflags)
 
     # Ensure the crate will build when used as a dependency of `std`
     if cfg.nightly():
-        run([*cmd, "--no-default-features", "--features=rustc-dep-of-std"])
+        run(
+            [*cmd, "--no-default-features", "--features=rustc-dep-of-std"],
+            rustflags=rustflags,
+        )
 
     # For freebsd targets, check with the different versions we support
     # if on nightly or stable
     if "freebsd" in tname and cfg.toolchain >= Toolchain.STABLE:
         for version in FREEBSD_VERSIONS:
-            run(cmd, env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)})
+            run(
+                cmd,
+                env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)},
+                rustflags=rustflags,
+            )
             run(
                 [*cmd, "--no-default-features"],
                 env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)},
+                rustflags=rustflags,
             )
 
     if cfg.skip_semver:
