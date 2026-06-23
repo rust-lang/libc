@@ -1438,8 +1438,8 @@ pub const NT_LWPSTATUS: c_int = 16;
 pub const NT_LWPSINFO: c_int = 17;
 pub const NT_PRFPXREG: c_int = 20;
 
-#[allow(overflowing_literals)] // fixed in a future kernel version
-pub const MS_NOUSER: c_ulong = 0xffffffff80000000;
+// FIXME(1.0): C uses an unsigned int here.
+pub const MS_NOUSER: c_ulong = 1 << 31;
 
 f! {
     pub fn CMSG_NXTHDR(
