@@ -3649,8 +3649,9 @@ pub const SCHED_FLAG_ALL: c_int = SCHED_FLAG_RESET_ON_FORK
     | SCHED_FLAG_UTIL_CLAMP;
 
 // ioctl_eventpoll: added in Linux 6.9
-pub const EPIOCSPARAMS: Ioctl = 0x40088a01;
-pub const EPIOCGPARAMS: Ioctl = u32_cast_ioctl(0x80088a02);
+const EPOLL_IOC_TYPE: u32 = 0x8A;
+pub const EPIOCSPARAMS: Ioctl = _IOW::<epoll_params>(EPOLL_IOC_TYPE, 0x01);
+pub const EPIOCGPARAMS: Ioctl = _IOR::<epoll_params>(EPOLL_IOC_TYPE, 0x02);
 
 // siginfo.h
 pub const SI_DETHREAD: c_int = -7;
