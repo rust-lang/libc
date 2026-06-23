@@ -3101,7 +3101,6 @@ pub const NFT_NG_RANDOM: c_int = 1;
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const FF_MAX: __u16 = 0x7f;
-
 pub const FF_CNT: usize = FF_MAX as usize + 1;
 
 // linux/input-event-codes.h
@@ -3122,61 +3121,51 @@ pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const EV_MAX: __u16 = 0x1f;
-
 pub const EV_CNT: usize = EV_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const SYN_MAX: __u16 = 0xf;
-
 pub const SYN_CNT: usize = SYN_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const KEY_MAX: __u16 = 0x2ff;
-
 pub const KEY_CNT: usize = KEY_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const REL_MAX: __u16 = 0x0f;
-
 pub const REL_CNT: usize = REL_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const ABS_MAX: __u16 = 0x3f;
-
 pub const ABS_CNT: usize = ABS_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
-pub const SW_MAX: __u16 = 0x10;
-
+pub const SW_MAX: __u16 = 0x11;
 pub const SW_CNT: usize = SW_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const MSC_MAX: __u16 = 0x07;
-
 pub const MSC_CNT: usize = MSC_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const LED_MAX: __u16 = 0x0f;
-
 pub const LED_CNT: usize = LED_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const REP_MAX: __u16 = 0x01;
-
 pub const REP_CNT: usize = REP_MAX as usize + 1;
 
 /// This symbol is prone to change across releases upstream.
 /// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const SND_MAX: __u16 = 0x07;
-
 pub const SND_CNT: usize = SND_MAX as usize + 1;
 
 // linux/uinput.h
