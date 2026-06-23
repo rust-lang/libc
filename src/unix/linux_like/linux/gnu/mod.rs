@@ -255,19 +255,23 @@ s! {
         /// This contains the bitfields `tcpi_snd_wscale` and `tcpi_rcv_wscale`.
         /// Each is 4 bits.
         pub tcpi_snd_rcv_wscale: u8,
+
         pub tcpi_rto: u32,
         pub tcpi_ato: u32,
         pub tcpi_snd_mss: u32,
         pub tcpi_rcv_mss: u32,
+
         pub tcpi_unacked: u32,
         pub tcpi_sacked: u32,
         pub tcpi_lost: u32,
         pub tcpi_retrans: u32,
         pub tcpi_fackets: u32,
+
         pub tcpi_last_data_sent: u32,
         pub tcpi_last_ack_sent: u32,
         pub tcpi_last_data_recv: u32,
         pub tcpi_last_ack_recv: u32,
+
         pub tcpi_pmtu: u32,
         pub tcpi_rcv_ssthresh: u32,
         pub tcpi_rtt: u32,
@@ -276,9 +280,55 @@ s! {
         pub tcpi_snd_cwnd: u32,
         pub tcpi_advmss: u32,
         pub tcpi_reordering: u32,
+
         pub tcpi_rcv_rtt: u32,
         pub tcpi_rcv_space: u32,
+
         pub tcpi_total_retrans: u32,
+
+        pub tcpi_pacing_rate: u64,
+        pub tcpi_max_pacing_rate: u64,
+        pub tcpi_bytes_acked: u64,
+        pub tcpi_bytes_received: u64,
+        pub tcpi_segs_out: u32,
+        pub tcpi_segs_in: u32,
+
+        pub tcpi_notsent_bytes: u32,
+        pub tcpi_min_rtt: u32,
+        pub tcpi_data_segs_in: u32,
+        pub tcpi_data_segs_out: u32,
+
+        pub tcpi_delivery_rate: u64,
+
+        pub tcpi_busy_time: u64,
+        pub tcpi_rwnd_limited: u64,
+        pub tcpi_sndbuf_limited: u64,
+
+        pub tcpi_delivered: u32,
+        pub tcpi_delivered_ce: u32,
+
+        pub tcpi_bytes_sent: u64,
+        pub tcpi_bytes_retrans: u64,
+        pub tcpi_dsack_dups: u32,
+        pub tcpi_reord_seen: u32,
+
+        pub tcpi_rcv_ooopack: u32,
+        pub tcpi_snd_wnd: u32,
+        pub tcpi_rcv_wnd: u32,
+
+        pub tcpi_rehash: u32,
+        pub tcpi_total_rto: u16,
+        pub tcpi_total_rto_recoveries: u16,
+        pub tcpi_total_rto_time: u32,
+        pub tcpi_received_ce: u32,
+        pub tcpi_delivered_e1_bytes: u32,
+        pub tcpi_delivered_e0_bytes: u32,
+        pub tcpi_delivered_ce_bytes: u32,
+        pub tcpi_received_e1_bytes: u32,
+        pub tcpi_received_e0_bytes: u32,
+        pub tcpi_received_ce_bytes: u32,
+        pub tcpi_accecn_fail_mode: u16,
+        pub tcpi_accecn_opt_seen: u16,
     }
 
     pub struct fanotify_event_info_pidfd {
