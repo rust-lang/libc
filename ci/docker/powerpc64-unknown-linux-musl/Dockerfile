@@ -18,8 +18,8 @@ RUN curl -O https://static.rust-lang.org/dist/2026-06-26/rust-std-nightly-powerp
     find rust-std-nightly-powerpc64-unknown-linux-musl/ -name libcompiler_builtins*.rlib -exec sh -c "cp {} /compiler_builtins.rlib" \;
 
 ARG MUSL_VERSION
-COPY install-musl.sh /
-RUN /install-musl.sh powerpc64 "$MUSL_VERSION"
+COPY . /ci
+RUN ci/install-musl.sh powerpc64 "$MUSL_VERSION"
 
 # Rust's unwind unconditionally links to libgcc_s.so.1
 # We instead get the unwinding symbols from the self-contained libunwind.a
