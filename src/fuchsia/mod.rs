@@ -36,11 +36,6 @@ pub type useconds_t = c_uint;
 pub type dev_t = c_ulonglong;
 pub type socklen_t = c_uint;
 pub type pthread_t = c_ulong;
-pub type ino64_t = u64;
-pub type off64_t = i64;
-pub type blkcnt64_t = i64;
-pub type rlim64_t = u64;
-pub type mqd_t = c_int;
 pub type mode_t = c_uint;
 pub type nfds_t = c_ulong;
 pub type nl_item = c_int;
@@ -48,6 +43,36 @@ pub type idtype_t = c_uint;
 pub type loff_t = crate::off_t;
 pub type nlink_t = c_ulong;
 pub type blksize_t = c_long;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist usptream. It's not part of the Fuchsia SDK."
+)]
+pub type mqd_t = c_int;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist usptream. It's not part of the Fuchsia SDK."
+)]
+pub type off64_t = i64;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist usptream. It's not part of the Fuchsia SDK."
+)]
+pub type ino64_t = u64;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist usptream. It's not part of the Fuchsia SDK."
+)]
+pub type blkcnt64_t = i64;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+pub type rlim64_t = u64;
 
 pub type __u8 = c_uchar;
 pub type __u16 = c_ushort;
@@ -78,12 +103,28 @@ pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
 pub type fsblkcnt_t = c_ulonglong;
 pub type fsfilcnt_t = c_ulonglong;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
 pub type rlim_t = c_ulonglong;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+pub type statfs64 = statfs;
 
 extern_ty! {
     pub type timezone;
     pub type DIR;
-    pub type fpos64_t; // FIXME(fuchsia): fill this out with a struct
+
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `fpos_t` instead. This type does not exist upstream."
+    )]
+    pub type fpos64_t;
 }
 
 // PUB_STRUCT
@@ -113,8 +154,7 @@ s! {
         pub tv_nsec: c_long,
     }
 
-    // FIXME(fuchsia): the rlimit and rusage related functions and types don't exist
-    // within zircon. Are there reasons for keeping them around?
+    #[deprecated(since = "0.2.187", note = "This type does not exist upstream.")]
     pub struct rlimit {
         pub rlim_cur: rlim_t,
         pub rlim_max: rlim_t,
@@ -388,6 +428,11 @@ s! {
         pub dli_saddr: *mut c_void,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist. The Fuchsia SDK doesn't ship it."
+    )]
+    #[allow(deprecated)]
     pub struct epoll_event {
         pub events: u32,
         pub data: epoll_data,
@@ -420,6 +465,10 @@ s! {
         pub int_n_sign_posn: c_char,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist upstream. It is not part of the Fuchsia SDK."
+    )]
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -665,6 +714,10 @@ s! {
         pub weak_magnitude: crate::__u16,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist usptream. It's not included in the Fuchsia SDK."
+    )]
     pub struct ff_effect {
         pub type_: crate::__u16,
         pub id: crate::__s16,
@@ -724,21 +777,10 @@ s! {
         pub p_align: Elf64_Xword,
     }
 
-    pub struct statfs64 {
-        pub f_type: c_ulong,
-        pub f_bsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_files: crate::fsfilcnt_t,
-        pub f_ffree: crate::fsfilcnt_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
-    }
-
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `statvfs` instead. This type doesn't exist upstream."
+    )]
     pub struct statvfs64 {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
@@ -841,6 +883,10 @@ s! {
         _align: [usize; 0],
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `termios`. This type doesn't exist. The Fuchsia SDK doesn't include it."
+    )]
     pub struct termios2 {
         pub c_iflag: crate::tcflag_t,
         pub c_oflag: crate::tcflag_t,
@@ -880,6 +926,7 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
     }
 
+    #[deprecated(since = "0.2.187", note = "This type doesn't exist upstream.")]
     pub struct sysinfo {
         pub uptime: c_ulong,
         pub loads: [c_ulong; 3],
@@ -925,6 +972,11 @@ s! {
         pub d_name: [c_char; 256],
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `dirent` instead. This type doesn't exist. It's not part of the Fuchsia SDK."
+    )]
+    #[allow(deprecated)]
     pub struct dirent64 {
         pub d_ino: crate::ino64_t,
         pub d_off: off64_t,
@@ -933,8 +985,10 @@ s! {
         pub d_name: [c_char; 256],
     }
 
-    // x32 compatibility
-    // See https://sourceware.org/bugzilla/show_bug.cgi?id=21279
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist upstream. It's not part of the Fuchsia SDK."
+    )]
     pub struct mq_attr {
         #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
         pub mq_flags: i64,
@@ -959,6 +1013,10 @@ s! {
         pad: Padding<[c_long; 4]>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist upstream. It's not part of the Fuchsia SDK."
+    )]
     pub struct sockaddr_nl {
         pub nl_family: crate::sa_family_t,
         nl_pad: Padding<c_ushort>,
@@ -1033,6 +1091,10 @@ s_no_extra_traits! {
         __align: c_double,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+    )]
     pub union epoll_data {
         pub ptr: *mut c_void,
         pub fd: c_int,
@@ -1048,36 +1110,45 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
+        #[allow(deprecated)]
         impl PartialEq for sigval {
             fn eq(&self, _other: &sigval) -> bool {
                 unimplemented!("traits")
             }
         }
+        #[allow(deprecated)]
         impl Eq for sigval {}
+        #[allow(deprecated)]
         impl hash::Hash for sigval {
             fn hash<H: hash::Hasher>(&self, _state: &mut H) {
                 unimplemented!("traits")
             }
         }
 
+        #[allow(deprecated)]
         impl PartialEq for epoll_data {
             fn eq(&self, _other: &epoll_data) -> bool {
                 unimplemented!("traits")
             }
         }
+        #[allow(deprecated)]
         impl Eq for epoll_data {}
+        #[allow(deprecated)]
         impl hash::Hash for epoll_data {
             fn hash<H: hash::Hasher>(&self, _state: &mut H) {
                 unimplemented!("traits")
             }
         }
 
+        #[allow(deprecated)]
         impl PartialEq for __c_anonymous_ifaddrs_ifa_ifu {
             fn eq(&self, _other: &__c_anonymous_ifaddrs_ifa_ifu) -> bool {
                 unimplemented!("traits")
             }
         }
+        #[allow(deprecated)]
         impl Eq for __c_anonymous_ifaddrs_ifa_ifu {}
+        #[allow(deprecated)]
         impl hash::Hash for __c_anonymous_ifaddrs_ifa_ifu {
             fn hash<H: hash::Hasher>(&self, _state: &mut H) {
                 unimplemented!("traits")
@@ -2039,7 +2110,18 @@ pub const _SC_XOPEN_STREAMS: c_int = 246;
 pub const _SC_THREAD_ROBUST_PRIO_INHERIT: c_int = 247;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: c_int = 248;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+#[allow(deprecated)]
 pub const RLIM_SAVED_MAX: crate::rlim_t = RLIM_INFINITY;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+#[allow(deprecated)]
 pub const RLIM_SAVED_CUR: crate::rlim_t = RLIM_INFINITY;
 
 pub const GLOB_ERR: c_int = 1 << 0;
@@ -2583,12 +2665,30 @@ pub const POSIX_FADV_NOREUSE: c_int = 5;
 
 pub const POSIX_MADV_DONTNEED: c_int = 4;
 
-pub const RLIM_INFINITY: crate::rlim_t = !0;
-pub const RLIMIT_RTTIME: c_int = 15;
-#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
-pub const RLIMIT_NLIMITS: c_int = 16;
+#[deprecated(
+    since = "0.2.187",
+    note = "This doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
 #[allow(deprecated)]
-#[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
+pub const RLIM_INFINITY: crate::rlim_t = !0;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+#[allow(deprecated)]
+pub const RLIMIT_RTTIME: c_int = 15;
+
+#[deprecated(
+    since = "0.2.64",
+    note = "This doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+pub const RLIMIT_NLIMITS: c_int = 16;
+#[deprecated(
+    since = "0.2.64",
+    note = "This doesn't exist upstream. It's not part of the Fuchsia SDK."
+)]
+#[allow(deprecated)]
 pub const RLIM_NLIMITS: c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
@@ -3794,7 +3894,7 @@ extern "C" {
 
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
-    pub fn readahead(fd: c_int, offset: off64_t, count: size_t) -> ssize_t;
+    pub fn readahead(fd: c_int, offset: off_t, count: size_t) -> ssize_t;
     pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
     pub fn timerfd_create(clockid: c_int, flags: c_int) -> c_int;
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut itimerspec) -> c_int;
@@ -3834,7 +3934,7 @@ extern "C" {
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn if_nameindex() -> *mut if_nameindex;
     pub fn if_freenameindex(ptr: *mut if_nameindex);
-    pub fn sync_file_range(fd: c_int, offset: off64_t, nbytes: off64_t, flags: c_uint) -> c_int;
+    pub fn sync_file_range(fd: c_int, offset: off_t, nbytes: off_t, flags: c_uint) -> c_int;
     pub fn getifaddrs(ifap: *mut *mut crate::ifaddrs) -> c_int;
     pub fn freeifaddrs(ifa: *mut crate::ifaddrs);
 

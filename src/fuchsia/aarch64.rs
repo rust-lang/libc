@@ -1,6 +1,10 @@
 use crate::off_t;
 use crate::prelude::*;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. The Fuchsia SDK doesn't ship it."
+)]
 pub type __u64 = c_ulonglong;
 pub type wchar_t = u32;
 
@@ -27,6 +31,10 @@ s! {
         __unused: Padding<[c_uint; 2]>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+    )]
     pub struct stat64 {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -49,6 +57,10 @@ s! {
         __unused: Padding<[c_uint; 2]>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+    )]
     pub struct ipc_perm {
         pub __ipc_perm_key: crate::key_t,
         pub uid: crate::uid_t,

@@ -2,10 +2,19 @@ use crate::off_t;
 use crate::prelude::*;
 
 // From psABI Calling Convention for RV64
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. The Fuchsia SDK doesn't ship it."
+)]
 pub type __u64 = c_ulonglong;
 pub type wchar_t = i32;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "Thist type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub type stat64 = stat;
+
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
@@ -29,6 +38,10 @@ s! {
     }
 
     // Not actually used, IPC calls just return ENOSYS
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type doesn't exist. The Fuchsia SDK does not ship it."
+    )]
     pub struct ipc_perm {
         pub __ipc_perm_key: crate::key_t,
         pub uid: crate::uid_t,
