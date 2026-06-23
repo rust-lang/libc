@@ -30,8 +30,17 @@ musl="musl-${musl_version}"
 # first. See https://github.com/rust-lang/ci-mirrors/blob/main/files/libc.toml.
 curl --retry 5 "https://ci-mirrors.rust-lang.org/libc/${musl}.tar.gz" | tar xzf -
 
-# Configure, build, and install musl:
 cd "$musl"
+
+# Apply patches
+if [ "$musl_version" = "$old_musl" ]; then
+    patch_dir="$(realpath ../ci/musl-patches-1.1.x)"
+    for patchfile in "$patch_dir"/*; do
+        cat "$patchfile" | patch -p1
+    done
+fi
+
+# Configure, build, and install musl:
 case ${1} in
     aarch64)
         musl_arch=aarch64

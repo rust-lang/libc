@@ -1,18 +1,21 @@
 FROM ubuntu:26.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
     ca-certificates \
+    curl \
     gcc \
     gcc-s390x-linux-gnu \
-    qemu-user \
-    xz-utils \
+    git \
+    libc6-dev \
+    make \
     patch \
-    rsync
+    rsync \
+    qemu-user \
+    xz-utils
 
 ARG MUSL_VERSION
-COPY install-musl.sh /
-RUN /install-musl.sh s390x "$MUSL_VERSION"
+COPY . /ci
+RUN ci/install-musl.sh s390x "$MUSL_VERSION"
 
 # FIXME: shouldn't need the `-lgcc` here, shouldn't that be in std?
 ENV CC_s390x_unknown_linux_gnu=musl-gcc \
