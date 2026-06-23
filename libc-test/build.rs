@@ -4308,6 +4308,9 @@ fn test_linux(target: &str) {
             // Extern types
             "DIR" | "FILE" | "fpos_t" | "timezone" => true,
 
+            // Many more fields added in the glibc update to go with 6.17
+            "tcp_info" if gnu && versions.glibc.unwrap() < (2, 43) => true,
+
             _ => false,
         }
     });
