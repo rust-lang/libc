@@ -106,6 +106,7 @@ jobs:
   test_tier1:
     name: Test tier1
     strategy:
+      fail-fast: false # Speed up 0.2 backport CI
       matrix:
         include:
           - target: aarch64-apple-darwin
@@ -164,9 +165,8 @@ jobs:
   # Unlike `main` this job doesn't have `needs`, in order to speed up backports a bit
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
     strategy:
-      fail-fast: true
+      fail-fast: false # Speed up 0.2 backport CI
       max-parallel: 16
       matrix:
         include:
@@ -262,7 +262,7 @@ jobs:
     name: Test tier2 VM
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false # Speed up 0.2 backport CI
       matrix:
         include:
           # FIXME(#4740): FreeBSD 13 tests are extremely flaky and fail most of the time
