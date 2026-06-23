@@ -149,27 +149,35 @@ fn main() {
         && target_arch != "riscv32"
         && target_arch != "x86_64"
     {
-        let defaultbits = "32".to_string();
-        let (timebits, filebits) = match (
-            env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS"),
-            env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
-        ) {
-            (Ok(_), Ok(_)) => panic!("Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"),
-            (Err(_), Err(_)) => (defaultbits.clone(), defaultbits.clone()),
-            (Ok(tb), Err(_)) if tb == "64" => (tb.clone(), tb),
-            (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits.clone()),
-            (Ok(_), Err(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64"),
+        let defaultbits = "32";
+        let tb_env = env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS");
+        let fb_env = env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
+        let (timebits, filebits) = match (tb_env.as_deref(), fb_env.as_deref()) {
+            (Ok(_), Ok(_)) => panic!(
+                "Do not set both RUST_LIBC_UNSTABLE_GNU_TIME_BITS and \
+                RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS"
+            ),
+            (Err(_), Err(_)) => (defaultbits, defaultbits),
+            (Ok(tb), Err(_)) if tb == "64" => (tb, tb),
+            (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits),
+            (Ok(_), Err(_)) => {
+                panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS, must be 32 or 64")
+            }
             (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits, fb),
-            (Err(_), Ok(_)) => panic!("Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"),
+            (Err(_), Ok(_)) => panic!(
+                "Invalid value for RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32 or 64"
+            ),
         };
         let valid_bits = ["32", "64"];
         assert!(
-            valid_bits.contains(&filebits.as_str()) && valid_bits.contains(&timebits.as_str()),
-            "Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS or RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS, must be 32, 64 or unset"
+            valid_bits.contains(&filebits) && valid_bits.contains(&timebits),
+            "Invalid value for RUST_LIBC_UNSTABLE_GNU_TIME_BITS or \
+            RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS. Must be 32, 64 or unset"
         );
         assert!(
             !(filebits == "32" && timebits == "64"),
-            "RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS must be 64 or unset if RUST_LIBC_UNSTABLE_GNU_TIME_BITS is 64"
+            "RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS must be 64 or unset if \
+            RUST_LIBC_UNSTABLE_GNU_TIME_BITS is 64"
         );
         if timebits == "64" {
             set_cfg("linux_time_bits64");
