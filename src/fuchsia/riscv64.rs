@@ -52,4 +52,16 @@ s! {
         __unused1: Padding<c_ulong>,
         __unused2: Padding<c_ulong>,
     }
+
+    pub struct mcontext_t {
+        pub regs: [c_ulong; 32],
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: c_ulong,
+        pub uc_link: *mut crate::ucontext_t,
+        pub uc_stack: crate::stack_t,
+        pub uc_sigmask: crate::sigset_t,
+        pub uc_mcontext: crate::mcontext_t,
+    }
 }

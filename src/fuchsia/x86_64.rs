@@ -9,7 +9,34 @@ pub type wchar_t = i32;
 )]
 pub type __u64 = c_ulonglong;
 
+pub type gregset_t = [c_ulonglong; 23];
+pub type fpregset_t = *mut _fpstate;
+
 s! {
+    pub struct _fpstate {
+        pub cwd: c_ushort,
+        pub swd: c_ushort,
+        pub ftw: c_ushort,
+        pub fop: c_ushort,
+        pub rip: c_ulonglong,
+        pub rdp: c_ulonglong,
+        pub mxcsr: c_uint,
+        pub mxcr_mask: c_uint,
+        pub _st: [__c_anonymous__fpstate__st; 8],
+        pub _xmm: [__c_anonymous__fpstate__xmm; 16],
+        padding: Padding<[c_uint; 24]>,
+    }
+
+    pub struct __c_anonymous__fpstate__st {
+        pub significand: [c_ushort; 4],
+        pub exponent: c_ushort,
+        padding: Padding<[c_ushort; 3]>,
+    }
+
+    pub struct __c_anonymous__fpstate__xmm {
+        pub element: [c_uint; 4],
+    }
+
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -57,7 +84,18 @@ s! {
     }
 
     pub struct mcontext_t {
-        __private: [u64; 32],
+        pub gregs: crate::gregset_t,
+        pub fpregs: crate::fpregset_t,
+        __reserved1: Padding<[c_ulonglong; 8]>,
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: c_ulong,
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: crate::stack_t,
+        pub uc_mcontext: crate::mcontext_t,
+        pub uc_sigmask: crate::sigset_t,
+        __fpregs_mem: [c_ulong; 64],
     }
 
     #[deprecated(
@@ -74,15 +112,6 @@ s! {
         pub __seq: c_int,
         __unused1: Padding<c_long>,
         __unused2: Padding<c_long>,
-    }
-
-    pub struct ucontext_t {
-        pub uc_flags: c_ulong,
-        pub uc_link: *mut ucontext_t,
-        pub uc_stack: crate::stack_t,
-        pub uc_mcontext: mcontext_t,
-        pub uc_sigmask: crate::sigset_t,
-        __private: [u8; 512],
     }
 }
 

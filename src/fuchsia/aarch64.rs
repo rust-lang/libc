@@ -72,6 +72,25 @@ s! {
         __unused1: Padding<c_ulong>,
         __unused2: Padding<c_ulong>,
     }
+
+    // FIXME(f128): __reserved is meant to be an array of `long double`s. That
+    // requires native support for `f128`. This is currently missing.
+    pub struct mcontext_t {
+        pub fault_address: c_ulong,
+        pub regs: [c_ulong; 31],
+        pub sp: c_ulong,
+        pub pc: c_ulong,
+        pub pstate: c_ulong,
+        __reserved: Padding<[i128; 256]>,
+    }
+
+    pub struct ucontext_t {
+        pub uc_flags: c_ulong,
+        pub uc_link: *mut crate::ucontext_t,
+        pub uc_stack: crate::stack_t,
+        pub uc_sigmask: crate::sigset_t,
+        pub uc_mcontext: crate::mcontext_t,
+    }
 }
 
 // From https://cs.opensource.google/fuchsia/fuchsia/+/main:zircon/third_party/ulib/musl/include/bits/signal.h;l=20-21;drc=0827b18ab9540c46f8037f407d17ea15a79e9ba7
