@@ -90,6 +90,11 @@ CTEST_EXTERN uint64_t ctest_size_of__VecU16__y(void) {
 typedef uint8_t *ctest_field_ty__VecU8__x;
 CTEST_EXTERN ctest_field_ty__VecU8__x
 ctest_field_ptr__VecU8__x(struct VecU8 *b) {
+    
+    ctest_field_ty__VecU8__x ptr;
+    ptr = &b->x;
+    (void)ptr; 
+
     return &b->x;
 }
 
@@ -97,6 +102,11 @@ ctest_field_ptr__VecU8__x(struct VecU8 *b) {
 typedef uint8_t *ctest_field_ty__VecU8__y;
 CTEST_EXTERN ctest_field_ty__VecU8__y
 ctest_field_ptr__VecU8__y(struct VecU8 *b) {
+    
+    ctest_field_ty__VecU8__y ptr;
+    ptr = &b->y;
+    (void)ptr; 
+
     return &b->y;
 }
 
@@ -104,6 +114,11 @@ ctest_field_ptr__VecU8__y(struct VecU8 *b) {
 typedef uint16_t *ctest_field_ty__VecU16__x;
 CTEST_EXTERN ctest_field_ty__VecU16__x
 ctest_field_ptr__VecU16__x(struct VecU16 *b) {
+    
+    ctest_field_ty__VecU16__x ptr;
+    ptr = &b->x;
+    (void)ptr; 
+
     return &b->x;
 }
 
@@ -111,6 +126,11 @@ ctest_field_ptr__VecU16__x(struct VecU16 *b) {
 typedef uint16_t *ctest_field_ty__VecU16__y;
 CTEST_EXTERN ctest_field_ty__VecU16__y
 ctest_field_ptr__VecU16__y(struct VecU16 *b) {
+    
+    ctest_field_ty__VecU16__y ptr;
+    ptr = &b->y;
+    (void)ptr; 
+
     return &b->y;
 }
 

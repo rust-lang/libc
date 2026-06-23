@@ -92,7 +92,8 @@ pub fn generate_test(
 
     let stem: &str = output_file_path.file_stem().unwrap().to_str().unwrap();
     cfg.out_dir(output_file_path.parent().unwrap())
-        .compile(stem);
+        .try_compile(stem)
+        .map_err(GenerationError::CompileError)?;
 
     Ok(output_file_path)
 }
