@@ -1823,6 +1823,10 @@ pub const PORT_SOURCE_ALERT: c_int = 5;
 pub const PORT_SOURCE_MQ: c_int = 6;
 pub const PORT_SOURCE_FILE: c_int = 7;
 
+pub const PORT_ALERT_SET: c_int = 0x01;
+pub const PORT_ALERT_UPDATE: c_int = 0x02;
+pub const PORT_ALERT_INVALID: c_int = PORT_ALERT_SET | PORT_ALERT_UPDATE;
+
 pub const NONROOT_USR: c_short = 2;
 
 pub const EMPTY: c_short = 0;
@@ -2657,6 +2661,7 @@ extern "C" {
         events: c_int,
         user: *mut c_void,
     ) -> c_int;
+    pub fn port_alert(port: c_int, flags: c_int, events: c_int, user: *mut c_void) -> c_int;
     #[cfg_attr(
         any(target_os = "solaris", target_os = "illumos"),
         link_name = "__posix_getgrgid_r"
