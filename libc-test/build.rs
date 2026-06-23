@@ -4804,6 +4804,9 @@ fn test_linux(target: &str) {
             "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
 
+            // Changed value recently
+            "SW_MAX" | "SW_CNT" => kernel < (6, 16),
+
             // Added in kernel versions 6.12..6.14 but we can't include `linux/fcntl.h`
             // (conflicts), so these need to wait on glibc's redefinition in 2.44-2.43.
             "AT_HANDLE_CONNECTABLE" | "AT_HANDLE_MNT_ID_UNIQUE" | "AT_EXECVE_CHECK" => {
