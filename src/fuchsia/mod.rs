@@ -354,7 +354,7 @@ s! {
     }
 
     pub struct fd_set {
-        fds_bits: [c_ulong; FD_SETSIZE as usize / ULONG_SIZE],
+        fds_bits: [c_ulong; FD_SETSIZE as usize / 8 / size_of::<c_long>()],
     }
 
     pub struct tm {
@@ -3005,17 +3005,6 @@ pub const O_NOFOLLOW: c_int = 0x00000080;
 
 pub const HUGETLB_FLAG_ENCODE_SHIFT: u32 = 26;
 pub const MAP_HUGE_SHIFT: u32 = 26;
-
-// intentionally not public, only used for fd_set
-cfg_if! {
-    if #[cfg(target_pointer_width = "32")] {
-        const ULONG_SIZE: usize = 32;
-    } else if #[cfg(target_pointer_width = "64")] {
-        const ULONG_SIZE: usize = 64;
-    } else {
-        // Unknown target_pointer_width
-    }
-}
 
 // END_PUB_CONST
 
