@@ -200,11 +200,12 @@ pub const TPACKET3_HDRLEN: usize = ((size_of::<tpacket3_hdr>() + TPACKET_ALIGNME
     & !(TPACKET_ALIGNMENT - 1))
     + size_of::<crate::sockaddr_ll>();
 
-c_enum! {
+e! {
+    #[repr(u32)]
     pub enum tpacket_versions {
-        pub TPACKET_V1,
-        pub TPACKET_V2,
-        pub TPACKET_V3,
+        TPACKET_V1,
+        TPACKET_V2,
+        TPACKET_V3,
     }
 }
 
