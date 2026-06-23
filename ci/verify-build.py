@@ -442,16 +442,9 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     # if on nightly or stable
     if "freebsd" in tname and cfg.toolchain >= Toolchain.STABLE:
         for version in FREEBSD_VERSIONS:
-            run(
-                cmd,
-                env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)},
-                rustflags=rustflags,
-            )
-            run(
-                [*cmd, "--no-default-features"],
-                env=env | {"RUST_LIBC_UNSTABLE_FREEBSD_VERSION": str(version)},
-                rustflags=rustflags,
-            )
+            free_rustflags = f'{rustflags} --cfg=libc_unstable_freebsd_version="{version}"'
+            run(cmd, rustflags=free_rustflags)
+            run([*cmd, "--no-default-features"], rustflags=free_rustflags)
 
     if cfg.skip_semver:
         eprint("Skipping semver checks")

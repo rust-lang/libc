@@ -70,14 +70,22 @@ fn main() {
     let target_ptr_width = env::var("CARGO_CFG_TARGET_POINTER_WIDTH").unwrap_or_default();
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
 
+    // FIXME: this can be removed in 1-2 releases
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
+    if env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION").is_ok() {
+        println!(
+            "cargo:warning=RUST_LIBC_UNSTABLE_FREEBSD_VERSION has been removed; set \
+            the cfg libc_unstable_freebsd_version via RUSTFLAGS instead"
+        );
+    }
+
     // The ABI of libc used by std is backward compatible with FreeBSD 12.
     // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
     //
     // On CI, we detect the actual FreeBSD version and match its ABI exactly,
     // running tests to ensure that the ABI is correct.
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
     // Allow overriding the default version for testing
-    let which_freebsd = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+    let which_freebsd = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION") {
         let vers = version.parse().unwrap();
         println!("cargo:warning=setting FreeBSD version to {vers}");
         vers

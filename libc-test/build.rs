@@ -2299,7 +2299,16 @@ fn test_freebsd(target: &str) {
     assert!(target.contains("freebsd"));
     let mut cfg = ctest_cfg();
 
-    let freebsd_ver = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION") {
+    // FIXME: this can be removed in 1-2 releases
+    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
+    if env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION").is_ok() {
+        println!(
+            "cargo:warning=RUST_LIBC_UNSTABLE_FREEBSD_VERSION has been removed; set \
+            the cfg libc_unstable_freebsd_version via RUSTFLAGS instead"
+        );
+    }
+
+    let freebsd_ver = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION") {
         let vers = version.parse().unwrap();
         println!("cargo:warning=setting FreeBSD version to {vers}");
         Some(vers)
