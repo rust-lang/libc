@@ -104,6 +104,14 @@ CTEST_EXTERN uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(voi
 typedef {{ item.volatile_keyword }}{{ item.field_return_type }};
 CTEST_EXTERN ctest_field_ty__{{ item.id }}__{{ item.field.ident() }}
 ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}({{ item.c_ty }} *b) {
+    {#
+        // In order to trigger -Wincompatible-pointer-types, we need to attempt to create a
+        // pointer to the given struct or field type, but using the type translated from Rust.
+    #}
+    ctest_field_ty__{{ item.id }}__{{ item.field.ident() }} ptr;
+    ptr = &b->{{ item.c_field }};
+    (void)ptr; {# avoid unused warnings #}
+
     return &b->{{ item.c_field }};
 }
 {%- endfor +%}

@@ -155,6 +155,11 @@ CTEST_EXTERN uint64_t ctest_size_of__Word__byte(void) {
 typedef const char **ctest_field_ty__Person__name;
 CTEST_EXTERN ctest_field_ty__Person__name
 ctest_field_ptr__Person__name(struct Person *b) {
+    
+    ctest_field_ty__Person__name ptr;
+    ptr = &b->name;
+    (void)ptr; 
+
     return &b->name;
 }
 
@@ -162,6 +167,11 @@ ctest_field_ptr__Person__name(struct Person *b) {
 typedef uint8_t *ctest_field_ty__Person__age;
 CTEST_EXTERN ctest_field_ty__Person__age
 ctest_field_ptr__Person__age(struct Person *b) {
+    
+    ctest_field_ty__Person__age ptr;
+    ptr = &b->age;
+    (void)ptr; 
+
     return &b->age;
 }
 
@@ -169,6 +179,11 @@ ctest_field_ptr__Person__age(struct Person *b) {
 typedef void (**ctest_field_ty__Person__job)(uint8_t, const char *);
 CTEST_EXTERN ctest_field_ty__Person__job
 ctest_field_ptr__Person__job(struct Person *b) {
+    
+    ctest_field_ty__Person__job ptr;
+    ptr = &b->job;
+    (void)ptr; 
+
     return &b->job;
 }
 
@@ -176,6 +191,11 @@ ctest_field_ptr__Person__job(struct Person *b) {
 typedef enum Color *ctest_field_ty__Person__favorite_color;
 CTEST_EXTERN ctest_field_ty__Person__favorite_color
 ctest_field_ptr__Person__favorite_color(struct Person *b) {
+    
+    ctest_field_ty__Person__favorite_color ptr;
+    ptr = &b->favorite_color;
+    (void)ptr; 
+
     return &b->favorite_color;
 }
 
@@ -183,6 +203,11 @@ ctest_field_ptr__Person__favorite_color(struct Person *b) {
 typedef uint16_t *ctest_field_ty__Word__word;
 CTEST_EXTERN ctest_field_ty__Word__word
 ctest_field_ptr__Word__word(union Word *b) {
+    
+    ctest_field_ty__Word__word ptr;
+    ptr = &b->word;
+    (void)ptr; 
+
     return &b->word;
 }
 
@@ -190,6 +215,11 @@ ctest_field_ptr__Word__word(union Word *b) {
 typedef Byte (*ctest_field_ty__Word__byte)[2];
 CTEST_EXTERN ctest_field_ty__Word__byte
 ctest_field_ptr__Word__byte(union Word *b) {
+    
+    ctest_field_ty__Word__byte ptr;
+    ptr = &b->byte;
+    (void)ptr; 
+
     return &b->byte;
 }
 

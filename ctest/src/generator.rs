@@ -124,6 +124,8 @@ pub enum GenerationError {
     OsError(std::io::Error),
     #[error("one of {0} environment variable(s) not set")]
     EnvVarNotFound(String),
+    #[error("unable to compile C tests {0}")]
+    CompileError(cc::Error),
 }
 
 impl TestGenerator {

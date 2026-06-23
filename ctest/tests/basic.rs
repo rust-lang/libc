@@ -210,3 +210,35 @@ fn test_raw_identifier_field() {
         assert!(result.is_ok());
     }
 }
+
+#[test]
+fn test_mismatched_union_field_ty() {
+    let include_path = PathBuf::from("tests/input");
+    let crate_path = include_path.join("mismatched_union_field_ty.rs");
+    let library_path = "mismatched_union_field_ty.out.a";
+
+    let (mut gen_, _out_dir) = default_generator(1, Some("mismatched_union_field_ty.h")).unwrap();
+
+    if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
+        let result = generate_test(&mut gen_, &crate_path, library_path);
+        assert!(result.is_err());
+        // As cc prints its warning/error messages to stderr, we cannot access them from cc::Error,
+        // and so cannot assert that the error was actually due to -Wincompatible-pointer-types.
+    }
+}
+
+#[test]
+fn test_mismatched_struct_field_ty() {
+    let include_path = PathBuf::from("tests/input");
+    let crate_path = include_path.join("mismatched_struct_field_ty.rs");
+    let library_path = "mismatched_struct_field_ty.out.a";
+
+    let (mut gen_, _out_dir) = default_generator(1, Some("mismatched_struct_field_ty.h")).unwrap();
+
+    if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
+        let result = generate_test(&mut gen_, &crate_path, library_path);
+        assert!(result.is_err());
+        // FIXME(ctest): As cc prints its warning/error messages to stderr, we cannot access them from cc::Error,
+        // and so cannot assert that the error was actually due to -Wincompatible-pointer-types.
+    }
+}
