@@ -1028,6 +1028,11 @@ s_no_extra_traits! {
         pub sival_ptr: *mut c_void,
     }
 
+    pub union fpos_t {
+        __opaque: [c_char; 16],
+        __align: c_double,
+    }
+
     pub union epoll_data {
         pub ptr: *mut c_void,
         pub fd: c_int,
@@ -3182,7 +3187,6 @@ extern "C" {}
 
 extern_ty! {
     pub type FILE;
-    pub type fpos_t; // FIXME(fuchsia): fill this out with a struct
 }
 
 extern "C" {
