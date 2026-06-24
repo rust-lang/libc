@@ -486,13 +486,8 @@ s! {
         pub gl_pathc: size_t,
         pub gl_pathv: *mut *mut c_char,
         pub gl_offs: size_t,
-        pub gl_flags: c_int,
-
-        __unused1: Padding<*mut c_void>,
-        __unused2: Padding<*mut c_void>,
-        __unused3: Padding<*mut c_void>,
-        __unused4: Padding<*mut c_void>,
-        __unused5: Padding<*mut c_void>,
+        __dummy1: Padding<c_int>,
+        __dummy2: Padding<[*mut c_void; 5]>,
     }
 
     pub struct ifaddrs {
@@ -536,15 +531,10 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
-        #[cfg(target_endian = "little")]
-        pub f_fsid: c_ulong,
-        #[cfg(all(target_pointer_width = "32", not(target_arch = "x86_64")))]
-        __f_unused: Padding<c_int>,
-        #[cfg(target_endian = "big")]
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct dqblk {
@@ -594,10 +584,7 @@ s! {
     }
 
     pub struct cpu_set_t {
-        #[cfg(all(target_pointer_width = "32", not(target_arch = "x86_64")))]
-        bits: [u32; 32],
-        #[cfg(not(all(target_pointer_width = "32", not(target_arch = "x86_64"))))]
-        bits: [u64; 16],
+        __bits: [c_ulonglong; 128 / size_of::<c_long>()],
     }
 
     pub struct if_nameindex {
@@ -741,23 +728,10 @@ s! {
     }
 
     pub struct dl_phdr_info {
-        #[cfg(target_pointer_width = "64")]
         pub dlpi_addr: Elf64_Addr,
-        #[cfg(target_pointer_width = "32")]
-        pub dlpi_addr: Elf32_Addr,
-
         pub dlpi_name: *const c_char,
-
-        #[cfg(target_pointer_width = "64")]
         pub dlpi_phdr: *const Elf64_Phdr,
-        #[cfg(target_pointer_width = "32")]
-        pub dlpi_phdr: *const Elf32_Phdr,
-
-        #[cfg(target_pointer_width = "64")]
         pub dlpi_phnum: Elf64_Half,
-        #[cfg(target_pointer_width = "32")]
-        pub dlpi_phnum: Elf32_Half,
-
         pub dlpi_adds: c_ulonglong,
         pub dlpi_subs: c_ulonglong,
         pub dlpi_tls_modid: size_t,
@@ -817,7 +791,7 @@ s! {
     }
 
     pub struct sigset_t {
-        __val: [c_ulong; 16],
+        __bits: [c_ulong; 128 / size_of::<c_long>()],
     }
 
     pub struct shmid_ds {
@@ -882,15 +856,16 @@ s! {
     }
 
     pub struct sem_t {
-        __val: [c_int; 8],
+        _s_value: c_int,
+        _s_waiters: c_int,
     }
 
+    #[repr(align(8))]
     pub struct siginfo_t {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        pub _pad: [c_int; 29],
-        _align: [usize; 0],
+        __si_fields: Padding<__c_anonymous_siginfo_t___si_fields>,
     }
 
     #[deprecated(
@@ -966,13 +941,14 @@ s! {
 
     pub struct sockaddr_storage {
         pub ss_family: sa_family_t,
-        __ss_pad2: Padding<[u8; 128 - 2 - 8]>,
-        __ss_align: size_t,
+        __ss_padding:
+            Padding<[c_char; 128 - size_of::<c_long>() - size_of::<crate::sa_family_t>()]>,
+        __ss_align: c_ulong,
     }
 
     pub struct utsname {
         pub sysname: [c_char; 65],
-        pub nodename: [c_char; 65],
+        pub nodename: [c_char; HOST_NAME_MAX as usize + 1],
         pub release: [c_char; 65],
         pub version: [c_char; 65],
         pub machine: [c_char; 65],
@@ -980,7 +956,7 @@ s! {
     }
 
     pub struct dirent {
-        pub d_ino: crate::ino_t,
+        pub d_ino: ino_t,
         pub d_off: off_t,
         pub d_reclen: c_ushort,
         pub d_type: c_uchar,
@@ -1125,19 +1101,77 @@ s_no_extra_traits! {
         ifu_broadaddr: *mut sockaddr,
         ifu_dstaddr: *mut sockaddr,
     }
+
+    pub union __c_anonymous_siginfo_t___si_fields {
+        __pad: Padding<[c_char; 128 - 2 * size_of::<c_int>() - size_of::<c_long>()]>,
+        __si_common: __c_anonymous___si_fields___si_common,
+        __sigfault: __c_anonymous___si_fields___sigfault,
+        __sigpoll: __c_anonymous___si_fields___sigpoll,
+        __sigsys: __c_anonymous___si_fields___sigsys,
+    }
+
+    pub struct __c_anonymous___si_fields___si_common {
+        __first: Padding<__c_anonymous___si_common___first>,
+        __second: Padding<__c_anonymous___si_common___second>,
+    }
+
+    pub union __c_anonymous___si_common___first {
+        __piduid: __c_anonymous___first___piduid,
+        __timer: __c_anonymous___first___timer,
+    }
+
+    pub struct __c_anonymous___first___piduid {
+        si_pid: pid_t,
+        si_uid: uid_t,
+    }
+
+    pub struct __c_anonymous___first___timer {
+        si_timerid: c_int,
+        si_overrun: c_int,
+    }
+
+    pub union __c_anonymous___si_common___second {
+        si_value: sigval,
+        __sigchld: __c_anonymous___second___sigchld,
+    }
+
+    pub struct __c_anonymous___second___sigchld {
+        si_status: c_int,
+        si_utime: clock_t,
+        si_stime: clock_t,
+    }
+
+    pub struct __c_anonymous___si_fields___sigfault {
+        si_addr: *mut c_void,
+        si_dadr_lsb: c_short,
+        __addr_bnd: __c_anonymous___sigfault___addr_bnd,
+    }
+
+    pub struct __c_anonymous___sigfault___addr_bnd {
+        si_lower: *mut c_void,
+        si_upper: *mut c_void,
+    }
+
+    pub struct __c_anonymous___si_fields___sigpoll {
+        si_band: c_long,
+        si_fd: c_int,
+    }
+
+    pub struct __c_anonymous___si_fields___sigsys {
+        si_call_addr: *mut c_void,
+        si_syscall: c_int,
+        si_arch: c_uint,
+    }
 }
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        #[allow(deprecated)]
         impl PartialEq for sigval {
             fn eq(&self, _other: &sigval) -> bool {
                 unimplemented!("traits")
             }
         }
-        #[allow(deprecated)]
         impl Eq for sigval {}
-        #[allow(deprecated)]
         impl hash::Hash for sigval {
             fn hash<H: hash::Hasher>(&self, _state: &mut H) {
                 unimplemented!("traits")
@@ -1159,15 +1193,12 @@ cfg_if! {
             }
         }
 
-        #[allow(deprecated)]
         impl PartialEq for __c_anonymous_ifaddrs_ifa_ifu {
             fn eq(&self, _other: &__c_anonymous_ifaddrs_ifa_ifu) -> bool {
                 unimplemented!("traits")
             }
         }
-        #[allow(deprecated)]
         impl Eq for __c_anonymous_ifaddrs_ifa_ifu {}
-        #[allow(deprecated)]
         impl hash::Hash for __c_anonymous_ifaddrs_ifa_ifu {
             fn hash<H: hash::Hasher>(&self, _state: &mut H) {
                 unimplemented!("traits")
@@ -1178,8 +1209,10 @@ cfg_if! {
 
 // PUB_CONST
 
-pub const INT_MIN: c_int = -2147483648;
-pub const INT_MAX: c_int = 2147483647;
+pub const HOST_NAME_MAX: c_int = 255;
+
+pub const INT_MIN: c_int = -1 - 0x7fffffff;
+pub const INT_MAX: c_int = 0x7fffffff;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
@@ -3166,31 +3199,34 @@ f! {
     }
 
     pub unsafe fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        cpuset.bits.fill(0);
+        cpuset.__bits.fill(0);
     }
 
     pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * size_of_val(&cpuset.bits[0]); // 32, 64 etc
-        let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-        cpuset.bits[idx] |= 1 << offset;
-        ()
+        if !(cpu / 8 >= size_of::<crate::cpu_set_t>()) {
+            cpuset.__bits[cpu / 8 / size_of::<c_long>()] |= 1 << (cpu % (8 * size_of::<c_long>()));
+        }
     }
 
     pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * size_of_val(&cpuset.bits[0]); // 32, 64 etc
-        let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-        cpuset.bits[idx] &= !(1 << offset);
-        ()
+        if !(cpu / 8 >= size_of::<crate::cpu_set_t>()) {
+            cpuset.__bits[cpu / 8 / size_of::<c_long>()] &=
+                !(1 << (cpu % (8 * size_of::<c_long>())));
+        }
     }
 
     pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * size_of_val(&cpuset.bits[0]);
-        let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-        0 != (cpuset.bits[idx] & (1 << offset))
+        if !(cpu / 8 >= size_of::<crate::cpu_set_t>()) {
+            (cpuset.__bits[cpu / 8 / size_of::<c_long>()]
+                & (1 << (cpu % (8 * size_of::<c_long>()))))
+                != 0
+        } else {
+            false
+        }
     }
 
     pub unsafe fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
-        set1.bits == set2.bits
+        set1.__bits == set2.__bits
     }
 
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
