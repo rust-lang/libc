@@ -1733,10 +1733,6 @@ fn test_dragonflybsd(target: &str) {
             | "REG_ITOA"
             | "REG_TRACE"
             | "REG_LARGE"
-            | "IP_ADD_SOURCE_MEMBERSHIP"
-            | "IP_DROP_SOURCE_MEMBERSHIP"
-            | "IP_BLOCK_SOURCE"
-            | "IP_UNBLOCK_SOURCE"
             | "MAP_RENAME"
             | "MAP_NORESERVE"
             | "CTL_UNSPEC"
@@ -1807,7 +1803,7 @@ fn test_dragonflybsd(target: &str) {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
             // Kernel-only or opaque types in userland.
-            "kvm_t" | "pmap" | "umtx_t" | "Elf32_Lword" => true,
+            "kvm_t" | "pmap" | "umtx_t" => true,
             _ => false,
         }
     });

@@ -293,7 +293,6 @@ EXTB
 EXTPROC
 Elf32_Addr
 Elf32_Half
-Elf32_Lword
 Elf32_Off
 Elf32_Phdr
 Elf32_Sword
