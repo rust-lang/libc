@@ -777,7 +777,15 @@ s! {
     }
 
     pub struct pthread_attr_t {
-        __size: [u64; 7],
+        __name: *const c_char,
+        __c11: c_int,
+        _a_stacksize: crate::size_t,
+        _a_guardsize: crate::size_t,
+        _a_stackaddr: *mut c_void,
+        _a_detach: c_int,
+        _a_sched: c_int,
+        _a_policy: c_int,
+        _a_prio: c_int,
     }
 
     pub struct sigset_t {
@@ -878,27 +886,16 @@ s! {
         pub ipi6_ifindex: c_uint,
     }
 
-    #[cfg_attr(
-        any(target_pointer_width = "32", target_arch = "x86_64"),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        not(any(target_pointer_width = "32", target_arch = "x86_64")),
-        repr(align(8))
-    )]
     pub struct pthread_mutexattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_MUTEXATTR_T],
+        pub __attr: c_uint,
     }
 
-    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
-    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct pthread_rwlockattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_RWLOCKATTR_T],
+        pub __attr: [c_uint; 2],
     }
 
-    #[repr(align(4))]
     pub struct pthread_condattr_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
+        pub __attr: c_uint,
     }
 
     #[deprecated(since = "0.2.187", note = "This type doesn't exist upstream.")]
@@ -1006,53 +1003,28 @@ s! {
         pub sigev_value: crate::sigval,
         pub sigev_signo: c_int,
         pub sigev_notify: c_int,
-        pub sigev_notify_function: fn(crate::sigval),
+        pub sigev_notify_function: Option<extern "C" fn(crate::sigval)>,
         pub sigev_notify_attributes: *mut pthread_attr_t,
-        pub __pad: [c_char; 56 - 3 * 8],
+        __pad: Padding<[c_char; 56 - 3 * size_of::<c_long>()]>,
     }
 
-    #[cfg_attr(
-        all(
-            target_pointer_width = "32",
-            any(target_arch = "arm", target_arch = "x86_64")
-        ),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        any(
-            target_pointer_width = "64",
-            not(any(target_arch = "arm", target_arch = "x86_64"))
-        ),
-        repr(align(8))
-    )]
     pub struct pthread_mutex_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_MUTEX_T],
+        pub _m_attr: c_uint,
+        pub _m_lock: c_int,
+        pub _m_waiters: c_int,
+        pub _m_count: c_int,
     }
 
-    #[cfg_attr(
-        all(
-            target_pointer_width = "32",
-            any(target_arch = "arm", target_arch = "x86_64")
-        ),
-        repr(align(4))
-    )]
-    #[cfg_attr(
-        any(
-            target_pointer_width = "64",
-            not(any(target_arch = "arm", target_arch = "x86_64"))
-        ),
-        repr(align(8))
-    )]
     pub struct pthread_rwlock_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_RWLOCK_T],
+        pub _rw_lock: c_int,
+        pub _rw_waiters: c_int,
     }
 
-    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
-    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
-    #[cfg_attr(target_arch = "x86", repr(align(4)))]
-    #[cfg_attr(not(target_arch = "x86"), repr(align(8)))]
     pub struct pthread_cond_t {
-        size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
+        pub _c_head: *mut c_void,
+        pub _c_clock: c_int,
+        pub _c_tail: *mut c_void,
+        pub _c_lock: c_int,
     }
 }
 
@@ -2152,13 +2124,20 @@ pub const RTLD_NOW: c_int = 0x2;
 pub const TCP_MD5SIG: c_int = 14;
 
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    size: [0; __SIZEOF_PTHREAD_MUTEX_T],
+    _m_attr: 0,
+    _m_lock: 0,
+    _m_waiters: 0,
+    _m_count: 0,
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    size: [0; __SIZEOF_PTHREAD_COND_T],
+    _c_head: ptr::null_mut(),
+    _c_clock: 0,
+    _c_tail: ptr::null_mut(),
+    _c_lock: 0,
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    size: [0; __SIZEOF_PTHREAD_RWLOCK_T],
+    _rw_lock: 0,
+    _rw_waiters: 0,
 };
 pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
@@ -2166,6 +2145,11 @@ pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: c_int = 1;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
 pub const RENAME_NOREPLACE: c_int = 1;
@@ -2687,8 +2671,22 @@ pub const TCP_TIMESTAMP: c_int = 24;
 
 pub const SIGUNUSED: c_int = crate::SIGSYS;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
 pub const CPU_SETSIZE: c_int = 128;
@@ -2827,7 +2825,16 @@ pub const B3000000: crate::speed_t = 0o010015;
 pub const B3500000: crate::speed_t = 0o010016;
 pub const B4000000: crate::speed_t = 0o010017;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 56;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "This type doesn't exist. It's not part of the Fuchsia SDK."
+)]
 pub const __SIZEOF_PTHREAD_MUTEX_T: usize = 40;
 
 pub const O_ASYNC: c_int = 0x00000400;
