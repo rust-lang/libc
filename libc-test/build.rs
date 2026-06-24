@@ -107,6 +107,11 @@ fn ctest_cfg() -> ctest::TestGenerator {
     // FIXME(1.0): These aliases will eventually be removed.
     cfg.skip_alias(|ty| ty.ident() == "__uint128");
 
+    if env::var("LIBC_CI_ZBUILD_STD").is_ok() {
+        *cfg.expansion_cargo_args_mut() = vec!["-Zbuild-std=core,std".into()];
+    }
+    cfg.crate_name("libc".into());
+
     cfg
 }
 
