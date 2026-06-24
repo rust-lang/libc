@@ -8,7 +8,7 @@ set -eux
 arch="$1"
 version="$2"
 old_musl=1.1.24
-new_musl=1.2.5
+new_musl=1.2.6
 
 case "$arch" in
     loongarch64) musl_version="$new_musl" ;;
@@ -119,18 +119,20 @@ rm -rf "$musl"
 
 # Download, configure, build, and install musl-sanitized kernel headers.
 
-# Alpine follows stable kernel releases, 3.20 uses Linux 6.6 headers.
-alpine_version=3.20
+# Alpine follows stable kernel releases, 3.24 uses Linux 7.0 headers.
+alpine_version=3.24
 alpine_git=https://git.alpinelinux.org/aports
 
-# This routine piggybacks on: https://git.alpinelinux.org/aports/tree/main/linux-headers?h=3.20-stable
+# This routine piggybacks on: https://git.alpinelinux.org/aports/tree/main/linux-headers?h=3.24-stable
 git clone -n --depth=1 --filter=tree:0 -b "${alpine_version}-stable" "$alpine_git"
 (
     cd aports
     git sparse-checkout set --no-cone main/linux-headers
     git checkout
-
     cd main/linux-headers
+
+    # Create a version of APKBUILD that dumps the variables we're interested
+    # in. This file doesn't retrieve or build anything on its own.
     cp APKBUILD APKBUILD.vars
     cat <<- EOF >> APKBUILD.vars
         echo "\$source" > alpine-source
