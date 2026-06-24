@@ -1664,8 +1664,6 @@ fn test_dragonflybsd(target: &str) {
             "procstat" => Some("enum procstat".to_string()),
             "vm_map_t" => Some("struct vm_map *".to_string()),
             "vm_map_entry_t" => Some("struct vm_map_entry *".to_string()),
-            "vm_eflags_t" => Some("unsigned int".to_string()),
-            "vm_subsys_t" => Some("int".to_string()),
             _ => None,
         }
     });
@@ -1808,8 +1806,9 @@ fn test_dragonflybsd(target: &str) {
         match ty.ident() {
             // sighandler_t is crazy across platforms
             "sighandler_t" => true,
-            // Kernel-only or opaque types in userland.
-            "kvm_t" | "pmap" | "umtx_t" => true,
+            // Same as FreeBSD: `kvm_t` is an opaque handle used through
+            // pointers, and libc does not bind the private `struct __kvm`.
+            "kvm_t" => true,
             _ => false,
         }
     });
@@ -1821,8 +1820,6 @@ fn test_dragonflybsd(target: &str) {
             // structs.
             "termios2" => true,
 
-            // Not available as userland-complete structs on DragonFly.
-            "ip_mreq_source" | "vm_map_entry" | "vmspace" => true,
             "ip_mreqn" if dragonfly_version < 600_000 => true,
 
             _ => false,
@@ -1857,18 +1854,6 @@ fn test_dragonflybsd(target: &str) {
             ("aiocb", "aio_buf") => true,
             _ => false,
         }
-    });
-
-    cfg.skip_roundtrip(move |ty| {
-        matches!(
-            ty,
-            "kvm_t"
-                | "posix_spawnattr_t"
-                | "posix_spawn_file_actions_t"
-                | "umtx_t"
-                | "pmap"
-                | "ip_mreq_source"
-        )
     });
 
     ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
