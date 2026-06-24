@@ -30,7 +30,6 @@ pub type cpuset_t = cpumask_t;
 pub type cpu_set_t = cpumask_t;
 
 pub type register_t = c_long;
-pub type umtx_t = c_int;
 pub type pthread_barrierattr_t = *mut __c_anonymous_pthread_barrierattr;
 pub type pthread_barrier_t = *mut __c_anonymous_pthread_barrier;
 pub type pthread_spinlock_t = crate::uintptr_t;
@@ -40,13 +39,9 @@ pub type segsz_t = isize;
 pub type vm_prot_t = u8;
 pub type vm_maptype_t = u8;
 pub type vm_inherit_t = i8;
-pub type vm_subsys_t = c_int;
-pub type vm_eflags_t = c_uint;
 
-pub type vm_map_t = *mut __c_anonymous_vm_map;
-pub type vm_map_entry_t = *mut vm_map_entry;
-
-pub type pmap = __c_anonymous_pmap;
+pub type vm_map_t = *mut c_void;
+pub type vm_map_entry_t = *mut c_void;
 
 extern_ty! {
     pub type sem;
@@ -345,50 +340,6 @@ s! {
         pub kp_lwp: crate::kinfo_lwp,
         pub kp_ktaddr: crate::uintptr_t,
         kp_spare: [c_int; 2],
-    }
-
-    pub struct __c_anonymous_vm_map {
-        _priv: [crate::uintptr_t; 36],
-    }
-
-    pub struct vm_map_entry {
-        _priv: [crate::uintptr_t; 15],
-        pub eflags: crate::vm_eflags_t,
-        pub maptype: crate::vm_maptype_t,
-        pub protection: crate::vm_prot_t,
-        pub max_protection: crate::vm_prot_t,
-        pub inheritance: crate::vm_inherit_t,
-        pub wired_count: c_int,
-        pub id: crate::vm_subsys_t,
-    }
-
-    pub struct __c_anonymous_pmap {
-        _priv1: [crate::uintptr_t; 32],
-        _priv2: [crate::uintptr_t; 32],
-        _priv3: [crate::uintptr_t; 32],
-        _priv4: [crate::uintptr_t; 32],
-        _priv5: [crate::uintptr_t; 8],
-    }
-
-    pub struct vmspace {
-        vm_map: __c_anonymous_vm_map,
-        vm_pmap: __c_anonymous_pmap,
-        pub vm_flags: c_int,
-        pub vm_shm: *mut c_char,
-        pub vm_rssize: crate::segsz_t,
-        pub vm_swrss: crate::segsz_t,
-        pub vm_tsize: crate::segsz_t,
-        pub vm_dsize: crate::segsz_t,
-        pub vm_ssize: crate::segsz_t,
-        pub vm_taddr: *mut c_char,
-        pub vm_daddr: *mut c_char,
-        pub vm_maxsaddr: *mut c_char,
-        pub vm_minsaddr: *mut c_char,
-        _unused1: Padding<c_int>,
-        _unused2: Padding<c_int>,
-        pub vm_pagesupply: c_int,
-        pub vm_holdcnt: c_uint,
-        pub vm_refcnt: c_uint,
     }
 
     pub struct cpuctl_msr_args_t {
