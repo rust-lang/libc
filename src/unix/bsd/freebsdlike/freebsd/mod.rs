@@ -6,6 +6,8 @@ use crate::{
 
 pub type fflags_t = u32;
 
+pub type Elf32_Lword = u64;
+
 pub type vm_prot_t = u_char;
 pub type kvaddr_t = u64;
 pub type segsz_t = isize;
@@ -276,6 +278,12 @@ s! {
         pub ip6s: c_uint,
         pub ip4: *mut crate::in_addr,
         pub ip6: *mut crate::in6_addr,
+    }
+
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: crate::in_addr,
+        pub imr_sourceaddr: crate::in_addr,
+        pub imr_interface: crate::in_addr,
     }
 
     pub struct statvfs {
@@ -3274,6 +3282,10 @@ pub const IP_RECVORIGDSTADDR: c_int = IP_ORIGDSTADDR;
 
 pub const IP_DONTFRAG: c_int = 67;
 pub const IP_RECVTOS: c_int = 68;
+pub const IP_ADD_SOURCE_MEMBERSHIP: c_int = 70;
+pub const IP_DROP_SOURCE_MEMBERSHIP: c_int = 71;
+pub const IP_BLOCK_SOURCE: c_int = 72;
+pub const IP_UNBLOCK_SOURCE: c_int = 73;
 
 pub const IPV6_BINDANY: c_int = 64;
 pub const IPV6_ORIGDSTADDR: c_int = 72;
