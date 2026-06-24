@@ -4274,6 +4274,7 @@ fn test_linux(target: &str) {
 
             // Recent additions
             "ptp_sys_offset_extended" if kernel < (6, 12) => true,
+            "epoll_params" if old_musl => true,
             "epoll_params" => kernel < (6, 9),
             "mnt_ns_info" => kernel < (6, 12),
 
@@ -4789,6 +4790,7 @@ fn test_linux(target: &str) {
             | "PF_RANDOMIZE" | "PF_NO_SETAFFINITY" | "PF_MCE_EARLY" | "PF_MEMALLOC_PIN"
             | "PF_BLOCK_TS" | "PF_SUSPEND_TASK" => true,
 
+            "EPIOCSPARAMS" | "EPIOCGPARAMS" if old_musl => true,
             "EPIOCSPARAMS" | "EPIOCGPARAMS" => kernel < (6, 9),
             "MAP_DROPPABLE" => kernel < (6, 11),
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => kernel < (6, 12),
@@ -4806,6 +4808,7 @@ fn test_linux(target: &str) {
             "SECURE_ALL_BITS" | "SECURE_ALL_LOCKS" => kernel < (6, 14),
 
             // Recent additions
+            "AT_HWCAP3" | "AT_HWCAP4" if old_musl => true,
             "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
 
