@@ -350,6 +350,13 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_union(move |u| {
+        match u.ident() {
+            "sighandler_t" => true,
+            _ => false,
+        }
+    });
+
     cfg.skip_const(move |constant| {
         match constant.ident() {
             // They're declared via `deprecated_mach` and we don't support it anymore.
@@ -368,6 +375,8 @@ fn test_apple(target: &str) {
 
             // FIXME(macos): bumped up on macOS 26, it's sizeof `vm_statistics64_data_t`
             "HOST_VM_INFO64_COUNT" => true,
+
+            "SIG_DFL" | "SIG_IGN" | "SIG_ERR" => true,
 
             _ => false,
         }
@@ -426,9 +435,6 @@ fn test_apple(target: &str) {
             .contains(&ty)
             .then_some(ty.to_string())
     });
-
-    // OSX calls this something else
-    cfg.rename_type(|ty| (ty == "sighandler_t").then_some("sig_t".to_string()));
 
     cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
     cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));

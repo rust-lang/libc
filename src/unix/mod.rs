@@ -17,8 +17,18 @@ pub type ssize_t = isize;
 pub type pid_t = i32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
-pub type sighandler_t = size_t;
 pub type cc_t = c_uchar;
+
+// All derivatives use sighandler_t to mean something which is either a
+// function pointer or a size_t. And this has implications for its size
+// (especially on CHERI architectures) compared to just blindly using size_t to
+// represent it.
+s_no_extra_traits! {
+    pub union sighandler_t {
+        pub sighandler_id: size_t,
+        pub sighandler_fn: extern "C" fn(c_int),
+    }
+}
 
 cfg_if! {
     if #[cfg(any(
@@ -229,9 +239,9 @@ s! {
 pub const INT_MIN: c_int = -2147483648;
 pub const INT_MAX: c_int = 2147483647;
 
-pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
-pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
-pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
+pub const SIG_DFL: size_t = 0 as size_t;
+pub const SIG_IGN: size_t = 1 as size_t;
+pub const SIG_ERR: size_t = !0 as size_t;
 
 cfg_if! {
     if #[cfg(all(
