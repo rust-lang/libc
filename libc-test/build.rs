@@ -3949,6 +3949,8 @@ fn test_linux(target: &str) {
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
     let ppc64 = target.contains("powerpc64");
+    let ppc64le = target.contains("powerpc64le");
+    let _ppc64be = target.contains("powerpc64-");
     let ppc32 = ppc && !ppc64;
     let s390x = target.contains("s390x");
     let sparc = target.contains("sparc");
@@ -5108,6 +5110,10 @@ fn test_linux(target: &str) {
 
             // FIXME(linux): function pointers changed since Ubuntu 23.10
             "strtol" | "strtoll" | "strtoul" | "strtoull" | "fscanf" | "scanf" | "sscanf" => true,
+
+            // FIXME(ppc): function pointers changed in Ubuntu 26.04 to support IEEE binary128
+            // `long double`. We should update at some point but there is no hurry.
+            "printf" | "fprintf" | "sprintf" | "snprintf" | "syslog" if gnu && ppc64le => true,
 
             _ => false,
         }
