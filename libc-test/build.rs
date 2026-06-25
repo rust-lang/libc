@@ -641,7 +641,7 @@ fn test_openbsd(target: &str) {
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
             // Extern types
-            "DIR" | "FILE" | "fpos_t" => true,
+            "DIR" | "FILE" | "fpos_t" | "sem" | "timezone" => true,
 
             _ => false,
         }
