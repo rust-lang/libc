@@ -304,11 +304,11 @@ s! {
 }
 
 /// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const RAND_MAX: c_int = 0x7fff_fffd;
 
 /// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const ELAST: c_int = 97;
 
 /// max length of devicename
