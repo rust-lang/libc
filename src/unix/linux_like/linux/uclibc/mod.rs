@@ -52,6 +52,14 @@ cfg_if! {
 }
 
 s! {
+    pub struct flock64 {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: crate::off64_t,
+        pub l_len: crate::off64_t,
+        pub l_pid: crate::pid_t,
+    }
+
     pub struct statvfs {
         // Different than GNU!
         pub f_bsize: c_ulong,
