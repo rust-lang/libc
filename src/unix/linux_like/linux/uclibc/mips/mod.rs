@@ -34,6 +34,18 @@ s! {
         pub f_flags: c_long,
         f_spare: Padding<[c_long; 5]>,
     }
+
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
+        #[cfg(not(all(uclibc_file_offset_bits64, target_arch = "mips64")))]
+        pub l_sysid: c_long,
+        pub l_pid: crate::pid_t,
+        #[cfg(not(all(uclibc_file_offset_bits64, target_arch = "mips64")))]
+        pad: [c_long; 4],
+    }
 }
 
 pub const SFD_CLOEXEC: c_int = 0x080000;
