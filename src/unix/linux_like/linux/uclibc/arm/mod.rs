@@ -9,6 +9,14 @@ pub type nlink_t = c_uint;
 pub type blksize_t = c_long;
 
 s! {
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
+        pub l_pid: crate::pid_t,
+    }
+
     pub struct cmsghdr {
         pub cmsg_len: size_t,
         pub cmsg_level: c_int,
@@ -93,14 +101,6 @@ s! {
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_ulong,
         pub st_ino: crate::ino64_t,
-    }
-
-    pub struct flock {
-        pub l_type: c_short,
-        pub l_whence: c_short,
-        pub l_start: off_t,
-        pub l_len: off_t,
-        pub l_pid: crate::pid_t,
     }
 
     pub struct sysinfo {

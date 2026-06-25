@@ -183,16 +183,6 @@ s! {
         pub c_cc: [crate::cc_t; crate::NCCS],
     }
 
-    pub struct flock {
-        pub l_type: c_short,
-        pub l_whence: c_short,
-        pub l_start: crate::off_t,
-        pub l_len: crate::off_t,
-        pub l_sysid: c_long,
-        pub l_pid: crate::pid_t,
-        pad: Padding<[c_long; 4]>,
-    }
-
     pub struct sysinfo {
         pub uptime: c_long,
         pub loads: [c_ulong; 3],
