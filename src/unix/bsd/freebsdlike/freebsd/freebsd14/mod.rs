@@ -319,11 +319,11 @@ s! {
 }
 
 /// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const RAND_MAX: c_int = 0x7fff_ffff;
 
 /// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
+/// See the [usage guidelines](crate#usage-guidelines) for details.
 pub const ELAST: c_int = 97;
 
 pub const KF_TYPE_EVENTFD: c_int = 13;
