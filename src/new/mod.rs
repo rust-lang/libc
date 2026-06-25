@@ -180,6 +180,7 @@ cfg_if! {
         pub use linux::can::j1939::*;
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
+        pub use linux::futex::*;
         pub use linux::if_link::*;
         pub use linux::if_packet::*;
         pub use linux::keyctl::*;
