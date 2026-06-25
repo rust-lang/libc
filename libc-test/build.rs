@@ -4811,6 +4811,7 @@ fn test_linux(target: &str) {
             "AT_HWCAP3" | "AT_HWCAP4" if old_musl => true,
             "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
+            "TLS_INFO_TX_MAX_PAYLOAD_LEN" | "TLS_INFO_MAX" => kernel < (6, 19),
 
             // Changed value recently
             "SW_MAX" | "SW_CNT" => kernel < (6, 16),
