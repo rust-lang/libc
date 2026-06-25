@@ -103,10 +103,13 @@ jobs:
         run: |
           set -eux
           if [ "${{ matrix.toolchain }}" = "1.65.0" ]; then
-              # Remove `-Dwarnings` at the MSRV since lints may be different, and allow
-              # `improper_ctypes` since pointers to ZSTs got the warning prior to 1.72.
-              # FIXME(msrv): remove this flag when possible.
-              export RUSTFLAGS="-Aimproper_ctypes"
+              # * Remove `-Dwarnings` at the MSRV since lints may be different
+              # * Allow `improper_ctypes` since pointers to ZSTs got the warning prior
+              #   to 1.72.
+              # * Enable `unknown_lints` since we have some config not known at this
+              #   version.
+              # FIXME(msrv): update this list when possible.
+              export RUSTFLAGS="-Aimproper_ctypes -Aunknown_lints"
           fi
 
           python3 ci/verify-build.py \

@@ -144,30 +144,26 @@
 //! practice, breakage is rare and following the above-discussed [Usage Guidelines](#usage-guidelines)
 //! means that most `libc` users will never encounter a problem.
 
+// Make it a bit easier to build without Cargo
 #![crate_name = "libc"]
 #![crate_type = "rlib"]
-#![allow(
-    renamed_and_removed_lints, // Keep this order.
-    unknown_lints, // Keep this order.
-    nonstandard_style,
-    overflowing_literals,
-    unused_macros,
-    unused_macro_rules,
-)]
-#![warn(
-    missing_copy_implementations,
-    missing_debug_implementations,
-    safe_packed_borrows
-)]
-// Prepare for a future upgrade
+// Pretty much all C API doesn't match Rust conventions.
+#![allow(nonstandard_style)]
+// Not all macros and all patterns are used on all targets.
+#![allow(unused_macros)]
+#![allow(unused_macro_rules)]
+// All traits should be `Copy` and `Debug`.
+#![warn(missing_copy_implementations)]
+#![warn(missing_debug_implementations)]
+// Downgrade deny to a warning.
+#![warn(overflowing_literals)]
+// Prepare for a future upgrade.
 #![warn(rust_2024_compatibility)]
-// Things missing for 2024 that are blocked on MSRV or breakage
-#![allow(
-    missing_unsafe_on_extern,
-    edition_2024_expr_fragment_specifier,
-    // Allowed globally, the warning is enabled in individual modules as we work through them
-    unsafe_op_in_unsafe_fn
-)]
+// Things missing for 2024 that are blocked on MSRV or breakage.
+#![allow(missing_unsafe_on_extern)]
+#![allow(edition_2024_expr_fragment_specifier)]
+// Allowed globally, the warning is enabled in individual modules as we work through them
+#![allow(unsafe_op_in_unsafe_fn)]
 #![cfg_attr(libc_deny_warnings, deny(warnings))]
 // Attributes needed when building as part of the standard library
 #![cfg_attr(feature = "rustc-dep-of-std", feature(link_cfg, no_core))]
