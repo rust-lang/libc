@@ -576,6 +576,14 @@ s! {
         __serial: c_uint,
         __value: [c_char; 92],
     }
+
+    // linux/futex.h
+    pub struct futex_waitv {
+        pub val: crate::__u64,
+        pub uaddr: crate::__u64,
+        pub flags: crate::__u32,
+        __reserved: Padding<crate::__u32>,
+    }
 }
 
 s_no_extra_traits! {
