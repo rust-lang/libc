@@ -696,6 +696,7 @@ cfg_if! {
 }
 
 pub const MADV_SOFT_OFFLINE: c_int = 101;
+#[allow(overflowing_literals)] // fixed in a future kernel version
 pub const MS_NOUSER: c_ulong = 0xffffffff80000000;
 pub const MS_RMT_MASK: c_ulong = 0x02800051;
 
@@ -1308,7 +1309,7 @@ pub const TCGETS: c_int = 0x5401;
 pub const TCSETS: c_int = 0x5402;
 pub const TCSETSW: c_int = 0x5403;
 pub const TCSETSF: c_int = 0x5404;
-pub const TCGETS2: c_int = 0x802c542a;
+pub const TCGETS2: c_int = u32_cast_int(0x802c542a);
 pub const TCSETS2: c_int = 0x402c542b;
 pub const TCSETSW2: c_int = 0x402c542c;
 pub const TCSETSF2: c_int = 0x402c542d;
@@ -1372,24 +1373,24 @@ pub const AI_DEFAULT: c_int = AI_V4MAPPED_CFG | AI_ADDRCONFIG;
 // linux/kexec.h
 pub const KEXEC_ON_CRASH: c_int = 0x00000001;
 pub const KEXEC_PRESERVE_CONTEXT: c_int = 0x00000002;
-pub const KEXEC_ARCH_MASK: c_int = 0xffff0000;
+pub const KEXEC_ARCH_MASK: c_int = u32_cast_int(0xffff0000);
 pub const KEXEC_FILE_UNLOAD: c_int = 0x00000001;
 pub const KEXEC_FILE_ON_CRASH: c_int = 0x00000002;
 pub const KEXEC_FILE_NO_INITRAMFS: c_int = 0x00000004;
 
-pub const LINUX_REBOOT_MAGIC1: c_int = 0xfee1dead;
+pub const LINUX_REBOOT_MAGIC1: c_int = u32_cast_int(0xfee1dead);
 pub const LINUX_REBOOT_MAGIC2: c_int = 672274793;
 pub const LINUX_REBOOT_MAGIC2A: c_int = 85072278;
 pub const LINUX_REBOOT_MAGIC2B: c_int = 369367448;
 pub const LINUX_REBOOT_MAGIC2C: c_int = 537993216;
 
 pub const LINUX_REBOOT_CMD_RESTART: c_int = 0x01234567;
-pub const LINUX_REBOOT_CMD_HALT: c_int = 0xCDEF0123;
-pub const LINUX_REBOOT_CMD_CAD_ON: c_int = 0x89ABCDEF;
+pub const LINUX_REBOOT_CMD_HALT: c_int = u32_cast_int(0xCDEF0123);
+pub const LINUX_REBOOT_CMD_CAD_ON: c_int = u32_cast_int(0x89ABCDEF);
 pub const LINUX_REBOOT_CMD_CAD_OFF: c_int = 0x00000000;
 pub const LINUX_REBOOT_CMD_POWER_OFF: c_int = 0x4321FEDC;
-pub const LINUX_REBOOT_CMD_RESTART2: c_int = 0xA1B2C3D4;
-pub const LINUX_REBOOT_CMD_SW_SUSPEND: c_int = 0xD000FCE2;
+pub const LINUX_REBOOT_CMD_RESTART2: c_int = u32_cast_int(0xA1B2C3D4);
+pub const LINUX_REBOOT_CMD_SW_SUSPEND: c_int = u32_cast_int(0xD000FCE2);
 pub const LINUX_REBOOT_CMD_KEXEC: c_int = 0x45584543;
 
 pub const REG_BASIC: c_int = 0;
@@ -1936,7 +1937,7 @@ pub const NF_MAX_VERDICT: c_int = NF_STOP;
 pub const NF_VERDICT_MASK: c_int = 0x000000ff;
 pub const NF_VERDICT_FLAG_QUEUE_BYPASS: c_int = 0x00008000;
 
-pub const NF_VERDICT_QMASK: c_int = 0xffff0000;
+pub const NF_VERDICT_QMASK: c_int = u32_cast_int(0xffff0000);
 pub const NF_VERDICT_QBITS: c_int = 16;
 
 pub const NF_VERDICT_BITS: c_int = 16;
@@ -2829,7 +2830,7 @@ pub const PR_SET_MM_EXE_FILE: c_int = 13;
 pub const PR_SET_MM_MAP: c_int = 14;
 pub const PR_SET_MM_MAP_SIZE: c_int = 15;
 pub const PR_SET_PTRACER: c_int = 0x59616d61;
-pub const PR_SET_PTRACER_ANY: c_ulong = 0xffffffffffffffff;
+pub const PR_SET_PTRACER_ANY: c_ulong = (-1 as c_long) as c_ulong;
 pub const PR_SET_CHILD_SUBREAPER: c_int = 36;
 pub const PR_GET_CHILD_SUBREAPER: c_int = 37;
 pub const PR_SET_NO_NEW_PRIVS: c_int = 38;
@@ -3295,7 +3296,7 @@ pub const PF_NO_SETAFFINITY: c_int = 0x04000000;
 pub const PF_MCE_EARLY: c_int = 0x08000000;
 pub const PF_MEMALLOC_PIN: c_int = 0x10000000;
 
-pub const PF_SUSPEND_TASK: c_int = 0x80000000;
+pub const PF_SUSPEND_TASK: c_int = u32_cast_int(0x80000000);
 
 pub const KLOG_CLOSE: c_int = 0;
 pub const KLOG_OPEN: c_int = 1;

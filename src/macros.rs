@@ -87,6 +87,7 @@ macro_rules! prelude {
             pub(crate) use core::prelude::v1::derive;
             #[allow(unused_imports)]
             pub(crate) use core::{
+                assert,
                 cfg,
                 fmt,
                 hash,
@@ -106,7 +107,13 @@ macro_rules! prelude {
             };
 
             #[allow(unused_imports)]
+            #[cfg(any(target_os = "linux", target_os = "android", target_os = "l4re"))]
+            pub(crate) use crate::types::u32_cast_ioctl;
+            #[allow(unused_imports)]
             pub(crate) use crate::types::{
+                u16_cast_short,
+                u32_cast_int,
+                u32_cast_long,
                 CEnumRepr,
                 Padding,
             };

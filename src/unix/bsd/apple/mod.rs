@@ -2126,9 +2126,9 @@ deprecated_mach! {
     pub const VM_FLAGS_SUPERPAGE_MASK: c_int = 0x70000;
     pub const VM_FLAGS_RETURN_DATA_ADDR: c_int = 0x100000;
     pub const VM_FLAGS_RETURN_4K_DATA_ADDR: c_int = 0x800000;
-    pub const VM_FLAGS_ALIAS_MASK: c_int = 0xFF000000;
-    pub const VM_FLAGS_USER_ALLOCATE: c_int = 0xff07401f;
-    pub const VM_FLAGS_USER_MAP: c_int = 0xff97401f;
+    pub const VM_FLAGS_ALIAS_MASK: c_int = u32_cast_int(0xFF000000);
+    pub const VM_FLAGS_USER_ALLOCATE: c_int = u32_cast_int(0xff07401f);
+    pub const VM_FLAGS_USER_MAP: c_int = u32_cast_int(0xff97401f);
     pub const VM_FLAGS_USER_REMAP: c_int = VM_FLAGS_FIXED
         | VM_FLAGS_ANYWHERE
         | VM_FLAGS_RANDOM_ADDR
@@ -3351,7 +3351,7 @@ pub const CTLTYPE_STRING: c_int = 3;
 pub const CTLTYPE_QUAD: c_int = 4;
 pub const CTLTYPE_OPAQUE: c_int = 5;
 pub const CTLTYPE_STRUCT: c_int = CTLTYPE_OPAQUE;
-pub const CTLFLAG_RD: c_int = 0x80000000;
+pub const CTLFLAG_RD: c_int = u32_cast_int(0x80000000);
 pub const CTLFLAG_WR: c_int = 0x40000000;
 pub const CTLFLAG_RW: c_int = CTLFLAG_RD | CTLFLAG_WR;
 pub const CTLFLAG_NOLOCK: c_int = 0x20000000;
