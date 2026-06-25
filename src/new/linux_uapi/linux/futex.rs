@@ -51,7 +51,7 @@ pub const FUTEX_WAITERS: u32 = 0x80000000;
 pub const FUTEX_OWNER_DIED: u32 = 0x40000000;
 pub const FUTEX_TID_MASK: u32 = 0x3fffffff;
 
-pub const FUTEX_BITSET_MATCH_ANY: c_int = 0xffffffff;
+pub const FUTEX_BITSET_MATCH_ANY: c_int = u32_cast_int(0xffffffff);
 
 pub const FUTEX_OP_SET: c_int = 0;
 pub const FUTEX_OP_ADD: c_int = 1;

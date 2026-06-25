@@ -692,13 +692,13 @@ pub const CTL_P1003_1B_SIGQUEUE_MAX: c_int = 24;
 pub const CTL_P1003_1B_TIMER_MAX: c_int = 25;
 pub const CTL_P1003_1B_MAXID: c_int = 26;
 
-pub const CPUCTL_RSMSR: c_int = 0xc0106301;
-pub const CPUCTL_WRMSR: c_int = 0xc0106302;
-pub const CPUCTL_CPUID: c_int = 0xc0106303;
-pub const CPUCTL_UPDATE: c_int = 0xc0106304;
-pub const CPUCTL_MSRSBIT: c_int = 0xc0106305;
-pub const CPUCTL_MSRCBIT: c_int = 0xc0106306;
-pub const CPUCTL_CPUID_COUNT: c_int = 0xc0106307;
+pub const CPUCTL_RSMSR: c_int = u32_cast_int(0xc0106301);
+pub const CPUCTL_WRMSR: c_int = u32_cast_int(0xc0106302);
+pub const CPUCTL_CPUID: c_int = u32_cast_int(0xc0106303);
+pub const CPUCTL_UPDATE: c_int = u32_cast_int(0xc0106304);
+pub const CPUCTL_MSRSBIT: c_int = u32_cast_int(0xc0106305);
+pub const CPUCTL_MSRCBIT: c_int = u32_cast_int(0xc0106306);
+pub const CPUCTL_CPUID_COUNT: c_int = u32_cast_int(0xc0106307);
 
 pub const CPU_SETSIZE: size_t = size_of::<crate::cpumask_t>() * 8;
 
@@ -1042,7 +1042,7 @@ pub const MSG_SYNC: c_int = 0x00000800;
 pub const MSG_CMSG_CLOEXEC: c_int = 0x00001000;
 pub const MSG_FBLOCKING: c_int = 0x00010000;
 pub const MSG_FNONBLOCKING: c_int = 0x00020000;
-pub const MSG_FMASK: c_int = 0xFFFF0000;
+pub const MSG_FMASK: c_int = u32_cast_int(0xFFFF0000);
 
 // sys/mount.h
 pub const MNT_NODEV: c_int = 0x00000010;
@@ -1101,7 +1101,7 @@ pub const TIOCREMOTE: c_ulong = 0x80047469;
 pub const TIOCTIMESTAMP: c_ulong = 0x40107459;
 
 // Constants used by "at" family of system calls.
-pub const AT_FDCWD: c_int = 0xFFFAFDCD; // invalid file descriptor
+pub const AT_FDCWD: c_int = u32_cast_int(0xFFFAFDCD); // invalid file descriptor
 pub const AT_SYMLINK_NOFOLLOW: c_int = 1;
 pub const AT_REMOVEDIR: c_int = 2;
 pub const AT_EACCESS: c_int = 4;

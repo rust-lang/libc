@@ -1606,7 +1606,7 @@ pub const EPOLLWRBAND: c_int = 0x200;
 pub const EPOLLMSG: c_int = 0x400;
 pub const EPOLLERR: c_int = 0x8;
 pub const EPOLLHUP: c_int = 0x10;
-pub const EPOLLET: c_int = 0x80000000;
+pub const EPOLLET: c_int = u32_cast_int(0x80000000);
 
 pub const EPOLL_CTL_ADD: c_int = 1;
 pub const EPOLL_CTL_MOD: c_int = 3;
@@ -1698,7 +1698,7 @@ pub const CLONE_NEWIPC: c_int = 0x08000000;
 pub const CLONE_NEWUSER: c_int = 0x10000000;
 pub const CLONE_NEWPID: c_int = 0x20000000;
 pub const CLONE_NEWNET: c_int = 0x40000000;
-pub const CLONE_IO: c_int = 0x80000000;
+pub const CLONE_IO: c_int = u32_cast_int(0x80000000);
 pub const CLONE_NEWCGROUP: c_int = 0x02000000;
 
 pub const WNOHANG: c_int = 0x00000001;
@@ -1734,7 +1734,7 @@ pub const PTRACE_EVENT_SECCOMP: c_int = 7;
 
 pub const __WNOTHREAD: c_int = 0x20000000;
 pub const __WALL: c_int = 0x40000000;
-pub const __WCLONE: c_int = 0x80000000;
+pub const __WCLONE: c_int = u32_cast_int(0x80000000);
 
 pub const SPLICE_F_MOVE: c_uint = 0x01;
 pub const SPLICE_F_NONBLOCK: c_uint = 0x02;
@@ -2551,7 +2551,7 @@ pub const EPROTO: c_int = 71;
 pub const EDOTDOT: c_int = 73;
 
 pub const SA_NODEFER: c_int = 0x40000000;
-pub const SA_RESETHAND: c_int = 0x80000000;
+pub const SA_RESETHAND: c_int = u32_cast_int(0x80000000);
 pub const SA_RESTART: c_int = 0x10000000;
 pub const SA_NOCLDSTOP: c_int = 0x00000001;
 

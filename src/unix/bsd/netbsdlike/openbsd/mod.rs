@@ -1539,7 +1539,7 @@ pub const NFSMNT_ACDIRMIN: c_int = 0x100000; // acdirmin field valid
 pub const NFSMNT_ACDIRMAX: c_int = 0x200000; // acdirmax field valid
 
 /* Flags valid only in kernel */
-pub const NFSMNT_INTERNAL: c_int = 0xfffc0000; // Bits set internally
+pub const NFSMNT_INTERNAL: c_int = u32_cast_int(0xfffc0000); // Bits set internally
 pub const NFSMNT_HASWRITEVERF: c_int = 0x40000; // Has write verifier for V3
 pub const NFSMNT_GOTPATHCONF: c_int = 0x80000; // Got the V3 pathconf info
 pub const NFSMNT_GOTFSINFO: c_int = 0x100000; // Got the V3 fsinfo
@@ -1553,7 +1553,7 @@ pub const NFSMNT_WANTRCV: c_int = 0x8000000; // Want above
 pub const NFSMNT_WAITAUTH: c_int = 0x10000000; // Wait for authentication
 pub const NFSMNT_HASAUTH: c_int = 0x20000000; // Has authenticator
 pub const NFSMNT_WANTAUTH: c_int = 0x40000000; // Wants an authenticator
-pub const NFSMNT_AUTHERR: c_int = 0x80000000; // Authentication error
+pub const NFSMNT_AUTHERR: c_int = u32_cast_int(0x80000000); // Authentication error
 
 pub const MSDOSFSMNT_SHORTNAME: c_int = 0x1; // Force old DOS short names only
 pub const MSDOSFSMNT_LONGNAME: c_int = 0x2; // Force Win'95 long names

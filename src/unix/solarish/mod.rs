@@ -839,9 +839,9 @@ pub const SS_DISABLE: c_int = 2;
 pub const FIOCLEX: c_int = 0x20006601;
 pub const FIONCLEX: c_int = 0x20006602;
 pub const FIONREAD: c_int = 0x4004667f;
-pub const FIONBIO: c_int = 0x8004667e;
-pub const FIOASYNC: c_int = 0x8004667d;
-pub const FIOSETOWN: c_int = 0x8004667c;
+pub const FIONBIO: c_int = u32_cast_int(0x8004667e);
+pub const FIOASYNC: c_int = u32_cast_int(0x8004667d);
+pub const FIOSETOWN: c_int = u32_cast_int(0x8004667c);
 pub const FIOGETOWN: c_int = 0x4004667b;
 
 pub const SIGCHLD: c_int = 18;
@@ -1032,7 +1032,7 @@ pub const WSTOPPED: c_int = WUNTRACED;
 pub const WCONTINUED: c_int = 0x08;
 pub const WNOWAIT: c_int = 0x80;
 
-pub const AT_FDCWD: c_int = 0xffd19553;
+pub const AT_FDCWD: c_int = u32_cast_int(0xffd19553);
 pub const AT_SYMLINK_NOFOLLOW: c_int = 0x1000;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x2000;
 pub const AT_REMOVEDIR: c_int = 0x1;
@@ -1536,8 +1536,8 @@ pub const IFF_NOFAILOVER: c_int = 0x0008000000; // in.mpathd test address
 pub const IFF_FAILED: c_int = 0x0010000000; // Interface has failed
 pub const IFF_STANDBY: c_int = 0x0020000000; // Interface is a hot-spare
 pub const IFF_INACTIVE: c_int = 0x0040000000; // Functioning but not used
-pub const IFF_OFFLINE: c_int = 0x0080000000; // Interface is offline
-                                             // If CoS marking is supported
+pub const IFF_OFFLINE: c_int = u32_cast_int(0x0080000000); // Interface is offline
+                                                           // If CoS marking is supported
 pub const IFF_COS_ENABLED: c_longlong = 0x0200000000;
 pub const IFF_PREFERRED: c_longlong = 0x0400000000; // Prefer as source addr.
 pub const IFF_TEMPORARY: c_longlong = 0x0800000000; // RFC3041

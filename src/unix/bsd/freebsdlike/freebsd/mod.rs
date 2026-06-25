@@ -2189,7 +2189,7 @@ pub const CTLTYPE_S16: c_int = 0xd;
 pub const CTLTYPE_S32: c_int = 0xe;
 pub const CTLTYPE_U32: c_int = 0xf;
 
-pub const CTLFLAG_RD: c_int = 0x80000000;
+pub const CTLFLAG_RD: c_int = u32_cast_int(0x80000000);
 pub const CTLFLAG_WR: c_int = 0x40000000;
 pub const CTLFLAG_RW: c_int = CTLFLAG_RD | CTLFLAG_WR;
 pub const CTLFLAG_DORMANT: c_int = 0x20000000;
@@ -2437,7 +2437,7 @@ pub const SO_PROTOTYPE: c_int = SO_PROTOCOL;
 pub const SO_TS_CLOCK: c_int = 0x1017;
 pub const SO_DOMAIN: c_int = 0x1019;
 pub const SO_SPLICE: c_int = 0x1023;
-pub const SO_VENDOR: c_int = 0x80000000;
+pub const SO_VENDOR: c_int = u32_cast_int(0x80000000);
 
 pub const SO_TS_REALTIME_MICRO: c_int = 0;
 pub const SO_TS_BINTIME: c_int = 1;
@@ -2552,12 +2552,12 @@ pub const PROC_TRAPCAP_CTL_DISABLE: c_int = 2;
 pub const PROC_ASLR_FORCE_ENABLE: c_int = 1;
 pub const PROC_ASLR_FORCE_DISABLE: c_int = 2;
 pub const PROC_ASLR_NOFORCE: c_int = 3;
-pub const PROC_ASLR_ACTIVE: c_int = 0x80000000;
+pub const PROC_ASLR_ACTIVE: c_int = u32_cast_int(0x80000000);
 
 pub const PROC_PROTMAX_FORCE_ENABLE: c_int = 1;
 pub const PROC_PROTMAX_FORCE_DISABLE: c_int = 2;
 pub const PROC_PROTMAX_NOFORCE: c_int = 3;
-pub const PROC_PROTMAX_ACTIVE: c_int = 0x80000000;
+pub const PROC_PROTMAX_ACTIVE: c_int = u32_cast_int(0x80000000);
 
 pub const PROC_STACKGAP_ENABLE: c_int = 0x0001;
 pub const PROC_STACKGAP_DISABLE: c_int = 0x0002;
@@ -2569,7 +2569,7 @@ pub const PROC_NO_NEW_PRIVS_DISABLE: c_int = 2;
 
 pub const PROC_WX_MAPPINGS_PERMIT: c_int = 0x0001;
 pub const PROC_WX_MAPPINGS_DISALLOW_EXEC: c_int = 0x0002;
-pub const PROC_WXORX_ENFORCE: c_int = 0x80000000;
+pub const PROC_WXORX_ENFORCE: c_int = u32_cast_int(0x80000000);
 
 pub const AF_SLOW: c_int = 33;
 pub const AF_SCLUSTER: c_int = 34;
@@ -2713,7 +2713,7 @@ pub const IFCAP_VXLAN_HWCSUM: c_int = 0x20000000;
 /// can do IFCAP_TSO on VXLANs
 pub const IFCAP_VXLAN_HWTSO: c_int = 0x40000000;
 /// can do TLS with rate limiting
-pub const IFCAP_TXTLS_RTLMT: c_int = 0x80000000;
+pub const IFCAP_TXTLS_RTLMT: c_int = u32_cast_int(0x80000000);
 
 pub const IFCAP_HWCSUM_IPV6: c_int = IFCAP_RXCSUM_IPV6 | IFCAP_TXCSUM_IPV6;
 pub const IFCAP_HWCSUM: c_int = IFCAP_RXCSUM | IFCAP_TXCSUM;
@@ -3303,7 +3303,7 @@ pub const RFTHREAD: c_int = 8192;
 pub const RFSIGSHARE: c_int = 16384;
 pub const RFLINUXTHPN: c_int = 65536;
 pub const RFTSIGZMB: c_int = 524288;
-pub const RFSPAWN: c_int = 2147483648;
+pub const RFSPAWN: c_int = u32_cast_int(2147483648);
 
 // For eventfd
 pub const EFD_SEMAPHORE: c_int = 0x1;
@@ -3705,7 +3705,7 @@ pub const P_STATCHILD: c_int = 0x08000000;
 pub const P_INMEM: c_int = 0x10000000;
 pub const P_SWAPPINGOUT: c_int = 0x20000000;
 pub const P_SWAPPINGIN: c_int = 0x40000000;
-pub const P_PPTRACE: c_int = 0x80000000;
+pub const P_PPTRACE: c_int = u32_cast_int(0x80000000);
 pub const P_STOPPED: c_int = P_STOPPED_SIG | P_STOPPED_SINGLE | P_STOPPED_TRACE;
 
 pub const P2_INHERIT_PROTECTED: c_int = 0x00000001;
@@ -3729,11 +3729,11 @@ pub const SZOMB: c_char = 5;
 pub const SWAIT: c_char = 6;
 pub const SLOCK: c_char = 7;
 
-pub const P_MAGIC: c_int = 0xbeefface;
+pub const P_MAGIC: c_int = u32_cast_int(0xbeefface);
 
 pub const TDP_SIGFASTBLOCK: c_int = 0x00000100;
 pub const TDP_UIOHELD: c_int = 0x10000000;
-pub const TDP_SIGFASTPENDING: c_int = 0x80000000;
+pub const TDP_SIGFASTPENDING: c_int = u32_cast_int(0x80000000);
 pub const TDP2_COMPAT32RB: c_int = 0x00000002;
 pub const P2_PROTMAX_ENABLE: c_int = 0x00000200;
 pub const P2_PROTMAX_DISABLE: c_int = 0x00000400;
@@ -4293,7 +4293,7 @@ safe_f! {
     }
 
     pub const fn INVALID_SINFO_FLAG(x: c_int) -> bool {
-        (x) & 0xfffffff0
+        (x) & u32_cast_int(0xfffffff0)
             & !(SCTP_EOF
                 | SCTP_ABORT
                 | SCTP_UNORDERED

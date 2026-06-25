@@ -1125,7 +1125,7 @@ pub const PR_SET_MM_MAP: c_int = 14;
 pub const PR_SET_MM_MAP_SIZE: c_int = 15;
 
 pub const PR_SET_PTRACER: c_int = 0x59616d61;
-pub const PR_SET_PTRACER_ANY: c_ulong = 0xffffffffffffffff;
+pub const PR_SET_PTRACER_ANY: c_ulong = (-1 as c_long) as c_ulong;
 
 pub const PR_SET_CHILD_SUBREAPER: c_int = 36;
 pub const PR_GET_CHILD_SUBREAPER: c_int = 37;
@@ -1425,6 +1425,7 @@ pub const NT_LWPSTATUS: c_int = 16;
 pub const NT_LWPSINFO: c_int = 17;
 pub const NT_PRFPXREG: c_int = 20;
 
+#[allow(overflowing_literals)] // fixed in a future kernel version
 pub const MS_NOUSER: c_ulong = 0xffffffff80000000;
 
 f! {

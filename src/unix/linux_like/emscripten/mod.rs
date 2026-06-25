@@ -921,7 +921,7 @@ pub const EHWPOISON: c_int = 155;
 pub const EL2NSYNC: c_int = 156;
 
 pub const SA_NODEFER: c_int = 0x40000000;
-pub const SA_RESETHAND: c_int = 0x80000000;
+pub const SA_RESETHAND: c_int = u32_cast_int(0x80000000);
 pub const SA_RESTART: c_int = 0x10000000;
 pub const SA_NOCLDSTOP: c_int = 0x00000001;
 

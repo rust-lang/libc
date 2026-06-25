@@ -692,9 +692,9 @@ pub const TIMER_ABSTIME: c_int = 0x1;
 pub const TIMER_RELTIME: c_int = 0x0;
 
 // PTHREAD STUFF
-pub const PTHREAD_INITIALIZED_OBJ: c_int = 0xF70990EF;
+pub const PTHREAD_INITIALIZED_OBJ: c_int = u32_cast_int(0xF70990EF);
 pub const PTHREAD_DESTROYED_OBJ: c_int = -1;
-pub const PTHREAD_VALID_OBJ: c_int = 0xEC542A37;
+pub const PTHREAD_VALID_OBJ: c_int = u32_cast_int(0xEC542A37);
 pub const PTHREAD_INVALID_OBJ: c_int = -1;
 pub const PTHREAD_UNUSED_YET_OBJ: c_int = -1;
 
@@ -1173,7 +1173,7 @@ pub const FIODISKCHANGE: c_int = 13;
 pub const FIOCANCEL: c_int = 14;
 pub const FIOSQUEEZE: c_int = 15;
 pub const FIOGETNAME: c_int = 18;
-pub const FIONBIO: c_int = 0x90040010;
+pub const FIONBIO: c_int = u32_cast_int(0x90040010);
 
 // limits.h
 pub const PATH_MAX: c_int = _PARM_PATH_MAX;
@@ -1346,7 +1346,7 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
 };
 
 const PTHREAD_CONDATTR_INITIALIZER: pthread_condattr_t = pthread_condattr_t {
-    condAttrStatus: 0xf70990ef,
+    condAttrStatus: u32_cast_int(0xf70990ef),
     condAttrPshared: 1,
     condAttrClockId: CLOCK_REALTIME,
 };
@@ -1434,7 +1434,7 @@ pub const MS_INVALIDATE: c_int = 0x0004;
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
 // sys/ttycom.h
-pub const TIOCGWINSZ: c_int = 0x1740087468;
+pub const TIOCGWINSZ: i64 = 0x1740087468;
 pub const TIOCSWINSZ: c_int = -0x7ff78b99;
 
 extern_ty! {
