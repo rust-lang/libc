@@ -1,6 +1,5 @@
 //! Definitions for uclibc on 64bit systems
 
-use crate::off64_t;
 use crate::prelude::*;
 
 pub type blksize_t = i64;
@@ -14,6 +13,8 @@ pub type pthread_t = c_ulong;
 
 pub type __u64 = c_ulong;
 pub type __s64 = c_long;
+
+pub type stat64 = stat;
 
 s! {
     pub struct ipc_perm {
@@ -102,7 +103,7 @@ s! {
     }
 
     pub struct stat {
-        pub st_dev: c_ulong,
+        pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
         // According to uclibc/libc/sysdeps/linux/x86_64/bits/stat.h, order of
         // nlink and mode are swapped on 64 bit systems.
@@ -110,8 +111,9 @@ s! {
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulong, // dev_t
-        pub st_size: off_t,   // file size
+        __pad0: Padding<c_int>,
+        pub st_rdev: crate::dev_t, // dev_t
+        pub st_size: crate::off_t, // file size
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,
@@ -120,7 +122,7 @@ s! {
         pub st_mtime_nsec: c_ulong,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_ulong,
-        st_pad4: Padding<[c_long; 3]>,
+        __uclibc_unused: Padding<[c_long; 3]>,
     }
 
     // FIXME(1.0): This should not implement `PartialEq`
@@ -140,49 +142,35 @@ s! {
     }
 
     pub struct statfs {
-        // FIXME(ulibc)
-        pub f_type: fsword_t,
-        pub f_bsize: fsword_t,
+        pub f_type: c_long,
+        pub f_bsize: c_long,
         pub f_blocks: crate::fsblkcnt_t,
         pub f_bfree: crate::fsblkcnt_t,
         pub f_bavail: crate::fsblkcnt_t,
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
+
         pub f_fsid: crate::fsid_t,
-        pub f_namelen: fsword_t,
-        pub f_frsize: fsword_t,
-        f_spare: [fsword_t; 5],
+        pub f_namelen: c_long,
+        pub f_frsize: c_long,
+        pub f_flags: c_long,
+        f_spare: Padding<[c_long; 4]>,
     }
 
     pub struct statfs64 {
-        pub f_type: c_int,
-        pub f_bsize: c_int,
+        pub f_type: c_long,
+        pub f_bsize: c_long,
         pub f_blocks: crate::fsblkcnt64_t,
         pub f_bfree: crate::fsblkcnt64_t,
         pub f_bavail: crate::fsblkcnt64_t,
         pub f_files: crate::fsfilcnt64_t,
         pub f_ffree: crate::fsfilcnt64_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_int,
-        pub f_frsize: c_int,
-        pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
-    }
 
-    pub struct statvfs64 {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: u64,
-        pub f_bfree: u64,
-        pub f_bavail: u64,
-        pub f_files: u64,
-        pub f_ffree: u64,
-        pub f_favail: u64,
-        pub f_fsid: c_ulong,
-        __f_unused: Padding<c_int>,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_fsid: crate::fsid_t,
+        pub f_namelen: c_long,
+        pub f_frsize: c_long,
+        pub f_flags: c_long,
+        f_spare: Padding<[c_long; 4]>,
     }
 
     pub struct msghdr {
