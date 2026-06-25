@@ -953,7 +953,7 @@ cfg_if! {
         pub const FIONWRITE: c_int = 1074030201;
         pub const IFF_ACCEPTRTADV: c_int = 0x40000000;
         pub const IFF_IP6FORWARDING: c_int = 0x20000000;
-        pub const IFF_SHIM: c_int = 0x80000000;
+        pub const IFF_SHIM: c_int = u32_cast_int(0x80000000);
         pub const KERN_ARND: c_int = 81;
         pub const KERN_IOV_MAX: c_int = 38;
         pub const KERN_LOGSIGEXIT: c_int = 46;
@@ -997,9 +997,9 @@ cfg_if! {
         pub const BIOCGETIF: c_int = 0x4020426b;
         pub const BIOCGSEESENT: c_int = 0x40044276;
         pub const BIOCGSTATS: c_int = 0x4008426f;
-        pub const BIOCSDLT: c_int = 0x80044278;
-        pub const BIOCSETIF: c_int = 0x8020426c;
-        pub const BIOCSSEESENT: c_int = 0x80044277;
+        pub const BIOCSDLT: c_int = u32_cast_int(0x80044278);
+        pub const BIOCSETIF: c_int = u32_cast_int(0x8020426c);
+        pub const BIOCSSEESENT: c_int = u32_cast_int(0x80044277);
         pub const KERN_ARND: c_int = 37;
         pub const KERN_IOV_MAX: c_int = 35;
         pub const KERN_LOGSIGEXIT: c_int = 34;
@@ -1015,7 +1015,7 @@ cfg_if! {
         pub const PF_ARP: c_int = AF_ARP;
         pub const PF_NATM: c_int = AF_NATM;
         pub const pseudo_AF_HDRCMPLT: c_int = 31;
-        pub const SIOCGIFADDR: c_int = 0xc0206921;
+        pub const SIOCGIFADDR: c_int = u32_cast_int(0xc0206921);
         pub const SO_SETFIB: c_int = 0x1014;
     }
 }

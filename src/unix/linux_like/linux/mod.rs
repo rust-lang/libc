@@ -1857,7 +1857,7 @@ pub const NF_MAX_VERDICT: c_int = NF_STOP;
 pub const NF_VERDICT_MASK: c_int = 0x000000ff;
 pub const NF_VERDICT_FLAG_QUEUE_BYPASS: c_int = 0x00008000;
 
-pub const NF_VERDICT_QMASK: c_int = 0xffff0000;
+pub const NF_VERDICT_QMASK: c_int = u32_cast_int(0xffff0000);
 pub const NF_VERDICT_QBITS: c_int = 16;
 
 pub const NF_VERDICT_BITS: c_int = 16;
@@ -3176,25 +3176,25 @@ pub const FAN_EPIDFD: c_int = -2;
 // linux/kexec.h
 pub const KEXEC_ON_CRASH: c_int = 0x00000001;
 pub const KEXEC_PRESERVE_CONTEXT: c_int = 0x00000002;
-pub const KEXEC_ARCH_MASK: c_int = 0xffff0000;
+pub const KEXEC_ARCH_MASK: c_int = u32_cast_int(0xffff0000);
 pub const KEXEC_FILE_UNLOAD: c_int = 0x00000001;
 pub const KEXEC_FILE_ON_CRASH: c_int = 0x00000002;
 pub const KEXEC_FILE_NO_INITRAMFS: c_int = 0x00000004;
 
 // linux/reboot.h
-pub const LINUX_REBOOT_MAGIC1: c_int = 0xfee1dead;
+pub const LINUX_REBOOT_MAGIC1: c_int = u32_cast_int(0xfee1dead);
 pub const LINUX_REBOOT_MAGIC2: c_int = 672274793;
 pub const LINUX_REBOOT_MAGIC2A: c_int = 85072278;
 pub const LINUX_REBOOT_MAGIC2B: c_int = 369367448;
 pub const LINUX_REBOOT_MAGIC2C: c_int = 537993216;
 
 pub const LINUX_REBOOT_CMD_RESTART: c_int = 0x01234567;
-pub const LINUX_REBOOT_CMD_HALT: c_int = 0xCDEF0123;
-pub const LINUX_REBOOT_CMD_CAD_ON: c_int = 0x89ABCDEF;
+pub const LINUX_REBOOT_CMD_HALT: c_int = u32_cast_int(0xCDEF0123);
+pub const LINUX_REBOOT_CMD_CAD_ON: c_int = u32_cast_int(0x89ABCDEF);
 pub const LINUX_REBOOT_CMD_CAD_OFF: c_int = 0x00000000;
 pub const LINUX_REBOOT_CMD_POWER_OFF: c_int = 0x4321FEDC;
-pub const LINUX_REBOOT_CMD_RESTART2: c_int = 0xA1B2C3D4;
-pub const LINUX_REBOOT_CMD_SW_SUSPEND: c_int = 0xD000FCE2;
+pub const LINUX_REBOOT_CMD_RESTART2: c_int = u32_cast_int(0xA1B2C3D4);
+pub const LINUX_REBOOT_CMD_SW_SUSPEND: c_int = u32_cast_int(0xD000FCE2);
 pub const LINUX_REBOOT_CMD_KEXEC: c_int = 0x45584543;
 
 // linux/errqueue.h
@@ -3496,7 +3496,7 @@ pub const PF_MEMALLOC_PIN: c_int = 0x10000000;
 /// Plug has ts that needs updating.
 pub const PF_BLOCK_TS: c_int = 0x20000000;
 /// This thread called `freeze_processes()` and should not be frozen.
-pub const PF_SUSPEND_TASK: c_int = PF_SUSPEND_TASK_UINT as _;
+pub const PF_SUSPEND_TASK: c_int = u32_cast_int(PF_SUSPEND_TASK_UINT);
 // The used value is the highest possible bit fitting on 32 bits, so directly
 // defining it as a signed integer causes the compiler to report an overflow.
 // Use instead a private intermediary that assuringly has the correct type and
@@ -3538,7 +3538,7 @@ pub const XDP_OPTIONS: c_int = 8;
 pub const XDP_OPTIONS_ZEROCOPY: crate::__u32 = 1 << 0;
 
 pub const XDP_PGOFF_RX_RING: crate::off_t = 0;
-pub const XDP_PGOFF_TX_RING: crate::off_t = 0x80000000;
+pub const XDP_PGOFF_TX_RING: crate::off_t = 0x80000000u32 as crate::off_t;
 pub const XDP_UMEM_PGOFF_FILL_RING: crate::c_ulonglong = 0x100000000;
 pub const XDP_UMEM_PGOFF_COMPLETION_RING: crate::c_ulonglong = 0x180000000;
 
@@ -3570,7 +3570,7 @@ pub const SCHED_FLAG_ALL: c_int = SCHED_FLAG_RESET_ON_FORK
 
 // ioctl_eventpoll: added in Linux 6.9
 pub const EPIOCSPARAMS: Ioctl = 0x40088a01;
-pub const EPIOCGPARAMS: Ioctl = 0x80088a02;
+pub const EPIOCGPARAMS: Ioctl = u32_cast_ioctl(0x80088a02);
 
 // siginfo.h
 pub const SI_DETHREAD: c_int = -7;

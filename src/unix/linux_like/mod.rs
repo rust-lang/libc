@@ -1158,7 +1158,7 @@ pub const CLONE_NEWIPC: c_int = 0x08000000;
 pub const CLONE_NEWUSER: c_int = 0x10000000;
 pub const CLONE_NEWPID: c_int = 0x20000000;
 pub const CLONE_NEWNET: c_int = 0x40000000;
-pub const CLONE_IO: c_int = 0x80000000;
+pub const CLONE_IO: c_int = u32_cast_int(0x80000000);
 
 pub const WNOHANG: c_int = 0x00000001;
 pub const WUNTRACED: c_int = 0x00000002;
@@ -1206,7 +1206,7 @@ cfg_if! {
 
 pub const __WNOTHREAD: c_int = 0x20000000;
 pub const __WALL: c_int = 0x40000000;
-pub const __WCLONE: c_int = 0x80000000;
+pub const __WCLONE: c_int = u32_cast_int(0x80000000);
 
 pub const SPLICE_F_MOVE: c_uint = 0x01;
 pub const SPLICE_F_NONBLOCK: c_uint = 0x02;
@@ -1536,8 +1536,8 @@ cfg_if! {
         pub const AFFS_SUPER_MAGIC: c_long = 0x0000adff;
         pub const AFS_SUPER_MAGIC: c_long = 0x5346414f;
         pub const AUTOFS_SUPER_MAGIC: c_long = 0x0187;
-        pub const BPF_FS_MAGIC: c_long = 0xcafe4a11;
-        pub const BTRFS_SUPER_MAGIC: c_long = 0x9123683e;
+        pub const BPF_FS_MAGIC: c_long = u32_cast_long(0xcafe4a11);
+        pub const BTRFS_SUPER_MAGIC: c_long = u32_cast_long(0x9123683e);
         pub const CGROUP2_SUPER_MAGIC: c_long = 0x63677270;
         pub const CGROUP_SUPER_MAGIC: c_long = 0x27e0eb;
         pub const CODA_SUPER_MAGIC: c_long = 0x73757245;
@@ -1549,12 +1549,12 @@ cfg_if! {
         pub const EXT2_SUPER_MAGIC: c_long = 0x0000ef53;
         pub const EXT3_SUPER_MAGIC: c_long = 0x0000ef53;
         pub const EXT4_SUPER_MAGIC: c_long = 0x0000ef53;
-        pub const F2FS_SUPER_MAGIC: c_long = 0xf2f52010;
+        pub const F2FS_SUPER_MAGIC: c_long = u32_cast_long(0xf2f52010);
         pub const FUSE_SUPER_MAGIC: c_long = 0x65735546;
         pub const FUTEXFS_SUPER_MAGIC: c_long = 0xbad1dea;
         pub const HOSTFS_SUPER_MAGIC: c_long = 0x00c0ffee;
-        pub const HPFS_SUPER_MAGIC: c_long = 0xf995e849;
-        pub const HUGETLBFS_MAGIC: c_long = 0x958458f6;
+        pub const HPFS_SUPER_MAGIC: c_long = u32_cast_long(0xf995e849);
+        pub const HUGETLBFS_MAGIC: c_long = u32_cast_long(0x958458f6);
         pub const ISOFS_SUPER_MAGIC: c_long = 0x00009660;
         pub const JFFS2_SUPER_MAGIC: c_long = 0x000072b6;
         pub const MINIX2_SUPER_MAGIC2: c_long = 0x00002478;
@@ -1575,7 +1575,7 @@ cfg_if! {
         pub const RDTGROUP_SUPER_MAGIC: c_long = 0x7655821;
         pub const REISERFS_SUPER_MAGIC: c_long = 0x52654973;
         pub const SECURITYFS_MAGIC: c_long = 0x73636673;
-        pub const SELINUX_MAGIC: c_long = 0xf97cff8c;
+        pub const SELINUX_MAGIC: c_long = u32_cast_long(0xf97cff8c);
         pub const SMACK_MAGIC: c_long = 0x43415d53;
         pub const SMB_SUPER_MAGIC: c_long = 0x0000517b;
         pub const SYSFS_MAGIC: c_long = 0x62656572;
@@ -1583,7 +1583,7 @@ cfg_if! {
         pub const TRACEFS_MAGIC: c_long = 0x74726163;
         pub const UDF_SUPER_MAGIC: c_long = 0x15013346;
         pub const USBDEVICE_SUPER_MAGIC: c_long = 0x00009fa2;
-        pub const XENFS_SUPER_MAGIC: c_long = 0xabba1974;
+        pub const XENFS_SUPER_MAGIC: c_long = u32_cast_long(0xabba1974);
         pub const NSFS_MAGIC: c_long = 0x6e736673;
     } else if #[cfg(target_arch = "s390x")] {
         pub const ADFS_SUPER_MAGIC: c_uint = 0x0000adf5;
@@ -1669,7 +1669,7 @@ cfg_if! {
         pub const STATX_ALL: c_uint = 0x0fff;
         pub const STATX_MNT_ID: c_uint = 0x1000;
         pub const STATX_DIOALIGN: c_uint = 0x2000;
-        pub const STATX__RESERVED: c_int = 0x80000000;
+        pub const STATX__RESERVED: c_int = u32_cast_int(0x80000000);
         pub const STATX_ATTR_COMPRESSED: c_int = 0x0004;
         pub const STATX_ATTR_IMMUTABLE: c_int = 0x0010;
         pub const STATX_ATTR_APPEND: c_int = 0x0020;

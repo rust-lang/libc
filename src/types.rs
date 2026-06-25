@@ -65,3 +65,37 @@ pub(crate) type CEnumRepr = c_int;
 #[cfg(not(target_env = "msvc"))]
 #[allow(unused)]
 pub(crate) type CEnumRepr = c_uint;
+
+/// Used to avoid `overflowing_literals` when the value is in-range for the unsigned number but
+/// out-of-range for signed.
+#[allow(unused)]
+pub(crate) const fn u16_cast_short(x: u16) -> c_short {
+    assert!(size_of::<u16>() <= size_of::<c_short>()); // Should always be true
+    x as i16
+}
+
+/// Used to avoid `overflowing_literals` when the value is in-range for the unsigned number but
+/// out-of-range for signed.
+#[allow(unused)]
+pub(crate) const fn u32_cast_int(x: u32) -> c_int {
+    // May not be true on 16-bit platforms, but should be everywhere this is used.
+    assert!(size_of::<u32>() <= size_of::<c_int>());
+    x as i32
+}
+
+/// Used to avoid `overflowing_literals` when the value is in-range for the unsigned number but
+/// out-of-range for signed.
+#[allow(unused)]
+pub(crate) const fn u32_cast_long(x: u32) -> c_long {
+    assert!(size_of::<u32>() <= size_of::<c_long>()); // Should always be true
+    x as c_long
+}
+
+/// Used to avoid `overflowing_literals` when the value is in-range for the unsigned number but
+/// out-of-range for signed.
+#[allow(unused)]
+#[cfg(any(target_os = "linux", target_os = "android", target_os = "l4re"))]
+pub(crate) const fn u32_cast_ioctl(x: u32) -> crate::Ioctl {
+    assert!(size_of::<u32>() <= size_of::<crate::Ioctl>()); // Should always be true
+    x as crate::Ioctl
+}

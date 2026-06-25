@@ -519,7 +519,7 @@ cfg_if! {
 // kernel/OS.h
 pub const B_OS_NAME_LENGTH: usize = 32;
 pub const B_PAGE_SIZE: usize = 4096;
-pub const B_INFINITE_TIMEOUT: usize = 9223372036854775807;
+pub const B_INFINITE_TIMEOUT: c_longlong = 0x7FFFFFFFFFFFFFFF;
 
 pub const B_RELATIVE_TIMEOUT: u32 = 0x8;
 pub const B_ABSOLUTE_TIMEOUT: u32 = 0x10;
