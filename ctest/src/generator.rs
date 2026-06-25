@@ -57,25 +57,46 @@ type CEnum = Box<dyn Fn(&str) -> bool>;
 #[derive(Default)]
 #[expect(missing_debug_implementations)]
 pub struct TestGenerator {
+    /// A vector of tuples, the left side being the header itself, and the right
+    /// being a list of defines that the header is associated with. Note that
+    /// these defines are only valid for the header, they are immediately undefined
+    /// afterwards.
     pub(crate) headers: Vec<(BoxStr, Vec<BoxStr>)>,
+    /// The target that the tests run on. Defaults to the native target.
     pub(crate) target: Option<String>,
+    /// A list of paths to include directories to find headers in.
     pub(crate) includes: Vec<PathBuf>,
+    /// The directory to output the generated test files.
     out_dir: Option<PathBuf>,
+    /// A list of flags to pass to the compiler with checking if they are supported.
     pub(crate) flags: Vec<String>,
+    /// A list of flags that are passed to the compiler if supported.
     pub(crate) flags_if_supported: Vec<String>,
+    /// A list of defines and their values.
     pub(crate) global_defines: Vec<(String, Option<String>)>,
+    /// A list of cfgs and their values to expand the crate with.
     cfg: Vec<(String, Option<String>)>,
+    /// A list of functions that remaps names used in the tests.
     mapped_names: Vec<MappedName>,
     /// The programming language to generate tests in.
     pub(crate) language: Language,
+    /// A list of functions that determine what items to skip all tests for.
     pub(crate) skips: Vec<Skip>,
+    /// Whether to output which items were skipped completely.
     pub(crate) verbose_skip: bool,
+    /// A list of functions that determine if an item is volatile.
     pub(crate) volatile_items: Vec<VolatileItem>,
+    /// A list of functions that determine if an item is a C style enum.
     pub(crate) c_enums: Vec<CEnum>,
+    /// A list of functions that determine if a type is actually an array argument.
     pub(crate) array_arg: Option<ArrayArg>,
+    /// Whether to skip testing private items.
     pub(crate) skip_private: bool,
+    /// Determines for which items the roundtrip test should be skipped.
     pub(crate) skip_roundtrip: Option<SkipTest>,
+    /// Determines for which items the signededness test should be skipped.
     pub(crate) skip_signededness: Option<SkipTest>,
+    /// Determines for which items the fn_ptrcheck test should be skipped.
     pub(crate) skip_fn_ptrcheck: Option<SkipTest>,
     /// The Rust edition to generate code against.
     pub(crate) edition: Option<u32>,
