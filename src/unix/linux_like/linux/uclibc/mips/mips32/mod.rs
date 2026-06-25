@@ -661,7 +661,6 @@ pub const SYS_process_mrelease: c_long = 4000 + 448;
 pub const SYS_futex_waitv: c_long = 4000 + 449;
 pub const SYS_set_mempolicy_home_node: c_long = 4000 + 450;
 
-#[link(name = "util")]
 extern "C" {
     pub fn sysctl(
         name: *mut c_int,
