@@ -14,6 +14,14 @@ pub type pthread_t = c_ulong;
 pub type stat64 = stat;
 
 s! {
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
+        pub l_pid: crate::pid_t,
+    }
+
     pub struct ipc_perm {
         pub __key: crate::key_t,
         pub uid: crate::uid_t,
