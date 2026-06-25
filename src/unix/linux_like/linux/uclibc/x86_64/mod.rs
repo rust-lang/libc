@@ -229,19 +229,6 @@ s! {
         pub _f: [c_char; 0],
     }
 
-    pub struct glob_t {
-        // FIXME(ulibc)
-        pub gl_pathc: size_t,
-        pub gl_pathv: *mut *mut c_char,
-        pub gl_offs: size_t,
-        pub gl_flags: c_int,
-        __unused1: Padding<*mut c_void>,
-        __unused2: Padding<*mut c_void>,
-        __unused3: Padding<*mut c_void>,
-        __unused4: Padding<*mut c_void>,
-        __unused5: Padding<*mut c_void>,
-    }
-
     pub struct cpu_set_t {
         // FIXME(ulibc)
         #[cfg(target_pointer_width = "32")]
@@ -268,16 +255,6 @@ s! {
         pub cmsg_len: size_t,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
-    }
-}
-
-s_no_extra_traits! {
-    pub struct dirent {
-        pub d_ino: crate::ino64_t,
-        pub d_off: off64_t,
-        pub d_reclen: u16,
-        pub d_type: u8,
-        pub d_name: [c_char; 256],
     }
 }
 
