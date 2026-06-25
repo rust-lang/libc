@@ -207,10 +207,10 @@ pub const S_IWRITE: c_short = 0o0200;
 pub const S_IREAD: c_short = 0o0400;
 pub const S_IFCHR: c_short = 0o2_0000;
 pub const S_IFDIR: c_short = 0o4_0000;
-pub const S_IFMT: c_short = 0o16_0000;
+pub const S_IFMT: c_short = u16_cast_short(0o16_0000);
 pub const S_IFIFO: c_short = 0o1_0000;
 pub const S_IFBLK: c_short = 0o6_0000;
-pub const S_IFREG: c_short = 0o10_0000;
+pub const S_IFREG: c_short = u16_cast_short(0o10_0000);
 
 pub const LC_ALL: c_int = 0;
 pub const LC_COLLATE: c_int = 1;

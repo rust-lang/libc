@@ -731,8 +731,8 @@ pub const S_IRWXO: c_int = 0o0007;
 pub const S_IROTH: c_int = 0o0004;
 pub const S_IWOTH: c_int = 0o0002;
 pub const S_IXOTH: c_int = 0o0001;
-pub const UTIME_NOW: c_long = 0xffffffff;
-pub const UTIME_OMIT: c_long = 0xfffffffe;
+pub const UTIME_NOW: c_long = u32_cast_long(0xffffffff);
+pub const UTIME_OMIT: c_long = u32_cast_long(0xfffffffe);
 
 // stdlib.h
 pub const EXIT_SUCCESS: c_int = 0;
@@ -986,8 +986,7 @@ pub const WNOWAIT: c_int = 0x0100_0000;
 
 pub const __WNOTHREAD: c_int = 0x2000_0000;
 pub const __WALL: c_int = 0x4000_0000;
-#[allow(overflowing_literals)]
-pub const __WCLONE: c_int = 0x8000_0000;
+pub const __WCLONE: c_int = u32_cast_int(0x8000_0000);
 
 // time.h
 pub const CLOCK_REALTIME: c_int = 1;
