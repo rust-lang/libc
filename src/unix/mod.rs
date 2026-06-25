@@ -2243,13 +2243,13 @@ cfg_if! {
                 all(target_os = "freebsd", not(any(freebsd11, freebsd10))),
                 link_name = "readdir_r@FBSD_1.5"
             )]
-            #[allow(non_autolinks)] // FIXME(docs): `<>` breaks line length limit.
             /// The 64-bit libc on Solaris and illumos only has readdir_r. If a
             /// 32-bit Solaris or illumos target is ever created, it should use
             /// __posix_readdir_r. See libc(3LIB) on Solaris or illumos:
-            /// https://illumos.org/man/3lib/libc
-            /// https://docs.oracle.com/cd/E36784_01/html/E36873/libc-3lib.html
-            /// https://www.unix.com/man-page/opensolaris/3LIB/libc/
+            ///
+            /// * <https://illumos.org/man/3lib/libc>
+            /// * <https://docs.oracle.com/cd/E36784_01/html/E36873/libc-3lib.html>
+            /// * <https://www.unix.com/man-page/opensolaris/3LIB/libc/>
             #[cfg_attr(gnu_file_offset_bits64, link_name = "readdir64_r")]
             pub fn readdir_r(
                 dirp: *mut crate::DIR,
