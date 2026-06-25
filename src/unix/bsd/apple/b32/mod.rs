@@ -37,6 +37,7 @@ s! {
         pub ifi_reserved2: u32,
     }
 
+    #[cfg(target_os = "macos")]
     pub struct bpf_hdr {
         pub bh_tstamp: crate::timeval,
         pub bh_caplen: u32,
@@ -63,10 +64,14 @@ pub const NET_RT_MAXID: c_int = 10;
 pub const TIOCTIMESTAMP: c_ulong = 0x40087459;
 pub const TIOCDCDTIMESTAMP: c_ulong = 0x40087458;
 
-pub const BIOCSETF: c_ulong = 0x80084267;
-pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
-pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
-pub const BIOCSETFNR: c_ulong = 0x8008427e;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        pub const BIOCSETF: c_ulong = 0x80084267;
+        pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
+        pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
+        pub const BIOCSETFNR: c_ulong = 0x8008427e;
+    }
+}
 
 extern "C" {
     pub fn exchangedata(path1: *const c_char, path2: *const c_char, options: c_ulong) -> c_int;

@@ -362,13 +362,23 @@ pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
     s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
 
-pub const ARPOP_REQUEST: u16 = 1;
-pub const ARPOP_REPLY: u16 = 2;
+cfg_if! {
+    // Not present on iOS/tvOS/watchOS/visionOS
+    if #[cfg(not(any(
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    )))] {
+        pub const ARPOP_REQUEST: u16 = 1;
+        pub const ARPOP_REPLY: u16 = 2;
 
-pub const ATF_COM: c_int = 0x02;
-pub const ATF_PERM: c_int = 0x04;
-pub const ATF_PUBL: c_int = 0x08;
-pub const ATF_USETRAILERS: c_int = 0x10;
+        pub const ATF_COM: c_int = 0x02;
+        pub const ATF_PERM: c_int = 0x04;
+        pub const ATF_PUBL: c_int = 0x08;
+        pub const ATF_USETRAILERS: c_int = 0x10;
+    }
+}
 
 cfg_if! {
     if #[cfg(any(target_os = "nto", target_os = "aix"))] {
@@ -393,7 +403,7 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(any(
-        target_os = "macos",
+        target_vendor = "apple",
         target_os = "freebsd",
         target_os = "android",
         target_os = "openbsd",
@@ -408,7 +418,7 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(any(
-        target_os = "macos",
+        target_vendor = "apple",
         target_os = "freebsd",
         target_os = "android",
         target_os = "openbsd",
@@ -552,11 +562,7 @@ cfg_if! {
         #[link(name = "c", cfg(not(target_feature = "crt-static")))]
         extern "C" {}
     } else if #[cfg(any(
-        target_os = "macos",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos",
+        target_vendor = "apple",
         target_os = "android",
         target_os = "openbsd",
         target_os = "nto",
@@ -1282,16 +1288,7 @@ extern "C" {
     #[cfg_attr(musl_redir_time64, link_name = "__getrusage_time64")]
     pub fn getrusage(resource: c_int, usage: *mut rusage) -> c_int;
 
-    #[cfg_attr(
-        any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos"
-        ),
-        link_name = "realpath$DARWIN_EXTSN"
-    )]
+    #[cfg_attr(target_vendor = "apple", link_name = "realpath$DARWIN_EXTSN")]
     pub fn realpath(pathname: *const c_char, resolved: *mut c_char) -> *mut c_char;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__times13")]
@@ -1469,16 +1466,7 @@ extern "C" {
         ),
         link_name = "__res_init"
     )]
-    #[cfg_attr(
-        any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos"
-        ),
-        link_name = "res_9_init"
-    )]
+    #[cfg_attr(target_vendor = "apple", link_name = "res_9_init")]
     #[cfg_attr(target_os = "aix", link_name = "_res_init")]
     #[cfg(not(target_os = "l4re"))]
     pub fn res_init() -> c_int;
@@ -2174,7 +2162,7 @@ cfg_if! {
         target_os = "dragonfly",
         target_os = "emscripten",
         target_os = "hurd",
-        target_os = "macos",
+        target_vendor = "apple",
         target_os = "openbsd",
         target_os = "l4re",
     )))] {
@@ -2471,11 +2459,7 @@ cfg_if! {
         mod linux_like;
         pub use self::linux_like::*;
     } else if #[cfg(any(
-        target_os = "macos",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos",
+        target_vendor = "apple",
         target_os = "freebsd",
         target_os = "dragonfly",
         target_os = "openbsd",

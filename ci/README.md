@@ -37,13 +37,13 @@ The remaining architectures look like:
   the generated binary to actually verify the tests pass.
 * The MUSL build just has to download a MUSL compiler and target libraries and
   then otherwise runs tests normally.
-* iOS builds need an extra linker flag currently, but beyond that they're built
-  as standard as everything else.
+* iOS is tested using [`cargo-apple-runner`][cargo-apple-runner].
 * The BSD builds, currently OpenBSD and FreeBSD, use QEMU to boot up a system
   and compile/run tests. More information on that below.
 
 [Actions config]: https://github.com/rust-lang/libc/tree/HEAD/.github/workflows
 [android-docker]: https://github.com/rust-lang/libc/blob/HEAD/ci/docker/x86_64-linux-android/Dockerfile
+[cargo-apple-runner]: https://github.com/madsmtm/cargo-apple-runner
 
 ## QEMU
 
