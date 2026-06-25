@@ -13,15 +13,15 @@ pub const UCHAR_MAX: c_uchar = 255;
 
 // Integer properties
 pub const INT_MAX: c_int = 2147483647;
-pub const INT_MIN: c_int = (-2147483647 - 1);
+pub const INT_MIN: c_int = -2147483647 - 1;
 pub const UINT_MAX: c_uint = 4294967295;
 
 pub const LONG_MAX: c_long = 2147483647;
-pub const LONG_MIN: c_long = (-2147483647 - 1);
+pub const LONG_MIN: c_long = -2147483647 - 1;
 pub const ULONG_MAX: c_ulong = 4294967295;
 
 pub const SHRT_MAX: c_short = 32767;
-pub const SHRT_MIN: c_short = (-32768);
+pub const SHRT_MIN: c_short = -32768;
 pub const USHRT_MAX: c_ushort = 65535;
 
 // POSIX Limits
