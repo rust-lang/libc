@@ -175,6 +175,7 @@ fn test_entrypoint_invalid_syntax() {
     assert!(fails)
 }
 
+/// Test if a field with a raw identifier successfully has tests generated.
 #[test]
 fn test_raw_identifier_field() {
     let include_path = PathBuf::from("tests/input");
