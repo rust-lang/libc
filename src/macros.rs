@@ -253,7 +253,7 @@ macro_rules! s_no_extra_traits {
 macro_rules! extern_ty {
     ($(
         $(#[$attr:meta])*
-        pub type $i:ident;
+        $vis:vis type $i:ident;
     )*) => ($(
         $(#[$attr])*
         /// This is an extern type ("opaque" or "incomplete" type in C).
@@ -279,7 +279,7 @@ macro_rules! extern_ty {
             ::core::fmt::Debug,
         )]
         #[repr(C)]
-        pub struct $i {
+        $vis struct $i {
             _data: (),
             _marker: ::core::marker::PhantomData<(*mut u8, ::core::marker::PhantomPinned)>,
         }
@@ -676,5 +676,10 @@ mod macro_checks {
             pub a: u32,
             b: f32,
         }
+    }
+
+    extern_ty! {
+        type Foo;
+        pub type Bar;
     }
 }
