@@ -10,10 +10,12 @@ cfg_if! {
         pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_long;
-    } else {
+    } else if #[cfg(any(target_arch = "arm", target_arch = "powerpc"))] {
         pub type dev_t = u32;
         pub type ino_t = u32;
         pub type off_t = i64;
+    } else {
+        core::compile_error!("unsupported target");
     }
 }
 
