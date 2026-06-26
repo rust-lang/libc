@@ -1829,6 +1829,12 @@ pub const SECCOMP_USER_NOTIF_FLAG_CONTINUE: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SETFD: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SEND: c_ulong = 2;
 
+pub const SECCOMP_IOCTL_NOTIF_RECV: c_ulong = 0xc0502100;
+pub const SECCOMP_IOCTL_NOTIF_SEND: c_ulong = 0xc0182101;
+pub const SECCOMP_IOCTL_NOTIF_ID_VALID: c_ulong = 0x40082102;
+pub const SECCOMP_IOCTL_NOTIF_ADDFD: c_ulong = 0x40182103;
+pub const SECCOMP_IOCTL_NOTIF_SET_FLAGS: c_ulong = 0x40082104;
+
 pub const NLA_F_NESTED: c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: c_int = 1 << 14;
 pub const NLA_TYPE_MASK: c_int = !(NLA_F_NESTED | NLA_F_NET_BYTEORDER);
