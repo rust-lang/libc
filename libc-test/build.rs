@@ -4663,9 +4663,6 @@ fn test_linux(target: &str) {
             // FIXME(value): IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
             "IPPROTO_MAX" => true,
 
-            // FIXME(linux): Not yet implemented on sparc64
-            "SYS_clone3" if sparc64 => true,
-
             // FIXME(linux): Requires >= 6.9 kernel headers.
             n if (arm || ppc32) && n.starts_with("FUTEX2_") => true,
 
