@@ -3927,6 +3927,10 @@ sched_setscheduler
 sched_yield
 seccomp_data
 seccomp_metadata
+seccomp_notif
+seccomp_notif_addfd
+seccomp_notif_resp
+seccomp_notif_sizes
 seekdir
 select
 sem_close

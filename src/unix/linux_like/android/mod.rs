@@ -334,6 +334,34 @@ s! {
         pub flags: crate::__u64,
     }
 
+    pub struct seccomp_notif_sizes {
+        pub seccomp_notif: crate::__u16,
+        pub seccomp_notif_resp: crate::__u16,
+        pub seccomp_data: crate::__u16,
+    }
+
+    pub struct seccomp_notif {
+        pub id: crate::__u64,
+        pub pid: crate::__u32,
+        pub flags: crate::__u32,
+        pub data: seccomp_data,
+    }
+
+    pub struct seccomp_notif_resp {
+        pub id: crate::__u64,
+        pub val: crate::__s64,
+        pub error: crate::__s32,
+        pub flags: crate::__u32,
+    }
+
+    pub struct seccomp_notif_addfd {
+        pub id: crate::__u64,
+        pub flags: crate::__u32,
+        pub srcfd: crate::__u32,
+        pub newfd: crate::__u32,
+        pub newfd_flags: crate::__u32,
+    }
+
     pub struct ptrace_peeksiginfo_args {
         pub off: crate::__u64,
         pub flags: crate::__u32,
