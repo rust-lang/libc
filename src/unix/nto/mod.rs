@@ -17,30 +17,6 @@
 
 use crate::prelude::*;
 
-// Things that are QNX specific
-
-mod neutrino;
-pub use self::neutrino::*;
-
-// Things that are architecture specific
-
-mod arch;
-pub use self::arch::*;
-
-// Things that are network-stack specific
-
-cfg_if! {
-    if #[cfg(any(target_env = "nto70", target_env = "nto71"))] {
-        mod io_pkt;
-        pub use self::io_pkt::*;
-    } else if #[cfg(any(target_env = "nto71_iosock", target_env = "nto80"))] {
-        mod io_sock;
-        pub use self::io_sock::*;
-    } else {
-        panic!("Unsupported arch");
-    }
-}
-
 // QNX definitions of common UNIX things
 
 pub type clock_t = u32;
@@ -3003,5 +2979,29 @@ impl siginfo_t {
             si_status: c_int,
         }
         (*(self as *const siginfo_t).cast::<siginfo_si_status>()).si_status
+    }
+}
+
+// Things that are QNX specific
+
+mod neutrino;
+pub use self::neutrino::*;
+
+// Things that are architecture specific
+
+mod arch;
+pub use self::arch::*;
+
+// Things that are network-stack specific
+
+cfg_if! {
+    if #[cfg(any(target_env = "nto70", target_env = "nto71"))] {
+        mod io_pkt;
+        pub use self::io_pkt::*;
+    } else if #[cfg(any(target_env = "nto71_iosock", target_env = "nto80"))] {
+        mod io_sock;
+        pub use self::io_sock::*;
+    } else {
+        panic!("Unsupported arch");
     }
 }
