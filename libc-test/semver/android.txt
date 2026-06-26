@@ -2364,6 +2364,14 @@ RT_TABLE_MAIN
 RT_TABLE_UNSPEC
 RUSAGE_CHILDREN
 RUSAGE_SELF
+RWF_APPEND
+RWF_ATOMIC
+RWF_DONTCACHE
+RWF_DSYNC
+RWF_HIPRI
+RWF_NOAPPEND
+RWF_NOWAIT
+RWF_SYNC
 R_OK
 SA_NOCLDSTOP
 SA_NOCLDWAIT
@@ -3765,6 +3773,7 @@ prctl
 pread
 pread64
 preadv
+preadv2
 preadv64
 printf
 prlimit
@@ -3868,6 +3877,7 @@ puts
 pwrite
 pwrite64
 pwritev
+pwritev2
 pwritev64
 qsort
 raise
