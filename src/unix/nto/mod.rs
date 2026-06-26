@@ -1,4 +1,4 @@
-//! Definitions for QNX Neutrino and QNX OS
+//! Definitions for QNX Software Development Platform
 //!
 //! This module applies to:
 //!
@@ -12,8 +12,8 @@
 //! * `x86_64-pc-nto-qnx800`
 //!
 //! There are sub-modules for the target architecture, and sub-modules for the
-//! kind of networking library used. QNX Neutrino 7.0 uses `io-pkt`, QNX OS 8.0
-//! uses `io-sock`, and QNX Neutrino 7.1 can be configured to use either.
+//! kind of networking library used. QNX SDP 7.0 uses `io-pkt`, QNX SDP 8.0
+//! uses `io-sock`, and QNX SDP 7.1 comes with both (so you can pick).
 
 use crate::prelude::*;
 
