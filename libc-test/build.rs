@@ -3547,8 +3547,8 @@ fn test_neutrino(target: &str) {
 }
 
 fn which_vxworks() -> Option<(u32, u32)> {
-    let version = env::var("WIND_RELEASE_ID").ok()?; // When in VxWorks setup, WIND_RELEASE_ID is
-                                                     // always set as the version of the release.
+    // When in VxWorks setup, WIND_RELEASE_ID is always set as the version of the release.
+    let version = env::var("WIND_RELEASE_ID").ok()?;
 
     let mut pieces = version.trim().split(['.']);
 

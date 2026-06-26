@@ -39,6 +39,7 @@ use annotate_snippets::{
     Snippet,
 };
 use proc_macro2::Span;
+use syn::Token;
 use syn::parse::{
     Parse,
     ParseStream,
@@ -48,7 +49,6 @@ use syn::visit::{
     self,
     Visit,
 };
-use syn::Token;
 
 const ALLOWED_REPEATED_MACROS: &[&str] = &["s", "s_no_extra_traits", "s_paren"];
 const ALLOWED_POSITIVE_S_CFGS: &[&str] = &[
