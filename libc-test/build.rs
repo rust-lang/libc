@@ -4952,6 +4952,10 @@ fn test_linux(target: &str) {
             | "PF_BLOCK_TS" | "PF_SUSPEND_TASK" => true,
 
             "EPIOCSPARAMS" | "EPIOCGPARAMS" if old_musl => true,
+
+            // FIXME(linux): Requires >= 6.6 kernel headers.
+            "SECCOMP_IOCTL_NOTIF_SET_FLAGS" => kernel < (6, 6),
+
             "EPIOCSPARAMS" | "EPIOCGPARAMS" => kernel < (6, 9),
             "MAP_DROPPABLE" => kernel < (6, 11),
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => kernel < (6, 12),
