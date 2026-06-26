@@ -940,6 +940,8 @@ extern "C" {
 
 mod generic;
 
+pub use self::generic::*;
+
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         mod espidf;
