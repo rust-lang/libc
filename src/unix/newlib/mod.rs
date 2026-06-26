@@ -6,11 +6,7 @@ pub type blksize_t = i32;
 pub type clockid_t = c_ulong;
 
 cfg_if! {
-    if #[cfg(any(
-        target_os = "espidf",
-        target_os = "vita",
-        target_arch = "aarch64"
-    ))] {
+    if #[cfg(any(target_os = "espidf", target_os = "vita"))] {
         pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_long;
@@ -950,9 +946,6 @@ cfg_if! {
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
-    } else if #[cfg(target_arch = "aarch64")] {
-        mod aarch64;
-        pub use self::aarch64::*;
     } else if #[cfg(target_arch = "powerpc")] {
         mod powerpc;
         pub use self::powerpc::*;
