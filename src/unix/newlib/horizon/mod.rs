@@ -152,12 +152,14 @@ pub const WNOHANG: c_int = 1;
 
 pub const POLLIN: c_int = 0x0001;
 pub const POLLPRI: c_int = 0x0002;
-pub const POLLOUT: c_int = 0x0004;
+pub const POLLOUT: c_int = 0x0008;
 pub const POLLRDNORM: c_int = 0x0040;
 pub const POLLWRNORM: c_int = POLLOUT;
 pub const POLLRDBAND: c_int = 0x0080;
 pub const POLLWRBAND: c_int = 0x0100;
+/// POLLERR behavior on 3DS+HorizonOS is unclear, and it may be unsupported.
 pub const POLLERR: c_int = 0x0008;
+/// POLLHUP behavior on 3DS+HorizonOS is unclear, and it may be unsupported.
 pub const POLLHUP: c_int = 0x0010;
 pub const POLLNVAL: c_int = 0x0020;
 
