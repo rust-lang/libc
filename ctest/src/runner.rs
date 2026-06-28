@@ -141,9 +141,15 @@ pub fn __compile_test(
 
     // Pass in a different target, linker or flags if set, useful for cross compilation.
 
-    let target = env::var("TARGET_PLATFORM").unwrap_or_default();
+    let target = env::var("TARGET_PLATFORM")
+        .or_else(|_| env::var("TARGET"))
+        .unwrap_or_default();
     if !target.is_empty() {
-        cmd.arg("--target").arg(target);
+        cmd.arg("--target").arg(&target);
+    }
+
+    if target.contains("windows") && target.contains("gnu") {
+        cmd.arg("-lws2_32");
     }
 
     let linker = env::var("LINKER").unwrap_or_default();

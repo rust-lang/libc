@@ -847,8 +847,12 @@ fn test_windows(target: &str) {
     });
 
     cfg.skip_struct_field(move |s, field| s.ident() == "CONTEXT" && field.ident() == "Fp");
-    // FIXME(windows): All functions point to the wrong addresses?
-    cfg.skip_fn_ptrcheck(|_| true);
+    // FIXME(windows): ctime and difftime are inline functions on the C side,
+    // so their addresses resolve to local wrappers rather than the DLL exports.
+    cfg.skip_fn_ptrcheck(|name| match name {
+        "ctime" | "difftime" => true,
+        _ => false,
+    });
 
     cfg.skip_signededness(move |c| {
         match c {
