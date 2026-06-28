@@ -4,6 +4,14 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#ifdef _MSC_VER
+    /* Disable MSVC warning C4197: 'top-level volatile in cast is ignored'.
+     * This occurs when casting to a volatile-qualified type (e.g. `(volatile char) -1`)
+     * to check its signedness, since volatile is ignored on rvalue expressions.
+     */
+    #pragma warning(disable:4197)
+#endif
 #include <simple.h>
 
 #if defined(__cplusplus)
@@ -105,7 +113,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__name(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__name(void) {
-    return sizeof(((struct Person){}).name);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct Person *)0)->name);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Person__age(void) {
@@ -113,7 +124,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__age(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__age(void) {
-    return sizeof(((struct Person){}).age);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct Person *)0)->age);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Person__job(void) {
@@ -121,7 +135,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__job(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__job(void) {
-    return sizeof(((struct Person){}).job);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct Person *)0)->job);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
@@ -129,7 +146,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__favorite_color(void) {
-    return sizeof(((struct Person){}).favorite_color);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct Person *)0)->favorite_color);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
@@ -137,7 +157,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Word__word(void) {
-    return sizeof(((union Word){}).word);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((union Word *)0)->word);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Word__byte(void) {
@@ -145,7 +168,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__Word__byte(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Word__byte(void) {
-    return sizeof(((union Word){}).byte);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((union Word *)0)->byte);
 }
 
 

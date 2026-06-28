@@ -35,6 +35,53 @@ mod generated_tests {
         }
     }
 
+    fn check_same_fn_ptr(rust: u64, c: u64, attr: &str) {
+        if rust == c {
+            NTESTS.fetch_add(1, Ordering::Relaxed);
+            return;
+        }
+
+        #[cfg(target_os = "windows")]
+        let (rust, c) = {
+            let resolve = |addr: u64| -> u64 {
+                if addr == 0 {
+                    return 0;
+                }
+                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+                unsafe {
+                    let bytes = addr as *const u8;
+                    // Check for a jump instruction (0xff 0x25), which is used for import thunks.
+                    if *bytes == 0xff && *bytes.add(1) == 0x25 {
+                        if cfg!(target_arch = "x86_64") {
+                            // On x86_64, the jump is RIP-relative: jmp [RIP + displacement]
+                            // bytes[2..6] holds the 32-bit signed displacement.
+                            // bytes.add(6) is the instruction pointer (RIP) after the instruction.
+                            let displacement = (bytes.add(2) as *const i32).read_unaligned();
+                            let slot_addr = bytes.add(6).offset(displacement as isize) as *const *const ();
+                            return *slot_addr as u64;
+                        } else if cfg!(target_arch = "x86") {
+                            // On x86, the jump contains the absolute address of the import table slot: jmp [absolute_address]
+                            // bytes[2..6] holds the 32-bit absolute address.
+                            let slot_addr_val = (bytes.add(2) as *const usize).read_unaligned();
+                            let slot_addr = slot_addr_val as *const *const ();
+                            return *slot_addr as u64;
+                        }
+                    }
+                }
+                addr
+            };
+
+            (resolve(rust), resolve(c))
+        };
+
+        if rust != c {
+            eprintln!("bad {attr}: rust: {rust:?} != c {c:?}");
+            FAILED.store(true, Ordering::Relaxed);
+        } else {
+            NTESTS.fetch_add(1, Ordering::Relaxed);
+        }
+    }
+
     fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
         if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
@@ -1086,7 +1133,7 @@ mod generated_tests {
         }
         let actual = unsafe { ctest_foreign_fn__calloc() } as u64;
         let expected = calloc as *const () as u64;
-        check_same(actual, expected, "`calloc` function pointer");
+        check_same_fn_ptr(actual, expected, "`calloc` function pointer");
     }
 
 /* Tests if the pointer to the static variable matches in both Rust and C. */

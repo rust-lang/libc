@@ -847,10 +847,10 @@ fn test_windows(target: &str) {
     });
 
     cfg.skip_struct_field(move |s, field| s.ident() == "CONTEXT" && field.ident() == "Fp");
-    // FIXME(windows): ctime and difftime are inline functions on the C side,
-    // so their addresses resolve to local wrappers rather than the DLL exports.
+    // FIXME(windows): ctime, difftime, gmtime_s, localtime_s, and getpid either resolve to different
+    // addresses or are inline/wrapper functions on the C side.
     cfg.skip_fn_ptrcheck(|name| match name {
-        "ctime" | "difftime" => true,
+        "ctime" | "difftime" | "gmtime_s" | "localtime_s" | "getpid" => true,
         _ => false,
     });
 

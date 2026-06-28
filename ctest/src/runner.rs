@@ -141,6 +141,7 @@ pub fn __compile_test(
 
     // Pass in a different target, linker or flags if set, useful for cross compilation.
 
+    // Fall back to TARGET if TARGET_PLATFORM is not set (e.g. during local cargo test).
     let target = env::var("TARGET_PLATFORM")
         .or_else(|_| env::var("TARGET"))
         .unwrap_or_default();

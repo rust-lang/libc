@@ -8,6 +8,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef _MSC_VER
+    /* Disable MSVC warning C4197: 'top-level volatile in cast is ignored'.
+     * This occurs when casting to a volatile-qualified type (e.g. `(volatile char) -1`)
+     * to check its signedness, since volatile is ignored on rvalue expressions.
+     */
+    #pragma warning(disable:4197)
+#endif
+
 {%- for (header, defines) in self.headers +%}
 {%- for define in defines +%}
 
@@ -89,6 +97,9 @@ CTEST_EXTERN uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(v
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
     return sizeof((({{ item.c_ty }} *)0)->{{ item.c_field }});
 }
 {%- endfor +%}

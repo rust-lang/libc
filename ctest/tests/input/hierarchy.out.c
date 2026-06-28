@@ -4,6 +4,14 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#ifdef _MSC_VER
+    /* Disable MSVC warning C4197: 'top-level volatile in cast is ignored'.
+     * This occurs when casting to a volatile-qualified type (e.g. `(volatile char) -1`)
+     * to check its signedness, since volatile is ignored on rvalue expressions.
+     */
+    #pragma warning(disable:4197)
+#endif
 #include <hierarchy.h>
 
 #if defined(__cplusplus)

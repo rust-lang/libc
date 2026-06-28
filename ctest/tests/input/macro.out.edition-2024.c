@@ -5,6 +5,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef _MSC_VER
+    /* Disable MSVC warning C4197: 'top-level volatile in cast is ignored'.
+     * This occurs when casting to a volatile-qualified type (e.g. `(volatile char) -1`)
+     * to check its signedness, since volatile is ignored on rvalue expressions.
+     */
+    #pragma warning(disable:4197)
+#endif
+
 #define SUPPRESS_ERROR
 #include <macro.h>
 #undef SUPPRESS_ERROR
@@ -56,7 +64,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU8__x(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU8__x(void) {
-    return sizeof(((struct VecU8){}).x);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct VecU8 *)0)->x);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__VecU8__y(void) {
@@ -64,7 +75,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU8__y(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU8__y(void) {
-    return sizeof(((struct VecU8){}).y);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct VecU8 *)0)->y);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__VecU16__x(void) {
@@ -72,7 +86,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU16__x(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU16__x(void) {
-    return sizeof(((struct VecU16){}).x);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct VecU16 *)0)->x);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__VecU16__y(void) {
@@ -80,7 +97,10 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU16__y(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU16__y(void) {
-    return sizeof(((struct VecU16){}).y);
+    /* MSVC C compiler does not support empty compound literals like `(Type){}`.
+     * Using the standard pointer-to-null dereference is portable across all compilers.
+     */
+    return sizeof(((struct VecU16 *)0)->y);
 }
 
 

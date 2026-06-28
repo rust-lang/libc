@@ -46,22 +46,29 @@ mod generated_tests {
         }
 
         #[cfg(target_os = "windows")]
-        let (rust, c) = unsafe {
+        let (rust, c) = {
             let resolve = |addr: u64| -> u64 {
                 if addr == 0 {
                     return 0;
                 }
                 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-                {
+                unsafe {
                     let bytes = addr as *const u8;
+                    // Check for a jump instruction (0xff 0x25), which is used for import thunks.
                     if *bytes == 0xff && *bytes.add(1) == 0x25 {
                         if cfg!(target_arch = "x86_64") {
+                            // On x86_64, the jump is RIP-relative: jmp [RIP + displacement]
+                            // bytes[2..6] holds the 32-bit signed displacement.
+                            // bytes.add(6) is the instruction pointer (RIP) after the instruction.
                             let displacement = (bytes.add(2) as *const i32).read_unaligned();
-                            let address_of_pointer = bytes.add(6).offset(displacement as isize) as *const *const ();
-                            return *address_of_pointer as u64;
+                            let slot_addr = bytes.add(6).offset(displacement as isize) as *const *const ();
+                            return *slot_addr as u64;
                         } else if cfg!(target_arch = "x86") {
-                            let address_of_pointer = (bytes.add(2) as *const *const *const ()).read_unaligned();
-                            return *address_of_pointer as u64;
+                            // On x86, the jump contains the absolute address of the import table slot: jmp [absolute_address]
+                            // bytes[2..6] holds the 32-bit absolute address.
+                            let slot_addr_val = (bytes.add(2) as *const usize).read_unaligned();
+                            let slot_addr = slot_addr_val as *const *const ();
+                            return *slot_addr as u64;
                         }
                     }
                 }
