@@ -35,6 +35,46 @@ mod generated_tests {
         }
     }
 
+    fn check_same_fn_ptr(rust: u64, c: u64, attr: &str) {
+        if rust == c {
+            NTESTS.fetch_add(1, Ordering::Relaxed);
+            return;
+        }
+
+        #[cfg(target_os = "windows")]
+        let (rust, c) = unsafe {
+            let resolve = |addr: u64| -> u64 {
+                if addr == 0 {
+                    return 0;
+                }
+                #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+                {
+                    let bytes = addr as *const u8;
+                    if *bytes == 0xff && *bytes.add(1) == 0x25 {
+                        if cfg!(target_arch = "x86_64") {
+                            let displacement = (bytes.add(2) as *const i32).read_unaligned();
+                            let address_of_pointer = bytes.add(6).offset(displacement as isize) as *const *const ();
+                            return *address_of_pointer as u64;
+                        } else if cfg!(target_arch = "x86") {
+                            let address_of_pointer = (bytes.add(2) as *const *const *const ()).read_unaligned();
+                            return *address_of_pointer as u64;
+                        }
+                    }
+                }
+                addr
+            };
+
+            (resolve(rust), resolve(c))
+        };
+
+        if rust != c {
+            eprintln!("bad {attr}: rust: {rust:?} != c {c:?}");
+            FAILED.store(true, Ordering::Relaxed);
+        } else {
+            NTESTS.fetch_add(1, Ordering::Relaxed);
+        }
+    }
+
     fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
         if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
@@ -1086,7 +1126,7 @@ mod generated_tests {
         }
         let actual = unsafe { ctest_foreign_fn__calloc() } as u64;
         let expected = calloc as *const () as u64;
-        check_same(actual, expected, "`calloc` function pointer");
+        check_same_fn_ptr(actual, expected, "`calloc` function pointer");
     }
 
 /* Tests if the pointer to the static variable matches in both Rust and C. */

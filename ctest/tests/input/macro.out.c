@@ -56,7 +56,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU8__x(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU8__x(void) {
-    return sizeof(((struct VecU8){}).x);
+    return sizeof(((struct VecU8 *)0)->x);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__VecU8__y(void) {
@@ -64,7 +64,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU8__y(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU8__y(void) {
-    return sizeof(((struct VecU8){}).y);
+    return sizeof(((struct VecU8 *)0)->y);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__VecU16__x(void) {
@@ -72,7 +72,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU16__x(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU16__x(void) {
-    return sizeof(((struct VecU16){}).x);
+    return sizeof(((struct VecU16 *)0)->x);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__VecU16__y(void) {
@@ -80,7 +80,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__VecU16__y(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__VecU16__y(void) {
-    return sizeof(((struct VecU16){}).y);
+    return sizeof(((struct VecU16 *)0)->y);
 }
 
 

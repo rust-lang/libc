@@ -105,7 +105,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__name(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__name(void) {
-    return sizeof(((struct Person){}).name);
+    return sizeof(((struct Person *)0)->name);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Person__age(void) {
@@ -113,7 +113,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__age(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__age(void) {
-    return sizeof(((struct Person){}).age);
+    return sizeof(((struct Person *)0)->age);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Person__job(void) {
@@ -121,7 +121,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__job(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__job(void) {
-    return sizeof(((struct Person){}).job);
+    return sizeof(((struct Person *)0)->job);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
@@ -129,7 +129,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__favorite_color(void) {
-    return sizeof(((struct Person){}).favorite_color);
+    return sizeof(((struct Person *)0)->favorite_color);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
@@ -137,7 +137,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Word__word(void) {
-    return sizeof(((union Word){}).word);
+    return sizeof(((union Word *)0)->word);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Word__byte(void) {
@@ -145,7 +145,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__Word__byte(void) {
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__Word__byte(void) {
-    return sizeof(((union Word){}).byte);
+    return sizeof(((union Word *)0)->byte);
 }
 
 

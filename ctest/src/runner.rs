@@ -57,6 +57,7 @@ pub fn generate_test(
             .flag("/wd4710") // function not inlined
             .flag("/wd5045") // compiler will insert Spectre mitigation
             .flag("/wd4514") // unreferenced inline function removed
+            .flag("/wd4197") // top-level volatile in cast is ignored
             .flag("/wd4711"); // function selected for automatic inline
     } else {
         cfg.flag("-Wall")
