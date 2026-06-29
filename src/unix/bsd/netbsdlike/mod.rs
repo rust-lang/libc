@@ -27,7 +27,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: crate::sig_t,
         pub sa_mask: crate::sigset_t,
         pub sa_flags: c_int,
     }
