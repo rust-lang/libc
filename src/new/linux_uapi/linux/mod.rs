@@ -4,6 +4,7 @@
 
 pub(crate) mod can;
 pub(crate) mod futex;
+pub(crate) mod if_addr;
 pub(crate) mod if_link;
 pub(crate) mod if_packet;
 pub(crate) mod keyctl;

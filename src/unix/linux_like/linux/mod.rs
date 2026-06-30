@@ -998,6 +998,11 @@ s! {
         pub ifi_change: c_uint,
     }
 
+    pub struct rtattr {
+        pub rta_len: c_ushort,
+        pub rta_type: c_ushort,
+    }
+
     // netdb.h
     pub struct netent {
         pub n_name: *mut c_char,
