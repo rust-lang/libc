@@ -41,13 +41,6 @@ pub type loff_t = c_longlong;
 pub type __kernel_loff_t = c_longlong;
 pub type __kernel_pid_t = c_int;
 
-pub type __u8 = c_uchar;
-pub type __u16 = c_ushort;
-pub type __s16 = c_short;
-pub type __u32 = c_uint;
-pub type __s32 = c_int;
-pub type __be16 = __u16;
-
 // linux/elf.h
 
 pub type Elf32_Addr = u32;

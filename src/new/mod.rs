@@ -173,6 +173,8 @@ cfg_if! {
 // Per-OS headers we export
 cfg_if! {
     if #[cfg(target_os = "android")] {
+        use bionic_libc::kernel_uapi::linux;
+        pub use linux::types::*;
         pub use sys::socket::*;
     } else if #[cfg(target_os = "linux")] {
         pub use linux::can::bcm::*;
@@ -190,6 +192,7 @@ cfg_if! {
         pub use linux::pidfd::*;
         pub use linux::sctp::*;
         pub use linux::tls::*;
+        pub use linux::types::*;
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
