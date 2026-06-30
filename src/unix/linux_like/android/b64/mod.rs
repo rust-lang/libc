@@ -4,8 +4,15 @@ use crate::prelude::*;
 // but may be wrong for mips64
 
 pub type mode_t = u32;
-pub type off64_t = i64;
 pub type socklen_t = u32;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `off_t` instead. Under 64-bit ABIs, Android just aliases these two types, and the \
+            `libc` crate is phasing out support for suffixed types in favor of exposing a single, \
+            fixed-width unsuffixed type."
+)]
+pub type off64_t = i64;
 
 s! {
     pub struct sigset_t {
@@ -21,6 +28,12 @@ s! {
         pub sa_restorer: Option<extern "C" fn()>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `rlimit` instead. Under 64-bit ABIs, Android aliases these types, and the \
+                `libc` crate is phasing out support for suffixed variants in favor of a single, \
+                fixed-width suffixed type."
+    )]
     pub struct rlimit64 {
         pub rlim_cur: c_ulonglong,
         pub rlim_max: c_ulonglong,
@@ -78,6 +91,12 @@ s! {
         pub _f: [c_char; 0],
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `statfs` instead. Under 64-bit ABIs, Android aliases these types, and the \
+               `libc` crate is phasing out support for suffixed types in favor of a single \
+               unsuffixed type with a fixed bit width."
+    )]
     pub struct statfs64 {
         pub f_type: u64,
         pub f_bsize: u64,
@@ -93,6 +112,12 @@ s! {
         pub f_spare: [u64; 4],
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `statfs` instead. Under 64-bit ABIs, Android aliases these types, and the \
+               `libc` crate is phasing out support for suffixed types in favor of a single \
+               unsuffixed type with a fixed bit width."
+    )]
     pub struct statvfs64 {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
@@ -135,6 +160,12 @@ s! {
         __reserved: Padding<[c_char; 36]>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `sigset_t` instead. Under 64-bit ABIs, Android aliases these types, and the \
+                `libc` crate is phasing out support for suffixed variants in favor of a single, \
+                unsuffixed type with a fixed bit width."
+    )]
     pub struct sigset64_t {
         __bits: [c_ulong; 1],
     }

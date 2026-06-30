@@ -34,7 +34,6 @@ pub type nfds_t = c_uint;
 pub type rlim_t = c_ulong;
 pub type dev_t = c_ulong;
 pub type ino_t = c_ulong;
-pub type ino64_t = u64;
 pub type __CPU_BITTYPE = c_ulong;
 pub type idtype_t = c_int;
 pub type loff_t = c_longlong;
@@ -47,6 +46,17 @@ pub type __s16 = c_short;
 pub type __u32 = c_uint;
 pub type __s32 = c_int;
 pub type __be16 = __u16;
+
+#[cfg_attr(
+    target_pointer_width = "64",
+    deprecated(
+        since = "0.2.187",
+        note = "Use `ino_t` instead. Under 64-bit ABIs, Android aliases these types and the `libc` \
+                crate is phasing out support for suffixed variants in favor of a single, \
+                fixed-width unsuffixed type."
+    )
+)]
+pub type ino64_t = u64;
 
 // linux/elf.h
 
@@ -119,6 +129,15 @@ s! {
         pub l_pid: crate::pid_t,
     }
 
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `flock` instead. Under 64-bit ABIs, Android aliases these types, and the \
+                    `libc` crate is phasing out support for suffixed variants in favor of a single, \
+                    unsuffixed, fixed-width symbol."
+        )
+    )]
     pub struct flock64 {
         pub l_type: c_short,
         pub l_whence: c_short,
@@ -511,6 +530,12 @@ s! {
         pub d_name: [c_char; 256],
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `dirent` instead. This type is defined as an alias to it and the `libc` crate \
+                is phasing out support for suffixed types in favor of a single, fixed-width \
+                unsuffixed type."
+    )]
     pub struct dirent64 {
         pub d_ino: u64,
         pub d_off: i64,
@@ -3474,7 +3499,27 @@ extern "C" {
     pub fn setgrent();
     pub fn endgrent();
     pub fn getgrent() -> *mut crate::group;
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `getrlimit` instead. Under 64-bit ABIs, Android aliases these types and the \
+                    `libc` crate is phasing out support for suffixed variants in favor of a single, \
+                    fixed-width, unsuffixed type."
+        ),
+        allow(deprecated)
+    )]
     pub fn getrlimit64(resource: c_int, rlim: *mut rlimit64) -> c_int;
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `setrlimit` instead. Under 64-bit ABIs, Android aliases these types and the \
+                    `libc` crate is phasing out support for suffixed variants in favor of a single, \
+                    fixed-width, unsuffixed type."
+        ),
+        allow(deprecated)
+    )]
     pub fn setrlimit64(resource: c_int, rlim: *const rlimit64) -> c_int;
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
@@ -3484,6 +3529,16 @@ extern "C" {
         new_limit: *const crate::rlimit,
         old_limit: *mut crate::rlimit,
     ) -> c_int;
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `prlimit` instead. Under 64-bit ABIs, Android aliases these types and the \
+                    `libc` crate is phasing out support for suffixed variants in favor of a single, \
+                    fixed-width, unsuffixed type."
+        ),
+        allow(deprecated)
+    )]
     pub fn prlimit64(
         pid: crate::pid_t,
         resource: c_int,
@@ -3544,8 +3599,28 @@ extern "C" {
     pub fn seekdir(dirp: *mut crate::DIR, loc: c_long);
     pub fn telldir(dirp: *mut crate::DIR) -> c_long;
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `fallocate` instead. Under 64-bit ABIs, Android aliases these types and \
+                    the `libc` crate is phasing out support for suffixed variants in favor of a \
+                    fixed-width unsuffixed type."
+        ),
+        allow(deprecated)
+    )]
     pub fn fallocate64(fd: c_int, mode: c_int, offset: off64_t, len: off64_t) -> c_int;
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `posix_fallocate` instead. Under 64-bit ABIs, Android aliases these types \
+                    and the `libc` crate is phasing out support for suffixed variants in favor of \
+                    a fixed-width unsuffixed type."
+        ),
+        allow(deprecated)
+    )]
     pub fn posix_fallocate64(fd: c_int, offset: off64_t, len: off64_t) -> c_int;
     pub fn getxattr(
         path: *const c_char,
@@ -3702,6 +3777,16 @@ extern "C" {
         param: *const crate::sched_param,
     ) -> c_int;
     pub fn sendfile(out_fd: c_int, in_fd: c_int, offset: *mut off_t, count: size_t) -> ssize_t;
+    #[cfg_attr(
+        target_pointer_width = "64",
+        deprecated(
+            since = "0.2.187",
+            note = "Use `sendfile` instead. Under 64-bit ABIs, Android aliases these types and the \
+                    `libc` crate is phasing out support for suffixed variants in favor of a single \
+                    unsuffixed type with a fixed bit-width."
+        ),
+        allow(deprecated)
+    )]
     pub fn sendfile64(out_fd: c_int, in_fd: c_int, offset: *mut off64_t, count: size_t) -> ssize_t;
     pub fn setfsgid(gid: crate::gid_t) -> c_int;
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
