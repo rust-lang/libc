@@ -188,6 +188,7 @@ cfg_if! {
         pub use linux::mount::*;
         pub use linux::netlink::*;
         pub use linux::pidfd::*;
+        pub use linux::sctp::*;
         pub use linux::tls::*;
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
