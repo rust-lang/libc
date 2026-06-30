@@ -11,4 +11,5 @@ pub(crate) mod membarrier;
 pub(crate) mod mount;
 pub(crate) mod netlink;
 pub(crate) mod pidfd;
+pub(crate) mod sctp;
 pub(crate) mod tls;
