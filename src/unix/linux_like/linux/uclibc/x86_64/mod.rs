@@ -19,8 +19,6 @@ pub type pthread_t = c_ulong;
 
 pub type fsblkcnt64_t = u64;
 pub type fsfilcnt64_t = u64;
-pub type __u64 = c_ulong;
-pub type __s64 = c_long;
 
 s! {
     pub struct ipc_perm {

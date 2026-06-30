@@ -11,8 +11,6 @@ pub type nlink_t = u64;
 pub type blksize_t = i64;
 pub type greg_t = i64;
 pub type suseconds_t = i64;
-pub type __u64 = c_ulonglong;
-pub type __s64 = c_longlong;
 
 s! {
     // FIXME(1.0): This should not implement `PartialEq`
