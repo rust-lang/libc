@@ -1,3 +1,4 @@
+#[allow(deprecated)]
 use crate::off64_t;
 use crate::prelude::*;
 
@@ -37,10 +38,27 @@ pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
 pub type fsblkcnt_t = c_ulonglong;
-pub type fsblkcnt64_t = c_ulonglong;
 pub type fsfilcnt_t = c_ulonglong;
-pub type fsfilcnt64_t = c_ulonglong;
 pub type rlim_t = c_ulonglong;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsblkcnt64_t` instead. This type is defined as an alias to the unsuffixed type \
+            upstream, and support for suffixed types is phasing out in the `libc` crate."
+)]
+pub type fsblkcnt64_t = c_ulonglong;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsfilcnt64_t` instead. This type is defined as an alias to the unsuffixed type \
+            upstream, and support for suffixed types is phasing out in the `libc` crate."
+)]
+pub type fsfilcnt64_t = c_ulonglong;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `stat` instead. This type is defined as an alias to the unsuffixed type upstream, \
+            and support for suffixed types is phasing out in the `libc` crate."
+)]
+pub type stat64 = stat;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -191,6 +209,11 @@ s! {
         __f_reserved: Padding<[c_int; 6]>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `statvfs` instead. This type is defined as an alias to the unsuffixed type \
+                upstream, and support for suffixed variants is phasing out in the `libc` crate."
+    )]
     pub struct statvfs64 {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
@@ -232,6 +255,12 @@ s! {
         pub l_pid: crate::pid_t,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `flock` instead. This type is defines as an alias to the unsuffixed type \
+                upstream, and support for suffixed types in the `libc` crate is phasing out."
+    )]
+    #[allow(deprecated)]
     pub struct flock64 {
         pub l_type: c_short,
         pub l_whence: c_short,
@@ -399,6 +428,11 @@ s! {
 
     // MIPS/s390x implementation is special (see arch folders)
     #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `statfs` instead. This type is defined as an alias to the unsuffixed type \
+                upstream, and support for suffixed types is phasing out in the `libc` crate."
+    )]
     pub struct statfs64 {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,
@@ -887,7 +921,14 @@ extern "C" {
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
+#[deprecated(
+    since = "0.2.187",
+    note = "Use the unsuffixed variants instead. Each of these routines is `#define`d in terms of \
+            the unsuffixed variant in upstream musl, and support for suffixed aliases is phasing \
+            out in the `libc` crate."
+)]
 mod lfs64;
+#[allow(deprecated)]
 pub use self::lfs64::*;
 
 cfg_if! {

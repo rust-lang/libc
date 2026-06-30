@@ -10,8 +10,6 @@ pub type blksize_t = c_int;
 pub type __u64 = c_ulonglong;
 pub type __s64 = c_longlong;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,

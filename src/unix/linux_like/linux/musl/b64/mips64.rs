@@ -7,8 +7,6 @@ pub type __s64 = c_long;
 pub type nlink_t = c_uint;
 pub type blksize_t = i64;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
@@ -91,6 +89,11 @@ s! {
         pub f_spare: [c_ulong; 5],
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `statfs` instead. This type is defined as an alias to the unsuffixed type \
+                upstream, and support for suffixed types is phasing out in the `libc` crate."
+    )]
     pub struct statfs64 {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,

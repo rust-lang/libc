@@ -12,6 +12,14 @@ pub type dev_t = u64;
 pub type socklen_t = u32;
 pub type mode_t = u32;
 pub type ino64_t = u64;
+#[cfg_attr(
+    any(target_env = "musl", target_env = "ohos"),
+    deprecated(
+        since = "0.2.187",
+        note = "Use `off_t` instead. This type is `#define`d as an alias to `off_t` in upstream \
+                musl and support for the suffixed variants is phasing out in `libc`."
+    )
+)]
 pub type off64_t = i64;
 pub type blkcnt64_t = i64;
 pub type rlim64_t = u64;
@@ -3826,7 +3834,10 @@ extern "C" {
     pub fn fallocate(fd: c_int, mode: c_int, offset: off_t, len: off_t) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fallocate64")]
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
     pub fn readahead(fd: c_int, offset: off64_t, count: size_t) -> ssize_t;
+    #[cfg(any(target_env = "musl", target_env = "ohos"))]
+    pub fn readahead(fd: c_int, offset: off_t, count: size_t) -> ssize_t;
     pub fn getxattr(
         path: *const c_char,
         name: *const c_char,
@@ -3914,7 +3925,10 @@ extern "C" {
 
     // Not available now on Android
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
+    #[cfg(not(any(target_env = "musl", target_env = "ohos")))]
     pub fn sync_file_range(fd: c_int, offset: off64_t, nbytes: off64_t, flags: c_uint) -> c_int;
+    #[cfg(any(target_env = "musl", target_env = "ohos"))]
+    pub fn sync_file_range(fd: c_int, offset: off_t, nbytes: off_t, flags: c_uint) -> c_int;
 
     pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
 

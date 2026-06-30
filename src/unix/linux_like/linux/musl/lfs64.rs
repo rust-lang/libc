@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use crate::off64_t;
 use crate::prelude::*;
 
