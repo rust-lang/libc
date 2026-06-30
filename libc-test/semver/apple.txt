@@ -1826,6 +1826,8 @@ backtrace_symbols_fd
 basename
 boolean_t
 bpf_hdr
+bpf_insn
+bpf_program
 brk
 bsearch
 chflags
