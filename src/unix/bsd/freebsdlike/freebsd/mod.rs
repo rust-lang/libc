@@ -209,10 +209,22 @@ s! {
         pub ip6: *mut crate::in6_addr,
     }
 
+    // netinet/in.h: RFC 3678 multicast group membership requests
     pub struct ip_mreq_source {
         pub imr_multiaddr: crate::in_addr,
         pub imr_sourceaddr: crate::in_addr,
         pub imr_interface: crate::in_addr,
+    }
+
+    pub struct group_req {
+        pub gr_interface: u32,
+        pub gr_group: crate::sockaddr_storage,
+    }
+
+    pub struct group_source_req {
+        pub gsr_interface: u32,
+        pub gsr_group: crate::sockaddr_storage,
+        pub gsr_source: crate::sockaddr_storage,
     }
 
     pub struct statvfs {
@@ -3119,6 +3131,14 @@ pub const IPPROTO_DONE: c_int = 257;
 pub const IPPROTO_DIVERT: c_int = 258;
 /// SeND pseudo-protocol
 pub const IPPROTO_SEND: c_int = 259;
+
+// RFC 3678 protocol-independent multicast
+pub const MCAST_JOIN_GROUP: c_int = 80;
+pub const MCAST_LEAVE_GROUP: c_int = 81;
+pub const MCAST_JOIN_SOURCE_GROUP: c_int = 82;
+pub const MCAST_LEAVE_SOURCE_GROUP: c_int = 83;
+pub const MCAST_BLOCK_SOURCE: c_int = 84;
+pub const MCAST_UNBLOCK_SOURCE: c_int = 85;
 
 // sys/netinet/TCP.h
 pub const TCP_MD5SIG: c_int = 16;
