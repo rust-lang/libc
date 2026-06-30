@@ -247,10 +247,10 @@ cfg_if! {
 
             // linux/filter.h
             pub struct sock_filter {
-                pub code: __u16,
-                pub jt: __u8,
-                pub jf: __u8,
-                pub k: __u32,
+                pub code: crate::__u16,
+                pub jt: crate::__u8,
+                pub jf: crate::__u8,
+                pub k: crate::__u32,
             }
 
             pub struct sock_fprog {
