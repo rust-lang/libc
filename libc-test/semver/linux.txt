@@ -4179,6 +4179,8 @@ getspnam
 getspnam_r
 gettid
 getxattr
+group_req
+group_source_req
 hasmntopt
 hwtstamp_config
 iconv
