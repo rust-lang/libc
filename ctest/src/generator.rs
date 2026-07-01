@@ -78,8 +78,10 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     /// A list of functions that remaps names used in the tests.
     mapped_names: Vec<MappedName>,
+    /// Extra command line args to pass to cargo when generating macro expansions.
     macro_expansion_cargo_args: Vec<String>,
-    macro_expansion_crate_name: Option<String>,
+    /// Crate name to use when performing macro expansion.
+    crate_name: Option<String>,
     /// The programming language to generate tests in.
     pub(crate) language: Language,
     /// A list of functions that determine what items to skip all tests for.
@@ -725,18 +727,20 @@ impl TestGenerator {
         self
     }
 
-    /// Configures any extra arguments which to be passed to cargo
-    /// during macro expansion.  This can be used, for example, to pass
-    /// -Zbuild-std if required.
-    pub fn set_macro_expansion_cargo_args(&mut self, args: Vec<String>) {
+    /// Configures extra arguments to be passed to cargo during macro expansion.  
+    /// This can be used, for example, to pass `-Zbuild-std`` if required.
+    pub fn macro_expansion_cargo_args(&mut self, args: Vec<String>) -> &mut Self {
         self.macro_expansion_cargo_args = args;
+        self
     }
 
     /// Configures the crate name which should be used during macro expansion.
-    /// This can be important for crates which have crate_name! macros or
-    /// similar, like libc.
-    pub fn set_macro_expansion_crate_name(&mut self, name: String) {
-        self.macro_expansion_crate_name = Some(name);
+    /// If the tested crate uses `#![crate_name = "..."]`, this must be called with the
+    /// same name. Otherwise, there will be an error about `--crate-name` not
+    /// matching.
+    pub fn crate_name(&mut self, name: String) -> &mut Self {
+        self.crate_name = Some(name);
+        self
     }
 
     /// Configures whether tests for the type of a field is skipped or not.
@@ -1107,7 +1111,7 @@ impl TestGenerator {
             &crate_path,
             &self.cfg,
             get_build_target(self)?,
-            self.macro_expansion_crate_name.as_deref(),
+            self.crate_name.as_deref(),
             &self.macro_expansion_cargo_args,
         )
         .map_err(|e| {

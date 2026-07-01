@@ -31,10 +31,11 @@ pub(crate) fn expand_with_args<P: AsRef<Path>>(
     // make a Cargo.toml pointing to the crate path
     let cargo_toml_path = dir.path().join("Cargo.toml");
     let crate_name = crate_name.unwrap_or("ctest-expansion-tmp");
+    // FIXME(#5238): allow building using an existing manifest
     let cargo_toml = format!(
         r#"
 [package]
-name = '''{crate_name}'''  # some crates require crate_name! to be usable
+name = '''{crate_name}'''  # Needs to match #![crate_name = "..."] if it exists.
 edition = '''{EDITION}'''
 [lib]
 path = '''{}'''
