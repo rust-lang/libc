@@ -438,6 +438,11 @@ fn test_apple(target: &str) {
         }
     });
 
+    cfg.skip_struct_field_type(move |struct_, field| {
+        // The type of `bfl_u` is an anonymous union
+        (struct_.ident(), field.ident()) == ("bpf_dltlist", "bfl_u")
+    });
+
     cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
 
     cfg.rename_struct_ty(move |ty| {
