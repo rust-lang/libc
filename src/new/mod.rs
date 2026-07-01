@@ -197,6 +197,7 @@ cfg_if! {
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
+        pub use netinet6::in6_var::*;
         pub use pthread_::introspection::*;
         pub use pthread_::pthread_spis::*;
         pub use pthread_::spawn::*;
@@ -221,6 +222,7 @@ cfg_if! {
         pub use net::bpf::*;
         pub use net::if_::*;
     } else if #[cfg(target_os = "freebsd")] {
+        pub use netinet6::in6_var::*;
         pub use sys::file::*;
     }
 }
