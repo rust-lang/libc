@@ -1458,6 +1458,14 @@ extern "C" {
         buflen: size_t,
         result: *mut *mut crate::group,
     ) -> c_int;
+    pub fn sigwait(set: *const crate::sigset_t, sig: *mut c_int) -> c_int;
+    pub fn sigwaitinfo(set: *const crate::sigset_t, info: *mut crate::siginfo_t) -> c_int;
+    pub fn sigtimedwait(
+        set: *const crate::sigset_t,
+        info: *mut crate::siginfo_t,
+        timeout: *const crate::timespec,
+    ) -> c_int;
+    pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
