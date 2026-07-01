@@ -24,8 +24,11 @@ use std::{
 use regex::Regex;
 
 fn do_cc() {
+    // NOTE: family could be one of: unix, windows, wasm, or multiple values
+    // (e.g. "unix,wasm")
+    let family = env::var("CARGO_CFG_TARGET_FAMILY").unwrap();
     let target = env::var("TARGET").unwrap();
-    if cfg!(unix) || target.contains("cygwin") {
+    if family.contains("unix") || target.contains("cygwin") {
         let exclude = ["redox", "wasi", "wali", "qurt"];
         if !exclude.iter().any(|x| target.contains(x)) {
             let mut cmsg = cc::Build::new();
