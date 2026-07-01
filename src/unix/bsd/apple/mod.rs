@@ -2307,13 +2307,6 @@ pub const TIOCSETA: c_ulong = 0x80487414;
 pub const TIOCSETAW: c_ulong = 0x80487415;
 pub const TIOCSETAF: c_ulong = 0x80487416;
 
-pub const BIOCGRSIG: c_ulong = 0x40044272;
-pub const BIOCSRSIG: c_ulong = 0x80044273;
-pub const BIOCSDLT: c_ulong = 0x80044278;
-pub const BIOCGSEESENT: c_ulong = 0x40044276;
-pub const BIOCSSEESENT: c_ulong = 0x80044277;
-pub const BIOCGDLTLIST: c_ulong = 0xc00c4279;
-
 pub const FIODTYPE: c_ulong = 0x4004667a;
 
 pub const B0: speed_t = 0;
@@ -3633,26 +3626,6 @@ pub const MH_MAGIC_64: u32 = 0xfeedfacf;
 // net/if_utun.h
 pub const UTUN_OPT_FLAGS: c_int = 1;
 pub const UTUN_OPT_IFNAME: c_int = 2;
-
-// net/bpf.h
-pub const DLT_NULL: c_uint = 0; // no link-layer encapsulation
-pub const DLT_EN10MB: c_uint = 1; // Ethernet (10Mb)
-pub const DLT_EN3MB: c_uint = 2; // Experimental Ethernet (3Mb)
-pub const DLT_AX25: c_uint = 3; // Amateur Radio AX.25
-pub const DLT_PRONET: c_uint = 4; // Proteon ProNET Token Ring
-pub const DLT_CHAOS: c_uint = 5; // Chaos
-pub const DLT_IEEE802: c_uint = 6; // IEEE 802 Networks
-pub const DLT_ARCNET: c_uint = 7; // ARCNET
-pub const DLT_SLIP: c_uint = 8; // Serial Line IP
-pub const DLT_PPP: c_uint = 9; // Point-to-point Protocol
-pub const DLT_FDDI: c_uint = 10; // FDDI
-pub const DLT_ATM_RFC1483: c_uint = 11; // LLC/SNAP encapsulated atm
-pub const DLT_RAW: c_uint = 12; // raw IP
-pub const DLT_LOOP: c_uint = 108;
-
-// https://github.com/apple/darwin-xnu/blob/HEAD/bsd/net/bpf.h#L100
-// sizeof(i32)
-pub const BPF_ALIGNMENT: c_int = 4;
 
 // sys/mount.h
 pub const MNT_NODEV: c_int = 0x00000010;
