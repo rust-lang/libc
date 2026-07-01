@@ -1871,6 +1871,7 @@ __PTHREAD_MUTEX_SIZE__
 __PTHREAD_ONCE_SIZE__
 __PTHREAD_RWLOCKATTR_SIZE__
 __PTHREAD_RWLOCK_SIZE__
+__c_anonymous_bfl_u
 __darwin_mcontext64
 __error
 abs
@@ -1900,6 +1901,7 @@ backtrace_symbols
 backtrace_symbols_fd
 basename
 boolean_t
+bpf_dltlist
 bpf_hdr
 bpf_insn
 bpf_program
