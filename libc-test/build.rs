@@ -1052,7 +1052,7 @@ fn test_solarish(target: &str) {
     );
 
     if is_illumos {
-        headers!(cfg, "sys/epoll.h", "sys/eventfd.h",);
+        headers!(cfg, "sys/epoll.h", "sys/eventfd.h", "sys/timerfd.h",);
     }
 
     if is_solaris {
@@ -1084,6 +1084,8 @@ fn test_solarish(target: &str) {
                 // expose stat.Xtim.tv_nsec fields
                 Some(field.ident().trim_end_matches("e_nsec").to_string() + ".tv_nsec")
             }
+            // epoll_event.data is a union in C; our `u64` field lives at `data.u64`
+            "epoll_event" if field.ident() == "u64" => Some("data.u64".to_string()),
             _ => None,
         }
     });
@@ -1110,6 +1112,15 @@ fn test_solarish(target: &str) {
         // defined on older systems.  It is, however, safe to use on systems which do not
         // explicitly support it. (A no-op is an acceptable implementation of EPOLLEXCLUSIVE.)
         "EPOLLEXCLUSIVE" if is_illumos => true,
+
+        // FIXME(illumos)
+        // illumos has changed this constant, see https://www.illumos.org/issues/16200 for details.
+        // We would like to keep this header value in sync with what is present in the illumos
+        // sysroot that rustc is cross compiled with. There is an in progress bump in
+        // https://github.com/illumos/sysroot/pull/5, however this will still predate the new value.
+        // When this does eventually make it to the sysroot we should update it in this crate and
+        // remove this test skip.
+        "PTHREAD_MUTEX_DEFAULT" if is_illumos => true,
 
         _ => false,
     });
