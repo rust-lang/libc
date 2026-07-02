@@ -95,7 +95,7 @@ targets = [
     "aarch64-unknown-hermit",
     "aarch64-unknown-illumos",
     "aarch64-unknown-netbsd",
-    "aarch64-unknown-nto-qnx800",
+    "aarch64-unknown-qnx",
     "aarch64-unknown-openbsd",
     "aarch64-unknown-redox",
     "aarch64-wrs-vxworks",

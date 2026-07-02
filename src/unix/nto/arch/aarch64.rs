@@ -5,7 +5,7 @@
 //! * `aarch64-unknown-nto-qnx700`
 //! * `aarch64-unknown-nto-qnx710`
 //! * `aarch64-unknown-nto-qnx710_iosock`
-//! * `aarch64-unknown-nto-qnx800`
+//! * `aarch64-unknown-qnx`
 
 use crate::prelude::*;
 
