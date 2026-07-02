@@ -28,19 +28,38 @@ pub type fsfilcnt_t = u32;
 pub type rlim_t = u64;
 pub type nlink_t = u32;
 
-pub type ino64_t = crate::ino_t;
+#[deprecated(since = "0.2.187", note = "Use `ino_t` instead. See #5142.")]
+pub type ino64_t = ino_t;
+
+#[deprecated(since = "0.2.187", note = "Use `off_t` instead. See #5142.")]
 pub type off64_t = off_t;
+
+#[deprecated(since = "0.2.187", note = "Use `blkcnt_t` instead. See #5142.")]
 pub type blkcnt64_t = crate::blkcnt_t;
+
+#[deprecated(since = "0.2.187", note = "Use `rlim_t` instead. See #5142.")]
 pub type rlim64_t = crate::rlim_t;
 
+#[deprecated(since = "0.2.187", note = "Use `rlimit` instead. See #5142.")]
 pub type rlimit64 = crate::rlimit;
+
+#[deprecated(since = "0.2.187", note = "Use `flock` instead. See #5142.")]
 pub type flock64 = crate::flock;
+
+#[deprecated(since = "0.2.187", note = "Use `stat` instead. See #5142.")]
 pub type stat64 = crate::stat;
+
+#[deprecated(since = "0.2.187", note = "Use `statfs` instead. See #5142.")]
 pub type statfs64 = crate::statfs;
+
+#[deprecated(since = "0.2.187", note = "Use `statvfs` instead. See #5142.")]
 pub type statvfs64 = crate::statvfs;
+
+#[deprecated(since = "0.2.187", note = "Use `dirent` instead. See #5142.")]
 pub type dirent64 = crate::dirent;
 
 extern_ty! {
+    #[deprecated(since = "0.2.187", note = "Use `fpos_t` instead. See #5142.")]
     pub type fpos64_t; // FIXME(emscripten): fill this out with a struct
 }
 
@@ -1456,5 +1475,16 @@ extern "C" {
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
+#[deprecated(
+    since = "0.2.187",
+    note = "Use \"64\"-unsuffixed routines instead. See #5142."
+)]
+#[allow(deprecated)]
 mod lfs64;
+
+#[deprecated(
+    since = "0.2.187",
+    note = "Use \"64\"-unsuffixed routines instead. See #5142."
+)]
+#[allow(deprecated)]
 pub use self::lfs64::*;
