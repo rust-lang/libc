@@ -144,7 +144,7 @@ fn main() {
     }
 
     if target_env == "gnu"
-        && target_os == "linux"
+        && matches!(target_os.as_str(), "hurd" | "linux")
         && target_ptr_width == "32"
         && target_arch != "riscv32"
         && target_arch != "x86_64"
@@ -197,7 +197,7 @@ fn main() {
             "libc_unstable_gnu_file_offset_bits must be 64 or unset if \
             libc_unstable_gnu_time_bits is 64"
         );
-        if timebits == "64" {
+        if timebits == "64" && target_os != "hurd" {
             set_cfg("linux_time_bits64");
             set_cfg("gnu_time_bits64");
         }
