@@ -15,64 +15,54 @@ pub type suseconds_t = c_long;
 pub type blksize_t = c_long;
 pub type blkcnt_t = c_long;
 
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsblkcnt_t` instead. LFS64 are being phased out. See #4805."
+)]
 pub type fsblkcnt64_t = c_ulong;
+#[deprecated(
+    since = "0.2.187",
+    note = "Use `fsfilcnt_t` instead. LFS64 are being phased out. See #4805."
+)]
 pub type fsfilcnt64_t = c_ulong;
 pub type __u64 = c_ulong;
 
+pub type flock64 = flock;
+pub type stat64 = stat;
+
 s! {
     pub struct stat {
-        pub st_dev: c_ulong,
-        pub __pad1: c_ushort,
+        pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
         pub st_nlink: nlink_t,
+        pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulong,
-        pub __pad2: c_ushort,
-        pub st_size: crate::off64_t,
-        pub st_blksize: blksize_t,
-        pub st_blocks: crate::blkcnt64_t,
+        __pad0: Padding<c_int>,
+        pub st_rdev: crate::dev_t,
+        pub st_size: crate::off_t,
+        pub st_blksize: crate::blksize_t,
+        pub st_blocks: crate::blkcnt_t,
         pub st_atim: crate::timespec,
         pub st_mtim: crate::timespec,
         pub st_ctim: crate::timespec,
-        pub __uclibc_unused4: c_ulong,
-        pub __uclibc_unused5: c_ulong,
-    }
-
-    pub struct stat64 {
-        pub st_dev: c_ulong,
-        pub __pad1: c_uint,
-        pub __st_ino: crate::ino_t,
-        pub st_mode: crate::mode_t,
-        pub st_nlink: nlink_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulong,
-        pub __pad2: c_uint,
-        pub st_size: crate::off64_t,
-        pub st_blksize: blksize_t,
-        pub st_blocks: crate::blkcnt64_t,
-        pub st_atim: crate::timespec,
-        pub st_mtim: crate::timespec,
-        pub st_ctim: crate::timespec,
-        pub st_ino: crate::ino64_t,
+        __uclibc_unused: Padding<[c_long; 3]>,
     }
 
     pub struct shmid_ds {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: crate::size_t,
         pub shm_atime: crate::time_t,
-        __unused1: c_ulong,
+        __unused1: Padding<c_ulong>,
         pub shm_dtime: crate::time_t,
-        __unused2: c_ulong,
+        __unused2: Padding<c_ulong>,
         pub shm_ctime: crate::time_t,
-        __unused3: c_ulong,
+        __unused3: Padding<c_ulong>,
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
         pub shm_nattch: crate::shmatt_t,
-        __unused4: c_ulong,
-        __unused5: c_ulong,
+        __unused4: Padding<c_ulong>,
+        __unused5: Padding<c_ulong>,
     }
 
     #[allow(unpredictable_function_pointer_comparisons)]

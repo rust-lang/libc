@@ -283,6 +283,14 @@ s! {
         pub val: c_int,
     }
 
+    #[cfg_attr(
+        all(target_os = "l4re", target_env = "uclibc"),
+        deprecated(
+            since = "0.2.187",
+            note = "Use `rlimit` instead. LFS64 are being phased out. See #4805."
+        ),
+        allow(deprecated)
+    )]
     pub struct rlimit64 {
         pub rlim_cur: crate::rlim64_t,
         pub rlim_max: crate::rlim64_t,
@@ -305,6 +313,14 @@ s! {
         pub d_name: [c_char; 256],
     }
 
+    #[cfg_attr(
+        all(target_os = "l4re", target_env = "uclibc"),
+        deprecated(
+            since = "0.2.187",
+            note = "Use `dirent` instead. LFS64 are being phased out. See #4805."
+        ),
+        allow(deprecated)
+    )]
     pub struct dirent64 {
         pub d_ino: crate::ino64_t,
         pub d_off: crate::off64_t,
@@ -1940,18 +1956,47 @@ extern "C" {
 cfg_if! {
     if #[cfg(not(any(target_env = "musl", target_env = "ohos")))] {
         extern "C" {
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `freopen` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn freopen64(
                 filename: *const c_char,
                 mode: *const c_char,
                 file: *mut crate::FILE,
             ) -> *mut crate::FILE;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fseeko` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn fseeko64(
                 stream: *mut crate::FILE,
-                offset: crate::off64_t,
+                #[cfg(not(all(target_os = "l4re", target_env = "uclibc")))] offset: crate::off64_t,
+                #[cfg(all(target_os = "l4re", target_env = "uclibc"))] offset: crate::off_t,
                 whence: c_int,
             ) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fsetpos` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn fsetpos64(stream: *mut crate::FILE, ptr: *const crate::fpos64_t) -> c_int;
+            #[cfg(not(all(target_os = "l4re", target_env = "uclibc")))]
             pub fn ftello64(stream: *mut crate::FILE) -> crate::off64_t;
+            #[cfg(all(target_os = "l4re", target_env = "uclibc"))]
+            #[deprecated(
+                since = "0.2.187",
+                note = "Use `ftello` instead. LFS64 are being phased out. See #4805."
+            )]
+            pub fn ftello64(stream: *mut crate::FILE) -> crate::off_t;
         }
     }
 }
