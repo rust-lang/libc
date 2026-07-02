@@ -4,6 +4,8 @@ use crate::prelude::*;
 use crate::{
     cmsghdr,
     msghdr,
+    _IOW,
+    _IOWR,
 };
 
 cfg_if! {
@@ -332,6 +334,34 @@ s! {
     pub struct seccomp_metadata {
         pub filter_off: crate::__u64,
         pub flags: crate::__u64,
+    }
+
+    pub struct seccomp_notif_sizes {
+        pub seccomp_notif: crate::__u16,
+        pub seccomp_notif_resp: crate::__u16,
+        pub seccomp_data: crate::__u16,
+    }
+
+    pub struct seccomp_notif {
+        pub id: crate::__u64,
+        pub pid: crate::__u32,
+        pub flags: crate::__u32,
+        pub data: seccomp_data,
+    }
+
+    pub struct seccomp_notif_resp {
+        pub id: crate::__u64,
+        pub val: crate::__s64,
+        pub error: crate::__s32,
+        pub flags: crate::__u32,
+    }
+
+    pub struct seccomp_notif_addfd {
+        pub id: crate::__u64,
+        pub flags: crate::__u32,
+        pub srcfd: crate::__u32,
+        pub newfd: crate::__u32,
+        pub newfd_flags: crate::__u32,
     }
 
     pub struct ptrace_peeksiginfo_args {
@@ -1790,6 +1820,14 @@ pub const SECCOMP_USER_NOTIF_FLAG_CONTINUE: c_ulong = 1;
 
 pub const SECCOMP_ADDFD_FLAG_SETFD: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SEND: c_ulong = 2;
+
+const SECCOMP_IOC_MAGIC: u32 = b'!' as u32;
+
+pub const SECCOMP_IOCTL_NOTIF_RECV: Ioctl = _IOWR::<seccomp_notif>(SECCOMP_IOC_MAGIC, 0);
+pub const SECCOMP_IOCTL_NOTIF_SEND: Ioctl = _IOWR::<seccomp_notif_resp>(SECCOMP_IOC_MAGIC, 1);
+pub const SECCOMP_IOCTL_NOTIF_ID_VALID: Ioctl = _IOW::<u64>(SECCOMP_IOC_MAGIC, 2);
+pub const SECCOMP_IOCTL_NOTIF_ADDFD: Ioctl = _IOW::<seccomp_notif_addfd>(SECCOMP_IOC_MAGIC, 3);
+pub const SECCOMP_IOCTL_NOTIF_SET_FLAGS: Ioctl = _IOW::<u64>(SECCOMP_IOC_MAGIC, 4);
 
 pub const NLA_F_NESTED: c_int = 1 << 15;
 pub const NLA_F_NET_BYTEORDER: c_int = 1 << 14;

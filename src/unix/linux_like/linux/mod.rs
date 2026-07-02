@@ -1286,6 +1286,14 @@ pub const SECCOMP_USER_NOTIF_FLAG_CONTINUE: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SETFD: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SEND: c_ulong = 2;
 
+const SECCOMP_IOC_MAGIC: u32 = b'!' as u32;
+
+pub const SECCOMP_IOCTL_NOTIF_RECV: Ioctl = _IOWR::<seccomp_notif>(SECCOMP_IOC_MAGIC, 0);
+pub const SECCOMP_IOCTL_NOTIF_SEND: Ioctl = _IOWR::<seccomp_notif_resp>(SECCOMP_IOC_MAGIC, 1);
+pub const SECCOMP_IOCTL_NOTIF_ID_VALID: Ioctl = _IOW::<u64>(SECCOMP_IOC_MAGIC, 2);
+pub const SECCOMP_IOCTL_NOTIF_ADDFD: Ioctl = _IOW::<seccomp_notif_addfd>(SECCOMP_IOC_MAGIC, 3);
+pub const SECCOMP_IOCTL_NOTIF_SET_FLAGS: Ioctl = _IOW::<u64>(SECCOMP_IOC_MAGIC, 4);
+
 pub const TFD_CLOEXEC: c_int = O_CLOEXEC;
 pub const TFD_NONBLOCK: c_int = O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: c_int = 1;
