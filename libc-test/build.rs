@@ -2569,6 +2569,7 @@ fn test_freebsd(target: &str) {
         "netinet/sctp.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet6/in6_var.h",
         "poll.h",
         "pthread.h",
         "pthread_np.h",
