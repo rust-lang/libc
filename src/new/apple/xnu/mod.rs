@@ -27,4 +27,6 @@ pub(crate) mod machine {
     pub(crate) mod _mcontext;
 }
 
+pub(crate) mod net;
+
 pub(crate) mod sys;
