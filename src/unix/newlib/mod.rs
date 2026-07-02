@@ -6,18 +6,21 @@ pub type blksize_t = i32;
 pub type clockid_t = c_ulong;
 
 cfg_if! {
-    if #[cfg(any(target_os = "espidf"))] {
+    if #[cfg(any(target_os = "espidf", target_os = "vita"))] {
         pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_long;
-    } else if #[cfg(any(target_os = "vita"))] {
-        pub type dev_t = c_short;
-        pub type ino_t = c_ushort;
-        pub type off_t = c_int;
-    } else {
+    } else if #[cfg(any(
+        target_os = "rtems",
+        target_os = "horizon",
+        target_os = "arm",
+        target_os = "powerpc"
+    ))] {
         pub type dev_t = u32;
         pub type ino_t = u32;
         pub type off_t = i64;
+    } else {
+        std::compile_error! { "unsupported target" }
     }
 }
 
@@ -55,12 +58,12 @@ pub type useconds_t = u32;
 
 cfg_if! {
     if #[cfg(any(
-        target_os = "horizon",
-        all(target_os = "espidf", not(espidf_time32))
+        all(target_os = "espidf", espidf_time32),
+        target_os = "vita"
     ))] {
-        pub type time_t = c_longlong;
+        pub type time_t = c_long;
     } else {
-        pub type time_t = i32;
+        pub type time_t = i64;
     }
 }
 
@@ -937,6 +940,8 @@ extern "C" {
 
 mod generic;
 
+pub use self::generic::*;
+
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         mod espidf;
@@ -950,9 +955,6 @@ cfg_if! {
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
-    } else if #[cfg(target_arch = "aarch64")] {
-        mod aarch64;
-        pub use self::aarch64::*;
     } else if #[cfg(target_arch = "powerpc")] {
         mod powerpc;
         pub use self::powerpc::*;
