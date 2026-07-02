@@ -1113,6 +1113,15 @@ fn test_solarish(target: &str) {
         // explicitly support it. (A no-op is an acceptable implementation of EPOLLEXCLUSIVE.)
         "EPOLLEXCLUSIVE" if is_illumos => true,
 
+        // FIXME(illumos)
+        // illumos has changed this constant, see https://www.illumos.org/issues/16200 for details.
+        // However, we would like to keep this header value in sync with what is present in the
+        // illumos sysroot that rustc is cross compiled with. There is an in progress bump in
+        // https://github.com/illumos/sysroot/pull/5 however this will still predate the new vaule.
+        // When this does eventually make it to the updated sysroot we should update it in this
+        // crate and remove this test skip.
+        "PTHREAD_MUTEX_DEFAULT" if is_illumos => true,
+
         _ => false,
     });
 
