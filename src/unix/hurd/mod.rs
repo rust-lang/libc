@@ -86,6 +86,7 @@ cfg_if! {
     }
 }
 
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type off64_t = __off64_t;
 pub type useconds_t = __useconds_t;
 pub type pid_t = __pid_t;
@@ -118,6 +119,7 @@ cfg_if! {
     }
 }
 
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type ino64_t = __ino64_t;
 pub type dev_t = __dev_t;
 pub type mode_t = __mode_t;
@@ -158,8 +160,11 @@ cfg_if! {
     }
 }
 
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type blkcnt64_t = __blkcnt64_t;
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type fsblkcnt64_t = __fsblkcnt64_t;
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type fsfilcnt64_t = __fsfilcnt64_t;
 
 pub type __pthread_spinlock_t = c_int;
@@ -199,6 +204,7 @@ cfg_if! {
     }
 }
 
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type rlim64_t = __rlim64_t;
 
 pub type __rusage_who = c_int;
@@ -260,6 +266,7 @@ pub type nl_item = c_int;
 pub type iconv_t = *mut c_void;
 
 extern_ty! {
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub type fpos64_t; // FIXME(hurd): fill this out with a struct
     pub type timezone;
 }
@@ -391,6 +398,7 @@ s! {
         pub d_name: [c_char; 1usize],
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct dirent64 {
         pub d_ino: __ino64_t,
         pub d_reclen: c_ushort,
@@ -515,6 +523,7 @@ s! {
         >,
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct stat64 {
         pub st_fstype: c_int,
         pub st_dev: __fsid_t, /* Actually st_fsid */
@@ -588,6 +597,7 @@ s! {
         f_spare: Padding<[c_uint; 3usize]>,
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct statfs64 {
         pub f_type: c_uint,
         pub f_bsize: c_ulong,
@@ -620,6 +630,7 @@ s! {
         f_spare: Padding<[c_uint; 3usize]>,
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct statvfs64 {
         pub __f_type: c_uint,
         pub f_bsize: c_ulong,
@@ -921,6 +932,7 @@ s! {
         pub domainname: [c_char; _UTSNAME_LENGTH],
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -959,6 +971,7 @@ s! {
         pub l_pid: __pid_t,
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct flock64 {
         #[cfg(target_pointer_width = "32")]
         pub l_type: c_int,
@@ -1274,6 +1287,7 @@ cfg_if! {
     }
 }
 
+// FIXME(1.0,deprecate,64): lfs binding to be removed
 pub const RLIM64_INFINITY: rlim64_t = 0x7fffffffffffffff;
 pub const RLIM_SAVED_MAX: rlim_t = RLIM_INFINITY;
 pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
@@ -3630,7 +3644,9 @@ extern "C" {
 
     pub fn dup3(oldfd: c_int, newfd: c_int, flags: c_int) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn pread64(fd: c_int, buf: *mut c_void, count: size_t, offset: off64_t) -> ssize_t;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn pwrite64(fd: c_int, buf: *const c_void, count: size_t, offset: off64_t) -> ssize_t;
 
     pub fn readv(__fd: c_int, __iovec: *const crate::iovec, __count: c_int) -> ssize_t;
@@ -3651,8 +3667,10 @@ extern "C" {
         __offset: off_t,
     ) -> ssize_t;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn preadv64(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off64_t)
         -> ssize_t;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn pwritev64(
         fd: c_int,
         iov: *const crate::iovec,
@@ -3721,11 +3739,18 @@ extern "C" {
         oldattr: *mut crate::mq_attr,
     ) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn lseek64(__fd: c_int, __offset: off64_t, __whence: c_int) -> off64_t;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
+    #[allow(clashing_extern_declarations)]
     pub fn fgetpos64(stream: *mut crate::FILE, ptr: *mut fpos64_t) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fseeko64(stream: *mut crate::FILE, offset: off64_t, whence: c_int) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
+    #[allow(clashing_extern_declarations)]
     pub fn fsetpos64(stream: *mut crate::FILE, ptr: *const fpos64_t) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn ftello64(stream: *mut crate::FILE) -> off64_t;
 
     pub fn bind(__fd: c_int, __addr: *const sockaddr, __len: crate::socklen_t) -> c_int;
@@ -3759,6 +3784,7 @@ extern "C" {
 
     #[cfg_attr(gnu_file_offset_bits64, link_name = "sendfile64")]
     pub fn sendfile(out_fd: c_int, in_fd: c_int, offset: *mut off_t, count: size_t) -> ssize_t;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn sendfile64(out_fd: c_int, in_fd: c_int, offset: *mut off64_t, count: size_t) -> ssize_t;
 
     pub fn shutdown(__fd: c_int, __how: c_int) -> c_int;
@@ -4099,8 +4125,10 @@ extern "C" {
         old_value: *mut crate::itimerspec,
     ) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fstat64(__fd: c_int, __buf: *mut stat64) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fstatat64(
         __fd: c_int,
         __file: *const c_char,
@@ -4116,37 +4144,50 @@ extern "C" {
         statxbuf: *mut statx,
     ) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn ftruncate64(__fd: c_int, __length: off64_t) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn truncate64(__file: *const c_char, __length: off64_t) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn lstat64(__file: *const c_char, __buf: *mut stat64) -> c_int;
 
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statfs64")]
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn statfs64(__file: *const c_char, __buf: *mut statfs64) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatfs64")]
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fstatfs64(__fildes: c_int, __buf: *mut statfs64) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn statvfs64(__file: *const c_char, __buf: *mut statvfs64) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fstatvfs64(__fildes: c_int, __buf: *mut statvfs64) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn open64(__file: *const c_char, __oflag: c_int, ...) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn openat64(__fd: c_int, __file: *const c_char, __oflag: c_int, ...) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut crate::FILE;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn freopen64(
         filename: *const c_char,
         mode: *const c_char,
         file: *mut crate::FILE,
     ) -> *mut crate::FILE;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn creat64(path: *const c_char, mode: mode_t) -> c_int;
 
     pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
     pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
     pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn tmpfile64() -> *mut crate::FILE;
 
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut crate::FILE;
@@ -4299,9 +4340,12 @@ extern "C" {
 
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn stat64(__file: *const c_char, __buf: *mut stat64) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn readdir64(dirp: *mut crate::DIR) -> *mut dirent64;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn readdir64_r(
         dirp: *mut crate::DIR,
         entry: *mut dirent64,
@@ -4317,6 +4361,7 @@ extern "C" {
 
     pub fn __errno_location() -> *mut c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn mmap64(
         __addr: *mut c_void,
         __len: size_t,
@@ -4345,11 +4390,13 @@ extern "C" {
     pub fn fallocate64(fd: c_int, mode: c_int, offset: off64_t, len: off64_t) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fallocate64")]
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn posix_fallocate64(fd: c_int, offset: off64_t, len: off64_t) -> c_int;
 
     #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fadvise64")]
     pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn posix_fadvise64(fd: c_int, offset: off64_t, len: off64_t, advise: c_int) -> c_int;
 
     pub fn madvise(__addr: *mut c_void, __len: size_t, __advice: c_int) -> c_int;
@@ -4358,9 +4405,11 @@ extern "C" {
 
     #[cfg_attr(gnu_file_offset_bits64, link_name = "getrlimit64")]
     pub fn getrlimit(resource: __rlimit_resource_t, rlim: *mut crate::rlimit) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn getrlimit64(resource: __rlimit_resource_t, rlim: *mut rlimit64) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "setrlimit64")]
     pub fn setrlimit(resource: __rlimit_resource_t, rlim: *const crate::rlimit) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn setrlimit64(resource: __rlimit_resource_t, rlim: *const rlimit64) -> c_int;
 
     pub fn getpriority(which: crate::__priority_which, who: crate::id_t) -> c_int;
