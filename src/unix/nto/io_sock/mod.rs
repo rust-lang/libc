@@ -4,8 +4,8 @@
 //!
 //! * `aarch64-unknown-nto-qnx710`
 //! * `x86_64-pc-nto-qnx710`
-//! * `aarch64-unknown-nto-qnx800`
-//! * `x86_64-pc-nto-qnx800`
+//! * `aarch64-unknown-qnx`
+//! * `x86_64-pc-qnx`
 
 use crate::prelude::*;
 
