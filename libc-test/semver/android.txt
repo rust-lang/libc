@@ -3595,6 +3595,8 @@ gmtime
 gmtime_r
 grantpt
 group
+group_req
+group_source_req
 hostent
 id_t
 idtype_t

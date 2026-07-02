@@ -2203,6 +2203,8 @@ gid_t
 gmtime
 gmtime_r
 group
+group_req
+group_source_req
 hostent
 hstrerror
 iconv
