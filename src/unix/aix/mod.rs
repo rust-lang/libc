@@ -2693,12 +2693,12 @@ extern "C" {
 
     pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
 
-    pub fn pthread_cleanup_pop(execute: c_int) -> c_void;
+    pub fn pthread_cleanup_pop(execute: c_int);
 
     pub fn pthread_cleanup_push(
         routine: Option<unsafe extern "C" fn(*mut c_void)>,
         arg: *mut c_void,
-    ) -> c_void;
+    );
 
     pub fn pthread_condattr_getclock(
         attr: *const pthread_condattr_t,
@@ -2839,7 +2839,7 @@ extern "C" {
     pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> c_int;
     pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> c_int;
 
-    pub fn pthread_testcancel() -> c_void;
+    pub fn pthread_testcancel();
 }
 
 #[link(name = "iconv")]
