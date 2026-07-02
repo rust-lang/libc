@@ -5,11 +5,11 @@
 //! * `aarch64-unknown-nto-qnx700`
 //! * `aarch64-unknown-nto-qnx710`
 //! * `aarch64-unknown-nto-qnx710_iosock`
-//! * `aarch64-unknown-nto-qnx800`
+//! * `aarch64-unknown-qnx`
 //! * `i686-pc-nto-qnx700`
 //! * `x86_64-pc-nto-qnx710`
 //! * `x86_64-pc-nto-qnx710_iosock`
-//! * `x86_64-pc-nto-qnx800`
+//! * `x86_64-pc-qnx`
 //!
 //! There are sub-modules for the target architecture, and sub-modules for the
 //! kind of networking library used. QNX SDP 7.0 uses `io-pkt`, QNX SDP 8.0
@@ -725,10 +725,10 @@ s_no_extra_traits! {
     // get native f128 support.
     //
     // The definition was taken from the definition of the _Maxalignt struct in the QNX SDK.
-    // However, on QNX7, there is a different definition of std::max_align_t (the C++ version of
+    // However, on QNX SDP 7, there is a different definition of std::max_align_t (the C++ version of
     // this type). In practice, this doesn't make a difference for the _alignment_ properties of the
     // type - however, it changes the size, so using in in any other form than the zero-sized array
-    // form would be bogus and it would potentially change the size of the data type. On QNX8, this
+    // form would be bogus and it would potentially change the size of the data type. On QNX SDP 8, this
     // got fixed and both C and C++ are using the same definition.
     pub struct max_align_t {
         _ll: crate::c_longlong,
@@ -3001,7 +3001,7 @@ cfg_if! {
     if #[cfg(any(target_env = "nto70", target_env = "nto71"))] {
         mod io_pkt;
         pub use self::io_pkt::*;
-    } else if #[cfg(any(target_env = "nto71_iosock", target_env = "nto80"))] {
+    } else if #[cfg(any(target_env = "nto71_iosock", target_os = "qnx"))] {
         mod io_sock;
         pub use self::io_sock::*;
     } else {

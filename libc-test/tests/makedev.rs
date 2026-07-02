@@ -29,6 +29,7 @@ cfg_if::cfg_if! {
         target_os = "emscripten",
         target_os = "fuchsia",
         target_os = "nto",
+        target_os = "qnx",
         target_os = "hurd",
         target_os = "openbsd",
         target_os = "cygwin",

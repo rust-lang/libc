@@ -28,7 +28,7 @@ cfg_if! {
     ))] {
         pub type uid_t = c_ushort;
         pub type gid_t = c_ushort;
-    } else if #[cfg(target_os = "nto")] {
+    } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         pub type uid_t = i32;
         pub type gid_t = i32;
     } else {
@@ -235,7 +235,7 @@ pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
 
 cfg_if! {
     if #[cfg(all(
-        not(target_os = "nto"),
+        not(any(target_os = "nto", target_os = "qnx")),
         not(target_os = "aix"),
         not(target_os = "espidf")
     ))] {
@@ -256,7 +256,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "nto", target_os = "l4re")))] {
+    if #[cfg(not(any(
+        target_os = "nto",
+        target_os = "qnx",
+        target_os = "l4re"
+    )))] {
         pub const USRQUOTA: c_int = 0;
         pub const GRPQUOTA: c_int = 1;
     }
@@ -319,7 +323,7 @@ pub const LOG_PRIMASK: c_int = 7;
 pub const LOG_FACMASK: c_int = 0x3f8;
 
 cfg_if! {
-    if #[cfg(not(target_os = "nto"))] {
+    if #[cfg(not(any(target_os = "nto", target_os = "qnx")))] {
         pub const PRIO_MIN: c_int = -20;
         pub const PRIO_MAX: c_int = 20;
     }
@@ -353,7 +357,7 @@ pub const ATF_PUBL: c_int = 0x08;
 pub const ATF_USETRAILERS: c_int = 0x10;
 
 cfg_if! {
-    if #[cfg(any(target_os = "nto", target_os = "aix"))] {
+    if #[cfg(any(target_os = "nto", target_os = "qnx", target_os = "aix"))] {
         pub const FNM_PERIOD: c_int = 1 << 1;
     } else {
         pub const FNM_PERIOD: c_int = 1 << 2;
@@ -400,7 +404,7 @@ cfg_if! {
         target_os = "cygwin",
     ))] {
         pub const FNM_NOESCAPE: c_int = 1 << 0;
-    } else if #[cfg(target_os = "nto")] {
+    } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         pub const FNM_NOESCAPE: c_int = 1 << 2;
     } else if #[cfg(target_os = "aix")] {
         pub const FNM_NOESCAPE: c_int = 1 << 3;
@@ -554,6 +558,7 @@ cfg_if! {
         target_os = "android",
         target_os = "openbsd",
         target_os = "nto",
+        target_os = "qnx",
     ))] {
         #[link(name = "c")]
         #[link(name = "m")]
@@ -2139,6 +2144,7 @@ cfg_if! {
         target_os = "android",
         target_os = "haiku",
         target_os = "nto",
+        target_os = "qnx",
         target_os = "solaris",
         target_os = "cygwin",
         target_os = "aix",
@@ -2260,7 +2266,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(target_os = "nto")] {
+    if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         extern "C" {
             pub fn readlinkat(
                 dirfd: c_int,
@@ -2334,10 +2340,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(
-        target_os = "aix",
-        all(target_os = "nto", target_env = "nto80")
-    ))] {
+    if #[cfg(any(target_os = "aix", target_os = "qnx",))] {
         extern "C" {
             pub fn cfsetspeed(termios: *mut crate::termios, speed: crate::speed_t) -> c_int;
         }
@@ -2494,7 +2497,7 @@ cfg_if! {
     } else if #[cfg(target_os = "cygwin")] {
         mod cygwin;
         pub use self::cygwin::*;
-    } else if #[cfg(target_os = "nto")] {
+    } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         mod nto;
         pub use self::nto::*;
     } else if #[cfg(target_os = "aix")] {
