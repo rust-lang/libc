@@ -530,6 +530,10 @@ s! {
         pub sigev_notify_attributes: *const crate::pthread_attr_t,
         __sigev_pad2: Padding<c_int>,
     }
+
+    pub struct icmp6_filter {
+        __icmp6_filt: [u32; 8],
+    }
 }
 
 s_no_extra_traits! {
@@ -879,6 +883,7 @@ pub const IP_PKTINFO: c_int = 0x1a;
 pub const IP_DONTFRAG: c_int = 0x1b;
 pub const IP_SEC_OPT: c_int = 0x22;
 
+pub const ICMP6_FILTER: c_int = 0x1;
 pub const IPV6_UNICAST_HOPS: c_int = 0x5;
 pub const IPV6_MULTICAST_IF: c_int = 0x6;
 pub const IPV6_MULTICAST_HOPS: c_int = 0x7;
@@ -2319,6 +2324,34 @@ safe_f! {
 
     pub const fn MR_GET_TYPE(flags: c_uint) -> c_uint {
         flags & 0x0000ffff
+    }
+
+    pub const fn ICMP6_FILTER_WILLPASS(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.__icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) != 0
+    }
+
+    pub const fn ICMP6_FILTER_WILLBLOCK(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.__icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) == 0
+    }
+
+    pub fn ICMP6_FILTER_SETPASSALL(filt: &mut icmp6_filter) -> () {
+        for i in &mut filt.__icmp6_filt {
+            *i = u32::MAX;
+        }
+    }
+
+    pub fn ICMP6_FILTER_SETBLOCKALL(filt: &mut icmp6_filter) -> () {
+        for i in &mut filt.__icmp6_filt {
+            *i = 0;
+        }
+    }
+
+    pub fn ICMP6_FILTER_SETPASS(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.__icmp6_filt[(typ >> 5) as usize] |= 1 << (typ & 31);
+    }
+
+    pub fn ICMP6_FILTER_SETBLOCK(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.__icmp6_filt[(typ >> 5) as usize] &= !(1 << (typ & 31));
     }
 }
 
