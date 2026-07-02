@@ -93,7 +93,7 @@ cfg_if! {
     } else if #[cfg(target_os = "netbsd")] {
         mod netbsd;
         pub(crate) use netbsd::*;
-    } else if #[cfg(target_os = "nto")] {
+    } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         mod nto;
         pub(crate) use nto::*;
     } else if #[cfg(target_os = "nuttx")] {
@@ -217,7 +217,7 @@ cfg_if! {
         pub use utmpx_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
-    } else if #[cfg(target_os = "nto")] {
+    } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         pub use net::bpf::*;
         pub use net::if_::*;
     } else if #[cfg(target_os = "freebsd")] {
