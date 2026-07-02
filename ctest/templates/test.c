@@ -89,7 +89,7 @@ CTEST_EXTERN uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(v
 }
 
 CTEST_EXTERN uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
-    return sizeof((({{ item.c_ty }}){}).{{ item.c_field }});
+    return sizeof((({{ item.c_ty }} *)0)->{{ item.c_field }});
 }
 {%- endfor +%}
 
