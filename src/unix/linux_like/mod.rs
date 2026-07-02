@@ -1263,6 +1263,11 @@ pub const PIPE_BUF: usize = 4096;
 
 pub const SI_LOAD_SHIFT: c_uint = 16;
 
+// arpa/nameser.h
+pub const T_A: c_int = 1;
+pub const T_CNAME: c_int = 5;
+pub const C_IN: c_int = 1;
+
 // si_code values
 pub const SI_USER: c_int = 0;
 pub const SI_KERNEL: c_int = 0x80;
@@ -2101,6 +2106,47 @@ extern "C" {
         buf: *mut c_char,
         buflen: size_t,
         result: *mut *mut passwd,
+    ) -> c_int;
+
+    // <resolv.h>
+    pub fn res_query(
+        dname: *const c_char,
+        class: c_int,
+        kind: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
+    ) -> c_int;
+    pub fn res_search(
+        dname: *const c_char,
+        class: c_int,
+        kind: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
+    ) -> c_int;
+    pub fn res_querydomain(
+        name: *const c_char,
+        domain: *const c_char,
+        class: c_int,
+        kind: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
+    ) -> c_int;
+    pub fn res_mkquery(
+        op: c_int,
+        dname: *const c_char,
+        class: c_int,
+        kind: c_int,
+        data: *const c_uchar,
+        datalen: c_int,
+        newrr: *const c_uchar,
+        buf: *mut c_uchar,
+        buflen: c_int,
+    ) -> c_int;
+    pub fn res_send(
+        msg: *const c_uchar,
+        msglen: c_int,
+        answer: *mut c_uchar,
+        anslen: c_int,
     ) -> c_int;
 }
 
