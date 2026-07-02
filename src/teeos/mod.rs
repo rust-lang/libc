@@ -49,7 +49,7 @@ pub type clockid_t = c_int;
 
 pub type suseconds_t = c_long;
 
-pub type once_fn = extern "C" fn() -> c_void;
+pub type once_fn = extern "C" fn();
 
 pub type pthread_once_t = c_int;
 
