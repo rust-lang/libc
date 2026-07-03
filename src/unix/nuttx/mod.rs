@@ -10,6 +10,7 @@ use crate::{
     DIR,
 };
 
+pub type pid_t = c_int;
 pub type nlink_t = u16;
 pub type ino_t = u16;
 pub type blkcnt_t = u64;
@@ -28,11 +29,11 @@ pub type pthread_rwlockattr_t = i32;
 pub type pthread_t = i32;
 pub type rlim_t = i64;
 pub type sa_family_t = u16;
-pub type socklen_t = u32;
+pub type socklen_t = c_uint;
 pub type speed_t = usize;
 pub type suseconds_t = i32;
 pub type tcflag_t = u32;
-pub type clockid_t = i32;
+pub type clockid_t = c_int;
 pub type time_t = i64;
 
 cfg_if! {
