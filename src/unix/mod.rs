@@ -14,6 +14,7 @@ pub type intptr_t = isize;
 pub type uintptr_t = usize;
 pub type ssize_t = isize;
 
+#[cfg(not(target_os = "nuttx"))]
 pub type pid_t = i32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
