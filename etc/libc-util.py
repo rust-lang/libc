@@ -4,6 +4,7 @@
 import argparse
 import copy
 import functools
+import json
 import os
 import pprint
 import re
@@ -13,6 +14,9 @@ from dataclasses import dataclass
 from inspect import cleandoc
 from multiprocessing import Pool
 from pathlib import Path
+
+REPO_OWNER = "rust-lang"
+REPO = "libc"
 
 
 def main() -> None:
@@ -24,7 +28,7 @@ def main() -> None:
     p_cat = sub.add_parser(
         "check-all-targets",
         aliases=["cat"],
-        help="Run `cargo check` on some or all targets (see subcommand help for more)",
+        help="run `cargo check` on some or all targets (see subcommand help for more)",
         description=cleandoc(
             """
             Run `cargo check` on all targets, possibly with filtering.
@@ -53,6 +57,22 @@ def main() -> None:
     )
     p_cat.set_defaults(func=do_check_all_targets)
 
+    p_rel = sub.add_parser(
+        "relabel",
+        help="replace the stable-nominated label with stable-applied",
+        description=cleandoc(
+            """
+            Replace the stable-nominated label with stable-applied, given the number of
+            a PR listing backported PRs.
+            """,
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    p_rel.add_argument(
+        "pr_number", metavar="pr-number", help="pull request for the backport"
+    )
+    p_rel.set_defaults(func=do_relabel)
+
     args = p.parse_args()
     args.func(args)
 
@@ -62,6 +82,86 @@ def do_check_all_targets(args: argparse.Namespace) -> None:
     toolchain = os.environ.get("RUSTC_CACHE_TOOLCHAIN") or "nightly-2026-06-24"
     cat = CheckAllTargets.prepare(toolchain)
     cat.check_all_targets(args.package, args.only, args.skip, args.cargo_args)
+
+
+def do_relabel(args: argparse.Namespace) -> None:
+    """Take a backport PR with a list of of items like `* http://.../libc/pull/1234`
+    and swap `stable-nominated` to `stable-applied`.
+    """
+
+    num = args.pr_number
+    j = check_output(
+        [
+            "gh",
+            "pr",
+            "view",
+            f"https://github.com/{REPO_OWNER}/{REPO}/pull/{num}",
+            "--json=baseRefName,body,state,title",
+        ]
+    )
+    d = json.loads(j)
+    base: str = d["baseRefName"]
+    body: str = d["body"]
+    state: str = d["state"]
+    title: str = d["title"]
+
+    if state != "MERGED":
+        print(f'expected MERGED state; got {state} for "{title}" (#{num})')
+        exit(1)
+    if base != "libc-0.2":
+        print(f'expected libc-0.2 base ref; got {base} for "{title}" (#{num})')
+        exit(1)
+
+    print(f'Relabling PRs listed in {num} "{title}"')
+
+    to_relabel = []
+    for line in body.splitlines():
+        re.match(r"^[-*]\s*http", line)
+        if not re.match(r"^[-*]\s*http", line):
+            continue
+
+        match = re.match(r"^[-*]\s*https?://github.com/rust-lang/libc/pull/(\d+)", line)
+        if match is None:
+            print(f"{E.YEL}Line `{line}` does not match expected link pattern{E.RST}")
+            continue
+
+        num = int(match.group(1))
+        to_relabel.append(num)
+
+    # `gh` requests can be pretty slow, parallelize to help with large lists
+    with Pool() as p:
+        p.map(do_relabel_inner, to_relabel)
+
+    print("Finished relabeling")
+
+
+def do_relabel_inner(num: int):
+    j = check_output(["gh", "pr", "view", pr_url(num), "--json=state,title,labels"])
+    d = json.loads(j)
+    state: str = d["state"]
+    title: str = d["title"]
+    labels: list[str] = [i["name"] for i in d["labels"]]
+
+    if state != "MERGED":
+        print(
+            f'{E.YEL}expected MERGED state; got {state} for "{title}" (#{num}){E.RST}'
+        )
+        return
+    if "stable-nominated" not in labels:
+        print(f'{E.YEL}`stable-nominated` not in labels for "{title}" (#{num}){E.RST}')
+
+    # Use check_output to eat the stdout since otherwise `gh` draws a spinner that
+    # messes up interleaved stdout.
+    check_output(
+        [
+            "gh",
+            "pr",
+            "edit",
+            "--remove-label=stable-nominated",
+            "--add-label=stable-applied",
+            pr_url(num),
+        ]
+    )
 
 
 @dataclass
@@ -236,11 +336,11 @@ class CheckAllTargets:
             fulldesc = f"{t.name} ({ran + 1} / {total})"
 
             if len(t.skip) > 0:
-                print(f"{E.YEL_D}Skipping {fulldesc} ({", ".join(t.skip)}){E.RST}")
+                print(f"{E.YEL}Skipping {fulldesc} ({", ".join(t.skip)}){E.RST}")
                 skipped += 1
                 continue
 
-            print(f"{E.CY}Checking {fulldesc}{E.RST}")
+            print(f"{E.CY_B}Checking {fulldesc}{E.RST}")
 
             extra_args = [] if t.installed else ["-Zbuild-std=core"]
             common_args = [
@@ -280,7 +380,7 @@ class CheckAllTargets:
             if ok:
                 passed += 1
             else:
-                print(f"{E.RED}failed: {t.target}{E.RST}")
+                print(f"{E.RED_B}failed: {t.target}{E.RST}")
                 failures.append(t.name)
 
             if len(failures) > self.failure_limit:
@@ -363,13 +463,18 @@ class RustcTarget:
 class E:
     """ANSI escapes."""
 
+    YEL = "\033[33m"
+    GRN = "\033[32m"
+
     # Bright colors
-    CY = "\033[1;36m"
-    YEL = "\033[1;33m"
-    RED = "\033[1;31m"
+    CY_B = "\033[1;36m"
+    YEL_B = "\033[1;33m"
+    RED_B = "\033[1;31m"
+
     # Dimmed colors
     YEL_D = "\033[2;33m"
     GRN_D = "\033[2;32m"
+
     RST = "\033[0m"
 
 
@@ -379,6 +484,10 @@ def cache_dir() -> Path:
     if xdg_cache is not None:
         return Path(xdg_cache)
     return Path.home() / ".cache"
+
+
+def pr_url(num: int) -> str:
+    return f"https://github.com/{REPO_OWNER}/{REPO}/pull/{num}"
 
 
 def check_output(args: list[str], *, quiet: bool = False, **kw) -> str:
