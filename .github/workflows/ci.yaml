@@ -313,6 +313,7 @@ jobs:
         if: contains(matrix.target, 'freebsd')
         with:
           release: ${{ matrix.release }}
+          envs: CARGO_TERM_COLOR CARGO_TERM_VERBOSE RUSTDOCFLAGS RUSTFLAGS RUST_BACKTRACE
           usesh: true
           copyback: false
           prepare: ./ci/bsd-prepare.sh ${{ matrix.target }}
@@ -327,6 +328,7 @@ jobs:
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
+          envs: CARGO_TERM_COLOR CARGO_TERM_VERBOSE RUSTDOCFLAGS RUSTFLAGS RUST_BACKTRACE
           usesh: true
           mem: 4096
           copyback: false
@@ -338,6 +340,7 @@ jobs:
         if: contains(matrix.target, 'netbsd')
         with:
           release: "10.1"
+          envs: CARGO_TERM_COLOR CARGO_TERM_VERBOSE RUSTDOCFLAGS RUSTFLAGS RUST_BACKTRACE
           usesh: true
           mem: 4096
           copyback: false
@@ -350,6 +353,7 @@ jobs:
         with:
           # Use the latest LTS
           release: "r151054-build"
+          envs: CARGO_TERM_COLOR CARGO_TERM_VERBOSE RUSTDOCFLAGS RUSTFLAGS RUST_BACKTRACE
           usesh: true
           mem: 4096
           copyback: false
