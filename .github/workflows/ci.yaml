@@ -315,20 +315,14 @@ jobs:
           release: ${{ matrix.release }}
           usesh: true
           copyback: false
-          prepare: |
-            set -ex
-            pkg install -y libnghttp2 curl
-            curl https://sh.rustup.rs -sSf --output rustup.sh
-            sh rustup.sh -y --default-toolchain nightly --profile=minimal
-            . "$HOME/.cargo/env"
-            rustup target add ${{ matrix.target }}
+          prepare: ./ci/bsd-prepare.sh ${{ matrix.target }}
           run: |
             set -ex
             . "$HOME/.cargo/env"
             LIBC_CI=1 ./ci/run.sh ${{ matrix.target }}
             ./ci/run.sh ${{ matrix.target }}
 
-      - name: test on Solaris
+      - name: Test on Solaris
         uses: vmactions/solaris-vm@d30dd6c228c8661ade859e36ead7660b9a62efcc # v1.3.7
         if: contains(matrix.target, 'solaris')
         with:
@@ -336,17 +330,8 @@ jobs:
           usesh: true
           mem: 4096
           copyback: false
-          prepare: |
-            set -ex
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
-              --profile minimal --default-toolchain nightly -y
-            uname -a
-          run: |
-            set -ex
-            . "$HOME/.cargo/env"
-            which rustc
-            rustc -Vv
-            ./ci/run.sh ${{ matrix.target }}
+          prepare: ./ci/bsd-prepare.sh ${{ matrix.target }}
+          run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on NetBSD
         uses: vmactions/netbsd-vm@99816dccf75edf233ed6cd00a159e3a5b85ea373 # v1.4.0
@@ -356,19 +341,10 @@ jobs:
           usesh: true
           mem: 4096
           copyback: false
-          prepare: |
-            set -ex
-            /usr/sbin/pkg_add curl
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
-              --profile minimal --default-toolchain nightly -y
-          run: |
-            set -ex
-            . "$HOME/.cargo/env"
-            which rustc
-            rustc -Vv
-            ./ci/run.sh ${{ matrix.target }}
+          prepare: ./ci/bsd-prepare.sh ${{ matrix.target }}
+          run: ./ci/bsd-run.sh ${{ matrix.target }}
 
-      - name: test on illumos
+      - name: Test on illumos
         uses: vmactions/omnios-vm@7f2be0b927aad1a78498c8aeeac4c4ce1fabd322 # v1.3.3
         if: contains(matrix.target, 'illumos')
         with:
@@ -377,17 +353,8 @@ jobs:
           usesh: true
           mem: 4096
           copyback: false
-          prepare: |
-            set -ex
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- \
-              --profile minimal --default-toolchain nightly -y
-            uname -a
-          run: |
-            set -ex
-            . "$HOME/.cargo/env"
-            which rustc
-            rustc -Vv
-            ./ci/run.sh ${{ matrix.target }}
+          prepare: ./ci/bsd-prepare.sh ${{ matrix.target }}
+          run: ./ci/bsd-run.sh ${{ matrix.target }}
 
   ctest_msrv:
     name: Check ctest MSRV
