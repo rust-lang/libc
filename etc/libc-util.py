@@ -3,6 +3,7 @@
 
 import argparse
 import copy
+import datetime as dt
 import functools
 import json
 import os
@@ -29,8 +30,7 @@ def main() -> None:
         "check-all-targets",
         aliases=["cat"],
         help="run `cargo check` on some or all targets (see subcommand help for more)",
-        description=cleandoc(
-            """
+        description=cleandoc("""
             Run `cargo check` on all targets, possibly with filtering.
 
             Query `rustc` for a list of supported targets, then run `cargo check` on
@@ -42,8 +42,7 @@ def main() -> None:
             takes so long that it can be worth keeping the cache around.
 
             The pinned toolchain can be overridden by setting RUSTC_CACHE_TOOLCHAIN.
-            """,
-        ),
+        """),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p_cat.add_argument("package", help="specify the package to build")
@@ -60,18 +59,39 @@ def main() -> None:
     p_rel = sub.add_parser(
         "relabel",
         help="replace the stable-nominated label with stable-applied",
-        description=cleandoc(
-            """
+        description=cleandoc("""
             Replace the stable-nominated label with stable-applied, given the number of
             a PR listing backported PRs.
-            """,
-        ),
+        """),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p_rel.add_argument(
         "pr_number", metavar="pr-number", help="pull request for the backport"
     )
     p_rel.set_defaults(func=do_relabel)
+
+    p_log = sub.add_parser(
+        "make-changelog",
+        help="collect changelog entries",
+        description=cleandoc("""
+            Prepare a template with commits merged between `old-tag` and `new-ref`, for
+            appending to the changelog.
+        """),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    p_log.add_argument(
+        "--old-tag",
+        metavar="old-tag",
+        help="tag of the previous revision to serve as the changelog base",
+        required=True,
+    )
+    p_log.add_argument(
+        "--new-ref",
+        metavar="new-ref",
+        help="ref to compare to the old tag",
+        default="libc-0.2",
+    )
+    p_log.set_defaults(func=do_make_changelog)
 
     args = p.parse_args()
     args.func(args)
@@ -162,6 +182,90 @@ def do_relabel_inner(num: int):
             pr_url(num),
         ]
     )
+
+
+def do_make_changelog(args: argparse.Namespace) -> None:
+    old_tag: str = args.old_tag
+    new_ref: str = args.new_ref
+    date = dt.datetime.now(dt.UTC).strftime("%Y-%m-%d")
+    split = old_tag.split(".")
+    split[2] = str(int(split[2]) + 1)  # increment patch version
+    next_tag = ".".join(split)
+
+    ret = cleandoc(f"""
+        ## [{next_tag}](https://github.com/rust-lang/libc/compare/{old_tag}...{next_tag}) - {date}
+
+        ### Support
+        ### Added
+        ### Deprecated
+        ### Fixed
+        ### Changed
+        ### Removed
+        ### Other
+    """)
+    ret += "\n\n"
+
+    changes = check_output(
+        [
+            "git",
+            "log",
+            f"{old_tag}..{new_ref}",
+            "--no-merges",
+            "--oneline",
+            "--reverse",
+        ],
+    ).splitlines()
+
+    print(
+        f"Generating changelog for {old_tag}..{new_ref}. Make sure {new_ref} "
+        "is up to date!"
+    )
+
+    for logline in changes:
+        sha = logline.split()[0]
+        summary = check_output(["git", "log", sha, "--format=%s", "-1"], quiet=True)
+        body = check_output(["git", "log", sha, "--format=%b", "-1"], quiet=True)
+        summary = summary.strip()
+        body = body.strip()
+
+        link = None
+
+        # Extract expected trailers
+        orig_sha_opt = re.search(r"\(cherry picked from commit (\w+)\)", body, re.M)
+        url_opt = re.search(r"^\(backport <(.*)>\)", body, re.M)
+
+        # Prefer a PR URL if available
+        if url_opt is not None:
+            pr_url = url_opt[1]
+            pr_opt = re.match(
+                rf"https://github.com/{REPO_OWNER}/{REPO}/pull/(\d+)", pr_url
+            )
+            if pr_opt is not None:
+                pr_num = pr_opt[1]
+                link = f"[#{pr_num}]({pr_url})"
+
+        # If there is no PR URL, link the backported commit
+        if link is None and orig_sha_opt is not None:
+            orig_sha = orig_sha_opt[1]
+            short = orig_sha[:12]
+            link = f"[{short}](https://github.com/rust-lang/libc/commit/{orig_sha})"
+
+        # If there is no PR URL or cherry pick commit, link the commit itself
+        if link is None:
+            patch_sha = check_output(["git", "rev-parse", sha], quiet=True).strip()
+            short = patch_sha[:12]
+            link = f"[{short}](https://github.com/rust-lang/libc/commit/{patch_sha})"
+
+        line = f"- {summary} ({link})"
+
+        ret += "\n"
+        ret += line
+
+    print(
+        "Copy the below to CHANGELOG.md, then sort log messages into the "
+        "relevant categories:\n"
+    )
+    print(ret)
 
 
 @dataclass
