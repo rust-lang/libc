@@ -4,6 +4,7 @@
 import argparse
 import copy
 import datetime as dt
+from enum import StrEnum
 import functools
 import json
 import os
@@ -86,6 +87,43 @@ def main() -> None:
         ).execute()
     )
 
+    p_bkp = sub.add_parser(
+        "backport",
+        help="prepare to cherry pick to `libc-0.2` (see subcommand help for more)",
+        description=Backporter.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    p_bkp.add_argument(
+        "--branch", help="branch to backport to, must not be checked out", required=True
+    )
+    p_bkp.set_defaults(
+        func=lambda args: Backporter(branch=args.branch).start_backports()
+    )
+
+    s = sub.add_parser(
+        "backport-pr-description",
+        help="create a PR description for a backport branch",
+        description=Backporter.backport_pr_description.__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    s.add_argument("--branch", help="name of the backport branch", required=True)
+    s.set_defaults(func=lambda args: Backporter.backport_pr_description(args.branch))
+
+    p_amd = sub.add_parser(
+        "add-backport-trailer",
+        help='add "(backport ...)" to the previous commit',
+        description=Backporter.add_backport_trailer.__doc__,
+    )
+    p_amd.add_argument("pick", help="commit that was cherry picked")
+    p_amd.set_defaults(func=lambda args: Backporter.add_backport_trailer(args.pick))
+
+    p_seq = sub.add_parser(
+        "_sequence-editor",
+        help="hook to update the rebase todo, meant for internal use",
+    )
+    p_seq.add_argument("path", help="path to the rebase todo")
+    p_seq.set_defaults(func=lambda args: Backporter.sequence_editor(args.path))
+
     args = p.parse_args()
     args.func(args)
 
@@ -129,7 +167,6 @@ class Relabel:
 
         to_relabel = []
         for line in body.splitlines():
-            re.match(r"^[-*]\s*http", line)
             if not re.match(r"^[-*]\s*http", line):
                 continue
 
@@ -555,6 +592,355 @@ class CheckInvocation:
 
 
 @dataclass(kw_only=True)
+class Backporter:
+    """Prepare an interactive rebase that will cherry pick commits to `libc-0.2`.
+
+    This loosely does the following:
+
+    * Create a git worktree at `.libc-backports`
+    * Switch to the specified branch
+    * Start an interactive rebase that runs `git cherry-pick -x <sha>` for each needed
+      commit, then modify the commit to add the `(cherry picked from ...)` and
+      `(backport ...)` trailers.
+
+    An interactive rebase is used because it's a nice way to create and execute a series
+    of shell commands with a chance to resolve conflicts and continue as needed.
+
+    Because it is standard `git rebase`, it is possible to use typical options like
+    `git rebase --edit-todo` if it pauses due to conflicts.
+    """
+
+    branch: str
+
+    WORKTREE_DIR = ".libc-backports"
+    WORKTREE_GIT = ["git", "-C", WORKTREE_DIR]
+    GQL_QUERY = """
+        query ($endCursor: String) {
+          repository(name: "libc", owner: "rust-lang") {
+            pullRequests(
+              first: 25
+              after: $endCursor
+              baseRefName: "main"
+              states: MERGED
+              labels: ["stable-nominated"]
+              # Ordering by merge date is not supported, we need to re-sort after fetch.
+              orderBy: {field: CREATED_AT, direction: ASC}
+            ) {
+              nodes {
+                title
+                number
+                state
+                url
+                author {
+                  login
+                }
+                mergedAt
+                mergeCommit {
+                  oid
+                  committedDate
+                  messageHeadline
+                  author {
+                    name
+                    user {
+                      login
+                    }
+                  }
+                }
+                commits(first: 100) {
+                  totalCount
+                  nodes {
+                    commit {
+                      oid
+                      committedDate
+                      messageHeadline
+                      author {
+                        name
+                        user {
+                          login
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
+            }
+          }
+        }
+    """
+
+    def start_backports(self) -> None:
+        self.ensure_local_updated()
+
+        try:
+            self.ensure_branch()
+            self.ensure_worktree()
+            self.prepare_rebase_todo()
+            seq_ed = "../etc/libc-util.py _sequence-editor"
+            run(
+                self.WORKTREE_GIT + ["rebase", "-i", "libc-0.2"],
+                env=os.environ | {"GIT_SEQUENCE_EDITOR": seq_ed},
+            )
+            # Give the user a chance to delete picks if desired
+            print("Presenting rebase todo to user for review...")
+            run(self.WORKTREE_GIT + ["rebase", "--edit-todo"])
+            run(self.WORKTREE_GIT + ["rebase", "--continue"])
+        except sp.CalledProcessError:
+            msg = f"""
+                {E.YEL}Rebase failed or incomplete; check the git error above for
+                details.
+
+                If git stopped because of a conflict or other resolvable error, change
+                to the worktree directory at {self.WORKTREE_DIR}. From there, you can
+                resolve conflicts or `git rebase --quit` to stop trying to backport the
+                rest of the commits.
+
+                If needed, `git worktree remove .libc-backports` will allow you to
+                delete the branch and start from scratch.{E.RST}
+            """
+            print("\n" + mstr(msg))
+            exit(1)
+
+    def prepare_rebase_todo(self) -> None:
+        """Create a rebase todo list and cache it, to be picked up by the sequence
+        editor.
+        """
+        # Start with a break so we can `--edit-todo`
+        rebase_todo = "break\n"
+        commit_map = ""
+
+        pull_requests = self.fetch_needs_backport_list()
+        for pr in pull_requests:
+            last_sha = pr.merge_commit.oid
+            parents = check_output(
+                ["git", "log", last_sha, "--format=%P", "-1"], quiet=True
+            ).split()
+
+            # If we have a merge commit, take only the second (incoming) commit.
+            if len(parents) > 2:
+                eprint("Can't backport commits with >1 parent")
+                exit(1)
+            if len(parents) == 2:
+                last_sha = parents[1]
+
+            # The commit list is not what we actually want to cherry pick; it has the
+            # refs for the commits in the PR but not the ref after merge. The PR's
+            # "merge" commit is the last commit on `main` from this PR, so we can
+            # work backwards; given N commits, `merge_sha~(N-1)` will be the first PR
+            # from the commit on `main`.
+            for i in reversed(range(len(pr.commits))):
+                n_back = len(pr.commits) - i - 1
+                pick_sha = check_output(
+                    ["git", "rev-parse", f"{last_sha}~{n_back}"], quiet=True
+                ).strip()
+                subject = check_output(
+                    ["git", "log", pick_sha, "--format=%s", "-1"], quiet=True
+                ).strip()
+                pick_short = pick_sha[:12]
+                rebase_todo += (
+                    f"exec printf '{E.CY_B.u}picking from PR{pr.number}: {pick_short} "
+                    f'"{subject}"{E.RST.u}\\n\''
+                    "\n"
+                    f'pick {pick_short}  # pick "{subject}"'
+                    "\n"
+                    f"exec ../etc/libc-util.py add-backport-trailer {pick_short}"
+                    "\n\n"
+                )
+                commit_map += f"{pick_sha} {pr.number}\n"
+
+        todo_path = self.rebase_todo_tmp_path()
+        # may need to create `target/libc-util`
+        todo_path.parent.parent.mkdir(exist_ok=True)
+        todo_path.parent.mkdir(exist_ok=True)
+        todo_path.write_text(rebase_todo)
+
+        self.commit_map_path().write_text(commit_map)
+
+    def fetch_needs_backport_list(self) -> list["PullRequest"]:
+        """Fetch PRs labeled `stable-nominated` via the GraphQL API"""
+        s = check_output(
+            [
+                "gh",
+                "api",
+                "graphql",
+                "--paginate",
+                "--slurp",
+                "-f",
+                "query=" + self.GQL_QUERY,
+            ]
+        )
+        j: list[dict] = json.loads(s)
+
+        # The result is paginated so we get nested lists. Extract the data we want
+        # then flatten.
+        pages = [page["data"]["repository"]["pullRequests"]["nodes"] for page in j]
+        pr_nodes = [pr_node for page in pages for pr_node in page]
+
+        pull_requests: list[PullRequest] = []
+        for pr in pr_nodes:
+            commits = [node["commit"] for node in pr["commits"]["nodes"]]
+
+            new = PullRequest(
+                title=pr["title"],
+                number=int(pr["number"]),
+                state=pr["state"],
+                url=pr["url"],
+                author_username=pr["author"]["login"],
+                merged_at=pr["mergedAt"],
+                merge_commit=Commit.from_object(pr["mergeCommit"]),
+                commits=[Commit.from_object(c) for c in commits],
+            )
+
+            total_commits = int(pr["commits"]["totalCount"])
+            new_commit_count = len(new.commits)
+            if total_commits != new_commit_count:
+                print(
+                    f"limit reached: {total_commits} total commits but could "
+                    f"only fetch {new_commit_count}"
+                )
+                exit(1)
+
+            pull_requests.append(new)
+
+        # Oldest to newest
+        pull_requests.sort(key=lambda pr: pr.merged_at)
+        return pull_requests
+
+    def ensure_local_updated(self) -> None:
+        """Sanity check that whatever we want to rebase onto is actually updated, and
+        fetch `main` to ensure cherry pick sources exist locally."""
+
+        run(["git", "fetch", repo_fetch_url(), "main"])
+        run(["git", "fetch", repo_fetch_url(), "libc-0.2"])
+        upstream = check_output(["git", "rev-parse", "FETCH_HEAD"]).strip()
+        local = check_output(["git", "rev-parse", "libc-0.2"]).strip()
+
+        if upstream != local:
+            print(
+                f"local libc-0.2@{local[:12]} does not match upstream/libc-0.2@{upstream[:12]}!"
+                "Fetch before retrying."
+            )
+            exit(1)
+
+    def ensure_branch(self) -> None:
+        """Create the branch if it doesn't exist."""
+        try:
+            run(["git", "branch", self.branch, "libc-0.2"], stderr=sp.PIPE)
+        except sp.CalledProcessError:
+            pass
+
+    def ensure_worktree(self) -> None:
+        """Set up a worktree pointing to the target branch."""
+        # Prune in case the directory was deleted without going via git.
+        run(["git", "worktree", "prune"])
+
+        try:
+            print("creating worktree")
+            run(
+                ["git", "worktree", "add", ".libc-backports", self.branch],
+                stderr=sp.PIPE,
+            )
+        except sp.CalledProcessError:
+            print("worktree already exists, checking out branch")
+            run(self.WORKTREE_GIT + ["switch", self.branch])
+
+    @staticmethod
+    def sequence_editor(path: str) -> None:
+        """The script-y way to construct a rebase is by setting the "sequence editor" to
+        a script that gets the rebase todo path. That's all this function does, the
+        needed contents have already been written.
+        """
+
+        print(f"editing rebase todo at {path}")
+
+        txt = "\n\n"
+        txt += Backporter.rebase_todo_tmp_path().read_text()
+
+        with Path(path).open("a") as f:
+            f.write(txt)
+
+    @staticmethod
+    def add_backport_trailer(pick: str) -> None:
+        """Add `(backport ...)` to the previous commit, using `(cherry picked from ...)`
+        to know where the commit came from.
+        """
+        head_summary = check_output(["git", "log", "-1", "HEAD", "--format=%s"]).strip()
+        pick_summary = check_output(["git", "log", "-1", pick, "--format=%s"]).strip()
+        head_message = check_output(["git", "log", "-1", "HEAD", "--format=%B"]).strip()
+        head = check_output(["git", "rev-parse", "HEAD"]).strip()
+        pick = check_output(["git", "rev-parse", pick]).strip()
+
+        existing_pick_msg = re.search(
+            r"^\(cherry picked from commit (\w+)\)", head_message, re.M
+        )
+        existing_backport_msg = re.search(r"^\(backport.*\)", head_message, re.M)
+
+        if existing_pick_msg is not None:
+            print(
+                f"{E.YEL}Commit {head} already contains cherry-pick trailer; "
+                f"skipping{E.RST}"
+            )
+            return
+
+        if existing_backport_msg is not None:
+            print(
+                f"{E.YEL}Commit {head} already contains backport trailer; "
+                f"skipping{E.RST}"
+            )
+            return
+
+        if head_summary != pick_summary:
+            print(
+                f"{E.YEL}Commit {head} summary does not match pick {pick} "
+                f"summary; skipping{E.RST}"
+            )
+            return
+
+        commit_map = Backporter.commit_map_path().read_text()
+        pr = None
+        for line in commit_map.splitlines():
+            if not line.startswith(pick):
+                continue
+            _, _, pr = line.partition(" ")
+            break
+
+        if pr is None:
+            print(f"{E.YEL}could not locate PR for picked commit {pick}{E.RST}")
+            return
+
+        new_message = head_message.strip()
+        new_message += f"\n\n(backport <{pr_url(int(pr))}>)"
+        new_message += f"\n(cherry picked from commit {pick})\n"
+        run(["git", "commit", "--amend", "--message", new_message])
+
+    @staticmethod
+    def backport_pr_description(branch: str) -> None:
+        """List all backported commits for a branch, for pasting into the PR body."""
+        commits = check_output(["git", "log", f"libc-0.2..{branch}", "--format=%b"])
+        urls = {x[1] for x in re.finditer(r"^\(backport <(.*)>\)", commits, re.M)}
+        urls = sorted(list(urls))
+
+        s = "Backport the following:\n\n"
+        for url in urls:
+            s += f"* {url}\n"
+
+        print(s)
+
+    @staticmethod
+    def rebase_todo_tmp_path() -> Path:
+        """Rebase todo to be appended to the default"""
+        return Path(__file__).parent.parent / "target" / "libc-util" / "rebase-todo.txt"
+
+    @staticmethod
+    def commit_map_path() -> Path:
+        """List of `<sha> <pr_number>` mappings."""
+        return Path(__file__).parent.parent / "target" / "libc-util" / "commit-map.txt"
+
+
+@dataclass(kw_only=True)
 class RustcTarget:
     """Config queried from rustc."""
 
@@ -594,7 +980,51 @@ class RustcTarget:
         return ret
 
 
-class E:
+@dataclass(kw_only=True)
+class PullRequest:
+    """Pull request built from a GitHub GraphQL API response"""
+
+    title: str
+    number: int
+    state: str
+    url: str
+    author_username: str
+    merged_at: str
+    merge_commit: "Commit"
+    commits: list["Commit"]
+
+
+@dataclass(kw_only=True)
+class Commit:
+    """Commit built from a GitHub GraphQL API response"""
+
+    oid: str
+    committed_date: str
+    subject: str
+    author_name: str
+    author_username: str | None
+
+    def __post_init__(self) -> None:
+        # Give some protection against multiline summaries, since that may confuse
+        # scripts or log messages.
+        self.subject = trunc_lines(self.subject)
+        self.author_name = trunc_lines(self.author_name)
+        if self.author_username is not None:
+            self.author_username = trunc_lines(self.author_username)
+
+    @staticmethod
+    def from_object(obj) -> "Commit":
+        user = obj["author"]["user"]
+        return Commit(
+            oid=obj["oid"],
+            committed_date=obj["committedDate"],
+            subject=obj["messageHeadline"],
+            author_name=obj["author"]["name"],
+            author_username=user["login"] if user is not None else None,
+        )
+
+
+class E(StrEnum):
     """ANSI escapes."""
 
     YEL = "\033[33m"
@@ -606,10 +1036,16 @@ class E:
     RED_B = "\033[1;31m"
 
     # Dimmed colors
+    DIM = "\033[2m"
     YEL_D = "\033[2;33m"
     GRN_D = "\033[2;32m"
 
     RST = "\033[0m"
+
+    @property
+    def u(self) -> str:
+        """Unescape, for passing to shell printf."""
+        return self.replace("\033", "\\033")
 
 
 @functools.cache
@@ -620,8 +1056,17 @@ def cache_dir() -> Path:
     return Path.home() / ".cache"
 
 
+def repo_fetch_url() -> str:
+    return f"https://github.com/{REPO_OWNER}/{REPO}.git"
+
+
 def pr_url(num: int) -> str:
     return f"https://github.com/{REPO_OWNER}/{REPO}/pull/{num}"
+
+
+def mstr(s: str) -> str:
+    """Message string: clean an indented string and convert singular `\\n`s to spaces."""
+    return re.sub(r"(\S)\n(\S)", r"\1 \2", cleandoc(s))
 
 
 def check_output(args: list[str], *, quiet: bool = False, **kw) -> str:
@@ -639,12 +1084,24 @@ def run(args: list[str], *, quiet: bool = False, **kw) -> sp.CompletedProcess:
 def xtrace(args: list[str], *, env: dict[str, str] | None) -> None:
     """Print commands before running them."""
     astr = " ".join(str(arg) for arg in args)
+
+    # GQL commands are long, trim the next line
+    astr = trunc_lines(astr)
+
     if env is None:
-        eprint(f"+ {astr}")
+        eprint(f"{E.DIM}+ {astr}{E.RST}")
     else:
         envdiff = set(env.items()) - set(os.environ.items())
         estr = " ".join(f"{k}='{v}'" for (k, v) in envdiff)
-        eprint(f"+ {estr} {astr}")
+        eprint(f"{E.DIM}+ {estr} {astr}{E.RST}")
+
+
+def trunc_lines(s: str) -> str:
+    """If >1 line, replace other lines with `...`."""
+    first, _, rest = s.partition("\n")
+    if rest != "":
+        first += " ..."
+    return first
 
 
 def eprint(*args, **kw) -> None:
