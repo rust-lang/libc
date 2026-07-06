@@ -6,4 +6,5 @@ getgrnam
 getgrnam_r
 getpwnam_r
 getpwuid_r
+in6_pktinfo
 posix_fallocate64
