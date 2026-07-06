@@ -212,6 +212,11 @@ s! {
         pub cmsg_type: c_int,
     }
 
+    pub struct in6_pktinfo {
+        pub ipi6_addr: crate::in6_addr,
+        pub ipi6_ifindex: c_uint,
+    }
+
     pub struct sem_t {
         __val: [c_int; 4],
     }
