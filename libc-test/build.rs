@@ -107,7 +107,7 @@ fn ctest_cfg() -> ctest::TestGenerator {
     cfg.skip_alias(|ty| ty.ident() == "__uint128");
 
     if env::var("LIBC_CI_ZBUILD_STD").is_ok() {
-        cfg.macro_expansion_cargo_args(vec!["-Zbuild-std=core,std".into()]);
+        *cfg.macro_expansion_cargo_args_mut() = vec!["-Zbuild-std=core,std".into()];
     }
     cfg.crate_name("libc".into());
 

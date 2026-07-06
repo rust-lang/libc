@@ -729,12 +729,12 @@ impl TestGenerator {
 
     /// Configures extra arguments to be passed to cargo during macro expansion.  
     /// This can be used, for example, to pass `-Zbuild-std`` if required.
-    pub fn macro_expansion_cargo_args(&mut self, args: Vec<String>) -> &mut Self {
-        self.macro_expansion_cargo_args = args;
-        self
+    pub fn macro_expansion_cargo_args_mut(&mut self) -> &mut Vec<String> {
+        &mut self.macro_expansion_cargo_args
     }
 
     /// Configures the crate name which should be used during macro expansion.
+    ///
     /// If the tested crate uses `#![crate_name = "..."]`, this must be called with the
     /// same name. Otherwise, there will be an error about `--crate-name` not
     /// matching.

@@ -46,20 +46,19 @@ unexpected_cfgs = "allow"
     );
     std::fs::write(cargo_toml_path, cargo_toml)?;
 
-    // In order to avoid warnings causing failures here when the
-    // environment's RUSTFLAGS contains -Dwarnings (or similar)
-    // we will append -Awarnings to RUSTFLAGS.
-    let flags = std::env::var("RUSTFLAGS").unwrap_or_default() + " -Awarnings";
-
     let mut cmd = Command::new(std::env::var("CARGO").unwrap_or("cargo".into()));
     cmd.env("RUSTC_BOOTSTRAP", "1")
-        .env("RUSTFLAGS", flags)
         .current_dir(dir.path())
         .arg("rustc")
         .arg("--lib")
         .arg("--profile")
         .arg("check")
         .args(extra_cargo_args);
+
+    // In order to avoid warnings causing failures here when the
+    // environment's RUSTFLAGS contains -Dwarnings (or similar),
+    // we will clear RUSTFLAGS.
+    cmd.env_remove("RUSTFLAGS");
 
     // set an independent target dir so we don't deadlock on the cargo build lock.
     cmd.arg("--target-dir").arg(dir.path().join("target"));
