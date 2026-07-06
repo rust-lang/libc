@@ -428,6 +428,176 @@ macro_rules! offset_of {
     }};
 }
 
+/// Emit a struct with the given derive attributes plus a generated `Default` impl.
+///
+/// Fields default to `Default::default()`. A field whose default can't be derived must carry
+/// `#[custom_default(EXPR)]` as its *first* attribute, and `EXPR` is used instead.
+macro_rules! impl_default {
+    // entry; `derives` is the attribute block the caller wants on the struct
+    (
+        derives: { $($derives:tt)* }
+        $(#[$attr:meta])*
+        $vis:vis struct $name:ident { $($body:tt)* }
+    ) => {
+        impl_default! {
+            @struct
+            derives: { $($derives)* }
+            attrs: { $(#[$attr])* }
+            vis: { $vis }
+            name: { $name }
+            stripped: { }
+            inits: { }
+            rest: { $($body)* }
+        }
+    };
+
+    // field led by #[custom_default(...)]
+    (
+        @struct
+        derives: { $($derives:tt)* }
+        attrs: { $($attr:tt)* }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        stripped: { $($stripped:tt)* }
+        inits: { $($inits:tt)* }
+        rest: {
+            #[custom_default($default:expr)]
+            $(#[$fattr:meta])*
+            $fvis:vis $fname:ident: $fty:ty,
+            $($tail:tt)*
+        }
+    ) => {
+        impl_default! {
+            @struct
+            derives: { $($derives)* }
+            attrs: { $($attr)* }
+            vis: { $vis }
+            name: { $name }
+            stripped: { $($stripped)* $(#[$fattr])* $fvis $fname: $fty, }
+            inits: { $($inits)* $fname: $default, }
+            rest: { $($tail)* }
+        }
+    };
+
+    // plain field
+    (
+        @struct
+        derives: { $($derives:tt)* }
+        attrs: { $($attr:tt)* }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        stripped: { $($stripped:tt)* }
+        inits: { $($inits:tt)* }
+        rest: {
+            $(#[$fattr:meta])*
+            $fvis:vis $fname:ident: $fty:ty,
+            $($tail:tt)*
+        }
+    ) => {
+        impl_default! {
+            @struct
+            derives: { $($derives)* }
+            attrs: { $($attr)* }
+            vis: { $vis }
+            name: { $name }
+            stripped: { $($stripped)* $(#[$fattr])* $fvis $fname: $fty, }
+            inits: { $($inits)* $fname: ::core::default::Default::default(), }
+            rest: { $($tail)* }
+        }
+    };
+
+    // done
+    (
+        @struct
+        derives: { $($derives:tt)* }
+        attrs: { $($attr:tt)* }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        stripped: { $($stripped:tt)* }
+        inits: { $($inits:tt)* }
+        rest: { }
+    ) => {
+        $($derives)*
+        $($attr)*
+        $vis struct $name { $($stripped)* }
+
+        impl ::core::default::Default for $name {
+            fn default() -> Self {
+                Self { $($inits)* }
+            }
+        }
+    };
+}
+
+/// Like [`s`], but also generates a `Default` impl for every struct in the block.
+macro_rules! s_with_default {
+    () => {};
+    (
+        $(#[$attr:meta])*
+        $vis:vis struct $name:ident { $($body:tt)* }
+        $($rest:tt)*
+    ) => {
+        impl_default! {
+            derives: {
+                #[repr(C)]
+                #[::core::prelude::v1::derive(
+                    ::core::clone::Clone,
+                    ::core::marker::Copy,
+                    ::core::fmt::Debug,
+                )]
+                #[cfg_attr(
+                    feature = "extra_traits",
+                    ::core::prelude::v1::derive(PartialEq, Eq, Hash)
+                )]
+                #[allow(deprecated)]
+            }
+            $(#[$attr])* $vis struct $name { $($body)* }
+        }
+        s_with_default! { $($rest)* }
+    };
+}
+
+/// Like [`s_no_extra_traits`], but also generates a `Default` impl for every struct in the block.
+macro_rules! s_no_extra_traits_with_default {
+    () => {};
+    (
+        $(#[$attr:meta])*
+        $vis:vis struct $name:ident { $($body:tt)* }
+        $($rest:tt)*
+    ) => {
+        impl_default! {
+            derives: {
+                #[repr(C)]
+                #[::core::prelude::v1::derive(
+                    ::core::clone::Clone,
+                    ::core::marker::Copy,
+                    ::core::fmt::Debug,
+                )]
+            }
+            $(#[$attr])* $vis struct $name { $($body)* }
+        }
+        s_no_extra_traits_with_default! { $($rest)* }
+    };
+    (
+        $(#[$attr:meta])*
+        $vis:vis union $name:ident { $($body:tt)* }
+        $($rest:tt)*
+    ) => {
+        #[repr(C)]
+        #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
+        $(#[$attr])*
+        $vis union $name { $($body)* }
+
+        impl ::core::fmt::Debug for $name {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                f.debug_struct(::core::stringify!($name)).finish_non_exhaustive()
+            }
+        }
+
+        s_no_extra_traits_with_default! { $($rest)* }
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use core::any::TypeId;
@@ -625,5 +795,33 @@ mod macro_checks {
     extern_ty! {
         type Foo;
         pub type Bar;
+    }
+
+    s_with_default! {
+        pub struct S3 {
+            pub a: u32,
+            #[custom_default([0; 64])]
+            pub buf: [u8; 64],
+        }
+    }
+
+    s_no_extra_traits_with_default! {
+        pub union U3 {
+            pub a: u32,
+            b: f32,
+        }
+
+        pub struct S4 {
+            pub a: u32,
+            #[custom_default(unsafe { ::core::mem::zeroed::<U3>() })]
+            pub u: U3,
+        }
+    }
+
+    fn assert_impls_default<T: Default>() {}
+
+    fn check_default() {
+        assert_impls_default::<S3>();
+        assert_impls_default::<S4>();
     }
 }
