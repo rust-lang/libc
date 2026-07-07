@@ -1,50 +1,34 @@
 FROM ubuntu:26.04
 
-RUN dpkg --add-architecture i386
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
-    expect \
+    e2fsprogs \
+    erofs-utils \
     file \
     gcc \
-    libc6-dev \
-    libpulse0 \
-    libstdc++6:i386 \
-    openjdk-8-jre \
+    libc-dev \
     python3 \
+    qemu-user \
     unzip \
     wget
 
 WORKDIR /android/
-COPY android* /android/
-
-ENV ANDROID_ARCH=aarch64
-# Single source of truth for the API level: it selects the emulator system
-# image (passed to android-install-sdk.sh) and names the CC wrapper below, so
-# the toolchain can never drift from the image the tests run on.
+COPY android-install-ndk.sh android-bionic-sysroot.sh /android/
+# The API level we compile against: this only names the CC wrapper and the
+# toolchain we use. The bionic extracted by android-bionic-sysroot.sh is
+# pinned separately and is newer, i.e. capable of testing newer APIs. The
+# toolchain wrapper is held at the same baseline as arm/x86_64 for now.
 ARG ANDROID_API=24
-ENV PATH=$PATH:/android/linux-x86_64/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
-
 RUN /android/android-install-ndk.sh
-RUN /android/android-install-sdk.sh $ANDROID_ARCH $ANDROID_API
-RUN mv /root/.android /tmp
-RUN chmod 777 -R /tmp/.android
-RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
+RUN /android/android-bionic-sysroot.sh
 
-ENV PATH=$PATH:/rust/bin \
+# Test binaries run under qemu-user against the bionic extracted to
+# /system by android-bionic-sysroot.sh. This is a stopgap until GitHub's
+# arm64 runners expose KVM, at which point we can move to Cuttlefish like
+# the x86_64-linux-android test.
+ENV PATH=$PATH:/rust/bin:/android/linux-x86_64/bin \
     CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android${ANDROID_API}-clang \
-    CARGO_TARGET_AARCH64_LINUX_ANDROID_RUNNER=/tmp/runtest \
+    CARGO_TARGET_AARCH64_LINUX_ANDROID_RUNNER=qemu-aarch64 \
     CC_aarch64_linux_android=aarch64-linux-android${ANDROID_API}-clang \
     AR_aarch64_linux_android=llvm-ar \
     HOME=/tmp
-
-ADD runtest-android.rs /tmp/runtest.rs
-ENTRYPOINT [ \
-    "bash", \
-    "-c", \
-    # set SHELL so android can detect a 64bits system, see
-    # http://stackoverflow.com/a/41789144
-    "SHELL=/bin/dash /android/sdk/emulator/emulator @aarch64 -no-window & \
-     rustc /tmp/runtest.rs -o /tmp/runtest && \
-     exec \"$@\"", \
-    "--" \
-]
