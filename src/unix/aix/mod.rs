@@ -114,6 +114,7 @@ s! {
         pub c_cc: [crate::cc_t; NCCS],
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct flock64 {
         pub l_type: c_short,
         pub l_whence: c_short,
@@ -439,6 +440,7 @@ s! {
         __unused: Padding<[*mut c_void; 34]>,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct rlimit64 {
         pub rlim_cur: rlim64_t,
         pub rlim_max: rlim64_t,
@@ -462,6 +464,7 @@ s! {
         shm_reserved1: Padding<i64>,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct stat64 {
         pub st_dev: dev_t,
         pub st_ino: ino_t,
@@ -2885,25 +2888,33 @@ extern "C" {
     pub fn ffsl(value: c_long) -> c_int;
     pub fn ffsll(value: c_longlong) -> c_int;
     pub fn fgetgrent(file: *mut crate::FILE) -> *mut crate::group;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn fgetpos64(stream: *mut crate::FILE, ptr: *mut fpos64_t) -> c_int;
     pub fn fgetpwent(file: *mut crate::FILE) -> *mut passwd;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut crate::FILE;
     pub fn freelocale(loc: crate::locale_t);
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn freopen64(
         filename: *const c_char,
         mode: *const c_char,
         file: *mut crate::FILE,
     ) -> *mut crate::FILE;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn fseeko64(stream: *mut crate::FILE, offset: off64_t, whence: c_int) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn fsetpos64(stream: *mut crate::FILE, ptr: *const fpos64_t) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn fstat64(fildes: c_int, buf: *mut stat64) -> c_int;
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
     // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
     // FIXME(1.0,deprecate,32): lfs binding to be removed
     pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn ftello64(stream: *mut crate::FILE) -> off64_t;
     pub fn ftok(path: *const c_char, id: c_int) -> key_t;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn ftruncate64(fd: c_int, length: off64_t) -> c_int;
     pub fn futimens(fd: c_int, times: *const crate::timespec) -> c_int;
     pub fn getcontext(ucp: *mut ucontext_t) -> c_int;
@@ -2961,6 +2972,7 @@ extern "C" {
         result: *mut *mut passwd,
     ) -> c_int;
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn getrlimit64(resource: c_int, rlim: *mut rlimit64) -> c_int;
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
     pub fn getitimer(which: c_int, curr_value: *mut crate::itimerval) -> c_int;
@@ -3012,7 +3024,9 @@ extern "C" {
         width: size_t,
         compar: Option<unsafe extern "C" fn(*const c_void, *const c_void) -> c_int>,
     ) -> *mut c_void;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
     pub fn madvise(addr: caddr_t, len: size_t, advice: c_int) -> c_int;
     pub fn makecontext(ucp: *mut ucontext_t, func: extern "C" fn(), argc: c_int, ...);
@@ -3073,6 +3087,7 @@ extern "C" {
     pub fn nl_langinfo(item: nl_item) -> *mut c_char;
     pub fn nl_langinfo_l(item: nl_item, loc: crate::locale_t) -> *mut c_char;
     pub fn nrand48(xseed: *mut c_ushort) -> c_long;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn open64(path: *const c_char, oflag: c_int, ...) -> c_int;
     pub fn pollset_create(maxfd: c_int) -> pollset_t;
     pub fn pollset_ctl(ps: pollset_t, pollctl_array: *mut poll_ctl, array_length: c_int) -> c_int;
@@ -3086,8 +3101,10 @@ extern "C" {
     pub fn pollset_query(ps: pollset_t, pollfd_query: *mut crate::pollfd) -> c_int;
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut crate::FILE;
     pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn posix_fadvise64(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn posix_fallocate64(fd: c_int, offset: off_t, len: off_t) -> c_int;
     pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
     pub fn posix_spawn(
@@ -3162,6 +3179,7 @@ extern "C" {
         argv: *const *mut c_char,
         envp: *const *mut c_char,
     ) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn pread64(fd: c_int, buf: *mut c_void, count: size_t, offset: off64_t) -> ssize_t;
     pub fn preadv(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: offset_t) -> ssize_t;
     pub fn ptrace64(
@@ -3173,6 +3191,7 @@ extern "C" {
     ) -> c_int;
     pub fn pututline(u: *const utmp) -> *mut utmp;
     pub fn pututxline(ut: *const utmpx) -> *mut utmpx;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn pwrite64(fd: c_int, buf: *const c_void, count: size_t, offset: off64_t) -> ssize_t;
     pub fn pwritev(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: offset_t)
         -> ssize_t;
@@ -3258,6 +3277,7 @@ extern "C" {
     pub fn setpriority(which: c_int, who: id_t, priority: c_int) -> c_int;
     pub fn setpwent();
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn setrlimit64(resource: c_int, rlim: *const rlimit64) -> c_int;
     pub fn settimeofday(tv: *const crate::timeval, tz: *const timezone) -> c_int;
     pub fn setitimer(
@@ -3285,7 +3305,9 @@ extern "C" {
     pub fn splice(socket1: c_int, socket2: c_int, flags: c_int) -> c_int;
     pub fn srand(seed: c_uint);
     pub fn srand48(seed: c_long);
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn stat64at(dirfd: c_int, path: *const c_char, buf: *mut stat64, flags: c_int) -> c_int;
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
     // FIXME(1.0,deprecate,64): lfs binding to be removed
@@ -3328,6 +3350,7 @@ extern "C" {
         new_value: *const itimerspec,
         old_value: *mut itimerspec,
     ) -> c_int;
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub fn truncate64(path: *const c_char, length: off64_t) -> c_int;
     pub fn uname(buf: *mut utsname) -> c_int;
     pub fn updwtmp(file: *const c_char, u: *const utmp);
