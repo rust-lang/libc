@@ -595,4 +595,6 @@ extern "C" {
     pub fn getrandom(buf: *mut c_void, buflen: usize, flags: u32) -> isize;
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(bytes: *mut c_void, nbytes: usize);
+    // include/string.h
+    pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
 }
