@@ -10,6 +10,7 @@ pub type blkcnt_t = c_long;
 pub type clock_t = c_int;
 pub type daddr_t = c_long;
 pub type dev_t = c_ulong;
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type fpos64_t = c_longlong;
 pub type fsblkcnt_t = c_ulong;
 pub type fsfilcnt_t = c_ulong;
@@ -21,6 +22,7 @@ pub type rlim_t = c_ulong;
 pub type speed_t = c_uint;
 pub type tcflag_t = c_uint;
 pub type time_t = c_long;
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type time64_t = i64;
 pub type timer_t = c_long;
 pub type wchar_t = c_uint;
@@ -33,6 +35,7 @@ pub type suseconds_t = c_int;
 pub type useconds_t = c_uint;
 pub type off_t = c_long;
 pub type offset_t = c_longlong;
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type off64_t = c_longlong;
 pub type idtype_t = c_uint;
 
@@ -48,6 +51,7 @@ pub type nl_item = c_int;
 pub type mqd_t = c_int;
 pub type shmatt_t = c_ulong;
 pub type regoff_t = c_long;
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type rlim64_t = c_ulonglong;
 
 pub type sem_t = c_int;
