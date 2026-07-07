@@ -566,6 +566,10 @@ pub const _SC_THREAD_STACK_MIN: i32 = 0x58;
 pub const _SC_GETPW_R_SIZE_MAX: i32 = 0x25;
 pub const _SC_HOST_NAME_MAX: i32 = 0x26;
 
+// include/sys/eventfd.h
+pub const EFD_NONBLOCK: i32 = O_NONBLOCK;
+pub const EFD_CLOEXEC: i32 = O_CLOEXEC;
+
 // signal.h
 pub const SIGHUP: c_int = 1;
 pub const SIGINT: c_int = 2;
@@ -664,4 +668,6 @@ extern "C" {
     ) -> c_int;
     pub fn recvmsg(sockfd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
     pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
+    // include/sys/eventfd.h
+    pub fn eventfd(count: c_uint, flags: c_int) -> c_int;
 }
