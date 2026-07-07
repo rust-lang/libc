@@ -33,7 +33,7 @@ cfg_if! {
 pub type iconv_t = *mut c_void;
 
 cfg_if! {
-    if #[cfg(not(target_env = "gnu"))] {
+    if #[cfg(not(any(target_env = "gnu", target_env = "uclibc")))] {
         extern_ty! {
             pub type fpos64_t; // FIXME(linux): fill this out with a struct
         }
