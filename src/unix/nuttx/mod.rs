@@ -50,9 +50,20 @@ s! {
         __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
+    // include/sys/socket.h
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [u8; 14],
+    }
+
+    pub struct msghdr {
+        pub msg_name: *mut c_void,
+        pub msg_namelen: socklen_t,
+        pub msg_iov: *mut crate::iovec,
+        pub msg_iovlen: c_ulong,
+        pub msg_control: *mut c_void,
+        pub msg_controllen: c_ulong,
+        pub msg_flags: c_int,
     }
 
     pub struct passwd {
@@ -484,24 +495,46 @@ pub const POLLERR: i16 = 0x08;
 pub const POLLNVAL: i16 = 0x20;
 
 // sys/socket.h
+// Supported Protocol Families
+pub const AF_UNSPEC: i32 = 0;
 pub const AF_UNIX: i32 = 1;
-pub const SOCK_DGRAM: i32 = 2;
-pub const SOCK_STREAM: i32 = 1;
 pub const AF_INET: i32 = 2;
 pub const AF_INET6: i32 = 10;
-pub const MSG_PEEK: i32 = 0x02;
+// The socket created by socket() has the indicated type, which specifies
+// the communication semantics.
+pub const SOCK_STREAM: i32 = 1;
+pub const SOCK_DGRAM: i32 = 2;
+pub const SOCK_RAW: i32 = 3;
+pub const SOCK_RDM: i32 = 4;
+pub const SOCK_SEQPACKET: i32 = 5;
+pub const SOCK_CLOEXEC: i32 = 0o02000000;
+pub const SOCK_NONBLOCK: i32 = 0o00004000;
+// Bits in the FLAGS argument to `send', `recv', et al. These are the bits
+// recognized by Linux, not all are supported by NuttX.
+pub const MSG_OOB: i32 = 0x000001;
+pub const MSG_PEEK: i32 = 0x000002;
+pub const MSG_TRUNC: i32 = 0x000020;
+pub const MSG_EOR: i32 = 0x000080;
+// Protocol levels supported by get/setsockopt():
 pub const SOL_SOCKET: i32 = 1;
-pub const SHUT_WR: i32 = 2;
-pub const SHUT_RD: i32 = 1;
-pub const SHUT_RDWR: i32 = 3;
-pub const SO_ERROR: i32 = 4;
-pub const SO_REUSEADDR: i32 = 11;
-pub const SOMAXCONN: i32 = 8;
-pub const SO_LINGER: i32 = 6;
-pub const SO_RCVTIMEO: i32 = 0xa;
-pub const SO_SNDTIMEO: i32 = 0xe;
+// Socket-level options
 pub const SO_BROADCAST: i32 = 1;
+pub const SO_ERROR: i32 = 4;
 pub const SO_KEEPALIVE: i32 = 5;
+pub const SO_LINGER: i32 = 6;
+pub const SO_OOBINLINE: i32 = 7;
+pub const SO_RCVBUF: i32 = 8;
+pub const SO_RCVTIMEO: i32 = 10;
+pub const SO_REUSEADDR: i32 = 11;
+pub const SO_SNDBUF: i32 = 12;
+pub const SO_SNDTIMEO: i32 = 14;
+pub const SO_TYPE: i32 = 15;
+// Values for the 'how' argument of shutdown()
+pub const SHUT_RD: i32 = 1;
+pub const SHUT_WR: i32 = 2;
+pub const SHUT_RDWR: i32 = 3;
+// The maximum backlog queue length
+pub const SOMAXCONN: i32 = 8;
 
 // netinet/tcp.h
 pub const TCP_NODELAY: i32 = 0x10;
@@ -597,4 +630,13 @@ extern "C" {
     pub fn arc4random_buf(bytes: *mut c_void, nbytes: usize);
     // include/string.h
     pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
+    // include/sys/socket.h
+    pub fn accept4(
+        sockfd: c_int,
+        addr: *mut sockaddr,
+        addrlen: *mut socklen_t,
+        flags: c_int,
+    ) -> c_int;
+    pub fn recvmsg(sockfd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
+    pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
 }
