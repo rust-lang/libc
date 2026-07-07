@@ -196,6 +196,8 @@ jobs:
       matrix:
         include:
           - target: aarch64-linux-android
+            # Keep in sync with the Android build pinned in ci/android-bionic-sysroot.sh
+            artifact-tag: android17
           - target: aarch64-unknown-linux-musl
           - target: aarch64-unknown-linux-musl
             env: { TEST_MUSL_V1_2_3: 1 }
