@@ -209,6 +209,7 @@ s! {
         __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
+    // include/netinet/in.h
     pub struct in_addr {
         pub s_addr: in_addr_t,
     }
@@ -243,9 +244,21 @@ s! {
         pub imr_interface: in_addr,
     }
 
+    pub struct ip_mreqn {
+        pub imr_multiaddr: in_addr,
+        pub imr_address: in_addr,
+        pub imr_ifindex: c_uint,
+    }
+
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
         pub ipv6mr_interface: u32,
+    }
+
+    pub struct ip_mreq_source {
+        pub imr_multiaddr: in_addr,
+        pub imr_interface: in_addr,
+        pub imr_sourceaddr: in_addr,
     }
 }
 
@@ -529,6 +542,8 @@ pub const SO_REUSEADDR: i32 = 11;
 pub const SO_SNDBUF: i32 = 12;
 pub const SO_SNDTIMEO: i32 = 14;
 pub const SO_TYPE: i32 = 15;
+// Protocol-level socket options may begin with this value
+pub const __SO_PROTOCOL: i32 = 16;
 // Values for the 'how' argument of shutdown()
 pub const SHUT_RD: i32 = 1;
 pub const SHUT_WR: i32 = 2;
@@ -589,15 +604,25 @@ pub const SIGSYS: c_int = 31;
 pub const PTHREAD_MUTEX_NORMAL: i32 = 0;
 
 // netinet/in.h
-pub const IP_TTL: i32 = 0x1e;
-pub const IPV6_V6ONLY: i32 = 0x17;
-pub const IPV6_JOIN_GROUP: i32 = 0x11;
-pub const IPV6_LEAVE_GROUP: i32 = 0x12;
-pub const IP_MULTICAST_LOOP: i32 = 0x13;
-pub const IPV6_MULTICAST_LOOP: i32 = 0x15;
-pub const IP_MULTICAST_TTL: i32 = 0x12;
-pub const IP_ADD_MEMBERSHIP: i32 = 0x14;
-pub const IP_DROP_MEMBERSHIP: i32 = 0x15;
+// SOL_IP protocol-level socket options.
+pub const IP_MULTICAST_IF: i32 = __SO_PROTOCOL + 1;
+pub const IP_MULTICAST_TTL: i32 = __SO_PROTOCOL + 2;
+pub const IP_MULTICAST_LOOP: i32 = __SO_PROTOCOL + 3;
+pub const IP_ADD_MEMBERSHIP: i32 = __SO_PROTOCOL + 4;
+pub const IP_DROP_MEMBERSHIP: i32 = __SO_PROTOCOL + 5;
+pub const IP_ADD_SOURCE_MEMBERSHIP: i32 = __SO_PROTOCOL + 8;
+pub const IP_DROP_SOURCE_MEMBERSHIP: i32 = __SO_PROTOCOL + 9;
+pub const IP_TOS: i32 = __SO_PROTOCOL + 13;
+pub const IP_TTL: i32 = __SO_PROTOCOL + 14;
+// SOL_IPV6 protocol-level socket options.
+pub const IPV6_JOIN_GROUP: i32 = __SO_PROTOCOL + 1;
+pub const IPV6_LEAVE_GROUP: i32 = __SO_PROTOCOL + 2;
+pub const IPV6_MULTICAST_HOPS: i32 = __SO_PROTOCOL + 3;
+pub const IPV6_MULTICAST_IF: i32 = __SO_PROTOCOL + 4;
+pub const IPV6_MULTICAST_LOOP: i32 = __SO_PROTOCOL + 5;
+pub const IPV6_UNICAST_HOPS: i32 = __SO_PROTOCOL + 6;
+pub const IPV6_V6ONLY: i32 = __SO_PROTOCOL + 7;
+pub const IPV6_RECVHOPLIMIT: i32 = __SO_PROTOCOL + 11;
 
 extern "C" {
     pub fn __errno() -> *mut c_int;
