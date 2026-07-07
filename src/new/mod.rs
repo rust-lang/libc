@@ -222,6 +222,7 @@ cfg_if! {
         pub use net::if_::*;
     } else if #[cfg(target_os = "freebsd")] {
         pub use sys::file::*;
+        pub use sys::socket::*;
     }
 }
 
