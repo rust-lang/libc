@@ -975,13 +975,8 @@ cfg_if! {
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
-    } else if #[cfg(target_arch = "powerpc")] {
-        mod powerpc;
-        pub use self::powerpc::*;
     } else {
-        // Only tested on ARM so far. Other platforms might have different
-        // definitions for types and constants.
-        pub use target_arch_not_implemented;
+        core::compile_error!("unsupported target");
     }
 }
 
