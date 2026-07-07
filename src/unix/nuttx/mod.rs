@@ -30,7 +30,14 @@ pub type suseconds_t = i32;
 pub type tcflag_t = u32;
 pub type clockid_t = i32;
 pub type time_t = i64;
-pub type wchar_t = i32;
+
+cfg_if! {
+    if #[cfg(any(target_arch = "riscv32", target_arch = "riscv64"))] {
+        pub type wchar_t = c_int;
+    } else if #[cfg(any(target_arch = "arm", target_arch = "aarch64"))] {
+        pub type wchar_t = c_uint;
+    }
+}
 
 s! {
     pub struct stat {
