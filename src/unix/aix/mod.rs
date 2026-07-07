@@ -134,6 +134,7 @@ s! {
         pub msg_flags: c_int,
     }
 
+    // FIXME(1.0,deprecate,32): lfs binding to be removed.
     pub struct statvfs64 {
         pub f_bsize: blksize64_t,
         pub f_frsize: blksize64_t,
@@ -267,6 +268,7 @@ s! {
         pub tv_nsec: c_int,
     }
 
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub struct statfs64 {
         pub f_version: c_int,
         pub f_type: c_int,
@@ -2896,7 +2898,9 @@ extern "C" {
     pub fn fsetpos64(stream: *mut crate::FILE, ptr: *const fpos64_t) -> c_int;
     pub fn fstat64(fildes: c_int, buf: *mut stat64) -> c_int;
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
+    // FIXME(1.0,deprecate,32): lfs binding to be removed
     pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
     pub fn ftello64(stream: *mut crate::FILE) -> off64_t;
     pub fn ftok(path: *const c_char, id: c_int) -> key_t;
@@ -3284,7 +3288,9 @@ extern "C" {
     pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
     pub fn stat64at(dirfd: c_int, path: *const c_char, buf: *mut stat64, flags: c_int) -> c_int;
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    // FIXME(1.0,deprecate,64): lfs binding to be removed
     pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
+    // FIXME(1.0,deprecate,32): lfs binding to be removed
     pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
     pub fn statx(path: *const c_char, buf: *mut stat, length: c_int, command: c_int) -> c_int;
     pub fn strcasecmp_l(
