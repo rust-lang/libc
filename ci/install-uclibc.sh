@@ -1,20 +1,19 @@
 #!/bin/bash
 #
-# Installs the appropriate uclibc toolchain into /toolchain
+# Builds a buildroot uclibc toolchain into /buildroot/output/host/
+#
+# usage: install-uclibc.sh BUILDROOT_DEFCONFIG USE_TIME64
 
 set -eux
 
-time64="$1"
+defconfig="$1"
+# shellcheck disable=SC2034
+time64="$2"  # TODO: honor this flag, adjusting UCLIBC_USE_TIME64 in config
 
-if [ "${time64:-0}" != "0" ]; then
-    version='bleeding-edge-2025.08-1'
-else
-    version='bleeding-edge-2024.02-1'  # last version with 32-bit time_t
-fi
+mkdir /buildroot
+BR_URL=https://buildroot.org/downloads/buildroot-2026.05.tar.xz
+curl --retry 5 -L "$BR_URL" | tar xJf - -C /buildroot --strip-components=1
 
-mkdir /toolchain
-
-curl --retry 5 -L "https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/armv7-eabihf--uclibc--${version}.tar.bz2" |
-tar xjf - -C /toolchain --strip-components=1
-
-/toolchain/relocate-sdk.sh
+cd /buildroot
+make defconfig "BR2_DEFCONFIG=$defconfig"
+make
