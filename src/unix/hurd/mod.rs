@@ -1013,10 +1013,7 @@ s! {
     }
 
     pub struct cpu_set_t {
-        #[cfg(all(target_pointer_width = "32", not(target_arch = "x86_64")))]
-        bits: [u32; 32],
-        #[cfg(not(all(target_pointer_width = "32", not(target_arch = "x86_64"))))]
-        bits: [u64; 16],
+        __bits: [__cpu_mask; __CPU_SETSIZE / __NCPUBITS],
     }
 
     pub struct if_nameindex {
@@ -2564,6 +2561,7 @@ pub const SCHED_FIFO: c_int = 1;
 pub const SCHED_RR: c_int = 2;
 pub const _BITS_TYPES_STRUCT_SCHED_PARAM: usize = 1;
 pub const __CPU_SETSIZE: usize = 1024;
+pub const __NCPUBITS: usize = 8 * size_of::<__cpu_mask>();
 pub const CPU_SETSIZE: usize = 1024;
 
 // pthread.h
@@ -3499,36 +3497,36 @@ f! {
 
     pub unsafe fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = mem::zeroed();
-        let size_in_bits = 8 * size_of_val(&_dummy.bits[0]);
+        let size_in_bits = 8 * size_of_val(&_dummy.__bits[0]);
         ((count as size_t + size_in_bits - 1) / 8) as size_t
     }
 
     pub unsafe fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
-        cpuset.bits.fill(0);
+        cpuset.__bits.fill(0);
     }
 
     pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * size_of_val(&cpuset.__bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-        cpuset.bits[idx] |= 1 << offset;
+        cpuset.__bits[idx] |= 1 << offset;
     }
 
     pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
-        let size_in_bits = 8 * size_of_val(&cpuset.bits[0]); // 32, 64 etc
+        let size_in_bits = 8 * size_of_val(&cpuset.__bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-        cpuset.bits[idx] &= !(1 << offset);
+        cpuset.__bits[idx] &= !(1 << offset);
     }
 
     pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
-        let size_in_bits = 8 * size_of_val(&cpuset.bits[0]);
+        let size_in_bits = 8 * size_of_val(&cpuset.__bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
-        0 != (cpuset.bits[idx] & (1 << offset))
+        0 != (cpuset.__bits[idx] & (1 << offset))
     }
 
     pub unsafe fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
-        let size_of_mask = size_of_val(&cpuset.bits[0]);
-        for i in cpuset.bits[..(size / size_of_mask)].iter() {
+        let size_of_mask = size_of_val(&cpuset.__bits[0]);
+        for i in cpuset.__bits[..(size / size_of_mask)].iter() {
             s += i.count_ones();
         }
         s as c_int
@@ -3539,7 +3537,7 @@ f! {
     }
 
     pub unsafe fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
-        set1.bits == set2.bits
+        set1.__bits == set2.__bits
     }
 
     pub unsafe fn IPTOS_TOS(tos: u8) -> u8 {
