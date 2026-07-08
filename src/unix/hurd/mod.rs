@@ -3717,9 +3717,7 @@ extern "C" {
         oldattr: *mut crate::mq_attr,
     ) -> c_int;
 
-    pub fn lseek64(__fd: c_int, __offset: __off64_t, __whence: c_int) -> __off64_t;
-
-    pub fn lseek(__fd: c_int, __offset: __off_t, __whence: c_int) -> __off_t;
+    pub fn lseek64(__fd: c_int, __offset: off64_t, __whence: c_int) -> off64_t;
 
     pub fn fgetpos64(stream: *mut crate::FILE, ptr: *mut fpos64_t) -> c_int;
     pub fn fseeko64(stream: *mut crate::FILE, offset: off64_t, whence: c_int) -> c_int;
@@ -4097,10 +4095,8 @@ extern "C" {
         old_value: *mut crate::itimerspec,
     ) -> c_int;
 
-    pub fn fstat(__fd: c_int, __buf: *mut stat) -> c_int;
     pub fn fstat64(__fd: c_int, __buf: *mut stat64) -> c_int;
 
-    pub fn fstatat(__fd: c_int, __file: *const c_char, __buf: *mut stat, __flag: c_int) -> c_int;
     pub fn fstatat64(
         __fd: c_int,
         __file: *const c_char,
@@ -4116,11 +4112,9 @@ extern "C" {
         statxbuf: *mut statx,
     ) -> c_int;
 
-    pub fn ftruncate(__fd: c_int, __length: __off_t) -> c_int;
-    pub fn ftruncate64(__fd: c_int, __length: __off64_t) -> c_int;
-    pub fn truncate64(__file: *const c_char, __length: __off64_t) -> c_int;
+    pub fn ftruncate64(__fd: c_int, __length: off64_t) -> c_int;
+    pub fn truncate64(__file: *const c_char, __length: off64_t) -> c_int;
 
-    pub fn lstat(__file: *const c_char, __buf: *mut stat) -> c_int;
     pub fn lstat64(__file: *const c_char, __buf: *mut stat64) -> c_int;
 
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statfs64")]
@@ -4130,15 +4124,11 @@ extern "C" {
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
     pub fn fstatfs64(__fildes: c_int, __buf: *mut statfs64) -> c_int;
 
-    pub fn statvfs(__file: *const c_char, __buf: *mut statvfs) -> c_int;
     pub fn statvfs64(__file: *const c_char, __buf: *mut statvfs64) -> c_int;
-    pub fn fstatvfs(__fildes: c_int, __buf: *mut statvfs) -> c_int;
     pub fn fstatvfs64(__fildes: c_int, __buf: *mut statvfs64) -> c_int;
 
-    pub fn open(__file: *const c_char, __oflag: c_int, ...) -> c_int;
     pub fn open64(__file: *const c_char, __oflag: c_int, ...) -> c_int;
 
-    pub fn openat(__fd: c_int, __file: *const c_char, __oflag: c_int, ...) -> c_int;
     pub fn openat64(__fd: c_int, __file: *const c_char, __oflag: c_int, ...) -> c_int;
 
     pub fn fopen64(filename: *const c_char, mode: *const c_char) -> *mut crate::FILE;
@@ -4305,16 +4295,9 @@ extern "C" {
 
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
 
-    pub fn stat(__file: *const c_char, __buf: *mut stat) -> c_int;
     pub fn stat64(__file: *const c_char, __buf: *mut stat64) -> c_int;
 
-    pub fn readdir(dirp: *mut crate::DIR) -> *mut crate::dirent;
-    pub fn readdir64(dirp: *mut crate::DIR) -> *mut crate::dirent64;
-    pub fn readdir_r(
-        dirp: *mut crate::DIR,
-        entry: *mut crate::dirent,
-        result: *mut *mut crate::dirent,
-    ) -> c_int;
+    pub fn readdir64(dirp: *mut crate::DIR) -> *mut dirent64;
     pub fn readdir64_r(
         dirp: *mut crate::DIR,
         entry: *mut dirent64,
