@@ -1068,6 +1068,23 @@ impl siginfo_t {
     }
 }
 
+s_no_extra_traits! {
+    pub struct fpos_t {
+        __pos: off_t,
+        __state: __mbstate_t,
+    }
+
+    struct __mbstate_t {
+        __count: c_int,
+        __value: __c_anonymous___mbstate_t___value,
+    }
+
+    union __c_anonymous___mbstate_t___value {
+        __wch: c_int,
+        __wchb: [c_char; 4],
+    }
+}
+
 // const
 
 // aio.h
