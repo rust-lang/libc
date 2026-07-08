@@ -625,7 +625,10 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
+    if #[cfg(not(any(
+        target_os = "hurd",
+        all(target_os = "linux", target_env = "gnu")
+    )))] {
         extern_ty! {
             pub type fpos_t; // FIXME(unix): fill this out with a struct
         }
