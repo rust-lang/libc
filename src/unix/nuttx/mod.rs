@@ -505,8 +505,14 @@ pub const S_IXOTH: u32 = 0x001;
 
 // sys/poll.h
 pub const POLLIN: i16 = 0x01;
+pub const POLLRDNORM: i16 = 0x01;
+pub const POLLRDBAND: i16 = 0x01;
+pub const POLLPRI: i16 = 0x02;
 pub const POLLOUT: i16 = 0x04;
+pub const POLLWRNORM: i16 = 0x04;
+pub const POLLWRBAND: i16 = 0x04;
 pub const POLLHUP: i16 = 0x10;
+pub const POLLRDHUP: i16 = 0x10;
 pub const POLLERR: i16 = 0x08;
 pub const POLLNVAL: i16 = 0x20;
 
