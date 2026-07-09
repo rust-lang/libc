@@ -536,6 +536,15 @@ IFF_SIMPLEX
 IFF_STATICARP
 IFF_UP
 IMAXBEL
+IN6_IFF_ANYCAST
+IN6_IFF_AUTOCONF
+IN6_IFF_DEPRECATED
+IN6_IFF_DETACHED
+IN6_IFF_DUPLICATED
+IN6_IFF_NODAD
+IN6_IFF_PREFER_SOURCE
+IN6_IFF_TEMPORARY
+IN6_IFF_TENTATIVE
 INIT_PROCESS
 IOV_MAX
 IPC_CREAT
@@ -1464,6 +1473,7 @@ SIGLWP
 SIGSTKSZ
 SIGTHR
 SIOCGIFADDR
+SIOCGIFAFLAG_IN6
 SLIPDISC
 SOCKCREDSIZE
 SOCK_CLOEXEC
@@ -1884,6 +1894,7 @@ _SC_XOPEN_VERSION
 _SC_XOPEN_XCU_VERSION
 _UUID_NODE_LEN
 __c_anonymous_cr_pid
+__c_anonymous_ifr_ifru6
 __cap_rights_clear
 __cap_rights_get
 __cap_rights_init
@@ -2065,6 +2076,7 @@ glob_t
 globfree
 hexdump
 humanize_number
+icmp6_ifstat
 iconv
 iconv_close
 iconv_open
@@ -2076,6 +2088,9 @@ if_nameindex
 ifaddrs
 ifconf
 ifreq
+in6_addrlifetime
+in6_ifreq
+in6_ifstat
 in6_pktinfo
 initgroups
 input_absinfo
