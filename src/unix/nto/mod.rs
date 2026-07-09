@@ -950,8 +950,8 @@ pub const LOCK_UN: c_int = 0x8;
 pub const SS_ONSTACK: c_int = 1;
 pub const SS_DISABLE: c_int = 2;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PATH_MAX: c_int = 1024;
 
 pub const UIO_MAXIOV: c_int = 1024;
@@ -2140,36 +2140,36 @@ pub const TIOCSWINSZ: c_int = -2146929561;
 
 pub const USER_CS_PATH: c_int = 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_BASE_MAX: c_int = 2;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_DIM_MAX: c_int = 3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_SCALE_MAX: c_int = 4;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_STRING_MAX: c_int = 5;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_EXPR_NEST_MAX: c_int = 7;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_LINE_MAX: c_int = 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_RE_DUP_MAX: c_int = 9;
 
 pub const USER_POSIX2_VERSION: c_int = 10;

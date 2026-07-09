@@ -898,14 +898,14 @@ pub const CHILD_MAX: c_int = 256;
 pub const IOV_MAX: c_int = 1024;
 pub const PTHREAD_STACK_MIN: size_t = 65536;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PATH_MAX: c_int = 4096;
 
 pub const PIPE_BUF: usize = 4096;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NGROUPS_MAX: c_int = 1024;
 
 pub const FILENAME_MAX: c_int = 4096;
