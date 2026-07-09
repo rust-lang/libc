@@ -679,4 +679,6 @@ extern "C" {
     pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
     // include/sys/eventfd.h
     pub fn eventfd(count: c_uint, flags: c_int) -> c_int;
+    // include/unistd.h
+    pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
 }
