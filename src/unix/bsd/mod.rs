@@ -166,8 +166,8 @@ pub const FIOASYNC: c_ulong = 0x8004667d;
 pub const FIOSETOWN: c_ulong = 0x8004667c;
 pub const FIOGETOWN: c_ulong = 0x4004667b;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PATH_MAX: c_int = 1024;
 
 pub const MAXPATHLEN: c_int = PATH_MAX;

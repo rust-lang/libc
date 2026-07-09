@@ -1383,8 +1383,8 @@ pub const SKF_AD_PAY_OFFSET: c_int = 52;
 pub const SKF_AD_RANDOM: c_int = 56;
 pub const SKF_AD_VLAN_TPID: c_int = 60;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SKF_AD_MAX: c_int = 64;
 
 pub const SKF_NET_OFF: c_int = -0x100000;
@@ -1573,8 +1573,8 @@ pub const NFNL_SUBSYS_NFTABLES: c_int = 10;
 pub const NFNL_SUBSYS_NFT_COMPAT: c_int = 11;
 pub const NFNL_SUBSYS_HOOK: c_int = 12;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NFNL_SUBSYS_COUNT: c_int = 13;
 
 pub const NFNL_MSG_BATCH_BEGIN: c_int = crate::NLMSG_MIN_TYPE;
@@ -1692,8 +1692,8 @@ pub const NFQA_CFG_F_GSO: c_int = 0x0004;
 pub const NFQA_CFG_F_UID_GID: c_int = 0x0008;
 pub const NFQA_CFG_F_SECCTX: c_int = 0x0010;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NFQA_CFG_F_MAX: c_int = 0x0020;
 
 pub const NFQA_SKB_CSUMNOTREADY: c_int = 0x0001;
@@ -1806,8 +1806,8 @@ pub const NF_BR_PRI_NAT_DST_OTHER: c_int = 100;
 pub const NF_BR_PRI_FILTER_OTHER: c_int = 200;
 pub const NF_BR_PRI_NAT_SRC: c_int = 300;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NF_BR_PRI_LAST: c_int = crate::INT_MAX;
 
 // linux/netfilter_ipv4.h
@@ -1833,8 +1833,8 @@ pub const NF_IP_PRI_SELINUX_LAST: c_int = 225;
 pub const NF_IP_PRI_CONNTRACK_HELPER: c_int = 300;
 pub const NF_IP_PRI_CONNTRACK_CONFIRM: c_int = crate::INT_MAX;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NF_IP_PRI_LAST: c_int = crate::INT_MAX;
 
 // linux/netfilter_ipv6.h
@@ -1859,8 +1859,8 @@ pub const NF_IP6_PRI_NAT_SRC: c_int = 100;
 pub const NF_IP6_PRI_SELINUX_LAST: c_int = 225;
 pub const NF_IP6_PRI_CONNTRACK_HELPER: c_int = 300;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NF_IP6_PRI_LAST: c_int = crate::INT_MAX;
 
 // linux/netfilter_ipv6/ip6_tables.h
@@ -1939,14 +1939,14 @@ pub const SIOCSIWPMKSA: c_ulong = 0x8B36;
 
 pub const SIOCIWFIRSTPRIV: c_ulong = 0x8BE0;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SIOCIWLASTPRIV: c_ulong = 0x8BFF;
 
 pub const SIOCIWFIRST: c_ulong = 0x8B00;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SIOCIWLAST: c_ulong = SIOCIWLASTPRIV;
 
 pub const IWEVTXDROP: c_ulong = 0x8C00;
@@ -2669,8 +2669,8 @@ pub const NFT_REG_2: c_int = 2;
 pub const NFT_REG_3: c_int = 3;
 pub const NFT_REG_4: c_int = 4;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const __NFT_REG_MAX: c_int = 5;
 
 pub const NFT_REG32_00: c_int = 8;
@@ -2726,8 +2726,8 @@ cfg_if! {
     }
 }
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NFT_MSG_MAX: c_int = 34;
 
 pub const NFT_SET_ANONYMOUS: c_int = 0x1;
@@ -2858,8 +2858,8 @@ pub const NFT_NG_INCREMENTAL: c_int = 0;
 pub const NFT_NG_RANDOM: c_int = 1;
 
 // linux/input.h
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const FF_MAX: __u16 = 0x7f;
 pub const FF_CNT: usize = FF_MAX as usize + 1;
 
@@ -2872,59 +2872,59 @@ pub const INPUT_PROP_TOPBUTTONPAD: __u16 = 0x04;
 pub const INPUT_PROP_POINTING_STICK: __u16 = 0x05;
 pub const INPUT_PROP_ACCELEROMETER: __u16 = 0x06;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const INPUT_PROP_MAX: __u16 = 0x1f;
 
 pub const INPUT_PROP_CNT: usize = INPUT_PROP_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const EV_MAX: __u16 = 0x1f;
 pub const EV_CNT: usize = EV_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SYN_MAX: __u16 = 0xf;
 pub const SYN_CNT: usize = SYN_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const KEY_MAX: __u16 = 0x2ff;
 pub const KEY_CNT: usize = KEY_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const REL_MAX: __u16 = 0x0f;
 pub const REL_CNT: usize = REL_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const ABS_MAX: __u16 = 0x3f;
 pub const ABS_CNT: usize = ABS_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SW_MAX: __u16 = 0x11;
 pub const SW_CNT: usize = SW_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const MSC_MAX: __u16 = 0x07;
 pub const MSC_CNT: usize = MSC_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const LED_MAX: __u16 = 0x0f;
 pub const LED_CNT: usize = LED_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const REP_MAX: __u16 = 0x01;
 pub const REP_CNT: usize = REP_MAX as usize + 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SND_MAX: __u16 = 0x07;
 pub const SND_CNT: usize = SND_MAX as usize + 1;
 
@@ -3137,8 +3137,8 @@ pub const KERN_CORE_USES_PID: c_int = 52;
 pub const KERN_TAINTED: c_int = 53;
 pub const KERN_CADPID: c_int = 54;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const KERN_PIDMAX: c_int = 55;
 
 pub const KERN_CORE_PATTERN: c_int = 56;
@@ -3149,8 +3149,8 @@ pub const KERN_PRINTK_RATELIMIT: c_int = 60;
 pub const KERN_PRINTK_RATELIMIT_BURST: c_int = 61;
 pub const KERN_PTY: c_int = 62;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const KERN_NGROUPS_MAX: c_int = 63;
 
 pub const KERN_SPARC_SCONS_PWROFF: c_int = 64;

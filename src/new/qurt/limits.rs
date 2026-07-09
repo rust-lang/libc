@@ -28,21 +28,21 @@ pub const USHRT_MAX: c_ushort = 65535;
 pub const ARG_MAX: c_int = 4096;
 pub const CHILD_MAX: c_int = 25;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const LINK_MAX: c_int = 8;
 
 pub const MAX_CANON: c_int = 255;
 pub const MAX_INPUT: c_int = 255;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NAME_MAX: c_int = 255;
 
 pub const OPEN_MAX: c_int = 20;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PATH_MAX: c_int = 260;
 
 pub const PIPE_BUF: c_int = 512;

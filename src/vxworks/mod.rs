@@ -708,8 +708,8 @@ pub const PTHREAD_MUTEX_RECURSIVE: c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
 pub const PTHREAD_STACK_MIN: usize = 4096;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const _PTHREAD_SHARED_SEM_NAME_MAX: usize = 30;
 
 //sched.h
@@ -1050,8 +1050,8 @@ pub const AF_TIPC: c_int = 33;
 pub const AF_MIPC: c_int = 34;
 pub const AF_MIPC_SAFE: c_int = 35;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const AF_MAX: c_int = 39;
 
 // termios.h
@@ -1182,8 +1182,8 @@ pub const FIOGETNAME: c_int = 18;
 pub const FIONBIO: c_int = u32_cast_int(0x90040010);
 
 // limits.h
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PATH_MAX: c_int = _PARM_PATH_MAX;
 
 pub const _POSIX_PATH_MAX: c_int = 256;
@@ -1329,12 +1329,12 @@ pub const AT_REMOVEDIR: c_int = 0x200;
 pub const AT_SYMLINK_FOLLOW: c_int = 0x400;
 
 // vxParams.h definitions
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const _PARM_NAME_MAX: c_int = 255;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const _PARM_PATH_MAX: c_int = 1024;
 
 // WAIT STUFF

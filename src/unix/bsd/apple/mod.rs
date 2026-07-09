@@ -2173,8 +2173,8 @@ pub const CPU_STATE_SYSTEM: c_int = 1;
 pub const CPU_STATE_IDLE: c_int = 2;
 pub const CPU_STATE_NICE: c_int = 3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const CPU_STATE_MAX: c_int = 4;
 
 pub const PROCESSOR_BASIC_INFO: c_int = 1;
@@ -2403,8 +2403,8 @@ pub const EOWNERDEAD: c_int = 105;
 pub const EQFULL: c_int = 106;
 pub const ENOTCAPABLE: c_int = 107;
 
-/// This symbols is prone to change across releases upstream.
-/// See the [usage guidelines](crate::#usage-guidelines) for details and use.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.and use.
 pub const ELAST: c_int = 107;
 
 pub const EAI_AGAIN: c_int = 2;
@@ -3592,36 +3592,36 @@ pub const HW_PRODUCT: c_int = 27;
 pub const HW_MAXID: c_int = 28;
 pub const USER_CS_PATH: c_int = 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_BASE_MAX: c_int = 2;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_DIM_MAX: c_int = 3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_SCALE_MAX: c_int = 4;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_STRING_MAX: c_int = 5;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_EXPR_NEST_MAX: c_int = 7;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_LINE_MAX: c_int = 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_RE_DUP_MAX: c_int = 9;
 
 pub const USER_POSIX2_VERSION: c_int = 10;
@@ -3742,8 +3742,8 @@ pub const RTV_SSTHRESH: c_int = 0x20;
 pub const RTV_RTT: c_int = 0x40;
 pub const RTV_RTTVAR: c_int = 0x80;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const RTAX_MAX: c_int = 8;
 
 pub const KERN_PROCARGS2: c_int = 49;
@@ -3953,8 +3953,8 @@ pub const MNT_NOWAIT: c_int = 2;
 // <mach/thread_policy.h>
 pub const THREAD_STANDARD_POLICY: c_int = 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_STANDARD_POLICY_COUNT: c_int = 0;
 
 pub const THREAD_EXTENDED_POLICY: c_int = 1;
@@ -4019,8 +4019,8 @@ pub const VM_PAGE_QUERY_PAGE_CS_NX: i32 = 0x400;
 // mach/task_info.h
 pub const TASK_THREAD_TIMES_INFO: u32 = 3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const HOST_CPU_LOAD_INFO_COUNT: u32 = 4;
 
 pub const MACH_TASK_BASIC_INFO: u32 = 20;
@@ -4085,8 +4085,8 @@ pub const COPYFILE_STATE_DST_BSIZE: c_int = 12;
 pub const COPYFILE_STATE_BSIZE: c_int = 13;
 
 // <sys/attr.h>
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const ATTR_BIT_MAP_COUNT: c_ushort = 5;
 
 pub const FSOPT_NOFOLLOW: u32 = 0x1;
@@ -4259,73 +4259,73 @@ const fn __DARWIN_ALIGN32(p: usize) -> usize {
     (p + __DARWIN_ALIGNBYTES32) & !__DARWIN_ALIGNBYTES32
 }
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_EXTENDED_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_extended_policy_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_TIME_CONSTRAINT_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_time_constraint_policy_data_t>() / size_of::<integer_t>())
         as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_PRECEDENCE_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_precedence_policy_data_t>() / size_of::<integer_t>())
         as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_AFFINITY_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_affinity_policy_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_BACKGROUND_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_background_policy_data_t>() / size_of::<integer_t>())
         as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_LATENCY_QOS_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_latency_qos_policy_data_t>() / size_of::<integer_t>())
         as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_THROUGHPUT_QOS_POLICY_COUNT: mach_msg_type_number_t =
     (size_of::<thread_throughput_qos_policy_data_t>() / size_of::<integer_t>())
         as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_BASIC_INFO_COUNT: mach_msg_type_number_t =
     (size_of::<thread_basic_info_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_IDENTIFIER_INFO_COUNT: mach_msg_type_number_t =
     (size_of::<thread_identifier_info_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const THREAD_EXTENDED_INFO_COUNT: mach_msg_type_number_t =
     (size_of::<thread_extended_info_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const TASK_THREAD_TIMES_INFO_COUNT: u32 =
     (size_of::<task_thread_times_info_data_t>() / size_of::<natural_t>()) as u32;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const MACH_TASK_BASIC_INFO_COUNT: u32 =
     (size_of::<mach_task_basic_info_data_t>() / size_of::<natural_t>()) as u32;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const HOST_VM_INFO64_COUNT: mach_msg_type_number_t =
     (size_of::<vm_statistics64_data_t>() / size_of::<integer_t>()) as mach_msg_type_number_t;
 

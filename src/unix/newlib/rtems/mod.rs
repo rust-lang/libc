@@ -57,8 +57,8 @@ pub const SIGUSR1: c_int = 25;
 pub const SIGUSR2: c_int = 26;
 pub const SIGRTMIN: c_int = 27;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SIGRTMAX: c_int = 31;
 
 pub const SIGXCPU: c_int = 24;

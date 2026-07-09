@@ -103,8 +103,8 @@ s! {
 pub const AF_FILE: c_int = 1;
 pub const AF_KCM: c_int = 41;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const AF_MAX: c_int = 43;
 
 pub const AF_QIPCRTR: c_int = 42;
@@ -240,8 +240,8 @@ pub const O_RSYNC: c_int = 1052672;
 pub const PF_FILE: c_int = 1;
 pub const PF_KCM: c_int = 41;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PF_MAX: c_int = 43;
 
 pub const PF_QIPCRTR: c_int = 42;
