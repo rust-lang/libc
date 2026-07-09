@@ -409,8 +409,13 @@ cfg_if! {
     }
 }
 
-pub const TIOCCBRK: c_uint = 0x2000747a;
-pub const TIOCSBRK: c_uint = 0x2000747b;
+cfg_if! {
+    // Redefined in `new/apple`
+    if #[cfg(not(target_vendor = "apple"))] {
+        pub const TIOCCBRK: c_uint = 0x2000747a;
+        pub const TIOCSBRK: c_uint = 0x2000747b;
+    }
+}
 
 pub const PRIO_PROCESS: c_int = 0;
 pub const PRIO_PGRP: c_int = 1;
