@@ -1,3 +1,7 @@
+///! Definitions for Apache NuttX RTOS.
+///!
+///! Following definitions are based on NuttX 13.0.0.
+///! See https://github.com/apache/nuttx/tree/releases/13.0 for more details.
 use crate::prelude::*;
 use crate::{
     in6_addr,
@@ -33,6 +37,7 @@ pub type time_t = i64;
 pub type wchar_t = i32;
 
 s! {
+    // sys/stat.h
     pub struct stat {
         pub st_dev: dev_t,
         pub st_ino: ino_t,
@@ -50,7 +55,7 @@ s! {
         __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
-    // include/sys/socket.h
+    // sys/socket.h
     pub struct sockaddr {
         pub sa_family: sa_family_t,
         pub sa_data: [u8; 14],
@@ -66,6 +71,7 @@ s! {
         pub msg_flags: c_int,
     }
 
+    // pwd.h
     pub struct passwd {
         pub pw_name: *const c_char,
         pub pw_passwd: *const c_char,
@@ -209,7 +215,7 @@ s! {
         __reserved: Padding<[usize; __DEFAULT_RESERVED_SIZE__]>,
     }
 
-    // include/netinet/in.h
+    // netinet/in.h
     pub struct in_addr {
         pub s_addr: in_addr_t,
     }
@@ -576,7 +582,7 @@ pub const _SC_THREAD_STACK_MIN: i32 = 0x58;
 pub const _SC_GETPW_R_SIZE_MAX: i32 = 0x25;
 pub const _SC_HOST_NAME_MAX: i32 = 0x26;
 
-// include/sys/eventfd.h
+// sys/eventfd.h
 pub const EFD_NONBLOCK: i32 = O_NONBLOCK;
 pub const EFD_CLOEXEC: i32 = O_CLOEXEC;
 
@@ -667,9 +673,9 @@ extern "C" {
     pub fn getrandom(buf: *mut c_void, buflen: usize, flags: u32) -> isize;
     pub fn arc4random() -> u32;
     pub fn arc4random_buf(bytes: *mut c_void, nbytes: usize);
-    // include/string.h
+    // string.h
     pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
-    // include/sys/socket.h
+    // sys/socket.h
     pub fn accept4(
         sockfd: c_int,
         addr: *mut sockaddr,
@@ -678,8 +684,8 @@ extern "C" {
     ) -> c_int;
     pub fn recvmsg(sockfd: c_int, msg: *mut msghdr, flags: c_int) -> ssize_t;
     pub fn sendmsg(sockfd: c_int, msg: *const msghdr, flags: c_int) -> ssize_t;
-    // include/sys/eventfd.h
+    // sys/eventfd.h
     pub fn eventfd(count: c_uint, flags: c_int) -> c_int;
-    // include/unistd.h
+    // unistd.h
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
 }
