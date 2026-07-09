@@ -2,6 +2,7 @@
 //!
 //! <https://github.com/apple-oss-distributions/xnu/tree/main/bsd/sys>
 
+pub(crate) mod ioccom;
 pub(crate) mod signal;
 
 /// Directory: `sys/_types`

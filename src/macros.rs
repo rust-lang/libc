@@ -89,6 +89,7 @@ macro_rules! prelude {
             pub(crate) use core::{
                 assert,
                 cfg,
+                debug_assert,
                 fmt,
                 hash,
                 iter,
