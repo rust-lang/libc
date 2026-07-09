@@ -198,6 +198,7 @@ cfg_if! {
         pub use net::route::*;
     } else if #[cfg(target_vendor = "apple")] {
         pub use net::bpf::*;
+        pub use netinet6::in6_var::*;
         pub use pthread_::introspection::*;
         pub use pthread_::pthread_spis::*;
         pub use pthread_::spawn::*;
