@@ -44,7 +44,5 @@ $cmd --features extra_traits -- $test_flags
 
 if [ "$env" = "gnu" ] && [ "$bits" = "32" ]; then
     # shellcheck disable=SC2086
-    RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_gnu_file_offset_bits=\"64\"" $cmd -- $test_flags
-    # shellcheck disable=SC2086
     RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_gnu_time_bits=\"64\"" $cmd -- $test_flags
 fi

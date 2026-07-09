@@ -166,7 +166,6 @@ fn main() {
         let defaultbits = "32";
 
         let mut tb_env = env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS");
-        let mut fb_env = env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS");
 
         // FIXME: remove these fallbacks in a few releases
         if let Ok(old_tb_env) = env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
@@ -176,47 +175,28 @@ fn main() {
             );
             tb_env = tb_env.or(Ok(old_tb_env));
         }
-        if let Ok(old_fb_env) = env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS") {
+        if env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS").is_ok()
+            || env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS").is_ok()
+        {
             println!(
-                "cargo:warning=RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS will be removed; \
-                set `--cfg=libc_unstable_gnu_file_offset_bits=\"...\"` via RUSTFLAGS instead"
+                "cargo:warning=glibc file offset can no longer be set independently of \
+                `gnu_time_bits`"
             );
-            fb_env = fb_env.or(Ok(old_fb_env));
         }
 
-        let (timebits, filebits) = match (tb_env.as_deref(), fb_env.as_deref()) {
-            (Ok(_), Ok(_)) => panic!(
-                "Do not set both libc_unstable_gnu_time_bits and \
-                 libc_unstable_gnu_file_offset_bits"
-            ),
-            (Err(_), Err(_)) => (defaultbits, defaultbits),
-            (Ok(tb), Err(_)) if tb == "64" => (tb, tb),
-            (Ok(tb), Err(_)) if tb == "32" => (tb, defaultbits),
-            (Ok(_), Err(_)) => {
-                panic!("Invalid value for libc_unstable_gnu_time_bits, must be 32 or 64")
-            }
-            (Err(_), Ok(fb)) if fb == "32" || fb == "64" => (defaultbits, fb),
-            (Err(_), Ok(_)) => {
-                panic!("Invalid value for libc_unstable_gnu_file_offset_bits, must be 32 or 64")
+        let timebits = match tb_env.as_deref() {
+            Err(_) => defaultbits,
+            Ok(tb) if tb == "64" => tb,
+            Ok(tb) if tb == "32" => tb,
+            Ok(_) => {
+                panic!("Invalid value for libc_unstable_gnu_time_bits. Must be 32, 64, or unset.")
             }
         };
-        let valid_bits = ["32", "64"];
-        assert!(
-            valid_bits.contains(&filebits) && valid_bits.contains(&timebits),
-            "Invalid value for libc_unstable_gnu_time_bits or \
-            libc_unstable_gnu_file_offset_bits. Must be 32, 64 or unset"
-        );
-        assert!(
-            !(filebits == "32" && timebits == "64"),
-            "libc_unstable_gnu_file_offset_bits must be 64 or unset if \
-            libc_unstable_gnu_time_bits is 64"
-        );
+
         if timebits == "64" {
             set_cfg("linux_time_bits64");
-            set_cfg("gnu_time_bits64");
-        }
-        if filebits == "64" {
             set_cfg("gnu_file_offset_bits64");
+            set_cfg("gnu_time_bits64");
         }
     }
 
