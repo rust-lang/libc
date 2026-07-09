@@ -221,6 +221,7 @@ fn test_apple(target: &str) {
     assert!(target.contains("apple"));
     let x86_64 = target.contains("x86_64");
     let i686 = target.contains("i686");
+    let macos = VERSIONS.macos;
 
     let mut cfg = ctest_cfg();
 
@@ -370,8 +371,11 @@ fn test_apple(target: &str) {
             // https://github.com/apple-oss-distributions/xnu/commit/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea
             "ELAST" => true,
 
-            // FIXME(macos): bumped up on macOS 26, it's sizeof `vm_statistics64_data_t`
-            "HOST_VM_INFO64_COUNT" => true,
+            // FIXME(macos): bumped up on macOS 27, it's sizeof `vm_statistics64_data_t`
+            "HOST_VM_INFO64_COUNT" => macos.unwrap() < (27, 0),
+
+            // FIXME(macos): bumped up on macOS 27, from 16 to 32
+            "AIO_LISTIO_MAX" => macos.unwrap() < (27, 0),
 
             _ => false,
         }
@@ -379,8 +383,8 @@ fn test_apple(target: &str) {
 
     cfg.skip_alias(move |ty| {
         match ty.ident() {
-            // FIXME(macos): The size is changed in macOS 26.
-            "vm_statistics64_data_t" => true,
+            // FIXME(macos): The size is changed in macOS 27.
+            "vm_statistics64_data_t" => macos.unwrap() < (27, 0),
             _ => false,
         }
     });
