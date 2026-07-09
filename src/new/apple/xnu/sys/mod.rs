@@ -4,6 +4,7 @@
 
 pub(crate) mod ioccom;
 pub(crate) mod signal;
+pub(crate) mod ttycom;
 
 /// Directory: `sys/_types`
 ///
