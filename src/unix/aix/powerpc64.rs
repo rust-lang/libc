@@ -500,6 +500,7 @@ cfg_if! {
     }
 }
 
+// pthread.h
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __mt_word: [0, 2, 0, 0, 0, 0, 0, 0],
 };
@@ -509,11 +510,11 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __rw_word: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
-
 pub const PTHREAD_ONCE_INIT: pthread_once_t = pthread_once_t {
     __on_word: [0, 0, 0, 0, 0, 2, 0, 0, 0],
 };
 
+// sys/resource.h
 pub const RLIM_INFINITY: c_ulong = 0x7fffffffffffffff;
 
 extern "C" {
