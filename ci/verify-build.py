@@ -302,10 +302,8 @@ def do_semver_checks(cfg: Cfg, target: Target) -> bool:
         # running on the host.
 
     if cfg.baseline_crate_dir is None:
-        eprint(
-            "Non-host target: --baseline-crate-dir must be specified to \
-            run semver-checks"
-        )
+        eprint("Non-host target: --baseline-crate-dir must be specified to \
+            run semver-checks")
         sys.exit(1)
 
     # Since semver-checks doesn't work with `--target`, we build the json ourself and
@@ -406,8 +404,6 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     run([*cmd, "--features=extra_traits"], rustflags=rustflags)
 
     if "gnu" in target_env and target_bits == "32":
-        # Equivalent of _FILE_OFFSET_BITS=64
-        run(cmd, rustflags=f'{rustflags} --cfg=libc_unstable_gnu_file_offset_bits="64"')
         # Equivalent of _TIME_BITS=64
         run(cmd, rustflags=f'{rustflags} --cfg=libc_unstable_gnu_time_bits="64"')
 
@@ -430,7 +426,9 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     # if on nightly or stable
     if "freebsd" in tname and cfg.toolchain >= Toolchain.STABLE:
         for version in FREEBSD_VERSIONS:
-            free_rustflags = f'{rustflags} --cfg=libc_unstable_freebsd_version="{version}"'
+            free_rustflags = (
+                f'{rustflags} --cfg=libc_unstable_freebsd_version="{version}"'
+            )
             run(cmd, rustflags=free_rustflags)
             run([*cmd, "--no-default-features"], rustflags=free_rustflags)
 
