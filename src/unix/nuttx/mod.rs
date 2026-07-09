@@ -451,11 +451,14 @@ pub const ENOSHARE: i32 = 139;
 pub const ECASECLASH: i32 = 140;
 
 // fcntl.h
+// fcntl() commands
 pub const FIOCLEX: i32 = 0x30b;
-pub const F_SETFL: i32 = 0x9;
 pub const F_DUPFD_CLOEXEC: i32 = 0x12;
 pub const F_GETFD: i32 = 0x1;
 pub const F_GETFL: i32 = 0x2;
+pub const F_SETFD: i32 = 8;
+pub const F_SETFL: i32 = 9;
+// open flag settings for open() (and related APIs)
 pub const O_RDONLY: i32 = 0x1;
 pub const O_WRONLY: i32 = 0x2;
 pub const O_RDWR: i32 = 0x3;
