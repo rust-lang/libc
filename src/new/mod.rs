@@ -227,6 +227,7 @@ cfg_if! {
         pub use net::if_::*;
     } else if #[cfg(target_os = "freebsd")] {
         pub use net::dlt::*;
+        pub use netinet6::in6_var::*;
         pub use sys::file::*;
         pub use sys::ioccom::*;
         pub use sys::socket::*;
