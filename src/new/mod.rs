@@ -228,6 +228,7 @@ cfg_if! {
     } else if #[cfg(target_os = "freebsd")] {
         pub use net::dlt::*;
         pub use sys::file::*;
+        pub use sys::ioccom::*;
         pub use sys::socket::*;
     }
 }
