@@ -684,8 +684,8 @@ pub const ELFCLASSNONE: u8 = 0;
 pub const ELFCLASS32: u8 = 1;
 pub const ELFCLASS64: u8 = 2;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const ELFCLASSNUM: usize = 3;
 
 pub const EI_DATA: usize = 5;
@@ -816,8 +816,8 @@ pub const EM_ALPHA: u16 = 0x9026;
 pub const EV_NONE: u32 = 0;
 pub const EV_CURRENT: u32 = 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const EV_NUM: u32 = 2;
 
 // elf.h - Legal values for p_type (segment type).
@@ -1167,8 +1167,8 @@ pub const PR_SCHED_CORE_CREATE: c_int = 1;
 pub const PR_SCHED_CORE_SHARE_TO: c_int = 2;
 pub const PR_SCHED_CORE_SHARE_FROM: c_int = 3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PR_SCHED_CORE_MAX: c_int = 4;
 
 pub const PR_SCHED_CORE_SCOPE_THREAD: c_int = 0;
@@ -1324,8 +1324,8 @@ pub const RT_CLASS_DEFAULT: u8 = 253;
 pub const RT_CLASS_MAIN: u8 = 254;
 pub const RT_CLASS_LOCAL: u8 = 255;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const RT_CLASS_MAX: u8 = 255;
 
 pub const MAX_ADDR_LEN: usize = 7;

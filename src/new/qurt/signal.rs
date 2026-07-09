@@ -52,8 +52,8 @@ pub const POSIX_MSG: c_int = 7;
 pub const POSIX_NOTIF: c_int = 8;
 pub const SIGRTMIN: c_int = 10;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SIGRTMAX: c_int = 32;
 
 // Notification types (from QuRT signal.h)

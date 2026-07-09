@@ -110,8 +110,8 @@ pub const FIL_ATTACH: c_int = 0x1;
 pub const FIL_DETACH: c_int = 0x2;
 pub const FIL_LIST: c_int = 0x3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const FILNAME_MAX: c_int = 32;
 
 pub const FILF_PROG: c_int = 0x1;
@@ -156,8 +156,8 @@ pub const LOCK_EX: c_int = 2;
 pub const LOCK_NB: c_int = 4;
 pub const LOCK_UN: c_int = 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const _PC_LAST: c_int = 101;
 
 pub const _CS_PATH: c_int = 65;
@@ -192,8 +192,8 @@ pub const PRIV_USER: c_uint = PRIV_DEBUG
     | PRIV_AWARE_RESET
     | PRIV_PFEXEC;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const LGRP_RSRC_COUNT: crate::lgrp_rsrc_t = 2;
 
 pub const LGRP_RSRC_CPU: crate::lgrp_rsrc_t = 0;

@@ -220,8 +220,8 @@ pub const LC_NUMERIC: c_int = 4;
 pub const LC_TIME: c_int = 5;
 pub const LC_MESSAGES: c_int = 6;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const _LC_LAST: c_int = 7;
 
 pub const EPERM: c_int = 1;

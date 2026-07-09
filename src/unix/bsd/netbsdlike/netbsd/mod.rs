@@ -1715,8 +1715,8 @@ pub const KVME_FLAG_PAGEABLE: c_int = 0x000000008;
 pub const KVME_FLAG_GROWS_UP: c_int = 0x000000010;
 pub const KVME_FLAG_GROWS_DOWN: c_int = 0x000000020;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NGROUPS_MAX: c_int = 16;
 
 pub const KI_NGROUPS: c_int = 16;
@@ -1794,8 +1794,8 @@ pub const RTA_TAG: c_int = 0x100;
 
 pub const RTAX_TAG: c_int = 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const RTAX_MAX: c_int = 9;
 
 // For eventfd

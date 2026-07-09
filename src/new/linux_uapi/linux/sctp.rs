@@ -56,8 +56,8 @@ pub const SCTP_PR_SCTP_NONE: c_int = 0x0000;
 pub const SCTP_PR_SCTP_TTL: c_int = 0x0010;
 pub const SCTP_PR_SCTP_RTX: c_int = 0x0020;
 pub const SCTP_PR_SCTP_PRIO: c_int = 0x0030;
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SCTP_PR_SCTP_MAX: c_int = SCTP_PR_SCTP_PRIO;
 pub const SCTP_PR_SCTP_MASK: c_int = 0x0030;
 
