@@ -115,6 +115,8 @@ macro_rules! prelude {
                 u16_cast_short,
                 u32_cast_int,
                 u32_cast_long,
+                ulong_cast_int,
+                ulong_cast_uint,
                 CEnumRepr,
                 Padding,
             };
