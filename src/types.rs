@@ -91,6 +91,20 @@ pub(crate) const fn u32_cast_long(x: u32) -> c_long {
     x as c_long
 }
 
+/// Checked casting from `unsigned long` to `int`.
+#[allow(unused)]
+pub(crate) const fn ulong_cast_int(x: c_ulong) -> c_int {
+    assert!(x <= (c_int::MAX as c_ulong));
+    x as c_int
+}
+
+/// Checked casting from `unsigned long` to `unsigned int`.
+#[allow(unused)]
+pub(crate) const fn ulong_cast_uint(x: c_ulong) -> c_uint {
+    assert!(x <= (c_uint::MAX as c_ulong));
+    x as c_uint
+}
+
 /// Used to avoid `overflowing_literals` when the value is in-range for the unsigned number but
 /// out-of-range for signed.
 #[allow(unused)]
