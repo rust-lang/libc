@@ -310,6 +310,7 @@ fn test_apple(target: &str) {
         "sys/sem.h",
         "sys/shm.h",
         "sys/socket.h",
+        "sys/sockio.h",
         "sys/stat.h",
         "sys/statvfs.h",
         "sys/sys_domain.h",

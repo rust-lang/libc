@@ -203,6 +203,7 @@ cfg_if! {
         pub use pthread_::stack_np::*;
         pub use signal::*;
         pub use sys::ioccom::*;
+        pub use sys::sockio::*;
         pub use sys::ttycom::*;
     } else if #[cfg(target_os = "l4re")] {
         pub use l4re::packet::*;
