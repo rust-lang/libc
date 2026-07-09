@@ -2370,36 +2370,36 @@ pub const HW_REALMEM: c_int = 12;
 
 pub const USER_CS_PATH: c_int = 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_BASE_MAX: c_int = 2;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_DIM_MAX: c_int = 3;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_SCALE_MAX: c_int = 4;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_BC_STRING_MAX: c_int = 5;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_COLL_WEIGHTS_MAX: c_int = 6;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_EXPR_NEST_MAX: c_int = 7;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_LINE_MAX: c_int = 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const USER_RE_DUP_MAX: c_int = 9;
 
 pub const USER_POSIX2_VERSION: c_int = 10;
@@ -2519,8 +2519,8 @@ pub const SO_TS_REALTIME: c_int = 2;
 pub const SO_TS_MONOTONIC: c_int = 3;
 pub const SO_TS_DEFAULT: c_int = SO_TS_REALTIME_MICRO;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SO_TS_CLOCK_MAX: c_int = SO_TS_MONOTONIC;
 
 pub const LOCAL_CREDS: c_int = 2;
@@ -2806,8 +2806,8 @@ pub const IFNET_SLOWHZ: c_int = 1;
 pub const IFAN_ARRIVAL: c_int = 0;
 pub const IFAN_DEPARTURE: c_int = 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const IFSTATMAX: c_int = 800;
 
 pub const RSS_FUNC_NONE: c_int = 0;
@@ -3146,8 +3146,8 @@ pub const TCP_FUNCTION_BLK: c_int = 8192;
 pub const TCP_FUNCTION_ALIAS: c_int = 8193;
 pub const TCP_FASTOPEN_PSK_LEN: c_int = 16;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const TCP_FUNCTION_NAME_LEN_MAX: c_int = 32;
 
 pub const TCP_REUSPORT_LB_NUMA: c_int = 1026;
@@ -3521,106 +3521,106 @@ pub const KKST_STATE_RUNNING: c_int = 2;
 
 pub const PRI_MIN: c_int = 0;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MAX: c_int = 255;
 
 pub const PRI_MIN_ITHD: c_int = PRI_MIN;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MAX_ITHD: c_int = PRI_MIN_REALTIME - 1;
 
 pub const PI_REALTIME: c_int = PRI_MIN_ITHD + 0;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PI_AV: c_int = PRI_MIN_ITHD + 4;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PI_NET: c_int = PRI_MIN_ITHD + 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PI_DISK: c_int = PRI_MIN_ITHD + 12;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PI_TTY: c_int = PRI_MIN_ITHD + 16;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PI_DULL: c_int = PRI_MIN_ITHD + 20;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PI_SOFT: c_int = PRI_MIN_ITHD + 24;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MIN_REALTIME: c_int = 48;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MAX_REALTIME: c_int = PRI_MIN_KERN - 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MIN_KERN: c_int = 80;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MAX_KERN: c_int = PRI_MIN_TIMESHARE - 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PSWP: c_int = PRI_MIN_KERN + 0;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PVM: c_int = PRI_MIN_KERN + 4;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PINOD: c_int = PRI_MIN_KERN + 8;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRIBIO: c_int = PRI_MIN_KERN + 12;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PVFS: c_int = PRI_MIN_KERN + 16;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PZERO: c_int = PRI_MIN_KERN + 20;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PSOCK: c_int = PRI_MIN_KERN + 24;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PWAIT: c_int = PRI_MIN_KERN + 28;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PLOCK: c_int = PRI_MIN_KERN + 32;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PPAUSE: c_int = PRI_MIN_KERN + 36;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PRI_MIN_TIMESHARE: c_int = 120;
 
 pub const PRI_MAX_TIMESHARE: c_int = PRI_MIN_IDLE - 1;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const PUSER: c_int = PRI_MIN_TIMESHARE;
 
 pub const PRI_MIN_IDLE: c_int = 224;
@@ -3664,14 +3664,14 @@ pub const MAX_CANON: c_int = 255;
 pub const MAX_INPUT: c_int = 255;
 /// Max bytes in a file name.
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NAME_MAX: c_int = 255;
 pub const MAXSYMLINKS: c_int = 32;
 /// Max supplemental group IDs.
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NGROUPS_MAX: c_int = 1023;
 /// max open files per process
 pub const OPEN_MAX: c_int = 64;
@@ -3687,56 +3687,56 @@ pub const _POSIX_STREAM_MAX: c_int = 8;
 
 /// Max ibase/obase values in bc(1).
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const BC_BASE_MAX: c_int = 99;
 
 /// Max array elements in bc(1).
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const BC_DIM_MAX: c_int = 2048;
 
 /// Max scale value in bc(1).
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const BC_SCALE_MAX: c_int = 99;
 
 /// Max const string length in bc(1).
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const BC_STRING_MAX: c_int = 1000;
 
 /// Max character class name size.
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const CHARCLASS_NAME_MAX: c_int = 14;
 
 /// Max weights for order keyword.
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const COLL_WEIGHTS_MAX: c_int = 10;
 
 /// Max expressions nested in expr(1).
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const EXPR_NEST_MAX: c_int = 32;
 
 /// Max bytes in an input line.
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const LINE_MAX: c_int = 2048;
 
 /// Max RE's in interval notation.
 ///
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const RE_DUP_MAX: c_int = 255;
 
 pub const _POSIX2_BC_BASE_MAX: c_int = 99;
@@ -4144,8 +4144,8 @@ pub const RTF_FIXEDMTU: c_int = 0x80000;
 
 pub const RTM_VERSION: c_int = 5;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const RTAX_MAX: c_int = 8;
 
 // sys/signal.h
@@ -4194,8 +4194,8 @@ pub const SCTP_PR_SCTP_PRIO: c_int = 0x0002;
 pub const SCTP_PR_SCTP_BUF: c_int = SCTP_PR_SCTP_PRIO;
 pub const SCTP_PR_SCTP_RTX: c_int = 0x0003;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SCTP_PR_SCTP_MAX: c_int = SCTP_PR_SCTP_RTX;
 
 pub const SCTP_PR_SCTP_ALL: c_int = 0x000f;
@@ -4280,8 +4280,8 @@ pub const SCTP_ASSOC_SUPPORTS_MULTIBUF: c_int = 0x04;
 pub const SCTP_ASSOC_SUPPORTS_RE_CONFIG: c_int = 0x05;
 pub const SCTP_ASSOC_SUPPORTS_INTERLEAVING: c_int = 0x06;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const SCTP_ASSOC_SUPPORTS_MAX: c_int = 0x06;
 
 pub const SCTP_ADDR_AVAILABLE: c_int = 0x0001;

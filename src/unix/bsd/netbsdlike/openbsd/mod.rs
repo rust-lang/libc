@@ -946,8 +946,8 @@ pub const ENOTRECOVERABLE: c_int = 93;
 pub const EOWNERDEAD: c_int = 94;
 pub const EPROTO: c_int = 95;
 
-/// This symbols is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const ELAST: c_int = 95;
 
 pub const F_DUPFD_CLOEXEC: c_int = 10;
@@ -1510,8 +1510,8 @@ pub const ISOFSMNT_EXTATT: c_int = 0x4; // enable extended attr
 pub const ISOFSMNT_NOJOLIET: c_int = 0x8; // disable Joliet Ext
 pub const ISOFSMNT_SESS: c_int = 0x10; // use iso_args.sess
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const NFS_ARGSVERSION: c_int = 4; // change when nfs_args changes
 
 pub const NFSMNT_RESVPORT: c_int = 0; // always use reserved ports
@@ -1741,8 +1741,8 @@ pub const LC_NUMERIC_MASK: c_int = 1 << crate::LC_NUMERIC;
 pub const LC_TIME_MASK: c_int = 1 << crate::LC_TIME;
 pub const LC_MESSAGES_MASK: c_int = 1 << crate::LC_MESSAGES;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 const _LC_LAST: c_int = 7;
 
 pub const LC_ALL_MASK: c_int = (1 << _LC_LAST) - 2;
@@ -1823,8 +1823,8 @@ pub const RTAX_DNS: c_int = 12;
 pub const RTAX_STATIC: c_int = 13;
 pub const RTAX_SEARCH: c_int = 14;
 
-/// This symbol is prone to change across releases upstream.
-/// See the [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const RTAX_MAX: c_int = 15;
 
 const fn _ALIGN(p: usize) -> usize {

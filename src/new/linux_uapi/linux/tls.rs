@@ -167,8 +167,8 @@ c_enum! {
     }
 }
 
-/// This symbols is prone to change across releases upstream. See the
-/// [usage guidelines](crate#usage-guidelines) for details.
+/// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
+/// for details.
 pub const TLS_INFO_MAX: c_int = __TLS_INFO_MAX - 1;
 
 pub const TLS_CONF_BASE: c_int = 1;
