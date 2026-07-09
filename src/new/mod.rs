@@ -202,6 +202,7 @@ cfg_if! {
         pub use pthread_::spawn::*;
         pub use pthread_::stack_np::*;
         pub use signal::*;
+        pub use sys::ioccom::*;
     } else if #[cfg(target_os = "l4re")] {
         pub use l4re::packet::*;
     } else if #[cfg(target_os = "netbsd")] {
