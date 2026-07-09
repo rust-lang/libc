@@ -2715,6 +2715,7 @@ fn test_freebsd(target: &str) {
         "netinet/sctp.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet6/in6_var.h",
         "poll.h",
         "pthread.h",
         "pthread_np.h",
@@ -3299,6 +3300,7 @@ fn test_freebsd(target: &str) {
             ("if_data", "__ifi_epoch") => true,
             ("if_data", "__ifi_lastchange") => true,
             ("ifreq", "ifr_ifru") => true,
+            ("in6_ifreq", "ifr_ifru") => true,
             ("ifconf", "ifc_ifcu") => true,
 
             // anonymous struct
