@@ -561,10 +561,11 @@ pub const SHUT_RDWR: i32 = 3;
 pub const SOMAXCONN: i32 = 8;
 
 // netinet/tcp.h
-pub const TCP_NODELAY: i32 = 0x10;
-pub const TCP_KEEPIDLE: i32 = 0x11;
-pub const TCP_KEEPINTVL: i32 = 0x12;
-pub const TCP_KEEPCNT: i32 = 0x13;
+pub const TCP_NODELAY: i32 = __SO_PROTOCOL + 0;
+pub const TCP_KEEPIDLE: i32 = __SO_PROTOCOL + 1;
+pub const TCP_KEEPINTVL: i32 = __SO_PROTOCOL + 2;
+pub const TCP_KEEPCNT: i32 = __SO_PROTOCOL + 3;
+pub const TCP_MAXSEG: i32 = __SO_PROTOCOL + 4;
 
 // nuttx/fs/ioctl.h
 pub const FIONBIO: i32 = 0x30a;
