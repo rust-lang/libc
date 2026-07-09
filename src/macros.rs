@@ -473,7 +473,7 @@ macro_rules! deprecated_mach {
 macro_rules! offset_of {
     ($Ty:path, $field:ident) => {{
         // Taken from bytemuck, avoids accidentally calling on deref
-        #[allow(clippy::unneeded_field_pattern)]
+        #[allow(clippy::unneeded_wildcard_pattern)]
         let $Ty { $field: _, .. };
         let data = core::mem::MaybeUninit::<$Ty>::uninit();
         let ptr = data.as_ptr();
