@@ -20,7 +20,7 @@ annotate-snippets = { version = "0.11.5", features = ["testing-colors"] }
 [build-dependencies]
 cc = "1.2.43"
 ctest = { path = "../ctest" }
-regex = "1.12.2"
+regex = "1.13.0"
 
 [features]
 default = ["std"]
