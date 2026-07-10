@@ -543,6 +543,8 @@ pub const XATTR_REPLACE: c_int = 0x2;
 cfg_if! {
     if #[cfg(target_os = "android")] {
         pub const RLIM64_INFINITY: c_ulonglong = !0;
+    } else if #[cfg(all(target_os = "l4re", target_env = "uclibc"))] {
+        pub const RLIM64_INFINITY: crate::rlim_t = !0;
     } else {
         pub const RLIM64_INFINITY: crate::rlim64_t = !0;
     }
@@ -2115,26 +2117,106 @@ cfg_if! {
         target_os = "emscripten",
     )))] {
         extern "C" {
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fstatfs` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `statvfs` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fstatvfs` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `statfs` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `creat` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn creat64(path: *const c_char, mode: mode_t) -> c_int;
             #[cfg_attr(gnu_time_bits64, link_name = "__fstat64_time64")]
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fstat` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn fstat64(fildes: c_int, buf: *mut stat64) -> c_int;
             #[cfg_attr(gnu_time_bits64, link_name = "__fstatat64_time64")]
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `fstatat` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn fstatat64(
                 dirfd: c_int,
                 pathname: *const c_char,
                 buf: *mut stat64,
                 flags: c_int,
             ) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `ftruncate` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn ftruncate64(fd: c_int, length: off64_t) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `lseek` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
             #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `lstat` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `mmap` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn mmap64(
                 addr: *mut c_void,
                 len: size_t,
@@ -2143,22 +2225,76 @@ cfg_if! {
                 fd: c_int,
                 offset: off64_t,
             ) -> *mut c_void;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `open` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn open64(path: *const c_char, oflag: c_int, ...) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `openat` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn openat64(fd: c_int, path: *const c_char, oflag: c_int, ...) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `posix_fadvise` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn posix_fadvise64(
                 fd: c_int,
                 offset: off64_t,
                 len: off64_t,
                 advise: c_int,
             ) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `pread` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn pread64(fd: c_int, buf: *mut c_void, count: size_t, offset: off64_t) -> ssize_t;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `pwrite` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn pwrite64(
                 fd: c_int,
                 buf: *const c_void,
                 count: size_t,
                 offset: off64_t,
             ) -> ssize_t;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `readdir` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn readdir64(dirp: *mut crate::DIR) -> *mut crate::dirent64;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `readdir_r` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn readdir64_r(
                 dirp: *mut crate::DIR,
                 entry: *mut crate::dirent64,
@@ -2166,7 +2302,22 @@ cfg_if! {
             ) -> c_int;
             #[cfg_attr(gnu_time_bits64, link_name = "__stat64_time64")]
             #[cfg(not(target_os = "l4re"))]
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `stat` instead. LFS64 are being phased out. See #4805."
+                )
+            )]
             pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_env = "uclibc"),
+                deprecated(
+                    since = "0.2.187",
+                    note = "Use `truncate` instead. LFS64 are being phased out. See #4805."
+                ),
+                allow(deprecated)
+            )]
             pub fn truncate64(path: *const c_char, length: off64_t) -> c_int;
         }
     }
