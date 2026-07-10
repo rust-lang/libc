@@ -66,6 +66,7 @@ run() {
     docker run \
         --rm \
         --user "$(id -u)":"$(id -g)" \
+        --env LIBC_BUILD_VERBOSE \
         --env LIBC_CI \
         --env LIBC_CI_ZBUILD_STD \
         --env RUSTFLAGS \
