@@ -3,6 +3,8 @@ use std::process::{
     Command,
     Output,
 };
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering::Relaxed;
 use std::{
     env,
     str,
@@ -61,9 +63,26 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
 /// from 32-bit to 64-bit `time_t` and need `__*_time64` symbol redirects).
 const MUSL_REDIR_TIME64_ARCHES: &[&str] = &["arm", "mips", "powerpc", "x86"];
 
+/// Read from env, print more debug output via `cargo:warning` if set.
+static VERBOSE_BUILD: AtomicBool = AtomicBool::new(false);
+
+/// Print info via warnings if `LIBC_BUILD_VERBOSE` is set.
+macro_rules! info {
+    ($($tt:tt)+) => {
+        if VERBOSE_BUILD.load(Relaxed) {
+            println!("cargo:warning=info: {}", format_args!($($tt)*));
+        }
+    }
+}
+
 fn main() {
     // Avoid unnecessary re-building.
     println!("cargo:rerun-if-changed=build.rs");
+
+    println!("cargo:rerun-if-env-changed=LIBC_BUILD_VERBOSE");
+    if env_flag("LIBC_BUILD_VERBOSE") {
+        VERBOSE_BUILD.store(true, Relaxed);
+    }
 
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
     let libc_ci = env_flag("LIBC_CI");
@@ -77,7 +96,7 @@ fn main() {
     // directly instead of translating it to `libc_pauthtest`. `target_abi`
     // cannot be used directly in cfg expressions on the current MSRV.
     if target_abi == "pauthtest" {
-        println!("cargo:rustc-cfg=libc_pauthtest");
+        set_cfg("libc_pauthtest");
     }
 
     // FIXME: this can be removed in 1-2 releases
@@ -291,6 +310,8 @@ fn rustc_minor_nightly() -> (u32, bool) {
     });
     let minor = otry!(otry!(minor).parse().ok());
 
+    info!("detected rust 1.{minor}, nightly={nightly}");
+
     (minor, nightly)
 }
 
@@ -358,6 +379,7 @@ fn set_cfg(cfg: &str) {
         "trying to set cfg {cfg}, but it is not in ALLOWED_CFGS",
     );
     println!("cargo:rustc-cfg={cfg}");
+    info!("setting config `{cfg}`");
 }
 
 /// Return true if the env is set to a value other than `0`.
