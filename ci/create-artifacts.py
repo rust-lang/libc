@@ -30,11 +30,20 @@ def main():
     archive_name = f"archive-{now}"
     archive_path = f"{archive_name}.tar.gz"
 
-    sp.run(
-        ["tar", "czvf", archive_path, "-C", build_dir, "-T-"],
-        input=file_list,
-        check=True,
-    )
+    # --dereference because kernel.log is a symlink into logs/
+    tar_cmd = ["tar", "czvf", archive_path, "--dereference", "-C", build_dir, "-T-"]
+
+    # Grab the runtime logs of the Cuttlefish device launched by ci/cuttlefish-setup.sh.
+    # The device runs inside the test container, which keeps it under the bind-mounted
+    # target/ so the logs are visible here.
+    cf_dir = Path(os.getenv("CUTTLEFISH_DIR", "target/cuttlefish")).resolve()
+    cf_runtime = cf_dir / "cuttlefish" / "instances" / "cvd-1"
+    cf_logs = ["logs/logcat", "logs/launcher.log", "kernel.log"]
+    cf_found = [log for log in cf_logs if cf_runtime.joinpath(log).exists()]
+    if cf_found:
+        tar_cmd += ["-C", str(cf_runtime), *cf_found]
+
+    sp.run(tar_cmd, input=file_list, check=True)
 
     # If we are in GHA, set these env vars for future use
     gh_env = os.getenv("GITHUB_ENV")
