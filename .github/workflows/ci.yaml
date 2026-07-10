@@ -236,6 +236,9 @@ jobs:
           - target: x86_64-apple-darwin
             os: macos-26-intel
           - target: x86_64-linux-android
+            env: { TEST_CUTTLEFISH: 1 }
+            # Keep in sync with the Android build pinned in ci/cuttlefish-setup.sh
+            artifact-tag: android17
           # FIXME: Exec format error (os error 8)
           # - target: x86_64-unknown-linux-gnux32
           - target: x86_64-unknown-linux-musl
