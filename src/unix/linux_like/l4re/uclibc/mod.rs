@@ -525,6 +525,10 @@ extern "C" {
 
 }
 
+extern_ty! {
+    pub type fpos64_t; // FIXME(linux): fill this out with a struct
+}
+
 cfg_if! {
     if #[cfg(target_arch = "x86_64")] {
         mod x86_64;

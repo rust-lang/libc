@@ -13,6 +13,7 @@ use syn::visit::Visit;
 use thiserror::Error;
 
 use crate::ffi_items::FfiItems;
+use crate::macro_expansion::expand_with_args;
 use crate::template::{
     CTestTemplate,
     RustTestTemplate,
@@ -32,7 +33,6 @@ use crate::{
     Type,
     Union,
     VolatileItemKind,
-    expand,
     get_build_target,
 };
 
@@ -78,6 +78,10 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     /// A list of functions that remaps names used in the tests.
     mapped_names: Vec<MappedName>,
+    /// Extra command line args to pass to cargo when generating macro expansions.
+    macro_expansion_cargo_args: Vec<String>,
+    /// Crate name to use when performing macro expansion.
+    crate_name: Option<String>,
     /// The programming language to generate tests in.
     pub(crate) language: Language,
     /// A list of functions that determine what items to skip all tests for.
@@ -723,6 +727,22 @@ impl TestGenerator {
         self
     }
 
+    /// Configures extra arguments to be passed to cargo during macro expansion.  
+    /// This can be used, for example, to pass `-Zbuild-std`` if required.
+    pub fn macro_expansion_cargo_args_mut(&mut self) -> &mut Vec<String> {
+        &mut self.macro_expansion_cargo_args
+    }
+
+    /// Configures the crate name which should be used during macro expansion.
+    ///
+    /// If the tested crate uses `#![crate_name = "..."]`, this must be called with the
+    /// same name. Otherwise, there will be an error about `--crate-name` not
+    /// matching.
+    pub fn crate_name(&mut self, name: String) -> &mut Self {
+        self.crate_name = Some(name);
+        self
+    }
+
     /// Configures whether tests for the type of a field is skipped or not.
     ///
     /// The closure is given a Rust struct as well as a field within that
@@ -1087,7 +1107,14 @@ impl TestGenerator {
         crate_path: impl AsRef<Path>,
         output_file_path: impl AsRef<Path>,
     ) -> Result<PathBuf, GenerationError> {
-        let expanded = expand(&crate_path, &self.cfg, get_build_target(self)?).map_err(|e| {
+        let expanded = expand_with_args(
+            &crate_path,
+            &self.cfg,
+            get_build_target(self)?,
+            self.crate_name.as_deref(),
+            &self.macro_expansion_cargo_args,
+        )
+        .map_err(|e| {
             GenerationError::MacroExpansion(crate_path.as_ref().to_path_buf(), e.to_string())
         })?;
         let ast = syn::parse_file(&expanded)

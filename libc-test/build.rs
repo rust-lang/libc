@@ -106,6 +106,11 @@ fn ctest_cfg() -> ctest::TestGenerator {
     // FIXME(1.0): These aliases will eventually be removed.
     cfg.skip_alias(|ty| ty.ident() == "__uint128");
 
+    if env::var("LIBC_CI_ZBUILD_STD").is_ok() {
+        *cfg.macro_expansion_cargo_args_mut() = vec!["-Zbuild-std=core,std".into()];
+    }
+    cfg.crate_name("libc".into());
+
     cfg
 }
 
@@ -4620,123 +4625,6 @@ fn test_linux(target: &str) {
 
         if uclibc {
             match name {
-                // The canonical uClibc toolchain, bootlin bleeding-edge-2024.02-1,
-                // uses linux 5.15, so several constants are not available.
-
-                // requires linux 5.16
-                "PR_SCHED_CORE_SCOPE_PROCESS_GROUP"
-                | "PR_SCHED_CORE_SCOPE_THREAD_GROUP"
-                | "PR_SCHED_CORE_SCOPE_THREAD"
-                | "NF_NETDEV_EGRESS"
-                | "SO_RESERVE_MEM" => return true,
-
-                // TLS_CIPHER_SM4_[GC]CM requires linux 5.16
-                "TLS_CIPHER_SM4_CCM_IV_SIZE"
-                | "TLS_CIPHER_SM4_CCM_KEY_SIZE"
-                | "TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE"
-                | "TLS_CIPHER_SM4_CCM_SALT_SIZE"
-                | "TLS_CIPHER_SM4_CCM_TAG_SIZE"
-                | "TLS_CIPHER_SM4_CCM"
-                | "TLS_CIPHER_SM4_GCM_IV_SIZE"
-                | "TLS_CIPHER_SM4_GCM_KEY_SIZE"
-                | "TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE"
-                | "TLS_CIPHER_SM4_GCM_SALT_SIZE"
-                | "TLS_CIPHER_SM4_GCM_TAG_SIZE"
-                | "TLS_CIPHER_SM4_GCM" => return true,
-
-                // requires linux 5.17
-                "PR_SET_VMA_ANON_NAME"
-                | "PR_SET_VMA"
-                | "RTNLGRP_MCTP_IFADDR" => return true,
-
-                // requires linux 5.18
-                "RTNLGRP_STATS"
-                | "RTNLGRP_TUNNEL"
-                | "TLS_TX_ZEROCOPY_RO"
-                | "MADV_DONTNEED_LOCKED"
-                | "NFQA_PRIORITY"
-                | "SO_TXREHASH" => return true,
-
-                // requires linux 5.19
-                "SECCOMP_FILTER_FLAG_WAIT_KILLABLE_RECV"
-                | "NLM_F_BULK"
-                | "SO_RCVMARK"
-                | "TLS_INFO_ZC_RO_TX" => return true,
-
-                // CAN_* consts requiring linux 6.0
-                "CAN_BUS_OFF_THRESHOLD"
-                | "CAN_CTRLMODE_TDC_AUTO"
-                | "CAN_CTRLMODE_TDC_MANUAL"
-                | "CAN_ERR_CNT"
-                | "CAN_ERROR_PASSIVE_THRESHOLD"
-                | "CAN_ERROR_WARNING_THRESHOLD" => return true,
-
-                // requires linux 6.0
-                "IFF_NO_CARRIER"
-                | "TLS_INFO_RX_NO_PAD"
-                | "TLS_RX_EXPECT_NO_PAD" => return true,
-
-                // CAN_* consts requiring linux 6.1
-                "CAN_RAW_XL_FRAMES"
-                | "CANXL_HDR_SIZE"
-                | "CANXL_MAX_DLC_MASK"
-                | "CANXL_MAX_DLC"
-                | "CANXL_MAX_DLEN"
-                | "CANXL_MAX_MTU"
-                | "CANXL_MIN_DLC"
-                | "CANXL_MIN_DLEN"
-                | "CANXL_MIN_MTU"
-                | "CANXL_MTU"
-                | "CANXL_PRIO_BITS"
-                | "CANXL_PRIO_MASK"
-                | "CANXL_SEC"
-                | "CANXL_XLF" => return true,
-
-                // TLS_CIPHER_ARIA_GCM_* requires linux 6.1
-                "TLS_CIPHER_ARIA_GCM_128_IV_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_128_KEY_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_128_SALT_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_128_TAG_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_128"
-                | "TLS_CIPHER_ARIA_GCM_256_IV_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_256_KEY_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_256_SALT_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_256_TAG_SIZE"
-                | "TLS_CIPHER_ARIA_GCM_256" => return true,
-
-                // requires linux 6.2
-                "ALG_SET_KEY_BY_KEY_SERIAL"
-                | "PACKET_FANOUT_FLAG_IGNORE_OUTGOING"
-                | "SOF_TIMESTAMPING_OPT_ID_TCP"
-                | "TUN_F_USO4"
-                | "TUN_F_USO6" => return true,
-
-                // FAN_* consts require kernel 6.3
-                "FAN_INFO"
-                | "FAN_RESPONSE_INFO_AUDIT_RULE"
-                | "FAN_RESPONSE_INFO_NONE" => return true,
-
-                // requires linux 6.3
-                "MFD_EXEC"
-                | "MFD_NOEXEC_SEAL"
-                | "PR_GET_MDWE"
-                | "PR_SET_MDWE" => return true,
-
-                // requires linux 6.4
-                "PACKET_VNET_HDR_SZ" => return true,
-                "PR_GET_MEMORY_MERGE" => return true,
-                "PR_SET_MEMORY_MERGE" => return true,
-
-                // requires linux 6.5
-                "SO_PASSPIDFD"
-                | "SO_PEERPIDFD" => return true,
-
-                // requires linux 6.6
-                "PR_MDWE_NO_INHERIT"
-                | "PR_MDWE_REFUSE_EXEC_GAIN" => return true,
-
                 // defined as a synonym for EM_ARC_COMPACT in gnu but not uclibc
                 "EM_ARC_A5" => return true,
 
