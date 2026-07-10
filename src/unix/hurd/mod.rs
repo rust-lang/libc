@@ -988,6 +988,10 @@ s! {
         __unused5: Padding<*mut c_void>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `glob_t` instead. The definitions are equivalent."
+    )]
     pub struct glob64_t {
         pub gl_pathc: size_t,
         pub gl_pathv: *mut *mut c_char,
@@ -4474,6 +4478,11 @@ extern "C" {
     pub fn globfree(pglob: *mut glob_t);
 
     #[cfg_attr(gnu_time_bits64, link_name = "__glob64_time64")]
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `glob` instead. Their definitions are equivalent."
+    )]
+    #[allow(deprecated)]
     pub fn glob64(
         pattern: *const c_char,
         flags: c_int,
@@ -4481,6 +4490,11 @@ extern "C" {
         pglob: *mut glob64_t,
     ) -> c_int;
     #[cfg_attr(gnu_time_bits64, link_name = "__globfree64_time64")]
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `globfree` instead. Their definitions are equivalent."
+    )]
+    #[allow(deprecated)]
     pub fn globfree64(pglob: *mut glob64_t);
 
     pub fn getxattr(
