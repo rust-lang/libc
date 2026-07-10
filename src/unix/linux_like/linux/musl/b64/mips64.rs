@@ -5,8 +5,6 @@ pub type wchar_t = i32;
 pub type nlink_t = c_uint;
 pub type blksize_t = i64;
 
-pub type stat64 = stat;
-
 s! {
     pub struct stat {
         pub st_dev: crate::dev_t,
@@ -89,6 +87,7 @@ s! {
         pub f_spare: [c_ulong; 5],
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct statfs64 {
         pub f_type: c_ulong,
         pub f_bsize: c_ulong,

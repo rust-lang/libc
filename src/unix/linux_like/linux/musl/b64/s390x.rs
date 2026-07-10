@@ -5,8 +5,9 @@ pub type blksize_t = i64;
 pub type nlink_t = u64;
 pub type wchar_t = i32;
 pub type greg_t = u64;
+
+// FIXME(1.0,deprecate): lfs binding to be removed
 pub type statfs64 = statfs;
-pub type stat64 = stat;
 
 s! {
     pub struct ipc_perm {
