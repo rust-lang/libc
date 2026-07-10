@@ -4341,6 +4341,7 @@ extern "C" {
     pub fn syncfs(fd: c_int) -> c_int;
     pub fn fdatasync(fd: c_int) -> c_int;
 
+    #[deprecated(since = "0.2.187", note = "This routine doesn't exist upstream.")]
     pub fn fallocate64(fd: c_int, mode: c_int, offset: off64_t, len: off64_t) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fallocate64")]
     pub fn posix_fallocate(fd: c_int, offset: off_t, len: off_t) -> c_int;
