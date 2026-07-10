@@ -3358,6 +3358,8 @@ fn test_freebsd(target: &str) {
 
 fn test_emscripten(target: &str) {
     assert!(target.contains("emscripten"));
+    #[expect(unused_variables)] // remove once we need a version check
+    let emscripten = VERSIONS.emscripten.unwrap();
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None); // FIXME(emscripten): ??
@@ -6550,6 +6552,7 @@ struct Versions {
     openbsd: Option<(u32, u32)>,
     netbsd: Option<(u32, u32)>,
     macos: Option<(u32, u32)>,
+    emscripten: Option<(u32, u32)>,
 }
 
 impl Versions {
@@ -6578,6 +6581,11 @@ impl Versions {
              * Apple: __MAC_OS_X_VERSION_MAX_ALLOWED __MAC_M_m (e.g. __MAC_26_5)
              */
             #include "sys/param.h"
+            #endif
+
+            #ifdef __EMSCRIPTEN__
+            /* Provides __EMSCRIPTEN_MAJOR__, __EMSCRIPTEN_MINOR__ */
+            #include "emscripten/version.h"
             #endif
         "#;
 
@@ -6652,6 +6660,12 @@ impl Versions {
                     let major: u32 = caps[1].parse().unwrap();
                     let minor: u32 = caps[2].parse().unwrap();
                     ret.openbsd = Some((major, minor));
+                }
+                "__EMSCRIPTEN_major__" => {
+                    ret.emscripten.get_or_insert_default().0 = value.parse().unwrap()
+                }
+                "__EMSCRIPTEN_minor__" => {
+                    ret.emscripten.get_or_insert_default().1 = value.parse().unwrap()
                 }
                 _ => (),
             }
