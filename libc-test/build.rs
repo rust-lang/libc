@@ -1,5 +1,6 @@
 #![allow(clippy::match_like_matches_macro)]
 
+use std::env::VarError;
 use std::fs::File;
 use std::io::{
     BufRead,
@@ -3987,7 +3988,7 @@ fn test_linux(target: &str) {
     let kernel = versions.linux.unwrap();
 
     // Force modern musl also for pauthtest.
-    let musl_v1_2_3 = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3").is_ok() || pauthtest;
+    let musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") || pauthtest;
     if musl_v1_2_3 {
         assert!(musl);
     }
@@ -4006,9 +4007,7 @@ fn test_linux(target: &str) {
             cfg.cfg("musl_redir_time64", None);
         }
     }
-    let uclibc_use_time64 = env::var("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64")
-        .map(|val| val != "0")
-        .unwrap_or(false);
+    let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
     if uclibc && uclibc_use_time64 {
         cfg.cfg("linux_time_bits64", None);
     }
@@ -6492,4 +6491,14 @@ fn try_command_output(cmd: &str, args: &[&str]) -> Option<String> {
     let res = String::from_utf8(output.stdout)
         .unwrap_or_else(|e| panic!("command {cmd} returned non-UTF-8 output: {e}"));
     Some(res)
+}
+
+/// Return true if the env is set to a value other than `0`.
+fn env_flag(key: &str) -> bool {
+    match env::var(key) {
+        Ok(x) if x == "0" => false,
+        Err(VarError::NotPresent) => false,
+        Err(VarError::NotUnicode(_)) => panic!("non-unicode var for `{key}`"),
+        Ok(_) => true,
+    }
 }
