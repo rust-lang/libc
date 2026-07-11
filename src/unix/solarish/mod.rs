@@ -1309,15 +1309,16 @@ pub const SIGSTKSZ: size_t = 8192;
 // https://illumos.org/man/3c/clock_gettime
 // https://github.com/illumos/illumos-gate/
 //   blob/HEAD/usr/src/lib/libc/amd64/sys/__clock_gettime.s
-// clock_gettime(3c) doesn't seem to accept anything other than CLOCK_REALTIME
-// or __CLOCK_REALTIME0
 //
 // https://github.com/illumos/illumos-gate/
 //   blob/HEAD/usr/src/uts/common/sys/time_impl.h
 // Confusing! CLOCK_HIGHRES==CLOCK_MONOTONIC==4
 // __CLOCK_REALTIME0==0 is an obsoleted version of CLOCK_REALTIME==3
+// CLOCK_PROF==CLOCK_THREAD_CPUTIME_ID==2 (distinct from CLOCK_VIRTUAL==1)
 pub const CLOCK_REALTIME: crate::clockid_t = 3;
 pub const CLOCK_MONOTONIC: crate::clockid_t = 4;
+pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 5;
+pub const CLOCK_THREAD_CPUTIME_ID: crate::clockid_t = 2;
 pub const TIMER_RELTIME: c_int = 0;
 pub const TIMER_ABSTIME: c_int = 1;
 
