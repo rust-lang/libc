@@ -1,12 +1,66 @@
 use crate::off_t;
 use crate::prelude::*;
 
-// Define lock_data_instrumented as an empty enum
-extern_ty! {
-    pub type lock_data_instrumented;
-}
+pub type simple_lock_data = c_int;
+pub type complex_lock_status = c_int;
+pub type tid_t = c_long;
 
 s! {
+    pub struct lock_data_instrumented {
+        lock_control_word: __c_anonymous_lock_data_instrumented_lock_control_word,
+        li_flags: c_uint,
+        reserved: Padding<[c_int; 1]>,
+        _lockname: __c_anonymous_lock_data_instrumented__lockname,
+
+        #[cfg(debug_assertions)]
+        lock_lr: c_int,
+        #[cfg(debug_assertions)]
+        unlock_lr: c_int,
+        #[cfg(debug_assertions)]
+        lock_caller: tid_t,
+        #[cfg(debug_assertions)]
+        unlock_caller: tid_t,
+        #[cfg(debug_assertions)]
+        lock_cpuid: c_int,
+        #[cfg(debug_assertions)]
+        dbg_zero: c_int,
+        #[cfg(debug_assertions)]
+        unlock_cpuid: c_int,
+        #[cfg(debug_assertions)]
+        dbg_flags: c_int,
+    }
+
+    pub struct _simple_lock {
+        _slock: simple_lock_data,
+        _slockp: *mut lock_data_instrumented,
+    }
+
+    pub struct _complex_lock {
+        _clock: complex_lock_data,
+        clockp: *mut lock_data_instrumented,
+    }
+
+    pub struct _drw_lock {
+        _drwlock: complex_lock_status,
+        _drwlockp: *mut lock_data_instrumented,
+    }
+
+    pub struct __c_anonymous__lockname__lock_id {
+        _id: c_uint,
+        ocurrence: c_uint,
+    }
+
+    pub struct complex_lock_data {
+        status: complex_lock_status,
+        flags: c_short,
+        recursion_depth: c_short,
+        reserved: c_uint,
+    }
+
+    pub struct drw_lock_data {
+        status: complex_lock_status,
+    }
+
     pub struct sigset_t {
         pub ss_set: [c_ulong; 4],
     }
@@ -268,6 +322,18 @@ s! {
 }
 
 s_no_extra_traits! {
+    pub union __c_anonymous_lock_data_instrumented_lock_control_word {
+        s_lock: simple_lock_data,
+        c_lock: complex_lock_data,
+        drw_lock: drw_lock_data,
+        lock_next: *mut lock_data_instrumented,
+    }
+
+    pub union __c_anonymous_lock_data_instrumented__lockname {
+        name: c_long,
+        _lock_id: __c_anonymous__lockname__lock_id,
+    }
+
     pub union _kernel_simple_lock {
         pub _slock: c_long,
         pub _slockp: *mut lock_data_instrumented,
