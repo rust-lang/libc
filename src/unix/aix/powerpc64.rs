@@ -364,6 +364,11 @@ s_no_extra_traits! {
         pub _slockp: *mut lock_data_instrumented,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type is only available when programming against the kernel."
+    )]
+    #[allow(deprecated)]
     pub struct fileops_t {
         pub fo_rw: Option<
             extern "C" fn(
@@ -384,7 +389,13 @@ s_no_extra_traits! {
             ) -> c_int,
         >,
         pub fo_select: Option<
-            extern "C" fn(file: *mut file, a: c_int, b: *mut c_ushort, c: extern "C" fn()) -> c_int,
+            extern "C" fn(
+                file: *mut file,
+                a: c_int,
+                b: c_ushort,
+                c: *mut c_ushort,
+                c: extern "C" fn(),
+            ) -> c_int,
         >,
         pub fo_close: Option<extern "C" fn(file: *mut file) -> c_int>,
         pub fo_fstat: Option<extern "C" fn(file: *mut file, sstat: *mut crate::stat) -> c_int>,
