@@ -6376,6 +6376,10 @@ struct Versions {
     netbsd: Option<(u32, u32)>,
     macos: Option<(u32, u32)>,
     emscripten: Option<(u32, u32)>,
+    /// Android API level. Unlike the (major, minor) platform versions
+    /// above, Android versions its libc ABI with a single increasing
+    /// integer (e.g. 28). There is no minor component.
+    android: Option<u32>,
 }
 
 impl Versions {
@@ -6392,6 +6396,13 @@ impl Versions {
             #ifdef __GLIBC__
             /* Provides __GLIBC__, __GLIBC_MINOR__ (integers) */
             #include "gnu/libc-version.h"
+            #endif
+
+            #ifdef __ANDROID__
+            /* The clang driver predefines __ANDROID_API__ and __ANDROID_MIN_SDK_VERSION__
+             * from the API level in the target triple. When that is missing, this header
+             * supplies the __ANDROID_API_FUTURE__ fallback definition. */
+            #include "android/api-level.h"
             #endif
 
             #if defined(__FreeBSD__) \
@@ -6458,6 +6469,15 @@ impl Versions {
                 }
                 "__GLIBC__" => ret.glibc.get_or_insert_default().0 = value.parse().unwrap(),
                 "__GLIBC_MINOR__" => ret.glibc.get_or_insert_default().1 = value.parse().unwrap(),
+                // The API level is in __ANDROID_API__ (old clang) or __ANDROID_MIN_SDK_VERSION__
+                // (modern clang), so take a number from either. When the API is undetected (e.g.
+                // the triple carries no API level), its consumers fall back to skipping every
+                // API-gated test as if the toolchain targeted the oldest level possible.
+                "__ANDROID_API__" | "__ANDROID_MIN_SDK_VERSION__" => {
+                    if let Ok(level) = value.parse() {
+                        ret.android = Some(level);
+                    }
+                }
                 "__MAC_OS_X_VERSION_MAX_ALLOWED" => {
                     let caps = mac_re.captures(value).unwrap();
                     let major: u32 = caps[1].parse().unwrap();
