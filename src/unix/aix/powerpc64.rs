@@ -355,6 +355,10 @@ s_no_extra_traits! {
         _lock_id: __c_anonymous__lockname__lock_id,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `_simple_lock` instead. This type doesn't exist upstream."
+    )]
     pub union _kernel_simple_lock {
         pub _slock: c_long,
         pub _slockp: *mut lock_data_instrumented,
@@ -397,8 +401,8 @@ s_no_extra_traits! {
         pub f_dir_off: crate::off_t,
         // Should be pointer to 'cred'
         pub f_cred: *mut c_void,
-        pub f_lock: _kernel_simple_lock,
-        pub f_offset_lock: _kernel_simple_lock,
+        pub f_lock: _simple_lock,
+        pub f_offset_lock: _simple_lock,
         pub f_vinfo: crate::caddr_t,
         pub f_ops: *mut fileops_t,
         pub f_parentp: crate::caddr_t,
