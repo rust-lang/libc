@@ -2476,6 +2476,17 @@ fn test_android(target: &str) {
         }
     });
 
+    cfg.skip_fn_ptrcheck(move |func| {
+        match func {
+            // termios functions are <termios.h> inlines below API 28, so
+            // their C-side address never matches the symbol Rust links.
+            "tcdrain" | "tcflow" | "tcflush" | "tcgetattr" | "tcgetsid" | "tcsendbreak"
+            | "tcsetattr" | "cfgetispeed" | "cfgetospeed" | "cfmakeraw" | "cfsetispeed"
+            | "cfsetospeed" | "cfsetspeed" => skip_below_api(28),
+            _ => false,
+        }
+    });
+
     cfg.skip_struct_field_type(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // This is a weird union, don't check the type.
