@@ -542,18 +542,18 @@ s! {
         pub sa_flags: c_int,
     }
 
-    pub struct poll_ctl_ext {
+    pub struct poll_ctl_ext_t {
         pub version: u8,
         pub command: u8,
         pub events: c_short,
         pub fd: c_int,
-        pub u: __poll_ctl_ext_u,
+        pub u: __c_anonymous_poll_ctl_ext_t_u,
         reserved64: Padding<[u64; 6]>,
     }
 }
 
 s_no_extra_traits! {
-    pub union __poll_ctl_ext_u {
+    pub union __c_anonymous_poll_ctl_ext_t_u {
         pub addr: *mut c_void,
         pub data32: u32,
         pub data: u64,
@@ -562,8 +562,8 @@ s_no_extra_traits! {
 
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __poll_ctl_ext_u {
-            fn eq(&self, other: &__poll_ctl_ext_u) -> bool {
+        impl PartialEq for __c_anonymous_poll_ctl_ext_t_u {
+            fn eq(&self, other: &__c_anonymous_poll_ctl_ext_t_u) -> bool {
                 unsafe {
                     self.addr == other.addr
                         && self.data32 == other.data32
@@ -571,8 +571,8 @@ cfg_if! {
                 }
             }
         }
-        impl Eq for __poll_ctl_ext_u {}
-        impl hash::Hash for __poll_ctl_ext_u {
+        impl Eq for __c_anonymous_poll_ctl_ext_t_u {}
+        impl hash::Hash for __c_anonymous_poll_ctl_ext_t_u {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.addr.hash(state);
