@@ -1013,6 +1013,14 @@ s! {
 }
 
 cfg_if! {
+    if #[cfg(not(target_env = "gnu"))] {
+        extern_ty! {
+            pub type fpos64_t; // FIXME(linux): fill this out with a struct
+        }
+    }
+}
+
+cfg_if! {
     if #[cfg(not(target_arch = "sparc64"))] {
         s! {
             pub struct iw_thrspy {
@@ -3579,6 +3587,13 @@ extern "C" {
 
     pub fn posix_madvise(addr: *mut c_void, len: size_t, advice: c_int) -> c_int;
 
+    pub fn mremap(
+        addr: *mut c_void,
+        len: size_t,
+        new_len: size_t,
+        flags: c_int,
+        ...
+    ) -> *mut c_void;
     pub fn remap_file_pages(
         addr: *mut c_void,
         size: size_t,
