@@ -2045,6 +2045,10 @@ fn test_android(target: &str) {
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
+    // The API level the NDK toolchain targets, which caps the available libc
+    // API surface (see `Versions`). Items introduced later must be skipped when
+    // building below their level and also when no level could be detected.
+    let skip_below_api = |level: u32| VERSIONS.android.map_or(true, |api| api < level);
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2237,7 +2241,7 @@ fn test_android(target: &str) {
             "posix_spawnattr_t" => true,
 
             // Added in API level 24
-            "if_nameindex" => true,
+            "if_nameindex" => skip_below_api(24),
 
             _ => false,
         }
@@ -2429,40 +2433,32 @@ fn test_android(target: &str) {
             "reallocarray" => true,
             "__system_property_wait" => true,
 
-            // Added in API level 30, but tests use level 28.
-            "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp" => true,
+            // Added in API level 30.
+            "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp" => {
+                skip_below_api(30)
+            }
 
             // Added in glibc 2.25.
             "getentropy" => true,
 
-            // Added in API level 28, but some tests use level 24.
-            "getrandom" => true,
+            // Added in API level 28.
+            "getrandom" | "syncfs" | "aligned_alloc" => skip_below_api(28),
 
-            // Added in API level 28, but some tests use level 24.
-            "syncfs" => true,
+            // Added in API level 28.
+            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" => skip_below_api(28),
 
-            // Added in API level 28, but some tests use level 24.
-            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" => true,
-            // Added in API level 28, but some tests use level 24.
-            "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked" => true,
+            // Added in API level 28.
+            "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked" => {
+                skip_below_api(28)
+            }
 
-            // Added in API level 28, but some tests use level 24.
-            "aligned_alloc" => true,
+            // Added in API level 26.
+            "getgrent" | "setgrent" | "endgrent" | "getpwent" | "setpwent" | "endpwent" => {
+                skip_below_api(26)
+            }
 
-            // Added in API level 26, but some tests use level 24.
-            "getgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "setgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "endgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "getpwent" | "setpwent" | "endpwent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "getdomainname" | "setdomainname" => true,
+            // Added in API level 26.
+            "getdomainname" | "setdomainname" => skip_below_api(26),
 
             // FIXME(android): bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
