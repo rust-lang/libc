@@ -1,4 +1,3 @@
-use crate::off_t;
 use crate::prelude::*;
 
 pub type simple_lock_data = c_int;
@@ -75,8 +74,8 @@ s! {
         pub l_sysid: c_uint,
         pub l_pid: crate::pid_t,
         pub l_vfs: c_int,
-        pub l_start: off_t,
-        pub l_len: off_t,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
     }
 
     pub struct statvfs {
@@ -88,7 +87,7 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
-        pub f_fsid: c_ulong,
+        pub f_fsid: crate::fsid_t,
         pub f_basetype: [c_char; 16],
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
@@ -132,8 +131,8 @@ s! {
         pub st_type: c_uint,
         pub st_gen: c_uint,
         st_reserved: Padding<[c_uint; 9]>,
-        pub st_padto_ll: c_uint,
-        pub st_size: off_t,
+        st_padto_ll: Padding<c_uint>,
+        pub st_size: crate::off_t,
     }
 
     pub struct statfs {
@@ -161,7 +160,7 @@ s! {
         pub aio_lio_opcode: c_int,
         pub aio_fildes: c_int,
         pub aio_word1: c_int,
-        pub aio_offset: off_t,
+        pub aio_offset: crate::off_t,
         pub aio_buf: *mut c_void,
         pub aio_return: ssize_t,
         pub aio_errno: c_int,
@@ -180,11 +179,11 @@ s! {
     }
 
     pub struct __vmx_context_t {
-        pub __vr: [crate::__vmxreg_t; 32],
-        pub __pad1: [c_uint; 3],
+        pub __vr: [__vmxreg_t; 32],
+        __pad1: Padding<[c_uint; 3]>,
         pub __vscr: c_uint,
         pub __vrsave: c_uint,
-        pub __pad2: [c_uint; 3],
+        __pad2: Padding<[c_uint; 3]>,
     }
 
     pub struct __vsx_context_t {
@@ -192,8 +191,8 @@ s! {
     }
 
     pub struct __tm_context_t {
-        pub vmx: crate::__vmx_context_t,
-        pub vsx: crate::__vsx_context_t,
+        pub vmx: __vmx_context_t,
+        pub vsx: __vsx_context_t,
         pub gpr: [c_ulonglong; 32],
         pub lr: c_ulonglong,
         pub ctr: c_ulonglong,
@@ -212,7 +211,7 @@ s! {
         pub tmcontext: c_char,
         pub tmstate: c_char,
         pub prevowner: c_char,
-        pub pad: [c_char; 5],
+        pad: Padding<[c_char; 5]>,
     }
 
     pub struct __context64 {
@@ -230,7 +229,7 @@ s! {
         pub fpeu: c_char,
         pub fpinfo: c_char,
         pub fpscr24_31: c_char,
-        pub pad: [c_char; 1],
+        pad: Padding<[c_char; 1]>,
         pub excp_type: c_int,
     }
 
@@ -241,24 +240,24 @@ s! {
     pub struct __extctx_t {
         pub __flags: c_uint,
         pub __rsvd1: [c_uint; 3],
-        pub __vmx: crate::__vmx_context_t,
+        pub __vmx: __vmx_context_t,
         pub __ukeys: [c_uint; 2],
-        pub __vsx: crate::__vsx_context_t,
-        pub __tm: crate::__tm_context_t,
+        pub __vsx: __vsx_context_t,
+        pub __tm: __tm_context_t,
         __reserved: Padding<[c_char; 1860]>,
         pub __extctx_magic: c_int,
     }
 
     pub struct ucontext_t {
-        pub __sc_onstack: c_int,
-        pub uc_sigmask: crate::sigset_t,
-        pub __sc_uerror: c_int,
-        pub uc_mcontext: crate::mcontext_t,
+        __sc_onstack: c_int,
+        pub uc_sigmask: sigset_t,
+        __sc_uerror: c_int,
+        pub uc_mcontext: mcontext_t,
         pub uc_link: *mut ucontext_t,
         pub uc_stack: crate::stack_t,
-        pub __extctx: *mut crate::__extctx_t,
-        pub __extctx_magic: c_int,
-        pub __pad: [c_int; 1],
+        __extctx: *mut __extctx_t,
+        __extctx_magic: c_int,
+        __pad: Padding<[c_int; 1]>,
     }
 
     pub struct utmpx {
@@ -269,17 +268,17 @@ s! {
         pub ut_type: c_short,
         pub ut_tv: crate::timeval,
         pub ut_host: [c_char; 256],
-        pub __dbl_word_pad: c_int,
-        pub __reservedA: [c_int; 2],
-        pub __reservedV: [c_int; 6],
+        __dbl_word_pad: Padding<c_int>,
+        __reservedA: Padding<[c_int; 2]>,
+        __reservedV: Padding<[c_int; 6]>,
     }
 
     pub struct pthread_spinlock_t {
-        pub __sp_word: [c_long; 3],
+        __sp_word: [c_long; 3],
     }
 
     pub struct pthread_barrier_t {
-        pub __br_word: [c_long; 5],
+        __br_word: [c_long; 5],
     }
 
     pub struct msqid_ds {
@@ -309,15 +308,37 @@ s! {
         pub si_addr: *mut c_void,
         pub si_band: c_long,
         pub si_value: crate::sigval,
-        pub __si_flags: c_int,
-        pub __pad: [c_int; 3],
+        __si_flags: c_int,
+        __pad: Padding<[c_int; 3]>,
     }
 
-    pub struct pollfd_ext {
+    pub struct pollfd_ext_t {
         pub fd: c_int,
         pub events: c_short,
         pub revents: c_short,
-        pub data: __pollfd_ext_u,
+        pub u: __c_anonymous_pollfd_ext_t_u,
+    }
+}
+
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut c_void {
+        self.si_addr
+    }
+
+    pub unsafe fn si_value(&self) -> crate::sigval {
+        self.si_value
+    }
+
+    pub unsafe fn si_pid(&self) -> crate::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> crate::uid_t {
+        self.si_uid
+    }
+
+    pub unsafe fn si_status(&self) -> c_int {
+        self.si_status
     }
 }
 
@@ -372,8 +393,8 @@ s_no_extra_traits! {
         pub f_type: c_short,
         // Should be pointer to 'vnode'
         pub f_data: *mut c_void,
-        pub f_offset: c_longlong,
-        pub f_dir_off: c_long,
+        pub f_offset: crate::offset_t,
+        pub f_dir_off: crate::off_t,
         // Should be pointer to 'cred'
         pub f_cred: *mut c_void,
         pub f_lock: _kernel_simple_lock,
@@ -385,16 +406,10 @@ s_no_extra_traits! {
         pub f_fdata: [c_char; 160],
     }
 
-    pub union __ld_info_file {
-        pub _ldinfo_fd: c_int,
-        pub _ldinfo_fp: *mut file,
-        pub _core_offset: c_long,
-    }
-
     pub struct ld_info {
         pub ldinfo_next: c_uint,
         pub ldinfo_flags: c_uint,
-        pub _file: __ld_info_file,
+        pub _file: __c_anonymous_ld_info__file,
         pub ldinfo_textorg: *mut c_void,
         pub ldinfo_textsize: c_ulong,
         pub ldinfo_dataorg: *mut c_void,
@@ -402,7 +417,13 @@ s_no_extra_traits! {
         pub ldinfo_filename: [c_char; 2],
     }
 
-    pub union __pollfd_ext_u {
+    pub union __c_anonymous_ld_info__file {
+        pub _ldinfo_fd: c_int,
+        pub _ldinfo_fp: *mut _file,
+        pub _core_offset: c_long,
+    }
+
+    pub union __c_anonymous_pollfd_ext_t_u {
         pub addr: *mut c_void,
         pub data32: u32,
         pub data: u64,
@@ -413,32 +434,10 @@ s_no_extra_traits! {
     }
 }
 
-impl siginfo_t {
-    pub unsafe fn si_addr(&self) -> *mut c_void {
-        self.si_addr
-    }
-
-    pub unsafe fn si_value(&self) -> crate::sigval {
-        self.si_value
-    }
-
-    pub unsafe fn si_pid(&self) -> crate::pid_t {
-        self.si_pid
-    }
-
-    pub unsafe fn si_uid(&self) -> crate::uid_t {
-        self.si_uid
-    }
-
-    pub unsafe fn si_status(&self) -> c_int {
-        self.si_status
-    }
-}
-
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __pollfd_ext_u {
-            fn eq(&self, other: &__pollfd_ext_u) -> bool {
+        impl PartialEq for __c_anonymous_pollfd_ext_t_u {
+            fn eq(&self, other: &__c_anonymous_pollfd_ext_t_u) -> bool {
                 unsafe {
                     self.addr == other.addr
                         && self.data32 == other.data32
@@ -446,8 +445,8 @@ cfg_if! {
                 }
             }
         }
-        impl Eq for __pollfd_ext_u {}
-        impl hash::Hash for __pollfd_ext_u {
+        impl Eq for __c_anonymous_pollfd_ext_t_u {}
+        impl hash::Hash for __c_anonymous_pollfd_ext_t_u {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.addr.hash(state);
