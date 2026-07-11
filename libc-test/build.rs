@@ -4133,7 +4133,11 @@ fn test_linux(target: &str) {
     let mips32 = mips && !mips64;
     let pauthtest = target.contains("pauthtest");
     let versions = &*VERSIONS;
-    let kernel = versions.linux.unwrap();
+    let kernel = match versions.linux {
+        Some(v) => v,
+        None if l4re => (0, 0),
+        None => panic!("failed to detect kernel version for Linux target {target}"),
+    };
 
     // Force modern musl also for pauthtest.
     let musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") || pauthtest;
@@ -6558,9 +6562,11 @@ struct Versions {
 impl Versions {
     fn init_from_cc() -> Self {
         let src = r#"
-            #ifdef __linux__
+            #if defined(__linux__) && defined(__has_include)
+            #if __has_include(<linux/version.h>)
             /* Defines LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL (integers) */
             #include "linux/version.h"
+            #endif
             #endif
 
             /* Including a libc header will define __GLIBC__ */

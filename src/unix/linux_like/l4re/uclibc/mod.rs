@@ -250,6 +250,7 @@ s! {
 
     pub struct pthread_mutexattr_t {
         __mutexkind: c_int,
+        __mutexprotocol: c_int,
     }
 
     pub struct pthread_rwlock_t {
@@ -276,6 +277,30 @@ s! {
 
     pub struct pthread_barrierattr_t {
         __pshared: c_int,
+    }
+
+    pub struct __mbstate_t {
+        pub __mask: crate::wchar_t,
+        pub __wc: crate::wchar_t,
+    }
+
+    pub struct fpos64_t {
+        pub __pos: crate::off64_t,
+        pub __mbstate: __mbstate_t,
+        pub __mblen_pending: c_int,
+    }
+
+    pub struct shmid_ds {
+        pub shm_perm: crate::ipc_perm,
+        pub shm_segsz: crate::size_t,
+        pub shm_atime: crate::time_t,
+        pub shm_dtime: crate::time_t,
+        pub shm_ctime: crate::time_t,
+        pub shm_cpid: crate::pid_t,
+        pub shm_lpid: crate::pid_t,
+        pub shm_nattch: crate::shmatt_t,
+        __unused4: c_ulong,
+        __unused5: c_ulong,
     }
 }
 
@@ -424,7 +449,6 @@ pub const MAP_HUGE_MASK: c_int = 0x3f;
 pub const MSG_COPY: c_int = 0o40000;
 pub const NI_MAXHOST: crate::socklen_t = 1025;
 pub const O_TMPFILE: c_int = 0o20000000 | O_DIRECTORY;
-pub const PACKET_MR_UNICAST: c_int = 3;
 pub const PF_NFC: c_int = 39;
 pub const PF_VSOCK: c_int = 40;
 pub const RTLD_NOLOAD: c_int = 0x00004;
