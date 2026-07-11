@@ -32,14 +32,6 @@ cfg_if! {
 
 pub type iconv_t = *mut c_void;
 
-cfg_if! {
-    if #[cfg(not(target_env = "gnu"))] {
-        extern_ty! {
-            pub type fpos64_t; // FIXME(linux): fill this out with a struct
-        }
-    }
-}
-
 s! {
     pub struct glob_t {
         pub gl_pathc: size_t,
@@ -801,6 +793,7 @@ pub const EM_M32R: u16 = 88;
 pub const EM_MN10300: u16 = 89;
 pub const EM_MN10200: u16 = 90;
 pub const EM_PJ: u16 = 91;
+#[cfg(not(target_env = "uclibc"))]
 pub const EM_OPENRISC: u16 = 92;
 #[cfg(target_env = "uclibc")]
 pub const EM_OR1K: u16 = 92;
@@ -881,6 +874,7 @@ pub const AT_EXECFN: c_ulong = 31;
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
 // wherever it is defined.
 pub const AT_SYSINFO_EHDR: c_ulong = 33;
+#[cfg(not(target_env = "uclibc"))]
 pub const AT_MINSIGSTKSZ: c_ulong = 51;
 
 pub const GLOB_ERR: c_int = 1 << 0;
@@ -935,7 +929,9 @@ pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
 pub const PTHREAD_MUTEX_DEFAULT: c_int = PTHREAD_MUTEX_NORMAL;
+#[cfg(not(target_os = "l4re"))]
 pub const PTHREAD_MUTEX_STALLED: c_int = 0;
+#[cfg(not(target_os = "l4re"))]
 pub const PTHREAD_MUTEX_ROBUST: c_int = 1;
 pub const PTHREAD_PRIO_NONE: c_int = 0;
 pub const PTHREAD_PRIO_INHERIT: c_int = 1;
@@ -1734,15 +1730,6 @@ extern "C" {
 
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn __errno_location() -> *mut c_int;
-
-    // Not available now on Android
-    pub fn mremap(
-        addr: *mut c_void,
-        len: size_t,
-        new_len: size_t,
-        flags: c_int,
-        ...
-    ) -> *mut c_void;
 
     #[cfg_attr(gnu_time_bits64, link_name = "__glob64_time64")]
     #[cfg_attr(
