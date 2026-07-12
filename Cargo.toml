@@ -202,10 +202,7 @@ ptr_as_ptr = "warn"
 unnecessary_semicolon = "warn"
 
 # FIXME(clippy): these should be fixed if possible
-expl_impl_clone_on_copy = "allow"
-uninlined_format_args = "allow"
 unnecessary_cast = "allow"  # some casts like `as usize` are only needed for some targets
-used_underscore_binding = "allow"
 
 [lints]
 workspace = true
