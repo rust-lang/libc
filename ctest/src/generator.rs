@@ -728,8 +728,8 @@ impl TestGenerator {
     }
 
     /// Configures extra arguments to be passed to cargo during macro expansion.  
-    /// This can be used, for example, to pass `-Zbuild-std`` if required.
-    pub fn macro_expansion_cargo_args_mut(&mut self) -> &mut Vec<String> {
+    /// This can be used, for example, to pass `-Zbuild-std` if required.
+    pub fn expansion_cargo_args_mut(&mut self) -> &mut Vec<String> {
         &mut self.macro_expansion_cargo_args
     }
 
