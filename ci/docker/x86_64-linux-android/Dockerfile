@@ -21,15 +21,19 @@ RUN curl -fsSL https://us-apt.pkg.dev/doc/repo-signing-key.gpg \
 
 WORKDIR /android/
 ENV ANDROID_ARCH=x86_64
+# The API level we compile against: this only names the CC wrapper and the toolchain we use.
+# The Android Cuttlefish device is pinned separately and is newer, i.e. capable of testing
+# newer APIs. The toolchain wrapper is held at the same baseline as arm/aarch64 for now.
+ARG ANDROID_API=24
 COPY android-install-ndk.sh /android/
 RUN /android/android-install-ndk.sh
 
 ENV PATH=$PATH:/rust/bin:/android/linux-x86_64/bin \
     ANDROID_SERIAL=127.0.0.1:6520 \
-    CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=x86_64-linux-android28-clang \
+    CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=x86_64-linux-android${ANDROID_API}-clang \
     CARGO_TARGET_X86_64_LINUX_ANDROID_RUNNER=/tmp/runtest \
-    CC_x86_64_linux_android=x86_64-linux-android28-clang \
-    CXX_x86_64_linux_android=x86_64-linux-android28-clang++ \
+    CC_x86_64_linux_android=x86_64-linux-android${ANDROID_API}-clang \
+    CXX_x86_64_linux_android=x86_64-linux-android${ANDROID_API}-clang++ \
     AR_x86_64_linux_android=llvm-ar \
     HOME=/tmp
 
