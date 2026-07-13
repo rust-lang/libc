@@ -27,9 +27,9 @@ RUN chmod 777 -R /tmp/.android
 RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
 
 ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android28-clang \
+    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android24-clang \
     CARGO_TARGET_AARCH64_LINUX_ANDROID_RUNNER=/tmp/runtest \
-    CC_aarch64_linux_android=aarch64-linux-android28-clang \
+    CC_aarch64_linux_android=aarch64-linux-android24-clang \
     AR_aarch64_linux_android=llvm-ar \
     HOME=/tmp
 

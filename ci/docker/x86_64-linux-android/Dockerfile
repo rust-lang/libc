@@ -19,8 +19,8 @@ COPY android-sysimage.sh /android/
 RUN /android/android-sysimage.sh x86_64 x86_64-24_r07.zip
 
 ENV PATH=$PATH:/rust/bin:/android/linux-x86_64/bin \
-    CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=x86_64-linux-android28-clang \
-    CC_x86_64_linux_android=x86_64-linux-android28-clang \
-    CXX_x86_64_linux_android=x86_64-linux-android28-clang++ \
+    CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER=x86_64-linux-android24-clang \
+    CC_x86_64_linux_android=x86_64-linux-android24-clang \
+    CXX_x86_64_linux_android=x86_64-linux-android24-clang++ \
     AR_x86_64_linux_android=llvm-ar \
     HOME=/tmp
