@@ -7,13 +7,9 @@
 set -eux
 
 defconfig="$1"
-# shellcheck disable=SC2034
 time64="$2"  # TODO: honor this flag, adjusting UCLIBC_USE_TIME64 in config
 
-mkdir /buildroot
-BR_URL=https://buildroot.org/downloads/buildroot-2026.05.tar.xz
-curl --retry 5 -L "$BR_URL" | tar xJf - -C /buildroot --strip-components=1
-
-cd /buildroot
-make defconfig "BR2_DEFCONFIG=$defconfig"
-make
+mkdir /toolchain
+URL=https://github.com/skrap/libc-downstream-ci/releases/download/v0.1-toolchain/arm-buildroot-linux-uclibcgnueabihf_sdk-buildroot.tar.gz
+curl --retry 5 -L "$URL" | tar xzf - -C /toolchain --strip-components=1
+/toolchain/relocate-sdk.sh

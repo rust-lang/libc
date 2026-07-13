@@ -26,8 +26,8 @@ COPY install-uclibc.sh /
 COPY buildroot_defconfigs/armv7_unknown_linux_uclibceabihf.config /
 RUN /install-uclibc.sh /armv7_unknown_linux_uclibceabihf.config "$TEST_UCLIBC_TIME64"
 
-ENV PATH=$PATH:/rust/bin:/buildroot/output/host/bin \
-    STAGING_DIR=/buildroot/output/host/armv7-buildroot-linux-uclibceabihf/sysroot \
+ENV PATH=$PATH:/rust/bin:/toolchain/bin \
+    STAGING_DIR=/toolchain/armv7-buildroot-linux-uclibceabihf/sysroot \
     CC_armv7_unknown_linux_uclibceabihf=arm-buildroot-linux-uclibcgnueabihf-gcc \
     CARGO_TARGET_ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF_LINKER=arm-buildroot-linux-uclibcgnueabihf-gcc \
-    CARGO_TARGET_ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF_RUNNER="qemu-arm -L /buildroot/output/host/arm-buildroot-linux-uclibcgnueabihf/sysroot/"
+    CARGO_TARGET_ARMV7_UNKNOWN_LINUX_UCLIBCEABIHF_RUNNER="qemu-arm -L /toolchain/arm-buildroot-linux-uclibcgnueabihf/sysroot/"
