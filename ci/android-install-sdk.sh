@@ -14,25 +14,31 @@ mkdir -p sdk/cmdline-tools
 wget -q --tries=20 "https://dl.google.com/android/repository/commandlinetools-linux-${sdk}_latest.zip"
 unzip -q -d sdk/cmdline-tools "commandlinetools-linux-${sdk}_latest.zip"
 
-case "$1" in
+# The API level is passed in (arg 2) so it stays a single source of truth
+# shared with the CC wrapper name in the Dockerfile; only the image variant
+# is arch-specific here.
+arch="$1"
+api="$2"
+if [ -z "${api}" ]; then
+    echo "usage: $0 <arch> <api-level>"
+    exit 1
+fi
+
+case "${arch}" in
     arm | armv7)
-        api=24
         image="system-images;android-${api};default;armeabi-v7a"
         ;;
     aarch64)
-        api=24
         image="system-images;android-${api};google_apis;arm64-v8a"
         ;;
     i686)
-        api=28
         image="system-images;android-${api};default;x86"
         ;;
     x86_64)
-        api=28
         image="system-images;android-${api};default;x86_64"
         ;;
     *)
-        echo "invalid arch: $1"
+        echo "invalid arch: ${arch}"
         exit 1
         ;;
 esac
@@ -66,7 +72,7 @@ cp /android/android-emulator-package.xml /android/sdk/emulator/package.xml
 
 echo "no" |
     ./sdk/cmdline-tools/tools/bin/avdmanager create avd \
-        --name "${1}" \
+        --name "${arch}" \
         --package "${image}" | grep -v = || true
 
 rm -rf "commandlinetools-linux-${sdk}_latest.zip" emulator-linux_x64-9058569.zip

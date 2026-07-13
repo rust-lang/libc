@@ -18,18 +18,22 @@ WORKDIR /android/
 COPY android* /android/
 
 ENV ANDROID_ARCH=aarch64
+# Single source of truth for the API level: it selects the emulator system
+# image (passed to android-install-sdk.sh) and names the CC wrapper below, so
+# the toolchain can never drift from the image the tests run on.
+ARG ANDROID_API=24
 ENV PATH=$PATH:/android/linux-x86_64/bin:/android/sdk/cmdline-tools/tools:/android/sdk/platform-tools
 
 RUN /android/android-install-ndk.sh
-RUN /android/android-install-sdk.sh $ANDROID_ARCH
+RUN /android/android-install-sdk.sh $ANDROID_ARCH $ANDROID_API
 RUN mv /root/.android /tmp
 RUN chmod 777 -R /tmp/.android
 RUN chmod 755 /android/sdk/cmdline-tools/tools/* /android/sdk/emulator/qemu/linux-x86_64/*
 
 ENV PATH=$PATH:/rust/bin \
-    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android28-clang \
+    CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=aarch64-linux-android${ANDROID_API}-clang \
     CARGO_TARGET_AARCH64_LINUX_ANDROID_RUNNER=/tmp/runtest \
-    CC_aarch64_linux_android=aarch64-linux-android28-clang \
+    CC_aarch64_linux_android=aarch64-linux-android${ANDROID_API}-clang \
     AR_aarch64_linux_android=llvm-ar \
     HOME=/tmp
 
