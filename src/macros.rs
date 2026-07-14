@@ -255,16 +255,16 @@ macro_rules! s_no_extra_traits {
 /// field is added to `processed_fields` with `#[custom_default]` stripped if necessary, and
 /// `impl_default` is invoked again with the remaining fields.
 macro_rules! impl_default {
-    // entry; `derives` is the attribute block the caller wants on the struct
+    // entry; `attrs` is the attribute block the caller wants on the struct (repr, derives, etc.),
+    // which is merged with the struct's own attributes.
     (
-        derives: { $($derives:tt)* }
+        attrs: { $($attrs:tt)* }
         $(#[$attr:meta])*
         $vis:vis struct $name:ident { $($body:tt)* }
     ) => {
         impl_default! {
             @struct
-            derives: { $($derives)* }
-            attrs: { $(#[$attr])* }
+            attrs: { $($attrs)* $(#[$attr])* }
             vis: { $vis }
             name: { $name }
             processed_fields: { }
@@ -276,8 +276,7 @@ macro_rules! impl_default {
     // field led by #[custom_default(...)]
     (
         @struct
-        derives: { $($derives:tt)* }
-        attrs: { $($attr:tt)* }
+        attrs: { $($attrs:tt)* }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -291,8 +290,7 @@ macro_rules! impl_default {
     ) => {
         impl_default! {
             @struct
-            derives: { $($derives)* }
-            attrs: { $($attr)* }
+            attrs: { $($attrs)* }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -304,8 +302,7 @@ macro_rules! impl_default {
     // plain field
     (
         @struct
-        derives: { $($derives:tt)* }
-        attrs: { $($attr:tt)* }
+        attrs: { $($attrs:tt)* }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -318,8 +315,7 @@ macro_rules! impl_default {
     ) => {
         impl_default! {
             @struct
-            derives: { $($derives)* }
-            attrs: { $($attr)* }
+            attrs: { $($attrs)* }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -331,16 +327,14 @@ macro_rules! impl_default {
     // done
     (
         @struct
-        derives: { $($derives:tt)* }
-        attrs: { $($attr:tt)* }
+        attrs: { $($attrs:tt)* }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
         processed_field_defaults: { $($processed_field_defaults:tt)* }
         remaining_fields: { }
     ) => {
-        $($derives)*
-        $($attr)*
+        $($attrs)*
         $vis struct $name { $($processed_fields)* }
 
         impl ::core::default::Default for $name {
@@ -363,7 +357,7 @@ macro_rules! s_with_default {
         $($rest:tt)*
     ) => {
         impl_default! {
-            derives: {
+            attrs: {
                 #[repr(C)]
                 #[::core::prelude::v1::derive(
                     ::core::clone::Clone,
@@ -394,7 +388,7 @@ macro_rules! s_no_extra_traits_with_default {
         $($rest:tt)*
     ) => {
         impl_default! {
-            derives: {
+            attrs: {
                 #[repr(C)]
                 #[::core::prelude::v1::derive(
                     ::core::clone::Clone,
