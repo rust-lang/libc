@@ -350,12 +350,20 @@ macro_rules! impl_default {
 
 /// Like [`s`], but also generates a `Default` impl for every struct in the block.
 macro_rules! s_with_default {
-    () => {};
-    (
+    ($(
         $(#[$attr:meta])*
-        $vis:vis struct $name:ident { $($body:tt)* }
-        $($rest:tt)*
-    ) => {
+        $pub:vis $t:ident $i:ident { $($field:tt)* }
+    )*) => ($(
+        s_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+    )*);
+
+    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
+        compile_error!(
+            "unions cannot derive extra traits, use s_no_extra_traits_with_default instead"
+        );
+    );
+
+    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
         impl_default! {
             attrs: {
                 #[repr(C)]
@@ -370,10 +378,9 @@ macro_rules! s_with_default {
                 )]
                 #[allow(deprecated)]
             }
-            $(#[$attr])* $vis struct $name { $($body)* }
+            $(#[$attr])* $pub struct $i { $($field)* }
         }
-        s_with_default! { $($rest)* }
-    };
+    );
 }
 
 /// Like [`s_no_extra_traits`], but also generates a `Default` impl for every struct in the block.
@@ -381,12 +388,30 @@ macro_rules! s_with_default {
 /// Unions are emitted as by `s_no_extra_traits!`; no `Default` is generated for them. A struct
 /// field of union type supplies its own default via `#[custom_default(...)]`.
 macro_rules! s_no_extra_traits_with_default {
-    () => {};
-    (
+    ($(
         $(#[$attr:meta])*
-        $vis:vis struct $name:ident { $($body:tt)* }
-        $($rest:tt)*
-    ) => {
+        $pub:vis $t:ident $i:ident { $($field:tt)* }
+    )*) => ($(
+        s_no_extra_traits_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+    )*);
+
+    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
+        #[repr(C)]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+        )]
+        $(#[$attr])*
+        $pub union $i { $($field)* }
+
+        impl ::core::fmt::Debug for $i {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
+            }
+        }
+    );
+
+    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
         impl_default! {
             attrs: {
                 #[repr(C)]
@@ -396,28 +421,9 @@ macro_rules! s_no_extra_traits_with_default {
                     ::core::fmt::Debug,
                 )]
             }
-            $(#[$attr])* $vis struct $name { $($body)* }
+            $(#[$attr])* $pub struct $i { $($field)* }
         }
-        s_no_extra_traits_with_default! { $($rest)* }
-    };
-    (
-        $(#[$attr:meta])*
-        $vis:vis union $name:ident { $($body:tt)* }
-        $($rest:tt)*
-    ) => {
-        #[repr(C)]
-        #[::core::prelude::v1::derive(::core::clone::Clone, ::core::marker::Copy)]
-        $(#[$attr])*
-        $vis union $name { $($body)* }
-
-        impl ::core::fmt::Debug for $name {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                f.debug_struct(::core::stringify!($name)).finish_non_exhaustive()
-            }
-        }
-
-        s_no_extra_traits_with_default! { $($rest)* }
-    };
+    );
 }
 
 /// Create an uninhabited type that can't be constructed. It implements `Debug`, `Clone`,
@@ -844,6 +850,11 @@ mod macro_checks {
             pub a: u32,
             #[custom_default([1; 64])]
             pub buf: [u8; 64],
+        }
+
+        struct S3Priv {
+            pub a: u32,
+            b: u32,
         }
     }
 
