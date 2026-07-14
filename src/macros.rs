@@ -294,7 +294,10 @@ macro_rules! impl_default {
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
-            processed_field_defaults: { $($processed_field_defaults)* $(#[$fattr])* $fname: $default, }
+            processed_field_defaults: {
+                $($processed_field_defaults)*
+                $(#[$fattr])* $fname: $default,
+            }
             remaining_fields: { $($tail)* }
         }
     };
@@ -319,7 +322,10 @@ macro_rules! impl_default {
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
-            processed_field_defaults: { $($processed_field_defaults)* $(#[$fattr])* $fname: ::core::default::Default::default(), }
+            processed_field_defaults: {
+                $($processed_field_defaults)*
+                $(#[$fattr])* $fname: ::core::default::Default::default(),
+            }
             remaining_fields: { $($tail)* }
         }
     };
