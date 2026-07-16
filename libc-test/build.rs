@@ -5991,7 +5991,7 @@ fn test_aix(target: &str) {
             "fileops_t" | "file" => true,
 
             // Extern types
-            "DIR" | "FILE" | "fpos_t" => true,
+            "DIR" | "FILE" | "fpos_t" | "lock_data_instrumented" => true,
 
             _ => false,
         }
