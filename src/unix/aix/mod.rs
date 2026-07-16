@@ -121,8 +121,8 @@ s! {
         pub l_sysid: c_uint,
         pub l_pid: crate::pid_t,
         pub l_vfs: c_int,
-        pub l_start: off_t,
-        pub l_len: off_t,
+        pub l_start: off64_t,
+        pub l_len: off64_t,
     }
 
     pub struct msghdr {
@@ -485,7 +485,7 @@ s! {
         pub st_type: c_uint,
         pub st_gen: c_uint,
         st_reserved: Padding<[c_uint; 10]>,
-        pub st_size: off_t,
+        pub st_size: off64_t,
     }
 
     pub struct mntent {

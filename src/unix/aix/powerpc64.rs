@@ -36,21 +36,6 @@ s! {
         dbg_flags: c_int,
     }
 
-    pub struct _simple_lock {
-        _slock: simple_lock_data,
-        _slockp: *mut lock_data_instrumented,
-    }
-
-    pub struct _complex_lock {
-        _clock: complex_lock_data,
-        clockp: *mut lock_data_instrumented,
-    }
-
-    pub struct _drw_lock {
-        _drwlock: complex_lock_status,
-        _drwlockp: *mut lock_data_instrumented,
-    }
-
     pub struct __c_anonymous__lockname__lock_id {
         _id: c_uint,
         ocurrence: c_uint,
@@ -350,6 +335,21 @@ impl siginfo_t {
 }
 
 s_no_extra_traits! {
+    pub union _simple_lock {
+        _slock: simple_lock_data,
+        _slockp: *mut lock_data_instrumented,
+    }
+
+    pub union _complex_lock {
+        _clock: complex_lock_data,
+        clockp: *mut lock_data_instrumented,
+    }
+
+    pub union _drw_lock {
+        _drwlock: complex_lock_status,
+        _drwlockp: *mut lock_data_instrumented,
+    }
+
     pub union __c_anonymous_lock_data_instrumented_lock_control_word {
         s_lock: simple_lock_data,
         c_lock: complex_lock_data,
