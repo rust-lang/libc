@@ -324,14 +324,14 @@ macro_rules! c_enum {
     // Matcher for multiple enums
     ($(
         $(#[repr($repr:ty)])?
-        pub enum $($ty_name:ident)? $(#$anon:ident)? {
-            $($vis:vis $variant:ident $(= $value:expr)?,)+
+        $vis:vis enum $($ty_name:ident)? $(#$anon:ident)? {
+            $($field_vis:vis $variant:ident $(= $value:expr)?,)+
         }
     )+) => {
         $(c_enum!(@single;
             $(#[repr($repr)])?
-            pub enum $($ty_name)? $(#$anon)? {
-                $($vis $variant $(= $value)?,)+
+            $vis enum $($ty_name)? $(#$anon)? {
+                $($field_vis $variant $(= $value)?,)+
             }
         );)+
     };
@@ -339,31 +339,31 @@ macro_rules! c_enum {
     // Matcher for a single enum
     (@single;
         $(#[repr($repr:ty)])?
-        pub enum $ty_name:ident {
-            $($vis:vis $variant:ident $(= $value:expr)?,)+
+        $vis:vis enum $ty_name:ident {
+            $($field_vis:vis $variant:ident $(= $value:expr)?,)+
         }
     ) => {
-        pub type $ty_name = c_enum!(@ty $($repr)?);
+        $vis type $ty_name = c_enum!(@ty $($repr)?);
         c_enum! {
             @variant;
             ty: $ty_name;
             default: 0;
-            variants: [$($vis $variant $(= $value)?,)+]
+            variants: [$($field_vis $variant $(= $value)?,)+]
         }
     };
 
     // Matcher for a single anonymous enum
     (@single;
         $(#[repr($repr:ty)])?
-        pub enum #anon {
-            $($vis:vis $variant:ident $(= $value:expr)?,)+
+        $vis:vis enum #anon {
+            $($field_vis:vis $variant:ident $(= $value:expr)?,)+
         }
     ) => {
         c_enum! {
             @variant;
             ty: c_enum!(@ty $($repr)?);
             default: 0;
-            variants: [$($vis $variant $(= $value)?,)+]
+            variants: [$($field_vis $variant $(= $value)?,)+]
         }
     };
 
@@ -374,11 +374,11 @@ macro_rules! c_enum {
         ty: $ty_name:ty;
         default: $default_val:expr;
         variants: [
-            $vis:vis $variant:ident $(= $value:expr)?,
+            $field_vis:vis $variant:ident $(= $value:expr)?,
             $($tail:tt)*
         ]
     ) => {
-        $vis const $variant: $ty_name = {
+        $field_vis const $variant: $ty_name = {
             #[allow(unused_variables)]
             let r = $default_val;
             $(let r = $value;)?
@@ -509,6 +509,13 @@ mod tests {
                 ANON1,
                 ANON2,
             }
+
+            // No visibility required.
+            enum #anon {
+                ANON3,
+                ANON4,
+                ANON5,
+            }
         }
 
         assert_eq!(TypeId::of::<e>(), TypeId::of::<CEnumRepr>());
@@ -520,6 +527,11 @@ mod tests {
         assert_eq!(ANON0, 0 as CEnumRepr);
         assert_eq!(ANON1, 1 as CEnumRepr);
         assert_eq!(ANON2, 2 as CEnumRepr);
+
+        assert_eq!(type_id_of_val(&ANON3), TypeId::of::<CEnumRepr>());
+        assert_eq!(ANON3, 0 as CEnumRepr);
+        assert_eq!(ANON4, 1 as CEnumRepr);
+        assert_eq!(ANON5, 2 as CEnumRepr);
     }
 
     #[test]
