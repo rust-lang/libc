@@ -969,7 +969,6 @@ cfg_if! {
         pub const PTHREAD_STACK_MIN: size_t = 131072;
     }
 }
-pub const PTHREAD_MUTEX_ADAPTIVE_NP: c_int = 3;
 
 pub const REG_STARTEND: c_int = 4;
 
