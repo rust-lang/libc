@@ -113,3 +113,28 @@ pub(crate) const fn u32_cast_ioctl(x: u32) -> crate::Ioctl {
     assert!(size_of::<u32>() <= size_of::<crate::Ioctl>()); // Should always be true
     x as crate::Ioctl
 }
+
+#[allow(unused)]
+pub(crate) const fn u8_slice_cast_char_slice(x: &[u8]) -> &[c_char] {
+    assert!(size_of::<u8>() == size_of::<c_char>());
+    // SAFETY: same repr, possibly just a sign cast
+    unsafe { mem::transmute::<&[u8], &[c_char]>(x) }
+}
+
+/// Replace bytes in an array with those from a slice. This is a polyfill for `[T]::copy_from_slice`
+/// in `const`.
+// FIXME(msrv): we can switch to `copy_from_slice` in 1.87.
+#[must_use]
+#[allow(dead_code)]
+pub const fn replace_array_items<T: Copy, const N: usize>(
+    mut dst: [T; N],
+    src: &[T],
+    start: usize,
+) -> [T; N] {
+    let mut i = 0;
+    while i < src.len() {
+        dst[i + start] = src[i];
+        i += 1;
+    }
+    dst
+}
