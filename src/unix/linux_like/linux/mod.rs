@@ -836,8 +836,7 @@ s! {
         repr(align(8))
     )]
     pub struct pthread_mutex_t {
-        #[doc(hidden)]
-        size: [c_char; crate::__SIZEOF_PTHREAD_MUTEX_T],
+        pub(crate) size: [c_char; crate::__SIZEOF_PTHREAD_MUTEX_T],
     }
 
     #[cfg_attr(
@@ -1203,6 +1202,7 @@ pub const MPOL_F_NUMA_BALANCING: c_int = 1 << 13;
 pub const MPOL_F_RELATIVE_NODES: c_int = 1 << 14;
 pub const MPOL_F_STATIC_NODES: c_int = 1 << 15;
 
+#[cfg(not(target_env = "gnu"))] // defined in `new/glibc`
 pub const PTHREAD_MUTEX_INITIALIZER: crate::pthread_mutex_t = crate::pthread_mutex_t {
     size: [0; crate::__SIZEOF_PTHREAD_MUTEX_T],
 };
