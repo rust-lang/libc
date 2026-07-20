@@ -2045,6 +2045,10 @@ fn test_android(target: &str) {
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
+    // The API level the NDK toolchain targets, which caps the available libc
+    // API surface (see `Versions`). Items introduced later must be skipped when
+    // building below their level and also when no level could be detected.
+    let skip_below_api = |level: u32| VERSIONS.android.map_or(true, |api| api < level);
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2237,7 +2241,7 @@ fn test_android(target: &str) {
             "posix_spawnattr_t" => true,
 
             // Added in API level 24
-            "if_nameindex" => true,
+            "if_nameindex" => skip_below_api(24),
 
             _ => false,
         }
@@ -2429,40 +2433,32 @@ fn test_android(target: &str) {
             "reallocarray" => true,
             "__system_property_wait" => true,
 
-            // Added in API level 30, but tests use level 28.
-            "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp" => true,
+            // Added in API level 30.
+            "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp" => {
+                skip_below_api(30)
+            }
 
             // Added in glibc 2.25.
             "getentropy" => true,
 
-            // Added in API level 28, but some tests use level 24.
-            "getrandom" => true,
+            // Added in API level 28.
+            "getrandom" | "syncfs" | "aligned_alloc" => skip_below_api(28),
 
-            // Added in API level 28, but some tests use level 24.
-            "syncfs" => true,
+            // Added in API level 28.
+            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" => skip_below_api(28),
 
-            // Added in API level 28, but some tests use level 24.
-            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" => true,
-            // Added in API level 28, but some tests use level 24.
-            "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked" => true,
+            // Added in API level 28.
+            "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked" => {
+                skip_below_api(28)
+            }
 
-            // Added in API level 28, but some tests use level 24.
-            "aligned_alloc" => true,
+            // Added in API level 26.
+            "getgrent" | "setgrent" | "endgrent" | "getpwent" | "setpwent" | "endpwent" => {
+                skip_below_api(26)
+            }
 
-            // Added in API level 26, but some tests use level 24.
-            "getgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "setgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "endgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "getpwent" | "setpwent" | "endpwent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "getdomainname" | "setdomainname" => true,
+            // Added in API level 26.
+            "getdomainname" | "setdomainname" => skip_below_api(26),
 
             // FIXME(android): bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
@@ -2476,6 +2472,17 @@ fn test_android(target: &str) {
             // which is not possible for functions that have been overloaded.
             "ioctl" => true,
 
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn_ptrcheck(move |func| {
+        match func {
+            // termios functions are <termios.h> inlines below API 28, so
+            // their C-side address never matches the symbol Rust links.
+            "tcdrain" | "tcflow" | "tcflush" | "tcgetattr" | "tcgetsid" | "tcsendbreak"
+            | "tcsetattr" | "cfgetispeed" | "cfgetospeed" | "cfmakeraw" | "cfsetispeed"
+            | "cfsetospeed" | "cfsetspeed" => skip_below_api(28),
             _ => false,
         }
     });
@@ -6380,6 +6387,10 @@ struct Versions {
     netbsd: Option<(u32, u32)>,
     macos: Option<(u32, u32)>,
     emscripten: Option<(u32, u32)>,
+    /// Android API level. Unlike the (major, minor) platform versions
+    /// above, Android versions its libc ABI with a single increasing
+    /// integer (e.g. 28). There is no minor component.
+    android: Option<u32>,
 }
 
 impl Versions {
@@ -6398,6 +6409,13 @@ impl Versions {
             #ifdef __GLIBC__
             /* Provides __GLIBC__, __GLIBC_MINOR__ (integers) */
             #include "gnu/libc-version.h"
+            #endif
+
+            #ifdef __ANDROID__
+            /* The clang driver predefines __ANDROID_API__ and __ANDROID_MIN_SDK_VERSION__
+             * from the API level in the target triple. When that is missing, this header
+             * supplies the __ANDROID_API_FUTURE__ fallback definition. */
+            #include "android/api-level.h"
             #endif
 
             #if defined(__FreeBSD__) \
@@ -6464,6 +6482,15 @@ impl Versions {
                 }
                 "__GLIBC__" => ret.glibc.get_or_insert_default().0 = value.parse().unwrap(),
                 "__GLIBC_MINOR__" => ret.glibc.get_or_insert_default().1 = value.parse().unwrap(),
+                // The API level is in __ANDROID_API__ (old clang) or __ANDROID_MIN_SDK_VERSION__
+                // (modern clang), so take a number from either. When the API is undetected (e.g.
+                // the triple carries no API level), its consumers fall back to skipping every
+                // API-gated test as if the toolchain targeted the oldest level possible.
+                "__ANDROID_API__" | "__ANDROID_MIN_SDK_VERSION__" => {
+                    if let Ok(level) = value.parse() {
+                        ret.android = Some(level);
+                    }
+                }
                 "__MAC_OS_X_VERSION_MAX_ALLOWED" => {
                     let caps = mac_re.captures(value).unwrap();
                     let major: u32 = caps[1].parse().unwrap();
