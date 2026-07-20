@@ -349,7 +349,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on illumos
-        uses: vmactions/omnios-vm@7f2be0b927aad1a78498c8aeeac4c4ce1fabd322 # v1.3.3
+        uses: vmactions/omnios-vm@027e3ec08fed6fb740ab5f300c2605f9de02997a # v1.3.4
         if: contains(matrix.target, 'illumos')
         with:
           # Use the latest LTS
