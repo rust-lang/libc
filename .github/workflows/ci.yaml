@@ -189,7 +189,8 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
+    # Start immediately if enqueued, otherwise save CI usage
+    needs: ${{ github.event_name == 'merge_group' && [] || [test_tier1, style_check] }}
     strategy:
       fail-fast: true
       max-parallel: 16
@@ -289,7 +290,8 @@ jobs:
 
   test_tier2_vm:
     name: Test tier2 VM
-    needs: [test_tier1, style_check]
+    # Start immediately if enqueued, otherwise save CI usage
+    needs: ${{ github.event_name == 'merge_group' && [] || [test_tier1, style_check] }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
