@@ -6,6 +6,10 @@ extern_ty! {
     pub type DIR;
 }
 
+// Deprecated impls: see #5296
+unsafe impl Send for DIR {}
+unsafe impl Sync for DIR {}
+
 pub type intmax_t = i64;
 pub type uintmax_t = u64;
 
