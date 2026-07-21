@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.188](https://github.com/rust-lang/libc/compare/0.2.187...0.2.188) - 2026-07-21
+
+### Changed
+
+- Restore `Send` and `Sync` for `DIR` ([35b062263401](https://github.com/rust-lang/libc/commit/35b062263401733cd89065c6a553640f2ba51ff1))
+
+These were removed in 0.2.187 because `libc` does not actually make `Send` and `Sync`
+guarantees about `DIR` (or other extern types), but this caused some crates to break.
+The traits are added back for now to allow time to migrate, but will be removed again
+in the future; please make sure your crates are not relying on `libc::DIR: Send` or
+`libc::DIR: Sync`.
+
+
 ## [0.2.187](https://github.com/rust-lang/libc/compare/0.2.186...0.2.187) - 2026-07-20
 
 This release contains a number of improvements related to 64-bit `time_t` configuration.
