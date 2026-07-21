@@ -419,8 +419,11 @@ extern "C" {
         } else {
             pub fn ctime(sourceTime: *const time_t) -> *mut c_char;
             pub fn difftime(timeEnd: time_t, timeStart: time_t) -> c_double;
+            #[link_name = "_gmtime64_s"]
             pub fn gmtime_s(destTime: *mut tm, srcTime: *const time_t) -> c_int;
+            #[link_name = "_localtime64_s"]
             pub fn localtime_s(tmDest: *mut tm, sourceTime: *const time_t) -> crate::errno_t;
+            #[link_name = "_time64"]
             pub fn time(destTime: *mut time_t) -> time_t;
         }
     }
