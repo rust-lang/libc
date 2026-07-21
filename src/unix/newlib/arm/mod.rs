@@ -3,12 +3,17 @@ use crate::prelude::*;
 pub type clock_t = c_long;
 pub type wchar_t = u32;
 
+// RTEMS gets its socket address types from the `rtems` module: its stack is
+// libbsd, so every one of these starts with the BSD length byte and
+// `sockaddr_storage` is 128 bytes. See `super::rtems`.
 s! {
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr {
         pub sa_family: crate::sa_family_t,
         pub sa_data: [c_char; 14],
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr_in6 {
         pub sin6_family: crate::sa_family_t,
         pub sin6_port: crate::in_port_t,
@@ -17,6 +22,7 @@ s! {
         pub sin6_scope_id: u32,
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr_in {
         pub sin_family: crate::sa_family_t,
         pub sin_port: crate::in_port_t,
@@ -24,12 +30,14 @@ s! {
         pub sin_zero: [u8; 8],
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr_storage {
         pub ss_family: crate::sa_family_t,
         __ss_padding: Padding<[u8; 26]>,
     }
 }
 
+#[cfg(not(target_os = "rtems"))]
 pub const AF_INET6: c_int = 23;
 
 pub const FIONBIO: c_ulong = 1;

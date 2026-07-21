@@ -2,14 +2,53 @@
 
 use crate::prelude::*;
 
+// RTEMS's networking is rtems-libbsd, a port of the FreeBSD stack, and its
+// headers are FreeBSD's: every socket address begins with a one-byte length
+// followed by a one-byte family. Definitions below follow
+// `newlib/libc/sys/rtems/include/{sys/socket.h,sys/_sockaddr_storage.h,
+// netinet/in.h,netinet6/in6.h}` and libbsd's `sys/un.h`.
 s! {
+    pub struct sockaddr {
+        pub sa_len: u8,
+        pub sa_family: crate::sa_family_t,
+        pub sa_data: [c_char; 14],
+    }
+
+    pub struct sockaddr_in {
+        pub sin_len: u8,
+        pub sin_family: crate::sa_family_t,
+        pub sin_port: crate::in_port_t,
+        pub sin_addr: crate::in_addr,
+        pub sin_zero: [c_char; 8],
+    }
+
+    pub struct sockaddr_in6 {
+        pub sin6_len: u8,
+        pub sin6_family: crate::sa_family_t,
+        pub sin6_port: crate::in_port_t,
+        pub sin6_flowinfo: u32,
+        pub sin6_addr: crate::in6_addr,
+        pub sin6_scope_id: u32,
+    }
+
     pub struct sockaddr_un {
+        pub sun_len: u8,
         pub sun_family: crate::sa_family_t,
-        pub sun_path: [c_char; 108usize],
+        pub sun_path: [c_char; 104usize],
+    }
+
+    // _SS_MAXSIZE 128, _SS_ALIGNSIZE 8, so _SS_PAD1SIZE 6 and _SS_PAD2SIZE 112.
+    pub struct sockaddr_storage {
+        pub ss_len: u8,
+        pub ss_family: crate::sa_family_t,
+        __ss_pad1: Padding<[u8; 6]>,
+        __ss_align: i64,
+        __ss_pad2: Padding<[u8; 112]>,
     }
 }
 
 pub const AF_UNIX: c_int = 1;
+pub const AF_INET6: c_int = 28;
 
 pub const RTLD_DEFAULT: *mut c_void = -2isize as *mut c_void;
 

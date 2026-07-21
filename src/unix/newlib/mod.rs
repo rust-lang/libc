@@ -577,6 +577,8 @@ pub const PF_INET: c_int = 2;
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         pub const PF_INET6: c_int = 10;
+    } else if #[cfg(target_os = "rtems")] {
+        pub const PF_INET6: c_int = 28;
     } else {
         pub const PF_INET6: c_int = 23;
     }
