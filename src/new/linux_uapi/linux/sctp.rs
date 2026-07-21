@@ -77,15 +77,15 @@ f! {
 }
 
 safe_f! {
-    pub const fn SCTP_PR_TTL_ENABLED(policy: c_int) -> bool {
+    pub const safe fn SCTP_PR_TTL_ENABLED(policy: c_int) -> bool {
         policy == SCTP_PR_SCTP_TTL
     }
 
-    pub const fn SCTP_PR_RTX_ENABLED(policy: c_int) -> bool {
+    pub const safe fn SCTP_PR_RTX_ENABLED(policy: c_int) -> bool {
         policy == SCTP_PR_SCTP_RTX
     }
 
-    pub const fn SCTP_PR_PRIO_ENABLED(policy: c_int) -> bool {
+    pub const safe fn SCTP_PR_PRIO_ENABLED(policy: c_int) -> bool {
         policy == SCTP_PR_SCTP_PRIO
     }
 }
