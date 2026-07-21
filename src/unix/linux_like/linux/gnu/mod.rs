@@ -863,8 +863,16 @@ pub const ELFOSABI_ARM_AEABI: u8 = 64;
 pub const CLONE_NEWTIME: c_int = 0x80;
 // DIFF(main): changed to `c_ulonglong` in e9abac9ac2. This is broken so should be fixed.
 #[allow(overflowing_literals)]
+#[deprecated(
+    since = "0.2.188",
+    note = "This constant overflows. In the near future, `libc` will change to a wider type, see #3584."
+)]
 pub const CLONE_CLEAR_SIGHAND: c_int = 0x100000000;
 #[allow(overflowing_literals)]
+#[deprecated(
+    since = "0.2.188",
+    note = "This constant overflows. In the near future, `libc` will change to a wider type, see #3584."
+)]
 pub const CLONE_INTO_CGROUP: c_int = 0x200000000;
 
 pub const M_MXFAST: c_int = 1;
