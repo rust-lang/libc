@@ -122,7 +122,7 @@ s! {
 
 pub const TPACKET_ALIGNMENT: usize = 16;
 f! {
-    pub fn TPACKET_ALIGN(x: usize) -> usize {
+    pub unsafe fn TPACKET_ALIGN(x: usize) -> usize {
         (x + TPACKET_ALIGNMENT - 1) & !(TPACKET_ALIGNMENT - 1)
     }
 }
