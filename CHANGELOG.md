@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.189](https://github.com/rust-lang/libc/compare/0.2.188...0.2.189) - 2026-07-21
+
+### Added
+
+- Emscripten: Add `pthread_sigmask`, `sigwait`, `sigwaitinfo`, `sigtimedwait`, `faccessat`, and `pthread_kill` ([#5270](https://github.com/rust-lang/libc/pull/5270))
+- Linux SPARC: Enable the `clone3` syscall ([#4980](https://github.com/rust-lang/libc/pull/4980))
+- Solarish: Add `CLOCK_PROCESS_CPUTIME_ID` and `CLOCK_THREAD_CPUTIME_ID` ([#5274](https://github.com/rust-lang/libc/pull/5274))
+
+### Deprecated
+
+- Deprecate `CLONE_INTO_CGROUP` and `CLONE_CLEAR_SIGHAND`. These overflow their types and will be changed to a larger size in the future. ([8c6e6710458d](https://github.com/rust-lang/libc/commit/8c6e6710458db4d6aa0766f6f84bbf13f640237e))
+
+### Fixed
+
+- Musl riscv32: Rename padding fields to avoid a conflict and fix the build ([2499ff0ad993](https://github.com/rust-lang/libc/commit/2499ff0ad9936a036e78a4e0991445efee383564))
+- NuttX: Fix `wchar_t` definition under Arm ([#5245](https://github.com/rust-lang/libc/pull/5245))
+- Windows: Add back link names for `time`-related symbols ([#5300](https://github.com/rust-lang/libc/pull/5300))
+
+
 ## [0.2.188](https://github.com/rust-lang/libc/compare/0.2.187...0.2.188) - 2026-07-21
 
 ### Changed
