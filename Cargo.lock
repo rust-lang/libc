@@ -120,7 +120,7 @@ version = "0.1.0"
 dependencies = [
  "cc",
  "ctest",
- "libc 1.0.0-alpha.3",
+ "libc 1.0.0-alpha.4",
 ]
 
 [[package]]
@@ -182,7 +182,7 @@ checksum = "68ab91017fe16c622486840e4c83c9a37afeff978bd239b5293d61ece587de66"
 
 [[package]]
 name = "libc"
-version = "1.0.0-alpha.3"
+version = "1.0.0-alpha.4"
 dependencies = [
  "rustc-std-workspace-core",
 ]
@@ -196,7 +196,7 @@ dependencies = [
  "cfg-if",
  "ctest",
  "glob",
- "libc 1.0.0-alpha.3",
+ "libc 1.0.0-alpha.4",
  "proc-macro2",
  "regex",
  "syn",
