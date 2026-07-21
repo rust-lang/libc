@@ -422,15 +422,14 @@ macro_rules! f {
 macro_rules! safe_f {
     ($(
         $(#[$attr:meta])*
-        // Less than ideal hack to match either `fn` or `const fn`.
-        pub $(fn $i:ident)? $(const fn $const_i:ident)?
-        ($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
+        pub $(const $($const_dummy:literal)?)? safe
+        fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
             $body:block
     )+) => {$(
         #[inline]
         $(#[$attr])*
-        pub $(extern "C" fn $i)? $(const extern "C" fn $const_i)?
-        ($($arg: $argty),*) -> $ret
+        pub $(const $($const_dummy)?)? extern "C"
+        fn $i ($($arg: $argty),*) -> $ret
             $body
     )+};
 }

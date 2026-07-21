@@ -1862,23 +1862,23 @@ f! {
 }
 
 safe_f! {
-    pub const fn WSTOPSIG(status: c_int) -> c_int {
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         status >> 8
     }
 
-    pub const fn WIFSIGNALED(status: c_int) -> bool {
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }
 
-    pub const fn WIFSTOPPED(status: c_int) -> bool {
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0o177) == 0o177
     }
 
-    pub const fn WIFCONTINUED(status: c_int) -> bool {
+    pub const safe fn WIFCONTINUED(status: c_int) -> bool {
         status == 0xffff
     }
 
-    pub const fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+    pub const safe fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;
@@ -1888,11 +1888,11 @@ safe_f! {
         dev
     }
 
-    pub const fn major(dev: crate::dev_t) -> c_int {
+    pub const safe fn major(dev: crate::dev_t) -> c_int {
         (((dev as u32) & 0x000fff00) >> 8) as c_int
     }
 
-    pub const fn minor(dev: crate::dev_t) -> c_int {
+    pub const safe fn minor(dev: crate::dev_t) -> c_int {
         let mut res = 0;
         res |= ((dev as u32) & 0xfff00000) >> 12;
         res |= (dev as u32) & 0x000000ff;

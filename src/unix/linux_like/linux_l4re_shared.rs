@@ -1565,7 +1565,7 @@ f! {
 }
 
 safe_f! {
-    pub const fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+    pub const safe fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;
@@ -1576,14 +1576,14 @@ safe_f! {
         dev
     }
 
-    pub const fn major(dev: crate::dev_t) -> c_uint {
+    pub const safe fn major(dev: crate::dev_t) -> c_uint {
         let mut major = 0;
         major |= (dev & 0x00000000000fff00) >> 8;
         major |= (dev & 0xfffff00000000000) >> 32;
         major as c_uint
     }
 
-    pub const fn minor(dev: crate::dev_t) -> c_uint {
+    pub const safe fn minor(dev: crate::dev_t) -> c_uint {
         let mut minor = 0;
         minor |= (dev & 0x00000000000000ff) >> 0;
         minor |= (dev & 0x00000ffffff00000) >> 12;
