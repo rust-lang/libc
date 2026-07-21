@@ -2414,25 +2414,25 @@ extern "C" {
 
 // wait.h macros
 safe_f! {
-    pub const fn WIFEXITED(status: c_int) -> bool {
+    pub const safe fn WIFEXITED(status: c_int) -> bool {
         (status & 0xFF00) == 0
     }
-    pub const fn WIFSIGNALED(status: c_int) -> bool {
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0xFF00) != 0
     }
-    pub const fn WIFSTOPPED(status: c_int) -> bool {
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xFF0000) != 0
     }
-    pub const fn WEXITSTATUS(status: c_int) -> c_int {
+    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
         status & 0xFF
     }
-    pub const fn WIFCONTINUED(status: c_int) -> c_int {
+    pub const safe fn WIFCONTINUED(status: c_int) -> c_int {
         (status >> 24) & 0xFF
     }
-    pub const fn WTERMSIG(status: c_int) -> c_int {
+    pub const safe fn WTERMSIG(status: c_int) -> c_int {
         (status >> 8) & 0xFF
     }
-    pub const fn WSTOPSIG(status: c_int) -> c_int {
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         (status >> 16) & 0xFF
     }
 }
