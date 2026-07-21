@@ -2,6 +2,12 @@
 
 use crate::prelude::*;
 
+// RTEMS defines `clock_t` as `__uint64_t` (`<machine/_types.h>` via
+// `<sys/types.h>`), not as the `long` that plain newlib arm/aarch64/vita use.
+// Measured with `arm-rtems6-gcc` on `armv7-rtems-eabihf`:
+// `sizeof(clock_t) == 8`, `_Alignof(clock_t) == 8`, unsigned.
+pub type clock_t = c_ulonglong;
+
 s! {
     pub struct sockaddr_un {
         pub sun_family: crate::sa_family_t,

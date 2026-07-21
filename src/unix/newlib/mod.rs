@@ -3,7 +3,13 @@ use crate::prelude::*;
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 
-pub type clockid_t = c_ulong;
+cfg_if! {
+    if #[cfg(target_os = "rtems")] {
+        pub type clockid_t = c_int;
+    } else {
+        pub type clockid_t = c_ulong;
+    }
+}
 
 cfg_if! {
     if #[cfg(any(target_os = "espidf"))] {
@@ -14,6 +20,10 @@ cfg_if! {
         pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_int;
+    } else if #[cfg(target_os = "rtems")] {
+        pub type dev_t = u64;
+        pub type ino_t = u64;
+        pub type off_t = i64;
     } else {
         pub type dev_t = u32;
         pub type ino_t = u32;
@@ -31,7 +41,13 @@ pub type nfds_t = u32;
 pub type nlink_t = c_ushort;
 pub type pthread_t = c_ulong;
 pub type pthread_key_t = c_uint;
-pub type rlim_t = u32;
+cfg_if! {
+    if #[cfg(target_os = "rtems")] {
+        pub type rlim_t = i64;
+    } else {
+        pub type rlim_t = u32;
+    }
+}
 
 cfg_if! {
     if #[cfg(target_os = "horizon")] {
@@ -56,6 +72,7 @@ pub type useconds_t = u32;
 cfg_if! {
     if #[cfg(any(
         target_os = "horizon",
+        target_os = "rtems",
         all(target_os = "espidf", not(espidf_time32))
     ))] {
         pub type time_t = c_longlong;

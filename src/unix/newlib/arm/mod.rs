@@ -1,5 +1,7 @@
 use crate::prelude::*;
 
+// RTEMS overrides this in `newlib/rtems`; see the comment there.
+#[cfg(not(target_os = "rtems"))]
 pub type clock_t = c_long;
 pub type wchar_t = u32;
 
