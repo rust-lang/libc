@@ -384,15 +384,14 @@ macro_rules! c_enum {
 macro_rules! f {
     ($(
         $(#[$attr:meta])*
-        // Less than ideal hack to match either `fn` or `const fn`.
-        pub $(fn $i:ident)? $(const fn $const_i:ident)?
-        ($($arg:ident: $argty:ty),* $(,)*) -> $ret:ty
+        pub $(const $($const_dummy:literal)?)? unsafe
+        fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
             $body:block
     )+) => {$(
         #[inline]
         $(#[$attr])*
-        pub $(unsafe extern "C" fn $i)? $(const unsafe extern "C" fn $const_i)?
-        ($($arg: $argty),*) -> $ret
+        pub $(const $($const_dummy)?)? unsafe extern "C"
+        fn $i ($($arg: $argty),*) -> $ret
             $body
     )+};
 }

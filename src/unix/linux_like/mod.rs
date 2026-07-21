@@ -1812,7 +1812,7 @@ const fn CMSG_ALIGN(len: usize) -> usize {
 }
 
 f! {
-    pub fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut crate::cmsghdr {
+    pub unsafe fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut crate::cmsghdr {
         if (*mhdr).msg_controllen as usize >= size_of::<crate::cmsghdr>() {
             (*mhdr).msg_control.cast()
         } else {
@@ -1820,39 +1820,39 @@ f! {
         }
     }
 
-    pub fn CMSG_DATA(cmsg: *const crate::cmsghdr) -> *mut c_uchar {
+    pub unsafe fn CMSG_DATA(cmsg: *const crate::cmsghdr) -> *mut c_uchar {
         cmsg.offset(1) as *mut c_uchar
     }
 
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
         (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<crate::cmsghdr>())) as c_uint
     }
 
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
         CMSG_ALIGN(size_of::<crate::cmsghdr>()) as c_uint + length
     }
 
-    pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
+    pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
         return;
     }
 
-    pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
+    pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
     }
 
-    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
+    pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
         return;
     }
 
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
+    pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).fds_bits.fill(0);
     }
 }

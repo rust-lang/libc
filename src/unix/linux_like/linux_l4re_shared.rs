@@ -1438,7 +1438,7 @@ pub const NT_PRFPXREG: c_int = 20;
 pub const MS_NOUSER: c_ulong = 1 << 31;
 
 f! {
-    pub fn CMSG_NXTHDR(
+    pub unsafe fn CMSG_NXTHDR(
         mhdr: *const crate::msghdr,
         cmsg: *const crate::cmsghdr,
     ) -> *mut crate::cmsghdr {
@@ -1474,35 +1474,35 @@ f! {
         }
     }
 
-    pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
+    pub unsafe fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = mem::zeroed();
         let size_in_bits = 8 * size_of_val(&_dummy.bits[0]);
         ((count as size_t + size_in_bits - 1) / 8) as size_t
     }
 
-    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+    pub unsafe fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         cpuset.bits.fill(0);
     }
 
-    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+    pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] |= 1 << offset;
     }
 
-    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+    pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * size_of_val(&cpuset.bits[0]); // 32, 64 etc
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         cpuset.bits[idx] &= !(1 << offset);
     }
 
-    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
+    pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
         let size_in_bits = 8 * size_of_val(&cpuset.bits[0]);
         let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
         0 != (cpuset.bits[idx] & (1 << offset))
     }
 
-    pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
+    pub unsafe fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = size_of_val(&cpuset.bits[0]);
         for i in &cpuset.bits[..(size / size_of_mask)] {
@@ -1511,55 +1511,55 @@ f! {
         s as c_int
     }
 
-    pub fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
+    pub unsafe fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
         CPU_COUNT_S(size_of::<cpu_set_t>(), cpuset)
     }
 
-    pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
+    pub unsafe fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
     }
 
-    pub fn IPTOS_TOS(tos: u8) -> u8 {
+    pub unsafe fn IPTOS_TOS(tos: u8) -> u8 {
         tos & IPTOS_TOS_MASK
     }
 
-    pub fn IPTOS_PREC(tos: u8) -> u8 {
+    pub unsafe fn IPTOS_PREC(tos: u8) -> u8 {
         tos & IPTOS_PREC_MASK
     }
 
-    pub fn RT_TOS(tos: u8) -> u8 {
+    pub unsafe fn RT_TOS(tos: u8) -> u8 {
         tos & crate::IPTOS_TOS_MASK
     }
 
-    pub fn RT_ADDRCLASS(flags: u32) -> u32 {
+    pub unsafe fn RT_ADDRCLASS(flags: u32) -> u32 {
         flags >> 23
     }
 
-    pub fn RT_LOCALADDR(flags: u32) -> bool {
+    pub unsafe fn RT_LOCALADDR(flags: u32) -> bool {
         (flags & RTF_ADDRCLASSMASK) == (RTF_LOCAL | RTF_INTERFACE)
     }
 
-    pub fn ELF32_R_SYM(val: Elf32_Word) -> Elf32_Word {
+    pub unsafe fn ELF32_R_SYM(val: Elf32_Word) -> Elf32_Word {
         val >> 8
     }
 
-    pub fn ELF32_R_TYPE(val: Elf32_Word) -> Elf32_Word {
+    pub unsafe fn ELF32_R_TYPE(val: Elf32_Word) -> Elf32_Word {
         val & 0xff
     }
 
-    pub fn ELF32_R_INFO(sym: Elf32_Word, t: Elf32_Word) -> Elf32_Word {
+    pub unsafe fn ELF32_R_INFO(sym: Elf32_Word, t: Elf32_Word) -> Elf32_Word {
         sym << (8 + t) & 0xff
     }
 
-    pub fn ELF64_R_SYM(val: Elf64_Xword) -> Elf64_Xword {
+    pub unsafe fn ELF64_R_SYM(val: Elf64_Xword) -> Elf64_Xword {
         val >> 32
     }
 
-    pub fn ELF64_R_TYPE(val: Elf64_Xword) -> Elf64_Xword {
+    pub unsafe fn ELF64_R_TYPE(val: Elf64_Xword) -> Elf64_Xword {
         val & 0xffffffff
     }
 
-    pub fn ELF64_R_INFO(sym: Elf64_Xword, t: Elf64_Xword) -> Elf64_Xword {
+    pub unsafe fn ELF64_R_INFO(sym: Elf64_Xword, t: Elf64_Xword) -> Elf64_Xword {
         sym << (32 + t)
     }
 }

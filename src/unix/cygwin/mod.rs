@@ -1679,35 +1679,35 @@ pub const FALLOC_FL_INSERT_RANGE: c_int = 0x0010;
 pub const FALLOC_FL_KEEP_SIZE: c_int = 0x1000;
 
 f! {
-    pub fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
+    pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] &= !(1 << (fd % size));
     }
 
-    pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
+    pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
         ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
     }
 
-    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
+    pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
         (*set).fds_bits[fd / size] |= 1 << (fd % size);
     }
 
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
+    pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).fds_bits.fill(0);
     }
 
-    pub fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
+    pub unsafe fn CPU_ALLOC_SIZE(count: c_int) -> size_t {
         let _dummy: cpu_set_t = cpu_set_t { bits: [0; 16] };
         let size_in_bits = 8 * size_of_val(&_dummy.bits[0]);
         ((count as size_t + size_in_bits - 1) / 8) as size_t
     }
 
-    pub fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
+    pub unsafe fn CPU_COUNT_S(size: usize, cpuset: &cpu_set_t) -> c_int {
         let mut s: u32 = 0;
         let size_of_mask = size_of_val(&cpuset.bits[0]);
         for i in cpuset.bits[..(size / size_of_mask)].iter() {
@@ -1716,11 +1716,11 @@ f! {
         s as c_int
     }
 
-    pub fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
+    pub unsafe fn CPU_ZERO(cpuset: &mut cpu_set_t) -> () {
         cpuset.bits.fill(0);
     }
 
-    pub fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+    pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
@@ -1728,7 +1728,7 @@ f! {
         }
     }
 
-    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
+    pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let size_in_bits = 8 * size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
@@ -1736,7 +1736,7 @@ f! {
         }
     }
 
-    pub fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
+    pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
         let size_in_bits = 8 * size_of_val(&cpuset.bits[0]);
         if cpu < size_in_bits {
             let (idx, offset) = (cpu / size_in_bits, cpu % size_in_bits);
@@ -1746,23 +1746,23 @@ f! {
         }
     }
 
-    pub fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
+    pub unsafe fn CPU_COUNT(cpuset: &cpu_set_t) -> c_int {
         CPU_COUNT_S(size_of::<cpu_set_t>(), cpuset)
     }
 
-    pub fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
+    pub unsafe fn CPU_EQUAL(set1: &cpu_set_t, set2: &cpu_set_t) -> bool {
         set1.bits == set2.bits
     }
 
-    pub fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
         CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
         (CMSG_ALIGN(length as usize) + CMSG_ALIGN(size_of::<cmsghdr>())) as c_uint
     }
 
-    pub fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
+    pub unsafe fn CMSG_FIRSTHDR(mhdr: *const msghdr) -> *mut cmsghdr {
         if (*mhdr).msg_controllen as usize >= size_of::<cmsghdr>() {
             (*mhdr).msg_control.cast()
         } else {
@@ -1770,7 +1770,7 @@ f! {
         }
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+    pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         let next = (cmsg as usize + CMSG_ALIGN((*cmsg).cmsg_len as usize)) as *mut cmsghdr;
         let max = (*mhdr).msg_control as usize + (*mhdr).msg_controllen as usize;
         if next as usize + CMSG_ALIGN(size_of::<cmsghdr>()) as usize > max {
@@ -1780,7 +1780,7 @@ f! {
         }
     }
 
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+    pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         cmsg.offset(1).cast_mut().cast()
     }
 }

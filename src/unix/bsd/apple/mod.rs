@@ -4142,7 +4142,7 @@ pub const DOT3COMPLIANCE_COLLS: c_int = 2;
 pub const MAX_KCTL_NAME: usize = 96;
 
 f! {
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+    pub unsafe fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         }
@@ -4156,19 +4156,19 @@ f! {
         }
     }
 
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+    pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         (cmsg as *mut c_uchar).add(__DARWIN_ALIGN32(size_of::<cmsghdr>()))
     }
 
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
         (__DARWIN_ALIGN32(size_of::<cmsghdr>()) + __DARWIN_ALIGN32(length as usize)) as c_uint
     }
 
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
         (__DARWIN_ALIGN32(size_of::<cmsghdr>()) + length as usize) as c_uint
     }
 
-    pub const fn VM_MAKE_TAG(id: u8) -> u32 {
+    pub const unsafe fn VM_MAKE_TAG(id: u8) -> u32 {
         (id as u32) << 24u32
     }
 }
