@@ -3977,7 +3977,6 @@ fn test_linux(target: &str) {
     }
 
     let arm = target.contains("arm");
-    let eabihf = target.contains("eabihf");
     let aarch64 = target.contains("aarch64");
     let i686 = target.contains("i686");
     let ppc = target.contains("powerpc");
@@ -4934,8 +4933,7 @@ fn test_linux(target: &str) {
             // FIXME(linux32): Requires >= 6.6 kernel headers.
             "XDP_USE_SG" | "XDP_PKT_CONTD" if pointer_width == 32 => kernel < (6, 6),
 
-            // FIXME(linux): Missing only on this platform for some reason
-            "PR_MDWE_NO_INHERIT" if gnueabihf => true,
+            "PR_MDWE_NO_INHERIT" if kernel < (6, 7) => true,
 
             // FIXME(musl): Not yet in musl
             // FIXME(linux32): Requires >= 6.8 kernel headers.
@@ -5008,9 +5006,7 @@ fn test_linux(target: &str) {
                 }
             }
 
-            // FIXME(musl): This value is not yet in musl.
-            // eabihf targets are tested using an older version of glibc
-            "AT_HANDLE_FID" if musl || eabihf => true,
+            "AT_HANDLE_FID" if old_musl || (gnu && versions.glibc.unwrap() < (2, 42)) => true,
 
             _ => false,
         }
