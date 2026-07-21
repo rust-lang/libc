@@ -50,6 +50,27 @@ s! {
 pub const AF_UNIX: c_int = 1;
 pub const AF_INET6: c_int = 28;
 
+// `_IOW('f', 126, int)`, i.e. FreeBSD's value, not newlib's 1.
+pub const FIONBIO: c_ulong = 0x8004667e;
+
+pub const POLLIN: c_short = 0x0001;
+pub const POLLPRI: c_short = 0x0002;
+pub const POLLOUT: c_short = 0x0004;
+pub const POLLERR: c_short = 0x0008;
+pub const POLLHUP: c_short = 0x0010;
+pub const POLLNVAL: c_short = 0x0020;
+
+pub const SOL_SOCKET: c_int = 0xffff;
+
+pub const MSG_OOB: c_int = 0x1;
+pub const MSG_PEEK: c_int = 0x2;
+pub const MSG_DONTROUTE: c_int = 0x4;
+pub const MSG_WAITALL: c_int = 0x40;
+pub const MSG_DONTWAIT: c_int = 0x80;
+pub const MSG_NOSIGNAL: c_int = 0x20000;
+// Not provided by RTEMS; kept at 0 so portable code compiles, as elsewhere.
+pub const MSG_MORE: c_int = 0;
+
 pub const RTLD_DEFAULT: *mut c_void = -2isize as *mut c_void;
 
 pub const UTIME_OMIT: c_long = -1;

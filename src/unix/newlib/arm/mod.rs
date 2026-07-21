@@ -40,23 +40,39 @@ s! {
 #[cfg(not(target_os = "rtems"))]
 pub const AF_INET6: c_int = 23;
 
+// RTEMS gets these from the `rtems` module; libbsd's values are FreeBSD's.
+#[cfg(not(target_os = "rtems"))]
 pub const FIONBIO: c_ulong = 1;
 
+#[cfg(not(target_os = "rtems"))]
 pub const POLLIN: c_short = 0x1;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLPRI: c_short = 0x2;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLHUP: c_short = 0x4;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLERR: c_short = 0x8;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLOUT: c_short = 0x10;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLNVAL: c_short = 0x20;
 
+#[cfg(not(target_os = "rtems"))]
 pub const SOL_SOCKET: c_int = 65535;
 
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_OOB: c_int = 1;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_PEEK: c_int = 2;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_DONTWAIT: c_int = 4;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_DONTROUTE: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_WAITALL: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_MORE: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_NOSIGNAL: c_int = 0;
 
 pub use crate::unix::newlib::generic::{
