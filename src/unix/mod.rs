@@ -41,6 +41,10 @@ extern_ty! {
     pub type DIR;
 }
 
+// Deprecated impls: see #5296
+unsafe impl Send for DIR {}
+unsafe impl Sync for DIR {}
+
 #[cfg(not(target_os = "nuttx"))]
 pub type locale_t = *mut c_void;
 

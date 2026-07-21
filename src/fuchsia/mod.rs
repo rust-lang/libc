@@ -84,6 +84,10 @@ extern_ty! {
     pub type fpos64_t; // FIXME(fuchsia): fill this out with a struct
 }
 
+// Deprecated impls: see #5296
+unsafe impl Send for DIR {}
+unsafe impl Sync for DIR {}
+
 // PUB_STRUCT
 
 s! {

@@ -51,6 +51,10 @@ extern_ty! {
     pub type __locale_struct;
 }
 
+// Deprecated impls: see #5296
+unsafe impl Send for DIR {}
+unsafe impl Sync for DIR {}
+
 s_paren! {
     // in wasi-libc clockid_t is const struct __clockid* (where __clockid is an opaque struct),
     // but that's an implementation detail that we don't want to have to deal with
