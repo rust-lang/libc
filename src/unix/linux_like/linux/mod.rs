@@ -3343,39 +3343,39 @@ pub const SI_DETHREAD: c_int = -7;
 pub const TRAP_PERF: c_int = 6;
 
 f! {
-    pub fn SO_EE_OFFENDER(ee: *const crate::sock_extended_err) -> *mut crate::sockaddr {
+    pub unsafe fn SO_EE_OFFENDER(ee: *const crate::sock_extended_err) -> *mut crate::sockaddr {
         ee.offset(1) as *mut crate::sockaddr
     }
 
-    pub fn BPF_CLASS(code: __u32) -> __u32 {
+    pub unsafe fn BPF_CLASS(code: __u32) -> __u32 {
         code & 0x07
     }
 
-    pub fn BPF_SIZE(code: __u32) -> __u32 {
+    pub unsafe fn BPF_SIZE(code: __u32) -> __u32 {
         code & 0x18
     }
 
-    pub fn BPF_MODE(code: __u32) -> __u32 {
+    pub unsafe fn BPF_MODE(code: __u32) -> __u32 {
         code & 0xe0
     }
 
-    pub fn BPF_OP(code: __u32) -> __u32 {
+    pub unsafe fn BPF_OP(code: __u32) -> __u32 {
         code & 0xf0
     }
 
-    pub fn BPF_SRC(code: __u32) -> __u32 {
+    pub unsafe fn BPF_SRC(code: __u32) -> __u32 {
         code & 0x08
     }
 
-    pub fn BPF_RVAL(code: __u32) -> __u32 {
+    pub unsafe fn BPF_RVAL(code: __u32) -> __u32 {
         code & 0x18
     }
 
-    pub fn BPF_MISCOP(code: __u32) -> __u32 {
+    pub unsafe fn BPF_MISCOP(code: __u32) -> __u32 {
         code & 0xf8
     }
 
-    pub fn BPF_STMT(code: __u16, k: __u32) -> sock_filter {
+    pub unsafe fn BPF_STMT(code: __u16, k: __u32) -> sock_filter {
         sock_filter {
             code,
             jt: 0,
@@ -3384,17 +3384,17 @@ f! {
         }
     }
 
-    pub fn BPF_JUMP(code: __u16, k: __u32, jt: __u8, jf: __u8) -> sock_filter {
+    pub unsafe fn BPF_JUMP(code: __u16, k: __u32, jt: __u8, jf: __u8) -> sock_filter {
         sock_filter { code, jt, jf, k }
     }
 
     #[cfg(target_env = "gnu")]
-    pub fn SUN_LEN(s: crate::sockaddr_un) -> usize {
+    pub unsafe fn SUN_LEN(s: crate::sockaddr_un) -> usize {
         offset_of!(crate::sockaddr_un, sun_path) + crate::strlen(s.sun_path.as_ptr())
     }
 
     #[cfg(target_env = "musl")]
-    pub fn SUN_LEN(s: crate::sockaddr_un) -> usize {
+    pub unsafe fn SUN_LEN(s: crate::sockaddr_un) -> usize {
         2 * crate::strlen(s.sun_path.as_ptr())
     }
 }

@@ -4367,15 +4367,15 @@ const fn _ALIGN(p: usize) -> usize {
 }
 
 f! {
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+    pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
     }
 
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
         _ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+    pub unsafe fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         }
@@ -4388,58 +4388,58 @@ f! {
         }
     }
 
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 
-    pub fn MALLOCX_ALIGN(lg: c_uint) -> c_int {
+    pub unsafe fn MALLOCX_ALIGN(lg: c_uint) -> c_int {
         ffsl(lg as c_long - 1)
     }
 
-    pub const fn MALLOCX_TCACHE(tc: c_int) -> c_int {
+    pub const unsafe fn MALLOCX_TCACHE(tc: c_int) -> c_int {
         (tc + 2) << 8 as c_int
     }
 
-    pub const fn MALLOCX_ARENA(a: c_int) -> c_int {
+    pub const unsafe fn MALLOCX_ARENA(a: c_int) -> c_int {
         (a + 1) << 20 as c_int
     }
 
-    pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
+    pub unsafe fn SOCKCREDSIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         size_of::<sockcred>() + size_of::<crate::gid_t>() * ngrps
     }
 
-    pub fn uname(buf: *mut crate::utsname) -> c_int {
+    pub unsafe fn uname(buf: *mut crate::utsname) -> c_int {
         __xuname(256, buf.cast())
     }
 
-    pub fn CPU_ZERO(cpuset: &mut cpuset_t) -> () {
+    pub unsafe fn CPU_ZERO(cpuset: &mut cpuset_t) -> () {
         cpuset.__bits.fill(0);
     }
 
-    pub fn CPU_FILL(cpuset: &mut cpuset_t) -> () {
+    pub unsafe fn CPU_FILL(cpuset: &mut cpuset_t) -> () {
         cpuset.__bits.fill(!0);
     }
 
-    pub fn CPU_SET(cpu: usize, cpuset: &mut cpuset_t) -> () {
+    pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpuset_t) -> () {
         let bitset_bits = 8 * size_of::<c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         cpuset.__bits[idx] |= 1 << offset;
     }
 
-    pub fn CPU_CLR(cpu: usize, cpuset: &mut cpuset_t) -> () {
+    pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpuset_t) -> () {
         let bitset_bits = 8 * size_of::<c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         cpuset.__bits[idx] &= !(1 << offset);
     }
 
-    pub fn CPU_ISSET(cpu: usize, cpuset: &cpuset_t) -> bool {
+    pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpuset_t) -> bool {
         let bitset_bits = 8 * size_of::<c_long>();
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         0 != cpuset.__bits[idx] & (1 << offset)
     }
 
-    pub fn CPU_COUNT(cpuset: &cpuset_t) -> c_int {
+    pub unsafe fn CPU_COUNT(cpuset: &cpuset_t) -> c_int {
         let mut s: u32 = 0;
         let cpuset_size = size_of::<cpuset_t>();
         let bitset_size = size_of::<c_long>();
@@ -4450,16 +4450,16 @@ f! {
         s as c_int
     }
 
-    pub fn SOCKCRED2SIZE(ngrps: usize) -> usize {
+    pub unsafe fn SOCKCRED2SIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         size_of::<sockcred2>() + size_of::<crate::gid_t>() * ngrps
     }
 
-    pub fn PROT_MAX(x: c_int) -> c_int {
+    pub unsafe fn PROT_MAX(x: c_int) -> c_int {
         x << 16
     }
 
-    pub fn PROT_MAX_EXTRACT(x: c_int) -> c_int {
+    pub unsafe fn PROT_MAX_EXTRACT(x: c_int) -> c_int {
         (x >> 16) & (crate::PROT_READ | crate::PROT_WRITE | crate::PROT_EXEC)
     }
 }
