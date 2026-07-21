@@ -619,13 +619,13 @@ pub const PTHREAD_STACK_MIN: usize = 2048;
 pub const TIMER_ABSTIME: c_int = 1;
 
 f! {
-    pub fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
+    pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let set = &*set;
         let n = set.__nfds;
         return set.__fds[..n].iter().any(|p| *p == fd);
     }
 
-    pub fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
+    pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let set = &mut *set;
         let n = set.__nfds;
         if !set.__fds[..n].iter().any(|p| *p == fd) {
@@ -634,7 +634,7 @@ f! {
         }
     }
 
-    pub fn FD_ZERO(set: *mut fd_set) -> () {
+    pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).__nfds = 0;
         return;
     }

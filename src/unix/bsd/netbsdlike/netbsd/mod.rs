@@ -1815,15 +1815,15 @@ const fn _ALIGN(p: usize) -> usize {
 }
 
 f! {
-    pub fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
+    pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
     }
 
-    pub const fn CMSG_LEN(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
         _ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
 
-    pub fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
+    pub unsafe fn CMSG_NXTHDR(mhdr: *const crate::msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
         if cmsg.is_null() {
             return crate::CMSG_FIRSTHDR(mhdr);
         }
@@ -1836,27 +1836,27 @@ f! {
         }
     }
 
-    pub const fn CMSG_SPACE(length: c_uint) -> c_uint {
+    pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
 
     // dirfd() is a macro on netbsd to access
     // the first field of the struct where dirp points to:
     // http://cvsweb.netbsd.org/bsdweb.cgi/src/include/dirent.h?rev=1.36
-    pub fn dirfd(dirp: *mut crate::DIR) -> c_int {
+    pub unsafe fn dirfd(dirp: *mut crate::DIR) -> c_int {
         *(dirp as *const c_int)
     }
 
-    pub fn SOCKCREDSIZE(ngrps: usize) -> usize {
+    pub unsafe fn SOCKCREDSIZE(ngrps: usize) -> usize {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         size_of::<sockcred>() + size_of::<crate::gid_t>() * ngrps
     }
 
-    pub fn PROT_MPROTECT(x: c_int) -> c_int {
+    pub unsafe fn PROT_MPROTECT(x: c_int) -> c_int {
         x << 3
     }
 
-    pub fn PROT_MPROTECT_EXTRACT(x: c_int) -> c_int {
+    pub unsafe fn PROT_MPROTECT_EXTRACT(x: c_int) -> c_int {
         (x >> 3) & 0x7
     }
 }
