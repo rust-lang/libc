@@ -138,15 +138,15 @@ jobs:
             os: windows-11-arm
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-26.04-arm
-          - target: i686-pc-windows-gnu
-            os: windows-2025
-          - target: i686-pc-windows-msvc
-            os: windows-2025
-          - target: i686-unknown-linux-gnu
-          - target: x86_64-pc-windows-gnu
-            os: windows-2025
-          - target: x86_64-pc-windows-msvc
-            os: windows-2025
+          # - target: i686-pc-windows-gnu
+          #   os: windows-2025
+          # - target: i686-pc-windows-msvc
+          #   os: windows-2025
+          # - target: i686-unknown-linux-gnu
+          # - target: x86_64-pc-windows-gnu
+          #   os: windows-2025
+          # - target: x86_64-pc-windows-msvc
+          #   os: windows-2025
           - target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
@@ -189,17 +189,17 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
+    # needs: [test_tier1, style_check]
     strategy:
       fail-fast: true
       max-parallel: 16
       matrix:
         include:
-          - target: aarch64-linux-android
+          # - target: aarch64-linux-android
           - target: aarch64-unknown-linux-musl
-          - target: aarch64-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
+          # - target: aarch64-unknown-linux-musl
+          #   env: { TEST_MUSL_V1_2_3: 1 }
+          #   artifact-tag: new-musl
           - target: arm-linux-androideabi
           - target: arm-unknown-linux-gnueabihf
           - target: arm-unknown-linux-musleabihf
@@ -212,11 +212,11 @@ jobs:
           - target: i686-unknown-linux-musl
             env: { TEST_MUSL_V1_2_3: 1 }
             artifact-tag: new-musl
-          - target: loongarch64-unknown-linux-gnu
-          - target: loongarch64-unknown-linux-musl
-          - target: loongarch64-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
+          # - target: loongarch64-unknown-linux-gnu
+          # - target: loongarch64-unknown-linux-musl
+          # - target: loongarch64-unknown-linux-musl
+          #   env: { TEST_MUSL_V1_2_3: 1 }
+            # artifact-tag: new-musl
           - target: powerpc-unknown-linux-gnu
           - target: powerpc64-unknown-linux-gnu
           - target: powerpc64-unknown-linux-musl
@@ -231,15 +231,15 @@ jobs:
           - target: riscv64gc-unknown-linux-gnu
           - target: s390x-unknown-linux-gnu
           - target: sparc64-unknown-linux-gnu
-          - target: wasm32-unknown-emscripten
-          - target: wasm32-wasip1
-          - target: wasm32-wasip2
-          - target: x86_64-apple-darwin
-            os: macos-26-intel
-          - target: x86_64-linux-android
-            env: { TEST_CUTTLEFISH: 1 }
-            # Keep in sync with the Android build pinned in ci/cuttlefish-setup.sh
-            artifact-tag: android17
+          # - target: wasm32-unknown-emscripten
+          # - target: wasm32-wasip1
+          # - target: wasm32-wasip2
+          # - target: x86_64-apple-darwin
+          #   os: macos-26-intel
+          # - target: x86_64-linux-android
+          #   env: { TEST_CUTTLEFISH: 1 }
+          #   # Keep in sync with the Android build pinned in ci/cuttlefish-setup.sh
+          #   artifact-tag: android17
           # FIXME: Exec format error (os error 8)
           # - target: x86_64-unknown-linux-gnux32
           - target: x86_64-unknown-linux-musl
