@@ -4174,35 +4174,35 @@ f! {
 }
 
 safe_f! {
-    pub const fn WSTOPSIG(status: c_int) -> c_int {
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         status >> 8
     }
 
-    pub const fn _WSTATUS(status: c_int) -> c_int {
+    pub const safe fn _WSTATUS(status: c_int) -> c_int {
         status & 0x7f
     }
 
-    pub const fn WIFCONTINUED(status: c_int) -> bool {
+    pub const safe fn WIFCONTINUED(status: c_int) -> bool {
         _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) == 0x13
     }
 
-    pub const fn WIFSIGNALED(status: c_int) -> bool {
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         _WSTATUS(status) != _WSTOPPED && _WSTATUS(status) != 0
     }
 
-    pub const fn WIFSTOPPED(status: c_int) -> bool {
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         _WSTATUS(status) == _WSTOPPED && WSTOPSIG(status) != 0x13
     }
 
-    pub const fn makedev(major: u32, minor: u32) -> dev_t {
+    pub const safe fn makedev(major: u32, minor: u32) -> dev_t {
         ((major << 24) | minor) as dev_t
     }
 
-    pub const fn major(dev: u32) -> i32 {
+    pub const safe fn major(dev: u32) -> i32 {
         ((dev >> 24) & 0xff) as i32
     }
 
-    pub const fn minor(dev: u32) -> i32 {
+    pub const safe fn minor(dev: u32) -> i32 {
         (dev & 0xffffff) as i32
     }
 }

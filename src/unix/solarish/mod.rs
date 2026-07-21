@@ -2278,47 +2278,47 @@ f! {
 }
 
 safe_f! {
-    pub fn SIGRTMAX() -> c_int {
+    pub safe fn SIGRTMAX() -> c_int {
         unsafe { crate::sysconf(_SC_SIGRT_MAX) as c_int }
     }
 
-    pub fn SIGRTMIN() -> c_int {
+    pub safe fn SIGRTMIN() -> c_int {
         unsafe { crate::sysconf(_SC_SIGRT_MIN) as c_int }
     }
 
-    pub const fn WIFEXITED(status: c_int) -> bool {
+    pub const safe fn WIFEXITED(status: c_int) -> bool {
         (status & 0xFF) == 0
     }
 
-    pub const fn WEXITSTATUS(status: c_int) -> c_int {
+    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
         (status >> 8) & 0xFF
     }
 
-    pub const fn WTERMSIG(status: c_int) -> c_int {
+    pub const safe fn WTERMSIG(status: c_int) -> c_int {
         status & 0x7F
     }
 
-    pub const fn WIFCONTINUED(status: c_int) -> bool {
+    pub const safe fn WIFCONTINUED(status: c_int) -> bool {
         (status & 0xffff) == 0xffff
     }
 
-    pub const fn WSTOPSIG(status: c_int) -> c_int {
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         (status & 0xff00) >> 8
     }
 
-    pub const fn WIFSIGNALED(status: c_int) -> bool {
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         ((status & 0xff) > 0) && (status & 0xff00 == 0)
     }
 
-    pub const fn WIFSTOPPED(status: c_int) -> bool {
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         ((status & 0xff) == 0x7f) && ((status & 0xff00) != 0)
     }
 
-    pub const fn WCOREDUMP(status: c_int) -> bool {
+    pub const safe fn WCOREDUMP(status: c_int) -> bool {
         (status & 0x80) != 0
     }
 
-    pub const fn MR_GET_TYPE(flags: c_uint) -> c_uint {
+    pub const safe fn MR_GET_TYPE(flags: c_uint) -> c_uint {
         flags & 0x0000ffff
     }
 }

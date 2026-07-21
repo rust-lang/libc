@@ -1858,76 +1858,76 @@ f! {
 }
 
 safe_f! {
-    pub fn SIGRTMAX() -> c_int {
+    pub safe fn SIGRTMAX() -> c_int {
         unsafe { __libc_current_sigrtmax() }
     }
 
-    pub fn SIGRTMIN() -> c_int {
+    pub safe fn SIGRTMIN() -> c_int {
         unsafe { __libc_current_sigrtmin() }
     }
 
-    pub const fn WIFSTOPPED(status: c_int) -> bool {
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xff) == 0x7f
     }
 
-    pub const fn WSTOPSIG(status: c_int) -> c_int {
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         (status >> 8) & 0xff
     }
 
-    pub const fn WIFCONTINUED(status: c_int) -> bool {
+    pub const safe fn WIFCONTINUED(status: c_int) -> bool {
         status == 0xffff
     }
 
-    pub const fn WIFSIGNALED(status: c_int) -> bool {
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         ((status & 0x7f) + 1) as i8 >= 2
     }
 
-    pub const fn WTERMSIG(status: c_int) -> c_int {
+    pub const safe fn WTERMSIG(status: c_int) -> c_int {
         status & 0x7f
     }
 
-    pub const fn WIFEXITED(status: c_int) -> bool {
+    pub const safe fn WIFEXITED(status: c_int) -> bool {
         (status & 0x7f) == 0
     }
 
-    pub const fn WEXITSTATUS(status: c_int) -> c_int {
+    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
         (status >> 8) & 0xff
     }
 
-    pub const fn WCOREDUMP(status: c_int) -> bool {
+    pub const safe fn WCOREDUMP(status: c_int) -> bool {
         (status & 0x80) != 0
     }
 
-    pub const fn W_EXITCODE(ret: c_int, sig: c_int) -> c_int {
+    pub const safe fn W_EXITCODE(ret: c_int, sig: c_int) -> c_int {
         (ret << 8) | sig
     }
 
-    pub const fn W_STOPCODE(sig: c_int) -> c_int {
+    pub const safe fn W_STOPCODE(sig: c_int) -> c_int {
         (sig << 8) | 0x7f
     }
 
-    pub const fn QCMD(cmd: c_int, type_: c_int) -> c_int {
+    pub const safe fn QCMD(cmd: c_int, type_: c_int) -> c_int {
         (cmd << 8) | (type_ & 0x00ff)
     }
 
-    pub const fn IPOPT_COPIED(o: u8) -> u8 {
+    pub const safe fn IPOPT_COPIED(o: u8) -> u8 {
         o & IPOPT_COPY
     }
 
-    pub const fn IPOPT_CLASS(o: u8) -> u8 {
+    pub const safe fn IPOPT_CLASS(o: u8) -> u8 {
         o & IPOPT_CLASS_MASK
     }
 
-    pub const fn IPOPT_NUMBER(o: u8) -> u8 {
+    pub const safe fn IPOPT_NUMBER(o: u8) -> u8 {
         o & IPOPT_NUMBER_MASK
     }
 
-    pub const fn IPTOS_ECN(x: u8) -> u8 {
+    pub const safe fn IPTOS_ECN(x: u8) -> u8 {
         x & crate::IPTOS_ECN_MASK
     }
 
     #[allow(ellipsis_inclusive_range_patterns)]
-    pub const fn KERNEL_VERSION(a: u32, b: u32, c: u32) -> u32 {
+    pub const safe fn KERNEL_VERSION(a: u32, b: u32, c: u32) -> u32 {
         ((a << 16) + (b << 8)) + if c > 255 { 255 } else { c }
     }
 }
