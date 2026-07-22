@@ -281,6 +281,7 @@ cfg_if! {
     }
 }
 
+#[link(name = "ucrt")]
 extern "C" {
     pub fn isalnum(c: c_int) -> c_int;
     pub fn isalpha(c: c_int) -> c_int;
