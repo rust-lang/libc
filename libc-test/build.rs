@@ -1942,6 +1942,7 @@ fn which_dragonfly() -> Option<u32> {
 fn test_wasi(target: &str) {
     assert!(target.contains("wasi"));
     let p2 = target.contains("wasip2");
+    let wasi_sdk = VERSIONS.wasi_sdk.unwrap();
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2005,9 +2006,14 @@ fn test_wasi(target: &str) {
     // used here to generate a pointer to them in bindings so skip these tests.
     cfg.skip_static(|s| s.ident().starts_with("_CLOCK_"));
 
-    // This was removed in wasip2 target for wasi-sdk-30+, but it's just a
-    // typedef, so ignore it.
-    cfg.skip_alias(|s| s.ident() == "__wasi_rights_t");
+    match wasi_sdk.1 {
+        WasiVersion::P1 => {}
+        // This was removed in wasip2 target for wasi-sdk-30+, but it's just a
+        // typedef, so ignore it.
+        _ => {
+            cfg.skip_alias(|s| s.ident() == "__wasi_rights_t");
+        }
+    }
 
     cfg.skip_const(|c| match c.ident() {
         // These constants aren't yet defined in wasi-libc.
@@ -6397,6 +6403,15 @@ struct Versions {
     netbsd: Option<(u32, u32)>,
     macos: Option<(u32, u32)>,
     emscripten: Option<(u32, u32)>,
+    wasi_sdk: Option<(u32, WasiVersion)>,
+}
+
+#[derive(Clone, Copy, Debug, Default)]
+enum WasiVersion {
+    #[default]
+    P1,
+    P2,
+    P3,
 }
 
 impl Versions {
@@ -6432,6 +6447,11 @@ impl Versions {
             #ifdef __EMSCRIPTEN__
             /* Provides __EMSCRIPTEN_MAJOR__, __EMSCRIPTEN_MINOR__ */
             #include "emscripten/version.h"
+            #endif
+
+            #if __has_include(<wasi/version.h>)
+            /* provides __wasi_sdk_major__, __wasi_sdk_version__ */
+            #include <wasi/version.h>
             #endif
         "#;
 
@@ -6513,6 +6533,12 @@ impl Versions {
                 "__EMSCRIPTEN_minor__" => {
                     ret.emscripten.get_or_insert_default().1 = value.parse().unwrap()
                 }
+                "__wasi_sdk_major__" => {
+                    ret.wasi_sdk.get_or_insert_default().0 = value.parse().unwrap()
+                }
+                "__wasip1__" => ret.wasi_sdk.get_or_insert_default().1 = WasiVersion::P1,
+                "__wasip2__" => ret.wasi_sdk.get_or_insert_default().1 = WasiVersion::P2,
+                "__wasip3__" => ret.wasi_sdk.get_or_insert_default().1 = WasiVersion::P3,
                 _ => (),
             }
         }
