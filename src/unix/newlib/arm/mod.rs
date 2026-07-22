@@ -4,11 +4,13 @@ pub type clock_t = c_long;
 pub type wchar_t = u32;
 
 s! {
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr {
         pub sa_family: crate::sa_family_t,
         pub sa_data: [c_char; 14],
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr_in6 {
         pub sin6_family: crate::sa_family_t,
         pub sin6_port: crate::in_port_t,
@@ -17,6 +19,7 @@ s! {
         pub sin6_scope_id: u32,
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr_in {
         pub sin_family: crate::sa_family_t,
         pub sin_port: crate::in_port_t,
@@ -24,31 +27,48 @@ s! {
         pub sin_zero: [u8; 8],
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct sockaddr_storage {
         pub ss_family: crate::sa_family_t,
         __ss_padding: Padding<[u8; 26]>,
     }
 }
 
+#[cfg(not(target_os = "rtems"))]
 pub const AF_INET6: c_int = 23;
 
+#[cfg(not(target_os = "rtems"))]
 pub const FIONBIO: c_ulong = 1;
 
+#[cfg(not(target_os = "rtems"))]
 pub const POLLIN: c_short = 0x1;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLPRI: c_short = 0x2;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLHUP: c_short = 0x4;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLERR: c_short = 0x8;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLOUT: c_short = 0x10;
+#[cfg(not(target_os = "rtems"))]
 pub const POLLNVAL: c_short = 0x20;
 
+#[cfg(not(target_os = "rtems"))]
 pub const SOL_SOCKET: c_int = 65535;
 
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_OOB: c_int = 1;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_PEEK: c_int = 2;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_DONTWAIT: c_int = 4;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_DONTROUTE: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_WAITALL: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_MORE: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const MSG_NOSIGNAL: c_int = 0;
 
 pub use crate::unix::newlib::generic::{
