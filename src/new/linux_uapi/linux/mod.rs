@@ -2,6 +2,7 @@
 //!
 //! <https://github.com/torvalds/linux/tree/master/include/uapi/linux>
 
+pub(crate) mod audit;
 pub(crate) mod can;
 pub(crate) mod futex;
 pub(crate) mod if_link;
