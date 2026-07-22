@@ -59,13 +59,11 @@ run() {
     mkdir -p target
 
     extra_args=()
-    if [ -n "${TEST_CUTTLEFISH:-}" ]; then
-        # Cuttlefish-based Android targets boot their virtual device inside
-        # the container (see cuttlefish-entrypoint.sh in the target's docker
-        # dir): pass the virtualization device nodes and let the entrypoint
-        # create its tap networking. It starts as root and drops to an
-        # unprivileged user matching HOST_UID for the device and the tests.
-        # Same flags as upstream's containerized Cuttlefish CI.
+    # x86_64-linux-android boots a Cuttlefish virtual device inside the
+    # container. Give it the virtualization device nodes and NET_ADMIN it needs.
+    # These are the same flags Google's android-cuttlefish project uses for its
+    # own containerized CI.
+    if [ "$run_target" = "x86_64-linux-android" ]; then
         extra_args+=(
             --device /dev/kvm
             --device /dev/net/tun
