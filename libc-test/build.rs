@@ -2005,6 +2005,10 @@ fn test_wasi(target: &str) {
     // used here to generate a pointer to them in bindings so skip these tests.
     cfg.skip_static(|s| s.ident().starts_with("_CLOCK_"));
 
+    // This was removed in wasip2 target for wasi-sdk-30+, but it's just a
+    // typedef, so ignore it.
+    cfg.skip_alias(|s| s.ident() == "__wasi_rights_t");
+
     cfg.skip_const(|c| match c.ident() {
         // These constants aren't yet defined in wasi-libc.
         // Exposing them is being tracked by https://github.com/WebAssembly/wasi-libc/issues/531.

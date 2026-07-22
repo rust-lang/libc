@@ -611,6 +611,40 @@ pub const NOEXPR: crate::nl_item = 0x50001;
 pub const YESSTR: crate::nl_item = 0x50002;
 pub const NOSTR: crate::nl_item = 0x50003;
 
+pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
+pub const PTHREAD_CREATE_DETACHED: c_int = 1;
+pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
+pub const PTHREAD_MUTEX_DEFAULT: c_int = 0;
+pub const PTHREAD_MUTEX_RECURSIVE: c_int = 1;
+pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
+pub const PTHREAD_MUTEX_STALLED: c_int = 0;
+pub const PTHREAD_MUTEX_ROBUST: c_int = 1;
+pub const PTHREAD_PRIO_NONE: c_int = 0;
+pub const PTHREAD_PRIO_INHERIT: c_int = 1;
+pub const PTHREAD_PRIO_PROTECT: c_int = 2;
+pub const PTHREAD_INHERIT_SCHED: c_int = 0;
+pub const PTHREAD_EXPLICIT_SCHED: c_int = 1;
+pub const PTHREAD_SCOPE_SYSTEM: c_int = 0;
+pub const PTHREAD_SCOPE_PROCESS: c_int = 1;
+pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
+pub const PTHREAD_PROCESS_SHARED: c_int = 1;
+pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
+    size: [0 as *mut c_void; 6],
+};
+pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
+    size: [0 as *mut c_void; 8],
+};
+pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
+    size: [0 as *mut c_void; 12],
+};
+pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
+pub const PTHREAD_CANCEL_ENABLE: c_int = 0;
+pub const PTHREAD_CANCEL_DISABLE: c_int = 1;
+pub const PTHREAD_CANCEL_MASKED: c_int = 2;
+pub const PTHREAD_CANCEL_DEFERRED: c_int = 0;
+pub const PTHREAD_CANCEL_ASYNCHRONOUS: c_int = 1;
+pub const PTHREAD_CANCELED: *mut c_void = usize::MAX as *mut c_void;
+pub const PTHREAD_BARRIER_SERIAL_THREAD: c_int = -1;
 pub const PTHREAD_STACK_MIN: usize = 2048;
 pub const TIMER_ABSTIME: c_int = 1;
 
@@ -1036,8 +1070,21 @@ extern "C" {
     pub fn pthread_attr_destroy(attr: *mut pthread_attr_t) -> c_int;
     pub fn pthread_attr_getstacksize(attr: *const pthread_attr_t, stacksize: *mut size_t) -> c_int;
     pub fn pthread_attr_setstacksize(attr: *mut pthread_attr_t, stack_size: size_t) -> c_int;
+    pub fn pthread_attr_getdetachstate(attr: *const pthread_attr_t, state: *mut c_int) -> c_int;
     pub fn pthread_attr_setdetachstate(attr: *mut pthread_attr_t, state: c_int) -> c_int;
+    pub fn pthread_attr_getguardsize(attr: *const pthread_attr_t, b: *mut size_t) -> c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut pthread_attr_t, b: size_t) -> c_int;
+    pub fn pthread_attr_getstack(
+        attr: *const pthread_attr_t,
+        b: *mut *mut c_void,
+        c: *mut size_t,
+    ) -> c_int;
+    pub fn pthread_attr_setstack(attr: *mut pthread_attr_t, b: *mut c_void, c: size_t) -> c_int;
     pub fn pthread_detach(thread: pthread_t) -> c_int;
+    pub fn pthread_setcancelstate(a: c_int, b: *mut c_int) -> c_int;
+    pub fn pthread_setcanceltype(a: c_int, b: *mut c_int) -> c_int;
+    pub fn pthread_testcancel();
+    pub fn pthread_once(a: *mut pthread_once_t, b: extern "C" fn()) -> c_int;
 
     pub fn pthread_key_create(
         key: *mut pthread_key_t,
@@ -1054,10 +1101,20 @@ extern "C" {
     pub fn pthread_mutex_lock(lock: *mut pthread_mutex_t) -> c_int;
     pub fn pthread_mutex_trylock(lock: *mut pthread_mutex_t) -> c_int;
     pub fn pthread_mutex_unlock(lock: *mut pthread_mutex_t) -> c_int;
+    pub fn pthread_mutex_timedlock(lock: *mut pthread_mutex_t, ts: *const timespec) -> c_int;
+    pub fn pthread_mutex_consistent(lock: *mut pthread_mutex_t) -> c_int;
+    pub fn pthread_mutex_getprioceiling(lock: *mut pthread_mutex_t, b: *mut c_int) -> c_int;
 
     pub fn pthread_mutexattr_init(attr: *mut pthread_mutexattr_t) -> c_int;
     pub fn pthread_mutexattr_destroy(attr: *mut pthread_mutexattr_t) -> c_int;
     pub fn pthread_mutexattr_settype(attr: *mut pthread_mutexattr_t, _type: c_int) -> c_int;
+    pub fn pthread_mutexattr_getprotocol(attr: *const pthread_mutexattr_t, b: *mut c_int) -> c_int;
+    pub fn pthread_mutexattr_getpshared(attr: *const pthread_mutexattr_t, b: *mut c_int) -> c_int;
+    pub fn pthread_mutexattr_getrobust(attr: *const pthread_mutexattr_t, b: *mut c_int) -> c_int;
+    pub fn pthread_mutexattr_gettype(attr: *const pthread_mutexattr_t, b: *mut c_int) -> c_int;
+    pub fn pthread_mutexattr_setprotocol(attr: *const pthread_mutexattr_t, b: c_int) -> c_int;
+    pub fn pthread_mutexattr_setpshared(attr: *const pthread_mutexattr_t, b: c_int) -> c_int;
+    pub fn pthread_mutexattr_setrobust(attr: *const pthread_mutexattr_t, b: c_int) -> c_int;
 
     pub fn pthread_cond_init(cond: *mut pthread_cond_t, attr: *const pthread_condattr_t) -> c_int;
     pub fn pthread_cond_wait(cond: *mut pthread_cond_t, lock: *mut pthread_mutex_t) -> c_int;
@@ -1071,6 +1128,8 @@ extern "C" {
     pub fn pthread_cond_destroy(cond: *mut pthread_cond_t) -> c_int;
     pub fn pthread_condattr_init(attr: *mut pthread_condattr_t) -> c_int;
     pub fn pthread_condattr_destroy(attr: *mut pthread_condattr_t) -> c_int;
+    pub fn pthread_condattr_setpshared(attr: *mut pthread_condattr_t, b: c_int) -> c_int;
+    pub fn pthread_condattr_getpshared(attr: *const pthread_condattr_t, b: *mut c_int) -> c_int;
 
     pub fn pthread_rwlock_init(
         lock: *mut pthread_rwlock_t,
@@ -1082,8 +1141,36 @@ extern "C" {
     pub fn pthread_rwlock_wrlock(lock: *mut pthread_rwlock_t) -> c_int;
     pub fn pthread_rwlock_trywrlock(lock: *mut pthread_rwlock_t) -> c_int;
     pub fn pthread_rwlock_unlock(lock: *mut pthread_rwlock_t) -> c_int;
+    pub fn pthread_rwlock_timedrdlock(lock: *mut pthread_rwlock_t, at: *const timespec) -> c_int;
+    pub fn pthread_rwlock_timedwrlock(lock: *mut pthread_rwlock_t, at: *const timespec) -> c_int;
     pub fn pthread_rwlockattr_init(attr: *mut pthread_rwlockattr_t) -> c_int;
     pub fn pthread_rwlockattr_destroy(attr: *mut pthread_rwlockattr_t) -> c_int;
+    pub fn pthread_rwlockattr_setpshared(attr: *mut pthread_rwlockattr_t, b: c_int) -> c_int;
+    pub fn pthread_rwlockattr_getpshared(attr: *const pthread_rwlockattr_t, b: *mut c_int)
+        -> c_int;
+
+    pub fn pthread_spin_init(lock: *mut pthread_spinlock_t, b: c_int) -> c_int;
+    pub fn pthread_spin_destroy(lock: *mut pthread_spinlock_t) -> c_int;
+    pub fn pthread_spin_lock(lock: *mut pthread_spinlock_t) -> c_int;
+    pub fn pthread_spin_trylock(lock: *mut pthread_spinlock_t) -> c_int;
+    pub fn pthread_spin_unlock(lock: *mut pthread_spinlock_t) -> c_int;
+
+    pub fn pthread_barrier_init(
+        barrier: *mut pthread_barrier_t,
+        attr: *const pthread_barrierattr_t,
+        count: c_uint,
+    ) -> c_int;
+    pub fn pthread_barrier_destroy(barrier: *mut pthread_barrier_t) -> c_int;
+    pub fn pthread_barrier_wait(barrier: *mut pthread_barrier_t) -> c_int;
+    pub fn pthread_barrierattr_init(attr: *mut pthread_barrierattr_t) -> c_int;
+    pub fn pthread_barrierattr_destroy(attr: *mut pthread_barrierattr_t) -> c_int;
+    pub fn pthread_barrierattr_setpshared(attr: *mut pthread_barrierattr_t, b: c_int) -> c_int;
+    pub fn pthread_barrierattr_getpshared(
+        attr: *const pthread_barrierattr_t,
+        b: *mut c_int,
+    ) -> c_int;
+
+    pub fn pthread_getattr_np(thread: pthread_t, attr: *mut pthread_attr_t) -> c_int;
 }
 
 cfg_if! {
