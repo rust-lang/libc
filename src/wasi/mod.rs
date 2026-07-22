@@ -31,6 +31,10 @@ pub type blkcnt_t = i64;
 pub type nfds_t = c_ulong;
 pub type wchar_t = i32;
 pub type nl_item = c_int;
+#[cfg_attr(
+    not(target_env = "p1"),
+    deprecated(since = "0.2.190", note = "not present on wasip2/3 targets")
+)]
 pub type __wasi_rights_t = u64;
 pub type locale_t = *mut __locale_struct;
 pub type pthread_t = *mut c_void;
@@ -629,13 +633,13 @@ pub const PTHREAD_SCOPE_PROCESS: c_int = 1;
 pub const PTHREAD_PROCESS_PRIVATE: c_int = 0;
 pub const PTHREAD_PROCESS_SHARED: c_int = 1;
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    size: [0 as *mut c_void; 6],
+    size: [ptr::null_mut(); 6],
 };
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
-    size: [0 as *mut c_void; 8],
+    size: [ptr::null_mut(); 8],
 };
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
-    size: [0 as *mut c_void; 12],
+    size: [ptr::null_mut(); 12],
 };
 pub const PTHREAD_ONCE_INIT: pthread_once_t = 0;
 pub const PTHREAD_CANCEL_ENABLE: c_int = 0;
