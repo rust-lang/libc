@@ -6,18 +6,16 @@ pub type blksize_t = i32;
 pub type clockid_t = c_ulong;
 
 cfg_if! {
-    if #[cfg(any(target_os = "espidf"))] {
+    if #[cfg(any(target_os = "espidf", target_os = "vita"))] {
         pub type dev_t = c_short;
         pub type ino_t = c_ushort;
         pub type off_t = c_long;
-    } else if #[cfg(any(target_os = "vita"))] {
-        pub type dev_t = c_short;
-        pub type ino_t = c_ushort;
-        pub type off_t = c_int;
-    } else {
+    } else if #[cfg(any(target_arch = "arm", target_arch = "powerpc"))] {
         pub type dev_t = u32;
         pub type ino_t = u32;
         pub type off_t = i64;
+    } else {
+        core::compile_error!("unsupported target");
     }
 }
 
@@ -55,12 +53,12 @@ pub type useconds_t = u32;
 
 cfg_if! {
     if #[cfg(any(
-        target_os = "horizon",
-        all(target_os = "espidf", not(espidf_time32))
+        all(target_os = "espidf", espidf_time32),
+        target_os = "vita"
     ))] {
-        pub type time_t = c_longlong;
+        pub type time_t = c_long;
     } else {
-        pub type time_t = i32;
+        pub type time_t = i64;
     }
 }
 
@@ -324,6 +322,35 @@ s! {
     pub struct pthread_condattr_t {
         // Unverified
         size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
+    }
+
+    #[cfg(all(not(target_os = "vita"), not(target_os = "horizon")))]
+    pub struct sigset_t {
+        __val: u32,
+    }
+
+    pub struct stat {
+        pub st_dev: crate::dev_t,
+        pub st_ino: crate::ino_t,
+        pub st_mode: crate::mode_t,
+        pub st_nlink: crate::nlink_t,
+        pub st_uid: crate::uid_t,
+        pub st_gid: crate::gid_t,
+        pub st_rdev: crate::dev_t,
+        pub st_size: off_t,
+        pub st_atim: crate::timespec,
+        pub st_mtim: crate::timespec,
+        pub st_ctim: crate::timespec,
+        pub st_blksize: crate::blksize_t,
+        pub st_blocks: crate::blkcnt_t,
+        pub st_spare4: [c_long; 2usize],
+    }
+
+    #[cfg(not(target_os = "vita"))]
+    pub struct dirent {
+        pub d_ino: crate::ino_t,
+        pub d_type: c_uchar,
+        pub d_name: [c_char; 256usize],
     }
 }
 
@@ -935,8 +962,6 @@ extern "C" {
     pub fn uname(buf: *mut crate::utsname) -> c_int;
 }
 
-mod generic;
-
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         mod espidf;
@@ -950,16 +975,8 @@ cfg_if! {
     } else if #[cfg(target_arch = "arm")] {
         mod arm;
         pub use self::arm::*;
-    } else if #[cfg(target_arch = "aarch64")] {
-        mod aarch64;
-        pub use self::aarch64::*;
-    } else if #[cfg(target_arch = "powerpc")] {
-        mod powerpc;
-        pub use self::powerpc::*;
     } else {
-        // Only tested on ARM so far. Other platforms might have different
-        // definitions for types and constants.
-        pub use target_arch_not_implemented;
+        core::compile_error!("unsupported target");
     }
 }
 
