@@ -916,7 +916,7 @@ fn test_windows(target: &str) {
 
     cfg.skip_struct_field(move |s, field| s.ident() == "CONTEXT" && field.ident() == "Fp");
     // FIXME(windows): All functions point to the wrong addresses?
-    cfg.skip_fn_ptrcheck(|_| true);
+    // cfg.skip_fn_ptrcheck(|_| true);
 
     cfg.skip_signededness(move |c| {
         match c {
