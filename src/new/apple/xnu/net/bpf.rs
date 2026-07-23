@@ -49,6 +49,10 @@ pub const DLT_LOOP: c_uint = 108;
 
 pub const BPF_ALIGNMENT: c_int = size_of::<i32>() as c_int;
 
+pub const fn BPF_WORDALIGN(x: usize) -> usize {
+    (x + (BPF_ALIGNMENT as usize - 1)) & !(BPF_ALIGNMENT as usize - 1)
+}
+
 pub const BIOCGRSIG: c_ulong = _IOR::<c_uint>('B' as c_ulong, 114);
 pub const BIOCSRSIG: c_ulong = _IOW::<c_uint>('B' as c_ulong, 115);
 pub const BIOCGSEESENT: c_ulong = _IOR::<c_uint>('B' as c_ulong, 118);
