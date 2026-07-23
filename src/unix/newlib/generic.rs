@@ -1,5 +1,4 @@
 //! Common types used by most newlib platforms
-use crate::off_t;
 #[allow(unused_imports)] // needed for platforms that don't use the prelude here
 use crate::prelude::*;
 
@@ -9,6 +8,7 @@ s! {
         __val: u32,
     }
 
+    #[cfg(not(target_os = "vita"))]
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -17,7 +17,7 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub st_size: off_t,
+        pub st_size: crate::off_t,
         pub st_atim: crate::timespec,
         pub st_mtim: crate::timespec,
         pub st_ctim: crate::timespec,

@@ -60,6 +60,23 @@ s! {
         pub sched_priority: c_int,
     }
 
+    pub struct stat {
+        pub st_dev: crate::dev_t,
+        pub st_ino: crate::ino_t,
+        pub st_mode: crate::mode_t,
+        pub st_nlink: crate::nlink_t,
+        pub st_uid: crate::uid_t,
+        pub st_gid: crate::gid_t,
+        pub st_rdev: crate::dev_t,
+        pub st_size: crate::off_t,
+        pub st_atime: crate::time_t,
+        pub st_mtime: crate::time_t,
+        pub st_ctime: crate::time_t,
+        pub st_blksize: crate::blksize_t,
+        pub st_blocks: crate::blkcnt_t,
+        pub st_spare4: [c_long; 2usize],
+    }
+
     #[repr(align(8))]
     pub struct dirent {
         __offset: [u8; 88],
