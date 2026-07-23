@@ -344,8 +344,6 @@ class CheckAllTargets:
         # libc problems
         ("aarch64-unknown-nto-qnx800", "libc error, unsupported arch"),
         ("aarch64.*-gnu_ilp32.*time_bits=64", "libc error, time64 mismatches"),
-        ("armv6k-nintendo-3ds", "libc error, stat missing"),
-        ("armv7-sony-vita-newlibeabihf", "libc error, stat missing"),
         ("csky.*gnu.*time_bits=64", "libc error, time64 mismatches"),
         ("i686-pc-nto-qnx700", "libc error, unsupported arch"),
         ("managarm-mlibc", "libc error, unresolved import"),
