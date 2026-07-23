@@ -56,6 +56,9 @@ fn do_cc() {
     if target.contains("android") || (target.contains("linux") && !target.contains("wasm32")) {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");
     }
+    if target.contains("linux") && !target.contains("android") && !target.contains("wasm32") {
+        cc::Build::new().file("src/nlmsg.c").compile("nlmsg");
+    }
     if (target.contains("linux") && !target.contains("wasm32"))
         || target.contains("l4re")
         || target.contains("android")
