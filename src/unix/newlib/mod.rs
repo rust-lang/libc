@@ -340,6 +340,8 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         pub const NCCS: usize = 11;
+    } else if #[cfg(target_os = "rtems")] {
+        pub const NCCS: usize = 20;
     } else {
         pub const NCCS: usize = 32;
     }
@@ -399,7 +401,7 @@ pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
 cfg_if! {
     if #[cfg(any(target_os = "horizon", target_os = "espidf"))] {
         pub const FD_SETSIZE: c_int = 64;
-    } else if #[cfg(target_os = "vita")] {
+    } else if #[cfg(any(target_os = "vita", target_os = "rtems"))] {
         pub const FD_SETSIZE: c_int = 256;
     } else {
         pub const FD_SETSIZE: c_int = 1024;
@@ -531,7 +533,7 @@ pub const O_NONBLOCK: c_int = 16384;
 
 pub const O_ACCMODE: c_int = 3;
 cfg_if! {
-    if #[cfg(target_os = "espidf")] {
+    if #[cfg(any(target_os = "espidf", target_os = "rtems"))] {
         pub const O_CLOEXEC: c_int = 0x40000;
     } else {
         pub const O_CLOEXEC: c_int = 0x80000;
@@ -577,6 +579,8 @@ pub const PF_INET: c_int = 2;
 cfg_if! {
     if #[cfg(target_os = "espidf")] {
         pub const PF_INET6: c_int = 10;
+    } else if #[cfg(target_os = "rtems")] {
+        pub const PF_INET6: c_int = 28;
     } else {
         pub const PF_INET6: c_int = 23;
     }
@@ -638,7 +642,13 @@ cfg_if! {
 }
 pub const SO_TYPE: c_int = 0x1008;
 
-pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
+cfg_if! {
+    if #[cfg(target_os = "rtems")] {
+        pub const SOCK_CLOEXEC: c_int = 0x10000000;
+    } else {
+        pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
+    }
+}
 
 pub const INET_ADDRSTRLEN: c_int = 16;
 
@@ -662,7 +672,7 @@ pub const IFF_ALTPHYS: c_int = IFF_LINK2; // use alternate physical connection
 pub const IFF_MULTICAST: c_int = 0x8000; // supports multicast
 
 cfg_if! {
-    if #[cfg(target_os = "vita")] {
+    if #[cfg(any(target_os = "vita", target_os = "rtems"))] {
         pub const TCP_NODELAY: c_int = 1;
         pub const TCP_MAXSEG: c_int = 2;
     } else if #[cfg(target_os = "espidf")] {
@@ -698,7 +708,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(target_os = "vita")] {
+    if #[cfg(any(target_os = "vita", target_os = "rtems"))] {
         pub const IP_TTL: c_int = 4;
     } else if #[cfg(target_os = "espidf")] {
         pub const IP_TTL: c_int = 2;
@@ -720,7 +730,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(target_os = "vita")] {
+    if #[cfg(any(target_os = "vita", target_os = "rtems"))] {
         pub const IP_ADD_MEMBERSHIP: c_int = 12;
         pub const IP_DROP_MEMBERSHIP: c_int = 13;
     } else if #[cfg(target_os = "espidf")] {
@@ -755,6 +765,11 @@ cfg_if! {
         pub const NO_DATA: c_int = 211;
         pub const NO_RECOVERY: c_int = 212;
         pub const TRY_AGAIN: c_int = 213;
+    } else if #[cfg(target_os = "rtems")] {
+        pub const HOST_NOT_FOUND: c_int = 1;
+        pub const TRY_AGAIN: c_int = 2;
+        pub const NO_RECOVERY: c_int = 3;
+        pub const NO_DATA: c_int = 4;
     } else {
         pub const HOST_NOT_FOUND: c_int = 1;
         pub const NO_DATA: c_int = 2;
@@ -762,7 +777,13 @@ cfg_if! {
         pub const TRY_AGAIN: c_int = 4;
     }
 }
-pub const NO_ADDRESS: c_int = 2;
+cfg_if! {
+    if #[cfg(target_os = "rtems")] {
+        pub const NO_ADDRESS: c_int = NO_DATA;
+    } else {
+        pub const NO_ADDRESS: c_int = 2;
+    }
+}
 
 pub const AI_PASSIVE: c_int = 1;
 pub const AI_CANONNAME: c_int = 2;
@@ -771,6 +792,9 @@ cfg_if! {
     if #[cfg(target_os = "espidf")] {
         pub const AI_NUMERICSERV: c_int = 8;
         pub const AI_ADDRCONFIG: c_int = 64;
+    } else if #[cfg(target_os = "rtems")] {
+        pub const AI_NUMERICSERV: c_int = 0x00000008;
+        pub const AI_ADDRCONFIG: c_int = 0x00000400;
     } else {
         pub const AI_NUMERICSERV: c_int = 0;
         pub const AI_ADDRCONFIG: c_int = 0;
@@ -783,7 +807,7 @@ pub const NI_NOFQDN: c_int = 1;
 pub const NI_NUMERICHOST: c_int = 2;
 pub const NI_NAMEREQD: c_int = 4;
 cfg_if! {
-    if #[cfg(target_os = "espidf")] {
+    if #[cfg(any(target_os = "espidf", target_os = "rtems"))] {
         pub const NI_NUMERICSERV: c_int = 8;
         pub const NI_DGRAM: c_int = 16;
     } else {
@@ -798,6 +822,11 @@ cfg_if! {
         pub const EAI_FAMILY: c_int = 204;
         pub const EAI_MEMORY: c_int = 203;
         pub const EAI_NONAME: c_int = 200;
+        pub const EAI_SOCKTYPE: c_int = 10;
+    } else if #[cfg(target_os = "rtems")] {
+        pub const EAI_FAMILY: c_int = 5;
+        pub const EAI_MEMORY: c_int = 6;
+        pub const EAI_NONAME: c_int = 8;
         pub const EAI_SOCKTYPE: c_int = 10;
     } else if #[cfg(not(target_os = "vita"))] {
         pub const EAI_FAMILY: c_int = -303;
