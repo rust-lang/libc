@@ -1,12 +1,57 @@
-use crate::off_t;
 use crate::prelude::*;
 
-// Define lock_data_instrumented as an empty enum
+pub type simple_lock_data = c_int;
+pub type complex_lock_status = c_int;
+pub type tid_t = c_long;
+
 extern_ty! {
-    pub type lock_data_instrumented;
+    /// This is meant to be the `file` type upstream under `sys/ldr.h`. We
+    /// currently expose the kernel definition but that is slated for removal.
+    /// This opaque type will then be renamed to `file`.
+    pub type _file;
 }
 
 s! {
+    pub struct lock_data_instrumented {
+        lock_control_word: __c_anonymous_lock_data_instrumented_lock_control_word,
+        li_flags: c_uint,
+        reserved: Padding<[c_int; 1]>,
+        _lockname: __c_anonymous_lock_data_instrumented__lockname,
+
+        #[cfg(debug_assertions)]
+        lock_lr: c_int,
+        #[cfg(debug_assertions)]
+        unlock_lr: c_int,
+        #[cfg(debug_assertions)]
+        lock_caller: tid_t,
+        #[cfg(debug_assertions)]
+        unlock_caller: tid_t,
+        #[cfg(debug_assertions)]
+        lock_cpuid: c_int,
+        #[cfg(debug_assertions)]
+        dbg_zero: c_int,
+        #[cfg(debug_assertions)]
+        unlock_cpuid: c_int,
+        #[cfg(debug_assertions)]
+        dbg_flags: c_int,
+    }
+
+    pub struct __c_anonymous__lockname__lock_id {
+        _id: c_uint,
+        ocurrence: c_uint,
+    }
+
+    pub struct complex_lock_data {
+        status: complex_lock_status,
+        flags: c_short,
+        recursion_depth: c_short,
+        reserved: c_uint,
+    }
+
+    pub struct drw_lock_data {
+        status: complex_lock_status,
+    }
+
     pub struct sigset_t {
         pub ss_set: [c_ulong; 4],
     }
@@ -21,8 +66,8 @@ s! {
         pub l_sysid: c_uint,
         pub l_pid: crate::pid_t,
         pub l_vfs: c_int,
-        pub l_start: off_t,
-        pub l_len: off_t,
+        pub l_start: crate::off_t,
+        pub l_len: crate::off_t,
     }
 
     pub struct statvfs {
@@ -34,7 +79,7 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
-        pub f_fsid: c_ulong,
+        pub f_fsid: crate::fsid_t,
         pub f_basetype: [c_char; 16],
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
@@ -78,8 +123,8 @@ s! {
         pub st_type: c_uint,
         pub st_gen: c_uint,
         st_reserved: Padding<[c_uint; 9]>,
-        pub st_padto_ll: c_uint,
-        pub st_size: off_t,
+        st_padto_ll: Padding<c_uint>,
+        pub st_size: crate::off_t,
     }
 
     pub struct statfs {
@@ -107,7 +152,7 @@ s! {
         pub aio_lio_opcode: c_int,
         pub aio_fildes: c_int,
         pub aio_word1: c_int,
-        pub aio_offset: off_t,
+        pub aio_offset: crate::off_t,
         pub aio_buf: *mut c_void,
         pub aio_return: ssize_t,
         pub aio_errno: c_int,
@@ -126,11 +171,11 @@ s! {
     }
 
     pub struct __vmx_context_t {
-        pub __vr: [crate::__vmxreg_t; 32],
-        pub __pad1: [c_uint; 3],
+        pub __vr: [__vmxreg_t; 32],
+        __pad1: Padding<[c_uint; 3]>,
         pub __vscr: c_uint,
         pub __vrsave: c_uint,
-        pub __pad2: [c_uint; 3],
+        __pad2: Padding<[c_uint; 3]>,
     }
 
     pub struct __vsx_context_t {
@@ -138,8 +183,8 @@ s! {
     }
 
     pub struct __tm_context_t {
-        pub vmx: crate::__vmx_context_t,
-        pub vsx: crate::__vsx_context_t,
+        pub vmx: __vmx_context_t,
+        pub vsx: __vsx_context_t,
         pub gpr: [c_ulonglong; 32],
         pub lr: c_ulonglong,
         pub ctr: c_ulonglong,
@@ -158,7 +203,7 @@ s! {
         pub tmcontext: c_char,
         pub tmstate: c_char,
         pub prevowner: c_char,
-        pub pad: [c_char; 5],
+        pad: Padding<[c_char; 5]>,
     }
 
     pub struct __context64 {
@@ -176,7 +221,7 @@ s! {
         pub fpeu: c_char,
         pub fpinfo: c_char,
         pub fpscr24_31: c_char,
-        pub pad: [c_char; 1],
+        pad: Padding<[c_char; 1]>,
         pub excp_type: c_int,
     }
 
@@ -187,24 +232,24 @@ s! {
     pub struct __extctx_t {
         pub __flags: c_uint,
         pub __rsvd1: [c_uint; 3],
-        pub __vmx: crate::__vmx_context_t,
+        pub __vmx: __vmx_context_t,
         pub __ukeys: [c_uint; 2],
-        pub __vsx: crate::__vsx_context_t,
-        pub __tm: crate::__tm_context_t,
+        pub __vsx: __vsx_context_t,
+        pub __tm: __tm_context_t,
         __reserved: Padding<[c_char; 1860]>,
         pub __extctx_magic: c_int,
     }
 
     pub struct ucontext_t {
-        pub __sc_onstack: c_int,
-        pub uc_sigmask: crate::sigset_t,
-        pub __sc_uerror: c_int,
-        pub uc_mcontext: crate::mcontext_t,
+        __sc_onstack: c_int,
+        pub uc_sigmask: sigset_t,
+        __sc_uerror: c_int,
+        pub uc_mcontext: mcontext_t,
         pub uc_link: *mut ucontext_t,
         pub uc_stack: crate::stack_t,
-        pub __extctx: *mut crate::__extctx_t,
-        pub __extctx_magic: c_int,
-        pub __pad: [c_int; 1],
+        __extctx: *mut __extctx_t,
+        __extctx_magic: c_int,
+        __pad: Padding<[c_int; 1]>,
     }
 
     pub struct utmpx {
@@ -215,17 +260,17 @@ s! {
         pub ut_type: c_short,
         pub ut_tv: crate::timeval,
         pub ut_host: [c_char; 256],
-        pub __dbl_word_pad: c_int,
-        pub __reservedA: [c_int; 2],
-        pub __reservedV: [c_int; 6],
+        __dbl_word_pad: Padding<c_int>,
+        __reservedA: Padding<[c_int; 2]>,
+        __reservedV: Padding<[c_int; 6]>,
     }
 
     pub struct pthread_spinlock_t {
-        pub __sp_word: [c_long; 3],
+        __sp_word: [c_long; 3],
     }
 
     pub struct pthread_barrier_t {
-        pub __br_word: [c_long; 5],
+        __br_word: [c_long; 5],
     }
 
     pub struct msqid_ds {
@@ -255,95 +300,15 @@ s! {
         pub si_addr: *mut c_void,
         pub si_band: c_long,
         pub si_value: crate::sigval,
-        pub __si_flags: c_int,
-        pub __pad: [c_int; 3],
+        __si_flags: c_int,
+        __pad: Padding<[c_int; 3]>,
     }
 
-    pub struct pollfd_ext {
+    pub struct pollfd_ext_t {
         pub fd: c_int,
         pub events: c_short,
         pub revents: c_short,
-        pub data: __pollfd_ext_u,
-    }
-}
-
-s_no_extra_traits! {
-    pub union _kernel_simple_lock {
-        pub _slock: c_long,
-        pub _slockp: *mut lock_data_instrumented,
-    }
-
-    pub struct fileops_t {
-        pub fo_rw: Option<
-            extern "C" fn(
-                file: *mut file,
-                rw: crate::uio_rw,
-                io: *mut c_void,
-                ext: c_long,
-                secattr: *mut c_void,
-            ) -> c_int,
-        >,
-        pub fo_ioctl: Option<
-            extern "C" fn(
-                file: *mut file,
-                a: c_long,
-                b: crate::caddr_t,
-                c: c_long,
-                d: c_long,
-            ) -> c_int,
-        >,
-        pub fo_select: Option<
-            extern "C" fn(file: *mut file, a: c_int, b: *mut c_ushort, c: extern "C" fn()) -> c_int,
-        >,
-        pub fo_close: Option<extern "C" fn(file: *mut file) -> c_int>,
-        pub fo_fstat: Option<extern "C" fn(file: *mut file, sstat: *mut crate::stat) -> c_int>,
-    }
-
-    pub struct file {
-        pub f_flag: c_long,
-        pub f_count: c_int,
-        pub f_options: c_short,
-        pub f_type: c_short,
-        // Should be pointer to 'vnode'
-        pub f_data: *mut c_void,
-        pub f_offset: c_longlong,
-        pub f_dir_off: c_long,
-        // Should be pointer to 'cred'
-        pub f_cred: *mut c_void,
-        pub f_lock: _kernel_simple_lock,
-        pub f_offset_lock: _kernel_simple_lock,
-        pub f_vinfo: crate::caddr_t,
-        pub f_ops: *mut fileops_t,
-        pub f_parentp: crate::caddr_t,
-        pub f_fnamep: crate::caddr_t,
-        pub f_fdata: [c_char; 160],
-    }
-
-    pub union __ld_info_file {
-        pub _ldinfo_fd: c_int,
-        pub _ldinfo_fp: *mut file,
-        pub _core_offset: c_long,
-    }
-
-    pub struct ld_info {
-        pub ldinfo_next: c_uint,
-        pub ldinfo_flags: c_uint,
-        pub _file: __ld_info_file,
-        pub ldinfo_textorg: *mut c_void,
-        pub ldinfo_textsize: c_ulong,
-        pub ldinfo_dataorg: *mut c_void,
-        pub ldinfo_datasize: c_ulong,
-        pub ldinfo_filename: [c_char; 2],
-    }
-
-    pub union __pollfd_ext_u {
-        pub addr: *mut c_void,
-        pub data32: u32,
-        pub data: u64,
-    }
-
-    pub struct fpreg_t {
-        pub d: c_double,
+        pub u: __c_anonymous_pollfd_ext_t_u,
     }
 }
 
@@ -369,10 +334,139 @@ impl siginfo_t {
     }
 }
 
+s_no_extra_traits! {
+    pub union _simple_lock {
+        _slock: simple_lock_data,
+        _slockp: *mut lock_data_instrumented,
+    }
+
+    pub union _complex_lock {
+        _clock: complex_lock_data,
+        clockp: *mut lock_data_instrumented,
+    }
+
+    pub union _drw_lock {
+        _drwlock: complex_lock_status,
+        _drwlockp: *mut lock_data_instrumented,
+    }
+
+    pub union __c_anonymous_lock_data_instrumented_lock_control_word {
+        s_lock: simple_lock_data,
+        c_lock: complex_lock_data,
+        drw_lock: drw_lock_data,
+        lock_next: *mut lock_data_instrumented,
+    }
+
+    pub union __c_anonymous_lock_data_instrumented__lockname {
+        name: c_long,
+        _lock_id: __c_anonymous__lockname__lock_id,
+    }
+
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `_simple_lock` instead. This type doesn't exist upstream."
+    )]
+    pub union _kernel_simple_lock {
+        pub _slock: c_long,
+        pub _slockp: *mut lock_data_instrumented,
+    }
+
+    #[deprecated(
+        since = "0.2.187",
+        note = "This type is only available when programming against the kernel."
+    )]
+    #[allow(deprecated)]
+    pub struct fileops_t {
+        pub fo_rw: Option<
+            extern "C" fn(
+                file: *mut file,
+                rw: crate::uio_rw,
+                io: *mut c_void,
+                ext: c_long,
+                secattr: *mut c_void,
+            ) -> c_int,
+        >,
+        pub fo_ioctl: Option<
+            extern "C" fn(
+                file: *mut file,
+                a: c_long,
+                b: crate::caddr_t,
+                c: c_long,
+                d: c_long,
+            ) -> c_int,
+        >,
+        pub fo_select: Option<
+            extern "C" fn(
+                file: *mut file,
+                a: c_int,
+                b: c_ushort,
+                c: *mut c_ushort,
+                c: extern "C" fn(),
+            ) -> c_int,
+        >,
+        pub fo_close: Option<extern "C" fn(file: *mut file) -> c_int>,
+        pub fo_fstat: Option<extern "C" fn(file: *mut file, sstat: *mut crate::stat) -> c_int>,
+    }
+
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `_file` instead. This type is only available when programming against the \
+                kernel, and is otherwise an opaque type."
+    )]
+    #[allow(deprecated)]
+    #[repr(align(256))]
+    pub struct file {
+        pub f_flag: c_long,
+        pub f_count: c_int,
+        pub f_options: c_short,
+        pub f_type: c_short,
+        // Should be pointer to 'vnode'
+        pub f_data: *mut c_void,
+        pub f_offset: crate::offset_t,
+        pub f_dir_off: crate::off_t,
+        // Should be pointer to 'cred'
+        pub f_cred: *mut c_void,
+        pub f_lock: _simple_lock,
+        pub f_offset_lock: _simple_lock,
+        pub f_vinfo: crate::caddr_t,
+        pub f_ops: *mut fileops_t,
+        pub f_parentp: crate::caddr_t,
+        pub f_fnamep: crate::caddr_t,
+        pub f_fdata: [c_char; 160],
+    }
+
+    pub struct ld_info {
+        pub ldinfo_next: c_uint,
+        pub ldinfo_flags: c_uint,
+        pub _file: __c_anonymous_ld_info__file,
+        pub ldinfo_textorg: *mut c_void,
+        pub ldinfo_textsize: c_ulong,
+        pub ldinfo_dataorg: *mut c_void,
+        pub ldinfo_datasize: c_ulong,
+        pub ldinfo_filename: [c_char; 2],
+    }
+
+    pub union __c_anonymous_ld_info__file {
+        pub _ldinfo_fd: c_int,
+        pub _ldinfo_fp: *mut _file,
+        pub _core_offset: c_long,
+    }
+
+    pub union __c_anonymous_pollfd_ext_t_u {
+        pub addr: *mut c_void,
+        pub data32: u32,
+        pub data: u64,
+    }
+
+    pub struct fpreg_t {
+        pub d: c_double,
+    }
+}
+
 cfg_if! {
     if #[cfg(feature = "extra_traits")] {
-        impl PartialEq for __pollfd_ext_u {
-            fn eq(&self, other: &__pollfd_ext_u) -> bool {
+        impl PartialEq for __c_anonymous_pollfd_ext_t_u {
+            fn eq(&self, other: &__c_anonymous_pollfd_ext_t_u) -> bool {
                 unsafe {
                     self.addr == other.addr
                         && self.data32 == other.data32
@@ -380,8 +474,8 @@ cfg_if! {
                 }
             }
         }
-        impl Eq for __pollfd_ext_u {}
-        impl hash::Hash for __pollfd_ext_u {
+        impl Eq for __c_anonymous_pollfd_ext_t_u {}
+        impl hash::Hash for __c_anonymous_pollfd_ext_t_u {
             fn hash<H: hash::Hasher>(&self, state: &mut H) {
                 unsafe {
                     self.addr.hash(state);
@@ -406,6 +500,7 @@ cfg_if! {
     }
 }
 
+// pthread.h
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __mt_word: [0, 2, 0, 0, 0, 0, 0, 0],
 };
@@ -415,11 +510,11 @@ pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __rw_word: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
-
 pub const PTHREAD_ONCE_INIT: pthread_once_t = pthread_once_t {
     __on_word: [0, 0, 0, 0, 0, 2, 0, 0, 0],
 };
 
+// sys/resource.h
 pub const RLIM_INFINITY: c_ulong = 0x7fffffffffffffff;
 
 extern "C" {
