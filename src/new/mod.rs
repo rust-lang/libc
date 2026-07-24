@@ -65,7 +65,14 @@ cfg_if! {
         // pub(crate) use espidf::*;
     } else if #[cfg(target_os = "freebsd")] {
         mod freebsd;
-        pub(crate) use freebsd::*;
+        // FIXME(1.0,remove): glob reexport should be the default.
+        pub use freebsd::netlink;
+        pub(crate) use freebsd::{
+            net,
+            netinet6,
+            sys,
+            unistd,
+        };
     } else if #[cfg(target_os = "fuchsia")] {
         mod fuchsia;
         pub(crate) use fuchsia::*;
