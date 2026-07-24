@@ -1348,6 +1348,20 @@ s! {
         __ss_pad2: Padding<[u8; 112]>,
     }
 
+    // netinet/in.h: RFC 3678 multicast group membership requests.
+    #[repr(packed(4))]
+    pub struct group_req {
+        pub gr_interface: u32,
+        pub gr_group: crate::sockaddr_storage,
+    }
+
+    #[repr(packed(4))]
+    pub struct group_source_req {
+        pub gsr_interface: u32,
+        pub gsr_group: crate::sockaddr_storage,
+        pub gsr_source: crate::sockaddr_storage,
+    }
+
     pub struct utmpx {
         pub ut_user: [c_char; _UTX_USERSIZE],
         pub ut_id: [c_char; _UTX_IDSIZE],
@@ -2610,6 +2624,14 @@ pub const IPPROTO_RAW: c_int = 255;
 pub const IPPROTO_MAX: c_int = 256;
 /// last return value of *_input(), meaning "all job for this pkt is done".
 pub const IPPROTO_DONE: c_int = 257;
+
+// RFC 3678 protocol-independent multicast
+pub const MCAST_JOIN_GROUP: c_int = 80;
+pub const MCAST_LEAVE_GROUP: c_int = 81;
+pub const MCAST_JOIN_SOURCE_GROUP: c_int = 82;
+pub const MCAST_LEAVE_SOURCE_GROUP: c_int = 83;
+pub const MCAST_BLOCK_SOURCE: c_int = 84;
+pub const MCAST_UNBLOCK_SOURCE: c_int = 85;
 
 pub const AF_UNSPEC: c_int = 0;
 pub const AF_LOCAL: c_int = 1;

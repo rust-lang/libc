@@ -36,10 +36,22 @@ s! {
         pub imr_ifindex: c_int,
     }
 
+    // netinet/in.h: RFC 3678 multicast group membership requests
     pub struct ip_mreq_source {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
         pub imr_sourceaddr: in_addr,
+    }
+
+    pub struct group_req {
+        pub gr_interface: u32,
+        pub gr_group: crate::sockaddr_storage,
+    }
+
+    pub struct group_source_req {
+        pub gsr_interface: u32,
+        pub gsr_group: crate::sockaddr_storage,
+        pub gsr_source: crate::sockaddr_storage,
     }
 
     pub struct sockaddr {
