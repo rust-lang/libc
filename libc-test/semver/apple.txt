@@ -1888,6 +1888,7 @@ __PTHREAD_RWLOCK_SIZE__
 __c_anonymous_bfl_u
 __darwin_mcontext64
 __error
+_opaque_pthread_t
 abs
 acct
 aio_cancel
