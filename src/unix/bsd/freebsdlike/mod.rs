@@ -1313,6 +1313,10 @@ pub const EUI64_LEN: usize = 8;
 // https://github.com/freebsd/freebsd/blob/HEAD/sys/net/bpf.h
 pub const BPF_ALIGNMENT: usize = SIZEOF_LONG;
 
+pub const fn BPF_WORDALIGN(x: usize) -> usize {
+    (x + (BPF_ALIGNMENT - 1)) & !(BPF_ALIGNMENT - 1)
+}
+
 // Values for rtprio struct (prio field) and syscall (function argument)
 pub const RTP_PRIO_MIN: c_ushort = 0;
 pub const RTP_PRIO_MAX: c_ushort = 31;
