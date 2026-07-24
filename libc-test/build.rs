@@ -2060,6 +2060,10 @@ fn test_android(target: &str) {
     };
     let x86 = target.contains("i686") || target.contains("x86_64");
     let aarch64 = target.contains("aarch64");
+    // The API level the NDK toolchain targets, which caps the available libc
+    // API surface (see `Versions`). Detection is required, so unwrap and let a
+    // toolchain we can't read fail loudly rather than silently skip every test.
+    let android = VERSIONS.android.unwrap();
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2251,8 +2255,7 @@ fn test_android(target: &str) {
             "posix_spawn_file_actions_t" => true,
             "posix_spawnattr_t" => true,
 
-            // Added in API level 24
-            "if_nameindex" => true,
+            "if_nameindex" if android < 24 => true,
 
             _ => false,
         }
@@ -2450,8 +2453,11 @@ fn test_android(target: &str) {
             "reallocarray" => true,
             "__system_property_wait" => true,
 
-            // Added in API level 30, but tests use level 28.
-            "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp" => true,
+            "memfd_create" | "mlock2" | "renameat2" | "statx" | "statx_timestamp"
+                if android < 30 =>
+            {
+                true
+            }
 
             // Added in API level 33, but tests use level 28.
             "preadv2" | "pwritev2" => true,
@@ -2459,34 +2465,23 @@ fn test_android(target: &str) {
             // Added in glibc 2.25.
             "getentropy" => true,
 
-            // Added in API level 28, but some tests use level 24.
-            "getrandom" => true,
+            "getrandom" | "syncfs" | "aligned_alloc" if android < 28 => true,
 
-            // Added in API level 28, but some tests use level 24.
-            "syncfs" => true,
+            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" if android < 28 => true,
 
-            // Added in API level 28, but some tests use level 24.
-            "pthread_attr_getinheritsched" | "pthread_attr_setinheritsched" => true,
-            // Added in API level 28, but some tests use level 24.
-            "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked" => true,
+            "fread_unlocked" | "fwrite_unlocked" | "fgets_unlocked" | "fflush_unlocked"
+                if android < 28 =>
+            {
+                true
+            }
 
-            // Added in API level 28, but some tests use level 24.
-            "aligned_alloc" => true,
+            "getgrent" | "setgrent" | "endgrent" | "getpwent" | "setpwent" | "endpwent"
+                if android < 26 =>
+            {
+                true
+            }
 
-            // Added in API level 26, but some tests use level 24.
-            "getgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "setgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "endgrent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "getpwent" | "setpwent" | "endpwent" => true,
-
-            // Added in API level 26, but some tests use level 24.
-            "getdomainname" | "setdomainname" => true,
+            "getdomainname" | "setdomainname" if android < 26 => true,
 
             // FIXME(android): bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
@@ -2500,6 +2495,21 @@ fn test_android(target: &str) {
             // which is not possible for functions that have been overloaded.
             "ioctl" => true,
 
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn_ptrcheck(move |func| {
+        match func {
+            // termios functions are <termios.h> inlines below API 28, so
+            // their C-side address never matches the symbol Rust links.
+            "tcdrain" | "tcflow" | "tcflush" | "tcgetattr" | "tcgetsid" | "tcsendbreak"
+            | "tcsetattr" | "cfgetispeed" | "cfgetospeed" | "cfmakeraw" | "cfsetispeed"
+            | "cfsetospeed" | "cfsetspeed"
+                if android < 28 =>
+            {
+                true
+            }
             _ => false,
         }
     });
@@ -6404,6 +6414,8 @@ struct Versions {
     macos: Option<(u32, u32)>,
     emscripten: Option<(u32, u32)>,
     wasi_sdk: Option<(u32, WasiVersion)>,
+    /// Android API level (no minor version).
+    android: Option<u32>,
 }
 
 #[derive(Clone, Copy, Debug, Default)]
@@ -6430,6 +6442,13 @@ impl Versions {
             #ifdef __GLIBC__
             /* Provides __GLIBC__, __GLIBC_MINOR__ (integers) */
             #include "gnu/libc-version.h"
+            #endif
+
+            #ifdef __ANDROID__
+            /* The clang driver predefines __ANDROID_MIN_SDK_VERSION__ from the API level
+             * in the target triple; including api-level.h ensures it is defined even on
+             * toolchains that leave it to the header. */
+            #include "android/api-level.h"
             #endif
 
             #if defined(__FreeBSD__) \
@@ -6501,6 +6520,11 @@ impl Versions {
                 }
                 "__GLIBC__" => ret.glibc.get_or_insert_default().0 = value.parse().unwrap(),
                 "__GLIBC_MINOR__" => ret.glibc.get_or_insert_default().1 = value.parse().unwrap(),
+                // Clang 12+ predefines the target API level here as a plain integer.
+                // Every NDK wrapper we build with carries an API level, so parse it like
+                // the other version macros above and let a missing value fail loudly at
+                // the unwrap in `test_android` rather than silently skipping tests.
+                "__ANDROID_MIN_SDK_VERSION__" => ret.android = Some(value.parse().unwrap()),
                 "__MAC_OS_X_VERSION_MAX_ALLOWED" => {
                     let caps = mac_re.captures(value).unwrap();
                     let major: u32 = caps[1].parse().unwrap();
