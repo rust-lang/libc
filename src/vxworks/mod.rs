@@ -1458,7 +1458,7 @@ extern_ty! {
 
 f! {
     pub const unsafe fn CMSG_ALIGN(len: usize) -> usize {
-        len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
+        (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
     }
 
     pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
@@ -1482,7 +1482,7 @@ f! {
     }
 
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
@@ -2436,7 +2436,7 @@ safe_f! {
 pub unsafe fn posix_memalign(memptr: *mut *mut c_void, align: size_t, size: size_t) -> c_int {
     // check to see if align is a power of 2 and if align is a multiple
     //  of sizeof(void *)
-    if (align & align - 1 != 0) || (align as usize % size_of::<size_t>() != 0) {
+    if (align & (align - 1) != 0) || (align as usize % size_of::<size_t>() != 0) {
         return crate::EINVAL;
     }
 

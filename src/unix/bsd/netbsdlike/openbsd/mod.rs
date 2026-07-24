@@ -1833,7 +1833,7 @@ const fn _ALIGN(p: usize) -> usize {
 
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
