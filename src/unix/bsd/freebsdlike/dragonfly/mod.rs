@@ -1268,13 +1268,11 @@ f! {
     pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         cpuset.ary[idx] |= 1 << offset;
-        ()
     }
 
     pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpu_set_t) -> () {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         cpuset.ary[idx] &= !(1 << offset);
-        ()
     }
 
     pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpu_set_t) -> bool {
