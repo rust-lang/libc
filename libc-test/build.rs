@@ -4184,6 +4184,7 @@ fn test_linux(target: &str) {
         headers!(
             cfg,
             (gnu, "linux/aio_abi.h"),
+            "linux/audit.h",
             "linux/can.h",
             "linux/can/bcm.h",
             "linux/can/error.h",
