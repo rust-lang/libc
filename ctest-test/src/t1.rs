@@ -76,7 +76,6 @@ extern "C" {
     pub fn T1e(a: c_uint, b: *const T1Bar);
 
     #[link_name = "T1f"]
-    #[allow(clippy::unused_unit)]
     pub fn f() -> ();
 
     pub fn T1g(a: *mut [i32; 4]);
