@@ -282,5 +282,3 @@ extern "C" {
 
     pub fn gethostid() -> c_long;
 }
-
-pub use crate::unix::newlib::generic::dirent;
