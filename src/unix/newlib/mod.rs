@@ -55,12 +55,12 @@ pub type useconds_t = u32;
 
 cfg_if! {
     if #[cfg(any(
-        target_os = "horizon",
-        all(target_os = "espidf", not(espidf_time32))
+        all(target_os = "espidf", espidf_time32),
+        target_os = "vita"
     ))] {
-        pub type time_t = c_longlong;
+        pub type time_t = c_long;
     } else {
-        pub type time_t = i32;
+        pub type time_t = i64;
     }
 }
 
