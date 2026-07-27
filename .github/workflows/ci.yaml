@@ -339,7 +339,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@0c26a4c4a5e234038862a4a53a00c905b8a107c9 # v1.4.2
+        uses: vmactions/netbsd-vm@bf34bcd909bb50856f934a67d09a8fbe2b966a1b # v1.4.4
         if: contains(matrix.target, 'netbsd')
         with:
           release: "10.1"
