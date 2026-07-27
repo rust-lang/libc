@@ -778,6 +778,10 @@ pub const MS_ASYNC: c_int = 0x0001;
 pub const MS_INVALIDATE: c_int = 0x0002;
 pub const MS_SYNC: c_int = 0x0004;
 
+// sys/random.h
+pub const GRND_NONBLOCK: c_uint = 1;
+pub const GRND_RANDOM: c_uint = 2;
+
 // sys/resource.h
 pub const RLIM_INFINITY: rlim_t = !0;
 pub const RLIM_SAVED_CUR: rlim_t = RLIM_INFINITY;
@@ -1388,6 +1392,9 @@ extern "C" {
     pub fn mprotect(addr: *mut c_void, len: size_t, prot: c_int) -> c_int;
     pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
+
+    // sys/random.h
+    pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
 
     // sys/resource.h
     pub fn getpriority(which: c_int, who: crate::id_t) -> c_int;
