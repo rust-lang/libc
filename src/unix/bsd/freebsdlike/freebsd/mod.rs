@@ -4493,8 +4493,7 @@ f! {
         let mut s: u32 = 0;
         let cpuset_size = size_of::<cpuset_t>();
         let bitset_size = size_of::<c_long>();
-
-        for i in cpuset.__bits[..(cpuset_size / bitset_size)].iter() {
+        for i in &cpuset.__bits[..(cpuset_size / bitset_size)] {
             s += i.count_ones();
         }
         s as c_int
