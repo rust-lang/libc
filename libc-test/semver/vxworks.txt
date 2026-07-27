@@ -623,7 +623,6 @@ pipe
 poll
 pollfd
 posix_memalign
-pread
 printf
 protoent
 pthread_attr_destroy
@@ -680,7 +679,6 @@ putchar
 putchar_unlocked
 putenv
 puts
-pwrite
 raise
 read
 readdir
