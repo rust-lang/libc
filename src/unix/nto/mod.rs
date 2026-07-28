@@ -1757,6 +1757,8 @@ pub const SOCK_CLOEXEC: c_int = 0x10000000;
 pub const SA_SIGINFO: c_int = 0x0002;
 pub const SA_NOCLDWAIT: c_int = 0x0020;
 pub const SA_NODEFER: c_int = 0x0010;
+#[cfg(target_os = "qnx")] // QNX8 only
+pub const SA_ONSTACK: c_int = 0x0008;
 pub const SA_RESETHAND: c_int = 0x0004;
 pub const SA_NOCLDSTOP: c_int = 0x0001;
 
