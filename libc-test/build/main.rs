@@ -3468,7 +3468,6 @@ fn test_neutrino(target: &str) {
         "limits.h",
         "sys/link.h",
         "locale.h",
-        "sys/malloc.h",
         "rcheck/malloc.h",
         "malloc.h",
         "mqueue.h",
@@ -3532,7 +3531,6 @@ fn test_neutrino(target: &str) {
         "nl_types.h",
         "langinfo.h",
         "unix.h",
-        "nbutil.h",
         "aio.h",
         "net/bpf.h",
         "net/if_dl.h",
@@ -3542,6 +3540,20 @@ fn test_neutrino(target: &str) {
         //       functions dependent on it are currently commented out.
         //"sys/asyncmsg.h",
     );
+
+    // add QNX version specific header files
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    match target_os.as_str() {
+        "nto" => {
+            headers!(cfg, "sys/malloc.h", "nbutil.h",);
+        }
+        "qnx" => {
+            headers!(cfg, "sys/neutrino.h",);
+        }
+        _ => {
+            panic!("unexpected QNX target_os value: {target_os}")
+        }
+    }
 
     // Create and include a header file containing
     // items which are not included in any official
@@ -3612,7 +3624,7 @@ fn test_neutrino(target: &str) {
             "_channel_connect_attr" => true,
 
             // Extern types
-            "DIR" | "FILE" | "fpos_t" => true,
+            "DIR" | "FILE" | "fpos_t" | "timezone" => true,
 
             _ => false,
         }
@@ -3625,6 +3637,15 @@ fn test_neutrino(target: &str) {
             "SIG_DFL" => true,
             "SIG_IGN" => true,
             "SIG_ERR" => true,
+
+            // On QNX7.x these constants are defined in `pcap/bpf.h` but we pass `net/bpf.h` to
+            // `ctest`. Both header files cannot be included at the same time because of
+            // `ifdef` include guards. As `ctest` only produces one test program we cannot
+            // test `pcap/bpf.h` separately
+            "BPF_MOD" | "BPF_XOR" => target_os == "nto",
+            // The value of this constant can changed from one QNX patchset to the next one so we
+            // skip it. The corresponding Rust binding is also marked as `#[deprecated]`
+            "RLIM_NLIMITS" => true,
 
             _ => false,
         }
@@ -3677,6 +3698,7 @@ fn test_neutrino(target: &str) {
             | ("sigevent", "__padding1") // ensure alignment
             | ("sigaction", "sa_sigaction") // sighandler_t type is super weird
             | ("syspage_entry", "__reserved") // does not exist
+            | ("ifreq", "ifr_ifru") // ifr_ifru is an anonymous union
         )
     });
 
