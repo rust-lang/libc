@@ -656,6 +656,13 @@ pub const PTHREAD_BARRIER_SERIAL_THREAD: c_int = -1;
 pub const PTHREAD_STACK_MIN: usize = 2048;
 pub const TIMER_ABSTIME: c_int = 1;
 
+pub const SOCK_CLOEXEC: c_int = 0x00002000;
+pub const SOCK_NONBLOCK: c_int = 0x00004000;
+
+pub const SOL_SOCKET: c_int = 0x7fffffff;
+
+pub const SO_TYPE: c_int = 3;
+
 f! {
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let set = &*set;
