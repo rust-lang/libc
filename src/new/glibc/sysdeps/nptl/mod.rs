@@ -4,24 +4,32 @@
 //!
 //! <https://github.com/bminor/glibc/tree/master/sysdeps/nptl>
 
+#[path = "."]
 pub(crate) mod bits {
     #[cfg_attr(
-        any(
-            target_arch = "mips",
-            target_arch = "mips32r6",
-            target_arch = "mips",
-            target_arch = "mips32r6",
-        ),
-        path = "../../mips/nptl/bits/struct_mutex.rs"
+        any(target_arch = "mips", target_arch = "mips32r6",),
+        path = "../mips/nptl/bits/struct_mutex.rs"
     )]
     #[cfg_attr(
         any(target_arch = "powerpc", target_arch = "powerpc64"),
-        path = "../../powerpc/nptl/bits/struct_mutex.rs"
+        path = "../powerpc/nptl/bits/struct_mutex.rs"
     )]
-    #[cfg_attr(target_arch = "s390x", path = "../../s390/nptl/bits/struct_mutex.rs")]
+    #[cfg_attr(target_arch = "s390x", path = "../s390/nptl/bits/struct_mutex.rs")]
     #[cfg_attr(
         any(target_arch = "x86", target_arch = "x86_64"),
-        path = "../../x86/nptl/bits/struct_mutex.rs"
+        path = "../x86/nptl/bits/struct_mutex.rs"
+    )]
+    #[cfg_attr(
+        not(any(
+            target_arch = "mips",
+            target_arch = "mips32r6",
+            target_arch = "powerpc",
+            target_arch = "powerpc64",
+            target_arch = "s390x",
+            target_arch = "x86",
+            target_arch = "x86_64",
+        )),
+        path = "bits/struct_mutex.rs"
     )]
     pub(crate) mod struct_mutex;
 }
