@@ -1711,7 +1711,8 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "big"
+            target_endian = "big",
+            not(libc_elfv2)
         ),
         link_name = "cfgetispeed@GLIBC_2.3"
     )]
@@ -1720,7 +1721,7 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "little"
+            any(target_endian = "little", libc_elfv2)
         ),
         link_name = "cfgetispeed@GLIBC_2.17"
     )]
@@ -1812,7 +1813,8 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "big"
+            target_endian = "big",
+            not(libc_elfv2)
         ),
         link_name = "cfgetospeed@GLIBC_2.3"
     )]
@@ -1821,7 +1823,7 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "little"
+            any(target_endian = "little", libc_elfv2)
         ),
         link_name = "cfgetospeed@GLIBC_2.17"
     )]
@@ -1913,7 +1915,8 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "big"
+            target_endian = "big",
+            not(libc_elfv2)
         ),
         link_name = "cfsetispeed@GLIBC_2.3"
     )]
@@ -1922,7 +1925,7 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "little"
+            any(target_endian = "little", libc_elfv2)
         ),
         link_name = "cfsetispeed@GLIBC_2.17"
     )]
@@ -2014,7 +2017,8 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "big"
+            target_endian = "big",
+            not(libc_elfv2)
         ),
         link_name = "cfsetospeed@GLIBC_2.3"
     )]
@@ -2023,7 +2027,7 @@ extern "C" {
             target_os = "linux",
             target_env = "gnu",
             target_arch = "powerpc64",
-            target_endian = "little"
+            any(target_endian = "little", libc_elfv2)
         ),
         link_name = "cfsetospeed@GLIBC_2.17"
     )]
@@ -2422,7 +2426,8 @@ cfg_if! {
                     target_os = "linux",
                     target_env = "gnu",
                     target_arch = "powerpc64",
-                    target_endian = "big"
+                    target_endian = "big",
+                    not(libc_elfv2)
                 ),
                 link_name = "cfsetspeed@GLIBC_2.3"
             )]
@@ -2431,7 +2436,7 @@ cfg_if! {
                     target_os = "linux",
                     target_env = "gnu",
                     target_arch = "powerpc64",
-                    target_endian = "little"
+                    any(target_endian = "little", libc_elfv2)
                 ),
                 link_name = "cfsetspeed@GLIBC_2.17"
             )]
