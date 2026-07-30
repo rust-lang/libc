@@ -189,6 +189,7 @@ TARGETS = [
     Target("powerpc-wrs-vxworks-spe", dist=False),
     Target("powerpc64-ibm-aix", dist=False),
     Target("powerpc64-unknown-freebsd", dist=False),
+    Target("powerpc64-unknown-linux-gnuelfv2", dist=False),
     Target("powerpc64-wrs-vxworks", dist=False),
     Target("riscv32-wrs-vxworks", dist=False),
     Target("riscv32gc-unknown-linux-gnu", dist=False),
