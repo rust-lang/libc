@@ -30,6 +30,7 @@ const ALLOWED_CFGS: &[&str] = &[
     // GNU to expose a 64-bit `time_t`.
     "gnu_time_bits64",
     "libc_deny_warnings",
+    "libc_elfv2",
     // Corresponds to `__USE_TIME_BITS64` in UAPI
     "linux_time_bits64",
     "musl_v1_2_3",
@@ -92,9 +93,12 @@ fn main() {
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default();
     let target_abi = env::var("CARGO_CFG_TARGET_ABI").unwrap_or_default();
 
-    // FIXME(msrv): Once the MSRV is 1.78, use `cfg(target_abi = "pauthtest")`
-    // directly instead of translating it to `libc_pauthtest`. `target_abi`
-    // cannot be used directly in cfg expressions on the current MSRV.
+    // FIXME(msrv): Once the MSRV is 1.78, use `cfg(target_abi)` directly instead
+    // of translating its values. `target_abi` cannot be used directly in cfg
+    // expressions on the current MSRV.
+    if target_abi == "elfv2" {
+        set_cfg("libc_elfv2");
+    }
     if target_abi == "pauthtest" {
         set_cfg("libc_pauthtest");
     }
