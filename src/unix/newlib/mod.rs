@@ -842,6 +842,7 @@ f! {
 }
 
 extern "C" {
+    pub fn __errno() -> *mut c_int;
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
 
