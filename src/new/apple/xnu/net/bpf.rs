@@ -47,7 +47,7 @@ pub const DLT_ATM_RFC1483: c_uint = 11; // LLC/SNAP encapsulated atm
 pub const DLT_RAW: c_uint = 12; // raw IP
 pub const DLT_LOOP: c_uint = 108;
 
-pub const BPF_ALIGNMENT: c_int = size_of::<i32>() as c_int;
+pub const BPF_ALIGNMENT: size_t = size_of::<i32>();
 
 pub const fn BPF_WORDALIGN(x: usize) -> usize {
     (x + (BPF_ALIGNMENT as usize - 1)) & !(BPF_ALIGNMENT as usize - 1)
