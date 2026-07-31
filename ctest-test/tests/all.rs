@@ -8,17 +8,6 @@ use std::process::{
     ExitStatus,
 };
 
-/// Create a command that starts in the `target/debug` or `target/release` directory.
-fn cmd(name: &str) -> Command {
-    let mut path = env::current_exe().unwrap();
-    path.pop();
-    if path.file_name().unwrap().to_str() == Some("deps") {
-        path.pop();
-    }
-    path.push(name);
-    Command::new(path)
-}
-
 /// Executes a command, returning stdout and stderr combined and it's status.
 fn output(cmd: &mut Command) -> (String, ExitStatus) {
     eprintln!("command: {cmd:?}");
@@ -32,7 +21,7 @@ fn output(cmd: &mut Command) -> (String, ExitStatus) {
 #[test]
 fn t1() {
     // t1 must run to completion without any errors.
-    let (output, status) = output(&mut cmd("t1"));
+    let (output, status) = output(&mut Command::new(env!("CARGO_BIN_EXE_t1")));
     assert!(status.success(), "output: {output}");
     assert!(!output.contains("bad "), "{output}");
     eprintln!("output: {output}");
@@ -41,7 +30,7 @@ fn t1() {
 #[test]
 fn t2() {
     // t2 must fail to run to completion, and only have the errors we expect it to have.
-    let (output, status) = output(&mut cmd("t2"));
+    let (output, status) = output(&mut Command::new(env!("CARGO_BIN_EXE_t2")));
     assert!(!status.success(), "output: {output}");
     let errors = [
         "bad `T2Foo` signed",
