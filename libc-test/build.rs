@@ -5786,7 +5786,6 @@ fn test_haiku(target: &str) {
             ("stat", "st_crtime_nsec") => true,
 
             // these are actually unions, but we cannot represent it well
-            ("sem_t", "named_sem_id") => true,
             ("sigaction", "sa_sigaction") => true,
             ("fpu_state", "_fpreg") => true,
             // these fields have a simplified data definition in libc
