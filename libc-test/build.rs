@@ -6363,8 +6363,6 @@ fn test_qurt(target: &str) {
             // These are compatibility stubs in libc, not from QuRT headers
             "stat" | "tm" | "timespec" | "timeval" | "itimerspec" | "dirent" | "DIR"
             | "termios" | "rlimit" | "rusage" | "flock" | "div_t" | "ldiv_t" | "lldiv_t" => true,
-            // sigaction: sa_handler/sa_sigaction are a union in C but separate fields in Rust
-            "sigaction" => true,
             // sem_t is typedef of anonymous struct in C (no struct tag)
             "sem_t" => true,
             _ => false,
