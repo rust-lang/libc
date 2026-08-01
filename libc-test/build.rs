@@ -4325,10 +4325,6 @@ fn test_linux(target: &str) {
                 Some(f.replace("e_nsec", ".tv_nsec"))
             }
 
-            // FIXME(linux): epoll_event.data is actually a union in C, but in Rust
-            // it is only a u64 because we only expose one field
-            // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
-            ("epoll_event", "u64") => Some("data.u64".to_string()),
             // The following structs have a field called `type` in C,
             // but `type` is a Rust keyword, so these fields are translated
             // to `type_` in Rust.
