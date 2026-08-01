@@ -5175,8 +5175,6 @@ fn test_linux(target: &str) {
             ("sigaction", "sa_sigaction") => true,
             // __timeval type is a patch which doesn't exist in glibc
             ("utmpx", "ut_tv") => true,
-            // sigval is actually a union, but we pretend it's a struct
-            ("sigevent", "sigev_value") => true,
             // this one is an anonymous union
             ("ff_effect", "u") => true,
             // `__exit_status` type is a patch which is absent in musl
