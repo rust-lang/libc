@@ -5869,9 +5869,6 @@ fn test_haiku(target: &str) {
 
             "Elf64_Phdr" => true,
 
-            // is an union
-            "cpuid_info" => true,
-
             _ => false,
         }
     });
@@ -5962,7 +5959,6 @@ fn test_haiku(target: &str) {
             ("sigaction", "sa_sigaction") => true,
             ("sigevent", "sigev_value") => true,
             ("fpu_state", "_fpreg") => true,
-            ("cpu_topology_node_info", "data") => true,
             // these fields have a simplified data definition in libc
             ("fpu_state", "_xmm") => true,
             ("savefpu", "_fp_ymm") => true,
