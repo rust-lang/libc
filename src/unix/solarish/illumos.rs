@@ -48,12 +48,6 @@ s! {
         pub fi_name: [c_char; crate::FILNAME_MAX as usize],
     }
 
-    #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed(4)))]
-    pub struct epoll_event {
-        pub events: u32,
-        pub u64: u64,
-    }
-
     pub struct utmpx {
         pub ut_user: [c_char; _UTX_USERSIZE],
         pub ut_id: [c_char; _UTX_IDSIZE],
@@ -66,6 +60,21 @@ s! {
         pub ut_pad: [c_int; _UTX_PADSIZE],
         pub ut_syslen: c_short,
         pub ut_host: [c_char; _UTX_HOSTSIZE],
+    }
+}
+
+s_no_extra_traits! {
+    #[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(packed(4)))]
+    pub struct epoll_event {
+        pub events: u32,
+        pub data: epoll_data,
+    }
+
+    pub union epoll_data {
+        pub ptr: *mut c_void,
+        pub fd: c_int,
+        pub u32: u32,
+        pub u64: u64,
     }
 }
 

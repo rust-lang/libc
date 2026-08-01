@@ -1120,8 +1120,6 @@ fn test_solarish(target: &str) {
                 // expose stat.Xtim.tv_nsec fields
                 Some(field.ident().trim_end_matches("e_nsec").to_string() + ".tv_nsec")
             }
-            // epoll_event.data is a union in C; our `u64` field lives at `data.u64`
-            "epoll_event" if field.ident() == "u64" => Some("data.u64".to_string()),
             _ => None,
         }
     });
