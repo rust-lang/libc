@@ -402,36 +402,59 @@ macro_rules! c_enum {
     (@ty) => { $crate::prelude::CEnumRepr };
 }
 
-/// Define a `unsafe` function.
+/// Define a function that can be either `safe` or `unsafe` and optionally `const`. This always
+/// marks the function inline and adds `extern "C"`.
 macro_rules! f {
     ($(
+        $(#[$attr:meta])*
+        pub $(const $($const_dummy:literal)?)?
+        $(unsafe $($unsafe_dummy:literal)?)? $(safe $($safe_dummy:literal)?)?
+        fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+            $body:block
+    )+) => {$(
+        f! {
+            @single
+            $(#[$attr])*
+            pub $(const $($const_dummy)?)?
+            $(unsafe $($unsafe_dummy)?)? $(safe $($safe_dummy)?)?
+            fn $i ($($arg: $argty),*) -> $ret
+                $body
+        }
+    )+};
+
+    (@single
         $(#[$attr:meta])*
         pub $(const $($const_dummy:literal)?)? unsafe
         fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
             $body:block
-    )+) => {$(
+    ) => {
         #[inline]
         $(#[$attr])*
         pub $(const $($const_dummy)?)? unsafe extern "C"
         fn $i ($($arg: $argty),*) -> $ret
             $body
-    )+};
-}
+    };
 
-/// Define a safe function.
-macro_rules! safe_f {
-    ($(
+    (@single
         $(#[$attr:meta])*
         pub $(const $($const_dummy:literal)?)? safe
         fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
             $body:block
-    )+) => {$(
+    ) => {
         #[inline]
         $(#[$attr])*
         pub $(const $($const_dummy)?)? extern "C"
         fn $i ($($arg: $argty),*) -> $ret
             $body
-    )+};
+    };
+
+    (@single
+        pub $(const $($const_dummy:literal)?)?
+        fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
+            $body:block
+    ) => {
+        compile_error!("either `safe` or `unsafe` must be specified");
+    };
 }
 
 // This macro is used to deprecate items that should be accessed via the mach2 crate
@@ -638,8 +661,6 @@ mod tests {
         f! {
             pub unsafe fn unsafe_foo() -> u32 { 100 }
             pub const unsafe fn const_unsafe_foo() -> u32 { 101 }
-        }
-        safe_f! {
             pub safe fn safe_foo() -> u32 { 200 }
             pub const safe fn const_safe_foo() -> u32 { 201 }
         }

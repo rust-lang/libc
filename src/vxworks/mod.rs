@@ -1496,6 +1496,30 @@ f! {
     pub const unsafe fn CMSG_LEN(length: c_uint) -> c_uint {
         CMSG_ALIGN(size_of::<cmsghdr>()) as c_uint + length
     }
+
+    // Dummy functions, these don't really exist in VxWorks.
+    // wait.h macros
+    pub const safe fn WIFEXITED(status: c_int) -> bool {
+        (status & 0xFF00) == 0
+    }
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
+        (status & 0xFF00) != 0
+    }
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
+        (status & 0xFF0000) != 0
+    }
+    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
+        status & 0xFF
+    }
+    pub const safe fn WIFCONTINUED(status: c_int) -> c_int {
+        (status >> 24) & 0xFF
+    }
+    pub const safe fn WTERMSIG(status: c_int) -> c_int {
+        (status >> 8) & 0xFF
+    }
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
+        (status >> 16) & 0xFF
+    }
 }
 
 extern "C" {
@@ -2408,33 +2432,6 @@ extern "C" {
     // vxCpuLib.h
     pub fn vxCpuEnabledGet() -> crate::cpuset_t; // Get set of running CPU's in the system
     pub fn vxCpuConfiguredGet() -> crate::cpuset_t; // Get set of Configured CPU's in the system
-}
-
-//Dummy functions, these don't really exist in VxWorks.
-
-// wait.h macros
-safe_f! {
-    pub const safe fn WIFEXITED(status: c_int) -> bool {
-        (status & 0xFF00) == 0
-    }
-    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
-        (status & 0xFF00) != 0
-    }
-    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
-        (status & 0xFF0000) != 0
-    }
-    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
-        status & 0xFF
-    }
-    pub const safe fn WIFCONTINUED(status: c_int) -> c_int {
-        (status >> 24) & 0xFF
-    }
-    pub const safe fn WTERMSIG(status: c_int) -> c_int {
-        (status >> 8) & 0xFF
-    }
-    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
-        (status >> 16) & 0xFF
-    }
 }
 
 pub unsafe fn posix_memalign(memptr: *mut *mut c_void, align: size_t, size: size_t) -> c_int {

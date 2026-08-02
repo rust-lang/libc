@@ -3527,9 +3527,7 @@ f! {
     pub unsafe fn SO_EE_OFFENDER(ee: *const crate::sock_extended_err) -> *mut crate::sockaddr {
         ee.offset(1) as *mut crate::sockaddr
     }
-}
 
-safe_f! {
     pub const safe fn makedev(ma: c_uint, mi: c_uint) -> crate::dev_t {
         let ma = ma as crate::dev_t;
         let mi = mi as crate::dev_t;

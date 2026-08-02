@@ -2275,9 +2275,7 @@ f! {
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).fds_bits.fill(0);
     }
-}
 
-safe_f! {
     pub safe fn SIGRTMAX() -> c_int {
         unsafe { crate::sysconf(_SC_SIGRT_MAX) as c_int }
     }

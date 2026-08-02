@@ -271,7 +271,7 @@ pub const MINCORE_SUPER: c_int = 0x20;
 /// max length of devicename
 pub const SPECNAMELEN: c_int = 63;
 
-safe_f! {
+f! {
     pub const safe fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;

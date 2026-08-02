@@ -2343,9 +2343,7 @@ f! {
         let ngrps = if ngrps > 0 { ngrps - 1 } else { 0 };
         size_of::<sockcred>() + size_of::<crate::gid_t>() * ngrps
     }
-}
 
-safe_f! {
     pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xff) == 0x7f
     }
