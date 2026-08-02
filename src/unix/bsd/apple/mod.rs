@@ -4361,9 +4361,7 @@ f! {
     pub const unsafe fn VM_MAKE_TAG(id: u8) -> u32 {
         (id as u32) << 24u32
     }
-}
 
-safe_f! {
     pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         status >> 8
     }

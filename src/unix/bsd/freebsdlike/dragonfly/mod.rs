@@ -1277,9 +1277,7 @@ f! {
         let (idx, offset) = ((cpu >> 6) & 3, cpu & 63);
         0 != cpuset.ary[idx] & (1 << offset)
     }
-}
 
-safe_f! {
     pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0
     }

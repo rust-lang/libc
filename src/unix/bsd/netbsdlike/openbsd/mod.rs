@@ -1872,9 +1872,7 @@ f! {
     pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
         (_ALIGN(size_of::<cmsghdr>()) + _ALIGN(length as usize)) as c_uint
     }
-}
 
-safe_f! {
     pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         status >> 8
     }

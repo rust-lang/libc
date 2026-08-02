@@ -1783,9 +1783,7 @@ f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         cmsg.offset(1).cast_mut().cast()
     }
-}
 
-safe_f! {
     pub const safe fn makedev(ma: c_uint, mi: c_uint) -> dev_t {
         let ma = ma as dev_t;
         let mi = mi as dev_t;

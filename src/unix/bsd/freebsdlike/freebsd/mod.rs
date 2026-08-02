@@ -4511,9 +4511,7 @@ f! {
     pub unsafe fn PROT_MAX_EXTRACT(x: c_int) -> c_int {
         (x >> 16) & (crate::PROT_READ | crate::PROT_WRITE | crate::PROT_EXEC)
     }
-}
 
-safe_f! {
     pub const safe fn WIFSIGNALED(status: c_int) -> bool {
         (status & 0o177) != 0o177 && (status & 0o177) != 0 && status != 0x13
     }

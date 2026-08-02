@@ -1859,9 +1859,7 @@ f! {
     pub unsafe fn PROT_MPROTECT_EXTRACT(x: c_int) -> c_int {
         (x >> 3) & 0x7
     }
-}
 
-safe_f! {
     pub const safe fn WSTOPSIG(status: c_int) -> c_int {
         status >> 8
     }
