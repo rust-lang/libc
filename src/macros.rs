@@ -575,6 +575,31 @@ mod tests {
         assert_eq!(PRIV_ON_1, 42u16);
     }
 
+    #[test]
+    #[deny(unused_unsafe)]
+    fn f_safety() {
+        // Enusure the created functions are safe / unsafe / const as expected
+        f! {
+            pub unsafe fn unsafe_foo() -> u32 { 100 }
+            pub const unsafe fn const_unsafe_foo() -> u32 { 101 }
+        }
+        safe_f! {
+            pub safe fn safe_foo() -> u32 { 200 }
+            pub const safe fn const_safe_foo() -> u32 { 201 }
+        }
+
+        assert_eq!(unsafe { unsafe_foo() }, 100u32);
+        assert_eq!(const { unsafe { const_unsafe_foo() } }, 101u32);
+        assert_eq!(safe_foo(), 200u32);
+        assert_eq!(const { const_safe_foo() }, 201u32);
+
+        // Check the ABI
+        let _: unsafe extern "C" fn() -> u32 = unsafe_foo;
+        let _: unsafe extern "C" fn() -> u32 = const_unsafe_foo;
+        let _: extern "C" fn() -> u32 = safe_foo;
+        let _: extern "C" fn() -> u32 = const_safe_foo;
+    }
+
     fn type_id_of_val<T: 'static>(_: &T) -> TypeId {
         TypeId::of::<T>()
     }
