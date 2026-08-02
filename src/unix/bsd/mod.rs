@@ -500,9 +500,7 @@ f! {
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).fds_bits.fill(0);
     }
-}
 
-safe_f! {
     pub const safe fn WTERMSIG(status: c_int) -> c_int {
         status & 0o177
     }

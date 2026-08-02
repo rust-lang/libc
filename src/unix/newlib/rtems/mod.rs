@@ -86,7 +86,7 @@ pub const WUNTRACED: c_int = 2;
 // sys/socket.h
 pub const SOMAXCONN: c_int = 128;
 
-safe_f! {
+f! {
     pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xff) == 0x7f
     }

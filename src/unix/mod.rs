@@ -432,6 +432,23 @@ cfg_if! {
     }
 }
 
+f! {
+    // It seems htonl, etc are macros on macOS. So we have to reimplement them. So let's
+    // reimplement them for all UNIX platforms
+    pub const safe fn htonl(hostlong: u32) -> u32 {
+        u32::to_be(hostlong)
+    }
+    pub const safe fn htons(hostshort: u16) -> u16 {
+        u16::to_be(hostshort)
+    }
+    pub const safe fn ntohl(netlong: u32) -> u32 {
+        u32::from_be(netlong)
+    }
+    pub const safe fn ntohs(netshort: u16) -> u16 {
+        u16::from_be(netshort)
+    }
+}
+
 extern "C" {
     pub static in6addr_loopback: in6_addr;
     pub static in6addr_any: in6_addr;
@@ -2136,23 +2153,6 @@ extern "C" {
     #[cfg_attr(gnu_file_offset_bits64, link_name = "lockf64")]
     pub fn lockf(fd: c_int, cmd: c_int, len: off_t) -> c_int;
 
-}
-
-safe_f! {
-    // It seems htonl, etc are macros on macOS. So we have to reimplement them. So let's
-    // reimplement them for all UNIX platforms
-    pub const safe fn htonl(hostlong: u32) -> u32 {
-        u32::to_be(hostlong)
-    }
-    pub const safe fn htons(hostshort: u16) -> u16 {
-        u16::to_be(hostshort)
-    }
-    pub const safe fn ntohl(netlong: u32) -> u32 {
-        u32::from_be(netlong)
-    }
-    pub const safe fn ntohs(netshort: u16) -> u16 {
-        u16::from_be(netshort)
-    }
 }
 
 cfg_if! {

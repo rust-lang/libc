@@ -3103,9 +3103,7 @@ f! {
     pub const unsafe fn CMSG_LEN(len: c_uint) -> c_uint {
         (CMSG_ALIGN(size_of::<cmsghdr>()) + len as size_t) as c_uint
     }
-}
 
-safe_f! {
     pub const safe fn WIFSTOPPED(status: c_int) -> bool {
         (status & 0xff) == 0x7f
     }
