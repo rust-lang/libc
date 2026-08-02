@@ -127,27 +127,55 @@ jobs:
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
+  # which platforms a diff touches, tier1 jobs gate on this
+  changes:
+    name: Detect changed groups
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    outputs:
+      changes: ${{ steps.detect.outputs.changes }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # full history so the base commit exists for the diff
+      - name: Compute affected groups
+        id: detect
+        run: python3 ci/detect-changes.py
+
   test_tier1:
     name: Test tier1
+    needs: changes
+    # run only if this target's group was touched, skipped jobs pass the gate
+    if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
     strategy:
       matrix:
         include:
           - target: aarch64-apple-darwin
+            group: apple
             os: macos-26
           - target: aarch64-pc-windows-msvc
+            group: windows_msvc
             os: windows-11-arm
           - target: aarch64-unknown-linux-gnu
+            group: linux_gnu
             os: ubuntu-26.04-arm
           - target: i686-pc-windows-gnu
+            group: windows_gnu
             os: windows-2025
           - target: i686-pc-windows-msvc
+            group: windows_msvc
             os: windows-2025
           - target: i686-unknown-linux-gnu
+            group: linux_gnu
           - target: x86_64-pc-windows-gnu
+            group: windows_gnu
             os: windows-2025
           - target: x86_64-pc-windows-msvc
+            group: windows_msvc
             os: windows-2025
           - target: x86_64-unknown-linux-gnu
+            group: linux_gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
@@ -420,6 +448,7 @@ jobs:
     name: success
     runs-on: ubuntu-26.04
     needs:
+      - changes
       - style_check
       - test_tier1
       - test_tier2
@@ -438,4 +467,4 @@ jobs:
     steps:
       # Manually check the status of all dependencies. `if: failure()` does not work.
       - name: check if any dependency failed
-        run: jq --exit-status 'all(.result == "success")' <<< "$NEEDS"
+        run: jq --exit-status 'all(.result == "success" or .result == "skipped")' <<< "$NEEDS"
