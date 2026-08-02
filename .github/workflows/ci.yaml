@@ -146,8 +146,7 @@ jobs:
   test_tier1:
     name: Test tier1
     needs: changes
-    # run only if this target's group was touched, skipped jobs pass the gate
-    if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
+    # untouched groups skip every step, the success gate passes on skipped
     strategy:
       matrix:
         include:
@@ -182,11 +181,14 @@ jobs:
       TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         with:
           persist-credentials: false
       - name: Setup Rust toolchain
+        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         run: ./ci/install-rust.sh
       - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         with:
           key: ${{ matrix.target }}
 
@@ -198,15 +200,15 @@ jobs:
         shell: bash
 
       - name: Run natively
-        if: runner.os != 'Linux'
+        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group) && runner.os != 'Linux'
         run: ./ci/run.sh ${{ matrix.target }}
       - name: Run in Docker
-        if: runner.os == 'Linux'
+        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group) && runner.os == 'Linux'
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
         id: create_artifacts
-        if: always()
+        if: always() && contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         run: echo "step is actually running" && python3 ci/create-artifacts.py
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always() && steps.create_artifacts.outcome == 'success'
