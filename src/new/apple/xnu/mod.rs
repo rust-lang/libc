@@ -29,6 +29,8 @@ pub(crate) mod machine {
 
 pub(crate) mod net;
 
+pub(crate) mod netinet;
+
 pub(crate) mod netinet6;
 
 pub(crate) mod sys;
