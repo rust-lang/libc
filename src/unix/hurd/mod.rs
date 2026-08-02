@@ -2579,7 +2579,7 @@ pub const SCHED_FIFO: c_int = 1;
 pub const SCHED_RR: c_int = 2;
 pub const _BITS_TYPES_STRUCT_SCHED_PARAM: usize = 1;
 pub const __CPU_SETSIZE: usize = 1024;
-pub const __NCPUBITS: usize = 8 * size_of::<__cpu_mask>();
+pub const __NCPUBITS: usize = __cpu_mask::BITS as usize;
 pub const CPU_SETSIZE: usize = 1024;
 
 // pthread.h
