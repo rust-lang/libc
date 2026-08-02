@@ -1442,9 +1442,7 @@ f! {
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).fds_bits.fill(0);
     }
-}
 
-safe_f! {
     pub const safe fn WIFEXITED(status: c_int) -> bool {
         (status & !0xff) == 0
     }

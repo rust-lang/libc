@@ -3589,6 +3589,91 @@ f! {
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
         (*set).fds_bits.fill(0);
     }
+
+    pub const safe fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
+        let major = major as crate::dev_t;
+        let minor = minor as crate::dev_t;
+        let mut dev = 0;
+        dev |= major << 8;
+        dev |= minor;
+        dev
+    }
+
+    pub const safe fn major(dev: crate::dev_t) -> c_uint {
+        ((dev >> 8) & 0xff) as c_uint
+    }
+
+    pub const safe fn minor(dev: crate::dev_t) -> c_uint {
+        (dev & 0xffff00ff) as c_uint
+    }
+
+    pub safe fn SIGRTMAX() -> c_int {
+        unsafe { __libc_current_sigrtmax() }
+    }
+
+    pub safe fn SIGRTMIN() -> c_int {
+        unsafe { __libc_current_sigrtmin() }
+    }
+
+    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
+        (status & 0xff) == 0x7f
+    }
+
+    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub const safe fn WIFCONTINUED(status: c_int) -> bool {
+        status == 0xffff
+    }
+
+    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
+        ((status & 0x7f) + 1) as i8 >= 2
+    }
+
+    pub const safe fn WTERMSIG(status: c_int) -> c_int {
+        status & 0x7f
+    }
+
+    pub const safe fn WIFEXITED(status: c_int) -> bool {
+        (status & 0x7f) == 0
+    }
+
+    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
+        (status >> 8) & 0xff
+    }
+
+    pub const safe fn WCOREDUMP(status: c_int) -> bool {
+        (status & 0x80) != 0
+    }
+
+    pub const safe fn W_EXITCODE(ret: c_int, sig: c_int) -> c_int {
+        (ret << 8) | sig
+    }
+
+    pub const safe fn W_STOPCODE(sig: c_int) -> c_int {
+        (sig << 8) | 0x7f
+    }
+
+    pub const safe fn QCMD(cmd: c_int, type_: c_int) -> c_int {
+        (cmd << 8) | (type_ & 0x00ff)
+    }
+
+    pub const safe fn IPOPT_COPIED(o: u8) -> u8 {
+        o & IPOPT_COPY
+    }
+
+    pub const safe fn IPOPT_CLASS(o: u8) -> u8 {
+        o & IPOPT_CLASS_MASK
+    }
+
+    pub const safe fn IPOPT_NUMBER(o: u8) -> u8 {
+        o & IPOPT_NUMBER_MASK
+    }
+
+    pub const safe fn IPTOS_ECN(x: u8) -> u8 {
+        x & crate::IPTOS_ECN_MASK
+    }
 }
 
 extern "C" {
@@ -4630,93 +4715,6 @@ extern "C" {
 
     pub fn gnu_get_libc_release() -> *const c_char;
     pub fn gnu_get_libc_version() -> *const c_char;
-}
-
-safe_f! {
-    pub const safe fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
-        let major = major as crate::dev_t;
-        let minor = minor as crate::dev_t;
-        let mut dev = 0;
-        dev |= major << 8;
-        dev |= minor;
-        dev
-    }
-
-    pub const safe fn major(dev: crate::dev_t) -> c_uint {
-        ((dev >> 8) & 0xff) as c_uint
-    }
-
-    pub const safe fn minor(dev: crate::dev_t) -> c_uint {
-        (dev & 0xffff00ff) as c_uint
-    }
-
-    pub safe fn SIGRTMAX() -> c_int {
-        unsafe { __libc_current_sigrtmax() }
-    }
-
-    pub safe fn SIGRTMIN() -> c_int {
-        unsafe { __libc_current_sigrtmin() }
-    }
-
-    pub const safe fn WIFSTOPPED(status: c_int) -> bool {
-        (status & 0xff) == 0x7f
-    }
-
-    pub const safe fn WSTOPSIG(status: c_int) -> c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub const safe fn WIFCONTINUED(status: c_int) -> bool {
-        status == 0xffff
-    }
-
-    pub const safe fn WIFSIGNALED(status: c_int) -> bool {
-        ((status & 0x7f) + 1) as i8 >= 2
-    }
-
-    pub const safe fn WTERMSIG(status: c_int) -> c_int {
-        status & 0x7f
-    }
-
-    pub const safe fn WIFEXITED(status: c_int) -> bool {
-        (status & 0x7f) == 0
-    }
-
-    pub const safe fn WEXITSTATUS(status: c_int) -> c_int {
-        (status >> 8) & 0xff
-    }
-
-    pub const safe fn WCOREDUMP(status: c_int) -> bool {
-        (status & 0x80) != 0
-    }
-
-    pub const safe fn W_EXITCODE(ret: c_int, sig: c_int) -> c_int {
-        (ret << 8) | sig
-    }
-
-    pub const safe fn W_STOPCODE(sig: c_int) -> c_int {
-        (sig << 8) | 0x7f
-    }
-
-    pub const safe fn QCMD(cmd: c_int, type_: c_int) -> c_int {
-        (cmd << 8) | (type_ & 0x00ff)
-    }
-
-    pub const safe fn IPOPT_COPIED(o: u8) -> u8 {
-        o & IPOPT_COPY
-    }
-
-    pub const safe fn IPOPT_CLASS(o: u8) -> u8 {
-        o & IPOPT_CLASS_MASK
-    }
-
-    pub const safe fn IPOPT_NUMBER(o: u8) -> u8 {
-        o & IPOPT_NUMBER_MASK
-    }
-
-    pub const safe fn IPTOS_ECN(x: u8) -> u8 {
-        x & crate::IPTOS_ECN_MASK
-    }
 }
 
 cfg_if! {

@@ -1436,7 +1436,7 @@ pub const POSIX_SPAWN_SETSCHEDULER: c_short = 0x08;
 pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
 
-safe_f! {
+f! {
     pub const safe fn WIFCONTINUED(status: c_int) -> bool {
         status == 0x13
     }

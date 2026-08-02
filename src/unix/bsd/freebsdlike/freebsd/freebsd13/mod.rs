@@ -339,7 +339,7 @@ pub const DOMAINSET_POLICY_INTERLEAVE: c_int = 4;
 
 pub const MINCORE_SUPER: c_int = 0x20;
 
-safe_f! {
+f! {
     pub const safe fn makedev(major: c_uint, minor: c_uint) -> crate::dev_t {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
