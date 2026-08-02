@@ -1,6 +1,6 @@
 //! Header: `net/if_mib.h`
 //!
-//! https://github.com/freebsd/freebsd-src/blob/86691d52a6d3796ad36ba474cf0a9493f6d99202/sys/net/if_mib.h
+//! <https://github.com/freebsd/freebsd-src/blob/86691d52a6d3796ad36ba474cf0a9493f6d99202/sys/net/if_mib.h>
 
 use crate::prelude::*;
 
