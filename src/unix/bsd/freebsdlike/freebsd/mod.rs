@@ -4377,19 +4377,19 @@ f! {
     }
 
     pub unsafe fn CPU_SET(cpu: usize, cpuset: &mut cpuset_t) -> () {
-        let bitset_bits = 8 * size_of::<c_long>();
+        let bitset_bits = c_long::BITS as usize;
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         cpuset.__bits[idx] |= 1 << offset;
     }
 
     pub unsafe fn CPU_CLR(cpu: usize, cpuset: &mut cpuset_t) -> () {
-        let bitset_bits = 8 * size_of::<c_long>();
+        let bitset_bits = c_long::BITS as usize;
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         cpuset.__bits[idx] &= !(1 << offset);
     }
 
     pub unsafe fn CPU_ISSET(cpu: usize, cpuset: &cpuset_t) -> bool {
-        let bitset_bits = 8 * size_of::<c_long>();
+        let bitset_bits = c_long::BITS as usize;
         let (idx, offset) = (cpu / bitset_bits, cpu % bitset_bits);
         0 != cpuset.__bits[idx] & (1 << offset)
     }
