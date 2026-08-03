@@ -1338,6 +1338,8 @@ pub const NI_DGRAM: c_int = 16;
 pub const NI_MAXHOST: size_t = 256;
 
 pub const RTLD_LOCAL: c_int = 0;
+pub const RTLD_NODELETE: c_int = 0x400;
+pub const RTLD_NOLOAD: c_int = 0x800;
 
 pub const CTL_MAXNAME: c_int = 12;
 
