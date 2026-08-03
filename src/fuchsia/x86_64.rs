@@ -2,6 +2,11 @@ use crate::off_t;
 use crate::prelude::*;
 
 pub type wchar_t = i32;
+
+#[deprecated(
+    since = "0.2.189",
+    note = "This type does not exist upstream and will eventually be removed."
+)]
 pub type __u64 = c_ulonglong;
 
 s! {
@@ -26,6 +31,11 @@ s! {
         __unused: Padding<[c_long; 3]>,
     }
 
+    #[deprecated(
+        since = "0.2.189",
+        note = "This type does not exist upstream and will eventually be \
+                removed."
+    )]
     pub struct stat64 {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino64_t,
@@ -51,6 +61,11 @@ s! {
         __private: [u64; 32],
     }
 
+    #[deprecated(
+        since = "0.2.189",
+        note = "This type does not exist upstream and will eventually be \
+                removed."
+    )]
     pub struct ipc_perm {
         pub __ipc_perm_key: crate::key_t,
         pub uid: crate::uid_t,
