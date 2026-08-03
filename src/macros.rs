@@ -230,6 +230,7 @@ macro_rules! s_no_extra_traits {
         $(#[$attr])*
         $pub union $i { $($field)* }
 
+        #[allow(deprecated)]
         impl ::core::fmt::Debug for $i {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
                 f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
