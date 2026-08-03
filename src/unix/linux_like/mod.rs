@@ -515,6 +515,8 @@ pub const XATTR_REPLACE: c_int = 0x2;
 cfg_if! {
     if #[cfg(target_os = "android")] {
         pub const RLIM64_INFINITY: c_ulonglong = !0;
+    } else if #[cfg(all(target_os = "l4re", target_pointer_width = "64"))] {
+        pub const RLIM64_INFINITY: crate::rlim_t = !0;
     } else {
         pub const RLIM64_INFINITY: crate::rlim64_t = !0;
     }
@@ -2135,14 +2137,26 @@ cfg_if! {
                 flags: c_int,
             ) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn ftruncate64(fd: c_int, length: off64_t) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
             #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
             #[cfg(not(target_os = "l4re"))]
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn mmap64(
                 addr: *mut c_void,
                 len: size_t,
@@ -2156,6 +2170,10 @@ cfg_if! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn openat64(fd: c_int, path: *const c_char, oflag: c_int, ...) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn posix_fadvise64(
                 fd: c_int,
                 offset: off64_t,
@@ -2163,8 +2181,16 @@ cfg_if! {
                 advise: c_int,
             ) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn pread64(fd: c_int, buf: *mut c_void, count: size_t, offset: off64_t) -> ssize_t;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn pwrite64(
                 fd: c_int,
                 buf: *const c_void,
@@ -2184,6 +2210,10 @@ cfg_if! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn truncate64(path: *const c_char, length: off64_t) -> c_int;
         }
     }
