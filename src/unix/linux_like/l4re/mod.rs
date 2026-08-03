@@ -10,10 +10,6 @@ pub type pthread_t = *mut c_void;
 pub type dev_t = u64;
 pub type socklen_t = u32;
 pub type mode_t = u32;
-pub type ino64_t = u64;
-pub type off64_t = i64;
-pub type blkcnt64_t = i64;
-pub type rlim64_t = u64;
 pub type nfds_t = c_ulong;
 pub type nl_item = c_int;
 pub type idtype_t = c_uint;
@@ -21,6 +17,40 @@ pub type loff_t = c_longlong;
 pub type pthread_key_t = c_uint;
 pub type pthread_once_t = c_int;
 pub type pthread_spinlock_t = c_int;
+
+#[cfg_attr(
+    all(target_os = "l4re", target_pointer_width = "64"),
+    deprecated(
+        since = "0.2.190",
+        note = "Use `ino_t` instead. LFS is being phased out, see rust-lang/libc#4805."
+    )
+)]
+pub type ino64_t = u64;
+#[cfg_attr(
+    all(target_os = "l4re", target_pointer_width = "64"),
+    deprecated(
+        since = "0.2.190",
+        note = "Use `off_t` instead. LFS is being phased out, see rust-lang/libc#4805."
+    )
+)]
+pub type off64_t = i64;
+#[cfg_attr(
+    all(target_os = "l4re", target_pointer_width = "64"),
+    deprecated(
+        since = "0.2.190",
+        note = "Use `blkcnt_t` instead. LFS is being phased out, see
+                rust-lang/libc#4805."
+    )
+)]
+pub type blkcnt64_t = i64;
+#[cfg_attr(
+    all(target_os = "l4re", target_pointer_width = "64"),
+    deprecated(
+        since = "0.2.190",
+        note = "Use `rlim_t` instead. LFS is being phased out, see rust-lang/libc#4805."
+    )
+)]
+pub type rlim64_t = u64;
 
 s! {
     /// CPU sets.
