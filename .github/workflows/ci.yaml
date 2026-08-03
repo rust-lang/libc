@@ -394,7 +394,8 @@ jobs:
       with:
         persist-credentials: false
     - name: Install Rust
-      run: rustup update nightly --no-self-update && rustup default nightly
+      # FIXME(rust-lang/rust#160439): unpin once the issue is fixed
+      run: rustup update nightly-2026-08-02 --no-self-update && rustup default nightly-2026-08-02
     - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
     - run: cargo doc --workspace --no-deps
 
