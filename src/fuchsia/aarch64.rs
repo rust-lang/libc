@@ -3,8 +3,6 @@ use crate::prelude::*;
 
 pub type __u64 = c_ulonglong;
 pub type wchar_t = u32;
-pub type nlink_t = c_ulong;
-pub type blksize_t = c_long;
 
 s! {
     pub struct stat {
