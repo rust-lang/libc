@@ -301,6 +301,7 @@ chroot
 clearerr
 clock_getres
 clock_gettime
+clock_settime
 difftime
 dirfd
 endgrent
@@ -353,6 +354,7 @@ open_memstream
 open_wmemstream
 openat
 openpty
+pause
 pipe2
 pthread_condattr_setclock
 qsort
