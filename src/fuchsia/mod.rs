@@ -1031,6 +1031,13 @@ s! {
     }
 }
 
+s_no_extra_traits! {
+    pub union fpos_t {
+        __opaque: [c_char; 16],
+        __align: c_double,
+    }
+}
+
 // PUB_CONST
 
 pub const INT_MIN: c_int = -2147483648;
@@ -3128,7 +3135,6 @@ extern "C" {}
 
 extern_ty! {
     pub type FILE;
-    pub type fpos_t; // FIXME(fuchsia): fill this out with a struct
 }
 
 extern "C" {
