@@ -1171,6 +1171,11 @@ extern "C" {
     #[cfg_attr(gnu_file_offset_bits64, link_name = "lseek64")]
     pub fn lseek(fd: c_int, offset: off_t, whence: c_int) -> off_t;
     pub fn pathconf(path: *const c_char, name: c_int) -> c_long;
+    #[cfg_attr(
+        all(target_os = "macos", target_arch = "x86"),
+        link_name = "pause$UNIX2003"
+    )]
+    pub fn pause() -> c_int;
     pub fn pipe(fds: *mut c_int) -> c_int;
     pub fn posix_memalign(memptr: *mut *mut c_void, align: size_t, size: size_t) -> c_int;
     pub fn aligned_alloc(alignment: size_t, size: size_t) -> *mut c_void;
@@ -2247,11 +2252,6 @@ cfg_if! {
     if #[cfg(not(target_os = "redox"))] {
         extern "C" {
             pub fn getsid(pid: pid_t) -> pid_t;
-            #[cfg_attr(
-                all(target_os = "macos", target_arch = "x86"),
-                link_name = "pause$UNIX2003"
-            )]
-            pub fn pause() -> c_int;
             #[cfg_attr(
                 all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
                 link_name = "readdir_r$INODE64"
