@@ -4372,7 +4372,7 @@ fn test_linux(t: &Target) {
             "Ioctl" => Some("int".to_string()),
             // LFS64 types have been removed in musl 1.2.4+
             "off64_t" if musl => Some("off_t".to_string()),
-            "fsword_t" if uclibc => Some("__SWORD_TYPE".to_string()),
+            "__sword_type" if uclibc => Some("__SWORD_TYPE".to_string()),
             _ => None,
         }
     });
@@ -4432,6 +4432,10 @@ fn test_linux(t: &Target) {
             // For internal use only, to define architecture specific ioctl constants with a libc
             // specific type.
             "Ioctl" => true,
+
+            // This type was renamed to more closely match upstream's
+            // `__SWORD_TYPE`; It now goes by `__sword_type`.
+            "fsword_t" if uclibc => true,
 
             t => {
                 if musl {
