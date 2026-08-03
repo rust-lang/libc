@@ -1,4 +1,3 @@
-use crate::off_t;
 use crate::prelude::*;
 
 // From psABI Calling Convention for RV64
@@ -23,9 +22,9 @@ s! {
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        __pad0: Padding<c_int>,
+        __pad0: Padding<c_uint>,
         pub st_rdev: crate::dev_t,
-        pub st_size: off_t,
+        pub st_size: crate::off_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,

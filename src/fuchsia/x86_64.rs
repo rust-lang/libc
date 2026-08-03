@@ -17,7 +17,7 @@ s! {
         pub st_mode: crate::mode_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        __pad0: Padding<c_int>,
+        __pad0: Padding<c_uint>,
         pub st_rdev: crate::dev_t,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
