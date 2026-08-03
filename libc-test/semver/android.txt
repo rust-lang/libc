@@ -3829,6 +3829,7 @@ pthread_getattr_np
 pthread_getcpuclockid
 pthread_getschedparam
 pthread_getspecific
+pthread_gettid_np
 pthread_join
 pthread_key_create
 pthread_key_delete

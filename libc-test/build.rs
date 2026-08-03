@@ -5090,6 +5090,8 @@ fn test_linux(target: &str) {
             "posix_spawn_file_actions_addclosefrom_np" if gnu && sparc64 => true,
             // Needs glibc 2.35 or later.
             "posix_spawn_file_actions_addtcsetpgrp_np" if gnu && sparc64 => true,
+            // Needs glibc 2.42 or later.
+            "pthread_gettid_np" if gnu && versions.glibc.unwrap() < (2, 42) => true,
 
             // FIXME(linux): Deprecated since glibc 2.30. Remove fn once upstream does.
             "sysctl" if gnu => true,
