@@ -127,68 +127,44 @@ jobs:
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
-  # groups the diff touches, tier1 skips the rest
-  changes:
-    name: Detect changed groups
+  # the diff decides what each tier runs, merge queues and schedules get everything
+  calculate_vars:
+    name: Calculate CI variables
     runs-on: ubuntu-26.04
     timeout-minutes: 5
     outputs:
-      changes: ${{ steps.detect.outputs.changes }}
+      tier1: ${{ steps.vars.outputs.tier1 }}
+      tier2: ${{ steps.vars.outputs.tier2 }}
+      tier2_vm: ${{ steps.vars.outputs.tier2_vm }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-depth: 0 # need full history so the base sha exists for the diff
-      - name: Compute affected groups
-        id: detect
-        run: python3 ci/detect-changes.py
+          fetch-depth: 0 # full history so the base sha exists for the diff
+      - name: Compute test matrices
+        id: vars
+        run: |
+          set -eo pipefail
+          python3 ci/detect-changes.py | tee "$GITHUB_OUTPUT"
 
   test_tier1:
     name: Test tier1
-    needs: changes
-    # untouched groups spawn but every step is skipped, success gate passes those
+    needs: calculate_vars
+    # only platforms the diff touches, an empty matrix means the job is skipped
     strategy:
       matrix:
-        include:
-          - target: aarch64-apple-darwin
-            group: apple
-            os: macos-26
-          - target: aarch64-pc-windows-msvc
-            group: windows_msvc
-            os: windows-11-arm
-          - target: aarch64-unknown-linux-gnu
-            group: linux_gnu
-            os: ubuntu-26.04-arm
-          - target: i686-pc-windows-gnu
-            group: windows_gnu
-            os: windows-2025
-          - target: i686-pc-windows-msvc
-            group: windows_msvc
-            os: windows-2025
-          - target: i686-unknown-linux-gnu
-            group: linux_gnu
-          - target: x86_64-pc-windows-gnu
-            group: windows_gnu
-            os: windows-2025
-          - target: x86_64-pc-windows-msvc
-            group: windows_msvc
-            os: windows-2025
-          - target: x86_64-unknown-linux-gnu
-            group: linux_gnu
+        include: ${{ fromJSON(needs.calculate_vars.outputs.tier1) }}
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
       TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         with:
           persist-credentials: false
       - name: Setup Rust toolchain
-        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         run: ./ci/install-rust.sh
       - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
-        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group)
         with:
           key: ${{ matrix.target }}
 
@@ -200,15 +176,15 @@ jobs:
         shell: bash
 
       - name: Run natively
-        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group) && runner.os != 'Linux'
+        if: runner.os != 'Linux'
         run: ./ci/run.sh ${{ matrix.target }}
       - name: Run in Docker
-        if: contains(fromJSON(needs.changes.outputs.changes), matrix.group) && runner.os == 'Linux'
+        if: runner.os == 'Linux'
         run: ./ci/run-docker.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
         id: create_artifacts
-        if: always() && contains(fromJSON(needs.changes.outputs.changes), matrix.group)
+        if: always()
         run: echo "step is actually running" && python3 ci/create-artifacts.py
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always() && steps.create_artifacts.outcome == 'success'
@@ -219,67 +195,12 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
+    needs: [calculate_vars, style_check]
     strategy:
       fail-fast: true
       max-parallel: 16
       matrix:
-        include:
-          - target: aarch64-linux-android
-          - target: aarch64-unknown-linux-musl
-          - target: aarch64-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: arm-linux-androideabi
-          - target: arm-unknown-linux-gnueabihf
-          - target: arm-unknown-linux-musleabihf
-          - target: arm-unknown-linux-musleabihf
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          # FIXME(#4297): Disabled due to spurious failue
-          # - target: i686-linux-android
-          - target: i686-unknown-linux-musl
-          - target: i686-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: loongarch64-unknown-linux-gnu
-          - target: loongarch64-unknown-linux-musl
-          - target: loongarch64-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: powerpc64-unknown-linux-gnu
-          - target: powerpc64-unknown-linux-musl
-          - target: powerpc64-unknown-linux-musl
-            env: { RUST_LIBC_UNSTABLE_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: powerpc64le-unknown-linux-gnu
-          - target: powerpc64le-unknown-linux-musl
-          - target: powerpc64le-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          - target: riscv64gc-unknown-linux-gnu
-          - target: s390x-unknown-linux-gnu
-          - target: sparc64-unknown-linux-gnu
-          - target: wasm32-unknown-emscripten
-          - target: wasm32-wasip1
-          - target: wasm32-wasip2
-          - target: x86_64-apple-darwin
-            os: macos-26-intel
-          - target: x86_64-linux-android
-            # Keep in sync with the Android build pinned in ci/cuttlefish-setup.sh
-            artifact-tag: android17
-          # FIXME: Exec format error (os error 8)
-          # - target: x86_64-unknown-linux-gnux32
-          - target: x86_64-unknown-linux-musl
-          - target: x86_64-unknown-linux-musl
-            env: { TEST_MUSL_V1_2_3: 1 }
-            artifact-tag: new-musl
-          # FIXME: It seems some items in `src/unix/mod.rs` aren't defined on redox actually.
-          # - target: x86_64-unknown-redox
-
-          # FIXME(ppc): SIGILL running tests, see
-          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
-          # - target: powerpc-unknown-linux-gnu
+        include: ${{ fromJSON(needs.calculate_vars.outputs.tier2) }}
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
@@ -321,21 +242,12 @@ jobs:
 
   test_tier2_vm:
     name: Test tier2 VM
-    needs: [test_tier1, style_check]
+    needs: [calculate_vars, style_check]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        include:
-          - release: "15.0"
-            target: i686-unknown-freebsd
-          - release: "14.4"
-            target: x86_64-unknown-freebsd
-          - release: "15.0"
-            target: x86_64-unknown-freebsd
-          - target: x86_64-pc-solaris
-          - target: x86_64-unknown-netbsd
-          - target: x86_64-unknown-illumos
+        include: ${{ fromJSON(needs.calculate_vars.outputs.tier2_vm) }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -450,7 +362,7 @@ jobs:
     name: success
     runs-on: ubuntu-26.04
     needs:
-      - changes
+      - calculate_vars
       - style_check
       - test_tier1
       - test_tier2
