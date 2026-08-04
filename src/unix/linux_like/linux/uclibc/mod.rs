@@ -133,6 +133,17 @@ s! {
         pub tcpi_rcv_space: u32,
         pub tcpi_total_retrans: u32,
     }
+
+    pub struct mbstate_t {
+        __mask: crate::wchar_t,
+        __wc: crate::wchar_t,
+    }
+
+    pub struct fpos64_t {
+        __pos: off64_t,
+        __mbstate: crate::mbstate_t,
+        __mblen_pending: c_int,
+    }
 }
 
 impl siginfo_t {

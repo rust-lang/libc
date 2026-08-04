@@ -1,22 +1,23 @@
-FROM ubuntu:23.10
+FROM ubuntu:25.04
 
-# FIXME(time): we are using an EOL release because 24.04 changes to 64-bit time
-RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
-        /etc/apt/sources.list && \
-    apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
-        file \
         gcc \
         libc6-dev \
-        patch \
         qemu-system-arm \
         qemu-user \
+        bzip2 \
+        gzip \
+        cpio \
+        unzip \
+        rsync \
+        bc \
         xz-utils
 
-ARG TEST_UCLIBC_TIME64
+ARG UCLIBC_TOOLCHAIN_URL
 COPY install-uclibc.sh /
-RUN /install-uclibc.sh "$TEST_UCLIBC_TIME64"
+RUN /install-uclibc.sh "$UCLIBC_TOOLCHAIN_URL"
 
 ENV PATH=$PATH:/rust/bin:/toolchain/bin \
     STAGING_DIR=/toolchain/armv7-buildroot-linux-uclibceabihf/sysroot \
