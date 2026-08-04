@@ -5068,7 +5068,7 @@ fn test_linux(target: &str) {
             "PR_SME_VL_LEN_MAX" | "PR_SME_SET_VL_INHERIT" | "PR_SME_SET_VL_ONE_EXEC" if gnu => true,
 
             // FIXME(linux): The below is no longer const in glibc 2.34:
-            // https://github.com/bminor/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
+            // https://github.com/sailfishos-mirror/glibc/commit/5d98a7dae955bafa6740c26eaba9c86060ae0344
             "PTHREAD_STACK_MIN" | "SIGSTKSZ" | "MINSIGSTKSZ" if gnu => true,
 
             // value changed
