@@ -1304,6 +1304,9 @@ extern "C" {
     pub fn mempcpy(dest: *mut c_void, src: *const c_void, n: size_t) -> *mut c_void;
 
     pub fn tgkill(tgid: crate::pid_t, tid: crate::pid_t, sig: c_int) -> c_int;
+
+    // glibc provides this in <unistd.h> with _GNU_SOURCE
+    pub static mut environ: *mut *mut c_char;
 }
 
 cfg_if! {
