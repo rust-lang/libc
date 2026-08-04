@@ -250,6 +250,194 @@ macro_rules! s_no_extra_traits {
     );
 }
 
+/// Like [`s`], but also generates a `Default` impl for every struct in the block.
+macro_rules! s_with_default {
+    ($(
+        $(#[$attr:meta])*
+        $pub:vis $t:ident $i:ident { $($field:tt)* }
+    )*) => ($(
+        s_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+    )*);
+
+    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
+        compile_error!(
+            "unions cannot derive extra traits, use s_no_extra_traits_with_default instead"
+        );
+    );
+
+    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+        struct_with_default! {
+            attrs: {
+                #[repr(C)]
+                #[::core::prelude::v1::derive(
+                    ::core::clone::Clone,
+                    ::core::marker::Copy,
+                    ::core::fmt::Debug,
+                )]
+                #[cfg_attr(
+                    feature = "extra_traits",
+                    ::core::prelude::v1::derive(PartialEq, Eq, Hash)
+                )]
+                #[allow(deprecated)]
+            }
+            $(#[$attr])* $pub struct $i { $($field)* }
+        }
+    );
+}
+
+/// Like [`s_no_extra_traits`], but also generates a `Default` impl for every struct in the block.
+///
+/// Unions are emitted just like `s_no_extra_traits!` does, with no `Default`. A struct field of
+/// union type supplies its own default via `#[custom_default(...)]`.
+macro_rules! s_no_extra_traits_with_default {
+    ($(
+        $(#[$attr:meta])*
+        $pub:vis $t:ident $i:ident { $($field:tt)* }
+    )*) => ($(
+        s_no_extra_traits_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+    )*);
+
+    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
+        #[repr(C)]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+        )]
+        $(#[$attr])*
+        $pub union $i { $($field)* }
+
+        impl ::core::fmt::Debug for $i {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
+            }
+        }
+    );
+
+    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+        struct_with_default! {
+            attrs: {
+                #[repr(C)]
+                #[::core::prelude::v1::derive(
+                    ::core::clone::Clone,
+                    ::core::marker::Copy,
+                    ::core::fmt::Debug,
+                )]
+            }
+            $(#[$attr])* $pub struct $i { $($field)* }
+        }
+    );
+}
+
+/// Emit a struct with the given derive attributes plus a generated `Default` impl.
+///
+/// Fields default to `Default::default()`. A field whose default can't be derived must carry
+/// `#[custom_default(EXPR)]` as its *first* attribute, and `EXPR` is used instead.
+///
+/// This works by scanning each field for `#[custom_default]` attributes. If one exists, the
+/// attribute's contents are added to `processed_field_defaults` and will be used in the expansion
+/// for `Default`. If it does not exist, `Default::default()` is used instead. In either case, the
+/// field is added to `processed_fields` with `#[custom_default]` stripped if necessary, and
+/// `struct_with_default` is invoked again with the remaining fields.
+macro_rules! struct_with_default {
+    // entry; `attrs` is the attribute block the caller wants on the struct (repr, derives, etc.),
+    // which is merged with the struct's own attributes.
+    (
+        attrs: { $($attrs:tt)* }
+        $(#[$attr:meta])*
+        $vis:vis struct $name:ident { $($body:tt)* }
+    ) => {
+        struct_with_default! {
+            @struct
+            attrs: { $($attrs)* $(#[$attr])* }
+            vis: { $vis }
+            name: { $name }
+            processed_fields: { }
+            processed_field_defaults: { }
+            remaining_fields: { $($body)* }
+        }
+    };
+
+    // field led by #[custom_default(...)]
+    (
+        @struct
+        attrs: { $($attrs:tt)* }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        processed_fields: { $($processed_fields:tt)* }
+        processed_field_defaults: { $($processed_field_defaults:tt)* }
+        remaining_fields: {
+            #[custom_default($default:expr)]
+            $(#[$fattr:meta])*
+            $fvis:vis $fname:ident: $fty:ty,
+            $($tail:tt)*
+        }
+    ) => {
+        struct_with_default! {
+            @struct
+            attrs: { $($attrs)* }
+            vis: { $vis }
+            name: { $name }
+            processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
+            processed_field_defaults: {
+                $($processed_field_defaults)*
+                $(#[$fattr])* $fname: $default,
+            }
+            remaining_fields: { $($tail)* }
+        }
+    };
+
+    // plain field
+    (
+        @struct
+        attrs: { $($attrs:tt)* }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        processed_fields: { $($processed_fields:tt)* }
+        processed_field_defaults: { $($processed_field_defaults:tt)* }
+        remaining_fields: {
+            $(#[$fattr:meta])*
+            $fvis:vis $fname:ident: $fty:ty,
+            $($tail:tt)*
+        }
+    ) => {
+        struct_with_default! {
+            @struct
+            attrs: { $($attrs)* }
+            vis: { $vis }
+            name: { $name }
+            processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
+            processed_field_defaults: {
+                $($processed_field_defaults)*
+                $(#[$fattr])* $fname: ::core::default::Default::default(),
+            }
+            remaining_fields: { $($tail)* }
+        }
+    };
+
+    // done
+    (
+        @struct
+        attrs: { $($attrs:tt)* }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        processed_fields: { $($processed_fields:tt)* }
+        processed_field_defaults: { $($processed_field_defaults:tt)* }
+        remaining_fields: { }
+    ) => {
+        $($attrs)*
+        $vis struct $name { $($processed_fields)* }
+
+        impl ::core::default::Default for $name {
+            // Field attributes (`#[cfg]`, doc comments) get forwarded to the initializer too.
+            // Docs are harmless there but trip the lint, so silence it.
+            #[allow(unused_doc_comments)]
+            fn default() -> Self {
+                Self { $($processed_field_defaults)* }
+            }
+        }
+    };
+}
+
 /// Create an uninhabited type that can't be constructed. It implements `Debug`, `Clone`,
 /// and `Copy`, but these aren't meaningful for extern types so they should eventually
 /// be removed.
@@ -701,6 +889,81 @@ mod tests {
         assert_eq!(core::mem::offset_of!(Off1, c), offset_of!(Off1, c));
         assert_eq!(core::mem::offset_of!(Off1, d), offset_of!(Off1, d));
     }
+
+    #[test]
+    fn s_with_default_uses_custom_default() {
+        // A non-default value proves `custom_default` is used rather than a derived default.
+        s_with_default! {
+            struct CustomDefault {
+                a: u32,
+                #[custom_default([1; 64])]
+                buf: [u8; 64],
+            }
+        }
+
+        let s = CustomDefault::default();
+        assert_eq!(s.a, 0);
+        assert_eq!(s.buf, [1u8; 64]);
+    }
+
+    #[test]
+    fn s_with_default_keeps_field_attrs() {
+        // If `custom_default` stripping ate the other field attributes, the two `a` fields
+        // would collide.
+        s_with_default! {
+            struct FieldAttrs {
+                #[cfg(target_arch = "x86_64")]
+                a: u8,
+                #[cfg(not(target_arch = "x86_64"))]
+                a: u64,
+            }
+        }
+
+        let s = FieldAttrs::default();
+        #[cfg(target_arch = "x86_64")]
+        assert_eq!(s.a, 0u8);
+        #[cfg(not(target_arch = "x86_64"))]
+        assert_eq!(s.a, 0u64);
+    }
+
+    #[test]
+    fn s_with_default_single_cfg_field() {
+        // this field only exists on x86_64, so its default init needs the same cfg or
+        // Default won't build on other arches
+        s_with_default! {
+            struct SingleCfg {
+                common: u32,
+                #[cfg(target_arch = "x86_64")]
+                x86_only: u64,
+            }
+        }
+
+        let s = SingleCfg::default();
+        assert_eq!(s.common, 0);
+        #[cfg(target_arch = "x86_64")]
+        assert_eq!(s.x86_only, 0);
+    }
+
+    #[test]
+    fn s_no_extra_traits_with_default_zeroes_union() {
+        // A union field's default is supplied by `custom_default(unsafe { mem::zeroed })`.
+        s_no_extra_traits_with_default! {
+            union U {
+                a: u32,
+                b: f32,
+            }
+
+            struct HasUnion {
+                x: u16,
+                #[custom_default(unsafe { ::core::mem::zeroed::<U>() })]
+                u: U,
+            }
+        }
+
+        let s = HasUnion::default();
+        assert_eq!(s.x, 0);
+        assert_eq!(unsafe { s.u.a }, 0);
+    }
 }
 
 #[cfg(test)]
@@ -743,5 +1006,38 @@ mod macro_checks {
     extern_ty! {
         type Foo;
         pub type Bar;
+    }
+
+    s_with_default! {
+        pub struct S3 {
+            pub a: u32,
+            #[custom_default([1; 64])]
+            pub buf: [u8; 64],
+        }
+
+        struct S3Priv {
+            pub a: u32,
+            b: u32,
+        }
+    }
+
+    s_no_extra_traits_with_default! {
+        pub union U3 {
+            pub a: u32,
+            b: f32,
+        }
+
+        pub struct S4 {
+            pub a: u32,
+            #[custom_default(unsafe { ::core::mem::zeroed::<U3>() })]
+            pub u: U3,
+        }
+    }
+
+    fn assert_impls_default<T: Default>() {}
+
+    fn check_default() {
+        assert_impls_default::<S3>();
+        assert_impls_default::<S4>();
     }
 }
