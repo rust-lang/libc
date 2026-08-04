@@ -1182,12 +1182,15 @@ pub const SO_DOMAIN: c_int = 39;
 pub const SO_RXQ_OVFL: c_int = 40;
 pub const SO_PEEK_OFF: c_int = 42;
 pub const SO_BUSY_POLL: c_int = 46;
+pub const SO_ATTACH_REUSEPORT_CBPF: c_int = 51;
+pub const SO_ATTACH_REUSEPORT_EBPF: c_int = 52;
 pub const SCM_TIMESTAMPING_OPT_STATS: c_int = 54;
 pub const SCM_TIMESTAMPING_PKTINFO: c_int = 58;
 pub const SO_BINDTOIFINDEX: c_int = 62;
 pub const SO_TIMESTAMP_NEW: c_int = 63;
 pub const SO_TIMESTAMPNS_NEW: c_int = 64;
 pub const SO_TIMESTAMPING_NEW: c_int = 65;
+pub const SO_DETACH_REUSEPORT_BPF: c_int = 68;
 
 // Defined in unix/linux_like/mod.rs
 // pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
