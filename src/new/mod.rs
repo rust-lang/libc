@@ -177,6 +177,7 @@ cfg_if! {
         pub use linux::types::*;
         pub use sys::socket::*;
     } else if #[cfg(target_os = "linux")] {
+        pub use linux::audit::*;
         pub use linux::can::bcm::*;
         pub use linux::can::error::*;
         pub use linux::can::j1939::*;
