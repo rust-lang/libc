@@ -116,7 +116,7 @@ Please include permalinks to headers in commit messages for all API changes.
 Common sources include:
 
 * Linux uapi: https://github.com/torvalds/linux/tree/master/include/uapi
-* Glibc: https://sourceware.org/git/?p=glibc.git;a=tree
+* Glibc: https://github.com/sailfishos-mirror/glibc (original is https://sourceware.org/git/?p=glibc.git;a=tree)
 * Musl: https://github.com/kraj/musl (original is https://git.musl-libc.org/cgit/musl/tree/)
 * Apple XNU: https://github.com/apple-oss-distributions/xnu, libc https://github.com/apple-oss-distributions/Libc/tree/main/include
 * Android: https://cs.android.com/android/platform/superproject/main
