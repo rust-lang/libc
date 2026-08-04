@@ -62,6 +62,9 @@ s! {
         pub uc_link: *mut ucontext_t,
         pub uc_stack: crate::stack_t,
         pub uc_sigmask: crate::sigset_t,
+        /* The kernel adds extra padding after uc_sigmask to match
+         * glibc sigset_t on ARM64. */
+        __padding: Padding<[c_char; 128 - size_of::<crate::sigset_t>()]>,
         pub uc_mcontext: mcontext_t,
     }
 
