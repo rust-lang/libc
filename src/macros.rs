@@ -215,37 +215,26 @@ macro_rules! s_paren {
 /// Most structs will prefer to use [`s`].
 macro_rules! s_no_extra_traits {
     ($(
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_no_extra_traits!(it: $(#[$attr])* $pub $t $i { $($field)* });
+        s_no_extra_traits!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
-        #[repr(C)]
-        #[::core::prelude::v1::derive(
-            ::core::clone::Clone,
-            ::core::marker::Copy,
-        )]
-        $(#[$attr])*
-        $pub union $i { $($field)* }
-
-        #[allow(deprecated)]
-        impl ::core::fmt::Debug for $i {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
-            }
+    (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
+        union_with_debug! {
+            $(#$attr)* $pub union $i { $($field)* }
         }
     );
 
-    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
         #[repr(C)]
         #[::core::prelude::v1::derive(
             ::core::clone::Clone,
             ::core::marker::Copy,
             ::core::fmt::Debug,
         )]
-        $(#[$attr])*
+        $(#$attr)*
         $pub struct $i { $($field)* }
     );
 }
@@ -253,19 +242,19 @@ macro_rules! s_no_extra_traits {
 /// Like [`s`], but also generates a `Default` impl for every struct in the block.
 macro_rules! s_with_default {
     ($(
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+        s_with_default!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
         compile_error!(
             "unions cannot derive extra traits, use s_no_extra_traits_with_default instead"
         );
     );
 
-    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
         struct_with_default! {
             attrs: {
                 #[repr(C)]
@@ -280,7 +269,7 @@ macro_rules! s_with_default {
                 )]
                 #[allow(deprecated)]
             }
-            $(#[$attr])* $pub struct $i { $($field)* }
+            $(#$attr)* $pub struct $i { $($field)* }
         }
     );
 }
@@ -291,29 +280,19 @@ macro_rules! s_with_default {
 /// union type supplies its own default via `#[custom_default(...)]`.
 macro_rules! s_no_extra_traits_with_default {
     ($(
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_no_extra_traits_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+        s_no_extra_traits_with_default!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
-        #[repr(C)]
-        #[::core::prelude::v1::derive(
-            ::core::clone::Clone,
-            ::core::marker::Copy,
-        )]
-        $(#[$attr])*
-        $pub union $i { $($field)* }
-
-        impl ::core::fmt::Debug for $i {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
-                f.debug_struct(::core::stringify!($i)).finish_non_exhaustive()
-            }
+    (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
+        union_with_debug! {
+            $(#$attr)* $pub union $i { $($field)* }
         }
     );
 
-    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
         struct_with_default! {
             attrs: {
                 #[repr(C)]
@@ -323,9 +302,107 @@ macro_rules! s_no_extra_traits_with_default {
                     ::core::fmt::Debug,
                 )]
             }
-            $(#[$attr])* $pub struct $i { $($field)* }
+            $(#$attr)* $pub struct $i { $($field)* }
         }
     );
+}
+
+/// Emit a union plus its `Debug` impl.
+///
+/// Unions can't derive `Debug`, so it is written out here. Attributes are split like
+/// [`struct_with_default`] does. Everything goes on the union, but only the `cfg`s are repeated
+/// on the impl, otherwise a union that is configured out leaves an impl behind.
+macro_rules! union_with_debug {
+    (
+        $(#$attr:tt)*
+        $vis:vis union $name:ident { $($body:tt)* }
+    ) => {
+        union_with_debug! {
+            @split_attrs
+            cfg_attrs: { }
+            other_attrs: { }
+            remaining_attrs: { $(#$attr)* }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // a `cfg` also has to gate the impl
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: {
+            #[cfg($($cfg:tt)*)]
+            $($tail:tt)*
+        }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        union_with_debug! {
+            @split_attrs
+            cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] }
+            other_attrs: { $($other_attrs)* }
+            remaining_attrs: { $($tail)* }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // anything else belongs to the union only
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: {
+            #$other:tt
+            $($tail:tt)*
+        }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        union_with_debug! {
+            @split_attrs
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* #$other }
+            remaining_attrs: { $($tail)* }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // done
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: { }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        #[repr(C)]
+        #[::core::prelude::v1::derive(
+            ::core::clone::Clone,
+            ::core::marker::Copy,
+        )]
+        $($other_attrs)*
+        $($cfg_attrs)*
+        $vis union $name { $($body)* }
+
+        $($cfg_attrs)*
+        #[allow(deprecated)]
+        impl ::core::fmt::Debug for $name {
+            fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+                f.debug_struct(::core::stringify!($name)).finish_non_exhaustive()
+            }
+        }
+    };
 }
 
 /// Emit a struct with the given derive attributes plus a generated `Default` impl.
@@ -338,17 +415,92 @@ macro_rules! s_no_extra_traits_with_default {
 /// for `Default`. If it does not exist, `Default::default()` is used instead. In either case, the
 /// field is added to `processed_fields` with `#[custom_default]` stripped if necessary, and
 /// `struct_with_default` is invoked again with the remaining fields.
+///
+/// Attributes are split into `cfg_attrs` and `other_attrs` before the fields are scanned. Both
+/// go on the struct, but only the `cfg`s are repeated on the `Default` impl. A `cfg` decides
+/// whether the type exists at all, so without it a configured-out struct leaves an impl behind
+/// referring to a type that isn't there.
 macro_rules! struct_with_default {
     // entry; `attrs` is the attribute block the caller wants on the struct (repr, derives, etc.),
     // which is merged with the struct's own attributes.
     (
         attrs: { $($attrs:tt)* }
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $vis:vis struct $name:ident { $($body:tt)* }
     ) => {
         struct_with_default! {
+            @split_attrs
+            cfg_attrs: { }
+            other_attrs: { }
+            remaining_attrs: { $($attrs)* $(#$attr)* }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // a `cfg` also has to gate the impl
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: {
+            #[cfg($($cfg:tt)*)]
+            $($tail:tt)*
+        }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        struct_with_default! {
+            @split_attrs
+            cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] }
+            other_attrs: { $($other_attrs)* }
+            remaining_attrs: { $($tail)* }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // anything else belongs to the struct only
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: {
+            #$other:tt
+            $($tail:tt)*
+        }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        struct_with_default! {
+            @split_attrs
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* #$other }
+            remaining_attrs: { $($tail)* }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // attributes are split, move on to the fields
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: { }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        struct_with_default! {
             @struct
-            attrs: { $($attrs)* $(#[$attr])* }
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* }
             vis: { $vis }
             name: { $name }
             processed_fields: { }
@@ -360,7 +512,8 @@ macro_rules! struct_with_default {
     // field led by #[custom_default(...)]
     (
         @struct
-        attrs: { $($attrs:tt)* }
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -374,7 +527,8 @@ macro_rules! struct_with_default {
     ) => {
         struct_with_default! {
             @struct
-            attrs: { $($attrs)* }
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -389,7 +543,8 @@ macro_rules! struct_with_default {
     // plain field
     (
         @struct
-        attrs: { $($attrs:tt)* }
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -402,7 +557,8 @@ macro_rules! struct_with_default {
     ) => {
         struct_with_default! {
             @struct
-            attrs: { $($attrs)* }
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -417,16 +573,19 @@ macro_rules! struct_with_default {
     // done
     (
         @struct
-        attrs: { $($attrs:tt)* }
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
         processed_field_defaults: { $($processed_field_defaults:tt)* }
         remaining_fields: { }
     ) => {
-        $($attrs)*
+        $($other_attrs)*
+        $($cfg_attrs)*
         $vis struct $name { $($processed_fields)* }
 
+        $($cfg_attrs)*
         impl ::core::default::Default for $name {
             // Field attributes (`#[cfg]`, doc comments) get forwarded to the initializer too.
             // Docs are harmless there but trip the lint, so silence it.
@@ -964,6 +1123,31 @@ mod tests {
         assert_eq!(s.x, 0);
         assert_eq!(unsafe { s.u.a }, 0);
     }
+
+    #[test]
+    fn s_with_default_keeps_struct_cfg() {
+        // The opposite of the configured-out types in `macro_checks`. With the `cfg` true the
+        // type and its `Default` both exist, and the other attributes still apply.
+        s_with_default! {
+            #[cfg(true)]
+            #[repr(align(8))]
+            /// a doc comment
+            struct EnabledCfg {
+                a: u32,
+                #[cfg(target_arch = "x86_64")]
+                x86_only: u8,
+                #[custom_default([1; 40])]
+                buf: [u8; 40],
+            }
+        }
+
+        let s = EnabledCfg::default();
+        assert_eq!(s.a, 0);
+        assert_eq!(s.buf, [1u8; 40]);
+        assert_eq!(align_of::<EnabledCfg>(), 8);
+        #[cfg(target_arch = "x86_64")]
+        assert_eq!(s.x86_only, 0);
+    }
 }
 
 #[cfg(test)]
@@ -1039,5 +1223,37 @@ mod macro_checks {
     fn check_default() {
         assert_impls_default::<S3>();
         assert_impls_default::<S4>();
+    }
+
+    // Types configured out entirely, checking that the generated impls carry the same `cfg` as
+    // the type. Without it they fail to compile with "cannot find type".
+    s_with_default! {
+        #[cfg(false)]
+        pub struct S5 {
+            pub a: u32,
+            #[custom_default([1; 64])]
+            pub buf: [u8; 64],
+        }
+    }
+
+    s_no_extra_traits! {
+        #[cfg(false)]
+        pub union U4 {
+            pub a: u32,
+            b: f32,
+        }
+    }
+
+    s_no_extra_traits_with_default! {
+        #[cfg(false)]
+        pub union U5 {
+            pub a: u32,
+            b: f32,
+        }
+
+        #[cfg(false)]
+        pub struct S6 {
+            pub a: u32,
+        }
     }
 }
