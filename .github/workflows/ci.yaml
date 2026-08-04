@@ -127,7 +127,7 @@ jobs:
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
-  # which platforms a diff touches, tier1 jobs gate on this
+  # groups the diff touches, tier1 skips the rest
   changes:
     name: Detect changed groups
     runs-on: ubuntu-26.04
@@ -138,7 +138,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-depth: 0 # full history so the base commit exists for the diff
+          fetch-depth: 0 # need full history so the base sha exists for the diff
       - name: Compute affected groups
         id: detect
         run: python3 ci/detect-changes.py
@@ -146,7 +146,7 @@ jobs:
   test_tier1:
     name: Test tier1
     needs: changes
-    # untouched groups skip every step, the success gate passes on skipped
+    # untouched groups spawn but every step is skipped, success gate passes those
     strategy:
       matrix:
         include:
