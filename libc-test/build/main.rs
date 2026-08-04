@@ -195,7 +195,7 @@ fn process_semver_file<W: Write, P: AsRef<Path>>(output: &mut W, path: &mut Path
 
 fn main() {
     // Avoid unnecessary re-building.
-    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=.");
     // Ensure version checking works, even if we don't use it.
     LazyLock::force(&VERSIONS);
 
