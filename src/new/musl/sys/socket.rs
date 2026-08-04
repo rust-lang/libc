@@ -1,6 +1,7 @@
 //! Header: `sys/socket.h`
 //!
-//! <https://github.com/kraj/musl/blob/kraj/master/include/sys/socket.h>
+//! * Headers: <https://git.musl-libc.org/cgit/musl/blob/arch/include/sys/socket.h> (official)
+//! * Headers: <https://github.com/kraj/musl/blob/kraj/master/include/sys/socket.h> (mirror)
 
 use crate::prelude::*;
 

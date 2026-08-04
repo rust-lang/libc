@@ -24,7 +24,8 @@ pub(crate) mod pthread;
 
 /// Directory: `sys/`
 ///
-/// <https://github.com/kraj/musl/tree/kraj/master/include/sys>
+/// * Headers: <https://git.musl-libc.org/cgit/musl/tree/include/sys> (official)
+/// * Headers: <https://github.com/kraj/musl/tree/master/include/sys> (mirror)
 pub(crate) mod sys {
     pub(crate) mod socket;
 }
