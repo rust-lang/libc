@@ -1,14 +1,9 @@
-// FIXME(ulibc): this module has definitions that are redundant with the parent
-#![allow(dead_code)]
-
-use crate::off64_t;
 use crate::prelude::*;
 
 pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
 pub type regoff_t = c_int;
-pub type rlim_t = c_ulong;
 pub type __rlimit_resource_t = c_ulong;
 pub type __priority_which_t = c_uint;
 
@@ -24,6 +19,29 @@ cfg_if! {
 }
 
 cfg_if! {
+    if #[cfg(uclibc_file_offset_bits64)] {
+        pub type ino_t = u64;
+        pub type off_t = i64;
+        pub type rlim_t = u64;
+        pub type blkcnt_t = i64;
+        pub type fsblkcnt_t = u64;
+        pub type fsfilcnt_t = u64;
+    } else {
+        pub type ino_t = c_ulong;
+        pub type off_t = c_long;
+        pub type rlim_t = c_ulong;
+        pub type blkcnt_t = c_long;
+        pub type fsblkcnt_t = c_ulong;
+        pub type fsfilcnt_t = c_ulong;
+    }
+}
+
+// Other LFS types have definitions provided by top-level modules (i.e. `unix`,
+// `linux_like` and `linux`.)
+pub type fsblkcnt64_t = u64;
+pub type fsfilcnt64_t = u64;
+
+cfg_if! {
     if #[cfg(doc)] {
         // Used in `linux::arch` to define ioctl constants.
         pub(crate) type Ioctl = c_ulong;
@@ -34,6 +52,14 @@ cfg_if! {
 }
 
 s! {
+    pub struct flock64 {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: crate::off64_t,
+        pub l_len: crate::off64_t,
+        pub l_pid: crate::pid_t,
+    }
+
     pub struct statvfs {
         // Different than GNU!
         pub f_bsize: c_ulong,
@@ -44,15 +70,29 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
-        #[cfg(target_endian = "little")]
         pub f_fsid: c_ulong,
         #[cfg(target_pointer_width = "32")]
         __f_unused: Padding<c_int>,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
+    }
+
+    pub struct statvfs64 {
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: crate::fsblkcnt64_t,
+        pub f_bfree: crate::fsblkcnt64_t,
+        pub f_bavail: crate::fsblkcnt64_t,
+        pub f_files: crate::fsfilcnt64_t,
+        pub f_ffree: crate::fsfilcnt64_t,
+        pub f_favail: crate::fsfilcnt64_t,
+        pub f_fsid: c_ulong,
+        #[cfg(target_pointer_width = "32")]
+        __f_unused: Padding<c_int>,
+        pub f_flag: c_ulong,
+        pub f_namemax: c_ulong,
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct regex_t {
@@ -389,8 +429,18 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
 
-    pub fn pwritev(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off64_t) -> ssize_t;
-    pub fn preadv(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off64_t) -> ssize_t;
+    pub fn pwritev(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: crate::off64_t,
+    ) -> ssize_t;
+    pub fn preadv(
+        fd: c_int,
+        iov: *const crate::iovec,
+        iovcnt: c_int,
+        offset: crate::off64_t,
+    ) -> ssize_t;
 
     pub fn sethostid(hostid: c_long) -> c_int;
     pub fn fanotify_mark(
