@@ -600,6 +600,7 @@ dlmopen
 dlvsym
 eaccess
 endutxent
+environ
 epoll_pwait2
 ethhdr
 euidaccess
