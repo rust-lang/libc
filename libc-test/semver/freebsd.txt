@@ -2323,6 +2323,8 @@ regfree
 register_t
 regmatch_t
 regoff_t
+rt_metrics
+rt_msghdr
 rtprio
 rtprio_thread
 sallocx
