@@ -1,6 +1,6 @@
 //! Source header: `sysdeps/nptl/pthread.h`
 //!
-//! <https://github.com/bminor/glibc/blob/master/sysdeps/nptl/pthread.h>
+//! <https://github.com/sailfishos-mirror/glibc/blob/master/sysdeps/nptl/pthread.h>
 
 use super::bits::struct_mutex::*;
 use crate::prelude::*;
