@@ -142,14 +142,6 @@ s! {
         __glibc_reserved5: Padding<c_ulong>,
     }
 
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_errno: c_int,
-        pub si_code: c_int,
-        _pad: Padding<[c_int; 29]>,
-        _align: [usize; 0],
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut c_void,
         pub ss_flags: c_int,
