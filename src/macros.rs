@@ -586,6 +586,8 @@ macro_rules! struct_with_default {
         $vis struct $name { $($processed_fields)* }
 
         $($cfg_attrs)*
+        // The impl names the type and its fields, which warns if either is deprecated.
+        #[allow(deprecated)]
         impl ::core::default::Default for $name {
             // Field attributes (`#[cfg]`, doc comments) get forwarded to the initializer too.
             // Docs are harmless there but trip the lint, so silence it.
@@ -1254,6 +1256,35 @@ mod macro_checks {
         #[cfg(false)]
         pub struct S6 {
             pub a: u32,
+        }
+    }
+
+    // The generated impls name the type and its fields, so they need to allow deprecation.
+    // `deny` turns the warning into an error if that ever stops being the case.
+    mod deprecated_checks {
+        #![deny(deprecated)]
+
+        s_with_default! {
+            #[deprecated(since = "0.0.0", note = "check that generated impls don't warn")]
+            pub struct S7 {
+                pub a: u32,
+            }
+        }
+
+        s_no_extra_traits! {
+            #[deprecated(since = "0.0.0", note = "check that generated impls don't warn")]
+            pub union U6 {
+                pub a: u32,
+                b: f32,
+            }
+        }
+
+        s_no_extra_traits_with_default! {
+            #[deprecated(since = "0.0.0", note = "check that generated impls don't warn")]
+            pub union U7 {
+                pub a: u32,
+                b: f32,
+            }
         }
     }
 }
