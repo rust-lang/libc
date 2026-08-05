@@ -51,14 +51,6 @@ s! {
         __sched_priority: c_int,
     }
 
-    pub struct siginfo_t {
-        si_signo: c_int,       // signal number
-        si_errno: c_int,       // if not zero: error value of signal, see errno.h
-        si_code: c_int,        // signal code
-        pub _pad: [c_int; 28], // unported union
-        _align: [usize; 0],
-    }
-
     pub struct shmid_ds {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,        // segment size in bytes
