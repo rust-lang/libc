@@ -8,3 +8,10 @@
 pub(crate) mod net {
     pub(crate) mod route;
 }
+
+/// Source directory: `sysdeps/unix/sysv/linux/bits`
+///
+/// <https://github.com/sailfishos-mirror/glibc/tree/master/sysdeps/unix/sysv/linux/bits>
+pub(crate) mod bits {
+    pub(crate) mod types;
+}
