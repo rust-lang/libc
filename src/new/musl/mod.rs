@@ -31,4 +31,5 @@ pub(crate) mod sys {
 }
 
 pub(crate) mod sched;
+pub(crate) mod signal;
 pub(crate) mod unistd;
