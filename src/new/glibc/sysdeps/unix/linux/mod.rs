@@ -19,6 +19,7 @@ pub(crate) mod bits {
         path = "../sparc/bits/sigaction.rs"
     )]
     pub(crate) mod sigaction;
+
     #[cfg_attr(
         any(
             target_arch = "mips",
@@ -33,7 +34,10 @@ pub(crate) mod bits {
         path = "../sparc/bits/signum_arch.rs"
     )]
     pub(crate) mod signum_arch;
+
     pub(crate) mod statvfs;
+
+    pub(crate) mod types;
 }
 
 /// Directory: `net/`
