@@ -48,6 +48,7 @@ mod sysdeps {
 pub(crate) use posix::*;
 // FIXME(pthread): eventually all platforms should use this module
 #[cfg(target_os = "linux")]
-pub(crate) use sysdeps::nptl::*;
+#[allow(unused)]
+pub(crate) use sysdeps::nptl::pthread;
 #[cfg(target_os = "linux")]
-pub(crate) use sysdeps::unix::linux::*;
+pub(crate) use sysdeps::unix::linux::net;
