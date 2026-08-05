@@ -127,7 +127,7 @@ jobs:
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
-  # the diff decides what each tier runs, merge queues and schedules get everything
+  # generates the full test matrix for each tier, same for every run
   calculate_vars:
     name: Calculate CI variables
     runs-on: ubuntu-26.04
@@ -140,7 +140,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-depth: 0 # full history so the base sha exists for the diff
       - name: Compute test matrices
         id: vars
         run: |
@@ -150,7 +149,6 @@ jobs:
   test_tier1:
     name: Test tier1
     needs: calculate_vars
-    # only platforms the diff touches, an empty matrix means the job is skipped
     strategy:
       matrix:
         include: ${{ fromJSON(needs.calculate_vars.outputs.tier1) }}
@@ -381,4 +379,4 @@ jobs:
     steps:
       # Manually check the status of all dependencies. `if: failure()` does not work.
       - name: check if any dependency failed
-        run: jq --exit-status 'all(.result == "success" or .result == "skipped")' <<< "$NEEDS"
+        run: jq --exit-status 'all(.result == "success")' <<< "$NEEDS"

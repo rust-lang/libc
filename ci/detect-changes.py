@@ -1,194 +1,195 @@
 #!/usr/bin/env python3
-# computes the ci matrices, merge queues and schedules get every platform
+"""Emit the test matrices for the CI workflow as GitHub Actions output.
+
+Each tier is printed on its own line as `tierN=<json>` so the workflow can
+feed it straight into a `matrix: include` block. Merge queues, schedules
+and manual runs always get every target; there is no file detection yet.
+"""
 
 import argparse
-import fnmatch
 import json
-import os
-import subprocess as sp
 import sys
-from pathlib import Path
+from dataclasses import dataclass, field
+from enum import IntEnum
 
-# the diff gets sorted into these, one group per platform family
-PLATFORMS = {
-    "apple": ["src/unix/bsd/apple/**", "src/unix/bsd/freebsdlike/**", "src/unix/bsd/mod.rs"],
-    "bsd": ["src/unix/bsd/netbsdlike/**" ,"src/unix/bsd/freebsdlike/**","src/unix/bsd/mod.rs" ] ,
-    "linux" :["src/unix/linux_like/**" ],
-    "windows_msvc": ["src/windows/msvc/**" , "src/windows/mod.rs" ],
-    "windows_gnu":["src/windows/gnu/**", "src/windows/mod.rs" ],
-    "wasm": ["src/wasi/**"],
-    "solarish" :["src/unix/solarish/**" ] ,
+
+class Tier(IntEnum):
+    """Roughly ordered by how much we care about the target staying green."""
+
+    T1 = 1
+    T2 = 2
+    T3 = 3  # tier 2 that only runs inside a VM
+
+
+@dataclass(frozen=True)
+class TestTarget:
+    """One row of the test matrix.
+
+    The fields map straight to matrix variables in ci.yaml; a missing `os`
+    means the default ubuntu-26.04 runner.
+    """
+
+    name: str  # rust target triple
+    #: runner OS, fall back to ubuntu-26.04 when unset
+    os: str | None = None
+    tier: Tier = Tier.T1
+    vm: bool = False
+    release: str | None = None  # OS version for the VM jobs
+    env: dict[str, str | int] = field(default_factory=dict)
+    artifact_tag: str | None = None
+
+
+# the full list of matrix rows, grouped by tier for `tier_rows()`
+TARGETS: list[TestTarget] = [
+    # tier 1
+    TestTarget("aarch64-apple-darwin", os="macos-26"),
+    TestTarget("aarch64-pc-windows-msvc", os="windows-11-arm"),
+    TestTarget("aarch64-unknown-linux-gnu", os="ubuntu-26.04-arm"),
+    TestTarget("i686-pc-windows-gnu", os="windows-2025"),
+    TestTarget("i686-pc-windows-msvc", os="windows-2025"),
+    TestTarget("i686-unknown-linux-gnu"),
+    TestTarget("x86_64-pc-windows-gnu", os="windows-2025"),
+    TestTarget("x86_64-pc-windows-msvc", os="windows-2025"),
+    TestTarget("x86_64-unknown-linux-gnu"),
+    # tier 2
+    TestTarget("aarch64-linux-android", tier=Tier.T2),
+    TestTarget("aarch64-unknown-linux-musl", tier=Tier.T2),
+    TestTarget(
+        "aarch64-unknown-linux-musl",
+        tier=Tier.T2,
+        env={"TEST_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    TestTarget("arm-linux-androideabi", tier=Tier.T2),
+    TestTarget("arm-unknown-linux-gnueabihf", tier=Tier.T2),
+    TestTarget("arm-unknown-linux-musleabihf", tier=Tier.T2),
+    TestTarget(
+        "arm-unknown-linux-musleabihf",
+        tier=Tier.T2,
+        env={"TEST_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    # FIXME(#4297): spurious test failures, keep disabled
+    # TestTarget("i686-linux-android", tier=Tier.T2),
+    TestTarget("i686-unknown-linux-musl", tier=Tier.T2),
+    TestTarget(
+        "i686-unknown-linux-musl",
+        tier=Tier.T2,
+        env={"TEST_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    TestTarget("loongarch64-unknown-linux-gnu", tier=Tier.T2),
+    TestTarget("loongarch64-unknown-linux-musl", tier=Tier.T2),
+    TestTarget(
+        "loongarch64-unknown-linux-musl",
+        tier=Tier.T2,
+        env={"TEST_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    TestTarget("powerpc64-unknown-linux-gnu", tier=Tier.T2),
+    TestTarget("powerpc64-unknown-linux-musl", tier=Tier.T2),
+    TestTarget(
+        "powerpc64-unknown-linux-musl",
+        tier=Tier.T2,
+        env={"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    TestTarget("powerpc64le-unknown-linux-gnu", tier=Tier.T2),
+    TestTarget("powerpc64le-unknown-linux-musl", tier=Tier.T2),
+    TestTarget(
+        "powerpc64le-unknown-linux-musl",
+        tier=Tier.T2,
+        env={"TEST_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    TestTarget("riscv64gc-unknown-linux-gnu", tier=Tier.T2),
+    TestTarget("s390x-unknown-linux-gnu", tier=Tier.T2),
+    TestTarget("sparc64-unknown-linux-gnu", tier=Tier.T2),
+    TestTarget("wasm32-unknown-emscripten", tier=Tier.T2),
+    TestTarget("wasm32-wasip1", tier=Tier.T2),
+    TestTarget("wasm32-wasip2", tier=Tier.T2),
+    TestTarget("x86_64-apple-darwin", os="macos-26-intel", tier=Tier.T2),
+    # keep in sync with the android build pinned in ci/cuttlefish-setup.sh
+    TestTarget("x86_64-linux-android", tier=Tier.T2, artifact_tag="android17"),
+    # FIXME: fails to run, exec format error (os error 8)
+    # TestTarget("x86_64-unknown-linux-gnux32", tier=Tier.T2),
+    TestTarget("x86_64-unknown-linux-musl", tier=Tier.T2),
+    TestTarget(
+        "x86_64-unknown-linux-musl",
+        tier=Tier.T2,
+        env={"TEST_MUSL_V1_2_3": 1},
+        artifact_tag="new-musl",
+    ),
+    # FIXME: some items in `src/unix/mod.rs` aren't defined on redox yet
+    # TestTarget("x86_64-unknown-redox", tier=Tier.T2),
+    # FIXME(ppc): SIGILL running tests, see rust-lang/libc#4254
+    # TestTarget("powerpc-unknown-linux-gnu", tier=Tier.T2),
+    # tier 2, VM only
+    TestTarget("i686-unknown-freebsd", tier=Tier.T3, vm=True, release="15.0"),
+    TestTarget("x86_64-unknown-freebsd", tier=Tier.T3, vm=True, release="14.4"),
+    TestTarget("x86_64-unknown-freebsd", tier=Tier.T3, vm=True, release="15.0"),
+    TestTarget("x86_64-pc-solaris", tier=Tier.T3, vm=True),
+    TestTarget("x86_64-unknown-netbsd", tier=Tier.T3, vm=True),
+    TestTarget("x86_64-unknown-illumos", tier=Tier.T3, vm=True),
+]
+
+#: tier value -> output variable name
+TIER_OUTPUT_NAMES = {
+    Tier.T1: "tier1",
+    Tier.T2: "tier2",
+    Tier.T3: "tier2_vm",
 }
-GROUPS = sorted ( PLATFORMS)
 
 
+def to_matrix_row(target: TestTarget) -> dict[str, str | int]:
+    """Convert a target into the dict a matrix `include` row expects.
 
-# docs/metadata, nothing compiles from them
-DOCS= ["README.md" ,"CHANGELOG.md" ,"CONTRIBUTING.md", "LICENSE*" , "triagebot.toml" ]
-
-# one row per entry in the workflow matrix, group decides when it runs
-# a missing os means ubuntu-26.04, except tier2_vm which runs on ubuntu-latest
-TIER1 = [
-    {"group" : "apple" ,"target":"aarch64-apple-darwin" ,"os":"macos-26" } ,
-    { "group": "windows_msvc" ,"target": "aarch64-pc-windows-msvc", "os": "windows-11-arm" },
-    {"group": "linux", "target": "aarch64-unknown-linux-gnu", "os": "ubuntu-26.04-arm"},
-    {"group" : "windows_gnu" , "target": "i686-pc-windows-gnu","os":"windows-2025" } ,
-    { "group":"windows_msvc","target":"i686-pc-windows-msvc","os" : "windows-2025"},
-    {"group": "linux", "target": "i686-unknown-linux-gnu"},
-    {"group": "windows_gnu", "target": "x86_64-pc-windows-gnu", "os": "windows-2025"},
-    {"group": "windows_msvc", "target": "x86_64-pc-windows-msvc", "os": "windows-2025"},
-    {"group": "linux", "target": "x86_64-unknown-linux-gnu"},
-]
-
-TIER2 = [
-    {"group": "apple", "target": "x86_64-apple-darwin", "os": "macos-26-intel"},
-    {"group": "linux", "target": "aarch64-linux-android"},
-    {"group": "linux" ,"target" :"arm-linux-androideabi" },
-    # Keep in sync with the Android build pinned in ci/cuttlefish-setup.sh
-    { "group":"linux","target" : "x86_64-linux-android" ,"artifact-tag" : "android17" } ,
-    {"group": "linux" ,"target":"arm-unknown-linux-gnueabihf" } ,
-    { "group" :"linux" ,"target": "loongarch64-unknown-linux-gnu"},
-    { "group" : "linux", "target": "powerpc64-unknown-linux-gnu"},
-    {"group": "linux", "target": "powerpc64le-unknown-linux-gnu"},
-    {"group": "linux", "target": "riscv64gc-unknown-linux-gnu"},
-    { "group":"linux" , "target" : "s390x-unknown-linux-gnu" },
-    {"group": "linux", "target": "sparc64-unknown-linux-gnu"},
-    {"group" : "linux" , "target": "wasm32-unknown-emscripten"} ,
-    {"group": "wasm", "target": "wasm32-wasip1"},
-    { "group": "wasm" ,"target": "wasm32-wasip2"},
-    {"group":"linux", "target":"aarch64-unknown-linux-musl" } ,
-    {"group": "linux", "target": "aarch64-unknown-linux-musl", "env": {"TEST_MUSL_V1_2_3": 1}, "artifact-tag": "new-musl"},
-    { "group" :"linux" ,"target" :"arm-unknown-linux-musleabihf" },
-    {"group": "linux", "target": "arm-unknown-linux-musleabihf", "env": {"TEST_MUSL_V1_2_3": 1}, "artifact-tag": "new-musl"},
-    { "group": "linux","target": "i686-unknown-linux-musl"},
-    { "group" : "linux","target":"i686-unknown-linux-musl","env" : { "TEST_MUSL_V1_2_3":1 }, "artifact-tag" : "new-musl" } ,
-    { "group":"linux", "target" : "loongarch64-unknown-linux-musl"},
-    {"group": "linux", "target": "loongarch64-unknown-linux-musl", "env": {"TEST_MUSL_V1_2_3": 1}, "artifact-tag": "new-musl"},
-    { "group": "linux" , "target":"powerpc64-unknown-linux-musl"},
-    {"group":"linux" ,"target" : "powerpc64-unknown-linux-musl","env" : { "RUST_LIBC_UNSTABLE_MUSL_V1_2_3":1} ,"artifact-tag" : "new-musl" } ,
-    {"group": "linux", "target": "powerpc64le-unknown-linux-musl"},
-    {"group":"linux", "target" : "powerpc64le-unknown-linux-musl", "env" : { "TEST_MUSL_V1_2_3" : 1},"artifact-tag": "new-musl" },
-    {"group" : "linux", "target":"x86_64-unknown-linux-musl" } ,
-    {"group" : "linux" ,"target": "x86_64-unknown-linux-musl","env":{ "TEST_MUSL_V1_2_3": 1} , "artifact-tag":"new-musl" } ,
-]
-
-# FIXME: disabled until they stop failing, see the linked issues
-# - i686-linux-android (#4297), x86_64-unknown-linux-gnux32, x86_64-unknown-redox, powerpc-unknown-linux-gnu (#4254)
-
-TIER2_VM = [
-    {"group": "bsd", "target": "i686-unknown-freebsd", "release": "15.0"},
-    { "group": "bsd" ,"target":"x86_64-unknown-freebsd" , "release" :"14.4" } ,
-    {"group":"bsd" , "target":"x86_64-unknown-freebsd","release" : "15.0"},
-    { "group" :"solarish", "target":"x86_64-pc-solaris" },
-    {"group" : "bsd" ,"target" : "x86_64-unknown-netbsd" },
-    {"group": "solarish", "target": "x86_64-unknown-illumos"},
-]
+    None fields are dropped so the JSON stays identical to the old
+    hardcoded `include:` blocks and the workflow's `matrix.os` fallbacks
+    keep working.
+    """
+    row: dict[str, str | int] = {"target": target.name}
+    if target.os is not None:
+        row["os"] = target.os
+    if target.env:
+        row["env"] = dict(target.env)
+    if target.artifact_tag is not None:
+        row["artifact-tag"] = target.artifact_tag
+    if target.release is not None:
+        row["release"] = target.release
+    return row
 
 
-TIERS ={"tier1" :TIER1 , "tier2":TIER2, "tier2_vm":TIER2_VM}
-
-
-def match(p,pat ) :
-    # /** is just a prefix match here
-    return p.startswith(pat[:-3]) if pat.endswith("/**") else fnmatch.fnmatch(p, pat)
-
-
-def groups_for(files) :
-    code = [p for p in files if not any(match(p, d) for d in DOCS)]
-
-
-    if not code:
-        return []
-    hit = set ()
-    for p in code:
-        gs= { g for g , pats in PLATFORMS.items ( )if any(match (p ,x)for x in pats )}
-        if not gs:
-
-            # unknown file, run everything rather than miss something
-            return GROUPS
-        hit |= gs
-    return sorted (hit)
-
-
-def changed( ):
-    # no event file when run locally, nothing to classify
-    event= os.environ.get ( "GITHUB_EVENT_PATH")
-    if not event :
-        return None
-    try :
-
-        ev =json.loads( Path (event ).read_text () )
-    except ( OSError, ValueError ) as err:
-        sys.exit(f"cannot read event file {event}, {err}")
-
-    pr = ev.get("pull_request")
-    if not pr:
-        # merge queues, schedules and manual runs get everything
-        return None
-    base = pr["base"]["sha"]
-    try:
-        out = sp.run(["git", "diff", "--name-only", f"{base}...HEAD"],
-                     capture_output=True, text=True, check=True)
-    except sp.CalledProcessError as err :
-        sys.exit(f"git diff failed for {base}..HEAD, {err}")
-
-    return out.stdout.splitlines()
-
-
-def matrices( groups ):
-    want = set(groups)
-    out = {}
-    for tier, rows in TIERS.items():
-        keep = [e for e in rows if e[ "group" ]in want ]
-        out[tier] = [{k: v for k, v in e.items() if k != "group"} for e in keep]
+def tier_rows() -> dict[str, list[dict[str, str | int]]]:
+    """All rows, grouped by tier so the workflow gets one JSON per job."""
+    out: dict[str, list[dict[str, str | int]]] = {
+        name: [] for name in TIER_OUTPUT_NAMES.values()
+    }
+    for target in TARGETS:
+        out[TIER_OUTPUT_NAMES[target.tier]].append(to_matrix_row(target))
     return out
 
 
-def sanity () :
-    cases= [
-        ([ "src/unix/bsd/apple/x.rs" ],[ "apple"] ),
-        (["src/unix/bsd/freebsdlike/x.rs"], ["apple", "bsd"]),
-        (["src/unix/bsd/netbsdlike/x.rs"], ["bsd"]),
-        (["src/unix/bsd/mod.rs"], ["apple", "bsd"]),
-        ( [ "src/unix/linux_like/linux/gnu/x.rs"] ,[ "linux" ]),
-        ( ["src/unix/linux_like/linux/musl/x.rs"] , [ "linux" ]) ,
-        ( [ "src/windows/msvc/x.rs"],["windows_msvc" ] ) ,
-        (["src/windows/gnu/x.rs"], [ "windows_gnu" ]),
-        (["src/windows/mod.rs"], ["windows_gnu", "windows_msvc"]),
-        ([ "src/wasi/x.rs" ] , [ "wasm" ]),
-        (["src/unix/solarish/x.rs"], ["solarish"]),
-        (["Cargo.toml" ] , GROUPS) ,
-        ( [ "ci/run.sh" ], GROUPS ) ,
-        (["README.md"], []),
-        ( ["README.md" , "src/unix/bsd/apple/x.rs"] ,["apple"] ) ,
-    ]
-    for files, want in cases:
-
-        got =groups_for(files )
-        assert got== want, f"expected {want} got {got} for {files}"
-    m=matrices ( ["apple"] )
-    assert[e [ "target" ] for e in m[ "tier1" ] ]== ["aarch64-apple-darwin" ],m
-    assert m[ "tier2_vm" ] == [ ] ,m
-    full = matrices(GROUPS)
-    assert len( full["tier1" ])==9 and len( full["tier2"] )== 28 and len ( full ["tier2_vm" ] ) == 6 ,full
-    print ( "all good")
+def sanity() -> None:
+    """Fail loudly if the matrices drift from the full current set."""
+    counts = {name: len(rows) for name, rows in tier_rows().items()}
+    assert counts == {"tier1": 9, "tier2": 28, "tier2_vm": 6}, counts
+    for target in TARGETS:
+        assert target.vm == (target.tier == Tier.T3)
 
 
-def main():
-    p =argparse.ArgumentParser ()
-    p.add_argument("--files" ,nargs ="+" ,help ="git paths to classify")
-    p.add_argument ( "--sanity" , action ="store_true")
-    args= p.parse_args()
-    if args.sanity :
-
-
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--sanity", action="store_true", help="check the matrix is complete"
+    )
+    args = parser.parse_args()
+    if args.sanity:
         sanity()
-        return
-    files=args.files if args.files else changed ( )
-    groups = GROUPS if files is None else groups_for ( files )
-    for tier, rows in matrices(groups).items():
-        print(f"{tier}={json.dumps(rows)}")
+        sys.exit(0)
+    for name, rows in tier_rows().items():
+        print(f"{name}={json.dumps(rows)}")
 
 
-if __name__== "__main__":
-    main( )
+if __name__ == "__main__":
+    main()
