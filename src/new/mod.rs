@@ -197,12 +197,13 @@ cfg_if! {
         pub use linux::sctp::*;
         pub use linux::tls::*;
         pub use linux::types::*;
+
         #[cfg(target_env = "gnu")]
-        pub use net::route::*;
-        #[cfg(target_env = "gnu")]
-        pub use signal::*;
-        #[cfg(target_env = "gnu")]
-        pub use sys::statvfs::*;
+        pub use self::{
+            net::route::*,
+            signal::*,
+            sys::statvfs::*,
+        };
     } else if #[cfg(target_vendor = "apple")] {
         #[cfg(target_os = "macos")]
         pub use net::bpf::*;

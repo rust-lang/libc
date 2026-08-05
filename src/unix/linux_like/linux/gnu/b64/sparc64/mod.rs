@@ -28,14 +28,6 @@ s! {
         f_spare: Padding<[crate::__fsword_t; 5]>,
     }
 
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_errno: c_int,
-        pub si_code: c_int,
-        _pad: Padding<[c_int; 29]>,
-        _align: [usize; 0],
-    }
-
     pub struct flock {
         pub l_type: c_short,
         pub l_whence: c_short,
