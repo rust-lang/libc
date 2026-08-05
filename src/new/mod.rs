@@ -194,8 +194,12 @@ cfg_if! {
         pub use linux::sctp::*;
         pub use linux::tls::*;
         pub use linux::types::*;
+
         #[cfg(target_env = "gnu")]
-        pub use net::route::*;
+        pub use self::{
+            bits::types::siginfo_t::*,
+            net::route::*,
+        };
     } else if #[cfg(target_vendor = "apple")] {
         pub use net::bpf::*;
         pub use netinet::tcp::*;

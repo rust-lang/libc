@@ -11,4 +11,4 @@
     path = "../../sparc/bits/siginfo_arch.rs"
 )]
 #[cfg_attr(target_arch = "x86", path = "../../x86/bits/siginfo_arch.rs")]
-mod siginfo_t;
+pub(crate) mod siginfo_t;
