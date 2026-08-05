@@ -3582,10 +3582,10 @@ extern "C" {
     #[cfg_attr(musl_redir_time64, link_name = "__sigtimedwait_time64")]
     pub fn sigtimedwait(
         set: *const sigset_t,
-        info: *mut siginfo_t,
+        info: *mut crate::siginfo_t,
         timeout: *const crate::timespec,
     ) -> c_int;
-    pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
+    pub fn sigwaitinfo(set: *const sigset_t, info: *mut crate::siginfo_t) -> c_int;
     pub fn accept4(fd: c_int, addr: *mut crate::sockaddr, len: *mut socklen_t, flg: c_int)
         -> c_int;
     pub fn reboot(how_to: c_int) -> c_int;
