@@ -113,14 +113,6 @@ s! {
         pub ss_flags: c_int,
     }
 
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_code: c_int,
-        pub si_errno: c_int,
-        _pad: Padding<c_int>,
-        _pad2: Padding<[c_long; 14]>,
-    }
-
     pub struct ipc_perm {
         pub __key: crate::key_t,
         pub uid: crate::uid_t,
