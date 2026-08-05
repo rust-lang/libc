@@ -197,6 +197,8 @@ cfg_if! {
         pub use linux::sctp::*;
         pub use linux::tls::*;
         pub use linux::types::*;
+        #[cfg(target_env = "uclibc")]
+        pub use sysdeps::linux::common::bits::siginfo::*;
 
         #[cfg(target_env = "gnu")]
         pub use self::{

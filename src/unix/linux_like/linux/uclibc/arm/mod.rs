@@ -179,13 +179,6 @@ s! {
         pub c_ospeed: crate::speed_t,
     }
 
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_errno: c_int,
-        pub si_code: c_int,
-        pub _pad: [c_int; 29],
-    }
-
     pub struct stack_t {
         pub ss_sp: *mut c_void,
         pub ss_flags: c_int,
