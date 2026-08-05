@@ -57,83 +57,6 @@ cfg_if! {
     }
 }
 
-impl siginfo_t {
-    pub unsafe fn si_addr(&self) -> *mut c_void {
-        #[repr(C)]
-        struct siginfo_sigfault {
-            _si_signo: c_int,
-            _si_errno: c_int,
-            _si_code: c_int,
-            si_addr: *mut c_void,
-        }
-        (*(self as *const siginfo_t).cast::<siginfo_sigfault>()).si_addr
-    }
-
-    pub unsafe fn si_value(&self) -> crate::sigval {
-        #[repr(C)]
-        struct siginfo_si_value {
-            _si_signo: c_int,
-            _si_errno: c_int,
-            _si_code: c_int,
-            _si_timerid: c_int,
-            _si_overrun: c_int,
-            si_value: crate::sigval,
-        }
-        (*(self as *const siginfo_t).cast::<siginfo_si_value>()).si_value
-    }
-}
-
-s_no_extra_traits! {
-    // Internal, for casts to access union fields
-    struct sifields_sigchld {
-        si_pid: crate::pid_t,
-        si_uid: crate::uid_t,
-        si_status: c_int,
-        si_utime: c_long,
-        si_stime: c_long,
-    }
-
-    // Internal, for casts to access union fields
-    union sifields {
-        _align_pointer: *mut c_void,
-        sigchld: sifields_sigchld,
-    }
-
-    // Internal, for casts to access union fields. Note that some variants
-    // of sifields start with a pointer, which makes the alignment of
-    // sifields vary on 32-bit and 64-bit architectures.
-    struct siginfo_f {
-        _siginfo_base: [c_int; 3],
-        sifields: sifields,
-    }
-}
-
-impl siginfo_t {
-    unsafe fn sifields(&self) -> &sifields {
-        &(*(self as *const siginfo_t).cast::<siginfo_f>()).sifields
-    }
-
-    pub unsafe fn si_pid(&self) -> crate::pid_t {
-        self.sifields().sigchld.si_pid
-    }
-
-    pub unsafe fn si_uid(&self) -> crate::uid_t {
-        self.sifields().sigchld.si_uid
-    }
-
-    pub unsafe fn si_status(&self) -> c_int {
-        self.sifields().sigchld.si_status
-    }
-
-    pub unsafe fn si_utime(&self) -> c_long {
-        self.sifields().sigchld.si_utime
-    }
-
-    pub unsafe fn si_stime(&self) -> c_long {
-        self.sifields().sigchld.si_stime
-    }
-}
-
 s! {
     pub struct aiocb {
         pub aio_fildes: c_int,
@@ -170,21 +93,6 @@ s! {
         pub sa_mask: crate::sigset_t,
         pub sa_flags: c_int,
         pub sa_restorer: Option<extern "C" fn()>,
-    }
-
-    // `mips*` targets swap the `s_errno` and `s_code` fields otherwise this struct is
-    // target-agnostic (see https://www.openwall.com/lists/musl/2016/01/27/1/2)
-    //
-    // FIXME(union): C implementation uses unions
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
-        pub si_errno: c_int,
-        pub si_code: c_int,
-        #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
-        pub si_errno: c_int,
-        _pad: Padding<[c_int; 29]>,
-        _align: [usize; 0],
     }
 
     // musl's uint64_t is an unsigned long instead of an unsigned long long on

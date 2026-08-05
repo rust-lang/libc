@@ -262,6 +262,7 @@ cfg_if! {
 // Per-env headers we export
 cfg_if! {
     if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+        pub use signal::*;
         pub use sys::socket::*;
     }
 }
