@@ -3344,5 +3344,7 @@ cfg_if! {
     if #[cfg(target_arch = "powerpc64")] {
         mod powerpc64;
         pub use self::powerpc64::*;
+    } else {
+        core::compile_error!("unsupported target");
     }
 }
