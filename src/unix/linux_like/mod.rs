@@ -270,7 +270,7 @@ cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
         target_os = "android",
-        all(target_env = "musl", musl_v1_2_3)
+        all(target_env = "musl", musl_v1_2)
     ))] {
         s! {
             pub struct statx {
@@ -1650,7 +1650,7 @@ cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
         target_os = "android",
-        all(target_env = "musl", musl_v1_2_3),
+        all(target_env = "musl", musl_v1_2),
         target_os = "l4re"
     ))] {
         pub const AT_STATX_SYNC_TYPE: c_int = 0x6000;
@@ -2230,7 +2230,7 @@ cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
         target_os = "android",
-        all(target_env = "musl", musl_v1_2_3)
+        all(target_env = "musl", musl_v1_2)
     ))] {
         extern "C" {
             pub fn statx(

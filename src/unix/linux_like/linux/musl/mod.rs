@@ -466,7 +466,7 @@ s! {
         pub ut_host: [c_char; 256],
         pub ut_exit: __exit_status,
 
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_v1_2))]
         #[deprecated(
             since = "0.2.173",
             note = "The ABI of this field has changed from c_long to c_int with padding, \
@@ -474,14 +474,14 @@ s! {
         )]
         pub ut_session: c_long,
 
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_v1_2)]
         #[cfg(not(target_endian = "little"))]
         __ut_pad2: Padding<c_int>,
 
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_v1_2)]
         pub ut_session: c_int,
 
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_v1_2)]
         #[cfg(target_endian = "little")]
         __ut_pad2: Padding<c_int>,
 
@@ -599,7 +599,7 @@ pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 
 // Value was changed in 1.2.4
-pub const CPU_SETSIZE: c_int = if cfg!(musl_v1_2_3) { 1024 } else { 128 };
+pub const CPU_SETSIZE: c_int = if cfg!(musl_v1_2) { 1024 } else { 128 };
 
 pub const PTRACE_TRACEME: c_int = 0;
 pub const PTRACE_PEEKTEXT: c_int = 1;

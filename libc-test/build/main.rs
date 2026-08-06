@@ -4083,22 +4083,22 @@ fn test_linux(target: &str) {
         None => panic!("failed to detect kernel version for Linux target {target}"),
     };
 
-    let mut musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3");
-    if musl_v1_2_3 {
+    let mut musl_v1_2 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
+    if musl_v1_2 {
         assert!(musl);
     }
 
     // Some platforms only exist with recent musl. Keep in sync with libc's build.rs.
     if musl && (loongarch64 || hexagon || pauthtest/* || ohos */) {
-        musl_v1_2_3 = true;
+        musl_v1_2 = true;
     }
 
-    let old_musl = musl && !musl_v1_2_3;
+    let old_musl = musl && !musl_v1_2;
 
     let mut cfg = ctest_cfg();
 
-    if musl_v1_2_3 {
-        cfg.cfg("musl_v1_2_3", None);
+    if musl_v1_2 {
+        cfg.cfg("musl_v1_2", None);
         if b32 {
             cfg.cfg("musl32_time64", None);
             cfg.cfg("linux_time_bits64", None);
