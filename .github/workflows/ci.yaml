@@ -44,7 +44,7 @@ jobs:
         id: vars
         run: |
           set -eo pipefail
-          python3 ci/ci-util.py | tee "$GITHUB_OUTPUT"
+          python3 ci/ci-util.py generate-matrix | tee "$GITHUB_OUTPUT"
 
   style_check:
     name: Style check

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Emit the test matrices for the CI workflow as GitHub Actions output.
+"""Utilities for CI.
 
+Generate the test matrices for the CI workflow as GitHub Actions output.
 Each tier is printed on its own line as `test_<tier>_matrix=<json>` so the
 workflow can feed it straight into a `matrix: include` block. Merge queues,
 schedules and manual runs always get every target; there is no file
@@ -8,6 +9,7 @@ detection yet.
 """
 
 import json
+import sys
 from dataclasses import dataclass, field
 from enum import IntEnum, StrEnum
 
@@ -165,7 +167,20 @@ def emit_workflow_output() -> None:
 
 
 def main() -> None:
-    emit_workflow_output()
+    match sys.argv[1:]:
+        case ["generate-matrix"]:
+            emit_workflow_output()
+        case ["--help" | "-h"] | []:
+            print(
+                """usage: ci/ci-util.py <COMMAND>
+
+COMMAND:
+    generate-matrix
+        Print the test matrix for each CI job as `test_<job>_matrix=<json>`."""
+            )
+        case _:
+            print(f"error: unknown command {sys.argv[1:]}", file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == "__main__":
