@@ -7,6 +7,13 @@ extern_ty! {
 
 pub type simple_lock_data = c_int;
 
+extern_ty! {
+    /// This is meant to be the `file` type upstream under `sys/ldr.h`. We
+    /// currently expose the kernel definition but that is slated for removal.
+    /// This opaque type will then be renamed to `file`.
+    pub type _file;
+}
+
 s! {
     pub struct sigset_t {
         pub ss_set: [c_ulong; 4],
@@ -342,6 +349,13 @@ s_no_extra_traits! {
         pub fo_fstat: Option<extern "C" fn(file: *mut file, sstat: *mut crate::stat) -> c_int>,
     }
 
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `_file` instead. This type is only available when programming against the \
+                kernel, and is otherwise an opaque type."
+    )]
+    #[allow(deprecated)]
+    #[repr(align(256))]
     pub struct file {
         pub f_flag: c_long,
         pub f_count: c_int,
