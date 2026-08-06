@@ -4080,6 +4080,7 @@ fn test_linux(target: &str) {
     let mips64 = target.contains("mips64");
     let mips32 = mips && !mips64;
     let pauthtest = target.contains("pauthtest");
+    let b32 = arm || target.contains("hexagon") || mips32 || ppc32 || x86_32;
     let versions = &*VERSIONS;
     let kernel = match versions.linux {
         Some(v) => v,
@@ -4087,17 +4088,21 @@ fn test_linux(target: &str) {
         None => panic!("failed to detect kernel version for Linux target {target}"),
     };
 
-    // Force modern musl also for pauthtest.
-    let musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") || pauthtest;
+    let mut musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3");
     if musl_v1_2_3 {
         assert!(musl);
     }
+
+    // Some platforms only exist with recent musl. Keep in sync with libc's build.rs.
+    if musl && (loongarch64 || hexagon || pauthtest/* || ohos */) {
+        musl_v1_2_3 = true;
+    }
+
     let old_musl = musl && !musl_v1_2_3;
 
-    let b32 = arm || target.contains("hexagon") || mips32 || ppc32 || x86_32;
-
     let mut cfg = ctest_cfg();
-    if (musl_v1_2_3 || loongarch64 || hexagon) && musl {
+
+    if musl_v1_2_3 {
         cfg.cfg("musl_v1_2_3", None);
         if b32 {
             cfg.cfg("musl32_time64", None);
@@ -4107,6 +4112,7 @@ fn test_linux(target: &str) {
             cfg.cfg("musl_redir_time64", None);
         }
     }
+
     let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
     if uclibc && uclibc_use_time64 {
         cfg.cfg("linux_time_bits64", None);
