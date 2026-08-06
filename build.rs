@@ -151,6 +151,13 @@ fn main() {
     }
 
     let mut musl_v1_2_3 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3");
+    if let Ok(old_musl_v1_2_3) = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3") {
+        println!(
+            "cargo:warning=RUST_LIBC_UNSTABLE_MUSL_V1_2_3 will be removed; \
+            set `--cfg=libc_unstable_musl_v1_2_3` via RUSTFLAGS instead"
+        );
+        musl_v1_2_3 |= old_musl_v1_2_3 != "0";
+    }
 
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
