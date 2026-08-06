@@ -429,7 +429,7 @@ class CheckAllTargets:
                 new.attributes = base.attributes | {"time_bits": "64"}
                 new.target_dir = base.target_dir / "time64"
                 new.extra_rustflags = base.extra_rustflags + [
-                    "--cfg=libc_unstable_musl_v1_2_3"
+                    "--cfg=libc_unstable_musl_v1_2"
                 ]
                 new_checks.append(new)
 

@@ -36,9 +36,9 @@ s! {
     }
 
     pub struct ipc_perm {
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_v1_2)]
         pub __key: crate::key_t,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_v1_2))]
         #[deprecated(
             since = "0.2.173",
             note = "This field is incorrectly named and will be changed
@@ -51,9 +51,9 @@ s! {
         pub cgid: crate::gid_t,
         pub mode: crate::mode_t,
 
-        #[cfg(musl_v1_2_3)]
+        #[cfg(musl_v1_2)]
         pub __seq: c_int,
-        #[cfg(not(musl_v1_2_3))]
+        #[cfg(not(musl_v1_2))]
         #[deprecated(
             since = "0.2.173",
             note = "The type of this field has changed from c_ushort to c_int,

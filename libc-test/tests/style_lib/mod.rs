@@ -55,7 +55,7 @@ const ALLOWED_POSITIVE_S_CFGS: &[&str] = &[
     "gnu_file_offset_bits64",
     "gnu_time_bits64",
     "musl32_time64",
-    "musl_v1_2_3",
+    "musl_v1_2",
 ];
 
 pub type Error = Box<dyn std::error::Error>;

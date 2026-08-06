@@ -411,7 +411,7 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
 
     if "musl" in target_env:
         # Check with breaking changes from musl, including 64-bit time_t on 32-bit
-        run(cmd, rustflags=f"{rustflags} --cfg=libc_unstable_musl_v1_2_3")
+        run(cmd, rustflags=f"{rustflags} --cfg=libc_unstable_musl_v1_2")
 
     # Test again without default features, i.e. without `std`
     run([*cmd, "--no-default-features"], rustflags=rustflags)
