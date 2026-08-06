@@ -2,3 +2,4 @@ target
 *~
 # Used by libc-util
 .libc-backports
+ci/__pycache__/

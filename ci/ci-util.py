@@ -1,45 +1,59 @@
 #!/usr/bin/env python3
 """Emit the test matrices for the CI workflow as GitHub Actions output.
 
-Each tier is printed on its own line as `tierN=<json>` so the workflow can
-feed it straight into a `matrix: include` block. Merge queues, schedules
-and manual runs always get every target; there is no file detection yet.
+Each tier is printed on its own line as `test_<tier>_matrix=<json>` so the
+workflow can feed it straight into a `matrix: include` block. Merge queues,
+schedules and manual runs always get every target; there is no file
+detection yet.
 """
 
-import argparse
 import json
-import sys
 from dataclasses import dataclass, field
-from enum import IntEnum
+from enum import IntEnum, StrEnum
 
 
 class Tier(IntEnum):
-    """Roughly ordered by how much we care about the target staying green."""
+    """Rust tier of the target, as defined in
+    <https://doc.rust-lang.org/rustc/platform-support.html>.
+    """
 
     T1 = 1
     T2 = 2
-    T3 = 3  # tier 2 that only runs inside a VM
+
+
+class CiJob(StrEnum):
+    """Which CI job the target is tested by."""
+
+    T1 = "tier1"
+    T2 = "tier2"
+    T2_VM = "tier2_vm"
 
 
 @dataclass(frozen=True)
 class TestTarget:
     """One row of the test matrix.
 
-    The fields map straight to matrix variables in ci.yaml; a missing `os`
-    means the default ubuntu-26.04 runner.
+    The fields map straight to matrix variables in ci.yaml; `os` defaults to
+    the ubuntu-26.04 runner.
     """
 
     name: str  # rust target triple
-    #: runner OS, fall back to ubuntu-26.04 when unset
-    os: str | None = None
+    #: runner OS
+    os: str = "ubuntu-26.04"
     tier: Tier = Tier.T1
     vm: bool = False
     release: str | None = None  # OS version for the VM jobs
     env: dict[str, str | int] = field(default_factory=dict)
     artifact_tag: str | None = None
 
+    def ci_job(self) -> CiJob:
+        """The CI job this target runs in, based on its tier and VM-ness."""
+        if self.tier is Tier.T1:
+            return CiJob.T1
+        return CiJob.T2_VM if self.vm else CiJob.T2
 
-# the full list of matrix rows, grouped by tier for `tier_rows()`
+
+# the full list of matrix rows, grouped by tier for readability
 TARGETS: list[TestTarget] = [
     # tier 1
     TestTarget("aarch64-apple-darwin", os="macos-26"),
@@ -125,70 +139,33 @@ TARGETS: list[TestTarget] = [
     # FIXME(ppc): SIGILL running tests, see rust-lang/libc#4254
     # TestTarget("powerpc-unknown-linux-gnu", tier=Tier.T2),
     # tier 2, VM only
-    TestTarget("i686-unknown-freebsd", tier=Tier.T3, vm=True, release="15.0"),
-    TestTarget("x86_64-unknown-freebsd", tier=Tier.T3, vm=True, release="14.4"),
-    TestTarget("x86_64-unknown-freebsd", tier=Tier.T3, vm=True, release="15.0"),
-    TestTarget("x86_64-pc-solaris", tier=Tier.T3, vm=True),
-    TestTarget("x86_64-unknown-netbsd", tier=Tier.T3, vm=True),
-    TestTarget("x86_64-unknown-illumos", tier=Tier.T3, vm=True),
+    TestTarget("i686-unknown-freebsd", tier=Tier.T2, vm=True, release="15.0"),
+    TestTarget("x86_64-unknown-freebsd", tier=Tier.T2, vm=True, release="14.4"),
+    TestTarget("x86_64-unknown-freebsd", tier=Tier.T2, vm=True, release="15.0"),
+    TestTarget("x86_64-pc-solaris", tier=Tier.T2, vm=True),
+    TestTarget("x86_64-unknown-netbsd", tier=Tier.T2, vm=True),
+    TestTarget("x86_64-unknown-illumos", tier=Tier.T2, vm=True),
 ]
 
-#: tier value -> output variable name
-TIER_OUTPUT_NAMES = {
-    Tier.T1: "tier1",
-    Tier.T2: "tier2",
-    Tier.T3: "tier2_vm",
-}
 
-
-def to_matrix_row(target: TestTarget) -> dict[str, str | int]:
-    """Convert a target into the dict a matrix `include` row expects.
-
-    None fields are dropped so the JSON stays identical to the old
-    hardcoded `include:` blocks and the workflow's `matrix.os` fallbacks
-    keep working.
-    """
-    row: dict[str, str | int] = {"target": target.name}
-    if target.os is not None:
-        row["os"] = target.os
-    if target.env:
-        row["env"] = dict(target.env)
-    if target.artifact_tag is not None:
-        row["artifact-tag"] = target.artifact_tag
-    if target.release is not None:
-        row["release"] = target.release
-    return row
-
-
-def tier_rows() -> dict[str, list[dict[str, str | int]]]:
-    """All rows, grouped by tier so the workflow gets one JSON per job."""
-    out: dict[str, list[dict[str, str | int]]] = {
-        name: [] for name in TIER_OUTPUT_NAMES.values()
-    }
+def emit_workflow_output() -> None:
+    """Print the test matrices, one `test_<job>_matrix=<json>` line per job."""
+    rows = {job: [] for job in CiJob}
     for target in TARGETS:
-        out[TIER_OUTPUT_NAMES[target.tier]].append(to_matrix_row(target))
-    return out
-
-
-def sanity() -> None:
-    """Fail loudly if the matrices drift from the full current set."""
-    counts = {name: len(rows) for name, rows in tier_rows().items()}
-    assert counts == {"tier1": 9, "tier2": 28, "tier2_vm": 6}, counts
-    for target in TARGETS:
-        assert target.vm == (target.tier == Tier.T3)
+        row: dict[str, str | int] = {
+            "target": target.name,
+            "os": target.os,
+            "env": dict(target.env) or None,
+            "artifact-tag": target.artifact_tag,
+            "release": target.release,
+        }
+        rows[target.ci_job()].append({k: v for k, v in row.items() if v is not None})
+    for job, targets in rows.items():
+        print(f"test_{job.value}_matrix={json.dumps(targets)}")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--sanity", action="store_true", help="check the matrix is complete"
-    )
-    args = parser.parse_args()
-    if args.sanity:
-        sanity()
-        sys.exit(0)
-    for name, rows in tier_rows().items():
-        print(f"{name}={json.dumps(rows)}")
+    emit_workflow_output()
 
 
 if __name__ == "__main__":

@@ -27,6 +27,25 @@ defaults:
     shell: bash
 
 jobs:
+  # generates the full test matrix for each tier, same for every run
+  calculate_vars:
+    name: Calculate CI variables
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    outputs:
+      test_tier1_matrix: ${{ steps.vars.outputs.test_tier1_matrix }}
+      test_tier2_matrix: ${{ steps.vars.outputs.test_tier2_matrix }}
+      test_tier2_vm_matrix: ${{ steps.vars.outputs.test_tier2_vm_matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Compute test matrices
+        id: vars
+        run: |
+          set -eo pipefail
+          python3 ci/ci-util.py | tee "$GITHUB_OUTPUT"
+
   style_check:
     name: Style check
     runs-on: ubuntu-26.04
@@ -127,31 +146,12 @@ jobs:
       - name: Target size after job completion
         run: du -sh target | sort -k 2
 
-  # generates the full test matrix for each tier, same for every run
-  calculate_vars:
-    name: Calculate CI variables
-    runs-on: ubuntu-26.04
-    timeout-minutes: 5
-    outputs:
-      tier1: ${{ steps.vars.outputs.tier1 }}
-      tier2: ${{ steps.vars.outputs.tier2 }}
-      tier2_vm: ${{ steps.vars.outputs.tier2_vm }}
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Compute test matrices
-        id: vars
-        run: |
-          set -eo pipefail
-          python3 ci/detect-changes.py | tee "$GITHUB_OUTPUT"
-
   test_tier1:
     name: Test tier1
     needs: calculate_vars
     strategy:
       matrix:
-        include: ${{ fromJSON(needs.calculate_vars.outputs.tier1) }}
+        include: ${{ fromJSON(needs.calculate_vars.outputs.test_tier1_matrix) }}
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
@@ -193,12 +193,12 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [calculate_vars, style_check]
+    needs: [test_tier1, calculate_vars, style_check]
     strategy:
       fail-fast: true
       max-parallel: 16
       matrix:
-        include: ${{ fromJSON(needs.calculate_vars.outputs.tier2) }}
+        include: ${{ fromJSON(needs.calculate_vars.outputs.test_tier2_matrix) }}
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
@@ -240,12 +240,12 @@ jobs:
 
   test_tier2_vm:
     name: Test tier2 VM
-    needs: [calculate_vars, style_check]
+    needs: [test_tier1, calculate_vars, style_check]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        include: ${{ fromJSON(needs.calculate_vars.outputs.tier2_vm) }}
+        include: ${{ fromJSON(needs.calculate_vars.outputs.test_tier2_vm_matrix) }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
