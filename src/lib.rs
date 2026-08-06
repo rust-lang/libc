@@ -152,6 +152,9 @@
 // Not all macros and all patterns are used on all targets.
 #![allow(unused_macros)]
 #![allow(unused_macro_rules)]
+// FIXME(rust-lang/rust#132699): get rid of this once we stop using the private
+// field.
+#![allow(clippy::manual_non_exhaustive)]
 // All traits should be `Copy` and `Debug`.
 #![warn(missing_copy_implementations)]
 #![warn(missing_debug_implementations)]
