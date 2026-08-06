@@ -5,6 +5,8 @@ extern_ty! {
     pub type lock_data_instrumented;
 }
 
+pub type simple_lock_data = c_int;
+
 s! {
     pub struct sigset_t {
         pub ss_set: [c_ulong; 4],
@@ -289,6 +291,15 @@ impl siginfo_t {
 }
 
 s_no_extra_traits! {
+    pub union _simple_lock {
+        _slock: simple_lock_data,
+        _slockp: *mut lock_data_instrumented,
+    }
+
+    #[deprecated(
+        since = "0.2.187",
+        note = "Use `_simple_lock` instead. This type doesn't exist upstream."
+    )]
     pub union _kernel_simple_lock {
         pub _slock: c_long,
         pub _slockp: *mut lock_data_instrumented,
@@ -331,8 +342,8 @@ s_no_extra_traits! {
         pub f_dir_off: crate::off_t,
         // Should be pointer to 'cred'
         pub f_cred: *mut c_void,
-        pub f_lock: _kernel_simple_lock,
-        pub f_offset_lock: _kernel_simple_lock,
+        pub f_lock: _simple_lock,
+        pub f_offset_lock: _simple_lock,
         pub f_vinfo: crate::caddr_t,
         pub f_ops: *mut fileops_t,
         pub f_parentp: crate::caddr_t,
