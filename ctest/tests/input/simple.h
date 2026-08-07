@@ -33,4 +33,5 @@ union Word
 #define C_B "bac"
 
 extern void *calloc(size_t num, size_t size);
+extern int printf(const char* format, ...);
 extern Byte byte;

@@ -254,6 +254,11 @@ pub(crate) fn func_ptr(args: Vec<CTy>, ret: CTy) -> CTy {
     }
 }
 
+/// Create a variadic function argument.
+pub(crate) fn variadic() -> CTy {
+    named("...", Constness::Mut)
+}
+
 /// Checked with <https://cdecl.org/>.
 #[cfg(test)]
 mod tests {

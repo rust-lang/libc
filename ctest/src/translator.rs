@@ -71,10 +71,6 @@ pub(crate) enum TranslationErrorKind {
     #[error("references to non-primitive types are not allowed")]
     NonPrimitiveReference,
 
-    /// Variadic functions or parameters were found, which cannot be handled.
-    #[error("variadics cannot be translated")]
-    HasVariadics,
-
     /// Lifetimes were found in the type or function signature, which are not supported.
     #[error("lifetimes cannot be translated")]
     HasLifetimes,
@@ -194,13 +190,6 @@ impl<'a> Translator<'a> {
                 function.span(),
             ));
         }
-        if function.variadic.is_some() {
-            return Err(TranslationError::new(
-                TranslationErrorKind::HasVariadics,
-                &function.to_token_stream().to_string(),
-                function.span(),
-            ));
-        }
 
         let mut parameters = function
             .inputs
@@ -213,7 +202,9 @@ impl<'a> Translator<'a> {
             syn::ReturnType::Type(_, ty) => self.translate_type(ty)?,
         };
 
-        if parameters.is_empty() {
+        if function.variadic.is_some() {
+            parameters.push(cdecl::variadic());
+        } else if parameters.is_empty() {
             parameters.push(cdecl::named("void", Constness::Mut));
         }
 

@@ -108,6 +108,10 @@ fn test_translation_type_bare_fn() {
         "extern \"C\" fn(c_int) -> *const c_void",
         "const void *(*foo)(int)",
     );
+    assert_r2cdecl(
+        "unsafe extern \"C\" fn(*const c_char, i32, ...) -> c_int",
+        "int (*foo)(const char *, int32_t, ...)",
+    );
     // FIXME(ctest): Reimplement support for ABI in a more robust way.
     // assert_r2cdecl(
     //     "Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>",
