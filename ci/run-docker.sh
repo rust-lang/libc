@@ -41,7 +41,7 @@ run() {
     # rather than needing two separate jobs.
     if [[ "$run_target" = *"musl"* ]]; then
         if [ -n "${TEST_MUSL_V1_2_3:-}" ]; then
-            export RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_musl_v1_2_3"
+            export RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_musl_v1_2"
             build_args+=("--build-arg=MUSL_VERSION=new")
         else
             build_args+=("--build-arg=MUSL_VERSION=old")
