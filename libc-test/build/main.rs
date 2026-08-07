@@ -4456,7 +4456,7 @@ fn test_linux(target: &str) {
 
         // FIXME(rust-lang/rust#43894): pass by value for structs that are not an even 32/64 bits
         // on big-endian systems corrupts the value for unknown reasons.
-        if (sparc64 || ppc || ppc64 || s390x)
+        if (sparc64 || ppc || s390x)
             && (ty == "sockaddr_pkt"
                 || ty == "tpacket_auxdata"
                 || ty == "tpacket_hdr_variant1"
@@ -4500,7 +4500,7 @@ fn test_linux(target: &str) {
 
             // FIXME(ppc): tests fail due to a field type mismatch (`long long unsigned` vs
             // `long unsigned`).
-            "clone_args" if ppc64 => true,
+            "clone_args" if ppc64 && gnu => true,
 
             // Linux >= 6.13 (pidfd_info.exit_code: Linux >= 6.15)
             // Might differ between kernel versions
@@ -5428,7 +5428,7 @@ fn test_linux(target: &str) {
         "bcm_msg_head" => true,
 
         // FIXME(linux): the call ABI of max_align_t is incorrect on these platforms:
-        "max_align_t" if i686 || ppc64 => true,
+        "max_align_t" if i686 => true,
 
         _ => false,
     });
