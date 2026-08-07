@@ -284,6 +284,7 @@ s! {
         pub __wc: crate::wchar_t,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct fpos64_t {
         pub __pos: crate::off64_t,
         pub __mbstate: __mbstate_t,

@@ -37,10 +37,15 @@ pub type shmatt_t = c_ulong;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
 pub type fsblkcnt_t = c_ulonglong;
-pub type fsblkcnt64_t = c_ulonglong;
 pub type fsfilcnt_t = c_ulonglong;
-pub type fsfilcnt64_t = c_ulonglong;
 pub type rlim_t = c_ulonglong;
+
+// FIXME(1.0,deprecate): lfs binding to be removed
+pub type fsblkcnt64_t = c_ulonglong;
+// FIXME(1.0,deprecate): lfs binding to be removed
+pub type fsfilcnt64_t = c_ulonglong;
+// FIXME(1.0,deprecate): lfs binding to be removed
+pub type stat64 = stat;
 
 cfg_if! {
     if #[cfg(doc)] {
@@ -191,6 +196,7 @@ s! {
         __f_reserved: Padding<[c_int; 6]>,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct statvfs64 {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
@@ -232,6 +238,7 @@ s! {
         pub l_pid: crate::pid_t,
     }
 
+    // FIXME(1.0,deprecate): lfs binding to be removed
     pub struct flock64 {
         pub l_type: c_short,
         pub l_whence: c_short,
@@ -398,6 +405,7 @@ s! {
     }
 
     // MIPS/s390x implementation is special (see arch folders)
+    // FIXME(1.0,deprecate): lfs binding to be removed
     #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
     pub struct statfs64 {
         pub f_type: c_ulong,
@@ -887,6 +895,7 @@ extern "C" {
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support
+// FIXME(1.0,deprecate): lfs binding to be removed
 mod lfs64;
 pub use self::lfs64::*;
 
