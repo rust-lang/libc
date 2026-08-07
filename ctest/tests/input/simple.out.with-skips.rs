@@ -228,6 +228,15 @@ mod generated_tests {
 
 /* Check if the Rust and C side function pointers point to the same underlying function. */
 
+    pub fn ctest_foreign_fn_printf() {
+        extern "C" {
+            fn ctest_foreign_fn__printf() -> unsafe extern "C" fn();
+        }
+        let actual = unsafe { ctest_foreign_fn__printf() } as u64;
+        let expected = printf as *const () as u64;
+        check_same(actual, expected, "`printf` function pointer");
+    }
+
 /* Tests if the pointer to the static variable matches in both Rust and C. */
 }
 
@@ -253,4 +262,5 @@ fn run_all() {
     ctest_size_align_volatile_char();
     ctest_signededness_volatile_char();
     ctest_roundtrip_volatile_char();
+    ctest_foreign_fn_printf();
 }

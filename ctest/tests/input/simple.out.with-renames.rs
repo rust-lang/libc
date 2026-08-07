@@ -1089,6 +1089,15 @@ mod generated_tests {
         check_same(actual, expected, "`calloc` function pointer");
     }
 
+    pub fn ctest_foreign_fn_printf() {
+        extern "C" {
+            fn ctest_foreign_fn__printf() -> unsafe extern "C" fn();
+        }
+        let actual = unsafe { ctest_foreign_fn__printf() } as u64;
+        let expected = printf as *const () as u64;
+        check_same(actual, expected, "`printf` function pointer");
+    }
+
 /* Tests if the pointer to the static variable matches in both Rust and C. */
 
     pub fn ctest_static_byte() {
@@ -1153,5 +1162,6 @@ fn run_all() {
     ctest_roundtrip_Person();
     ctest_roundtrip_Word();
     ctest_foreign_fn_calloc();
+    ctest_foreign_fn_printf();
     ctest_static_byte();
 }
