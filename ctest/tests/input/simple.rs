@@ -31,6 +31,7 @@ const B: *const c_char = c"bac".as_ptr();
 
 unsafe extern "C" {
     pub fn calloc(num: usize, size: usize) -> *mut c_void;
+    pub fn printf(format: *const c_char, ...) -> c_int;
 
     pub static byte: Byte;
 }
