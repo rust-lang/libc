@@ -194,8 +194,14 @@ cfg_if! {
         pub use linux::sctp::*;
         pub use linux::tls::*;
         pub use linux::types::*;
+        #[cfg(target_env = "uclibc")]
+        pub use sysdeps::linux::common::bits::siginfo::*;
+
         #[cfg(target_env = "gnu")]
-        pub use net::route::*;
+        pub use self::{
+            bits::types::siginfo_t::*,
+            net::route::*,
+        };
     } else if #[cfg(target_vendor = "apple")] {
         pub use net::bpf::*;
         pub use netinet::tcp::*;
@@ -242,6 +248,7 @@ cfg_if! {
 // Per-env headers we export
 cfg_if! {
     if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
+        pub use signal::*;
         pub use sys::socket::*;
     }
 }
