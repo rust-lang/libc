@@ -5395,30 +5395,6 @@ fn test_linux(target: &str) {
         // FIXME(union): This is actually a union.
         "fpreg_t" if s390x => true,
 
-        // The test doesn't work on some env:
-        "ipv6_mreq"
-        | "ip_mreq_source"
-        | "sockaddr_in6"
-        | "sockaddr_ll"
-        | "in_pktinfo"
-        | "arpreq"
-        | "arpreq_old"
-        | "sockaddr_un"
-        | "ff_constant_effect"
-        | "ff_ramp_effect"
-        | "ff_condition_effect"
-        | "Elf32_Ehdr"
-        | "Elf32_Chdr"
-        | "ucred"
-        | "in6_pktinfo"
-        | "sockaddr_nl"
-        | "termios"
-        | "nlmsgerr"
-            if sparc64 && gnu =>
-        {
-            true
-        }
-
         // The following types contain Flexible Array Member fields which have unspecified calling
         // convention. The roundtripping tests deliberately pass the structs by value to check "by
         // value" layout consistency, but this would be UB for the these types.
