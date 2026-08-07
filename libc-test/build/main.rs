@@ -2079,6 +2079,10 @@ fn test_android(target: &str) {
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
 
+    // This ensure we avoid the `ioctl` overload for request parameters that use
+    // an unsigned integer instead of a signed integer.
+    cfg.define("BIONIC_IOCTL_NO_SIGNEDNESS_OVERLOAD", None);
+
     headers!(
         cfg,
         "arpa/inet.h",
@@ -2508,10 +2512,6 @@ fn test_android(target: &str) {
 
             // Added in API level 24
             "if_nameindex" | "if_freenameindex" => true,
-
-            // FIXME(ctest): In our current method of testing, we cast the function to a `void *`,
-            // which is not possible for functions that have been overloaded.
-            "ioctl" => true,
 
             _ => false,
         }
