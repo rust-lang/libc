@@ -237,6 +237,13 @@ cfg_if! {
     }
 }
 
+s_no_extra_traits! {
+    #[repr(align(8))]
+    pub struct max_align_t {
+        priv_: [i64; 3],
+    }
+}
+
 pub const POSIX_FADV_DONTNEED: c_int = 6;
 pub const POSIX_FADV_NOREUSE: c_int = 7;
 

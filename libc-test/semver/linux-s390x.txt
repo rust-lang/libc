@@ -104,4 +104,5 @@ flock64
 fpreg_t
 fpregset_t
 greg_t
+max_align_t
 termios2
