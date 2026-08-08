@@ -65,7 +65,10 @@ fn do_ctest() {
         t if t.contains("apple") => test_apple(t),
         t if t.contains("dragonfly") => test_dragonflybsd(t),
         t if t.contains("emscripten") => test_emscripten(t),
-        t if t.contains("freebsd") => test_freebsd(t),
+        t if t.contains("freebsd") => {
+            test_freebsd(t, FreeBsdNetHeader::Ifmib.into());
+            test_freebsd(t, FreeBsdNetHeader::Netlink.into());
+        },
         t if t.contains("haiku") => test_haiku(t),
         t if t.contains("l4re") => test_linux(t),
         t if t.contains("linux") => test_linux(t),
@@ -2470,7 +2473,7 @@ fn test_android(target: &str) {
     test_linux_like_apis(target);
 }
 
-fn test_freebsd(target: &str) {
+fn test_freebsd(target: &str, net_header: Option<FreeBsdNetHeader>) {
     assert!(target.contains("freebsd"));
     let mut cfg = ctest_cfg();
 
@@ -6336,6 +6339,12 @@ fn test_qurt(target: &str) {
 /// Platform versions for checking expected support. These are extracted from headers so should be
 /// accurate for the target we are building, rather than the host (which `uname` would provide).
 static VERSIONS: LazyLock<Versions> = LazyLock::new(Versions::init_from_cc);
+
+#[derive(Clone, Copy, Debug)]
+struct FreeBsdNetHeader {
+    Ifmib,
+    Netlink,
+}
 
 #[derive(Clone, Copy, Debug, Default)]
 struct Versions {
