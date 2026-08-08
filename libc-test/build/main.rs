@@ -66,9 +66,10 @@ fn do_ctest() {
         t if t.contains("dragonfly") => test_dragonflybsd(t),
         t if t.contains("emscripten") => test_emscripten(t),
         t if t.contains("freebsd") => {
+            test_freebsd(t, None);
             test_freebsd(t, FreeBsdNetHeader::Ifmib.into());
             test_freebsd(t, FreeBsdNetHeader::Netlink.into());
-        },
+        }
         t if t.contains("haiku") => test_haiku(t),
         t if t.contains("l4re") => test_linux(t),
         t if t.contains("linux") => test_linux(t),
@@ -2520,6 +2521,21 @@ fn test_freebsd(target: &str, net_header: Option<FreeBsdNetHeader>) {
     let freebsd13 = matches!(freebsd_ver, Some(n) if n >= 13);
     let freebsd14 = matches!(freebsd_ver, Some(n) if n >= 14);
     let freebsd15 = matches!(freebsd_ver, Some(n) if n >= 15);
+
+    let None = net_header else {
+        let net_header = net_header.unwrap();
+        match net_header {
+            FreeBsdNetHeader::Ifmib => {
+                headers!(cfg, "net/if_mib.h",);
+                ctest::generate_test(&mut cfg, "../src/lib.rs", "if_mib_ctest_output.rs").unwrap();
+            }
+            FreeBsdNetHeader::Netlink => {
+                headers!(cfg, "netlink/netlink.h",);
+                ctest::generate_test(&mut cfg, "../src/lib.rs", "netlink_ctest_output.rs").unwrap();
+            }
+        }
+        return;
+    };
 
     headers!(
         cfg,
@@ -6341,7 +6357,7 @@ fn test_qurt(target: &str) {
 static VERSIONS: LazyLock<Versions> = LazyLock::new(Versions::init_from_cc);
 
 #[derive(Clone, Copy, Debug)]
-struct FreeBsdNetHeader {
+enum FreeBsdNetHeader {
     Ifmib,
     Netlink,
 }
