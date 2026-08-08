@@ -2522,20 +2522,102 @@ fn test_freebsd(target: &str, net_header: Option<FreeBsdNetHeader>) {
     let freebsd14 = matches!(freebsd_ver, Some(n) if n >= 14);
     let freebsd15 = matches!(freebsd_ver, Some(n) if n >= 15);
 
-    let None = net_header else {
-        let net_header = net_header.unwrap();
-        match net_header {
-            FreeBsdNetHeader::Ifmib => {
-                headers!(cfg, "net/if_mib.h",);
-                ctest::generate_test(&mut cfg, "../src/lib.rs", "if_mib_ctest_output.rs").unwrap();
-            }
-            FreeBsdNetHeader::Netlink => {
-                headers!(cfg, "netlink/netlink.h",);
-                ctest::generate_test(&mut cfg, "../src/lib.rs", "netlink_ctest_output.rs").unwrap();
-            }
+    if let Some(net_header) = net_header {
+        if let FreeBsdNetHeader::Netlink = net_header {
+            headers!(cfg, "netlink/netlink.h",);
+            cfg.skip_struct(|ty| !matches!(ty.ident(), "sockaddr_nl"));
+            cfg.skip_const(|c| {
+                !matches!(
+                    c.ident(),
+                    "CTRL_CMD_UNSPEC"
+                        | "CTRL_CMD_NEWFAMILY"
+                        | "CTRL_CMD_DELFAMILY"
+                        | "CTRL_CMD_GETFAMILY"
+                        | "CTRL_CMD_NEWOPS"
+                        | "CTRL_CMD_DELOPS"
+                        | "CTRL_CMD_GETOPS"
+                        | "CTRL_CMD_NEWMCAST_GRP"
+                        | "CTRL_CMD_DELMCAST_GRP"
+                        | "CTRL_CMD_GETMCAST_GRP"
+                        | "CTRL_CMD_GETPOLICY"
+                        | "CTRL_ATTR_UNSPEC"
+                        | "CTRL_ATTR_FAMILY_ID"
+                        | "CTRL_ATTR_FAMILY_NAME"
+                        | "CTRL_ATTR_VERSION"
+                        | "CTRL_ATTR_HDRSIZE"
+                        | "CTRL_ATTR_MAXATTR"
+                        | "CTRL_ATTR_OPS"
+                        | "CTRL_ATTR_MCAST_GROUPS"
+                        | "CTRL_ATTR_POLICY"
+                        | "CTRL_ATTR_OP_POLICY"
+                        | "CTRL_ATTR_OP"
+                        | "CTRL_ATTR_MCAST_GRP_UNSPEC"
+                        | "CTRL_ATTR_MCAST_GRP_NAME"
+                        | "CTRL_ATTR_MCAST_GRP_ID"
+                        | "SOL_NETLINK"
+                        | "NETLINK_ADD_MEMBERSHIP"
+                        | "NETLINK_DROP_MEMBERSHIP"
+                        | "NETLINK_PKTINFO"
+                        | "NETLINK_BROADCAST_ERROR"
+                        | "NETLINK_NO_ENOBUFS"
+                        | "NETLINK_RX_RING"
+                        | "NETLINK_TX_RING"
+                        | "NETLINK_LISTEN_ALL_NSID"
+                        | "NETLINK_LIST_MEMBERSHIPS"
+                        | "NETLINK_CAP_ACK"
+                        | "NETLINK_EXT_ACK"
+                        | "NETLINK_GET_STRICT_CHK"
+                        | "NLM_F_REQUEST"
+                        | "NLM_F_MULTI"
+                        | "NLM_F_ACK"
+                        | "NLM_F_ECHO"
+                        | "NLM_F_DUMP_INTR"
+                        | "NLM_F_DUMP_FILTERED"
+                        | "NLM_F_ROOT"
+                        | "NLM_F_MATCH"
+                        | "NLM_F_ATOMIC"
+                        | "NLM_F_DUMP"
+                        | "NLM_F_REPLACE"
+                        | "NLM_F_EXCL"
+                        | "NLM_F_CREATE"
+                        | "NLM_F_APPEND"
+                        | "NLM_F_NONREC"
+                        | "NLM_F_CAPPED"
+                        | "NLM_F_ACK_TLVS"
+                        | "NLMSG_NOOP"
+                        | "NLMSG_ERROR"
+                        | "NLMSG_DONE"
+                        | "NLMSG_OVERRUN"
+                        | "NETLINK_ROUTE"
+                        | "NETLINK_UNUSED"
+                        | "NETLINK_USERSOCK"
+                        | "NETLINK_FIREWALL"
+                        | "NETLINK_SOCK_DIAG"
+                        | "NETLINK_NFLOG"
+                        | "NETLINK_XFRM"
+                        | "NETLINK_SELINUX"
+                        | "NETLINK_ISCSI"
+                        | "NETLINK_AUDIT"
+                        | "NETLINK_FIB_LOOKUP"
+                        | "NETLINK_CONNECTOR"
+                        | "NETLINK_NETFILTER"
+                        | "NETLINK_IP6_FW"
+                        | "NETLINK_DNRTMSG"
+                        | "NETLINK_KOBJECT_UEVENT"
+                        | "NETLINK_GENERIC"
+                        | "NL_ITEM_ALIGN_SIZE"
+                        | "NLMSG_ALIGNTO"
+                )
+            });
+            cfg.skip_union(|_| true);
+            cfg.skip_alias(|_| true);
+            cfg.skip_static(|_| true);
+            cfg.skip_fn(|_| true);
+            cfg.skip_c_enum(|_| true);
+            ctest::generate_test(&mut cfg, "../src/lib.rs", "netlink_ctest_output.rs").unwrap();
         }
         return;
-    };
+    }
 
     headers!(
         cfg,
@@ -2709,6 +2791,88 @@ fn test_freebsd(target: &str, net_header: Option<FreeBsdNetHeader>) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
+            // These constants are part of `netlink/netlink.h`. They are tested in a
+            // separate ctest invocation because some conflict with those of
+            // `net/if_mib.h`.
+            "CTRL_CMD_UNSPEC"
+            | "CTRL_CMD_NEWFAMILY"
+            | "CTRL_CMD_DELFAMILY"
+            | "CTRL_CMD_GETFAMILY"
+            | "CTRL_CMD_NEWOPS"
+            | "CTRL_CMD_DELOPS"
+            | "CTRL_CMD_GETOPS"
+            | "CTRL_CMD_NEWMCAST_GRP"
+            | "CTRL_CMD_DELMCAST_GRP"
+            | "CTRL_CMD_GETMCAST_GRP"
+            | "CTRL_CMD_GETPOLICY"
+            | "CTRL_ATTR_UNSPEC"
+            | "CTRL_ATTR_FAMILY_ID"
+            | "CTRL_ATTR_FAMILY_NAME"
+            | "CTRL_ATTR_VERSION"
+            | "CTRL_ATTR_HDRSIZE"
+            | "CTRL_ATTR_MAXATTR"
+            | "CTRL_ATTR_OPS"
+            | "CTRL_ATTR_MCAST_GROUPS"
+            | "CTRL_ATTR_POLICY"
+            | "CTRL_ATTR_OP_POLICY"
+            | "CTRL_ATTR_OP"
+            | "CTRL_ATTR_MCAST_GRP_UNSPEC"
+            | "CTRL_ATTR_MCAST_GRP_NAME"
+            | "CTRL_ATTR_MCAST_GRP_ID"
+            | "SOL_NETLINK"
+            | "NETLINK_ADD_MEMBERSHIP"
+            | "NETLINK_DROP_MEMBERSHIP"
+            | "NETLINK_PKTINFO"
+            | "NETLINK_BROADCAST_ERROR"
+            | "NETLINK_NO_ENOBUFS"
+            | "NETLINK_RX_RING"
+            | "NETLINK_TX_RING"
+            | "NETLINK_LISTEN_ALL_NSID"
+            | "NETLINK_LIST_MEMBERSHIPS"
+            | "NETLINK_CAP_ACK"
+            | "NETLINK_EXT_ACK"
+            | "NETLINK_GET_STRICT_CHK"
+            | "NLM_F_REQUEST"
+            | "NLM_F_MULTI"
+            | "NLM_F_ACK"
+            | "NLM_F_ECHO"
+            | "NLM_F_DUMP_INTR"
+            | "NLM_F_DUMP_FILTERED"
+            | "NLM_F_ROOT"
+            | "NLM_F_MATCH"
+            | "NLM_F_ATOMIC"
+            | "NLM_F_DUMP"
+            | "NLM_F_REPLACE"
+            | "NLM_F_EXCL"
+            | "NLM_F_CREATE"
+            | "NLM_F_APPEND"
+            | "NLM_F_NONREC"
+            | "NLM_F_CAPPED"
+            | "NLM_F_ACK_TLVS"
+            | "NLMSG_NOOP"
+            | "NLMSG_ERROR"
+            | "NLMSG_DONE"
+            | "NLMSG_OVERRUN"
+            | "NETLINK_ROUTE"
+            | "NETLINK_UNUSED"
+            | "NETLINK_USERSOCK"
+            | "NETLINK_FIREWALL"
+            | "NETLINK_SOCK_DIAG"
+            | "NETLINK_NFLOG"
+            | "NETLINK_XFRM"
+            | "NETLINK_SELINUX"
+            | "NETLINK_ISCSI"
+            | "NETLINK_AUDIT"
+            | "NETLINK_FIB_LOOKUP"
+            | "NETLINK_CONNECTOR"
+            | "NETLINK_NETFILTER"
+            | "NETLINK_IP6_FW"
+            | "NETLINK_DNRTMSG"
+            | "NETLINK_KOBJECT_UEVENT"
+            | "NETLINK_GENERIC"
+            | "NL_ITEM_ALIGN_SIZE"
+            | "NLMSG_ALIGNTO" => true,
+
             // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
@@ -3005,6 +3169,10 @@ fn test_freebsd(target: &str, net_header: Option<FreeBsdNetHeader>) {
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
+            // This is tested in a separate ctest invocation because some symbols
+            // `netlink/netlink.h` conflict with some other symbols from `net/if_mib.h`.
+            "sockaddr_nl" => true,
+
             // `procstat` is a private struct
             "procstat" => true,
 
