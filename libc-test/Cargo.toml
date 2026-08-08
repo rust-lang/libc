@@ -33,6 +33,14 @@ name = "ctest"
 harness = false
 
 [[test]]
+name = "freebsd_if_mib"
+harness = false
+
+[[test]]
+name = "freebsd_netlink"
+harness = false
+
+[[test]]
 name = "linux_fcntl"
 harness = false
 
