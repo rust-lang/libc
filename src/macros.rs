@@ -163,7 +163,7 @@ macro_rules! s {
     )*);
 
     (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
-        compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
+        ::core::compile_error!("unions cannot derive extra traits, use s_no_extra_traits instead");
     );
 
     (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
@@ -253,19 +253,19 @@ macro_rules! s_no_extra_traits {
 /// Like [`s`], but also generates a `Default` impl for every struct in the block.
 macro_rules! s_with_default {
     ($(
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+        s_with_default!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
-        compile_error!(
+    (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
+        ::core::compile_error!(
             "unions cannot derive extra traits, use s_no_extra_traits_with_default instead"
         );
     );
 
-    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
         struct_with_default! {
             attrs: {
                 #[repr(C)]
@@ -280,7 +280,7 @@ macro_rules! s_with_default {
                 )]
                 #[allow(deprecated)]
             }
-            $(#[$attr])* $pub struct $i { $($field)* }
+            $(#$attr)* $pub struct $i { $($field)* }
         }
     );
 }
@@ -291,19 +291,19 @@ macro_rules! s_with_default {
 /// union type supplies its own default via `#[custom_default(...)]`.
 macro_rules! s_no_extra_traits_with_default {
     ($(
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_no_extra_traits_with_default!(it: $(#[$attr])* $pub $t $i { $($field)* });
+        s_no_extra_traits_with_default!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
-    (it: $(#[$attr:meta])* $pub:vis union $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
         #[repr(C)]
         #[::core::prelude::v1::derive(
             ::core::clone::Clone,
             ::core::marker::Copy,
         )]
-        $(#[$attr])*
+        $(#$attr)*
         $pub union $i { $($field)* }
 
         impl ::core::fmt::Debug for $i {
@@ -313,7 +313,7 @@ macro_rules! s_no_extra_traits_with_default {
         }
     );
 
-    (it: $(#[$attr:meta])* $pub:vis struct $i:ident { $($field:tt)* }) => (
+    (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
         struct_with_default! {
             attrs: {
                 #[repr(C)]
@@ -323,7 +323,7 @@ macro_rules! s_no_extra_traits_with_default {
                     ::core::fmt::Debug,
                 )]
             }
-            $(#[$attr])* $pub struct $i { $($field)* }
+            $(#$attr)* $pub struct $i { $($field)* }
         }
     );
 }
@@ -343,12 +343,12 @@ macro_rules! struct_with_default {
     // which is merged with the struct's own attributes.
     (
         attrs: { $($attrs:tt)* }
-        $(#[$attr:meta])*
+        $(#$attr:tt)*
         $vis:vis struct $name:ident { $($body:tt)* }
     ) => {
         struct_with_default! {
             @struct
-            attrs: { $($attrs)* $(#[$attr])* }
+            attrs: { $($attrs)* $(#$attr)* }
             vis: { $vis }
             name: { $name }
             processed_fields: { }
@@ -414,7 +414,7 @@ macro_rules! struct_with_default {
         }
     };
 
-    // done
+    // done with `Default`, start scanning for the `exhaustive` attribute
     (
         @struct
         attrs: { $($attrs:tt)* }
@@ -424,17 +424,111 @@ macro_rules! struct_with_default {
         processed_field_defaults: { $($processed_field_defaults:tt)* }
         remaining_fields: { }
     ) => {
-        $($attrs)*
-        $vis struct $name { $($processed_fields)* }
+        struct_with_default! {
+            @attr
+            attrs: { $($attrs)* }
+            processed_attrs: { }
+            found: { false }
+            vis: { $vis }
+            name: { $name }
+            processed_fields: { $($processed_fields)* }
+            processed_field_defaults: { $($processed_field_defaults)* }
+        }
+    };
+
+    // done with `Default` and `exhaustive`; we hand off handling the basecase
+    // of either adding the private field or not to the `fin` macro.
+    (
+        @attr
+        attrs: { }
+        processed_attrs: { $($attrs:tt)* }
+        found: { $found:tt }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        processed_fields: { $($processed_fields:tt)* }
+        processed_field_defaults: { $($processed_field_defaults:tt)* }
+    ) => {
+        fin! { $found decl: $($attrs)* $vis $name { $($processed_fields)* } }
 
         impl ::core::default::Default for $name {
-            // Field attributes (`#[cfg]`, doc comments) get forwarded to the initializer too.
-            // Docs are harmless there but trip the lint, so silence it.
+            // Field attributes (`#[cfg]`, doc comments) get forwarded to the
+            // initializer too. Docs are harmless there but trip the lint, so
+            // silence it.
             #[allow(unused_doc_comments)]
             fn default() -> Self {
-                Self { $($processed_field_defaults)* }
+                fin! { $found default: { $($processed_field_defaults)* } }
             }
         }
+    };
+
+    // found `exhaustive`; parameter `found` is not matched against `false` in
+    // case somebody annotates a `struct` with more than one `exhaustive`. If we
+    // didn't match a wildcard, that attribute would go down to the general case
+    // of the muncher and add it to the packed matcher of `processed_attrs`.
+    (
+        @attr
+        attrs: { #[exhaustive] $($attrs:tt)* }
+        processed_attrs: { $($prev_attrs:tt)* }
+        found: { $_:tt }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        processed_fields: { $($processed_fields:tt)* }
+        processed_field_defaults: { $($processed_field_defaults:tt)* }
+    ) => {
+        struct_with_default! {
+            @attr
+            attrs: { $($attrs)* }
+            processed_attrs: { $($prev_attrs)* }
+            found: { true }
+            vis: { $vis }
+            name: { $name }
+            processed_fields: { $($processed_fields)* }
+            processed_field_defaults: { $($processed_field_defaults)* }
+        }
+    };
+
+    // we've not found `exhaustive`; we keep munching to see whether it's still
+    // there
+    (
+        @attr
+        attrs: { #$other:tt $($attrs:tt)* }
+        processed_attrs: { $($prev_attrs:tt)* }
+        found: { $found:tt }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        processed_fields: { $($processed_fields:tt)* }
+        processed_field_defaults: { $($processed_field_defaults:tt)* }
+    ) => {
+        struct_with_default! {
+            @attr
+            attrs: { $($attrs)* }
+            processed_attrs: { $($prev_attrs)* #$other }
+            found: { $found }
+            vis: { $vis }
+            name: { $name }
+            processed_fields: { $($processed_fields)* }
+            processed_field_defaults: { $($processed_field_defaults)* }
+        }
+    };
+}
+
+/// Helper macro for `struct_with_default`. Prints the basecase item with either
+/// the private `non_exhaustive` field or not.
+macro_rules! fin {
+    (true decl: $(#[$attr:meta])* $vis:vis $name:ident { $($field:tt)* }) => {
+        $(#[$attr])*
+        $vis struct $name { $($field)* }
+    };
+    (true default: { $($field_default:tt)* }) => {
+        Self { $($field_default)* }
+    };
+
+    (false decl: $(#[$attr:meta])* $vis:vis $name:ident { $($field:tt)* }) => {
+        $(#[$attr])*
+        $vis struct $name { $($field)* __non_exhaustive: () }
+    };
+    (false default: { $($field_default:tt)* }) => {
+        Self { $($field_default)* __non_exhaustive: () }
     };
 }
 
@@ -620,7 +714,7 @@ macro_rules! f {
         fn $i:ident ($($arg:ident: $argty:ty),* $(,)?) -> $ret:ty
             $body:block
     ) => {
-        compile_error!("either `safe` or `unsafe` must be specified");
+        ::core::compile_error!("either `safe` or `unsafe` must be specified");
     };
 }
 
