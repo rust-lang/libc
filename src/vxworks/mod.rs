@@ -681,7 +681,7 @@ pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 
 pub const INT_MAX: c_int = 0x7fffffff;
-pub const INT_MIN: c_int = -INT_MAX - 1;
+pub const INT_MIN: c_int = -0x7fffffff - 1;
 
 // FIXME(vxworks): This is not defined in vxWorks, but we have to define it here
 // to make the building pass for getrandom and std

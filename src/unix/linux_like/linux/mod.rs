@@ -1775,7 +1775,7 @@ pub const NF_BR_POST_ROUTING: c_int = 4;
 pub const NF_BR_BROUTING: c_int = 5;
 pub const NF_BR_NUMHOOKS: c_int = 6;
 
-pub const NF_BR_PRI_FIRST: c_int = crate::INT_MIN;
+pub const NF_BR_PRI_FIRST: c_int = c_int::MIN;
 pub const NF_BR_PRI_NAT_DST_BRIDGED: c_int = -300;
 pub const NF_BR_PRI_FILTER_BRIDGED: c_int = -200;
 pub const NF_BR_PRI_BRNF: c_int = 0;
@@ -1785,7 +1785,7 @@ pub const NF_BR_PRI_NAT_SRC: c_int = 300;
 
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
-pub const NF_BR_PRI_LAST: c_int = crate::INT_MAX;
+pub const NF_BR_PRI_LAST: c_int = c_int::MAX;
 
 // linux/netfilter_ipv4.h
 pub const NF_IP_PRE_ROUTING: c_int = 0;
@@ -1795,7 +1795,7 @@ pub const NF_IP_LOCAL_OUT: c_int = 3;
 pub const NF_IP_POST_ROUTING: c_int = 4;
 pub const NF_IP_NUMHOOKS: c_int = 5;
 
-pub const NF_IP_PRI_FIRST: c_int = crate::INT_MIN;
+pub const NF_IP_PRI_FIRST: c_int = c_int::MIN;
 pub const NF_IP_PRI_RAW_BEFORE_DEFRAG: c_int = -450;
 pub const NF_IP_PRI_CONNTRACK_DEFRAG: c_int = -400;
 pub const NF_IP_PRI_RAW: c_int = -300;
@@ -1808,11 +1808,11 @@ pub const NF_IP_PRI_SECURITY: c_int = 50;
 pub const NF_IP_PRI_NAT_SRC: c_int = 100;
 pub const NF_IP_PRI_SELINUX_LAST: c_int = 225;
 pub const NF_IP_PRI_CONNTRACK_HELPER: c_int = 300;
-pub const NF_IP_PRI_CONNTRACK_CONFIRM: c_int = crate::INT_MAX;
+pub const NF_IP_PRI_CONNTRACK_CONFIRM: c_int = c_int::MAX;
 
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
-pub const NF_IP_PRI_LAST: c_int = crate::INT_MAX;
+pub const NF_IP_PRI_LAST: c_int = c_int::MAX;
 
 // linux/netfilter_ipv6.h
 pub const NF_IP6_PRE_ROUTING: c_int = 0;
@@ -1822,7 +1822,7 @@ pub const NF_IP6_LOCAL_OUT: c_int = 3;
 pub const NF_IP6_POST_ROUTING: c_int = 4;
 pub const NF_IP6_NUMHOOKS: c_int = 5;
 
-pub const NF_IP6_PRI_FIRST: c_int = crate::INT_MIN;
+pub const NF_IP6_PRI_FIRST: c_int = c_int::MIN;
 pub const NF_IP6_PRI_RAW_BEFORE_DEFRAG: c_int = -450;
 pub const NF_IP6_PRI_CONNTRACK_DEFRAG: c_int = -400;
 pub const NF_IP6_PRI_RAW: c_int = -300;
@@ -1838,7 +1838,7 @@ pub const NF_IP6_PRI_CONNTRACK_HELPER: c_int = 300;
 
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
-pub const NF_IP6_PRI_LAST: c_int = crate::INT_MAX;
+pub const NF_IP6_PRI_LAST: c_int = c_int::MAX;
 
 // linux/netfilter_ipv6/ip6_tables.h
 pub const IP6T_SO_ORIGINAL_DST: c_int = 80;
