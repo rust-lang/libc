@@ -7,8 +7,7 @@ rust-version = "1.88"
 
 [build-dependencies]
 ctest = { path = "../ctest" }
-# FIXME: Unpin once https://github.com/rust-lang/cc-rs/pull/1845 is released.
-cc = "=1.4.0"
+cc = "1.4.2"
 
 [dev-dependencies]
 ctest = { path = "../ctest" }
