@@ -34,7 +34,7 @@ mylib-sys = { path = "../mylib-sys" }
 libc = "0.2"
 
 [build-dependencies]
-ctest = "0.5.0-beta.0"
+ctest = "0.5"
 ```
 
 Next, add a build script to `systest/build.rs`:
@@ -52,7 +52,7 @@ fn main() {
 
     // Generate the tests, passing the path to the `*-sys` library as well as
     // the module to generate.
-    ctest::generate_test(&mut cfg, "../mylib-sys/lib.rs", "all.rs");
+    cfg.build_test("../mylib-sys/lib.rs", "all.rs");
 }
 ```
 

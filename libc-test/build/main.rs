@@ -378,7 +378,7 @@ fn test_apple(t: &Target) {
         _ => false,
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_openbsd(t: &Target) {
@@ -561,7 +561,7 @@ fn test_openbsd(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_cygwin(t: &Target) {
@@ -731,7 +731,7 @@ fn test_cygwin(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_windows(t: &Target) {
@@ -866,7 +866,7 @@ fn test_windows(t: &Target) {
 
     cfg.skip_fn(|_| false);
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_redox(t: &Target) {
@@ -917,7 +917,7 @@ fn test_redox(t: &Target) {
         "wchar.h",
     );
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_solarish(t: &Target) {
@@ -1210,7 +1210,7 @@ fn test_solarish(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_netbsd(t: &Target) {
@@ -1515,7 +1515,7 @@ fn test_netbsd(t: &Target) {
         });
     }
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_dragonflybsd(t: &Target) {
@@ -1838,7 +1838,7 @@ fn test_dragonflybsd(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn parse_dragonfly_version(version: &str) -> Option<u32> {
@@ -1983,7 +1983,7 @@ fn test_wasi(t: &Target) {
     // doesn't support sizeof.
     cfg.skip_struct_field(|s, field| s.ident() == "dirent" && field.ident() == "d_name");
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_android(t: &Target) {
@@ -2486,7 +2486,7 @@ fn test_android(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 
     test_linux_like_apis(t);
 }
@@ -3187,7 +3187,7 @@ fn test_freebsd(t: &Target) {
 
     cfg.alias_is_c_enum(|ty| ty == "dot3Vendors");
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_emscripten(t: &Target) {
@@ -3454,7 +3454,7 @@ fn test_emscripten(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_neutrino(t: &Target) {
@@ -3728,7 +3728,7 @@ fn test_neutrino(t: &Target) {
 
     cfg.skip_static(move |static_| static_.ident() == "__dso_handle");
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn which_vxworks() -> Option<(u32, u32)> {
@@ -3877,7 +3877,7 @@ fn test_vxworks(t: &Target) {
     // Not defined in vxworks. Just a crate specific union type.
     cfg.skip_union(move |u| u.ident() == "sa_u_t");
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn config_gnu_bits(t: &Target, cfg: &mut ctest::TestGenerator) {
@@ -5212,7 +5212,7 @@ fn test_linux(t: &Target) {
         }
     }
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 
     if !l4re {
         test_linux_like_apis(t);
@@ -5243,7 +5243,7 @@ fn test_linux_like_apis(t: &Target) {
             .skip_union(|_| true)
             .skip_fn(|function| function.ident() != "strerror_r");
 
-        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_strerror_r.rs").unwrap();
+        cfg.build_test("../src/lib.rs", "linux_strerror_r.rs");
     }
 
     let mut cfg = ctest_cfg();
@@ -5273,7 +5273,7 @@ fn test_linux_like_apis(t: &Target) {
             cfg.header("linux/fcntl.h");
         }
 
-        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_fcntl.rs").unwrap();
+        cfg.build_test("../src/lib.rs", "linux_fcntl.rs");
     }
 
     let mut cfg = ctest_cfg();
@@ -5298,7 +5298,7 @@ fn test_linux_like_apis(t: &Target) {
                 _ => None,
             });
 
-        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_termios.rs").unwrap();
+        cfg.build_test("../src/lib.rs", "linux_termios.rs");
     }
 
     let mut cfg = ctest_cfg();
@@ -5321,7 +5321,7 @@ fn test_linux_like_apis(t: &Target) {
         config_gnu_bits(t, &mut cfg);
         headers!(cfg, "linux/in6.h",);
 
-        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_ipv6.rs").unwrap();
+        cfg.build_test("../src/lib.rs", "linux_ipv6.rs");
     }
 
     let mut cfg = ctest_cfg();
@@ -5342,7 +5342,7 @@ fn test_linux_like_apis(t: &Target) {
 
         config_gnu_bits(t, &mut cfg);
 
-        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_elf.rs").unwrap();
+        cfg.build_test("../src/lib.rs", "linux_elf.rs");
     }
 
     if (linux && !wali) || android {
@@ -5358,7 +5358,7 @@ fn test_linux_like_apis(t: &Target) {
             .skip_alias(|_| true)
             .skip_const(move |constant| constant.ident() != "ARPHRD_CAN");
 
-        ctest::generate_test(&mut cfg, "../src/lib.rs", "linux_if_arp.rs").unwrap();
+        cfg.build_test("../src/lib.rs", "linux_if_arp.rs");
     }
 }
 
@@ -5685,7 +5685,7 @@ fn test_haiku(t: &Target) {
         }
     });
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 fn test_aix(t: &Target) {
@@ -5977,7 +5977,7 @@ fn test_aix(t: &Target) {
     let c_enums = ["uio_rw"];
     cfg.alias_is_c_enum(move |e| c_enums.contains(&e));
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 // QuRT ctest is disabled: sched_yield is static inline in the SDK (no
@@ -6213,7 +6213,7 @@ fn test_qurt(t: &Target) {
 
     cfg.skip_roundtrip(|_| true);
 
-    ctest::generate_test(&mut cfg, "../src/lib.rs", "ctest_output.rs").unwrap();
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 /// Platform versions for checking expected support. These are extracted from headers so should be
