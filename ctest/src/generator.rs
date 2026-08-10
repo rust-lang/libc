@@ -283,12 +283,15 @@ impl TestGenerator {
     /// let mut cfg = TestGenerator::new();
     /// cfg.edition(2024);
     /// ```
+    // FIXME(ctest1.0): take a string instead, testing editions are not integers
     pub fn edition(&mut self, e: u32) -> &mut Self {
         self.edition = Some(e);
         self
     }
 
     /// Configures the output directory of the generated Rust and C code.
+    ///
+    /// If not specified, `OUT_DIR` is used.
     ///
     /// # Examples
     ///
@@ -1100,13 +1103,24 @@ impl TestGenerator {
         self
     }
 
-    /// Generate the Rust and C testing files.
+    /// Generate the Rust and C testing files, returning the path to the
+    /// generated Rust file.
     ///
-    /// Returns the path to the generated file.
+    /// `crate_path` is the path to the crate root that should be scanned for
+    /// API, typically `lib.rs`, and `test_file` is the name of the Rust file
+    /// to generate. This file will be located in `OUT_DIR` or [`out_dir`],
+    /// and `.rs` will be appended if needed.
+    ///
+    /// Note that `test_file` must be unique as it is used to name output
+    /// files.
+    ///
+    /// [`out_dir`]: Self::out_dir
+    // FIXME(ctest1.0): return a `Vec<PathBuf>` with all generated files, or
+    // something like `struct { rust_entrypoint: PathBuf, c_files: Vec<PathBuf> }`.
     pub fn generate_files(
         &mut self,
         crate_path: impl AsRef<Path>,
-        output_file_path: impl AsRef<Path>,
+        test_file: impl AsRef<Path>,
     ) -> Result<PathBuf, GenerationError> {
         let expanded = expand_with_args(
             &crate_path,
@@ -1129,7 +1143,7 @@ impl TestGenerator {
             .clone()
             .or_else(|| env::var("OUT_DIR").ok().map(Into::into))
             .ok_or(GenerationError::EnvVarNotFound("OUT_DIR".to_string()))?;
-        let output_file_path = output_directory.join(output_file_path);
+        let output_file_path = output_directory.join(test_file);
 
         let ensure_trailing_newline = |s: &mut String| {
             s.truncate(s.trim_end().len());
@@ -1161,6 +1175,36 @@ impl TestGenerator {
             .map_err(GenerationError::OsError)?;
 
         Ok(output_file_path)
+    }
+
+    /// Build the C portion of the test library using [`cc`] and return the name
+    /// of the Rust file that contains the test's `fn main()`.
+    ///
+    /// `crate_path` is the path to the crate root that should be scanned for
+    /// API, typically `lib.rs`, and `test_file` is the name of the Rust file
+    /// to generate. This file will be located in `OUT_DIR` or [`out_dir`],
+    /// and `.rs` will be appended if needed.
+    ///
+    /// `cc` also emits link directives, so the built C files will get linked
+    /// automatically by any test that needs them. Note that `test_file` must
+    /// be unique; it is used to name output files and libraries.
+    ///
+    /// [`cc`]: https://docs.rs/cc/latest/cc/
+    /// [`out_dir`]: Self::out_dir
+    pub fn build_test(&mut self, crate_path: impl AsRef<Path>, test_file: &str) -> PathBuf {
+        match self.try_build_test(crate_path, test_file) {
+            Ok(v) => v,
+            Err(e) => panic!("building the test failed: {e}"),
+        }
+    }
+
+    /// The same as [`build_test`](Self::build_test) but allows for possible failure.
+    pub fn try_build_test(
+        &mut self,
+        crate_path: impl AsRef<Path>,
+        test_file: &str,
+    ) -> Result<PathBuf, GenerationError> {
+        crate::generate_test(self, crate_path, test_file)
     }
 
     /// Maps Rust identifiers or types to C counterparts, or defaults to the original name.

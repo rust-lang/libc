@@ -12,7 +12,6 @@ use ctest::{
     __run_test,
     Result,
     TestGenerator,
-    generate_test,
 };
 use pretty_assertions::assert_eq;
 
@@ -66,24 +65,24 @@ fn check_entrypoint(
     gen_: &mut TestGenerator,
     out_dir: tempfile::TempDir,
     crate_path: impl AsRef<Path>,
-    library_path: impl AsRef<Path>,
+    test_name: &str,
     include_path: impl AsRef<Path>,
 ) {
-    let output_file = gen_.generate_files(&crate_path, &library_path).unwrap();
+    let output_file = gen_.generate_files(&crate_path, test_name).unwrap();
 
     let rs = include_path
         .as_ref()
-        .join(library_path.as_ref().with_extension("rs"));
+        .join(Path::new(test_name).with_extension("rs"));
     let c = include_path
         .as_ref()
-        .join(library_path.as_ref().with_extension("c"));
+        .join(Path::new(test_name).with_extension("c"));
 
     bless_equal(output_file.with_extension("rs"), rs);
     bless_equal(output_file.with_extension("c"), c);
 
     if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
-        generate_test(gen_, &crate_path, &library_path).unwrap();
-        let test_binary = __compile_test(&out_dir, crate_path, library_path).unwrap();
+        gen_.build_test(&crate_path, test_name);
+        let test_binary = __compile_test(&out_dir, crate_path, test_name).unwrap();
         let result = __run_test(test_binary);
         if let Err(err) = &result {
             eprintln!("Test failed: {err:?}");
@@ -170,7 +169,9 @@ fn test_entrypoint_invalid_syntax() {
     let crate_path = "tests/input/invalid_syntax.rs";
     let mut gen_ = TestGenerator::new();
 
-    let fails = generate_test(&mut gen_, crate_path, "invalid_syntax.out").is_err();
+    let fails = gen_
+        .try_build_test(crate_path, "invalid_syntax.rs")
+        .is_err();
 
     assert!(fails)
 }
@@ -180,7 +181,7 @@ fn test_entrypoint_invalid_syntax() {
 fn test_raw_identifier_field() {
     let include_path = PathBuf::from("tests/input");
     let crate_path = include_path.join("raw_ident.rs");
-    let library_path = "raw_ident.out.a";
+    let library_path = "raw_ident.out.rs";
 
     let (mut gen_, out_dir) = default_generator(1, Some("raw_ident.h")).unwrap();
     gen_.rename_struct_ty(|ty| Some(ty.to_string()));
@@ -201,7 +202,7 @@ fn test_raw_identifier_field() {
     assert!(c_output.contains("ctest_field_ptr__RawIdent__type"));
 
     if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
-        generate_test(&mut gen_, &crate_path, library_path).unwrap();
+        gen_.build_test(&crate_path, library_path);
         let test_binary = __compile_test(&out_dir, crate_path, library_path).unwrap();
         let result = __run_test(test_binary);
         if let Err(err) = &result {
@@ -215,12 +216,12 @@ fn test_raw_identifier_field() {
 fn test_mismatched_union_field_ty() {
     let include_path = PathBuf::from("tests/input");
     let crate_path = include_path.join("mismatched_union_field_ty.rs");
-    let library_path = "mismatched_union_field_ty.out.a";
+    let library_path = "mismatched_union_field_ty.out.rs";
 
     let (mut gen_, _out_dir) = default_generator(1, Some("mismatched_union_field_ty.h")).unwrap();
 
     if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
-        let result = generate_test(&mut gen_, &crate_path, library_path);
+        let result = gen_.try_build_test(&crate_path, library_path);
         assert!(result.is_err());
         // As cc prints its warning/error messages to stderr, we cannot access them from cc::Error,
         // and so cannot assert that the error was actually due to -Wincompatible-pointer-types.
@@ -231,12 +232,12 @@ fn test_mismatched_union_field_ty() {
 fn test_mismatched_struct_field_ty() {
     let include_path = PathBuf::from("tests/input");
     let crate_path = include_path.join("mismatched_struct_field_ty.rs");
-    let library_path = "mismatched_struct_field_ty.out.a";
+    let library_path = "mismatched_struct_field_ty.out.rs";
 
     let (mut gen_, _out_dir) = default_generator(1, Some("mismatched_struct_field_ty.h")).unwrap();
 
     if env::var("TARGET_PLATFORM") == env::var("HOST_PLATFORM") {
-        let result = generate_test(&mut gen_, &crate_path, library_path);
+        let result = gen_.try_build_test(&crate_path, library_path);
         assert!(result.is_err());
         // FIXME(ctest): As cc prints its warning/error messages to stderr, we cannot access them from cc::Error,
         // and so cannot assert that the error was actually due to -Wincompatible-pointer-types.

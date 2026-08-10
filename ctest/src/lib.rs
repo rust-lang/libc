@@ -4,9 +4,57 @@
 
 //! # ctest - an FFI binding validator
 //!
-//! This library is intended to be used as a build dependency in a separate
-//! project from the main repo to generate tests which can be used to validate
-//! FFI bindings in Rust against the headers from which they come from.
+//! This library is intended to be used as a build dependency in a separate project from the main
+//! repo. It generate tests which can validate FFI bindings in Rust against the headers from which
+//! they are derived.
+//!
+//! Sample usage:
+//!
+//! ```no_run
+//! // build.rs
+//!
+//! let mut cfg = ctest::TestGenerator::new();
+//!
+//! // Set up C headers to include
+//! cfg.header("foo.h");
+//!
+//! // Set up C flags and defines
+//! cfg.flag("-Wno-deprecated-declarations");
+//! cfg.define("SOME_API_CONFIG", Some("v2"));
+//!
+//! // Set up Rust config
+//! cfg.cfg("some_api_config", Some("v2"));
+//!
+//! // Set up API to exclude from tests, if any
+//! cfg.skip_struct(|s| match s.ident() {
+//!     "foo" => true,
+//!     "bar" if cfg!(target_arch = "x86") => true,
+//!     _ => false
+//! });
+//!
+//! cfg.build_test("../my-crate/src/lib.rs", "ctest.rs");
+//! ```
+//!
+//! Assuming this was done in a build script, the test output can then be included for Cargo
+//! to run:
+//!
+//! ```toml
+//! # Cargo.toml
+//!
+//! [[test]]
+//! name = "ctest"
+//! harness = false
+//! ```
+//!
+//! ```skip
+//! // tests/ctest.rs
+//!
+//! use my_crate::*;
+//!
+//! include!(concat!(env!("OUT_DIR"), "/ctest.rs"));
+//! ```
+//!
+//! See [`TestGenerator`] for configuration options.
 
 #[cfg(test)]
 mod tests;
