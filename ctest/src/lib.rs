@@ -83,6 +83,7 @@ pub use ast::{
 };
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
+#[expect(deprecated)]
 pub use runner::{
     __compile_test,
     __run_test,
