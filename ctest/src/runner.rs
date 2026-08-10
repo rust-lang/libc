@@ -23,6 +23,7 @@ use crate::{
 
 /// Generate all tests for the given crate and output the Rust side to a file.
 #[doc(hidden)]
+#[deprecated(note = "use `cfg.build_test()` instead")]
 pub fn generate_test(
     generator: &mut TestGenerator,
     crate_path: impl AsRef<Path>,

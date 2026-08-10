@@ -1204,6 +1204,7 @@ impl TestGenerator {
         crate_path: impl AsRef<Path>,
         test_file: &str,
     ) -> Result<PathBuf, GenerationError> {
+        #[expect(deprecated)] // Eventually inline the definition.
         crate::generate_test(self, crate_path, test_file)
     }
 
