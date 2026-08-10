@@ -8,6 +8,9 @@ pub type off64_t = c_longlong;
 pub type sigset_t = c_ulong;
 pub type socklen_t = i32;
 pub type time64_t = i64;
+// `struct stat64` is a synonym for `struct stat`, provided by Bionic for source
+// compatibility with other systems.
+pub type stat64 = stat;
 
 s! {
     // FIXME(1.0): This should not implement `PartialEq`
@@ -24,47 +27,29 @@ s! {
         pub rlim_max: u64,
     }
 
+    // Note that the 32-bit `dev_t`, `ino_t`, `off_t` and `blkcnt_t` typedefs do
+    // not match the wider fields Bionic actually uses here, so they cannot be
+    // spelled with those aliases.
     pub struct stat {
-        pub st_dev: crate::dev_t,
-        pub st_ino: crate::ino_t,
-        pub st_mode: c_ushort,
-        pub st_nlink: crate::nlink_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        pub st_rdev: crate::dev_t,
-        pub st_size: crate::off_t,
-        pub st_blksize: crate::blksize_t,
-        pub st_blocks: crate::blkcnt_t,
-        pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_ulong,
-        pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_ulong,
-        pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_ulong,
-        __unused4: Padding<c_ulong>,
-        __unused5: Padding<c_ulong>,
-    }
-
-    pub struct stat64 {
-        pub st_dev: crate::dev_t,
+        pub st_dev: c_ulonglong,
         __pad0: Padding<[c_uchar; 4]>,
         __st_ino: crate::ino_t,
         pub st_mode: c_uint,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub st_rdev: crate::dev_t,
+        pub st_rdev: c_ulonglong,
         __pad3: Padding<[c_uchar; 4]>,
-        pub st_size: crate::off_t,
+        pub st_size: c_longlong,
         pub st_blksize: crate::blksize_t,
-        pub st_blocks: crate::blkcnt_t,
+        pub st_blocks: c_ulonglong,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
         pub st_mtime: crate::time_t,
         pub st_mtime_nsec: c_long,
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_long,
-        pub st_ino: crate::dev_t,
+        pub st_ino: c_ulonglong,
     }
 
     pub struct statfs64 {
