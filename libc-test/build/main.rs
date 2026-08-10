@@ -2225,6 +2225,9 @@ fn test_android(target: &str) {
 
     cfg.rename_type(move |ty| match ty {
         "Ioctl" => Some("int".to_string()),
+        // `stat64` is an alias of `struct stat`, so it needs the "struct" prefix:
+        // the bare name refers to the `stat64()` function in C.
+        "stat64" => Some("struct stat64".to_string()),
         _ => None,
     });
 
