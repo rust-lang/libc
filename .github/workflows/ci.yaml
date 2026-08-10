@@ -52,7 +52,7 @@ jobs:
         with:
           persist-credentials: false
       - run: rustup update stable --no-self-update
-      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
@@ -98,7 +98,7 @@ jobs:
       # FIXME(ci): These `du` statements are temporary for debugging cache
       - name: Target size before restoring cache
         run: du -sh target | sort -k 2 || true
-      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
       - name: Target size after restoring cache
@@ -158,7 +158,7 @@ jobs:
           persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           key: ${{ matrix.target }}
 
@@ -260,7 +260,7 @@ jobs:
           persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           key: ${{ matrix.target }}
 
@@ -382,7 +382,7 @@ jobs:
         echo "MSRV=$msrv" >> "$GITHUB_ENV"
     - name: Install Rust
       run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-    - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
     - run: cargo build -p ctest
 
   docs:
@@ -396,7 +396,7 @@ jobs:
     - name: Install Rust
       # FIXME(rust-lang/rust#160439): unpin once the issue is fixed
       run: rustup update nightly-2026-08-02 --no-self-update && rustup default nightly-2026-08-02
-    - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
     - run: cargo doc --workspace --no-deps
 
   zizmor:
