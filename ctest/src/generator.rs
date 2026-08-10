@@ -7,6 +7,7 @@ use std::path::{
     Path,
     PathBuf,
 };
+use std::rc::Rc;
 
 use askama::Template;
 use syn::visit::Visit;
@@ -41,20 +42,20 @@ const DEFAULT_EDITION: u32 = 2021;
 
 /// A function that takes a mappable input and returns its mapping as `Some`, otherwise
 /// use the default name if `None`.
-type MappedName = Box<dyn Fn(&MapInput) -> Option<String>>;
+type MappedName = Rc<dyn Fn(&MapInput) -> Option<String>>;
 /// A function that determines whether to skip an item or not.
-type Skip = Box<dyn Fn(&MapInput) -> bool>;
+type Skip = Rc<dyn Fn(&MapInput) -> bool>;
 /// A function that determines whether a variable or field is volatile.
-type VolatileItem = Box<dyn Fn(VolatileItemKind) -> bool>;
+type VolatileItem = Rc<dyn Fn(VolatileItemKind) -> bool>;
 /// A function that determines whether a function argument is an array.
-type ArrayArg = Box<dyn Fn(crate::Fn, Parameter) -> bool>;
+type ArrayArg = Rc<dyn Fn(crate::Fn, Parameter) -> bool>;
 /// A function that determines whether to skip a test, taking in the identifier name.
-type SkipTest = Box<dyn Fn(&str) -> bool>;
+type SkipTest = Rc<dyn Fn(&str) -> bool>;
 /// A function that determines whether a type alias is a c enum.
-type CEnum = Box<dyn Fn(&str) -> bool>;
+type CEnum = Rc<dyn Fn(&str) -> bool>;
 
 /// A builder used to generate a test suite.
-#[derive(Default)]
+#[derive(Clone, Default)]
 #[expect(missing_debug_implementations)]
 pub struct TestGenerator {
     /// A vector of tuples, the left side being the header itself, and the right
@@ -342,7 +343,7 @@ impl TestGenerator {
     /// cfg.alias_is_c_enum(|e| e == "pid_type");
     /// ```
     pub fn alias_is_c_enum(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
-        self.c_enums.push(Box::new(f));
+        self.c_enums.push(Rc::new(f));
         self
     }
 
@@ -362,7 +363,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(Struct, Field) -> bool + 'static,
     ) -> &mut Self {
-        self.volatile_items.push(Box::new(move |item| {
+        self.volatile_items.push(Rc::new(move |item| {
             if let VolatileItemKind::StructField(s, f_) = item {
                 f(s, f_)
             } else {
@@ -385,7 +386,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn volatile_static(&mut self, f: impl Fn(Static) -> bool + 'static) -> &mut Self {
-        self.volatile_items.push(Box::new(move |item| {
+        self.volatile_items.push(Rc::new(move |item| {
             if let VolatileItemKind::Static(s) = item {
                 f(s)
             } else {
@@ -411,7 +412,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(crate::Fn, Box<Parameter>) -> bool + 'static,
     ) -> &mut Self {
-        self.volatile_items.push(Box::new(move |item| {
+        self.volatile_items.push(Rc::new(move |item| {
             if let VolatileItemKind::FnArgument(func, param) = item {
                 f(func, param)
             } else {
@@ -437,7 +438,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(crate::Fn) -> bool + 'static,
     ) -> &mut Self {
-        self.volatile_items.push(Box::new(move |item| {
+        self.volatile_items.push(Rc::new(move |item| {
             if let VolatileItemKind::FnReturnType(func) = item {
                 f(func)
             } else {
@@ -465,7 +466,7 @@ impl TestGenerator {
     /// }});
     /// ```
     pub fn array_arg(&mut self, f: impl Fn(crate::Fn, Parameter) -> bool + 'static) -> &mut Self {
-        self.array_arg = Some(Box::new(f));
+        self.array_arg = Some(Rc::new(f));
         self
     }
 
@@ -482,7 +483,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_struct(&mut self, f: impl Fn(&Struct) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::Struct(struct_) = item {
                 f(struct_)
             } else {
@@ -505,7 +506,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_union(&mut self, f: impl Fn(&Union) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::Union(union_) = item {
                 f(union_)
             } else {
@@ -531,7 +532,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(&Struct, &Field) -> bool + 'static,
     ) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::StructField(struct_, field) = item {
                 f(struct_, field)
             } else {
@@ -554,7 +555,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_union_field(&mut self, f: impl Fn(&Union, &Field) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::UnionField(union_, field) = item {
                 f(union_, field)
             } else {
@@ -577,7 +578,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_alias(&mut self, f: impl Fn(&Type) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::Alias(alias) = item {
                 f(alias)
             } else {
@@ -600,7 +601,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_const(&mut self, f: impl Fn(&Const) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::Const(constant) = item {
                 f(constant)
             } else {
@@ -623,7 +624,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_static(&mut self, f: impl Fn(&Static) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::Static(static_) = item {
                 f(static_)
             } else {
@@ -646,7 +647,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_fn(&mut self, f: impl Fn(&crate::Fn) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::Fn(func) = item {
                 f(func)
             } else {
@@ -670,7 +671,7 @@ impl TestGenerator {
     /// cfg.skip_c_enum(|e| e == "pid_type");
     /// ```
     pub fn skip_c_enum(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::CEnumType(e) = item {
                 f(e)
             } else {
@@ -723,11 +724,11 @@ impl TestGenerator {
     /// ```
     pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.global_defines
-            .push((k.to_string(), v.map(std::string::ToString::to_string)));
+            .push((k.to_string(), v.map(ToString::to_string)));
         self
     }
 
-    /// Configures extra arguments to be passed to cargo during macro expansion.  
+    /// Configures extra arguments to be passed to cargo during macro expansion.
     /// This can be used, for example, to pass `-Zbuild-std` if required.
     pub fn expansion_cargo_args_mut(&mut self) -> &mut Vec<String> {
         &mut self.macro_expansion_cargo_args
@@ -768,7 +769,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(&Struct, &Field) -> bool + 'static,
     ) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::StructFieldType(struct_, field) = item {
                 f(struct_, field)
             } else {
@@ -803,7 +804,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(&Union, &Field) -> bool + 'static,
     ) -> &mut Self {
-        self.skips.push(Box::new(move |item| {
+        self.skips.push(Rc::new(move |item| {
             if let MapInput::UnionFieldType(union_, field) = item {
                 f(union_, field)
             } else {
@@ -826,7 +827,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn rename_constant(&mut self, f: impl Fn(&Const) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::Const(c) = item {
                 f(c)
             } else {
@@ -849,7 +850,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn rename_alias(&mut self, f: impl Fn(&Type) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::Alias(t) = item {
                 f(t)
             } else {
@@ -875,7 +876,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(&Struct, &Field) -> Option<String> + 'static,
     ) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::StructField(s, c) = item {
                 f(s, c)
             } else {
@@ -901,7 +902,7 @@ impl TestGenerator {
         &mut self,
         f: impl Fn(&Union, &Field) -> Option<String> + 'static,
     ) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::UnionField(u, c) = item {
                 f(u, c)
             } else {
@@ -922,7 +923,7 @@ impl TestGenerator {
     /// cfg.rename_fn(|f| Some(format!("{}_c", f.ident())));
     /// ```
     pub fn rename_fn(&mut self, f: impl Fn(&crate::Fn) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::Fn(func) = item {
                 f(func)
             } else {
@@ -943,7 +944,7 @@ impl TestGenerator {
     /// cfg.rename_static(|f| Some(format!("{}_c", f.ident())));
     /// ```
     pub fn rename_static(&mut self, f: impl Fn(&Static) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::Static(s) = item {
                 f(s)
             } else {
@@ -966,7 +967,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn rename_type(&mut self, f: impl Fn(&str) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::Type(ty) = item {
                 f(ty)
             } else {
@@ -993,7 +994,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn rename_struct_ty(&mut self, f: impl Fn(&str) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::StructType(ty) = item {
                 f(ty)
             } else {
@@ -1020,7 +1021,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn rename_union_ty(&mut self, f: impl Fn(&str) -> Option<String> + 'static) -> &mut Self {
-        self.mapped_names.push(Box::new(move |item| {
+        self.mapped_names.push(Rc::new(move |item| {
             if let MapInput::UnionType(ty) = item {
                 f(ty)
             } else {
@@ -1049,7 +1050,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_roundtrip(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
-        self.skip_roundtrip = Some(Box::new(f));
+        self.skip_roundtrip = Some(Rc::new(f));
         self
     }
 
@@ -1071,7 +1072,7 @@ impl TestGenerator {
     /// });
     /// ```
     pub fn skip_signededness(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
-        self.skip_signededness = Some(Box::new(f));
+        self.skip_signededness = Some(Rc::new(f));
         self
     }
 
@@ -1095,7 +1096,7 @@ impl TestGenerator {
     /// cfg.skip_fn_ptrcheck(|name| name == "T1p");
     /// ```
     pub fn skip_fn_ptrcheck(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
-        self.skip_fn_ptrcheck = Some(Box::new(f));
+        self.skip_fn_ptrcheck = Some(Rc::new(f));
         self
     }
 
