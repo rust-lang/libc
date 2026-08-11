@@ -325,7 +325,13 @@ s_no_extra_traits! {
             ) -> c_int,
         >,
         pub fo_select: Option<
-            extern "C" fn(file: *mut file, a: c_int, b: *mut c_ushort, c: extern "C" fn()) -> c_int,
+            extern "C" fn(
+                file: *mut file,
+                a: c_int,
+                b: c_ushort,
+                c: *mut c_ushort,
+                c: extern "C" fn(),
+            ) -> c_int,
         >,
         pub fo_close: Option<extern "C" fn(file: *mut file) -> c_int>,
         pub fo_fstat: Option<extern "C" fn(file: *mut file, sstat: *mut crate::stat) -> c_int>,
