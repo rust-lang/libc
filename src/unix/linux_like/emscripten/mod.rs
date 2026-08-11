@@ -973,10 +973,6 @@ pub const RLIM_NLIMITS: c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
-#[doc(hidden)]
-#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
-pub const SIGUNUSED: c_int = crate::SIGSYS;
-
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;

@@ -11,7 +11,6 @@ NFT_MSG_NEWOBJ
 SCM_TIMESTAMPNS
 SCM_WIFI_STATUS
 SIGSTKFLT
-SIGUNUSED
 SO_ATTACH_BPF
 SO_ATTACH_FILTER
 SO_BPF_EXTENSIONS
@@ -44,7 +43,6 @@ SYS_break
 SYS_chmod
 SYS_chown
 SYS_creat
-SYS_create_module
 SYS_dup2
 SYS_epoll_create
 SYS_epoll_wait
@@ -54,7 +52,6 @@ SYS_fstat
 SYS_fstatfs64
 SYS_ftime
 SYS_futimesat
-SYS_get_kernel_syms
 SYS_getdents
 SYS_getpgrp
 SYS_getpmsg
@@ -91,7 +88,6 @@ SYS_poll
 SYS_prof
 SYS_profil
 SYS_putpmsg
-SYS_query_module
 SYS_readdir
 SYS_readlink
 SYS_recv

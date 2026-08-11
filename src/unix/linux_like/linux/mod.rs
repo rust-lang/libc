@@ -1316,12 +1316,6 @@ pub const FALLOC_FL_ZERO_RANGE: c_int = 0x10;
 pub const FALLOC_FL_INSERT_RANGE: c_int = 0x20;
 pub const FALLOC_FL_UNSHARE_RANGE: c_int = 0x40;
 
-#[deprecated(
-    since = "0.2.55",
-    note = "ENOATTR is not available on Linux; use ENODATA instead"
-)]
-pub const ENOATTR: c_int = crate::ENODATA;
-
 pub const SO_ORIGINAL_DST: c_int = 80;
 
 pub const IP_RECVFRAGSIZE: c_int = 25;
@@ -2532,12 +2526,6 @@ pub const MAP_DROPPABLE: c_int = 0x8;
 // uapi/linux/vm_sockets.h
 pub const VMADDR_CID_ANY: c_uint = 0xFFFFFFFF;
 pub const VMADDR_CID_HYPERVISOR: c_uint = 0;
-#[deprecated(
-    since = "0.2.74",
-    note = "VMADDR_CID_RESERVED is removed since Linux v5.6 and \
-            replaced with VMADDR_CID_LOCAL"
-)]
-pub const VMADDR_CID_RESERVED: c_uint = 1;
 pub const VMADDR_CID_LOCAL: c_uint = 1;
 pub const VMADDR_CID_HOST: c_uint = 2;
 pub const VMADDR_PORT_ANY: c_uint = 0xFFFFFFFF;

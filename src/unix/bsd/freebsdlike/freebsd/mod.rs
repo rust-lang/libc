@@ -2212,12 +2212,6 @@ pub const NOTE_ABSTIME: u32 = 0x00000010;
 
 pub const MADV_PROTECT: c_int = 10;
 
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.72",
-    note = "CTL_UNSPEC is deprecated. Use CTL_SYSCTL instead"
-)]
-pub const CTL_UNSPEC: c_int = 0;
 pub const CTL_SYSCTL: c_int = 0;
 pub const CTL_KERN: c_int = 1;
 pub const CTL_VM: c_int = 2;
@@ -2685,13 +2679,6 @@ pub const IFF_POINTOPOINT: c_int = 0x10;
 pub const IFF_KNOWSEPOCH: c_int = 0x20;
 /// (d) resources allocated
 pub const IFF_RUNNING: c_int = 0x40;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.54",
-    note = "IFF_DRV_RUNNING is deprecated. Use the portable IFF_RUNNING instead"
-)]
-/// (d) resources allocate
-pub const IFF_DRV_RUNNING: c_int = 0x40;
 /// (n) no address resolution protocol
 pub const IFF_NOARP: c_int = 0x80;
 /// (n) receive all packets
@@ -2700,10 +2687,6 @@ pub const IFF_PROMISC: c_int = 0x100;
 pub const IFF_ALLMULTI: c_int = 0x200;
 /// (d) tx hardware queue is full
 pub const IFF_OACTIVE: c_int = 0x400;
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Use the portable `IFF_OACTIVE` instead")]
-/// (d) tx hardware queue is full
-pub const IFF_DRV_OACTIVE: c_int = 0x400;
 /// (i) can't hear own transmissions
 pub const IFF_SIMPLEX: c_int = 0x800;
 /// per link layer defined bit
@@ -2908,12 +2891,6 @@ pub const IPPROTO_BLT: c_int = 30;
 pub const IPPROTO_NSP: c_int = 31;
 /// Merit Internodal
 pub const IPPROTO_INP: c_int = 32;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.72",
-    note = "IPPROTO_SEP is deprecated. Use IPPROTO_DCCP instead"
-)]
-pub const IPPROTO_SEP: c_int = 33;
 /// Datagram Congestion Control Protocol
 pub const IPPROTO_DCCP: c_int = 33;
 /// Third Party Connect

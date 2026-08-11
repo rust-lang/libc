@@ -283,10 +283,6 @@ fn test_apple(target: &str) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
-            // FIXME(deprecated): These OSX constants are removed in Sierra.
-            // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
-            "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
-
             // FIXME(deprecated): Removed since 12.0.1 / xnu-8019.41.5. See `ttycom.h` at
             // https://github.com/apple-oss-distributions/xnu/commit/e6231be02a03711ca404e5121a151b24afbff733
             "TIOCREMOTE" => true,
@@ -1376,7 +1372,6 @@ fn test_netbsd(target: &str) {
     cfg.skip_const(move |constant| {
         match constant.ident() {
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            "SIGUNUSED" => true,                       // removed in glibc 2.26
 
             // deprecated, obsolete upstream
             "PT_LWPINFO" | "PL_EVENT_NONE" | "PL_EVENT_SIGNAL" | "PL_EVENT_SUSPENDED" => true,
@@ -2231,14 +2226,8 @@ fn test_android(target: &str) {
             // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests:
             "ARPHRD_CAN" => true,
 
-            // FIXME(deprecated): deprecated: not available in any header
-            // See: https://github.com/rust-lang/libc/issues/1356
-            "ENOATTR" => true,
-
             // FIXME(android): still necessary?
             "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
-            // FIXME(deprecated): deprecated - removed in glibc 2.26
-            "SIGUNUSED" => true,
 
             // Needs a newer Android SDK for the definition
             "P_PIDFD" => true,
@@ -2292,7 +2281,6 @@ fn test_android(target: &str) {
             | "ALG_SET_DRBG_ENTROPY" => true,
 
             // FIXME(android): Something has been changed on r26b:
-            | "IPPROTO_MAX"
             | "NFNL_SUBSYS_COUNT"
             | "NF_NETDEV_NUMHOOKS"
             | "NFT_MSG_MAX"
@@ -2720,11 +2708,6 @@ fn test_freebsd(target: &str) {
                 true
             }
 
-            // FIXME(deprecated): These are deprecated - remove in a couple of releases.
-            // These constants were removed in FreeBSD 11 (svn r273250) but will
-            // still be accepted and ignored at runtime.
-            "MAP_RENAME" | "MAP_NORESERVE" => true,
-
             // FIXME(deprecated): This is deprecated - remove in a couple of releases.
             // This was removed in FreeBSD 14 (git 1b4701fe1e8) and never
             // should've been used anywhere anyway.
@@ -2766,12 +2749,6 @@ fn test_freebsd(target: &str) {
             // This constant was removed in FreeBSD 13 (svn r363622), and never
             // had any legitimate use outside of the base system anyway.
             "CTL_P1003_1B_MAXID" => true,
-
-            // This was renamed in FreeBSD 12.2 and 13 (r352486).
-            "CTL_UNSPEC" | "CTL_SYSCTL" => true,
-
-            // This was renamed in FreeBSD 12.2 and 13 (r350749).
-            "IPPROTO_SEP" | "IPPROTO_DCCP" => true,
 
             // This was changed to 96(0x60) in FreeBSD 13:
             // https://github.com/freebsd/freebsd/
@@ -3355,10 +3332,6 @@ fn test_emscripten(target: &str) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
-            // FIXME(deprecated): deprecated - SIGNUNUSED was removed in glibc 2.26
-            // users should use SIGSYS instead
-            "SIGUNUSED" => true,
-
             // FIXME(emscripten): emscripten uses different constants to constructs these
             n if n.contains("__SIZEOF_PTHREAD") => true,
 
@@ -4791,14 +4764,6 @@ fn test_linux(target: &str) {
             // because including `linux/if_arp.h` causes some conflicts:
             "ARPHRD_CAN" => true,
 
-            // FIXME(deprecated): deprecated: not available in any header
-            // See: https://github.com/rust-lang/libc/issues/1356
-            "ENOATTR" => true,
-
-            // FIXME(deprecated): SIGUNUSED was removed in glibc 2.26
-            // Users should use SIGSYS instead.
-            "SIGUNUSED" => true,
-
             // FIXME(linux): conflicts with glibc headers and is tested in
             // `linux_termios.rs` below:
             "BOTHER" | "IBSHIFT" | "TCGETS2" | "TCSETS2" | "TCSETSW2" | "TCSETSF2" => true,
@@ -4810,12 +4775,6 @@ fn test_linux(target: &str) {
             // FIXME(linux): It was extended to 4096 since glibc 2.31 (Linux 5.4).
             // We should do so after a while.
             "SOMAXCONN" if gnu => true,
-
-            // deprecated: not available from Linux kernel 5.6:
-            "VMADDR_CID_RESERVED" => true,
-
-            // FIXME(value): IPPROTO_MAX was increased in 5.6 for IPPROTO_MPTCP:
-            "IPPROTO_MAX" => true,
 
             // Requires >= 6.9 kernel headers.
             n if (arm || ppc32) && n.starts_with("FUTEX2_") => kernel < (6, 9),
@@ -4933,6 +4892,8 @@ fn test_linux(target: &str) {
             | "PF_BLOCK_TS" | "PF_SUSPEND_TASK" => true,
 
             "EPIOCSPARAMS" | "EPIOCGPARAMS" if old_musl => true,
+            // Changed value
+            "IPPROTO_MAX" if old_musl => true,
 
             // FIXME(linux): Requires >= 6.6 kernel headers.
             "SECCOMP_IOCTL_NOTIF_SET_FLAGS" => kernel < (6, 6),
