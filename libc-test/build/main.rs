@@ -4642,16 +4642,10 @@ fn test_linux(target: &str) {
             }
         }
         if musl {
-            // LFS64 types have been removed in musl 1.2.4+
-            if name.starts_with("RLIM64") {
-                return true;
-            }
-            // CI fails because musl targets use Linux v4 kernel
-            if name.starts_with("NI_IDN") {
-                return true;
-            }
-
             match name {
+                // LFS64 types have been removed in musl 1.2.4+
+                x if x.starts_with("RLIM64") && musl_v1_2 => return true,
+
                 // FIXME: Does not exist on non-x86 architectures, slated for removal
                 // in libc in 1.0
                 "MAP_32BIT" if ppc64 => return true,
@@ -4703,11 +4697,14 @@ fn test_linux(target: &str) {
                 | "PR_SCHED_CORE_SHARE_FROM"
                 | "PR_SCHED_CORE_SHARE_TO" => return true,
 
+                // Not present in musl, deprecated in libc.
+                "NI_IDN" => return true,
+
                 /* Added in versions more recent than what we test */
                 // Since 1.2.0
-                "SO_DETACH_REUSEPORT_BPF" => return true,
+                "SO_DETACH_REUSEPORT_BPF" if old_musl => return true,
                 // Since 1.2.3
-                "SO_BUSY_POLL_BUDGET" | "SO_PREFER_BUSY_POLL" => return true,
+                "SO_BUSY_POLL_BUDGET" | "SO_PREFER_BUSY_POLL" if old_musl => return true,
 
                 // FIXME(musl): value was updated in new musl
                 "RLIM_NLIMITS" => return true,
