@@ -948,13 +948,7 @@ pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 // netinet/in.h
 // NOTE: These are in addition to the constants defined in src/unix/mod.rs
 
-#[deprecated(
-    since = "0.2.80",
-    note = "This value was increased in the newer kernel \
-            and we'll change this following upstream in the future release. \
-            See #1896 for more info."
-)]
-pub const IPPROTO_MAX: c_int = 256;
+pub const IPPROTO_MAX: c_int = 263;
 
 // System V IPC
 pub const IPC_PRIVATE: crate::key_t = 0;
