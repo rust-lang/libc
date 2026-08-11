@@ -1911,6 +1911,7 @@ extern "C" {
     pub fn chflags(path: *const c_char, flags: c_ulong) -> c_int;
     pub fn fchflags(fd: c_int, flags: c_ulong) -> c_int;
     pub fn lchflags(path: *const c_char, flags: c_ulong) -> c_int;
+    pub fn lchmod(path: *const c_char, mode: crate::mode_t) -> c_int;
 
     pub fn extattr_list_fd(
         fd: c_int,

@@ -2126,6 +2126,7 @@ kld_load
 kqueue
 labs
 lchflags
+lchmod
 lcong48
 lio_listio
 lockf

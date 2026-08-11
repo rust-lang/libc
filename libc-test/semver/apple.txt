@@ -2205,6 +2205,8 @@ key_t
 killpg
 kqueue
 labs
+lchflags
+lchmod
 lio_listio
 listxattr
 load_command
