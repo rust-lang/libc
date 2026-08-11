@@ -5037,6 +5037,8 @@ extern "C" {
         symbol: *const c_char,
         version: *const c_char,
     ) -> *mut c_void;
+
+    pub fn lchmod(path: *const c_char, mode: crate::mode_t) -> c_int;
 }
 
 #[link(name = "memstat")]
