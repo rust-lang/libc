@@ -231,7 +231,9 @@ s! {
     }
 }
 
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
 pub const INT_MIN: c_int = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
 pub const INT_MAX: c_int = 2147483647;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;

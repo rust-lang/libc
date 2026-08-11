@@ -176,7 +176,9 @@ s! {
     }
 }
 
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
 pub const INT_MIN: c_int = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
 pub const INT_MAX: c_int = 2147483647;
 
 pub const EXIT_FAILURE: c_int = 1;

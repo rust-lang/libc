@@ -1127,7 +1127,9 @@ s_no_extra_traits! {
 
 pub const HOST_NAME_MAX: c_int = 255;
 
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
 pub const INT_MIN: c_int = -1 - 0x7fffffff;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
 pub const INT_MAX: c_int = 0x7fffffff;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
