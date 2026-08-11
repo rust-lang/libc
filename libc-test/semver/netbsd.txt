@@ -1410,6 +1410,7 @@ labs
 lastlog
 lastlogx
 lchflags
+lchmod
 lcong48
 lgetxattr
 lio_listio
