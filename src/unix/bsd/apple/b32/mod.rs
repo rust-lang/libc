@@ -56,10 +56,6 @@ s_no_extra_traits! {
     }
 }
 
-#[doc(hidden)]
-#[deprecated(since = "0.2.55")]
-pub const NET_RT_MAXID: c_int = 10;
-
 pub const BIOCSETF: c_ulong = 0x80084267;
 pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
 pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;

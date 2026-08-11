@@ -67,7 +67,6 @@ REG_SS
 REG_TRAPNO
 REG_UESP
 SIGSTKFLT
-SIGUNUSED
 SO_BSDCOMPAT
 SO_NO_CHECK
 SO_PRIORITY
@@ -85,7 +84,6 @@ SYS_chmod
 SYS_chown
 SYS_chown32
 SYS_creat
-SYS_create_module
 SYS_dup2
 SYS_epoll_create
 SYS_epoll_wait
@@ -102,7 +100,6 @@ SYS_fstatfs64
 SYS_ftime
 SYS_ftruncate64
 SYS_futimesat
-SYS_get_kernel_syms
 SYS_get_thread_area
 SYS_getdents
 SYS_getegid32
@@ -148,7 +145,6 @@ SYS_poll
 SYS_prof
 SYS_profil
 SYS_putpmsg
-SYS_query_module
 SYS_readdir
 SYS_readlink
 SYS_rename

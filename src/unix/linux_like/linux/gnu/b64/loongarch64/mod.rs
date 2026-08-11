@@ -754,7 +754,6 @@ pub const SIGIO: c_int = 29;
 pub const SIGPOLL: c_int = 29;
 pub const SIGPWR: c_int = 30;
 pub const SIGSYS: c_int = 31;
-pub const SIGUNUSED: c_int = 31;
 
 pub const POLLWRNORM: c_short = 0x100;
 pub const POLLWRBAND: c_short = 0x200;

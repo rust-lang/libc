@@ -997,8 +997,6 @@ pub const SIGURG: c_int = 23;
 pub const SIGIO: c_int = 29;
 pub const SIGSYS: c_int = 31;
 pub const SIGSTKFLT: c_int = 16;
-#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
-pub const SIGUNUSED: c_int = 31;
 pub const SIGTTIN: c_int = 21;
 pub const SIGTTOU: c_int = 22;
 pub const SIGXCPU: c_int = 24;
@@ -1141,7 +1139,7 @@ pub const SOCK_DCCP: c_int = 6;
 #[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
-pub const IPPROTO_MAX: c_int = 256;
+pub const IPPROTO_MAX: c_int = 263;
 
 pub const SOL_SOCKET: c_int = 1;
 pub const SOL_SCTP: c_int = 132;
@@ -2643,12 +2641,6 @@ pub const SOF_TIMESTAMPING_OPT_TX_SWHW: c_uint = 1 << 14;
 pub const SOF_TIMESTAMPING_BIND_PHC: c_uint = 1 << 15;
 pub const SOF_TIMESTAMPING_OPT_ID_TCP: c_uint = 1 << 16;
 pub const SOF_TIMESTAMPING_OPT_RX_FILTER: c_uint = 1 << 17;
-
-#[deprecated(
-    since = "0.2.55",
-    note = "ENOATTR is not available on Android; use ENODATA instead"
-)]
-pub const ENOATTR: c_int = crate::ENODATA;
 
 // linux/if_alg.h
 pub const ALG_SET_KEY: c_int = 1;
