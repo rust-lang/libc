@@ -1005,6 +1005,10 @@ pub const NI_NOFQDN: c_int = 4;
 pub const NI_NAMEREQD: c_int = 8;
 pub const NI_DGRAM: c_int = 16;
 #[cfg(not(target_env = "uclibc"))]
+#[cfg_attr(
+    target_env = "musl",
+    deprecated(since = "0.2.190", note = "not present in musl")
+)]
 pub const NI_IDN: c_int = 32;
 
 cfg_if! {
