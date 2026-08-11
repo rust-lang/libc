@@ -73,7 +73,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "aarch64-unknown-linux-musl",
         tier=Tier.T2,
-        env={"TEST_MUSL_V1_2_3": 1},
+        env={"TEST_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     TestTarget("arm-linux-androideabi", tier=Tier.T2),
@@ -82,7 +82,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "arm-unknown-linux-musleabihf",
         tier=Tier.T2,
-        env={"TEST_MUSL_V1_2_3": 1},
+        env={"TEST_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     # FIXME(#4297): spurious test failures, keep disabled
@@ -91,7 +91,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "i686-unknown-linux-musl",
         tier=Tier.T2,
-        env={"TEST_MUSL_V1_2_3": 1},
+        env={"TEST_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     TestTarget("loongarch64-unknown-linux-gnu", tier=Tier.T2),
@@ -99,7 +99,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "loongarch64-unknown-linux-musl",
         tier=Tier.T2,
-        env={"TEST_MUSL_V1_2_3": 1},
+        env={"TEST_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     TestTarget("powerpc64-unknown-linux-gnu", tier=Tier.T2),
@@ -107,7 +107,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "powerpc64-unknown-linux-musl",
         tier=Tier.T2,
-        env={"RUST_LIBC_UNSTABLE_MUSL_V1_2_3": 1},
+        env={"RUST_LIBC_UNSTABLE_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     TestTarget("powerpc64le-unknown-linux-gnu", tier=Tier.T2),
@@ -115,7 +115,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "powerpc64le-unknown-linux-musl",
         tier=Tier.T2,
-        env={"TEST_MUSL_V1_2_3": 1},
+        env={"TEST_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     TestTarget("riscv64gc-unknown-linux-gnu", tier=Tier.T2),
@@ -133,7 +133,7 @@ TARGETS: list[TestTarget] = [
     TestTarget(
         "x86_64-unknown-linux-musl",
         tier=Tier.T2,
-        env={"TEST_MUSL_V1_2_3": 1},
+        env={"TEST_MUSL_V1_2": 1},
         artifact_tag="new-musl",
     ),
     # FIXME: some items in `src/unix/mod.rs` aren't defined on redox yet
