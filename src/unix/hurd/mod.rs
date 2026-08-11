@@ -2634,42 +2634,79 @@ pub const TCP_REPAIR_OFF: c_int = 0;
 pub const TCP_REPAIR_OFF_NO_WP: c_int = -1;
 
 // stdint.h
+#[deprecated(since = "0.2.190", note = "Use `i8::MIN` instead.")]
 pub const INT8_MIN: i8 = -128;
+#[deprecated(since = "0.2.190", note = "Use `i16::MIN` instead.")]
 pub const INT16_MIN: i16 = -32768;
+#[deprecated(since = "0.2.190", note = "Use `i32::MIN` instead.")]
 pub const INT32_MIN: i32 = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `i8::MAX` instead.")]
 pub const INT8_MAX: i8 = 127;
+#[deprecated(since = "0.2.190", note = "Use `i16::MAX` instead.")]
 pub const INT16_MAX: i16 = 32767;
+#[deprecated(since = "0.2.190", note = "Use `i32::MAX` instead.")]
 pub const INT32_MAX: i32 = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `u8::MAX` instead.")]
 pub const UINT8_MAX: u8 = 255;
+#[deprecated(since = "0.2.190", note = "Use `u16::MAX` instead.")]
 pub const UINT16_MAX: u16 = 65535;
+#[deprecated(since = "0.2.190", note = "Use `u32::MAX` instead.")]
 pub const UINT32_MAX: u32 = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `int_least8_t::MIN` instead.")]
 pub const INT_LEAST8_MIN: int_least8_t = -128;
+#[deprecated(since = "0.2.190", note = "Use `int_least16_t::MIN` instead.")]
 pub const INT_LEAST16_MIN: int_least16_t = -32768;
+#[deprecated(since = "0.2.190", note = "Use `int_least32_t::MIN` instead.")]
 pub const INT_LEAST32_MIN: int_least32_t = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `int_least8_t::MAX` instead.")]
 pub const INT_LEAST8_MAX: int_least8_t = 127;
+#[deprecated(since = "0.2.190", note = "Use `int_least16_t::MAX` instead.")]
 pub const INT_LEAST16_MAX: int_least16_t = 32767;
+#[deprecated(since = "0.2.190", note = "Use `int_least32_t::MAX` instead.")]
 pub const INT_LEAST32_MAX: int_least32_t = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `uint_least8_t::MAX` instead.")]
 pub const UINT_LEAST8_MAX: uint_least8_t = 255;
+#[deprecated(since = "0.2.190", note = "Use `uint_least16_t::MAX` instead.")]
 pub const UINT_LEAST16_MAX: uint_least16_t = 65535;
+#[deprecated(since = "0.2.190", note = "Use `uint_least32_t::MAX` instead.")]
 pub const UINT_LEAST32_MAX: uint_least32_t = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `int_fast8_t::MIN` instead.")]
 pub const INT_FAST8_MIN: int_fast8_t = -128;
+#[deprecated(since = "0.2.190", note = "Use `int_fast16_t::MIN` instead.")]
 pub const INT_FAST16_MIN: int_fast16_t = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `int_fast32_t::MIN` instead.")]
 pub const INT_FAST32_MIN: int_fast32_t = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `int_fast8_t::MAX` instead.")]
 pub const INT_FAST8_MAX: int_fast8_t = 127;
+#[deprecated(since = "0.2.190", note = "Use `int_fast16_t::MAX` instead.")]
 pub const INT_FAST16_MAX: int_fast16_t = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `int_fast32_t::MAX` instead.")]
 pub const INT_FAST32_MAX: int_fast32_t = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `uint_fast8_t::MAX` instead.")]
 pub const UINT_FAST8_MAX: uint_fast8_t = 255;
+#[deprecated(since = "0.2.190", note = "Use `uint_fast16_t::MAX` instead.")]
 pub const UINT_FAST16_MAX: uint_fast16_t = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `uint_fast32_t::MAX` instead.")]
 pub const UINT_FAST32_MAX: uint_fast32_t = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `intptr_t::MIN` instead.")]
 pub const INTPTR_MIN: __intptr_t = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `intptr_t::MAX` instead.")]
 pub const INTPTR_MAX: __intptr_t = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `uintptr_t::MAX` instead.")]
 pub const UINTPTR_MAX: usize = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `ptrdiff_t::MIN` instead.")]
 pub const PTRDIFF_MIN: __ptrdiff_t = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `ptrdiff_t::MAX` instead.")]
 pub const PTRDIFF_MAX: __ptrdiff_t = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
 pub const SIG_ATOMIC_MIN: __sig_atomic_t = -2147483648;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
 pub const SIG_ATOMIC_MAX: __sig_atomic_t = 2147483647;
+#[deprecated(since = "0.2.190", note = "Use `size_t::MAX` instead.")]
 pub const SIZE_MAX: usize = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `wint_t::MIN` instead.")]
 pub const WINT_MIN: wint_t = 0;
+#[deprecated(since = "0.2.190", note = "Use `wint_t::MAX` instead.")]
 pub const WINT_MAX: wint_t = 4294967295;
 pub const INT8_WIDTH: usize = 8;
 pub const UINT8_WIDTH: usize = 8;
