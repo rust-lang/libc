@@ -307,30 +307,24 @@ s_no_extra_traits! {
 
     pub struct fileops_t {
         pub fo_rw: Option<
-            extern "C" fn(
-                file: *mut file,
-                rw: crate::uio_rw,
-                io: *mut c_void,
-                ext: c_long,
-                secattr: *mut c_void,
+            unsafe extern "C" fn(
+                *mut file,
+                crate::uio_rw,
+                *mut c_void,
+                c_long,
+                *mut c_void,
             ) -> c_int,
         >,
         pub fo_ioctl: Option<
-            extern "C" fn(
-                file: *mut file,
-                a: c_long,
-                b: crate::caddr_t,
-                c: c_long,
-                d: c_long,
-            ) -> c_int,
+            unsafe extern "C" fn(*mut file, c_long, crate::caddr_t, c_long, c_long) -> c_int,
         >,
         pub fo_select: Option<
-            extern "C" fn(
-                file: *mut file,
-                a: c_int,
-                b: c_ushort,
-                c: *mut c_ushort,
-                c: extern "C" fn(),
+            unsafe extern "C" fn(
+                *mut file,
+                c_int,
+                c_ushort,
+                *mut c_ushort,
+                Option<unsafe extern "C" fn()>,
             ) -> c_int,
         >,
         pub fo_close: Option<extern "C" fn(file: *mut file) -> c_int>,
