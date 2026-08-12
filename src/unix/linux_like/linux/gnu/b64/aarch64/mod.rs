@@ -12,17 +12,6 @@ pub type blksize_t = i32;
 pub type suseconds_t = i64;
 
 s! {
-    // FIXME(1.0): This should not implement `PartialEq`
-    #[allow(unpredictable_function_pointer_comparisons)]
-    pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t,
-        pub sa_mask: crate::sigset_t,
-        #[cfg(target_arch = "sparc64")]
-        __reserved0: Padding<c_int>,
-        pub sa_flags: c_int,
-        pub sa_restorer: Option<extern "C" fn()>,
-    }
-
     pub struct statfs {
         pub f_type: crate::__fsword_t,
         pub f_bsize: crate::__fsword_t,
@@ -361,34 +350,6 @@ pub const POSIX_FADV_NOREUSE: c_int = 5;
 pub const SOCK_STREAM: c_int = 1;
 pub const SOCK_DGRAM: c_int = 2;
 
-pub const SA_ONSTACK: c_int = 0x08000000;
-pub const SA_SIGINFO: c_int = 0x00000004;
-pub const SA_NOCLDWAIT: c_int = 0x00000002;
-
-pub const SIGTTIN: c_int = 21;
-pub const SIGTTOU: c_int = 22;
-pub const SIGXCPU: c_int = 24;
-pub const SIGXFSZ: c_int = 25;
-pub const SIGVTALRM: c_int = 26;
-pub const SIGPROF: c_int = 27;
-pub const SIGWINCH: c_int = 28;
-pub const SIGCHLD: c_int = 17;
-pub const SIGBUS: c_int = 7;
-pub const SIGUSR1: c_int = 10;
-pub const SIGUSR2: c_int = 12;
-pub const SIGCONT: c_int = 18;
-pub const SIGSTOP: c_int = 19;
-pub const SIGTSTP: c_int = 20;
-pub const SIGURG: c_int = 23;
-pub const SIGIO: c_int = 29;
-pub const SIGSYS: c_int = 31;
-pub const SIGSTKFLT: c_int = 16;
-pub const SIGPOLL: c_int = 29;
-pub const SIGPWR: c_int = 30;
-pub const SIG_SETMASK: c_int = 2;
-pub const SIG_BLOCK: c_int = 0x000000;
-pub const SIG_UNBLOCK: c_int = 0x01;
-
 pub const POLLWRNORM: c_short = 0x100;
 pub const POLLWRBAND: c_short = 0x200;
 
@@ -436,11 +397,6 @@ pub const ESRMNT: c_int = 69;
 pub const ECOMM: c_int = 70;
 pub const EPROTO: c_int = 71;
 pub const EDOTDOT: c_int = 73;
-
-pub const SA_NODEFER: c_int = 0x40000000;
-pub const SA_RESETHAND: c_int = u32_cast_int(0x80000000);
-pub const SA_RESTART: c_int = 0x10000000;
-pub const SA_NOCLDSTOP: c_int = 0x00000001;
 
 pub const EPOLL_CLOEXEC: c_int = 0x80000;
 

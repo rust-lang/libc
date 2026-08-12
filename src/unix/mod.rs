@@ -2312,6 +2312,7 @@ cfg_if! {
             #[cfg(not(target_os = "l4re"))]
             pub fn open_memstream(ptr: *mut *mut c_char, sizeloc: *mut size_t) -> *mut FILE;
             pub fn atexit(cb: extern "C" fn()) -> c_int;
+            #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
             #[cfg_attr(target_os = "netbsd", link_name = "__sigaction14")]
             pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction)
                 -> c_int;
