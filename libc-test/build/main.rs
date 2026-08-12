@@ -2276,8 +2276,6 @@ fn test_android(t: &Target) {
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
-            // uc_sigmask and uc_sigmask64 of ucontext_t are an anonymous union
-            "ucontext_t" => true,
             // 'private' type
             "prop_info" => true,
 
@@ -2546,6 +2544,9 @@ fn test_android(t: &Target) {
             ("siginfo_t", "_pad") => true,
             ("ifreq", "ifr_ifru") => true,
             ("ifconf", "ifc_ifcu") => true,
+
+            // uc_sigmask and uc_sigmask64 are an anonymous union
+            ("ucontext_t", "uc_sigmask" | "uc_sigmask64" | "uc_sigmask__c_anonymous_union") => true,
 
             _ => false,
         }
