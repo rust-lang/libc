@@ -299,8 +299,6 @@ cfg_if! {
         pub const O_PATH: c_int = 0x1000000;
         pub const O_TMPFILE: c_int = 0x2000000 | O_DIRECTORY;
 
-        pub const SA_ONSTACK: c_int = 1;
-
         pub const PTRACE_DETACH: c_uint = 11;
 
         pub const F_RDLCK: c_int = 1;
@@ -329,11 +327,6 @@ cfg_if! {
         pub const EPROTO: c_int = 86;
         pub const EDOTDOT: c_int = 88;
 
-        pub const SA_NODEFER: c_int = 0x20;
-        pub const SA_RESETHAND: c_int = 0x4;
-        pub const SA_RESTART: c_int = 0x2;
-        pub const SA_NOCLDSTOP: c_int = 0x00000008;
-
         pub const EPOLL_CLOEXEC: c_int = 0x400000;
 
         pub const EFD_CLOEXEC: c_int = 0x400000;
@@ -341,8 +334,6 @@ cfg_if! {
         pub const O_NOATIME: c_int = 0o1000000;
         pub const O_PATH: c_int = 0o10000000;
         pub const O_TMPFILE: c_int = 0o20000000 | O_DIRECTORY;
-
-        pub const SA_ONSTACK: c_int = 0x08000000;
 
         pub const PTRACE_DETACH: c_uint = 17;
 
@@ -370,11 +361,6 @@ cfg_if! {
         pub const ECOMM: c_int = 70;
         pub const EPROTO: c_int = 71;
         pub const EDOTDOT: c_int = 73;
-
-        pub const SA_NODEFER: c_int = 0x40000000;
-        pub const SA_RESETHAND: c_int = u32_cast_int(0x80000000);
-        pub const SA_RESTART: c_int = 0x10000000;
-        pub const SA_NOCLDSTOP: c_int = 0x00000001;
 
         pub const EPOLL_CLOEXEC: c_int = 0x80000;
 
