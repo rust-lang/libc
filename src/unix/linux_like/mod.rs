@@ -435,8 +435,6 @@ pub const F_SEAL_WRITE: c_int = 0x0008;
 
 // FIXME(#235): Include file sealing fcntls once we have a way to verify them.
 
-pub const SIGTRAP: c_int = 5;
-
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: c_int = 1;
 
@@ -485,17 +483,24 @@ pub const F_OK: c_int = 0;
 pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
 pub const X_OK: c_int = 1;
-pub const SIGHUP: c_int = 1;
-pub const SIGINT: c_int = 2;
-pub const SIGQUIT: c_int = 3;
-pub const SIGILL: c_int = 4;
-pub const SIGABRT: c_int = 6;
-pub const SIGFPE: c_int = 8;
-pub const SIGKILL: c_int = 9;
-pub const SIGSEGV: c_int = 11;
-pub const SIGPIPE: c_int = 13;
-pub const SIGALRM: c_int = 14;
-pub const SIGTERM: c_int = 15;
+
+cfg_if! {
+    // defined in src/new/glibc
+    if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
+        pub const SIGHUP: c_int = 1;
+        pub const SIGINT: c_int = 2;
+        pub const SIGQUIT: c_int = 3;
+        pub const SIGILL: c_int = 4;
+        pub const SIGTRAP: c_int = 5;
+        pub const SIGABRT: c_int = 6;
+        pub const SIGFPE: c_int = 8;
+        pub const SIGKILL: c_int = 9;
+        pub const SIGSEGV: c_int = 11;
+        pub const SIGPIPE: c_int = 13;
+        pub const SIGALRM: c_int = 14;
+        pub const SIGTERM: c_int = 15;
+    }
+}
 
 pub const PROT_NONE: c_int = 0;
 pub const PROT_READ: c_int = 1;

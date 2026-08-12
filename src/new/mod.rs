@@ -196,6 +196,8 @@ cfg_if! {
         pub use linux::types::*;
         #[cfg(target_env = "gnu")]
         pub use net::route::*;
+        #[cfg(target_env = "gnu")]
+        pub use signal::*;
     } else if #[cfg(target_vendor = "apple")] {
         pub use net::bpf::*;
         pub use netinet::tcp::*;
