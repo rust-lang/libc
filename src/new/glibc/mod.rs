@@ -6,12 +6,23 @@
 //! This module structure is modeled after glibc's source tree. Its build system selects headers
 //! from different locations based on the platform, which we mimic here with reexports.
 
+/// Source directory: `bits/`
+///
+/// <https://github.com/sailfishos-mirror/glibc/tree/master/bits>
+mod bits {
+    #[cfg(target_os = "linux")]
+    pub(crate) mod signum_generic;
+}
+
 /// Source directory: `posix/`
 ///
 /// <https://github.com/sailfishos-mirror/glibc/tree/master/posix>
 mod posix {
     pub(crate) mod unistd;
 }
+
+#[cfg(target_os = "linux")]
+pub(crate) mod signal;
 
 /// Source directory: `sysdeps/`
 ///
