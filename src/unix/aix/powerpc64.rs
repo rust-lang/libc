@@ -331,6 +331,7 @@ s_no_extra_traits! {
         pub fo_fstat: Option<extern "C" fn(file: *mut file, sstat: *mut crate::stat) -> c_int>,
     }
 
+    #[repr(align(256))]
     pub struct file {
         pub f_flag: c_long,
         pub f_count: c_int,
