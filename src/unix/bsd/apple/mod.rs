@@ -4645,12 +4645,12 @@ extern "C" {
     );
     pub fn backtrace_async(array: *mut *mut c_void, length: size_t, task_id: *mut u32) -> size_t;
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "statfs$INODE64"
     )]
     pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "fstatfs$INODE64"
     )]
     pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
@@ -4903,12 +4903,12 @@ extern "C" {
     pub fn ntp_gettime(buf: *mut ntptimeval) -> c_int;
 
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "getmntinfo$INODE64"
     )]
     pub fn getmntinfo(mntbufp: *mut *mut statfs, flags: c_int) -> c_int;
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "getfsstat$INODE64"
     )]
     pub fn getfsstat(mntbufp: *mut statfs, bufsize: c_int, flags: c_int) -> c_int;

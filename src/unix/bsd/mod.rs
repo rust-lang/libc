@@ -572,7 +572,7 @@ extern "C" {
     pub fn getpeereid(socket: c_int, euid: *mut crate::uid_t, egid: *mut crate::gid_t) -> c_int;
 
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "glob$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__glob30")]
