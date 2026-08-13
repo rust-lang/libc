@@ -199,8 +199,10 @@ cfg_if! {
         #[cfg(target_env = "gnu")]
         pub use signal::*;
     } else if #[cfg(target_vendor = "apple")] {
+        #[cfg(target_os = "macos")]
         pub use net::bpf::*;
         pub use netinet::tcp::*;
+        #[cfg(target_os = "macos")]
         pub use netinet6::in6_var::*;
         pub use pthread_::introspection::*;
         pub use pthread_::pthread_spis::*;
