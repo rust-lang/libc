@@ -383,8 +383,14 @@ pub const POLLRDBAND: c_short = 0x080;
 pub const POLLWRBAND: c_short = 0x100;
 
 cfg_if! {
-    // Not yet implemented on NetBSD
-    if #[cfg(not(any(target_os = "netbsd")))] {
+    // Not yet implemented on NetBSD, and not present on iOS/tvOS/watchOS/visionOS.
+    if #[cfg(not(any(
+        target_os = "netbsd",
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    )))] {
         pub const BIOCGBLEN: c_ulong = 0x40044266;
         pub const BIOCSBLEN: c_ulong = 0xc0044266;
         pub const BIOCFLUSH: c_uint = 0x20004268;
@@ -397,9 +403,12 @@ cfg_if! {
         pub const BIOCVERSION: c_ulong = 0x40044271;
         pub const BIOCGHDRCMPLT: c_ulong = 0x40044274;
         pub const BIOCSHDRCMPLT: c_ulong = 0x80044275;
-        pub const SIOCGIFADDR: c_ulong = 0xc0206921;
     }
 }
+
+// Not yet implemented on NetBSD.
+#[cfg(not(target_os = "netbsd"))]
+pub const SIOCGIFADDR: c_ulong = 0xc0206921;
 
 cfg_if! {
     // Redefined in `new/apple`
@@ -417,48 +426,58 @@ pub const ITIMER_REAL: c_int = 0;
 pub const ITIMER_VIRTUAL: c_int = 1;
 pub const ITIMER_PROF: c_int = 2;
 
-// net/route.h
+cfg_if! {
+    // Not present on iOS/tvOS/watchOS/visionOS
+    if #[cfg(not(any(
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    )))] {
+        // net/route.h
 
-pub const RTF_UP: c_int = 0x1;
-pub const RTF_GATEWAY: c_int = 0x2;
-pub const RTF_HOST: c_int = 0x4;
-pub const RTF_REJECT: c_int = 0x8;
-pub const RTF_DYNAMIC: c_int = 0x10;
-pub const RTF_MODIFIED: c_int = 0x20;
-pub const RTF_DONE: c_int = 0x40;
-pub const RTF_STATIC: c_int = 0x800;
-pub const RTF_BLACKHOLE: c_int = 0x1000;
-pub const RTF_PROTO2: c_int = 0x4000;
-pub const RTF_PROTO1: c_int = 0x8000;
+        pub const RTF_UP: c_int = 0x1;
+        pub const RTF_GATEWAY: c_int = 0x2;
+        pub const RTF_HOST: c_int = 0x4;
+        pub const RTF_REJECT: c_int = 0x8;
+        pub const RTF_DYNAMIC: c_int = 0x10;
+        pub const RTF_MODIFIED: c_int = 0x20;
+        pub const RTF_DONE: c_int = 0x40;
+        pub const RTF_STATIC: c_int = 0x800;
+        pub const RTF_BLACKHOLE: c_int = 0x1000;
+        pub const RTF_PROTO2: c_int = 0x4000;
+        pub const RTF_PROTO1: c_int = 0x8000;
 
-// Message types
-pub const RTM_ADD: c_int = 0x1;
-pub const RTM_DELETE: c_int = 0x2;
-pub const RTM_CHANGE: c_int = 0x3;
-pub const RTM_GET: c_int = 0x4;
-pub const RTM_LOSING: c_int = 0x5;
-pub const RTM_REDIRECT: c_int = 0x6;
-pub const RTM_MISS: c_int = 0x7;
+        // Message types
+        pub const RTM_ADD: c_int = 0x1;
+        pub const RTM_DELETE: c_int = 0x2;
+        pub const RTM_CHANGE: c_int = 0x3;
+        pub const RTM_GET: c_int = 0x4;
+        pub const RTM_LOSING: c_int = 0x5;
+        pub const RTM_REDIRECT: c_int = 0x6;
+        pub const RTM_MISS: c_int = 0x7;
 
-// Bitmask values for rtm_addrs.
-pub const RTA_DST: c_int = 0x1;
-pub const RTA_GATEWAY: c_int = 0x2;
-pub const RTA_NETMASK: c_int = 0x4;
-pub const RTA_GENMASK: c_int = 0x8;
-pub const RTA_IFP: c_int = 0x10;
-pub const RTA_IFA: c_int = 0x20;
-pub const RTA_AUTHOR: c_int = 0x40;
-pub const RTA_BRD: c_int = 0x80;
+        // Bitmask values for rtm_addrs.
+        pub const RTA_DST: c_int = 0x1;
+        pub const RTA_GATEWAY: c_int = 0x2;
+        pub const RTA_NETMASK: c_int = 0x4;
+        pub const RTA_GENMASK: c_int = 0x8;
+        pub const RTA_IFP: c_int = 0x10;
+        pub const RTA_IFA: c_int = 0x20;
+        pub const RTA_AUTHOR: c_int = 0x40;
+        pub const RTA_BRD: c_int = 0x80;
 
-// Index offsets for sockaddr array for alternate internal encoding.
-pub const RTAX_DST: c_int = 0;
-pub const RTAX_GATEWAY: c_int = 1;
-pub const RTAX_NETMASK: c_int = 2;
-pub const RTAX_GENMASK: c_int = 3;
-pub const RTAX_IFP: c_int = 4;
-pub const RTAX_IFA: c_int = 5;
-pub const RTAX_AUTHOR: c_int = 6;
-pub const RTAX_BRD: c_int = 7;
+        // Index offsets for sockaddr array for alternate internal encoding.
+        pub const RTAX_DST: c_int = 0;
+        pub const RTAX_GATEWAY: c_int = 1;
+        pub const RTAX_NETMASK: c_int = 2;
+        pub const RTAX_GENMASK: c_int = 3;
+        pub const RTAX_IFP: c_int = 4;
+        pub const RTAX_IFA: c_int = 5;
+        pub const RTAX_AUTHOR: c_int = 6;
+        pub const RTAX_BRD: c_int = 7;
+    }
+}
 
 f! {
     pub unsafe fn CMSG_FIRSTHDR(mhdr: *const crate::msghdr) -> *mut cmsghdr {
@@ -547,7 +566,6 @@ extern "C" {
     pub fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
     pub fn kqueue() -> c_int;
     pub fn unmount(target: *const c_char, arg: c_int) -> c_int;
-    pub fn syscall(num: c_int, ...) -> c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__getpwent50")]
     pub fn getpwent() -> *mut passwd;
     pub fn setpwent();
@@ -679,6 +697,8 @@ extern "C" {
         link_name = "sigaltstack$UNIX2003"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__sigaltstack14")]
+    // `sigaltstack` is prohibited on tvOS and watchOS.
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
     #[cfg_attr(target_os = "netbsd", link_name = "__sigsuspend14")]
     pub fn sigsuspend(mask: *const crate::sigset_t) -> c_int;
@@ -837,6 +857,16 @@ extern "C" {
     pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 
     pub fn issetugid() -> c_int;
+}
+
+cfg_if! {
+    // `syscall` is prohibited on tvOS and watchOS (and strongly discouraged
+    // on iOS and macOS).
+    if #[cfg(not(any(target_os = "tvos", target_os = "watchos")))] {
+        extern "C" {
+            pub fn syscall(num: c_int, ...) -> c_int;
+        }
+    }
 }
 
 cfg_if! {

@@ -355,13 +355,23 @@ pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
     s6_addr: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 };
 
-pub const ARPOP_REQUEST: u16 = 1;
-pub const ARPOP_REPLY: u16 = 2;
+cfg_if! {
+    // Not present on iOS/tvOS/watchOS/visionOS
+    if #[cfg(not(any(
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    )))] {
+        pub const ARPOP_REQUEST: u16 = 1;
+        pub const ARPOP_REPLY: u16 = 2;
 
-pub const ATF_COM: c_int = 0x02;
-pub const ATF_PERM: c_int = 0x04;
-pub const ATF_PUBL: c_int = 0x08;
-pub const ATF_USETRAILERS: c_int = 0x10;
+        pub const ATF_COM: c_int = 0x02;
+        pub const ATF_PERM: c_int = 0x04;
+        pub const ATF_PUBL: c_int = 0x08;
+        pub const ATF_USETRAILERS: c_int = 0x10;
+    }
+}
 
 cfg_if! {
     if #[cfg(any(target_os = "nto", target_os = "qnx", target_os = "aix"))] {
