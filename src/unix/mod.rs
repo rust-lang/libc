@@ -928,7 +928,7 @@ extern "C" {
     pub fn fchmod(fd: c_int, mode: mode_t) -> c_int;
 
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "fstat$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__fstat50")]
@@ -947,7 +947,7 @@ extern "C" {
     pub fn mkdir(path: *const c_char, mode: mode_t) -> c_int;
 
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "stat$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__stat50")]
@@ -1015,7 +1015,7 @@ extern "C" {
     pub fn fdopendir(fd: c_int) -> *mut crate::DIR;
 
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "readdir$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__readdir30")]
@@ -1053,7 +1053,7 @@ extern "C" {
     #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
     pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "fstatat$INODE64"
     )]
     #[cfg_attr(
@@ -1265,7 +1265,7 @@ extern "C" {
     pub fn if_indextoname(ifindex: c_uint, ifname: *mut c_char) -> *mut c_char;
 
     #[cfg_attr(
-        all(target_os = "macos", not(target_arch = "aarch64")),
+        all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
         link_name = "lstat$INODE64"
     )]
     #[cfg_attr(target_os = "netbsd", link_name = "__lstat50")]
@@ -2250,7 +2250,7 @@ cfg_if! {
             )]
             pub fn pause() -> c_int;
             #[cfg_attr(
-                all(target_os = "macos", not(target_arch = "aarch64")),
+                all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
                 link_name = "readdir_r$INODE64"
             )]
             #[cfg_attr(target_os = "netbsd", link_name = "__readdir_r30")]
