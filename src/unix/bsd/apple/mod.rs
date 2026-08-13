@@ -5228,6 +5228,9 @@ extern "C" {
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
     pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
     pub fn freadlink(fd: c_int, buf: *mut c_char, size: size_t) -> c_int;
+
+    // exec* marked as prohibited on tvOS and watchOS.
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execvP(
         file: *const c_char,
         search_path: *const c_char,

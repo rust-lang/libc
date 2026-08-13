@@ -4099,6 +4099,12 @@ erand48
 eventfd
 eventfd_read
 eventfd_write
+execl
+execle
+execlp
+execv
+execve
+execvp
 execvpe
 faccessat
 fallocate
@@ -4129,6 +4135,7 @@ file_handle
 flistxattr
 fmemopen
 fopen64
+fork
 forkpty
 fpos64_t
 fread_unlocked

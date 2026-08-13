@@ -3,6 +3,14 @@ __darwin_arm_neon_state64
 __darwin_arm_thread_state64
 brk
 exchangedata
+execl
+execle
+execlp
+execv
+execvP
+execve
+execvp
+fork
 sbrk
 sigaltstack
 syscall
