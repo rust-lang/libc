@@ -142,7 +142,10 @@ fn test_apple(t: &Target) {
     assert!(t.apple());
     let x86_64 = t.x86_64();
     let x86_32 = t.x86_32();
-    let macos = VERSIONS.macos;
+    let macos = t.macos();
+    let tvos = t.tvos();
+    let watchos = t.watchos();
+    let apple = VERSIONS.apple;
 
     let mut cfg = ctest_cfg();
 
@@ -170,27 +173,29 @@ fn test_apple(t: &Target) {
         "ifaddrs.h",
         "langinfo.h",
         "libgen.h",
-        "libproc.h",
+        (macos, "libproc.h"),
         "limits.h",
         "locale.h",
+        "mach/mach.h",
         "malloc/malloc.h",
-        "net/bpf.h",
-        "net/dlil.h",
+        (macos, "net/bpf.h"),
+        (macos, "net/dlil.h"),
         "net/if.h",
-        "net/if_arp.h",
+        (macos, "net/if_arp.h"),
         "net/if_dl.h",
-        "net/if_mib.h",
-        "net/if_utun.h",
+        (macos, "net/if_mib.h"),
+        (macos, "net/if_utun.h"),
         "net/if_var.h",
-        "net/ndrv.h",
-        "net/route.h",
+        (macos, "net/ndrv.h"),
+        (macos, "net/route.h"),
         "netdb.h",
-        "netinet/if_ether.h",
+        (macos, "netinet/if_ether.h"),
         "netinet/in.h",
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
-        "netinet6/in6_var.h",
+        "netinet6/scope6_var.h",
+        (macos, "netinet6/in6_var.h"),
         "os/clock.h",
         "os/lock.h",
         "os/signpost.h",
@@ -221,13 +226,13 @@ fn test_apple(t: &Target) {
         "sys/file.h",
         "sys/ioctl.h",
         "sys/ipc.h",
-        "sys/kern_control.h",
+        (macos, "sys/kern_control.h"),
         "sys/mman.h",
         "sys/mount.h",
-        "sys/proc_info.h",
-        "sys/ptrace.h",
+        (macos, "sys/proc_info.h"),
+        (macos, "sys/ptrace.h"),
         "sys/quota.h",
-        "sys/random.h",
+        (macos, "sys/random.h"),
         "sys/resource.h",
         "sys/sem.h",
         "sys/shm.h",
@@ -235,7 +240,7 @@ fn test_apple(t: &Target) {
         "sys/sockio.h",
         "sys/stat.h",
         "sys/statvfs.h",
-        "sys/sys_domain.h",
+        (macos, "sys/sys_domain.h"),
         "sys/sysctl.h",
         "sys/time.h",
         "sys/times.h",
@@ -256,7 +261,7 @@ fn test_apple(t: &Target) {
         "utmpx.h",
         "wchar.h",
         "xlocale.h",
-        (x86_64, "crt_externs.h"),
+        "crt_externs.h",
     );
 
     cfg.skip_struct(move |s| {
@@ -289,11 +294,11 @@ fn test_apple(t: &Target) {
             // https://github.com/apple-oss-distributions/xnu/commit/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea
             "ELAST" => true,
 
-            // FIXME(macos): bumped up on macOS 27, it's sizeof `vm_statistics64_data_t`
-            "HOST_VM_INFO64_COUNT" => macos.unwrap() < (27, 0),
+            // FIXME(macos): bumped up on macOS/iOS/... 27, it's sizeof `vm_statistics64_data_t`
+            "HOST_VM_INFO64_COUNT" => apple.unwrap() < (27, 0),
 
-            // FIXME(macos): bumped up on macOS 27, from 16 to 32
-            "AIO_LISTIO_MAX" => macos.unwrap() < (27, 0),
+            // FIXME(macos): bumped up on macOS/iOS/... 27, from 16 to 32
+            "AIO_LISTIO_MAX" => apple.unwrap() < (27, 0),
 
             _ => false,
         }
@@ -301,8 +306,8 @@ fn test_apple(t: &Target) {
 
     cfg.skip_alias(move |ty| {
         match ty.ident() {
-            // FIXME(macos): The size is changed in macOS 27.
-            "vm_statistics64_data_t" => macos.unwrap() < (27, 0),
+            // FIXME(macos): The size is changed in macOS/iOS/... 27.
+            "vm_statistics64_data_t" => apple.unwrap() < (27, 0),
             _ => false,
         }
     });
@@ -314,6 +319,10 @@ fn test_apple(t: &Target) {
             "close" if x86_64 => true,
             // FIXME(1.0): std removed libresolv support: https://github.com/rust-lang/rust/pull/102766
             "res_init" => true,
+            // https://github.com/rust-lang/libc/issues/5409
+            "getentropy" => !macos,
+            // https://github.com/rust-lang/libc/issues/5410
+            ident if ident.starts_with("posix_spawn") => tvos || watchos,
             _ => false,
         }
     });
@@ -6262,7 +6271,7 @@ struct Versions {
     freebsd: Option<(u32, u32)>,
     openbsd: Option<(u32, u32)>,
     netbsd: Option<(u32, u32)>,
-    macos: Option<(u32, u32)>,
+    apple: Option<(u32, u32)>,
     emscripten: Option<(u32, u32)>,
     wasi_sdk: Option<(u32, WasiVersion)>,
     /// Android API level (no minor version).
@@ -6304,14 +6313,17 @@ impl Versions {
 
             #if defined(__FreeBSD__) \
                 || defined(__NetBSD__) \
-                || defined(__OpenBSD__) \
-                || defined(__APPLE__)
+                || defined(__OpenBSD__)
             /* FreeBSD: __FreeBSD_version (MMmmRxx string, e.g. 1600018)
              * NetBSD: __NetBSD_Version__ (MMmmrrpp00 string, e.g. 1001000000)
              * OpenBSD: OpenBSD (release date, e.g. 202510) and OpenBSDM_m (e.g. OpenBSD7_8)
-             * Apple: __MAC_OS_X_VERSION_MAX_ALLOWED __MAC_M_m (e.g. __MAC_26_5)
              */
             #include "sys/param.h"
+            #endif
+
+            #if defined(__APPLE__)
+            /* Apple: __MAC_OS_X_VERSION_MAX_ALLOWED __MAC_M_m (e.g. __MAC_26_5) */
+            #include "Availability.h"
             #endif
 
             #ifdef __EMSCRIPTEN__
@@ -6353,7 +6365,7 @@ impl Versions {
         // Allow spaces everywhere so we match things like `\n  # define foo bar \n`.
         let re = Regex::new(r"^\s*#\s*define\s+(\w+)\s+(.*?)\s*$").unwrap();
         let obsd_re = Regex::new(r"^OpenBSD(\d+)_(\d+)$").unwrap();
-        let mac_re = Regex::new(r"^__MAC_(\d+)_(\d+)").unwrap();
+        let apple_re = Regex::new(r"^__[A-Z]*_(\d+)_(\d+)").unwrap();
 
         for line in out.lines() {
             let Some(caps) = re.captures(line) else {
@@ -6376,11 +6388,19 @@ impl Versions {
                 // the other version macros above and let a missing value fail loudly at
                 // the unwrap in `test_android` rather than silently skipping tests.
                 "__ANDROID_MIN_SDK_VERSION__" => ret.android = Some(value.parse().unwrap()),
-                "__MAC_OS_X_VERSION_MAX_ALLOWED" => {
-                    let caps = mac_re.captures(value).unwrap();
+                "__MAC_OS_X_VERSION_MAX_ALLOWED"
+                | "__IPHONE_OS_VERSION_MAX_ALLOWED"
+                | "__WATCH_OS_VERSION_MAX_ALLOWED"
+                | "__TV_OS_VERSION_MAX_ALLOWED"
+                | "__VISION_OS_VERSION_MAX_ALLOWED" => {
+                    let caps = apple_re.captures(value).unwrap();
                     let major: u32 = caps[1].parse().unwrap();
                     let minor: u32 = caps[2].parse().unwrap();
-                    ret.macos = Some((major, minor));
+                    // Override any previous value.
+                    //
+                    // (`__IPHONE_OS_VERSION_MAX_ALLOWED` is defined first,
+                    // and is set on watchOS, tvOS and visionOS too).
+                    ret.apple = Some((major, minor));
                 }
                 "__FreeBSD_version" => {
                     // Format: MmmRxx where M is major (possibly multi-digit), mm is minor, R
