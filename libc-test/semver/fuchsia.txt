@@ -1276,6 +1276,12 @@ duplocale
 endpwent
 epoll_event
 eventfd
+execl
+execle
+execlp
+execv
+execve
+execvp
 execvpe
 faccessat
 fallocate
@@ -1291,6 +1297,7 @@ ff_ramp_effect
 ff_replay
 ff_rumble_effect
 ff_trigger
+fork
 fpos64_t
 freeifaddrs
 freelocale

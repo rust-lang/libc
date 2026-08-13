@@ -1137,14 +1137,22 @@ extern "C" {
     pub fn dup(fd: c_int) -> c_int;
     pub fn dup2(src: c_int, dst: c_int) -> c_int;
 
+    // exec* marked as prohibited on tvOS and watchOS.
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execl(path: *const c_char, arg0: *const c_char, ...) -> c_int;
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execle(path: *const c_char, arg0: *const c_char, ...) -> c_int;
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execlp(file: *const c_char, arg0: *const c_char, ...) -> c_int;
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execv(prog: *const c_char, argv: *const *mut c_char) -> c_int;
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execve(prog: *const c_char, argv: *const *mut c_char, envp: *const *mut c_char)
         -> c_int;
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> c_int;
 
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn fork() -> pid_t;
     pub fn fpathconf(filedes: c_int, name: c_int) -> c_long;
     pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;

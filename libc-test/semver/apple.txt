@@ -1836,7 +1836,6 @@ endgrent
 endpwent
 endservent
 endutxent
-execvP
 faccessat
 fchdir
 fchflags

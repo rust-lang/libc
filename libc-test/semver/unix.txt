@@ -505,12 +505,6 @@ dlopen
 dlsym
 dup
 dup2
-execl
-execle
-execlp
-execv
-execve
-execvp
 exit
 fchmod
 fchmodat
@@ -530,7 +524,6 @@ fileno
 flock
 fnmatch
 fopen
-fork
 fpathconf
 fpos_t
 fprintf

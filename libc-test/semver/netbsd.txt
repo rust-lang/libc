@@ -1298,6 +1298,12 @@ estrndup
 estrtoi
 estrtou
 evasprintf
+execl
+execle
+execlp
+execv
+execve
+execvp
 explicit_memset
 extattr_delete_fd
 extattr_delete_file
@@ -1322,6 +1328,7 @@ fgetxattr
 flags_to_string
 flistxattr
 fmemopen
+fork
 forkpty
 freeifaddrs
 freelocale
