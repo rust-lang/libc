@@ -298,6 +298,26 @@ impl Target {
         self.os == "windows"
     }
 
+    pub fn macos(&self) -> bool {
+        self.os == "macos"
+    }
+
+    pub fn ios(&self) -> bool {
+        self.os == "ios"
+    }
+
+    pub fn tvos(&self) -> bool {
+        self.os == "tvos"
+    }
+
+    pub fn watchos(&self) -> bool {
+        self.os == "watchos"
+    }
+
+    pub fn visionos(&self) -> bool {
+        self.os == "visionos"
+    }
+
     /* vendor */
 
     pub fn apple(&self) -> bool {
