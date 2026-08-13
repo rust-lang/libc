@@ -757,6 +757,13 @@ extern "C" {
         all(target_os = "macos", target_arch = "x86"),
         link_name = "system$UNIX2003"
     )]
+    // Not available on iOS/tvOS/watchOS/visionOS
+    #[cfg(not(any(
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos"
+    )))]
     pub fn system(s: *const c_char) -> c_int;
     pub fn getenv(s: *const c_char) -> *mut c_char;
 

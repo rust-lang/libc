@@ -378,5 +378,6 @@ strlcpy
 strncasecmp
 strndup
 strsignal
+system
 ttyname_r
 utimensat

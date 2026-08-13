@@ -845,7 +845,6 @@ symlink
 symlinkat
 sysconf
 syslog
-system
 tcdrain
 tcflag_t
 tcflow
