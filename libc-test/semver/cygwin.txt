@@ -653,6 +653,12 @@ eaccess
 endpwent
 erand48
 euidaccess
+execl
+execle
+execlp
+execv
+execve
+execvp
 execvpe
 explicit_bzero
 faccessat
@@ -666,6 +672,7 @@ ffsll
 fls
 flsl
 flsll
+fork
 forkpty
 freelocale
 fstatfs

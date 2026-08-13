@@ -1989,8 +1989,14 @@ eui64_ntoa
 eui64_ntohost
 eventfd_read
 eventfd_write
+execl
+execle
+execlp
 exect
+execv
 execvP
+execve
+execvp
 execvpe
 explicit_bzero
 extattr_delete_fd
@@ -2025,6 +2031,7 @@ fls
 flsl
 flsll
 fmemopen
+fork
 forkpty
 fparseln
 freeifaddrs

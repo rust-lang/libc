@@ -1371,8 +1371,14 @@ eui64_aton
 eui64_hostton
 eui64_ntoa
 eui64_ntohost
+execl
+execle
+execlp
 exect
+execv
 execvP
+execve
+execvp
 exit_status
 explicit_bzero
 extattr_delete_file
@@ -1385,6 +1391,7 @@ fdatasync
 fdopendir
 fexecve
 fmemopen
+fork
 forkpty
 fparseln
 freeifaddrs
