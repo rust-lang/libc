@@ -5218,6 +5218,7 @@ pub unsafe fn mach_task_self() -> crate::mach_port_t {
 }
 
 cfg_if! {
+    // Prohibited on iOS/tvOS/watchOS/visionOS
     if #[cfg(target_os = "macos")] {
         extern "C" {
             pub fn clock_settime(clock_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
@@ -5225,12 +5226,7 @@ cfg_if! {
     }
 }
 cfg_if! {
-    if #[cfg(any(
-        target_os = "macos",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "visionos"
-    ))] {
+    if #[cfg(target_vendor = "apple")] {
         extern "C" {
             pub fn memmem(
                 haystack: *const c_void,
