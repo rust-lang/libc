@@ -175,6 +175,14 @@ brk
 clock_settime
 ctl_info
 exchangedata
+execl
+execle
+execlp
+execv
+execvP
+execve
+execvp
+fork
 gethostuuid
 icmp6_ifstat
 in6_addrlifetime

@@ -185,7 +185,7 @@ IP_TTL
 MSG_PEEK
 O_APPEND
 O_CREAT
-O_DIRECTORY 
+O_DIRECTORY
 O_EXCL
 O_NONBLOCK
 O_RDONLY
@@ -246,6 +246,13 @@ S_IXUSR
 TCP_NODELAY
 addrinfo
 dirent64
+execl
+execle
+execlp
+execv
+execve
+execvp
+fork
 in6_addr
 in_addr
 iovec

@@ -1158,6 +1158,12 @@ endgrent
 endpwent
 endservent
 erand48
+execl
+execle
+execlp
+execv
+execve
+execvp
 execvpe
 explicit_bzero
 export_args
@@ -1167,6 +1173,7 @@ fchflags
 fdatasync
 fdopendir
 fmemopen
+fork
 forkpty
 freeifaddrs
 freelocale
