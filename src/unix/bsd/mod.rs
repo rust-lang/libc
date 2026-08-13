@@ -40,15 +40,7 @@ s! {
         pub pw_shell: *mut c_char,
         pub pw_expire: crate::time_t,
 
-        #[cfg(not(any(
-            target_os = "macos",
-            target_os = "ios",
-            target_os = "tvos",
-            target_os = "watchos",
-            target_os = "visionos",
-            target_os = "netbsd",
-            target_os = "openbsd"
-        )))]
+        #[cfg(not(any(target_vendor = "apple", target_os = "netbsd", target_os = "openbsd")))]
         pub pw_fields: c_int,
     }
 
@@ -848,13 +840,7 @@ extern "C" {
 }
 
 cfg_if! {
-    if #[cfg(any(
-        target_os = "macos",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos"
-    ))] {
+    if #[cfg(target_vendor = "apple")] {
         mod apple;
         pub use self::apple::*;
     } else if #[cfg(any(target_os = "openbsd", target_os = "netbsd"))] {
