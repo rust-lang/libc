@@ -251,9 +251,12 @@ fn main() {
         || target_env == "ohos"
         || target_abi == "pauthtest";
 
+    // Single entry-point to enable `time64` on supported platforms.
+    let time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_TIME64");
+
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
-    let musl_v1_2 = musl && (musl_v1_2_env || only_v1_2_on_musl);
+    let musl_v1_2 = musl && (musl_v1_2_env || only_v1_2_on_musl || time64);
 
     if musl_v1_2 {
         cfgs.push(Cfg::MuslV1_2);
@@ -301,7 +304,7 @@ fn main() {
         || target_arch == "x86_64"
         || !matches!(target_os.as_str(), "linux" | "windows" | "hurd");
     let gnu = target_env == "gnu";
-    let gnu32_time64 = gnu && target_ptr_width == "32" && gnu32_timebits == "64";
+    let gnu32_time64 = gnu && target_ptr_width == "32" && (gnu32_timebits == "64" || time64);
 
     if gnu32_time64 && !gnu32_already_time64 {
         // These configs all set up nonstandard options. They are not needed on platforms like
@@ -315,7 +318,7 @@ fn main() {
 
     let uclibc_time64_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
     let uclibc = target_env == "uclibc";
-    let uclibc32_time64 = uclibc && target_ptr_width == "32" && uclibc_time64_env;
+    let uclibc32_time64 = uclibc && target_ptr_width == "32" && (uclibc_time64_env || time64);
 
     if uclibc32_time64 {
         if target_os == "linux" {
