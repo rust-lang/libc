@@ -246,13 +246,9 @@ cfg_if! {
         pub use bits::*;
         pub use dirent_mod::*;
         pub use errno::*;
-        pub use fibril::*;
         pub use fibril_synch::*;
         pub use inet::dnsr::*;
-        pub use inet::endpoint::*;
         pub use inet::tcp::*;
-        pub use ipc::vfs::*;
-        pub use stdio::*;
         pub use stdlib::*;
         pub use vfs::vfs::*;
     }
