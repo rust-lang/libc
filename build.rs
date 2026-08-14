@@ -170,6 +170,9 @@ fn main() {
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
 
+    // Single entry-point to enable `time64` on supported platforms.
+    let time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_TIME64");
+
     // loongarch64, hexagon, ohos and pauthtest only exist with recent musl
     if target_arch == "loongarch64"
         || target_arch == "hexagon"
@@ -179,7 +182,7 @@ fn main() {
         musl_v1_2 = true;
     }
 
-    if musl && musl_v1_2 {
+    if musl && (musl_v1_2 || time64) {
         set_cfg("musl_v1_2");
         if target_ptr_width == "32" {
             set_cfg("musl32_time64");
@@ -191,7 +194,7 @@ fn main() {
     }
 
     let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
-    if target_env == "uclibc" && uclibc_use_time64 {
+    if target_env == "uclibc" && (uclibc_use_time64 || time64) {
         set_cfg("linux_time_bits64");
     }
 
@@ -231,7 +234,7 @@ fn main() {
             }
         };
 
-        if timebits == "64" {
+        if timebits == "64" || time64 {
             set_cfg("linux_time_bits64");
             set_cfg("gnu_file_offset_bits64");
             set_cfg("gnu_time_bits64");
