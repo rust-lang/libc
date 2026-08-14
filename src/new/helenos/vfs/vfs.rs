@@ -2,16 +2,12 @@
 //!
 //! * Header file: <https://github.com/HelenOS/helenos/tree/master/uspace/lib/c/include/vfs/vfs.h>
 
+use crate::errno_t;
 pub use crate::ipc::loc::*;
 pub use crate::ipc::vfs::*;
 pub use crate::offset::*;
+use crate::prelude::*;
 pub use crate::stdio::*;
-use crate::{
-    c_char,
-    c_int,
-    c_uint,
-    errno_t,
-};
 
 s! {
     pub struct vfs_stat_t {
@@ -28,8 +24,8 @@ s! {
 
 c_enum! {
     pub enum vfs_file_kind_t {
-        KIND_FILE,
-        KIND_DIRECTORY,
+        pub KIND_FILE,
+        pub KIND_DIRECTORY,
     }
 }
 

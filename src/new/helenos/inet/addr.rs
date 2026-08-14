@@ -8,9 +8,9 @@ pub type addr128_t = [u8; 16];
 c_enum! {
     #[repr(u32)]
     pub enum ip_ver_t {
-        ip_any,
-        ip_v4,
-        ip_v6,
+        pub ip_any,
+        pub ip_v4,
+        pub ip_v6,
     }
 }
 s_no_extra_traits! {

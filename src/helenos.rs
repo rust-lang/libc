@@ -37,8 +37,7 @@ pub const CLOCK_MONOTONIC: clockid_t = 1;
 // 'static inline' functions from libc
 // common/include/adt/list.h
 f! {
-    pub fn list_initialize(list: *mut list_t) -> () {
-        let list = &mut *list;
+    pub safe fn list_initialize(list: &mut list_t) -> () {
         list.head.next = &mut list.head;
         list.head.prev = &mut list.head;
     }
@@ -52,7 +51,7 @@ extern "C" {
     // uspace/lib/posix/include/posix/pthread.h
     pub fn pthread_key_create(
         key: *mut pthread_key_t,
-        destructor: unsafe extern "C" fn(*mut c_void),
+        destructor: Option<unsafe extern "C" fn(*mut c_void)>,
     ) -> c_int;
     pub fn pthread_getspecific(key: pthread_key_t) -> *mut c_void;
     pub fn pthread_setspecific(key: pthread_key_t, value: *const c_void) -> c_int;

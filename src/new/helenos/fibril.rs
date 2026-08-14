@@ -2,12 +2,9 @@
 //!
 //! * Header file: <https://github.com/HelenOS/helenos/tree/master/uspace/lib/c/include/fibril.h>
 
+use crate::errno_t;
+use crate::prelude::*;
 pub use crate::time::*;
-use crate::{
-    c_void,
-    errno_t,
-    size_t,
-};
 
 pub type fid_t = *mut fibril_t;
 
@@ -18,12 +15,12 @@ s! {
 }
 
 extern_ty! {
-    pub enum fibril_t {}
+    pub type fibril_t;
 }
 
 extern "C" {
     pub fn fibril_create_generic(
-        func: extern "C" fn(*mut c_void) -> errno_t,
+        func: unsafe extern "C" fn(*mut c_void) -> errno_t,
         arg: *mut c_void,
         stacksize: size_t,
     ) -> fid_t;

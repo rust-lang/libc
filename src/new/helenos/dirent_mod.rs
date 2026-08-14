@@ -5,10 +5,7 @@
 // The module is named to avoid name collision with the dirent struct, which causes issues with
 // wildcard imports in the parent module.
 
-use crate::{
-    c_char,
-    c_int,
-};
+use crate::prelude::*;
 
 s! {
     pub struct dirent {
@@ -17,7 +14,7 @@ s! {
 }
 
 extern_ty! {
-    pub enum DIR {}
+    pub type DIR;
 }
 
 extern "C" {
@@ -25,5 +22,4 @@ extern "C" {
     pub fn readdir(dir: *mut DIR) -> *mut dirent;
     pub fn closedir(dir: *mut DIR) -> c_int;
     pub fn rewinddir(dir: *mut DIR);
-
 }

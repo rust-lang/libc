@@ -2,30 +2,28 @@
 //!
 //! * Header file: <https://github.com/HelenOS/helenos/tree/master/uspace/lib/inet/include/inet/tcp.h>
 
+use crate::errno_t;
 pub use crate::inet::endpoint::*;
-use crate::{
-    c_void,
-    errno_t,
-    size_t,
-};
+use crate::prelude::*;
 
 s_no_extra_traits! {
     pub struct tcp_cb_t {
-        pub connected: extern "C" fn(conn: *mut tcp_conn_t),
-        pub conn_failed: extern "C" fn(conn: *mut tcp_conn_t),
-        pub conn_reset: extern "C" fn(conn: *mut tcp_conn_t),
-        pub data_avail: extern "C" fn(conn: *mut tcp_conn_t),
-        pub urg_data: extern "C" fn(conn: *mut tcp_conn_t),
+        pub connected: Option<unsafe extern "C" fn(conn: *mut tcp_conn_t)>,
+        pub conn_failed: Option<unsafe extern "C" fn(conn: *mut tcp_conn_t)>,
+        pub conn_reset: Option<unsafe extern "C" fn(conn: *mut tcp_conn_t)>,
+        pub data_avail: Option<unsafe extern "C" fn(conn: *mut tcp_conn_t)>,
+        pub urg_data: Option<unsafe extern "C" fn(conn: *mut tcp_conn_t)>,
     }
     pub struct tcp_listen_cb_t {
-        pub new_conn: extern "C" fn(listener: *mut tcp_listener_t, conn: *mut tcp_conn_t),
+        pub new_conn:
+            Option<unsafe extern "C" fn(listener: *mut tcp_listener_t, conn: *mut tcp_conn_t)>,
     }
 }
 
 extern_ty! {
-    pub enum tcp_t {}
-    pub enum tcp_conn_t {}
-    pub enum tcp_listener_t {}
+    pub type tcp_t;
+    pub type tcp_conn_t;
+    pub type tcp_listener_t;
 }
 
 extern "C" {

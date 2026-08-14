@@ -9,7 +9,7 @@ pub const SEEK_CUR: c_int = 1;
 pub const SEEK_END: c_int = 2;
 
 extern_ty! {
-    pub enum FILE {}
+    pub type FILE;
 }
 
 extern "C" {

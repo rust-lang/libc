@@ -2,10 +2,7 @@
 //!
 //! * Header file: <https://github.com/HelenOS/helenos/tree/master/uspace/lib/c/include/time.h>
 
-pub use crate::{
-    c_long,
-    c_longlong,
-};
+use crate::prelude::*;
 
 pub type time_t = c_longlong;
 pub type usec_t = c_longlong;

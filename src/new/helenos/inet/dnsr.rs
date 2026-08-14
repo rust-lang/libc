@@ -2,11 +2,9 @@
 //!
 //! * Header file: <https://github.com/HelenOS/helenos/tree/master/uspace/lib/inet/include/inet/dnsr.h>
 
+use crate::errno_t;
 pub use crate::inet::addr::*;
-use crate::{
-    c_char,
-    errno_t,
-};
+use crate::prelude::*;
 
 s_no_extra_traits! {
     pub struct dnsr_hostinfo_t {

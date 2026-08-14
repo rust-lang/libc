@@ -23,5 +23,7 @@ pub(crate) mod stdio;
 pub(crate) mod stdlib;
 pub(crate) mod time;
 pub(crate) mod vfs {
+    // The module layout mirrors the `vfs/vfs.h` header path.
+    #[allow(clippy::module_inception)]
     pub(crate) mod vfs;
 }
