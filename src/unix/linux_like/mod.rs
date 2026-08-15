@@ -1678,6 +1678,12 @@ cfg_if! {
         pub const STATX_ALL: c_uint = 0x0fff;
         pub const STATX_MNT_ID: c_uint = 0x1000;
         pub const STATX_DIOALIGN: c_uint = 0x2000;
+        pub const STATX_MNT_ID_UNIQUE: c_uint = 0x00004000;
+        pub const STATX_SUBVOL: c_uint = 0x00008000;
+        pub const STATX_WRITE_ATOMIC: c_uint = 0x00010000;
+        // Not in the Android NDK as of r29.
+        #[cfg(not(target_os = "android"))]
+        pub const STATX_DIO_READ_ALIGN: c_uint = 0x00020000;
         pub const STATX__RESERVED: c_int = u32_cast_int(0x80000000);
         pub const STATX_ATTR_COMPRESSED: c_int = 0x0004;
         pub const STATX_ATTR_IMMUTABLE: c_int = 0x0010;
@@ -1688,6 +1694,7 @@ cfg_if! {
         pub const STATX_ATTR_MOUNT_ROOT: c_int = 0x2000;
         pub const STATX_ATTR_VERITY: c_int = 0x100000;
         pub const STATX_ATTR_DAX: c_int = 0x200000;
+        pub const STATX_ATTR_WRITE_ATOMIC: c_int = 0x00400000;
     }
 }
 
