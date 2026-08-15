@@ -7,7 +7,7 @@ use crate::prelude::*;
 pub type time_t = c_longlong;
 pub type usec_t = c_longlong;
 
-s! {
+s_with_default! {
     pub struct timespec {
         pub tv_sec: time_t,
         pub tv_nsec: c_long,
