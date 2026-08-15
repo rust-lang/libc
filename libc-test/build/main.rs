@@ -2371,6 +2371,11 @@ fn test_android(t: &Target) {
             | "NTF_EXT_LOCKED"
             | "ALG_SET_DRBG_ENTROPY" => true,
 
+            // FIXME(android): NDK r28 minimum required
+            | "STATX_SUBVOL"
+            | "STATX_WRITE_ATOMIC"
+            | "STATX_ATTR_WRITE_ATOMIC" => true,
+
             // FIXME(android): Something has been changed on r26b:
             | "NFNL_SUBSYS_COUNT"
             | "NF_NETDEV_NUMHOOKS"
@@ -5051,6 +5056,12 @@ fn test_linux(t: &Target) {
             "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
             "TLS_INFO_TX_MAX_PAYLOAD_LEN" | "TLS_INFO_MAX" => kernel < (6, 19),
+
+            // statx mask and attribute bits
+            "STATX_MNT_ID_UNIQUE" => kernel < (6, 8),
+            "STATX_SUBVOL" => kernel < (6, 10),
+            "STATX_WRITE_ATOMIC" | "STATX_ATTR_WRITE_ATOMIC" => kernel < (6, 11),
+            "STATX_DIO_READ_ALIGN" => kernel < (6, 14),
 
             // Changed value recently
             "SW_MAX" | "SW_CNT" => kernel < (6, 16),
