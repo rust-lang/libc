@@ -29,7 +29,7 @@ s! {
     }
 }
 
-f! {
+safe_f! {
     pub safe fn fibril_mutex_initialize(fm: &mut fibril_mutex_t) -> () {
         fm.oi.owned_by = ptr::null_mut();
         fm.counter = 1;

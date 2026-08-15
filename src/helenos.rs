@@ -36,7 +36,7 @@ pub const CLOCK_MONOTONIC: clockid_t = 1;
 
 // 'static inline' functions from libc
 // common/include/adt/list.h
-f! {
+safe_f! {
     pub safe fn list_initialize(list: &mut list_t) -> () {
         list.head.next = &mut list.head;
         list.head.prev = &mut list.head;
