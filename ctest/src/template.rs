@@ -122,7 +122,7 @@ impl TestTemplate {
             if let syn::Type::Ptr(ptr) = &constant.ty
                 && let syn::Type::Path(path) = &*ptr.elem
                 && path.path.segments.last().unwrap().ident == "c_char"
-                && ptr.mutability.is_none()
+                && matches!(ptr.mutability, syn::PointerMutability::Const(_))
             {
                 let item = TestCStr {
                     id: constant.ident().into(),

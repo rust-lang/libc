@@ -13,7 +13,7 @@ askama = "0.14.0"
 cc = "1.4.2"
 proc-macro2 = { version = "1.0.103", features = ["span-locations"] }
 quote = "1.0.41"
-syn = { version = "2.0.108", features = ["full", "visit", "extra-traits"] }
+syn = { version = "3.0.0", features = ["full", "visit", "extra-traits"] }
 tempfile = "3.23.0"
 thiserror = "2.0.17"
 
