@@ -795,7 +795,6 @@ pub const EM_M32R: u16 = 88;
 pub const EM_MN10300: u16 = 89;
 pub const EM_MN10200: u16 = 90;
 pub const EM_PJ: u16 = 91;
-#[cfg(not(target_env = "uclibc"))]
 pub const EM_OPENRISC: u16 = 92;
 #[cfg(target_env = "uclibc")]
 pub const EM_OR1K: u16 = 92;
@@ -876,7 +875,6 @@ pub const AT_EXECFN: c_ulong = 31;
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
 // wherever it is defined.
 pub const AT_SYSINFO_EHDR: c_ulong = 33;
-#[cfg(not(target_env = "uclibc"))]
 pub const AT_MINSIGSTKSZ: c_ulong = 51;
 
 pub const GLOB_ERR: c_int = 1 << 0;
