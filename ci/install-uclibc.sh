@@ -1,20 +1,18 @@
 #!/bin/bash
 #
-# Installs the appropriate uclibc toolchain into /toolchain
+# Builds a buildroot uclibc toolchain into /buildroot/output/host/
+#
+# usage: install-uclibc.sh BUILDROOT_TOOLCHAIN_URL
 
 set -eux
 
-time64="$1"
-
-if [ "${time64:-0}" != "0" ]; then
-    version='bleeding-edge-2025.08-1'
-else
-    version='bleeding-edge-2024.02-1'  # last version with 32-bit time_t
-fi
+toolchain_url="$1"
 
 mkdir /toolchain
-
-curl --retry 5 -L "https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/armv7-eabihf--uclibc--${version}.tar.bz2" |
-tar xjf - -C /toolchain --strip-components=1
-
+curl --retry 5 -L "$toolchain_url" | tar xzf - -C /toolchain --strip-components=1
+if ! [ -f /toolchain/relocate-sdk.sh ]; then
+    echo "ERROR: toolchain does not contain relocate-sdk.sh, expecting a buildroot SDK."
+    exit 1
+fi
 /toolchain/relocate-sdk.sh
+
