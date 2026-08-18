@@ -120,7 +120,7 @@ dependencies = [
  "pretty_assertions",
  "proc-macro2",
  "quote",
- "syn 2.0.119",
+ "syn 3.0.3",
  "tempfile",
  "thiserror",
 ]
@@ -210,7 +210,7 @@ dependencies = [
  "libc 1.0.0-alpha.4",
  "proc-macro2",
  "regex",
- "syn 2.0.119",
+ "syn 3.0.3",
 ]
 
 [[package]]
