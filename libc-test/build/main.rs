@@ -4776,6 +4776,10 @@ fn test_linux(t: &Target) {
                 | "UDP_GRO"
                 | "UDP_SEGMENT" => return true,
 
+                // FIXME: once uclibc catches up with the kernel headers, remove.
+                // See https://github.com/rust-lang/libc/issues/1896
+                "IPPROTO_MAX" => return true,
+
                 _ => (),
             }
         }
