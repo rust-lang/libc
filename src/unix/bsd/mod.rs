@@ -9,6 +9,9 @@ pub type sa_family_t = u8;
 cfg_if! {
     if #[cfg(target_vendor = "apple")] {
         extern_ty! {
+            // Internal definition that must be public because it appears in `pthread_t`, but is
+            // not meant to be user-facing.
+            #[doc(hidden)]
             pub type _opaque_pthread_t;
         }
 
