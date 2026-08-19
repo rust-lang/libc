@@ -1326,6 +1326,11 @@ pub const IPV6_FREEBIND: c_int = 78;
 pub const IPV6_FLOWINFO_FLOWLABEL: c_int = 0x000fffff;
 pub const IPV6_FLOWINFO_PRIORITY: c_int = 0x0ff00000;
 
+// netinet/in.h
+// NOTE: These are in addition to the constants defined in src/unix/mod.rs
+
+pub const IPPROTO_MAX: c_int = 263;
+
 // SO_MEMINFO offsets
 pub const SK_MEMINFO_RMEM_ALLOC: c_int = 0;
 pub const SK_MEMINFO_RCVBUF: c_int = 1;

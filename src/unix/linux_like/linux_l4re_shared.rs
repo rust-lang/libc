@@ -945,11 +945,6 @@ pub const PTHREAD_EXPLICIT_SCHED: c_int = 1;
 #[cfg(not(target_os = "l4re"))]
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
 
-// netinet/in.h
-// NOTE: These are in addition to the constants defined in src/unix/mod.rs
-
-pub const IPPROTO_MAX: c_int = 263;
-
 // System V IPC
 pub const IPC_PRIVATE: crate::key_t = 0;
 

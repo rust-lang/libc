@@ -410,6 +410,8 @@ pub const ENOTSUP: c_int = EOPNOTSUPP;
 pub const IPV6_JOIN_GROUP: c_int = 20;
 pub const IPV6_LEAVE_GROUP: c_int = 21;
 
+pub const IPPROTO_MAX: c_int = 256;
+
 // Different than Gnu.
 pub const FILENAME_MAX: c_uint = 4095;
 
