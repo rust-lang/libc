@@ -447,7 +447,7 @@ s! {
     }
 
     pub struct utsname {
-        pub sysname: [c_char; 66],
+        pub sysname: [c_char; 65],
         pub nodename: [c_char; 65],
         pub release: [c_char; 65],
         pub version: [c_char; 65],
