@@ -1789,10 +1789,10 @@ _W_SFWTED
 _W_SLWTED
 _W_STOPPED
 _W_STRC
+__c_anonymous_ld_info__file
+__c_anonymous_pollfd_ext_t_u
 __context64
 __extctx_t
-__ld_info_file
-__pollfd_ext_u
 __tm_context_t
 __vmx_context_t
 __vmxreg_t
@@ -2182,7 +2182,7 @@ poll
 poll_ctl
 poll_ctl_ext
 pollfd
-pollfd_ext
+pollfd_ext_t
 pollset_create
 pollset_ctl
 pollset_destroy
