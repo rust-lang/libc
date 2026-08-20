@@ -6139,6 +6139,7 @@ fn test_aix(t: &Target) {
         match s.ident() {
             // The field 'u' is actually a unnamed union in the AIX header.
             "poll_ctl_ext" if field.ident() == "u" => true,
+            "pollfd_ext_t" if field.ident() == "u" => true,
 
             // The field 'data' is actually a unnamed union in the AIX header.
             "pollfd_ext" if field.ident() == "data" => true,
