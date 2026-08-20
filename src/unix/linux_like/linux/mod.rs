@@ -100,9 +100,18 @@ s! {
         // On all variants _except_ 32-bit long and 64-bit time_t they actually
         // refer to members of input_event.time, a timeval struct.
         // The timeval struct has two members of type time_t and suseconds_t.
-        #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
+        #[cfg(all(target_arch = "x86_64", target_pointer_width = "32"))]
+        pub input_event_sec: c_long,
+        #[cfg(all(
+            not(all(target_arch = "x86_64", target_pointer_width = "32")),
+            any(target_pointer_width = "64", not(linux_time_bits64)),
+        ))]
         pub input_event_sec: crate::time_t,
-        #[cfg(all(target_pointer_width = "32", linux_time_bits64))]
+        #[cfg(all(
+            not(all(target_arch = "x86_64", target_pointer_width = "32")),
+            target_pointer_width = "32",
+            linux_time_bits64,
+        ))]
         pub input_event_sec: c_ulong,
 
         #[cfg(any(target_pointer_width = "64", not(linux_time_bits64)))]
