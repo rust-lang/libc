@@ -156,8 +156,10 @@ s! {
         _pad2: Padding<[c_int; 7]>,
     }
 
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: crate::sig_t,
         pub sa_flags: c_int,
         pub sa_mask: sigset_t,
     }
