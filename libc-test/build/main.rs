@@ -267,7 +267,7 @@ fn test_apple(t: &Target) {
     cfg.skip_struct(move |s| {
         match s.ident() {
             // Extern types
-            "DIR" | "FILE" | "fpos_t" | "timezone" => true,
+            "DIR" | "FILE" | "fpos_t" | "timezone" | "_opaque_pthread_t" => true,
 
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_zone_t" => true,

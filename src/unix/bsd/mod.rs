@@ -5,7 +5,25 @@ pub type useconds_t = u32;
 pub type blkcnt_t = i64;
 pub type socklen_t = u32;
 pub type sa_family_t = u8;
-pub type pthread_t = crate::uintptr_t;
+
+cfg_if! {
+    if #[cfg(target_vendor = "apple")] {
+        extern_ty! {
+            // Internal definition that must be public because it appears in `pthread_t`, but is
+            // not meant to be user-facing.
+            #[doc(hidden)]
+            pub type _opaque_pthread_t;
+        }
+
+        type __darwin_pthread_t = *mut _opaque_pthread_t;
+
+        pub type pthread_t = __darwin_pthread_t;
+    } else {
+        // FIXME(1.0): verify other BSDs? Glancing around, other BSDs also look like a pointer
+        pub type pthread_t = crate::uintptr_t;
+    }
+}
+
 pub type nfds_t = c_uint;
 #[cfg(target_os = "dragonfly")]
 pub type regoff_t = c_int;
