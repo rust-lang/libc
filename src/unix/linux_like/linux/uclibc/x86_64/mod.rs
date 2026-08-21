@@ -52,10 +52,10 @@ s! {
     }
 
     pub struct siginfo_t {
-        si_signo: c_int,       // signal number
-        si_errno: c_int,       // if not zero: error value of signal, see errno.h
-        si_code: c_int,        // signal code
-        pub _pad: [c_int; 28], // unported union
+        si_signo: c_int,            // signal number
+        si_errno: c_int,            // if not zero: error value of signal, see errno.h
+        si_code: c_int,             // signal code
+        _pad: Padding<[c_int; 28]>, // unported union
         _align: [usize; 0],
     }
 
@@ -171,7 +171,7 @@ s! {
         pub f_namelen: c_int,
         pub f_frsize: c_int,
         pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
+        f_spare: Padding<[c_int; 4]>,
     }
 
     pub struct statvfs64 {
@@ -227,11 +227,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 0],
+        _f: Padding<[c_char; 0]>,
     }
 
     pub struct cpu_set_t {

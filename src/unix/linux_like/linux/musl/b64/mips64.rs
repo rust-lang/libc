@@ -84,7 +84,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 5],
+        f_spare: Padding<[c_ulong; 5]>,
     }
 
     // FIXME(1.0,deprecate): lfs binding to be removed
@@ -100,7 +100,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 5],
+        f_spare: Padding<[c_ulong; 5]>,
     }
 }
 

@@ -63,14 +63,14 @@ s! {
 
     pub struct stat64 {
         pub st_dev: c_ulonglong,
-        pub __pad1: c_uint,
+        __pad1: Padding<c_uint>,
         pub __st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: c_ulonglong,
-        pub __pad2: c_uint,
+        __pad2: Padding<c_uint>,
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt64_t,
@@ -101,11 +101,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 8],
+        _f: Padding<[c_char; 8]>,
     }
 
     pub struct statfs {
@@ -121,7 +121,7 @@ s! {
         pub f_namelen: c_int,
         pub f_frsize: c_int,
         pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
+        f_spare: Padding<[c_int; 4]>,
     }
 
     pub struct statfs64 {
@@ -136,7 +136,7 @@ s! {
         pub f_namelen: c_int,
         pub f_frsize: c_int,
         pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
+        f_spare: Padding<[c_int; 4]>,
     }
 
     pub struct statvfs64 {
@@ -183,7 +183,7 @@ s! {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        pub _pad: [c_int; 29],
+        _pad: Padding<[c_int; 29]>,
     }
 
     pub struct stack_t {

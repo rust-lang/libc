@@ -64,7 +64,7 @@ s! {
         pub f_namelen: u32,
         pub f_frsize: u32,
         pub f_flags: u32,
-        pub f_spare: [u32; 4],
+        f_spare: Padding<[u32; 4]>,
     }
 
     pub struct statvfs64 {
@@ -138,7 +138,7 @@ s! {
         pub f_namelen: u32,
         pub f_frsize: u32,
         pub f_flags: u32,
-        pub f_spare: [u32; 4],
+        f_spare: Padding<[u32; 4]>,
     }
 
     pub struct sysinfo {
@@ -151,11 +151,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 8],
+        _f: Padding<[c_char; 8]>,
     }
 }
 

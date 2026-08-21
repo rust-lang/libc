@@ -139,7 +139,7 @@ s! {
     pub struct fanotify_event_metadata {
         pub event_len: c_uint,
         pub vers: c_uchar,
-        pub reserved: c_uchar,
+        reserved: Padding<c_uchar>,
         pub metadata_len: c_ushort,
         pub mask: c_ulonglong,
         pub fd: c_int,
@@ -291,19 +291,19 @@ s! {
     }
 
     pub struct rtentry {
-        pub rt_pad1: c_ulong,
+        rt_pad1: Padding<c_ulong>,
         pub rt_dst: crate::sockaddr,
         pub rt_gateway: crate::sockaddr,
         pub rt_genmask: crate::sockaddr,
         pub rt_flags: c_ushort,
-        pub rt_pad2: c_short,
-        pub rt_pad3: c_ulong,
+        rt_pad2: Padding<c_short>,
+        rt_pad3: Padding<c_ulong>,
         pub rt_tos: c_uchar,
         pub rt_class: c_uchar,
         #[cfg(target_pointer_width = "64")]
-        pub rt_pad4: [c_short; 3usize],
+        rt_pad4: Padding<[c_short; 3usize]>,
         #[cfg(not(target_pointer_width = "64"))]
-        pub rt_pad4: [c_short; 1usize],
+        rt_pad4: Padding<[c_short; 1usize]>,
         pub rt_metric: c_short,
         pub rt_dev: *mut c_char,
         pub rt_mtu: c_ulong,
@@ -318,7 +318,7 @@ s! {
 
     pub struct Elf64_Chdr {
         pub ch_type: crate::Elf64_Word,
-        pub ch_reserved: crate::Elf64_Word,
+        ch_reserved: Padding<crate::Elf64_Word>,
         pub ch_size: crate::Elf64_Xword,
         pub ch_addralign: crate::Elf64_Xword,
     }
@@ -350,7 +350,7 @@ s! {
         pub errcnt: c_long,
         pub stbcnt: c_long,
         pub tai: c_int,
-        pub __padding: [c_int; 11],
+        __padding: Padding<[c_int; 11]>,
     }
 
     pub struct ntptimeval {
@@ -436,7 +436,7 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     // MIPS/s390x implementation is special (see arch folders)
@@ -454,7 +454,7 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     pub struct sysinfo {
@@ -467,11 +467,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub __reserved: [c_char; 256],
+        __reserved: Padding<[c_char; 256]>,
     }
 
     pub struct utmpx {

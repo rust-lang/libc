@@ -438,7 +438,7 @@ s! {
         pub f_ffree: c_long,
         pub f_fsid: c_long,
         pub f_namelen: c_long,
-        pub f_spare: [c_long; 6],
+        f_spare: Padding<[c_long; 6]>,
     }
 
     pub struct sockaddr_un {

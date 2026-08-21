@@ -207,7 +207,7 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: u32,
         pub st_gen: u32,
-        pub st_spare: [u32; 2],
+        st_spare: Padding<[u32; 2]>,
     }
 
     pub struct addrinfo {
@@ -739,7 +739,7 @@ s! {
         pub tcpi_snd_rexmitpack: u32,
         pub tcpi_rcv_ooopack: u32,
         pub tcpi_snd_zerowin: u32,
-        pub __tcpi_pad: [u32; 26],
+        __tcpi_pad: Padding<[u32; 26]>,
     }
 
     pub struct in_pktinfo {

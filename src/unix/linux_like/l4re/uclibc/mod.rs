@@ -60,7 +60,7 @@ s! {
         pub f_namelen: __sword_type,
         pub f_frsize: __sword_type,
         pub f_flags: __sword_type,
-        pub f_spare: [__sword_type; 4],
+        f_spare: Padding<[__sword_type; 4]>,
     }
 
     pub struct statfs64 {
@@ -75,7 +75,7 @@ s! {
         pub f_namelen: __sword_type,
         pub f_frsize: __sword_type,
         pub f_flags: __sword_type,
-        pub f_spare: [__sword_type; 4],
+        f_spare: Padding<[__sword_type; 4]>,
     }
 
     pub struct ipc_perm {
@@ -142,14 +142,14 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
         #[cfg(target_pointer_width = "32")]
-        pub _f: [c_char; 8],
+        _f: Padding<[c_char; 8]>,
         #[cfg(target_pointer_width = "64")]
-        pub _f: [c_char; 0],
+        _f: Padding<[c_char; 0]>,
     }
 
     pub struct regex_t {
@@ -164,19 +164,19 @@ s! {
     }
 
     pub struct rtentry {
-        pub rt_pad1: c_ulong,
+        rt_pad1: Padding<c_ulong>,
         pub rt_dst: crate::sockaddr,
         pub rt_gateway: crate::sockaddr,
         pub rt_genmask: crate::sockaddr,
         pub rt_flags: c_ushort,
-        pub rt_pad2: c_short,
-        pub rt_pad3: c_ulong,
+        rt_pad2: Padding<c_short>,
+        rt_pad3: Padding<c_ulong>,
         pub rt_tos: c_uchar,
         pub rt_class: c_uchar,
         #[cfg(target_pointer_width = "64")]
-        pub rt_pad4: [c_short; 3usize],
+        rt_pad4: Padding<[c_short; 3usize]>,
         #[cfg(not(target_pointer_width = "64"))]
-        pub rt_pad4: c_short,
+        rt_pad4: Padding<c_short>,
         pub rt_metric: c_short,
         pub rt_dev: *mut c_char,
         pub rt_mtu: c_ulong,

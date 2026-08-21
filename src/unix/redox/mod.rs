@@ -96,7 +96,7 @@ s! {
     pub struct epoll_event {
         pub events: u32,
         pub u64: u64,
-        pub _pad: u64,
+        _pad: Padding<u64>,
     }
 
     pub struct fd_set {

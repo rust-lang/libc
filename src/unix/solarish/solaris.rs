@@ -36,7 +36,7 @@ s! {
         pub aio_resultp: crate::aio_result_t,
         pub aio_state: c_char,
         pub aio_returned: c_char,
-        pub aio__pad1: [c_char; 2],
+        aio__pad1: Padding<[c_char; 2]>,
         pub aio_flags: c_int,
     }
 
@@ -55,7 +55,7 @@ s! {
         pub shm_amp: *mut c_void,
         pub shm_gransize: u64,
         pub shm_allocated: u64,
-        pub shm_pad4: [i64; 1],
+        shm_pad4: Padding<[i64; 1]>,
     }
 
     pub struct xrs_t {
@@ -72,7 +72,7 @@ s! {
         pub ut_exit: exit_status,
         pub ut_tv: crate::timeval,
         pub ut_session: c_int,
-        pub pad: [c_int; 5],
+        pad: Padding<[c_int; 5]>,
         pub ut_syslen: c_short,
         pub ut_host: [c_char; 257],
     }
