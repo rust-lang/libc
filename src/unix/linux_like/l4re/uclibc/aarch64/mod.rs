@@ -22,34 +22,34 @@ pub type __u64 = c_ulong;
 s! {
     pub struct stat {
         pub st_dev: c_ulong,
-        pub __pad1: c_ushort,
+        __pad1: Padding<c_ushort>,
         pub st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: c_ulong,
-        pub __pad2: c_ushort,
+        __pad2: Padding<c_ushort>,
         pub st_size: crate::off64_t,
         pub st_blksize: blksize_t,
         pub st_blocks: crate::blkcnt64_t,
         pub st_atim: crate::timespec,
         pub st_mtim: crate::timespec,
         pub st_ctim: crate::timespec,
-        pub __uclibc_unused4: c_ulong,
-        pub __uclibc_unused5: c_ulong,
+        __uclibc_unused4: Padding<c_ulong>,
+        __uclibc_unused5: Padding<c_ulong>,
     }
 
     pub struct stat64 {
         pub st_dev: c_ulong,
-        pub __pad1: c_uint,
+        __pad1: Padding<c_uint>,
         pub __st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: c_ulong,
-        pub __pad2: c_uint,
+        __pad2: Padding<c_uint>,
         pub st_size: crate::off64_t,
         pub st_blksize: blksize_t,
         pub st_blocks: crate::blkcnt64_t,
@@ -76,7 +76,7 @@ s! {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        pub _pad: [c_int; 28],
+        _pad: Padding<[c_int; 28]>,
     }
 
     pub struct stack_t {

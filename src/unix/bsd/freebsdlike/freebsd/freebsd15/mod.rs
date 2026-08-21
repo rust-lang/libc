@@ -92,7 +92,7 @@ s! {
         /// Job control counter.
         pub ki_jobc: c_short,
         /// Unused (just here for alignment).
-        pub ki_spare_short1: c_short,
+        ki_spare_short1: Padding<c_short>,
         /// Controlling tty dev.
         pub ki_tdev_freebsd11: u32,
         /// Signals arrived but not delivered.
@@ -116,7 +116,7 @@ s! {
         /// Number of groups.
         pub ki_ngroups: c_short,
         /// Unused (just here for alignment).
-        pub ki_spare_short2: c_short,
+        ki_spare_short2: Padding<c_short>,
         /// Groups.
         pub ki_groups: [crate::gid_t; crate::KI_NGROUPS],
         /// Virtual size.
@@ -186,9 +186,9 @@ s! {
         /// More thread name.
         pub ki_moretdname: [c_char; crate::MAXCOMLEN - crate::TDNAMLEN + 1],
         /// Spare string space.
-        pub ki_sparestrings: [c_char; 46],
+        ki_sparestrings: Padding<[c_char; 46]>,
         /// Spare room for growth.
-        pub ki_spareints: [c_int; crate::KI_NSPARE_INT],
+        ki_spareints: Padding<[c_int; crate::KI_NSPARE_INT]>,
         /// Controlling tty dev.
         pub ki_tdev: u64,
         /// Which cpu we are on.
@@ -229,8 +229,8 @@ s! {
         pub ki_pd: *mut c_void,
         /// Address of the ext err msg place
         pub ki_uerrmsg: *mut c_void,
-        pub ki_spareptrs: [*mut c_void; crate::KI_NSPARE_PTR],
-        pub ki_sparelongs: [c_long; crate::KI_NSPARE_LONG],
+        ki_spareptrs: Padding<[*mut c_void; crate::KI_NSPARE_PTR]>,
+        ki_sparelongs: Padding<[c_long; crate::KI_NSPARE_LONG]>,
         /// PS_* flags.
         pub ki_sflag: c_long,
         /// kthread flag.
@@ -269,7 +269,7 @@ s! {
         pub st_flags: crate::fflags_t,
         pub st_gen: u64,
         pub st_filerev: u64,
-        pub st_spare: [u64; 9],
+        st_spare: Padding<[u64; 9]>,
     }
 
     pub struct dirent {

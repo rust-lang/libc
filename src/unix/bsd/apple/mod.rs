@@ -309,8 +309,8 @@ s! {
         pub st_blksize: blksize_t,
         pub st_flags: u32,
         pub st_gen: u32,
-        pub st_lspare: i32,
-        pub st_qspare: [i64; 2],
+        st_lspare: Padding<i32>,
+        st_qspare: Padding<[i64; 2]>,
     }
 
     pub struct siginfo_t {
@@ -350,10 +350,10 @@ s! {
     }
 
     pub struct fpunchhole_t {
-        pub fp_flags: c_uint, /* unused */
-        pub reserved: c_uint, /* (to maintain 8-byte alignment) */
-        pub fp_offset: off_t, /* IN: start of the region */
-        pub fp_length: off_t, /* IN: size of the region */
+        pub fp_flags: c_uint,      /* unused */
+        reserved: Padding<c_uint>, /* (to maintain 8-byte alignment) */
+        pub fp_offset: off_t,      /* IN: start of the region */
+        pub fp_length: off_t,      /* IN: size of the region */
     }
 
     pub struct ftrimactivefile_t {
@@ -363,7 +363,7 @@ s! {
 
     pub struct fspecread_t {
         pub fsr_flags: c_uint,
-        pub reserved: c_uint,
+        reserved: Padding<c_uint>,
         pub fsr_offset: off_t,
         pub fsr_length: off_t,
     }
@@ -422,7 +422,7 @@ s! {
         pub dqb_btime: u32,
         pub dqb_itime: u32,
         pub dqb_id: u32,
-        pub dqb_spare: [u32; 4],
+        dqb_spare: Padding<[u32; 4]>,
     }
 
     pub struct if_msghdr {
@@ -476,7 +476,7 @@ s! {
         pub rmx_rtt: u32,
         pub rmx_rttvar: u32,
         pub rmx_pksent: u32,
-        pub rmx_filler: [u32; 4],
+        rmx_filler: Padding<[u32; 4]>,
     }
 
     #[cfg(target_os = "macos")]
@@ -505,7 +505,7 @@ s! {
         pub rtm_addrs: c_int,
         pub rtm_refcnt: i32,
         pub rtm_parentflags: c_int,
-        pub rtm_reserved: c_int,
+        rtm_reserved: Padding<c_int>,
         pub rtm_use: c_int,
         pub rtm_inits: u32,
         pub rtm_rmx: rt_metrics,
@@ -724,7 +724,7 @@ s! {
         pub ss_sysaddr: u16,
         pub sc_id: u32,
         pub sc_unit: u32,
-        pub sc_reserved: [u32; 5],
+        sc_reserved: Padding<[u32; 5]>,
     }
 
     pub struct in_pktinfo {
@@ -895,14 +895,14 @@ s! {
         pub vst_flags: u32,
         pub vst_gen: u32,
         pub vst_rdev: u32,
-        pub vst_qspare: [i64; 2],
+        vst_qspare: Padding<[i64; 2]>,
     }
 
     #[cfg(target_os = "macos")]
     pub struct vnode_info {
         pub vi_stat: vinfo_stat,
         pub vi_type: c_int,
-        pub vi_pad: c_int,
+        vi_pad: Padding<c_int>,
         pub vi_fsid: crate::fsid_t,
     }
 
@@ -1074,7 +1074,7 @@ s! {
 
     pub struct attrlist {
         pub bitmapcount: c_ushort,
-        pub reserved: u16,
+        reserved: Padding<u16>,
         pub commonattr: attrgroup_t,
         pub volattr: attrgroup_t,
         pub dirattr: attrgroup_t,
@@ -1244,7 +1244,7 @@ s! {
         /// Number of drops in send queue
         pub ifmd_snd_drops: c_uint,
         /// For future expansion
-        pub ifmd_filler: [c_uint; 4],
+        ifmd_filler: Padding<[c_uint; 4]>,
         /// Generic information and statistics
         pub ifmd_data: if_data64,
     }
@@ -1300,10 +1300,10 @@ s! {
         pub sem_base: i32,
         pub sem_nsems: c_ushort,
         pub sem_otime: crate::time_t,
-        pub sem_pad1: i32,
+        sem_pad1: Padding<i32>,
         pub sem_ctime: crate::time_t,
-        pub sem_pad2: i32,
-        pub sem_pad3: [i32; 4],
+        sem_pad2: Padding<i32>,
+        sem_pad3: Padding<[i32; 4]>,
     }
 
     #[repr(packed(4))]
@@ -1317,7 +1317,7 @@ s! {
         pub shm_dtime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
         pub shm_ctime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
         // FIXME: 64-bit wrong align => wrong offset:
-        pub shm_internal: *mut c_void,
+        shm_internal: Padding<*mut c_void>,
     }
 
     #[cfg(target_os = "macos")]
@@ -1352,7 +1352,7 @@ s! {
         pub f_mntonname: [c_char; 1024],
         pub f_mntfromname: [c_char; 1024],
         pub f_flags_ext: u32,
-        pub f_reserved: [u32; 7],
+        f_reserved: Padding<[u32; 7]>,
     }
 
     pub struct dirent {
@@ -1473,7 +1473,7 @@ s! {
         pub ifi_hdrlen: c_uchar,
         pub ifi_recvquota: c_uchar,
         pub ifi_xmitquota: c_uchar,
-        pub ifi_unused1: c_uchar,
+        ifi_unused1: Padding<c_uchar>,
         pub ifi_mtu: u32,
         pub ifi_metric: u32,
         pub ifi_baudrate: u64,
@@ -1598,7 +1598,7 @@ s! {
     pub struct sockaddr_vm {
         pub svm_len: c_uchar,
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
     }

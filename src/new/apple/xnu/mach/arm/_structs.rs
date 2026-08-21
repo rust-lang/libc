@@ -2,7 +2,6 @@
 //!
 //! <https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/arm/_structs.h>
 
-#[cfg(target_arch = "arm")]
 use crate::prelude::*;
 
 s! {
@@ -19,7 +18,7 @@ s! {
         pub __sp: u64,
         pub __pc: u64,
         pub __cpsr: u32,
-        pub __pad: u32,
+        __pad: Padding<u32>,
     }
 
     #[cfg(target_arch = "aarch64")]

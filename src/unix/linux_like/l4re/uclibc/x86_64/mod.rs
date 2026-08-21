@@ -86,7 +86,7 @@ s! {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        pub _pad: [c_int; 28],
+        _pad: Padding<[c_int; 28]>,
     }
 
     pub struct stack_t {

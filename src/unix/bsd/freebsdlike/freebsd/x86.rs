@@ -38,7 +38,7 @@ s! {
         pub mc_gsbase: register_t,
         pub mc_xfpustate: register_t,
         pub mc_xfpustate_len: register_t,
-        pub mc_spare2: [c_int; 4],
+        mc_spare2: Padding<[c_int; 4]>,
     }
 }
 
