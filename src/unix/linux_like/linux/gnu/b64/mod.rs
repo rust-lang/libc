@@ -202,7 +202,8 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        __f_spare: [c_int; 5],
     }
 
     #[cfg(not(any(target_arch = "riscv64")))]
@@ -218,7 +219,8 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        __f_spare: [c_int; 5],
     }
 }
 

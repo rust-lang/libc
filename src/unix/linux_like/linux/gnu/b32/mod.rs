@@ -138,7 +138,8 @@ s! {
         __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        __f_spare: [c_int; 5],
     }
 
     #[cfg(not(any(target_arch = "m68k", target_arch = "riscv32")))]
@@ -155,7 +156,8 @@ s! {
         __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        __f_spare: [c_int; 5],
     }
 
     pub struct pthread_attr_t {

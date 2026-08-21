@@ -105,7 +105,8 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        pub __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        pub __f_spare: [c_int; 5],
     }
 
     pub struct statvfs64 {
@@ -120,7 +121,8 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        pub __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        pub __f_spare: [c_int; 5],
     }
 
     pub struct siginfo_t {
