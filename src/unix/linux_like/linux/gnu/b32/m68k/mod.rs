@@ -103,7 +103,8 @@ s! {
         __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        pub f_type: c_uint,
+        __f_spare: [c_int; 5],
     }
 
     pub struct shmid_ds {
