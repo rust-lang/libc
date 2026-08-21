@@ -188,6 +188,39 @@ s! {
         pub __unused11: i32,
     }
 }
+s! {
+    #[cfg(not(any(target_arch = "riscv64")))]
+    pub struct statvfs {
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: crate::fsblkcnt_t,
+        pub f_bfree: crate::fsblkcnt_t,
+        pub f_bavail: crate::fsblkcnt_t,
+        pub f_files: crate::fsfilcnt_t,
+        pub f_ffree: crate::fsfilcnt_t,
+        pub f_favail: crate::fsfilcnt_t,
+        pub f_fsid: c_ulong,
+        pub f_flag: c_ulong,
+        pub f_namemax: c_ulong,
+        __f_spare: [c_int; 6],
+    }
+
+    #[cfg(not(any(target_arch = "riscv64")))]
+    pub struct statvfs64 {
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: u64,
+        pub f_fsid: c_ulong,
+        pub f_flag: c_ulong,
+        pub f_namemax: c_ulong,
+        __f_spare: [c_int; 6],
+    }
+}
 
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
 
