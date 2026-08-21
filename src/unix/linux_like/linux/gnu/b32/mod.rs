@@ -141,6 +141,23 @@ s! {
         __f_spare: [c_int; 6],
     }
 
+    #[cfg(not(any(target_arch = "m68k", target_arch = "riscv32")))]
+    pub struct statvfs64 {
+        pub f_bsize: c_ulong,
+        pub f_frsize: c_ulong,
+        pub f_blocks: u64,
+        pub f_bfree: u64,
+        pub f_bavail: u64,
+        pub f_files: u64,
+        pub f_ffree: u64,
+        pub f_favail: u64,
+        pub f_fsid: c_ulong,
+        __f_unused: Padding<c_int>,
+        pub f_flag: c_ulong,
+        pub f_namemax: c_ulong,
+        __f_spare: [c_int; 6],
+    }
+
     pub struct pthread_attr_t {
         __size: [u32; 9],
     }
