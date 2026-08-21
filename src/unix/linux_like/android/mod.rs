@@ -191,7 +191,7 @@ s! {
     pub struct genlmsghdr {
         pub cmd: u8,
         pub version: u8,
-        pub reserved: u16,
+        reserved: Padding<u16>,
     }
 
     pub struct nlmsghdr {
@@ -249,7 +249,7 @@ s! {
         pub ee_origin: u8,
         pub ee_type: u8,
         pub ee_code: u8,
-        pub ee_pad: u8,
+        ee_pad: Padding<u8>,
         pub ee_info: u32,
         pub ee_data: u32,
     }
@@ -268,7 +268,7 @@ s! {
 
     pub struct sockaddr_vm {
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
         pub svm_zero: [u8; 4],
@@ -549,7 +549,7 @@ s! {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        pub _pad: [c_int; 29],
+        _pad: Padding<[c_int; 29]>,
         _align: [usize; 0],
     }
 

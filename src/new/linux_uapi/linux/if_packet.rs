@@ -141,14 +141,14 @@ s! {
         pub tp_nsec: u32,
         pub tp_vlan_tci: u16,
         pub tp_vlan_tpid: u16,
-        pub tp_padding: [u8; 4],
+        tp_padding: Padding<[u8; 4]>,
     }
 
     pub struct tpacket_hdr_variant1 {
         pub tp_rxhash: u32,
         pub tp_vlan_tci: u32,
         pub tp_vlan_tpid: u16,
-        pub tp_padding: u16,
+        tp_padding: Padding<u16>,
     }
 
     pub struct tpacket3_hdr {
@@ -161,7 +161,7 @@ s! {
         pub tp_mac: u16,
         pub tp_net: u16,
         pub hv1: tpacket_hdr_variant1,
-        pub tp_padding: [u8; 8],
+        tp_padding: Padding<[u8; 8]>,
     }
 
     pub struct tpacket_bd_ts {

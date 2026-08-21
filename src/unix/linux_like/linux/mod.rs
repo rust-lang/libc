@@ -262,7 +262,7 @@ s! {
     pub struct genlmsghdr {
         pub cmd: u8,
         pub version: u8,
-        pub reserved: u16,
+        reserved: Padding<u16>,
     }
 
     pub struct inotify_event {
@@ -279,7 +279,7 @@ s! {
 
     pub struct fanotify_event_info_header {
         pub info_type: __u8,
-        pub pad: __u8,
+        pad: Padding<__u8>,
         pub len: __u16,
     }
 
@@ -291,7 +291,7 @@ s! {
 
     pub struct sockaddr_vm {
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
         pub svm_flags: u8,
@@ -303,7 +303,7 @@ s! {
         pub ee_origin: u8,
         pub ee_type: u8,
         pub ee_code: u8,
-        pub ee_pad: u8,
+        ee_pad: Padding<u8>,
         pub ee_info: u32,
         pub ee_data: u32,
     }
@@ -362,19 +362,19 @@ s! {
     pub struct ptp_clock_time {
         pub sec: crate::__s64,
         pub nsec: __u32,
-        pub reserved: __u32,
+        reserved: Padding<__u32>,
     }
 
     pub struct ptp_extts_request {
         pub index: c_uint,
         pub flags: c_uint,
-        pub rsv: [c_uint; 2],
+        rsv: Padding<[c_uint; 2]>,
     }
 
     pub struct ptp_sys_offset_extended {
         pub n_samples: c_uint,
         pub clockid: __kernel_clockid_t,
-        pub rsv: [c_uint; 2],
+        rsv: Padding<[c_uint; 2]>,
         pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
     }
 
@@ -382,7 +382,7 @@ s! {
         pub device: ptp_clock_time,
         pub sys_realtime: ptp_clock_time,
         pub sys_monoraw: ptp_clock_time,
-        pub rsv: [c_uint; 4],
+        rsv: Padding<[c_uint; 4]>,
     }
 
     pub struct ptp_extts_event {
@@ -533,7 +533,7 @@ s! {
         pub busy_poll_usecs: u32,
         pub busy_poll_budget: u16,
         pub prefer_busy_poll: u8,
-        pub __pad: u8, // Must be zero
+        __pad: Padding<u8>, // Must be zero
     }
 
     #[cfg_attr(
@@ -613,7 +613,7 @@ s! {
     pub struct fanotify_event_metadata {
         pub event_len: __u32,
         pub vers: __u8,
-        pub reserved: __u8,
+        reserved: Padding<__u8>,
         pub metadata_len: __u16,
         pub mask: __u64,
         pub fd: c_int,
@@ -624,7 +624,7 @@ s! {
 
     pub struct ptp_sys_offset {
         pub n_samples: c_uint,
-        pub rsv: [c_uint; 3],
+        rsv: Padding<[c_uint; 3]>,
         // FIXME(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported
         pub ts: [ptp_clock_time; 51],
     }
@@ -634,7 +634,7 @@ s! {
         pub index: c_uint,
         pub func: c_uint,
         pub chan: c_uint,
-        pub rsv: [c_uint; 5],
+        rsv: Padding<[c_uint; 5]>,
     }
 
     pub struct ptp_clock_caps {
@@ -647,7 +647,7 @@ s! {
         pub cross_timestamping: c_int,
         pub adjust_phase: c_int,
         pub max_phase_adj: c_int,
-        pub rsv: [c_int; 11],
+        rsv: Padding<[c_int; 11]>,
     }
 
     // linux/if_xdp.h

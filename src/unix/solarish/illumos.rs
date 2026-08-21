@@ -24,7 +24,7 @@ s! {
         pub aio_lio_opcode: c_int,
         pub aio_resultp: crate::aio_result_t,
         pub aio_state: c_int,
-        pub aio__pad: [c_int; 1],
+        aio__pad: Padding<[c_int; 1]>,
     }
 
     pub struct shmid_ds {
@@ -39,7 +39,7 @@ s! {
         pub shm_atime: crate::time_t,
         pub shm_dtime: crate::time_t,
         pub shm_ctime: crate::time_t,
-        pub shm_pad4: [i64; 4],
+        shm_pad4: Padding<[i64; 4]>,
     }
 
     pub struct fil_info {
@@ -57,7 +57,7 @@ s! {
         pub ut_exit: exit_status,
         pub ut_tv: crate::timeval,
         pub ut_session: c_int,
-        pub ut_pad: [c_int; _UTX_PADSIZE],
+        ut_pad: Padding<[c_int; _UTX_PADSIZE]>,
         pub ut_syslen: c_short,
         pub ut_host: [c_char; _UTX_HOSTSIZE],
     }

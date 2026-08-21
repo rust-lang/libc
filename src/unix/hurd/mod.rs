@@ -581,7 +581,7 @@ s! {
     pub struct statx_timestamp {
         pub tv_sec: i64,
         pub tv_nsec: u32,
-        pub __statx_timestamp_pad1: [i32; 1],
+        __statx_timestamp_pad1: Padding<[i32; 1]>,
     }
 
     pub struct statfs {

@@ -100,7 +100,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_long,
         pub f_flags: c_long,
-        pub f_spare: [c_long; 5],
+        f_spare: Padding<[c_long; 5]>,
     }
 
     pub struct pthread_attr_t {

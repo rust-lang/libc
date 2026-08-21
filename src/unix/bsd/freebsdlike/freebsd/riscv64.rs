@@ -23,15 +23,15 @@ s! {
         pub fp_x: [[u64; 2]; 32],
         pub fp_fcsr: u64,
         pub fp_flags: c_int,
-        pub pad: c_int,
+        pad: Padding<c_int>,
     }
 
     pub struct mcontext_t {
         pub mc_gpregs: gpregs,
         pub mc_fpregs: fpregs,
         pub mc_flags: c_int,
-        pub mc_pad: c_int,
-        pub mc_spare: [u64; 8],
+        mc_pad: Padding<c_int>,
+        mc_spare: Padding<[u64; 8]>,
     }
 }
 

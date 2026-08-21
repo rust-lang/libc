@@ -841,7 +841,7 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     pub struct msghdr {
@@ -858,7 +858,7 @@ s! {
 
     pub struct cmsghdr {
         pub cmsg_len: crate::socklen_t,
-        pub __pad1: c_int,
+        __pad1: Padding<c_int>,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }
@@ -924,7 +924,7 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,

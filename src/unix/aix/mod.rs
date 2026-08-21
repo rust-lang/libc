@@ -154,7 +154,7 @@ s! {
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
         pub f_fstr: [c_char; 32],
-        pub f_filler: [c_ulong; 16],
+        f_filler: Padding<[c_ulong; 16]>,
     }
 
     pub struct lconv {
@@ -373,7 +373,7 @@ s! {
         pub ss_sp: *mut c_void,
         pub ss_size: size_t,
         pub ss_flags: c_int,
-        pub __pad: [c_int; 4],
+        __pad: Padding<[c_int; 4]>,
     }
 
     pub struct posix_spawnattr_t {
@@ -420,9 +420,9 @@ s! {
         pub ut_time: time64_t,
         pub ut_exit: exit_status,
         pub ut_host: [c_char; 256],
-        pub __dbl_word_pad: c_int,
-        pub __reservedA: [c_int; 2],
-        pub __reservedV: [c_int; 6],
+        __dbl_word_pad: Padding<c_int>,
+        __reservedA: Padding<[c_int; 2]>,
+        __reservedV: Padding<[c_int; 6]>,
     }
 
     pub struct regmatch_t {

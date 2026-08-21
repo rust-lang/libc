@@ -557,7 +557,7 @@ s! {
         pub t_pw: i16,
         pub t_sl: i16,
         pub t_sw: i16,
-        pub t_pad: [u16; 3],
+        t_pad: Padding<[u16; 3]>,
     }
 
     pub struct sockstat {
@@ -620,7 +620,7 @@ s! {
         pub ifm_flags: c_int,
         /// index for associated ifp
         pub ifm_index: c_ushort,
-        pub _ifm_spare1: c_ushort,
+        _ifm_spare1: Padding<c_ushort>,
         /// statistics and other data about if
         pub ifm_data: if_data,
     }
@@ -639,12 +639,12 @@ s! {
         /// index for associated ifp
         pub ifm_index: c_ushort,
         /// spare space to grow if_index, see if_var.h
-        pub _ifm_spare1: c_ushort,
+        _ifm_spare1: Padding<c_ushort>,
         /// length of if_msghdrl incl. if_data
         pub ifm_len: c_ushort,
         /// offset of if_data from beginning
         pub ifm_data_off: c_ushort,
-        pub _ifm_spare2: c_int,
+        _ifm_spare2: Padding<c_int>,
         /// statistics and other data about if
         pub ifm_data: if_data,
     }
@@ -662,7 +662,7 @@ s! {
         pub ifam_flags: c_int,
         /// index for associated ifp
         pub ifam_index: c_ushort,
-        pub _ifam_spare1: c_ushort,
+        _ifam_spare1: Padding<c_ushort>,
         /// value of ifa_ifp->if_metric
         pub ifam_metric: c_int,
     }
@@ -681,7 +681,7 @@ s! {
         /// index for associated ifp
         pub ifam_index: c_ushort,
         /// spare space to grow if_index, see if_var.h
-        pub _ifam_spare1: c_ushort,
+        _ifam_spare1: Padding<c_ushort>,
         /// length of ifa_msghdrl incl. if_data
         pub ifam_len: c_ushort,
         /// offset of if_data from beginning
@@ -705,7 +705,7 @@ s! {
         pub ifmam_flags: c_int,
         /// index for associated ifp
         pub ifmam_index: c_ushort,
-        pub _ifmam_spare1: c_ushort,
+        _ifmam_spare1: Padding<c_ushort>,
     }
 
     pub struct if_announcemsghdr {
@@ -778,8 +778,8 @@ s! {
         pub offset: u8,
         /// read length
         pub len: u8,
-        pub spare0: u8,
-        pub spare1: u32,
+        spare0: Padding<u8>,
+        spare1: Padding<u32>,
         /// read buffer
         pub data: [u8; 8],
     }
@@ -789,8 +789,8 @@ s! {
         pub ifrh_name: [c_char; crate::IFNAMSIZ as usize],
         /// RSS_FUNC_
         pub ifrh_func: u8,
-        pub ifrh_spare0: u8,
-        pub ifrh_spare1: u16,
+        ifrh_spare0: Padding<u8>,
+        ifrh_spare1: Padding<u16>,
         /// RSS_TYPE_
         pub ifrh_types: u32,
     }
@@ -809,7 +809,7 @@ s! {
         /// number of drops in send queue
         pub ifmd_snd_drops: c_int,
         /// for future expansion
-        pub ifmd_filler: [c_int; 4],
+        ifmd_filler: Padding<[c_int; 4]>,
         /// generic information and statistics
         pub ifmd_data: if_data,
     }
@@ -859,7 +859,7 @@ s! {
         pub hz: c_int,
         /// micro-seconds per hz tick
         pub tick: c_int,
-        pub spare: c_int,
+        spare: Padding<c_int>,
         /// statistics clock frequency
         pub stathz: c_int,
         /// profiling clock frequency
@@ -1060,11 +1060,11 @@ s! {
         #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_dupacks: u32,
         #[cfg(any(freebsd14, freebsd13))]
-        pub __tcpi_pad: [u32; 10],
+        __tcpi_pad: Padding<[u32; 10]>,
         #[cfg(freebsd15)]
-        pub __tcpi_pad: [u32; 14],
+        __tcpi_pad: Padding<[u32; 14]>,
         #[cfg(not(any(freebsd15, freebsd14, freebsd13)))]
-        pub __tcpi_pad: [u32; 26],
+        __tcpi_pad: Padding<[u32; 26]>,
     }
 
     pub struct _umtx_time {
@@ -1132,7 +1132,7 @@ s! {
         pub sinfo_assoc_id: crate::sctp_assoc_t,
         pub sinfo_keynumber: u16,
         pub sinfo_keynumber_valid: u16,
-        pub __reserve_pad: [u8; SCTP_ALIGN_RESV_PAD],
+        __reserve_pad: Padding<[u8; SCTP_ALIGN_RESV_PAD]>,
     }
 
     pub struct sctp_extrcvinfo {
@@ -1152,7 +1152,7 @@ s! {
         pub serinfo_next_ppid: u32,
         pub sinfo_keynumber: u16,
         pub sinfo_keynumber_valid: u16,
-        pub __reserve_pad: [u8; SCTP_ALIGN_RESV_PAD_SHORT],
+        __reserve_pad: Padding<[u8; SCTP_ALIGN_RESV_PAD_SHORT]>,
     }
 
     pub struct sctp_sndinfo {
@@ -1384,7 +1384,7 @@ s! {
         pub ut_user: [c_char; 32],
         pub ut_line: [c_char; 16],
         pub ut_host: [c_char; 128],
-        pub __ut_spare: [c_char; 64],
+        __ut_spare: Padding<[c_char; 64]>,
     }
 
     pub struct xucred {
@@ -1496,7 +1496,7 @@ s! {
         pub ifrk_name: [c_char; crate::IFNAMSIZ as usize],
         /// RSS_FUNC_
         pub ifrk_func: u8,
-        pub ifrk_spare0: u8,
+        ifrk_spare0: Padding<u8>,
         pub ifrk_keylen: u16,
         pub ifrk_key: [u8; crate::RSS_KEYLEN as usize],
     }

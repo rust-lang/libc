@@ -40,7 +40,7 @@ s! {
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
         pub f_fstr: [c_char; 32],
-        pub f_filler: [c_ulong; 16],
+        f_filler: Padding<[c_ulong; 16]>,
     }
 
     pub struct pthread_rwlock_t {

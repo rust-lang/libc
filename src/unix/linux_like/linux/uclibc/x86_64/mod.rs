@@ -163,7 +163,7 @@ s! {
         pub f_namelen: c_int,
         pub f_frsize: c_int,
         pub f_flags: c_int,
-        pub f_spare: [c_int; 4],
+        f_spare: Padding<[c_int; 4]>,
     }
 
     pub struct statvfs64 {
@@ -219,11 +219,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 0],
+        _f: Padding<[c_char; 0]>,
     }
 
     pub struct cpu_set_t {
