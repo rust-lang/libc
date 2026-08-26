@@ -1476,6 +1476,7 @@ pub const ETH_P_AOE: c_int = 0x88A2;
 pub const ETH_P_8021AD: c_int = 0x88A8;
 pub const ETH_P_802_EX1: c_int = 0x88B5;
 pub const ETH_P_TIPC: c_int = 0x88CA;
+pub const ETH_P_LLDP: c_int = 0x88CC;
 pub const ETH_P_MACSEC: c_int = 0x88E5;
 pub const ETH_P_8021AH: c_int = 0x88E7;
 pub const ETH_P_MVRP: c_int = 0x88F5;
