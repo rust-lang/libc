@@ -3743,6 +3743,7 @@ pub const XATTR_NODEFAULT: c_int = 0x0010;
 pub const XATTR_SHOWCOMPRESSION: c_int = 0x0020;
 
 pub const NET_RT_IFLIST2: c_int = 0x0006;
+pub const NET_RT_DUMP2: c_int = 0x0007;
 
 cfg_if! {
     if #[cfg(target_os = "macos")] {
