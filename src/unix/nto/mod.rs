@@ -511,7 +511,7 @@ s! {
         pub f_basetype: [c_char; 16],
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        f_filler: [c_uint; 21],
+        f_filler: Padding<[c_uint; 21]>,
     }
 
     pub struct aiocb {

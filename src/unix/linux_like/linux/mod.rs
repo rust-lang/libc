@@ -387,7 +387,7 @@ s! {
         pub t: ptp_clock_time,
         index: c_uint,
         flags: c_uint,
-        rsv: [c_uint; 2],
+        rsv: Padding<[c_uint; 2]>,
     }
 
     // linux/wireless.h

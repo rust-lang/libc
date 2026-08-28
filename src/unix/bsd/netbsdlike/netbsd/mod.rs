@@ -263,7 +263,7 @@ s! {
         ptm_owner: crate::pthread_t,
         ptm_waiters: *mut u8,
         ptm_recursed: c_uint,
-        ptm_spare2: *mut c_void,
+        ptm_spare2: Padding<*mut c_void>,
     }
 
     pub struct pthread_mutexattr_t {
@@ -1341,7 +1341,7 @@ cfg_if! {
             ptm_waiters: ptr::null_mut(),
             ptm_owner: 0,
             ptm_recursed: 0,
-            ptm_spare2: ptr::null_mut(),
+            ptm_spare2: Padding::new(ptr::null_mut()),
         };
     } else {
         pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
@@ -1351,7 +1351,7 @@ cfg_if! {
             ptm_waiters: ptr::null_mut(),
             ptm_owner: 0,
             ptm_recursed: 0,
-            ptm_spare2: ptr::null_mut(),
+            ptm_spare2: Padding::new(ptr::null_mut()),
         };
     }
 }

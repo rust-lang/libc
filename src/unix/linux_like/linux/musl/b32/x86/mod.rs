@@ -117,7 +117,7 @@ s! {
         __pad2: Padding<c_ulong>,
 
         #[cfg(musl32_time64)]
-        __pad3: c_ulong,
+        __pad3: Padding<c_ulong>,
         #[cfg(musl32_time64)]
         shm_atime: crate::time_t,
         #[cfg(musl32_time64)]
