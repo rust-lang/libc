@@ -24,6 +24,14 @@ mod posix {
 #[cfg(target_os = "linux")]
 pub(crate) mod signal;
 
+/// Source directory: `io/sys/`
+///
+/// <https://github.com/sailfishos-mirror/glibc/tree/master/io/sys>
+pub(crate) mod sys {
+    #[cfg(target_os = "linux")]
+    pub(crate) mod statvfs;
+}
+
 /// Source directory: `sysdeps/`
 ///
 /// <https://github.com/sailfishos-mirror/glibc/tree/master/sysdeps>

@@ -2113,8 +2113,10 @@ cfg_if! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
             pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
             pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
