@@ -90,22 +90,6 @@ s! {
         pub f_spare: [crate::__fsword_t; 4],
     }
 
-    pub struct statvfs64 {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_files: crate::fsblkcnt64_t,
-        pub f_ffree: crate::fsblkcnt64_t,
-        pub f_favail: crate::fsblkcnt64_t,
-        pub f_fsid: c_ulong,
-        __f_unused: Padding<c_int>,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
-    }
-
     pub struct shmid_ds {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,

@@ -33,6 +33,7 @@ pub(crate) mod bits {
         path = "../sparc/bits/signum_arch.rs"
     )]
     pub(crate) mod signum_arch;
+    pub(crate) mod statvfs;
 }
 
 /// Directory: `net/`
