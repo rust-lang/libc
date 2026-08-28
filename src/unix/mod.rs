@@ -1640,8 +1640,10 @@ extern "C" {
     pub fn sem_wait(sem: *mut sem_t) -> c_int;
     pub fn sem_trywait(sem: *mut sem_t) -> c_int;
     pub fn sem_post(sem: *mut sem_t) -> c_int;
+    #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statvfs64")]
     pub fn statvfs(path: *const c_char, buf: *mut crate::statvfs) -> c_int;
+    #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatvfs64")]
     pub fn fstatvfs(fd: c_int, buf: *mut crate::statvfs) -> c_int;
 
