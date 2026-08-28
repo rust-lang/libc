@@ -191,7 +191,7 @@ s! {
         pub nsec_stable: u64, // volatile
         pub timer_load_max: u64,
         pub timer_prog_time: u32,
-        spare: [u32; 7],
+        spare: Padding<[u32; 7]>,
     }
 
     #[cfg(target_os = "qnx")]
@@ -261,7 +261,7 @@ s_no_extra_traits! {
         pub smp: syspage_entry_info,
         pub pminfo: syspage_entry_info,
         pub old_mdriver: syspage_entry_info,
-        spare0: [u32; 1],
+        spare0: Padding<[u32; 1]>,
         __reserved: Padding<[u64; 20]>, // anonymous union with architecture dependent structs
         pub new_asinfo: syspage_array_info,
         pub new_cpuinfo: syspage_array_info,

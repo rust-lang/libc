@@ -339,7 +339,7 @@ s! {
         pub kp_auxflags: c_int,
         pub kp_lwp: crate::kinfo_lwp,
         pub kp_ktaddr: crate::uintptr_t,
-        kp_spare: [c_int; 2],
+        kp_spare: Padding<[c_int; 2]>,
     }
 
     pub struct cpuctl_msr_args_t {
@@ -397,7 +397,7 @@ s! {
     }
 
     pub struct statfs {
-        __spare2: c_long,
+        __spare2: Padding<c_long>,
         pub f_bsize: c_long,
         pub f_iosize: c_long,
         pub f_blocks: c_long,
@@ -415,10 +415,10 @@ s! {
         pub f_mntonname: [c_char; 80],
         pub f_syncreads: c_long,
         pub f_asyncreads: c_long,
-        __spares1: c_short,
+        __spares1: Padding<c_short>,
         pub f_mntfromname: [c_char; 80],
-        __spares2: c_short,
-        __spare: [c_long; 2],
+        __spares2: Padding<c_short>,
+        __spare: Padding<[c_long; 2]>,
     }
 
     pub struct sigevent {

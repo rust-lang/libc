@@ -237,7 +237,7 @@ s! {
     pub struct pthread_cond_t {
         __c_lock: _pthread_fastlock,
         __c_waiting: _pthread_descr,
-        __padding: [u8; PTHREAD_COND_PADDING_SIZE],
+        __padding: Padding<[u8; PTHREAD_COND_PADDING_SIZE]>,
         __align: __pthread_cond_align_t,
     }
 
@@ -246,7 +246,7 @@ s! {
     }
 
     pub struct pthread_mutex_t {
-        __m_reserved: c_int,
+        __m_reserved: Padding<c_int>,
         __m_count: c_int,
         __m_owner: _pthread_descr,
         __m_kind: c_int,
@@ -484,7 +484,7 @@ pub const __LOCK_INITIALIZER: _pthread_fastlock = _pthread_fastlock {
 };
 
 pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
-    __m_reserved: 0,
+    __m_reserved: Padding::new(0),
     __m_count: 0,
     __m_owner: ptr::null_mut(),
     __m_kind: PTHREAD_MUTEX_TIMED_NP,
@@ -499,7 +499,7 @@ const PTHREAD_COND_PADDING_SIZE: usize = 48
 pub const PTHREAD_COND_INITIALIZER: pthread_cond_t = pthread_cond_t {
     __c_lock: __LOCK_INITIALIZER,
     __c_waiting: ptr::null_mut(),
-    __padding: [0; PTHREAD_COND_PADDING_SIZE],
+    __padding: Padding::new([0; PTHREAD_COND_PADDING_SIZE]),
     __align: 0,
 };
 
