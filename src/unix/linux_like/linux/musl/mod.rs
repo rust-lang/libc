@@ -183,13 +183,7 @@ s! {
         pub si_code: c_int,
         #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
         pub si_errno: c_int,
-        #[doc(hidden)]
-        #[deprecated(
-            since = "0.2.54",
-            note = "Please leave a comment on https://github.com/rust-lang/libc/pull/1316 \
-                  if you're using this field"
-        )]
-        pub _pad: [c_int; 29],
+        _pad: Padding<[c_int; 29]>,
         _align: [usize; 0],
     }
 
