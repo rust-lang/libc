@@ -82,8 +82,8 @@ s! {
         pub msg_qbytes: crate::msglen_t,
         pub msg_lspid: crate::pid_t,
         pub msg_lrpid: crate::pid_t,
-        __ignored1: c_ulong,
-        __ignored2: c_ulong,
+        __ignored1: Padding<c_ulong>,
+        __ignored2: Padding<c_ulong>,
     }
 
     pub struct sockaddr {
@@ -168,7 +168,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: fsword_t,
         pub f_frsize: fsword_t,
-        f_spare: [fsword_t; 5],
+        f_spare: Padding<[fsword_t; 5]>,
     }
 
     pub struct statfs64 {
@@ -199,7 +199,7 @@ s! {
         __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct msghdr {

@@ -149,7 +149,7 @@ s! {
         pub aio_offset: off_t,
         __next: *mut c_void,
         __prev: *mut c_void,
-        __dummy4: [c_char; 32 - 2 * size_of::<*const ()>()],
+        __dummy4: Padding<[c_char; 32 - 2 * size_of::<*const ()>()]>,
     }
 
     #[repr(align(8))]

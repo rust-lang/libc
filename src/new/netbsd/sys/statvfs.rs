@@ -36,7 +36,7 @@ s! {
         pub f_owner: crate::uid_t,
 
         // This type is updated in a future version
-        f_spare: [u32; 4],
+        f_spare: Padding<[u32; 4]>,
 
         pub f_fstypename: [c_char; _VFS_NAMELEN],
         pub f_mntonname: [c_char; _VFS_MNAMELEN],

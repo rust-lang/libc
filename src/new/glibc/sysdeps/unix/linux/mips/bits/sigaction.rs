@@ -12,7 +12,7 @@ s! {
         pub sa_mask: crate::sigset_t,
         pub sa_restorer: Option<extern "C" fn()>,
         #[cfg(target_pointer_width = "32")]
-        _resv: [c_int; 1],
+        _resv: Padding<[c_int; 1]>,
     }
 }
 

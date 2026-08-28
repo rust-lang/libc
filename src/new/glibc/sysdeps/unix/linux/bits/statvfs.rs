@@ -13,8 +13,9 @@ s! {
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
         pub f_fsid: c_ulong,
-        // Mirrors `_STATVFSBUF_F_UNUSED` in the header. x32 is excluded because its
-        // `__SYSCALL_WORDSIZE` is 64, aarch64 because glibc always sets `__WORDSIZE` to 64.
+        // Mirrors `_STATVFSBUF_F_UNUSED` in the header. x32 is excluded because
+        // its `__SYSCALL_WORDSIZE` is 64, aarch64 because glibc always sets
+        // `__WORDSIZE` to 64.
         #[cfg(all(
             target_pointer_width = "32",
             not(any(target_arch = "x86_64", target_arch = "aarch64"))
@@ -23,7 +24,7 @@ s! {
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
         pub f_type: c_uint,
-        __f_spare: [c_int; 5],
+        __f_spare: Padding<[c_int; 5]>,
     }
 
     pub struct statvfs64 {
@@ -36,8 +37,8 @@ s! {
         pub f_ffree: u64,
         pub f_favail: u64,
         pub f_fsid: c_ulong,
-        // FIXME(riscv32): glibc declares this field on riscv32 too, but we have never
-        // declared it here.
+        // FIXME(riscv32): glibc declares this field on riscv32 too, but we have
+        // never declared it here.
         #[cfg(all(
             target_pointer_width = "32",
             not(any(
@@ -50,6 +51,6 @@ s! {
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
         pub f_type: c_uint,
-        __f_spare: [c_int; 5],
+        __f_spare: Padding<[c_int; 5]>,
     }
 }

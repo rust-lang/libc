@@ -661,7 +661,7 @@ s! {
         /// Current SVGID on process.
         pub pbsi_svgid: crate::gid_t,
         /// Reserved for future use.
-        pbsi_rfu: u32,
+        pbsi_rfu: Padding<u32>,
     }
 
     #[cfg(target_os = "macos")]
