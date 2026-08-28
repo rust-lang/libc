@@ -234,11 +234,11 @@ s! {
         pub f_asyncwrites: u64,
         pub f_syncreads: u64,
         pub f_asyncreads: u64,
-        f_spare: [u64; 10],
+        f_spare: Padding<[u64; 10]>,
         pub f_namemax: u32,
         pub f_owner: crate::uid_t,
         pub f_fsid: crate::fsid_t,
-        f_charspare: [c_char; 80],
+        f_charspare: Padding<[c_char; 80]>,
         pub f_fstypename: [c_char; 16],
         // Array length changed from 88 to 1024 in FreeBSD 12:
         pub f_mntfromname: [c_char; 88],

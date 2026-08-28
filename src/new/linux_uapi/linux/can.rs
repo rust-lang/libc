@@ -44,7 +44,7 @@ s_with_default! {
         // FIXME(1.0): this field was renamed to `len` in Linux 5.11
         pub can_dlc: u8,
         __pad: Padding<u8>,
-        __res0: u8,
+        __res0: Padding<u8>,
         pub len8_dlc: u8,
         pub data: [u8; CAN_MAX_DLEN],
     }
@@ -60,8 +60,8 @@ s_with_default! {
         pub can_id: canid_t,
         pub len: u8,
         pub flags: u8,
-        __res0: u8,
-        __res1: u8,
+        __res0: Padding<u8>,
+        __res1: Padding<u8>,
         #[custom_default([0; CANFD_MAX_DLEN])]
         pub data: [u8; CANFD_MAX_DLEN],
     }

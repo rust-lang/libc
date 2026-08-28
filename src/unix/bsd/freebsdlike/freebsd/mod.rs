@@ -367,14 +367,14 @@ s! {
         m_rb_link: crate::uintptr_t,
         #[cfg(target_pointer_width = "32")]
         m_pad: Padding<u32>,
-        m_spare: [u32; 2],
+        m_spare: Padding<[u32; 2]>,
     }
 
     pub struct ucond {
         c_has_waiters: u32,
         c_flags: u32,
         c_clockid: u32,
-        c_spare: [u32; 1],
+        c_spare: Padding<[u32; 1]>,
     }
 
     pub struct uuid {
@@ -434,9 +434,9 @@ s! {
         #[cfg(not(freebsd11))]
         pub kve_vn_rdev: u64,
         #[cfg(not(freebsd11))]
-        _kve_is_spare: [c_int; 8],
+        _kve_is_spare: Padding<[c_int; 8]>,
         #[cfg(freebsd11)]
-        _kve_is_spare: [c_int; 12],
+        _kve_is_spare: Padding<[c_int; 12]>,
         pub kve_path: [c_char; crate::PATH_MAX as usize],
     }
 
@@ -1601,9 +1601,9 @@ s! {
         _priv: [u8; 304], // FIXME(freebsd): this is really a giant union
         pub kf_status: u16,
         _kf_pad1: Padding<u16>,
-        _kf_ispare0: c_int,
+        _kf_ispare0: Padding<c_int>,
         pub kf_cap_rights: crate::cap_rights_t,
-        _kf_cap_spare: u64,
+        _kf_cap_spare: Padding<u64>,
         pub kf_path: [c_char; crate::PATH_MAX as usize],
     }
 }
@@ -1612,7 +1612,7 @@ s_no_extra_traits! {
     pub struct __aiocb_private {
         status: c_long,
         error: c_long,
-        spare: *mut c_void,
+        spare: Padding<*mut c_void>,
     }
 
     pub struct aiocb {
@@ -1620,8 +1620,8 @@ s_no_extra_traits! {
         pub aio_offset: off_t,
         pub aio_buf: *mut c_void,
         pub aio_nbytes: size_t,
-        __spare__: [c_int; 2],
-        __spare2__: *mut c_void,
+        __spare__: Padding<[c_int; 2]>,
+        __spare2__: Padding<*mut c_void>,
         pub aio_lio_opcode: c_int,
         pub aio_reqprio: c_int,
         _aiocb_private: __aiocb_private,
@@ -1632,7 +1632,7 @@ s_no_extra_traits! {
         pub _threadid: crate::__lwpid_t,
         pub _sigev_thread: __c_anonymous_sigev_thread,
         pub _kevent_flags: c_ushort,
-        __spare__: [c_long; 8],
+        __spare__: Padding<[c_long; 8]>,
     }
 
     pub union __c_anonymous_cr_pid {
@@ -1690,17 +1690,17 @@ s_no_extra_traits! {
         pub uc_link: *mut crate::ucontext_t,
         pub uc_stack: crate::stack_t,
         pub uc_flags: c_int,
-        __spare__: [c_int; 4],
+        __spare__: Padding<[c_int; 4]>,
     }
 
     #[repr(align(8))]
     pub struct xinpgen {
         pub xig_len: ksize_t,
         pub xig_count: u32,
-        _xig_spare32: u32,
+        _xig_spare32: Padding<u32>,
         pub xig_gen: inp_gen_t,
         pub xig_sogen: so_gen_t,
-        _xig_spare64: [u64; 4],
+        _xig_spare64: Padding<[u64; 4]>,
     }
 
     pub struct in_addr_4in6 {
@@ -1732,8 +1732,8 @@ s_no_extra_traits! {
         // Note: this field is called `gen` in upstream FreeBSD, but `gen` is
         // reserved keyword in Rust since the 2024 Edition, hence `gennum`.
         pub gennum: u64,
-        _rsrv1: [u64; 8],
-        _rsrv2: [u32; 8],
+        _rsrv1: Padding<[u64; 8]>,
+        _rsrv2: Padding<[u32; 8]>,
         pub iv: [u8; 32],
         pub cipher_algorithm: i32,
         pub auth_algorithm: i32,

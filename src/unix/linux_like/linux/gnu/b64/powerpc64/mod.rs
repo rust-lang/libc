@@ -27,7 +27,7 @@ s! {
 
         pub f_namelen: crate::__fsword_t,
         pub f_frsize: crate::__fsword_t,
-        f_spare: [crate::__fsword_t; 5],
+        f_spare: Padding<[crate::__fsword_t; 5]>,
     }
 
     pub struct flock {
