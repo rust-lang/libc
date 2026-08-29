@@ -51,7 +51,7 @@ run() {
 
     if [ -n "${TEST_UCLIBC_TIME64:-}" ]; then
         build_args+=("--build-arg=TEST_UCLIBC_TIME64=1")
-        RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_uclibc_time64"
+        RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_time64"
     fi
     if [[ "$run_target" = *-linux-uclibc* ]]; then
         if [ "${UCLIBC_TOOLCHAIN_URL:-}" ]; then
