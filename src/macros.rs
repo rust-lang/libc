@@ -1094,6 +1094,56 @@ mod tests {
     }
 
     #[test]
+    fn s_with_default_is_non_exhaustive() {
+        // Without `#[exhaustive]`, the record should have an additional field
+        // added at the end. If this test compiles, it has it.
+        s_with_default! {
+            struct Something {
+                a: u32,
+            }
+        }
+
+        let s = Something::default();
+        assert_eq!(s.__non_exhaustive, ());
+    }
+
+    #[test]
+    fn s_with_default_uses_exhaustive() {
+        // With `#[exhaustive]`, the record should be regurgitated as-is. If
+        // this test compiles, then it works.
+        s_with_default! {
+            #[exhaustive]
+            struct Something {
+                a: u32,
+            }
+        }
+
+        #[allow(unused)]
+        let s = Something {
+            a: Default::default(),
+        };
+    }
+
+    #[test]
+    fn s_with_default_uses_mixed_exhaustive() {
+        // `#[exhaustive]` should work when sandwiched between attributes. If
+        // the test compiles, then it works.
+        s_with_default! {
+            #[repr(align(8))]
+            #[exhaustive]
+            #[repr(align(2))]
+            struct Something {
+                a: u32,
+            }
+        }
+
+        #[allow(unused)]
+        let s = Something {
+            a: Default::default(),
+        };
+    }
+
+    #[test]
     fn s_with_default_uses_custom_default() {
         // A non-default value proves `custom_default` is used rather than a derived default.
         s_with_default! {
