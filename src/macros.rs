@@ -427,24 +427,34 @@ macro_rules! union_with_debug {
     };
 }
 
-/// Emit a struct with the given derive attributes plus a generated `Default` impl.
+/// Emit a struct with the given derive attributes plus a generated `Default`
+/// impl. Ensure that the record has an additional private field added to
+/// replicate `#[non_exhaustive]`, unless it is annotated with `#[exhaustive]`.
 ///
-/// Fields default to `Default::default()`. A field whose default can't be derived must carry
-/// `#[custom_default(EXPR)]` as its *first* attribute, and `EXPR` is used instead.
+/// Fields default to `Default::default()`. A field whose default can't be
+/// derived must carry `#[custom_default(EXPR)]` as its *first* attribute, and
+/// `EXPR` is used instead.
 ///
-/// This works by scanning each field for `#[custom_default]` attributes. If one exists, the
-/// attribute's contents are added to `processed_field_defaults` and will be used in the expansion
-/// for `Default`. If it does not exist, `Default::default()` is used instead. In either case, the
-/// field is added to `processed_fields` with `#[custom_default]` stripped if necessary, and
+/// This works by scanning each field for `#[custom_default]` attributes. If one
+/// exists, the attribute's contents are added to `processed_field_defaults` and
+/// will be used in the expansion for `Default`. If it does not exist,
+/// `Default::default()` is used instead. In either case, the field is added to
+/// `processed_fields` with `#[custom_default]` stripped if necessary, and
 /// `struct_with_default` is invoked again with the remaining fields.
 ///
-/// Attributes are split into `cfg_attrs` and `other_attrs` before the fields are scanned. Both
-/// go on the struct, but only the `cfg`s are repeated on the `Default` impl. A `cfg` decides
-/// whether the type exists at all, so without it a configured-out struct leaves an impl behind
-/// referring to a type that isn't there.
+/// Attributes are split into `cfg_attrs` and `other_attrs` before the fields
+/// are scanned. Both go on the struct, but only the `cfg`s are repeated on the
+/// `Default` impl. A `cfg` decides whether the type exists at all, so without
+/// it a configured-out struct leaves an impl behind referring to a type that
+/// isn't there.
+///
+/// Out of `other_attrs`, we scan for `#[exhaustive]`. If found, we remove it
+/// but take into account that the record should be expanded _without_ an
+/// additional private field. The scan for both `cfg` attributes and the
+/// (non-existent) `exhaustive` attribute is done in one linear pass.
 macro_rules! struct_with_default {
-    // entry; `attrs` is the attribute block the caller wants on the struct (repr, derives, etc.),
-    // which is merged with the struct's own attributes.
+    // entry; `attrs` is the attribute block the caller wants on the struct
+    // (repr, derives, etc.), which is merged with the struct's own attributes.
     (
         attrs: { $($attrs:tt)* }
         $(#$attr:tt)*
@@ -455,6 +465,7 @@ macro_rules! struct_with_default {
             cfg_attrs: { }
             other_attrs: { }
             remaining_attrs: { $($attrs)* $(#$attr)* }
+            found_exhaustive_attr: { false }
             vis: { $vis }
             name: { $name }
             body: { $($body)* }
@@ -470,6 +481,7 @@ macro_rules! struct_with_default {
             #[cfg($($cfg:tt)*)]
             $($tail:tt)*
         }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         body: { $($body:tt)* }
@@ -479,6 +491,34 @@ macro_rules! struct_with_default {
             cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] }
             other_attrs: { $($other_attrs)* }
             remaining_attrs: { $($tail)* }
+            found_exhaustive_attr: { $found_exhaustive }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // `exhaustive` must be taken into account as many times as it appears,
+    // though the effect is the same with a single annotation.
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: {
+            #[exhaustive]
+            $($tail:tt)*
+        }
+        found_exhaustive_attr: { $_:tt }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        struct_with_default! {
+            @split_attrs
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* }
+            remaining_attrs: { $($tail)* }
+            found_exhaustive_attr: { true }
             vis: { $vis }
             name: { $name }
             body: { $($body)* }
@@ -494,6 +534,7 @@ macro_rules! struct_with_default {
             #$other:tt
             $($tail:tt)*
         }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         body: { $($body:tt)* }
@@ -503,6 +544,7 @@ macro_rules! struct_with_default {
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* #$other }
             remaining_attrs: { $($tail)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             body: { $($body)* }
@@ -515,6 +557,7 @@ macro_rules! struct_with_default {
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
         remaining_attrs: { }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         body: { $($body:tt)* }
@@ -523,6 +566,7 @@ macro_rules! struct_with_default {
             @struct
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             processed_fields: { }
@@ -536,6 +580,7 @@ macro_rules! struct_with_default {
         @struct
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -551,6 +596,7 @@ macro_rules! struct_with_default {
             @struct
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -567,6 +613,7 @@ macro_rules! struct_with_default {
         @struct
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -581,6 +628,7 @@ macro_rules! struct_with_default {
             @struct
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -597,27 +645,77 @@ macro_rules! struct_with_default {
         @struct
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
         processed_field_defaults: { $($processed_field_defaults:tt)* }
         remaining_fields: { }
     ) => {
-        $($other_attrs)*
-        $($cfg_attrs)*
-        $vis struct $name { $($processed_fields)* }
-
-        $($cfg_attrs)*
-        // The impl names the type and its fields, which warns if either is deprecated.
-        #[allow(deprecated)]
-        impl ::core::default::Default for $name {
-            // Field attributes (`#[cfg]`, doc comments) get forwarded to the initializer too.
-            // Docs are harmless there but trip the lint, so silence it.
-            #[allow(unused_doc_comments)]
-            fn default() -> Self {
-                Self { $($processed_field_defaults)* }
+        emit_struct_definition! {
+            found_exhaustive_attr: $found_exhaustive,
+            body: {
+                $($other_attrs)*
+                $($cfg_attrs)*
+                $vis $name { $($processed_fields)* }
             }
         }
+
+        $($cfg_attrs)*
+        // The impl names the type and its fields, which warns if either is
+        // deprecated.
+        #[allow(deprecated)]
+        impl ::core::default::Default for $name {
+            // Field attributes (`#[cfg]`, doc comments) get forwarded to the
+            // initializer too. Docs are harmless there but trip the lint, so
+            // silence it.
+            #[allow(unused_doc_comments)]
+            fn default() -> Self {
+                emit_struct_default_body! {
+                    found_exhaustive_attr: $found_exhaustive,
+                    body: { $($processed_field_defaults)* }
+                }
+            }
+        }
+    };
+}
+
+/// Expands the definition of the record defined at [`struct_with_default`], with either one of an
+/// additional private field or with its verbatim fields.
+macro_rules! emit_struct_definition {
+    (
+        found_exhaustive_attr: false,
+        body: { $(#[$attr:meta])* $vis:vis $name:ident { $($field:tt)* } }
+    ) => {
+        $(#[$attr])*
+        $vis struct $name { $($field)* __non_exhaustive: () }
+    };
+
+    (
+        found_exhaustive_attr: true,
+        body: { $(#[$attr:meta])* $vis:vis $name:ident { $($field:tt)* } }
+    ) => {
+        $(#[$attr])*
+        $vis struct $name { $($field)* }
+    };
+}
+
+/// Expands the `Default` implementation of the record defined at [`struct_with_default`], with
+/// either one of an additional private field initialized to the unit value, or the record's fields
+/// verbatim.
+macro_rules! emit_struct_default_body {
+    (
+        found_exhaustive_attr: false,
+        body: { $($field_default:tt)* }
+    ) => {
+        Self { $($field_default)* __non_exhaustive: () }
+    };
+
+    (
+        found_exhaustive_attr: true,
+        body: { $($field_default:tt)* }
+    ) => {
+        Self { $($field_default)* }
     };
 }
 
