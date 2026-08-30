@@ -32,6 +32,7 @@ SIGSEGV
 SIGTERM
 SOL_SOCKET
 SOMAXCONN
+_PATH_BSHELL
 __errno
 cmsghdr
 dirent

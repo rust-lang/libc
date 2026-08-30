@@ -1720,6 +1720,8 @@ _NSGetArgv
 _NSGetEnviron
 _NSGetExecutablePath
 _NSGetProgname
+_PATH_BSHELL
+_PATH_DEFPATH
 _PC_2_SYMLINKS
 _PC_ALLOC_SIZE_MIN
 _PC_ASYNC_IO

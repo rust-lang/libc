@@ -112,6 +112,7 @@ macro_rules! prelude {
             pub(crate) use crate::types::u32_cast_ioctl;
             #[allow(unused_imports)]
             pub(crate) use crate::types::{
+                cstr,
                 replace_array_items,
                 u16_cast_short,
                 u32_cast_int,
