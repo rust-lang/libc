@@ -459,7 +459,7 @@ impl siginfo_t {
 s_no_extra_traits! {
     // linux/if_ether.h
 
-    #[repr(C, packed)]
+    #[repr(packed)]
     pub struct ethhdr {
         pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
         pub h_source: [c_uchar; crate::ETH_ALEN as usize],

@@ -36,7 +36,6 @@ extern_ty! {
 }
 
 s! {
-    #[repr(C)]
     pub struct utsname {
         pub sysname: [c_char; UTSLENGTH],
         pub nodename: [c_char; UTSLENGTH],
@@ -251,57 +250,47 @@ s! {
         pub gid: gid_t,
     }
 
-    #[cfg_attr(target_pointer_width = "32", repr(C, align(4)))]
-    #[cfg_attr(target_pointer_width = "64", repr(C, align(8)))]
+    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct pthread_attr_t {
         bytes: [u8; _PTHREAD_ATTR_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_barrier_t {
         bytes: [u8; _PTHREAD_BARRIER_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_barrierattr_t {
         bytes: [u8; _PTHREAD_BARRIERATTR_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_mutex_t {
         bytes: [u8; _PTHREAD_MUTEX_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_rwlock_t {
         bytes: [u8; _PTHREAD_RWLOCK_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_mutexattr_t {
         bytes: [u8; _PTHREAD_MUTEXATTR_SIZE],
     }
-    #[repr(C)]
     #[repr(align(1))]
     pub struct pthread_rwlockattr_t {
         bytes: [u8; _PTHREAD_RWLOCKATTR_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_cond_t {
         bytes: [u8; _PTHREAD_COND_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_condattr_t {
         bytes: [u8; _PTHREAD_CONDATTR_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_once_t {
         bytes: [u8; _PTHREAD_ONCE_SIZE],
     }
-    #[repr(C)]
     #[repr(align(4))]
     pub struct pthread_spinlock_t {
         bytes: [u8; _PTHREAD_SPINLOCK_SIZE],
