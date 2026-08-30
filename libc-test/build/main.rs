@@ -5360,9 +5360,12 @@ fn test_linux(t: &Target) {
             }
             // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
             ("mcontext_t", "__extcontext") if musl && loongarch64 => true,
-            // FIXME(#4121): a new field was added from `f_spare`
-            ("statvfs", "__f_spare") => true,
-            ("statvfs64", "__f_spare") => true,
+            // glibc 2.39 took one of the six spares for `f_type`
+            ("statvfs" | "statvfs64", "f_type" | "__f_spare")
+                if gnu && versions.glibc.unwrap() < (2, 39) =>
+            {
+                true
+            }
             // the `xsk_tx_metadata_union` field is an anonymous union
             ("xsk_tx_metadata", "xsk_tx_metadata_union") => true,
             // After musl 1.2.0, the type becomes `int` instead of `long`.
