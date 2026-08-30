@@ -140,3 +140,11 @@ pub const fn replace_array_items<T: Copy, const N: usize>(
     }
     dst
 }
+
+/// Constructs a compile time cstring literal from a byte array
+// FIXME(msrv): we can opt to use C-string literals directly in 1.77
+#[allow(dead_code)]
+pub(crate) const fn cstr(bytes: &[u8]) -> *const c_char {
+    assert!(!bytes.is_empty() && bytes[bytes.len() - 1] == 0);
+    bytes.as_ptr().cast::<c_char>()
+}

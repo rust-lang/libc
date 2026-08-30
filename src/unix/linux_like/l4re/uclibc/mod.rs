@@ -478,6 +478,10 @@ pub const PTHREAD_MUTEX_ADAPTIVE_NP: c_int = 3;
 
 pub const __LT_SPINLOCK_INIT: c_int = 0;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 pub const __LOCK_INITIALIZER: _pthread_fastlock = _pthread_fastlock {
     __status: 0,
     __spinlock: __LT_SPINLOCK_INIT,
