@@ -151,7 +151,8 @@ fn main() {
         _ => (),
     }
 
-    let mut musl_v1_2 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
+    let mut musl_v1_2 =
+        env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2") || env_flag("CARGO_FEATURE_RUSTC_DEP_OF_STD");
     if let Ok(old_musl_v1_2_3) = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") {
         println!(
             "cargo:warning=`--cfg=libc_unstable_musl_v1_2_3` will be removed; \
