@@ -4560,8 +4560,8 @@ fn test_linux(t: &Target) {
             // FIXME(musl): Struct has changed for new musl versions
             "tcp_info" if musl => true,
 
-            // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
-            "statx" | "statx_timestamp" if musl => true,
+            // Added in musl 1.2.5
+            "statx" | "statx_timestamp" if old_musl => true,
 
             // FIXME(musl): New fields in newer versions
             "utmpx" if !old_musl => true,
@@ -5196,15 +5196,14 @@ fn test_linux(t: &Target) {
             // assume it's a int instead.
             "getnameinfo" if uclibc => true,
 
-            // FIXME(musl): This needs musl 1.2.2 or later, which is newer than what we test with
-            // on CI.
-            "gettid" | "reallocarray" if musl => true,
+            // Added in musl 1.2.2
+            "gettid" | "reallocarray" if old_musl => true,
             // Needs musl 1.2.3 or later.
-            "pthread_getname_np" if musl => true,
+            "pthread_getname_np" if old_musl => true,
             // Added in musl 1.2.5
-            "preadv2" | "pwritev2" if musl => true,
-            // FIXME(musl): Supported in new musl but we don't have a new enough version in CI.
-            "statx" if musl => true,
+            "preadv2" | "pwritev2" if old_musl => true,
+            // Added in musl 1.2.5
+            "statx" if old_musl => true,
             // FIXME(musl): Supported since musl 1.2.6 but not yet in CI.
             "renameat2" if musl => true,
 
