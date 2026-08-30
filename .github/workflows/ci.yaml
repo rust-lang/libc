@@ -133,8 +133,6 @@ jobs:
             os: windows-11-arm
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-26.04-arm
-          - target: i686-pc-windows-gnu
-            os: windows-2025
           - target: i686-pc-windows-msvc
             os: windows-2025
           - target: i686-unknown-linux-gnu
