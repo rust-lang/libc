@@ -274,11 +274,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(
-        target_env = "gnu",
-        target_env = "musl",
-        target_os = "android",
-    ))] {
+    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
         s! {
             pub struct statx {
                 pub stx_mask: crate::__u32,
