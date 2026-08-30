@@ -1225,6 +1225,9 @@ pub const PRIO_USER: c_int = 2;
 
 pub const RENAME_NOREPLACE: c_uint = 1;
 
+// include/paths.h from relibc
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 f! {
     //sys/socket.h
     pub const unsafe fn CMSG_ALIGN(len: size_t) -> size_t {

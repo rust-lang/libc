@@ -1386,6 +1386,10 @@ pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
 pub const POSIX_SPAWN_SETSID: c_short = 0x40;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 const fn CMSG_ALIGN(len: usize) -> usize {
     len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
 }

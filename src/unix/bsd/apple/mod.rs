@@ -4115,6 +4115,10 @@ pub const VMADDR_CID_RESERVED: c_uint = 1;
 pub const VMADDR_CID_HOST: c_uint = 2;
 pub const VMADDR_PORT_ANY: c_uint = 0xFFFFFFFF;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 const fn __DARWIN_ALIGN32(p: usize) -> usize {
     const __DARWIN_ALIGNBYTES32: usize = size_of::<u32>() - 1;
     (p + __DARWIN_ALIGNBYTES32) & !__DARWIN_ALIGNBYTES32
