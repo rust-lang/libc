@@ -200,6 +200,7 @@ fn test_apple(t: &Target) {
         "os/lock.h",
         "os/signpost.h",
         "os/os_sync_wait_on_address.h",
+        "paths.h",
         "poll.h",
         "pthread.h",
         "pthread_spis.h",
@@ -473,6 +474,7 @@ fn test_openbsd(t: &Target) {
         "sys/shm.h",
         "sys/param.h",
         "sys/auxv.h",
+        "paths.h",
     );
 
     cfg.rename_type(|ty| match ty {
@@ -574,6 +576,7 @@ fn test_cygwin(t: &Target) {
         "net/if.h",
         "netdb.h",
         "netinet/tcp.h",
+        "paths.h",
         "poll.h",
         "pthread.h",
         "pty.h",
@@ -875,6 +878,7 @@ fn test_redox(t: &Target) {
         "netinet/in.h",
         "netinet/ip.h",
         "netinet/tcp.h",
+        "paths.h",
         "poll.h",
         "pwd.h",
         "semaphore.h",
@@ -1303,6 +1307,7 @@ fn test_netbsd(t: &Target) {
         "iconv.h",
         "utmp.h",
         "utmpx.h",
+        "paths.h",
     );
 
     cfg.rename_type(move |ty| {
@@ -1546,6 +1551,7 @@ fn test_dragonflybsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "paths.h",
         "poll.h",
         "pthread.h",
         "pthread_np.h",
@@ -2077,6 +2083,7 @@ fn test_android(t: &Target) {
         // generate the error 'Your time_t is already 64-bit'
         (t.p32(), "time64.h"),
         (x86, "sys/reg.h"),
+        "paths.h",
     );
 
     // Include linux headers at the end:
@@ -2560,6 +2567,7 @@ fn test_freebsd(t: &Target) {
         "netinet/tcp.h",
         "netinet/udp.h",
         "netinet6/in6_var.h",
+        "paths.h",
         "poll.h",
         "pthread.h",
         "pthread_np.h",
@@ -3247,6 +3255,7 @@ fn test_emscripten(t: &Target) {
         "utmp.h",
         "utmpx.h",
         "wchar.h",
+        "paths.h",
     );
 
     cfg.rename_struct_ty(move |ty| {
@@ -4106,6 +4115,7 @@ fn test_linux(t: &Target) {
         // https://www.openwall.com/lists/musl/2015/04/09/3
         // <execinfo.h> is not present on uclibc.
         (!(musl || uclibc), "execinfo.h"),
+        "paths.h",
     );
 
     // Include linux headers at the end:
@@ -5494,6 +5504,7 @@ fn test_haiku(t: &Target) {
         "netinet6/in6.h",
         "nl_types.h",
         "null.h",
+        "paths.h",
         "poll.h",
         "pthread.h",
         "pwd.h",

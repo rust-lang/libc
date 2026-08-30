@@ -1232,6 +1232,12 @@ pub const RTAX_MPLS3: c_int = 10;
 /// for details.
 pub const RTAX_MAX: c_int = 11;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(
+    b"/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/pkg/bin:/usr/pkg/sbin\0",
+);
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 const fn _CMSG_ALIGN(n: usize) -> usize {
     (n + (size_of::<c_long>() - 1)) & !(size_of::<c_long>() - 1)
 }

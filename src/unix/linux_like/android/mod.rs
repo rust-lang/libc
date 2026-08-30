@@ -3410,6 +3410,14 @@ pub const RWF_NOAPPEND: c_int = 0x00000020;
 pub const RWF_ATOMIC: c_int = 0x00000040;
 pub const RWF_DONTCACHE: c_int = 0x00000080;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(
+    b"/product/bin:/apex/com.android.runtime/bin:\
+    /apex/com.android.art/bin:/system_ext/bin:/system/bin:\
+    /system/xbin:/odm/bin:/vendor/bin:/vendor/xbin\0",
+);
+pub const _PATH_BSHELL: *const c_char = cstr(b"/system/bin/sh\0");
+
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.

@@ -944,6 +944,10 @@ pub const GLOB_TILDE_CHECK: c_int = 1 << 14;
 
 pub const MADV_COLLAPSE: c_int = 25;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 cfg_if! {
     if #[cfg(any(
         target_arch = "arm",
