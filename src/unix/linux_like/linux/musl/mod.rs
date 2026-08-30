@@ -193,6 +193,47 @@ s! {
         _align: [usize; 0],
     }
 
+    // musl's uint64_t is an unsigned long instead of an unsigned long long on
+    // 64-bit targets, so it's not a __u64 (which is c_ulonglong), but rather a
+    // real u64. This is also how we handle musl's uint64_t elsewhere.
+    pub struct statx {
+        pub stx_mask: u32,
+        pub stx_blksize: u32,
+        pub stx_attributes: u64,
+        pub stx_nlink: u32,
+        pub stx_uid: u32,
+        pub stx_gid: u32,
+        pub stx_mode: u16,
+        __statx_pad1: Padding<[u16; 1]>,
+        pub stx_ino: u64,
+        pub stx_size: u64,
+        pub stx_blocks: u64,
+        pub stx_attributes_mask: u64,
+        pub stx_atime: statx_timestamp,
+        pub stx_btime: statx_timestamp,
+        pub stx_ctime: statx_timestamp,
+        pub stx_mtime: statx_timestamp,
+        pub stx_rdev_major: u32,
+        pub stx_rdev_minor: u32,
+        pub stx_dev_major: u32,
+        pub stx_dev_minor: u32,
+        pub stx_mnt_id: u64,
+        pub stx_dio_mem_align: u32,
+        pub stx_dio_offset_align: u32,
+        pub stx_subvol: u64,
+        pub stx_atomic_write_unit_min: u32,
+        pub stx_atomic_write_unit_max: u32,
+        pub stx_atomic_write_segments_max: u32,
+        __statx_pad2: Padding<[u32; 1]>,
+        __statx_pad3: Padding<[u64; 9]>,
+    }
+
+    pub struct statx_timestamp {
+        pub tv_sec: i64,
+        pub tv_nsec: u32,
+        __statx_timestamp_pad1: Padding<[i32; 1]>,
+    }
+
     pub struct statvfs {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
