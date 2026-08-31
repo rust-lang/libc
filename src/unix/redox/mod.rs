@@ -275,42 +275,52 @@ s! {
     pub struct pthread_attr_t {
         bytes: [u8; _PTHREAD_ATTR_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_barrier_t {
         bytes: [u8; _PTHREAD_BARRIER_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_barrierattr_t {
         bytes: [u8; _PTHREAD_BARRIERATTR_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_mutex_t {
         bytes: [u8; _PTHREAD_MUTEX_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_rwlock_t {
         bytes: [u8; _PTHREAD_RWLOCK_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_mutexattr_t {
         bytes: [u8; _PTHREAD_MUTEXATTR_SIZE],
     }
+
     #[repr(align(1))]
     pub struct pthread_rwlockattr_t {
         bytes: [u8; _PTHREAD_RWLOCKATTR_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_cond_t {
         bytes: [u8; _PTHREAD_COND_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_condattr_t {
         bytes: [u8; _PTHREAD_CONDATTR_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_once_t {
         bytes: [u8; _PTHREAD_ONCE_SIZE],
     }
+
     #[repr(align(4))]
     pub struct pthread_spinlock_t {
         bytes: [u8; _PTHREAD_SPINLOCK_SIZE],
@@ -335,10 +345,12 @@ s! {
         _signum: c_uint,
         pub uc_mcontext: mcontext_t,
     }
+
     #[cfg(target_arch = "x86")]
     pub struct mcontext {
         _opaque: [c_uchar; 512],
     }
+
     #[cfg(target_arch = "x86_64")]
     pub struct mcontext {
         pub ymm_upper: [[c_ulong; 2]; 16],
@@ -362,10 +374,12 @@ s! {
         pub rip: c_ulong,
         pub rsp: c_ulong,
     }
+
     #[cfg(target_arch = "aarch64")]
     pub struct mcontext {
         _opaque: [c_uchar; 272],
     }
+
     #[cfg(target_arch = "riscv64")]
     pub struct mcontext {
         _opaque: [c_uchar; 520],
