@@ -4,7 +4,6 @@
 import argparse
 import copy
 import datetime as dt
-from enum import StrEnum
 import functools
 import json
 import os
@@ -13,6 +12,7 @@ import re
 import subprocess as sp
 import sys
 from dataclasses import dataclass
+from enum import StrEnum
 from inspect import cleandoc
 from multiprocessing import Pool
 from pathlib import Path
@@ -463,7 +463,7 @@ class CheckAllTargets:
         package: str,
         only: str | None = None,
         skip: str | None = None,
-        cargo_args: list[str] = [],
+        cargo_args: list[str] | None = None,
     ) -> None:
         """Run checks from the populated list."""
         checks = self.checks
@@ -532,7 +532,7 @@ class CheckAllTargets:
                     ]
                     + common_args
                     + extra_args
-                    + cargo_args,
+                    + (cargo_args or []),
                     env=env | {"RUSTFLAGS": " ".join(rustflags)},
                 )
                 ok = True
@@ -729,8 +729,7 @@ class Backporter:
             # "merge" commit is the last commit on `main` from this PR, so we can
             # work backwards; given N commits, `merge_sha~(N-1)` will be the first PR
             # from the commit on `main`.
-            for i in reversed(range(len(pr.commits))):
-                n_back = len(pr.commits) - i - 1
+            for n_back in reversed(range(len(pr.commits))):
                 pick_sha = check_output(
                     ["git", "rev-parse", f"{last_sha}~{n_back}"], quiet=True
                 ).strip()
@@ -919,7 +918,7 @@ class Backporter:
         """List all backported commits for a branch, for pasting into the PR body."""
         commits = check_output(["git", "log", f"libc-0.2..{branch}", "--format=%b"])
         urls = {x[1] for x in re.finditer(r"^\(backport <(.*)>\)", commits, re.M)}
-        urls = sorted(list(urls))
+        urls = sorted(urls)
 
         s = "Backport the following:\n\n"
         for url in urls:
