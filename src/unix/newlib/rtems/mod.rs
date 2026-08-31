@@ -1,6 +1,8 @@
 use crate::prelude::*;
 
-pub type clock_t = c_long;
+// RTEMS defines `clock_t` as `__uint64_t` (`<machine/_types.h>` via
+// `<sys/types.h>`), not `long` as plain newlib arm targets did.
+pub type clock_t = u64;
 pub type wchar_t = u32;
 
 s! {
