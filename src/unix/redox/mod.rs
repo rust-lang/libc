@@ -28,8 +28,19 @@ pub type suseconds_t = c_int;
 pub type tcflag_t = u32;
 pub type time_t = c_longlong;
 pub type id_t = c_uint;
+pub type pid_t = c_int;
 pub type uid_t = c_int;
 pub type gid_t = c_int;
+pub type ucontext_t = ucontext;
+pub type stack_t = sigaltstack;
+pub type siginfo_t = siginfo;
+#[cfg(any(
+    target_arch = "x86",
+    target_arch = "x86_64",
+    target_arch = "aarch64",
+    target_arch = "riscv64"
+))]
+pub type mcontext_t = mcontext;
 
 extern_ty! {
     pub type timezone;
@@ -157,12 +168,21 @@ s! {
         pub sa_mask: crate::sigset_t,
     }
 
-    pub struct siginfo_t {
+    pub struct siginfo {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        _pad: Padding<[c_int; 29]>,
-        _align: [usize; 0],
+        pub si_pid: pid_t,
+        pub si_uid: uid_t,
+        pub si_addr: *mut c_void,
+        pub si_status: c_int,
+        pub si_value: crate::sigval,
+    }
+
+    pub struct sigaltstack {
+        pub ss_sp: *mut c_void,
+        pub ss_flags: c_int,
+        pub ss_size: size_t,
     }
 
     pub struct sockaddr {
@@ -295,7 +315,93 @@ s! {
     pub struct pthread_spinlock_t {
         bytes: [u8; _PTHREAD_SPINLOCK_SIZE],
     }
+
+    pub struct ucontext {
+        #[cfg(any(
+            target_arch = "x86_64",
+            target_arch = "aarch64",
+            target_arch = "riscv64"
+        ))]
+        _pad: [c_ulong; 1], // pad from 7*8 to 64
+
+        #[cfg(target_arch = "x86")]
+        _pad: [c_ulong; 3], // pad from 9*4 to 12*4
+
+        pub uc_link: *mut ucontext_t,
+        pub uc_stack: stack_t,
+        pub uc_sigmask: sigset_t,
+        _sival: c_ulong,
+        _sigcode: c_uint,
+        _signum: c_uint,
+        pub uc_mcontext: mcontext_t,
+    }
+    #[cfg(target_arch = "x86")]
+    pub struct mcontext {
+        _opaque: [c_uchar; 512],
+    }
+    #[cfg(target_arch = "x86_64")]
+    pub struct mcontext {
+        pub ymm_upper: [[c_ulong; 2]; 16],
+        pub fxsave: [[c_ulong; 2]; 29],
+        pub r15: c_ulong, // fxsave "available" +0
+        pub r14: c_ulong, // available +8
+        pub r13: c_ulong, // available +16
+        pub r12: c_ulong, // available +24
+        pub rbp: c_ulong, // available +32
+        pub rbx: c_ulong, // available +40
+        pub r11: c_ulong, // outside fxsave, and so on
+        pub r10: c_ulong,
+        pub r9: c_ulong,
+        pub r8: c_ulong,
+        pub rax: c_ulong,
+        pub rcx: c_ulong,
+        pub rdx: c_ulong,
+        pub rsi: c_ulong,
+        pub rdi: c_ulong,
+        pub rflags: c_ulong,
+        pub rip: c_ulong,
+        pub rsp: c_ulong,
+    }
+    #[cfg(target_arch = "aarch64")]
+    pub struct mcontext {
+        _opaque: [c_uchar; 272],
+    }
+    #[cfg(target_arch = "riscv64")]
+    pub struct mcontext {
+        _opaque: [c_uchar; 520],
+    }
 }
+
+impl siginfo_t {
+    pub unsafe fn si_addr(&self) -> *mut c_void {
+        self.si_addr
+    }
+
+    pub unsafe fn si_code(&self) -> c_int {
+        self.si_code
+    }
+
+    pub unsafe fn si_errno(&self) -> c_int {
+        self.si_errno
+    }
+
+    pub unsafe fn si_pid(&self) -> crate::pid_t {
+        self.si_pid
+    }
+
+    pub unsafe fn si_uid(&self) -> uid_t {
+        self.si_uid
+    }
+
+    pub unsafe fn si_value(&self) -> crate::sigval {
+        self.si_value
+    }
+
+    pub unsafe fn si_status(&self) -> c_int {
+        self.si_status
+    }
+}
+
 const _PTHREAD_ATTR_SIZE: usize = 32;
 const _PTHREAD_RWLOCKATTR_SIZE: usize = 1;
 const _PTHREAD_RWLOCK_SIZE: usize = 4;
@@ -672,6 +778,9 @@ pub const SA_RESTART: c_int = 0x0800_0000;
 pub const SA_NODEFER: c_int = 0x1000_0000;
 pub const SA_RESETHAND: c_int = 0x2000_0000;
 pub const SA_NOCLDSTOP: c_int = 0x4000_0000;
+
+pub const SS_ONSTACK: c_int = 0x00000001;
+pub const SS_DISABLE: c_int = 0x00000002;
 
 // sys/file.h
 pub const LOCK_SH: c_int = 1;
@@ -1334,6 +1443,7 @@ extern "C" {
         timeout: *const crate::timespec,
     ) -> c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
+    pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
 
     // stdlib.h
     pub fn getsubopt(
