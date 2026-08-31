@@ -229,12 +229,6 @@ pub const MCL_ONFAULT: c_int = 0x0004;
 
 pub const AF_VSOCK: c_int = 40;
 
-// Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
-// following are only available on newer Linux versions than the versions
-// currently used in CI in some configurations, so we define them here.
-pub const BINDERFS_SUPER_MAGIC: c_long = 0x6c6f6f70;
-pub const XFS_SUPER_MAGIC: c_long = 0x58465342;
-
 pub const PTRACE_TRACEME: c_int = 0;
 pub const PTRACE_PEEKTEXT: c_int = 1;
 pub const PTRACE_PEEKDATA: c_int = 2;

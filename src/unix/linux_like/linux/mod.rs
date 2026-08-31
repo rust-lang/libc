@@ -2557,6 +2557,20 @@ pub const IN_ONLYDIR: u32 = 0x0100_0000;
 pub const IN_DONT_FOLLOW: u32 = 0x0200_0000;
 pub const IN_EXCL_UNLINK: u32 = 0x0400_0000;
 
+// uapi/linux/magic.h
+// Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
+// following are only available on newer Linux versions than the versions
+// currently used in CI in some configurations, so we define them here.
+cfg_if! {
+    if #[cfg(not(target_arch = "s390x"))] {
+        pub const BINDERFS_SUPER_MAGIC: c_long = 0x6c6f6f70;
+        pub const XFS_SUPER_MAGIC: c_long = 0x58465342;
+    } else if #[cfg(target_arch = "s390x")] {
+        pub const BINDERFS_SUPER_MAGIC: c_uint = 0x6c6f6f70;
+        pub const XFS_SUPER_MAGIC: c_uint = 0x58465342;
+    }
+}
+
 // uapi/linux/securebits.h
 const SECURE_NOROOT: c_int = 0;
 const SECURE_NOROOT_LOCKED: c_int = 1;
