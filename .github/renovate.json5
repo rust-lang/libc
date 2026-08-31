@@ -24,6 +24,11 @@
       // Every month
       schedule: "* 0 1 * *",
       groupName: "Github Actions",
+    },
+    {
+      // Don't updates such as 23.10 -> mantic-20240530
+      "matchDatasources": ["docker"],
+      "pinDigests": false
     }
   ],
   // Receive any update that fixes security vulnerabilities.
