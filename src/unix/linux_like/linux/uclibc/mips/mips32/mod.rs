@@ -1,17 +1,9 @@
-use crate::off64_t;
 use crate::prelude::*;
 
 pub type clock_t = i32;
 pub type wchar_t = i32;
-pub type off_t = i32;
-pub type ino_t = u32;
-pub type blkcnt_t = i32;
 pub type blksize_t = i32;
 pub type nlink_t = u32;
-pub type fsblkcnt_t = c_ulong;
-pub type fsfilcnt_t = c_ulong;
-pub type fsblkcnt64_t = u64;
-pub type fsfilcnt64_t = u64;
 
 s! {
     pub struct stat {
@@ -23,16 +15,29 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub st_pad2: [c_long; 1],
-        pub st_size: off_t,
+
+        #[cfg(not(uclibc_file_offset_bits64))]
+        st_pad2: Padding<[c_long; 1]>,
+
+        #[cfg(uclibc_file_offset_bits64)]
+        st_pad2: Padding<[c_long; 2]>,
+
+        pub st_size: crate::off_t,
+
+        #[cfg(not(uclibc_file_offset_bits64))]
         st_pad3: Padding<c_long>,
+
         pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
+        pub st_atime_nsec: c_ulong,
         pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
+        pub st_mtime_nsec: c_ulong,
         pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_ctime_nsec: c_ulong,
         pub st_blksize: crate::blksize_t,
+
+        #[cfg(uclibc_file_offset_bits64)]
+        st_pad4: Padding<c_long>,
+
         pub st_blocks: crate::blkcnt_t,
         st_pad5: Padding<[c_long; 14]>,
     }
@@ -47,33 +52,17 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         st_pad2: Padding<[c_long; 2]>,
-        pub st_size: off64_t,
+        pub st_size: crate::off64_t,
         pub st_atime: crate::time_t,
-        pub st_atime_nsec: c_long,
+        pub st_atime_nsec: c_ulong,
         pub st_mtime: crate::time_t,
-        pub st_mtime_nsec: c_long,
+        pub st_mtime_nsec: c_ulong,
         pub st_ctime: crate::time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_ctime_nsec: c_ulong,
         pub st_blksize: crate::blksize_t,
         st_pad3: Padding<c_long>,
         pub st_blocks: crate::blkcnt64_t,
-        st_pad5: Padding<[c_long; 14]>,
-    }
-
-    pub struct statvfs64 {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_files: crate::fsfilcnt64_t,
-        pub f_ffree: crate::fsfilcnt64_t,
-        pub f_favail: crate::fsfilcnt64_t,
-        pub f_fsid: c_ulong,
-        pub __f_unused: c_int,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        pub __f_spare: [c_int; 6],
+        st_pad4: Padding<[c_long; 14]>,
     }
 
     pub struct pthread_attr_t {
@@ -169,36 +158,6 @@ s! {
         __glibc_reserved5: Padding<c_ulong>,
     }
 
-    pub struct statfs {
-        pub f_type: c_long,
-        pub f_bsize: c_long,
-        pub f_frsize: c_long,
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_files: crate::fsblkcnt_t,
-        pub f_ffree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_fsid: crate::fsid_t,
-
-        pub f_namelen: c_long,
-        f_spare: [c_long; 6],
-    }
-
-    pub struct statfs64 {
-        pub f_type: c_long,
-        pub f_bsize: c_long,
-        pub f_frsize: c_long,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_files: crate::fsblkcnt64_t,
-        pub f_ffree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_long,
-        pub f_flags: c_long,
-        pub f_spare: [c_long; 5],
-    }
-
     pub struct msghdr {
         pub msg_name: *mut c_void,
         pub msg_namelen: crate::socklen_t,
@@ -222,16 +181,6 @@ s! {
         pub c_lflag: crate::tcflag_t,
         pub c_line: crate::cc_t,
         pub c_cc: [crate::cc_t; crate::NCCS],
-    }
-
-    pub struct flock {
-        pub l_type: c_short,
-        pub l_whence: c_short,
-        pub l_start: off_t,
-        pub l_len: off_t,
-        pub l_sysid: c_long,
-        pub l_pid: crate::pid_t,
-        pad: Padding<[c_long; 4]>,
     }
 
     pub struct sysinfo {
