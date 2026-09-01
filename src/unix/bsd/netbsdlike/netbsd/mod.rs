@@ -1876,7 +1876,7 @@ f! {
     }
 
     pub const safe fn WIFSTOPPED(status: c_int) -> bool {
-        (status & 0o177) == 0o177
+        (status & 0o177) == 0o177 && !WIFCONTINUED(status)
     }
 
     pub const safe fn WIFCONTINUED(status: c_int) -> bool {
