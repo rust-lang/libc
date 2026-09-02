@@ -8,6 +8,7 @@ use crate::{
 pub struct Struct {
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,
+    pub(crate) path: syn::Path,
     pub(crate) fields: Vec<Field>,
 }
 
