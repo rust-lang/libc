@@ -27,6 +27,7 @@ pub use ast::{
     Const,
     Field,
     Fn,
+    Module,
     Parameter,
     Static,
     Struct,
