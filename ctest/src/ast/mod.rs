@@ -1,6 +1,7 @@
 mod constant;
 mod field;
 mod function;
+mod module;
 mod parameter;
 mod static_variable;
 mod structure;
@@ -12,6 +13,7 @@ use std::fmt;
 pub use constant::Const;
 pub use field::Field;
 pub use function::Fn;
+pub use module::Module;
 pub use parameter::Parameter;
 pub use static_variable::Static;
 pub use structure::Struct;

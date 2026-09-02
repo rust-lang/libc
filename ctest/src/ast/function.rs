@@ -13,6 +13,7 @@ pub struct Fn {
     #[expect(unused)]
     pub(crate) abi: Abi,
     pub(crate) ident: BoxStr,
+    pub(crate) path: syn::Path,
     pub(crate) link_name: Option<BoxStr>,
     #[expect(unused)]
     pub(crate) parameters: Vec<Parameter>,
