@@ -620,67 +620,70 @@ impl<'a> TranslateHelper<'a> {
         helper
     }
 
-    /// Skips entire items such as structs, constants, and aliases from being tested.
+    /// Skips entire items such as structs, constants, and aliases from being
+    /// tested.
     ///
-    /// Does not skip specific tests or specific fields. If `skip_private` is true,
-    /// it will skip tests for all private items.
+    /// Does not skip specific tests or specific fields. If `skip_private` is
+    /// `true`, it will skip tests for all private items.
     fn filter_ffi_items(&mut self) {
-        let verbose = self.generator.verbose_skip;
+        fn skipper(items: &mut FfiItems, generator: &TestGenerator) {
+            let skipped = items.aliases.extract_if(.., |alias| {
+                generator
+                    .skips
+                    .iter()
+                    .any(|f| f(&MapInput::CEnumType(alias.ident())))
+            });
 
-        let skipped = self.filtered_ffi_items.aliases.extract_if(.., |alias| {
-            self.generator
-                .skips
-                .iter()
-                .any(|f| f(&MapInput::CEnumType(alias.ident())))
-        });
-
-        for item in skipped {
-            if verbose {
-                eprintln!("Skipping C enum type {}", item.ident());
+            for item in skipped {
+                if generator.verbose_skip {
+                    eprintln!("Skipping C enum type {}", item.ident());
+                }
             }
-        }
 
-        let skipped = self
-            .filtered_ffi_items
-            .constants
-            .extract_if(.., |constant| {
-                self.generator.skips.iter().any(|f| {
+            let skipped = items.constants.extract_if(.., |constant| {
+                generator.skips.iter().any(|f| {
                     f(&MapInput::CEnumType(
                         &constant.ty.to_token_stream().to_string(),
                     ))
                 })
             });
 
-        for item in skipped {
-            if verbose {
-                eprintln!("Skipping C enum constant {}", item.ident());
+            for item in skipped {
+                if generator.verbose_skip {
+                    eprintln!("Skipping C enum constant {}", item.ident());
+                }
+            }
+
+            macro_rules! filter {
+                ($field:ident, $variant:ident, $label:literal) => {{
+                    let skipped = items.$field.extract_if(.., |item| {
+                        (generator.skip_private && !item.public)
+                            || generator.skips.iter().any(|f| f(&MapInput::$variant(item)))
+                    });
+                    for item in skipped {
+                        if generator.verbose_skip {
+                            eprintln!("Skipping {} \"{}\"", $label, item.ident())
+                        }
+                    }
+                }};
+            }
+
+            filter!(aliases, Alias, "alias");
+            filter!(constants, Const, "const");
+            filter!(structs, Struct, "struct");
+            filter!(unions, Union, "union");
+            filter!(foreign_functions, Fn, "fn");
+            filter!(foreign_statics, Static, "static");
+            filter!(modules, Module, "module");
+
+            // [NOTE]: after dropping the modules that should be skipped from
+            // `items`, we can safely iterate through whichever ones remain.
+            for module in &mut items.modules {
+                skipper(&mut module.items, generator);
             }
         }
 
-        macro_rules! filter {
-            ($field:ident, $variant:ident, $label:literal) => {{
-                let skipped = self.filtered_ffi_items.$field.extract_if(.., |item| {
-                    (self.generator.skip_private && !item.public)
-                        || self
-                            .generator
-                            .skips
-                            .iter()
-                            .any(|f| f(&MapInput::$variant(item)))
-                });
-                for item in skipped {
-                    if verbose {
-                        eprintln!("Skipping {} \"{}\"", $label, item.ident())
-                    }
-                }
-            }};
-        }
-
-        filter!(aliases, Alias, "alias");
-        filter!(constants, Const, "const");
-        filter!(structs, Struct, "struct");
-        filter!(unions, Union, "union");
-        filter!(foreign_functions, Fn, "fn");
-        filter!(foreign_statics, Static, "static");
+        skipper(&mut self.filtered_ffi_items, self.generator);
     }
 
     /// Returns the equivalent C/Cpp identifier of the Rust item.
@@ -711,6 +714,7 @@ impl<'a> TranslateHelper<'a> {
             MapInput::StructFieldType(_, _) => panic!("MapInput::StructFieldType is not allowed!"),
             MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
+            MapInput::Module(_) => panic!("MapInput::Module is not allowed!"),
         };
 
         let ty = cdecl::cdecl(&ty, "".to_string()).map_err(|_| {
