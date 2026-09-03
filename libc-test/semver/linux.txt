@@ -4519,6 +4519,7 @@ shmget
 shmid_ds
 sigaltstack
 sigevent
+sighandler_t
 siginfo_t
 signalfd
 signalfd_siginfo

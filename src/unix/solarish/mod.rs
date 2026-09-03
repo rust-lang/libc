@@ -265,7 +265,7 @@ s! {
 
     pub struct sigaction {
         pub sa_flags: c_int,
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: size_t,
         pub sa_mask: sigset_t,
     }
 

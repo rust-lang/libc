@@ -541,7 +541,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t, // FIXME(union): this field is actually a union
+        pub sa_sigaction: size_t, // FIXME(union): this field is actually a union
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
     }

@@ -93,7 +93,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: sighandler_t,
+        pub sa_sigaction: size_t,
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
     }
