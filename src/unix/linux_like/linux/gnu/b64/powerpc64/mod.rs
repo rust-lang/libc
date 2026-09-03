@@ -100,7 +100,7 @@ s! {
         pub f_namelen: crate::__fsword_t,
         pub f_frsize: crate::__fsword_t,
         pub f_flags: crate::__fsword_t,
-        pub f_spare: [crate::__fsword_t; 4],
+        f_spare: Padding<[crate::__fsword_t; 4]>,
     }
 
     pub struct pthread_attr_t {
@@ -203,7 +203,7 @@ s_no_extra_traits! {
         pub gp_regs: crate::gregset_t,
         pub fp_regs: crate::fpregset_t,
         pub v_regs: *mut vrregset_t,
-        pub vmx_reserve: [c_long; __NVRREG + __NVRREG + 1],
+        vmx_reserve: Padding<[c_long; __NVRREG + __NVRREG + 1]>,
     }
 
     #[repr(align(16))]

@@ -168,7 +168,7 @@ s! {
         pub f_namelen: c_uint,
         pub f_frsize: c_uint,
         pub f_flags: c_uint,
-        pub f_spare: [c_uint; 4],
+        f_spare: Padding<[c_uint; 4]>,
     }
 }
 

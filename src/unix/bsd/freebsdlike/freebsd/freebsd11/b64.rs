@@ -21,7 +21,7 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: crate::fflags_t,
         pub st_gen: u32,
-        pub st_lspare: i32,
+        st_lspare: Padding<i32>,
         pub st_birthtime: crate::time_t,
         pub st_birthtime_nsec: c_long,
     }

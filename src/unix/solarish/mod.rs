@@ -369,8 +369,8 @@ s! {
         pub sem_count: u32,
         pub sem_type: u16,
         pub sem_magic: u16,
-        pub sem_pad1: [u64; 3],
-        pub sem_pad2: [u64; 2],
+        sem_pad1: Padding<[u64; 3]>,
+        sem_pad2: Padding<[u64; 2]>,
     }
 
     pub struct flock {
@@ -380,7 +380,7 @@ s! {
         pub l_len: off_t,
         pub l_sysid: c_int,
         pub l_pid: crate::pid_t,
-        pub l_pad: [c_long; 4],
+        l_pad: Padding<[c_long; 4]>,
     }
 
     pub struct if_nameindex {
@@ -399,7 +399,7 @@ s! {
     pub struct port_event {
         pub portev_events: c_int,
         pub portev_source: c_ushort,
-        pub portev_pad: c_ushort,
+        portev_pad: Padding<c_ushort>,
         pub portev_object: crate::uintptr_t,
         pub portev_user: *mut c_void,
     }
@@ -539,7 +539,7 @@ s_no_extra_traits! {
         pub si_code: c_int,
         pub si_errno: c_int,
         #[cfg(target_pointer_width = "64")]
-        pub si_pad: c_int,
+        si_pad: Padding<c_int>,
 
         __data_pad: [c_int; SIGINFO_DATA_SIZE],
     }

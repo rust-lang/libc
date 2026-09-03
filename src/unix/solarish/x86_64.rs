@@ -76,17 +76,17 @@ s! {
         pub uc_stack: crate::stack_t,
         pub uc_mcontext: mcontext_t,
         #[cfg(target_os = "illumos")]
-        pub uc_brand_data: [*mut c_void; 3],
+        uc_filler3: Padding<[c_long; 3]>,
         #[cfg(target_os = "illumos")]
         pub uc_xsave: c_long,
         #[cfg(target_os = "illumos")]
-        pub uc_filler: c_long,
+        uc_filler1: Padding<c_long>,
         #[cfg(target_os = "solaris")]
         pub uc_xrs: solaris::xrs_t,
         #[cfg(target_os = "solaris")]
         pub uc_lwpid: c_uint,
         #[cfg(target_os = "solaris")]
-        pub uc_filler: [c_long; 2],
+        uc_filler: Padding<[c_long; 2]>,
     }
 }
 

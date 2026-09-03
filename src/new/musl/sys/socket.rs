@@ -26,10 +26,10 @@ s! {
 
     pub struct cmsghdr {
         #[cfg(all(target_pointer_width = "64", target_endian = "big"))]
-        pub __pad1: c_int,
+        __pad1: Padding<c_int>,
         pub cmsg_len: crate::socklen_t,
         #[cfg(all(target_pointer_width = "64", target_endian = "little"))]
-        pub __pad1: c_int,
+        __pad1: Padding<c_int>,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }

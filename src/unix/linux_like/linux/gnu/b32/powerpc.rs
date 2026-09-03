@@ -129,7 +129,7 @@ s! {
         pub f_namelen: crate::__fsword_t,
         pub f_frsize: crate::__fsword_t,
         pub f_flags: crate::__fsword_t,
-        pub f_spare: [crate::__fsword_t; 4],
+        f_spare: Padding<[crate::__fsword_t; 4]>,
     }
 
     pub struct shmid_ds {

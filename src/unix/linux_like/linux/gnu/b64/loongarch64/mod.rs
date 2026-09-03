@@ -41,10 +41,10 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub __pad1: crate::dev_t,
+        __pad1: Padding<crate::dev_t>,
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
-        pub __pad2: c_int,
+        __pad2: Padding<c_int>,
         pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
@@ -67,7 +67,7 @@ s! {
         pub f_namelen: crate::__fsword_t,
         pub f_frsize: crate::__fsword_t,
         pub f_flags: crate::__fsword_t,
-        pub f_spare: [crate::__fsword_t; 4],
+        f_spare: Padding<[crate::__fsword_t; 4]>,
     }
 
     pub struct statfs64 {
@@ -82,7 +82,7 @@ s! {
         pub f_namelen: crate::__fsword_t,
         pub f_frsize: crate::__fsword_t,
         pub f_flags: crate::__fsword_t,
-        pub f_spare: [crate::__fsword_t; 4],
+        f_spare: Padding<[crate::__fsword_t; 4]>,
     }
 
     pub struct flock {
@@ -150,7 +150,7 @@ s! {
         pub orig_a0: u64,
         pub csr_era: u64,
         pub csr_badv: u64,
-        pub reserved: [u64; 10],
+        reserved: Padding<[u64; 10]>,
     }
 
     pub struct user_fp_struct {

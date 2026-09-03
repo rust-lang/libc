@@ -23,7 +23,7 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub st_pad2: [c_long; 1],
+        st_pad2: Padding<[c_long; 1]>,
         pub st_size: off_t,
         st_pad3: Padding<c_long>,
         pub st_atime: crate::time_t,
@@ -70,10 +70,10 @@ s! {
         pub f_ffree: crate::fsfilcnt64_t,
         pub f_favail: crate::fsfilcnt64_t,
         pub f_fsid: c_ulong,
-        pub __f_unused: c_int,
+        __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        pub __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct pthread_attr_t {
@@ -101,7 +101,7 @@ s! {
         pub si_signo: c_int,
         pub si_code: c_int,
         pub si_errno: c_int,
-        pub _pad: [c_int; 29],
+        _pad: Padding<[c_int; 29]>,
     }
 
     pub struct glob64_t {
@@ -196,7 +196,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_long,
         pub f_flags: c_long,
-        pub f_spare: [c_long; 5],
+        f_spare: Padding<[c_long; 5]>,
     }
 
     pub struct msghdr {
@@ -244,11 +244,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 8],
+        _f: Padding<[c_char; 8]>,
     }
 
     // FIXME(1.0): this is actually a union

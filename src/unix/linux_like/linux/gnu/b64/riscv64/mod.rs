@@ -27,10 +27,10 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub __pad1: crate::dev_t,
+        __pad1: Padding<crate::dev_t>,
         pub st_size: off_t,
         pub st_blksize: crate::blksize_t,
-        pub __pad2: c_int,
+        __pad2: Padding<c_int>,
         pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
@@ -49,10 +49,10 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub __pad1: crate::dev_t,
+        __pad1: Padding<crate::dev_t>,
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
-        pub __pad2: c_int,
+        __pad2: Padding<c_int>,
         pub st_blocks: crate::blkcnt_t,
         pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
@@ -75,7 +75,7 @@ s! {
         pub f_namelen: c_long,
         pub f_frsize: c_long,
         pub f_flags: c_long,
-        pub f_spare: [c_long; 4],
+        f_spare: Padding<[c_long; 4]>,
     }
 
     pub struct statfs64 {
@@ -90,7 +90,7 @@ s! {
         pub f_namelen: c_long,
         pub f_frsize: c_long,
         pub f_flags: c_long,
-        pub f_spare: [c_long; 4],
+        f_spare: Padding<[c_long; 4]>,
     }
 
     pub struct siginfo_t {
@@ -236,7 +236,7 @@ s_no_extra_traits! {
     pub struct __riscv_mc_q_ext_state {
         pub __f: [c_ulonglong; 64],
         pub __fcsr: c_uint,
-        pub __glibc_reserved: [c_uint; 3],
+        __glibc_reserved: Padding<[c_uint; 3]>,
     }
 
     #[repr(align(16))]

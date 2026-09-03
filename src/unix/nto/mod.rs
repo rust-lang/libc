@@ -755,7 +755,7 @@ s_no_extra_traits! {
         pub __rcond: crate::pthread_cond_t, // union
         pub __wcond: crate::pthread_cond_t, // union
         pub __owner: c_uint,
-        pub __spare: c_uint,
+        __spare: Padding<c_uint>,
     }
 
     // There is no canonical definition of c_longdouble in Rust. For both AArch64 and x86_64,
@@ -2315,7 +2315,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __rcond: PTHREAD_COND_INITIALIZER,
     __wcond: PTHREAD_COND_INITIALIZER,
     __owner: -2i32 as c_uint,
-    __spare: 0,
+    __spare: Padding::new(0),
 };
 #[cfg(target_os = "qnx")]
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t { __u: 0, __owner: 0 };

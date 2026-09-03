@@ -7,20 +7,19 @@ use crate::prelude::*;
 
 s! {
     pub struct rtentry {
-        pub rt_pad1: c_ulong,
+        rt_pad1: Padding<c_ulong>,
         pub rt_dst: crate::sockaddr,
         pub rt_gateway: crate::sockaddr,
         pub rt_genmask: crate::sockaddr,
         pub rt_flags: c_ushort,
-        pub rt_pad2: c_short,
-        pub rt_pad3: c_ulong,
+        rt_pad2: Padding<c_short>,
+        rt_pad3: Padding<c_ulong>,
         pub rt_tos: c_uchar,
         pub rt_class: c_uchar,
-        // FIXME(1.0): private padding fields
         #[cfg(target_pointer_width = "64")]
-        pub rt_pad4: [c_short; 3usize],
+        rt_pad4: Padding<[c_short; 3usize]>,
         #[cfg(not(target_pointer_width = "64"))]
-        pub rt_pad4: c_short,
+        rt_pad4: Padding<c_short>,
         pub rt_metric: c_short,
         pub rt_dev: *mut c_char,
         pub rt_mtu: c_ulong,
