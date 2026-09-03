@@ -26,6 +26,7 @@ use crate::{
     Field,
     Language,
     MapInput,
+    Module,
     Parameter,
     Result,
     Static,
@@ -467,6 +468,32 @@ impl TestGenerator {
     /// ```
     pub fn array_arg(&mut self, f: impl Fn(crate::Fn, Parameter) -> bool + 'static) -> &mut Self {
         self.array_arg = Some(Rc::new(f));
+        self
+    }
+
+    /// Skip a specific module in the crate.
+    ///
+    /// Module paths are given relative to the crate root, so for example the
+    /// identifier of a module `bar` inside a top-level module `foo` would be
+    /// `foo::bar`, and not `crate::foo::bar`. This is returned by the
+    /// [`Module::ident`] function.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_module(|module| module.ident() == "foo::bar");
+    /// ```
+    pub fn skip_module(&mut self, f: impl Fn(&Module) -> bool + 'static) -> &mut Self {
+        self.skips.push(Rc::new(move |item| {
+            if let MapInput::Module(module) = item {
+                f(module)
+            } else {
+                false
+            }
+        }));
         self
     }
 
@@ -1184,6 +1211,11 @@ impl TestGenerator {
             MapInput::StructFieldType(_, f) => f.ident().to_string(),
             MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => translate_primitive_type(ty),
+
+            MapInput::Module(_) => unimplemented!(
+                "modules do not currently \
+                 have a c counterpart"
+            ),
         }
     }
 }
