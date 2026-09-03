@@ -300,6 +300,9 @@ fn test_apple(t: &Target) {
             // FIXME(macos): bumped up on macOS/iOS/... 27, from 16 to 32
             "AIO_LISTIO_MAX" => apple.unwrap() < (27, 0),
 
+            // In C, these are function pointers, but in Rust they are `size_t`.
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
+
             _ => false,
         }
     });
@@ -351,9 +354,6 @@ fn test_apple(t: &Target) {
             .contains(&ty)
             .then_some(ty.to_string())
     });
-
-    // OSX calls this something else
-    cfg.rename_type(|ty| (ty == "sighandler_t").then_some("sig_t".to_string()));
 
     cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
     cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
