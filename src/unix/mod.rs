@@ -1354,41 +1354,6 @@ extern "C" {
     #[cfg_attr(gnu_file_offset_bits64, link_name = "ftruncate64")]
     pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
 
-    #[cfg(any(
-        target_os = "linux",
-        target_os = "l4re",
-        target_os = "android",
-        target_os = "emscripten",
-        target_os = "hurd"
-    ))]
-    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
-
-    #[cfg(any(
-        target_vendor = "apple",
-        target_os = "freebsd",
-        target_os = "dragonfly",
-        target_os = "netbsd",
-        target_os = "openbsd"
-    ))]
-    pub fn signal(signum: c_int, handler: sig_t) -> sig_t;
-
-    #[cfg(not(any(
-        target_os = "linux",
-        target_os = "l4re",
-        target_os = "android",
-        target_os = "emscripten",
-        target_os = "hurd",
-        target_vendor = "apple",
-        target_os = "freebsd",
-        target_os = "dragonfly",
-        target_os = "netbsd",
-        target_os = "openbsd"
-    )))]
-    pub fn signal(
-        signum: c_int,
-        handler: Option<unsafe extern "C" fn(c_int)>,
-    ) -> Option<unsafe extern "C" fn(c_int)>;
-
     #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__getrusage64")]
     #[cfg_attr(musl_redir_time64, link_name = "__getrusage_time64")]

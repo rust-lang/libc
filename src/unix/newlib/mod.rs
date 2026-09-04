@@ -954,6 +954,10 @@ extern "C" {
         result: *mut *mut passwd,
     ) -> c_int;
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
+    pub fn signal(
+        signum: c_int,
+        handler: Option<unsafe extern "C" fn(c_int)>,
+    ) -> Option<unsafe extern "C" fn(c_int)>;
     pub fn pthread_atfork(
         prepare: Option<unsafe extern "C" fn()>,
         parent: Option<unsafe extern "C" fn()>,

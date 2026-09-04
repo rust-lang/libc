@@ -3734,6 +3734,8 @@ extern "C" {
 
     pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
 
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
+
     pub fn __libc_current_sigrtmin() -> c_int;
 
     pub fn __libc_current_sigrtmax() -> c_int;

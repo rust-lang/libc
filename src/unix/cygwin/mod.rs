@@ -1836,6 +1836,11 @@ const fn CMSG_ALIGN(len: usize) -> usize {
 }
 
 extern "C" {
+    pub fn signal(
+        signum: c_int,
+        handler: Option<unsafe extern "C" fn(c_int)>,
+    ) -> Option<unsafe extern "C" fn(c_int)>;
+
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
     pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
 

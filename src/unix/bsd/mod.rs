@@ -858,6 +858,7 @@ extern "C" {
     pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 
     pub fn issetugid() -> c_int;
+    pub fn signal(signum: c_int, handler: sig_t) -> sig_t;
 }
 
 cfg_if! {

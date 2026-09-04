@@ -2470,6 +2470,11 @@ f! {
 // `inotify_*` functions are provided by `fsnotify` on QNX 8.0
 #[cfg_attr(target_os = "qnx", link(name = "fsnotify"))]
 extern "C" {
+    pub fn signal(
+        signum: c_int,
+        handler: Option<unsafe extern "C" fn(c_int)>,
+    ) -> Option<unsafe extern "C" fn(c_int)>;
+
     pub fn sem_destroy(sem: *mut sem_t) -> c_int;
     pub fn sem_init(sem: *mut sem_t, pshared: c_int, value: c_uint) -> c_int;
     pub fn fdatasync(fd: c_int) -> c_int;

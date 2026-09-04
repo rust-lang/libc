@@ -1959,6 +1959,8 @@ f! {
 }
 
 extern "C" {
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
+
     #[doc(hidden)]
     pub fn __libc_current_sigrtmax() -> c_int;
     #[doc(hidden)]
