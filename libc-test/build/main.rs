@@ -2638,12 +2638,6 @@ fn test_freebsd(t: &Target) {
         "wchar.h",
     );
 
-    cfg.rename_type(|ty| match ty {
-        // FIXME(freebsd): https://github.com/rust-lang/libc/issues/1273
-        "sighandler_t" => Some("sig_t".to_string()),
-        _ => None,
-    });
-
     cfg.rename_struct_ty(|ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
@@ -2689,6 +2683,9 @@ fn test_freebsd(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
+            // In C, these are function pointers, but in Rust they are `size_t`.
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
+
             // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
