@@ -93,7 +93,8 @@ pub(crate) struct TestTemplate {
 }
 
 impl TestTemplate {
-    /// Populate all tests for all items depending on the configuration provided.
+    /// Populate all tests for all items depending on the configuration
+    /// provided.
     pub(crate) fn new(
         ffi_items: &FfiItems,
         generator: &TestGenerator,
@@ -113,7 +114,8 @@ impl TestTemplate {
         Ok(template)
     }
 
-    /// Populates tests for constants and C-str constants, keeping track of the names of each test.
+    /// Populates tests for constants and C-str constants, keeping track of the
+    /// names of each test.
     fn populate_const_and_cstr_tests(
         &mut self,
         helper: &TranslateHelper,
@@ -477,12 +479,15 @@ impl TestTemplate {
 /* Many test structures have the following fields:
  *
  * - `test_name`: The function name.
- * - `id`: An identifier that can be used to create functions related to this type without conflict,
- *    usually also part of `test_name`.
- * - `rust_val`: Identifier for a Rust value, with path qualifications if needed.
- * - `rust_ty`: The Rust type of the relevant item, with path qualifications if needed.
- * - `c_val`: Identifier for a C value (e.g. `#define`)
- * - `c_ty`: The C type of the constant, qualified with `struct` or `union` if needed.
+ * - `id`       : An identifier that can be used to create functions related to
+ *                this type without conflict, usually also part of `test_name`.
+ * - `rust_val` : Identifier for a Rust value, with path qualifications if
+ *                needed.
+ * - `rust_ty`  : The Rust type of the relevant item, with path qualifications
+ *                if needed.
+ * - `c_val`    : Identifier for a C value (e.g. `#define`)
+ * - `c_ty`     : The C type of the constant, qualified with `struct` or `union`
+ *                if needed.
  */
 
 #[derive(Clone, Debug)]
