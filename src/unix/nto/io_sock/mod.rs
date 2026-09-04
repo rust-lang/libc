@@ -6,6 +6,10 @@
 //! * `x86_64-pc-nto-qnx710`
 //! * `aarch64-unknown-qnx`
 //! * `x86_64-pc-qnx`
+//!
+//! The QNX io-sock networking stack is based on FreeBSD 13.2 release:
+//! https://www.qnx.com/developers/docs/relnotes8.0/com.qnx.doc.release_notes/topic/sdp8_rn.html
+//! See `What's new in QNX SDP? > Networking` for details
 
 use crate::prelude::*;
 
@@ -51,12 +55,14 @@ s! {
         pub sdl_data: [c_char; 46],
     }
 
+    // https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/in.h#L549
     pub struct ip_mreqn {
         pub imr_multiaddr: in_addr,
         pub imr_address: in_addr,
         pub imr_ifindex: c_int,
     }
 
+    // https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/in.h#L558
     pub struct ip_mreq_source {
         pub imr_multiaddr: crate::in_addr,
         pub imr_sourceaddr: crate::in_addr,
@@ -101,11 +107,17 @@ pub const PF_NATM: c_int = AF_NATM;
 pub const pseudo_AF_HDRCMPLT: c_int = 31;
 pub const SIOCGIFADDR: c_int = u32_cast_int(0xc0206921);
 pub const SO_SETFIB: c_int = 0x1014;
+// https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/tcp.h#L208
 pub const TCP_KEEPIDLE: c_int = 256;
+// https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/tcp.h#L209
 pub const TCP_KEEPINTVL: c_int = 512;
+// https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/tcp.h#L210
 pub const TCP_KEEPCNT: c_int = 1024;
+// https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/in.h#L487
 pub const IP_RECVTOS: c_int = 68;
+// https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3e/sys/netinet/in.h#L490
 pub const IP_ADD_SOURCE_MEMBERSHIP: c_int = 70;
+// https://github.com/freebsd/freebsd-src/blob/f0cf0b8266eef39b13917f7bed808daf6d6a2d3esys/netinet/in.h#L491
 pub const IP_DROP_SOURCE_MEMBERSHIP: c_int = 71;
 
 extern "C" {
