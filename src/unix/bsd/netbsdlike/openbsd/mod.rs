@@ -1407,6 +1407,7 @@ pub const KERN_MALLOCSTATS: c_int = 39;
 pub const KERN_CPTIME: c_int = 40;
 pub const KERN_NCHSTATS: c_int = 41;
 pub const KERN_FORKSTAT: c_int = 42;
+#[deprecated(since = "0.2.190", note = "Removed in OpenBSD 7.2")]
 pub const KERN_NSELCOLL: c_int = 43;
 pub const KERN_TTY: c_int = 44;
 pub const KERN_CCPU: c_int = 45;

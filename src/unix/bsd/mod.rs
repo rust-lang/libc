@@ -865,6 +865,10 @@ cfg_if! {
     // on iOS and macOS).
     if #[cfg(not(any(target_os = "tvos", target_os = "watchos")))] {
         extern "C" {
+            #[cfg_attr(
+                target_os = "openbsd",
+                deprecated(since = "0.2.190", note = "Removed in OpenBSD 7.5")
+            )]
             pub fn syscall(num: c_int, ...) -> c_int;
         }
     }
