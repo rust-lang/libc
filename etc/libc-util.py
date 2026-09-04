@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Helper utilities for common libc tasks."""
 
+# ruff: noqa: FURB167 allow short regex flags
+
 import argparse
 import copy
 import datetime as dt
@@ -9,6 +11,7 @@ import json
 import os
 import pprint
 import re
+import shlex
 import subprocess as sp
 import sys
 from dataclasses import dataclass
@@ -16,6 +19,7 @@ from enum import StrEnum
 from inspect import cleandoc
 from multiprocessing import Pool
 from pathlib import Path
+from typing import ClassVar
 
 REPO_OWNER = "rust-lang"
 REPO = "libc"
@@ -158,10 +162,10 @@ class Relabel:
 
         if state != "MERGED":
             print(f'expected MERGED state; got {state} for "{title}" (#{num})')
-            exit(1)
+            sys.exit(1)
         if base != "libc-0.2":
             print(f'expected libc-0.2 base ref; got {base} for "{title}" (#{num})')
-            exit(1)
+            sys.exit(1)
 
         print(f'Relabling PRs listed in {num} "{title}"')
 
@@ -337,10 +341,10 @@ class CheckAllTargets:
     checks: list["CheckInvocation"]
     failure_limit: int
 
-    FREEBSD_VERSIONS = [13, 14, 15]
+    FREEBSD_VERSIONS: ClassVar = [13, 14, 15]
 
     # Targets that don't pass for one reason or another
-    BROKEN_TARGETS = [
+    BROKEN_TARGETS: ClassVar = [
         # libc problems
         ("aarch64-unknown-nto-qnx800", "libc error, unsupported arch"),
         ("aarch64.*-gnu_ilp32.*time_bits=64", "libc error, time64 mismatches"),
@@ -359,7 +363,7 @@ class CheckAllTargets:
     ]
 
     # Flags that always need to be passed to specific targets
-    EXTRA_TARGET_FLAGS = {
+    EXTRA_TARGET_FLAGS: ClassVar = {
         # Target CPU must be specified
         "avr-none": ["-Ctarget-cpu=atmega328p"],
         # Emits a lot of warnings
@@ -611,7 +615,7 @@ class Backporter:
     branch: str
 
     WORKTREE_DIR = ".libc-backports"
-    WORKTREE_GIT = ["git", "-C", WORKTREE_DIR]
+    WORKTREE_GIT: ClassVar = ["git", "-C", WORKTREE_DIR]
     GQL_QUERY = """
         query ($endCursor: String) {
           repository(name: "libc", owner: "rust-lang") {
@@ -700,7 +704,7 @@ class Backporter:
                 delete the branch and start from scratch.{E.RST}
             """
             print("\n" + mstr(msg))
-            exit(1)
+            sys.exit(1)
 
     def prepare_rebase_todo(self) -> None:
         """Create a rebase todo list and cache it, to be picked up by the sequence
@@ -720,7 +724,7 @@ class Backporter:
             # If we have a merge commit, take only the second (incoming) commit.
             if len(parents) > 2:
                 eprint("Can't backport commits with >1 parent")
-                exit(1)
+                sys.exit(1)
             if len(parents) == 2:
                 last_sha = parents[1]
 
@@ -739,7 +743,7 @@ class Backporter:
                 pick_short = pick_sha[:12]
                 rebase_todo += (
                     f"exec printf '{E.CY_B.u}picking from PR{pr.number}: {pick_short} "
-                    f'"{subject}"{E.RST.u}\\n\''
+                    f'"%s"{E.RST.u}\\n\' {shlex.quote(subject)}'
                     "\n"
                     f'pick {pick_short}  # pick "{subject}"'
                     "\n"
@@ -798,7 +802,7 @@ class Backporter:
                     f"limit reached: {total_commits} total commits but could "
                     f"only fetch {new_commit_count}"
                 )
-                exit(1)
+                sys.exit(1)
 
             pull_requests.append(new)
 
@@ -820,7 +824,7 @@ class Backporter:
                 f"local libc-0.2@{local[:12]} does not match upstream/libc-0.2@{upstream[:12]}!"
                 "Fetch before retrying."
             )
-            exit(1)
+            sys.exit(1)
 
     def ensure_branch(self) -> None:
         """Create the branch if it doesn't exist."""
