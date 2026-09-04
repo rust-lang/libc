@@ -176,6 +176,7 @@ pub type copyfile_callback_t = Option<
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
+#[cfg(target_os = "macos")]
 deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
@@ -304,6 +305,7 @@ s! {
         pub ai_next: *mut addrinfo,
     }
 
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_timebase_info {
         pub numer: u32,
@@ -685,6 +687,7 @@ s! {
         pub cr_groups: [crate::gid_t; 16],
     }
 
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header {
         pub magic: u32,
@@ -696,6 +699,7 @@ s! {
         pub flags: u32,
     }
 
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header_64 {
         pub magic: u32,
@@ -4577,13 +4581,17 @@ extern "C" {
         newp: *mut c_void,
         newlen: size_t,
     ) -> c_int;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_absolute_time() -> u64;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut crate::mach_timebase_info) -> c_int;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_host_self() -> mach_port_t;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_thread_self() -> mach_port_t;
     pub fn pthread_cond_timedwait_relative_np(
@@ -4868,13 +4876,17 @@ extern "C" {
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn sbrk(increment: c_int) -> *mut c_void;
     pub fn settimeofday(tv: *const crate::timeval, tz: *const crate::timezone) -> c_int;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_image_count() -> u32;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> intptr_t;
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_name(image_index: u32) -> *const c_char;
 
@@ -5085,6 +5097,7 @@ extern "C" {
     pub fn _NSGetEnviron() -> *mut *mut *mut c_char;
     pub fn _NSGetProgname() -> *mut *mut c_char;
 
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_vm_map(
         target_task: crate::vm_map_t,
@@ -5127,6 +5140,7 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> crate::kern_return_t;
 
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub static mut mach_task_self_: crate::mach_port_t;
     pub fn task_for_pid(
@@ -5252,6 +5266,7 @@ extern "C" {
 }
 
 #[allow(deprecated)]
+#[cfg(target_os = "macos")]
 #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
 pub unsafe fn mach_task_self() -> crate::mach_port_t {
     mach_task_self_

@@ -166,6 +166,10 @@ SYSPROTO_EVENT
 UTUN_OPT_FLAGS
 UTUN_OPT_IFNAME
 __c_anonymous_bfl_u
+_dyld_get_image_header
+_dyld_get_image_name
+_dyld_get_image_vmaddr_slide
+_dyld_image_count
 arphdr
 bpf_dltlist
 bpf_hdr
@@ -188,6 +192,15 @@ icmp6_ifstat
 in6_addrlifetime
 in6_ifreq
 in6_ifstat
+mach_absolute_time
+mach_header
+mach_header_64
+mach_host_self
+mach_port_t
+mach_thread_self
+mach_timebase_info
+mach_timebase_info_data_t
+mach_vm_map
 memmem
 proc_bsdinfo
 proc_bsdshortinfo
