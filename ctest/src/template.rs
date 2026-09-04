@@ -730,3 +730,18 @@ impl<'a> TranslateHelper<'a> {
         Ok(self.generator.rty_to_cty(item))
     }
 }
+
+#[test]
+fn tmp() {
+    use syn::visit::Visit;
+
+    let file =
+        r#"mod t { mod r { extern "C" { fn ctime() -> c_int; fn something() -> c_int; } } }"#;
+    let mut items = FfiItems::new();
+    let file = syn::parse_file(file).unwrap();
+    items.visit_file(&file);
+    let mut generator = TestGenerator::new();
+    generator.skip_fn(|it| it.ident() == "t::r::ctime");
+    let mut translator = TranslateHelper::new(&items, &generator);
+    println!("{:#?}", translator.filtered_ffi_items);
+}
