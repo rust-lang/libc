@@ -19,6 +19,7 @@ use crate::{
     TestGenerator,
     TranslationError,
     VolatileItemKind,
+    ast,
     cdecl,
 };
 
@@ -127,18 +128,26 @@ impl TestTemplate {
                 && matches!(ptr.mutability, syn::PointerMutability::Const(_))
             {
                 let item = TestCStr {
+                    // [NOTE]: the test name needs the full path to the item
+                    // with path separators escaped as `_`.
+                    test_name: cstr_test_ident(&ast::escape_item_path(constant)),
+                    // [NOTE]: the item's identifier ought be the last segment
+                    // of its path because it is used in the C tests.
                     id: constant.ident().into(),
-                    test_name: cstr_test_ident(constant.ident()),
-                    rust_val: constant.ident().into(),
+                    // [NOTE]: the item's Rust identifier ought be the full,
+                    // unescaped path to the item (as it itself is not used as
+                    // an identifier for some other item in the generated
+                    // tests but as a standalone identifier.)
+                    rust_val: constant.path().into(),
                     c_val: helper.c_ident(constant).into(),
                 };
                 self.const_cstr_tests.push(item.clone());
                 self.test_idents.push(item.test_name);
             } else {
                 let item = TestConst {
-                    id: constant.ident().into(),
-                    test_name: const_test_ident(constant.ident()),
-                    rust_val: constant.ident().into(),
+                    id: constant.path().into(),
+                    test_name: const_test_ident(constant.path()),
+                    rust_val: constant.path().into(),
                     rust_ty: constant.ty.to_token_stream().to_string().into_boxed_str(),
                     c_val: helper.c_ident(constant).into(),
                     c_ty: helper.c_type(constant)?.into(),
@@ -160,9 +169,9 @@ impl TestTemplate {
     ) -> Result<(), TranslationError> {
         for alias in helper.filtered_ffi_items.aliases() {
             let item = TestSizeAlign {
-                test_name: size_align_test_ident(alias.ident()),
-                id: alias.ident().into(),
-                rust_ty: alias.ident().into(),
+                test_name: size_align_test_ident(alias.path()),
+                id: alias.path().into(),
+                rust_ty: alias.path().into(),
                 c_ty: helper.c_type(alias)?.into(),
             };
             self.size_align_tests.push(item.clone());
@@ -170,9 +179,9 @@ impl TestTemplate {
         }
         for struct_ in helper.filtered_ffi_items.structs() {
             let item = TestSizeAlign {
-                test_name: size_align_test_ident(struct_.ident()),
-                id: struct_.ident().into(),
-                rust_ty: struct_.ident().into(),
+                test_name: size_align_test_ident(struct_.path()),
+                id: struct_.path().into(),
+                rust_ty: struct_.path().into(),
                 c_ty: helper.c_type(struct_)?.into(),
             };
             self.size_align_tests.push(item.clone());
@@ -180,9 +189,9 @@ impl TestTemplate {
         }
         for union_ in helper.filtered_ffi_items.unions() {
             let item = TestSizeAlign {
-                test_name: size_align_test_ident(union_.ident()),
-                id: union_.ident().into(),
-                rust_ty: union_.ident().into(),
+                test_name: size_align_test_ident(union_.path()),
+                id: union_.path().into(),
+                rust_ty: union_.path().into(),
                 c_ty: helper.c_type(union_)?.into(),
             };
             self.size_align_tests.push(item.clone());
@@ -204,14 +213,14 @@ impl TestTemplate {
                 .generator
                 .skip_signededness
                 .as_ref()
-                .is_some_and(|skip| skip(alias.ident()));
+                .is_some_and(|skip| skip(alias.path()));
 
             if !helper.translator.is_signed(&alias.ty) || should_skip_signededness_test {
                 continue;
             }
             let item = TestSignededness {
-                test_name: signededness_test_ident(alias.ident()),
-                id: alias.ident().into(),
+                test_name: signededness_test_ident(alias.path()),
+                id: alias.path().into(),
                 c_ty: helper.c_type(alias)?.into(),
             };
             self.signededness_tests.push(item.clone());
@@ -240,7 +249,7 @@ impl TestTemplate {
             })
             .map(|(struct_, field)| {
                 (
-                    struct_.ident(),
+                    struct_.path(),
                     field,
                     helper.c_type(struct_),
                     helper.c_ident(MapInput::StructField(struct_, field)),
@@ -256,7 +265,7 @@ impl TestTemplate {
             })
             .map(|(union_, field)| {
                 (
-                    union_.ident(),
+                    union_.path(),
                     field,
                     helper.c_type(union_),
                     helper.c_ident(MapInput::UnionField(union_, field)),
@@ -291,15 +300,15 @@ impl TestTemplate {
                 continue;
             }
             let c_ty = helper.c_type(alias)?;
-            self.add_roundtrip_test(helper, alias.ident(), &[], &c_ty, true);
+            self.add_roundtrip_test(helper, alias.path(), &[], &c_ty, true);
         }
         for struct_ in helper.filtered_ffi_items.structs() {
             let c_ty = helper.c_type(struct_)?;
-            self.add_roundtrip_test(helper, struct_.ident(), &struct_.fields, &c_ty, false);
+            self.add_roundtrip_test(helper, struct_.path(), &struct_.fields, &c_ty, false);
         }
         for union_ in helper.filtered_ffi_items.unions() {
             let c_ty = helper.c_type(union_)?;
-            self.add_roundtrip_test(helper, union_.ident(), &union_.fields, &c_ty, false);
+            self.add_roundtrip_test(helper, union_.path(), &union_.fields, &c_ty, false);
         }
 
         Ok(())
@@ -352,7 +361,7 @@ impl TestTemplate {
             })
             .map(|(s, f)| {
                 (
-                    s.ident(),
+                    s.path(),
                     f,
                     helper.c_type(s),
                     helper.c_ident(MapInput::StructField(s, f)),
@@ -381,7 +390,7 @@ impl TestTemplate {
             })
             .map(|(u, f)| {
                 (
-                    u.ident(),
+                    u.path(),
                     f,
                     helper.c_type(u),
                     helper.c_ident(MapInput::UnionField(u, f)),
@@ -428,21 +437,22 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        let should_skip_fn_test = |ident| {
+        let should_skip_fn_test = |path| {
             helper
                 .generator
                 .skip_fn_ptrcheck
                 .as_ref()
-                .is_some_and(|skip| skip(ident))
+                .is_some_and(|skip| skip(path))
         };
         for func in helper.filtered_ffi_items.foreign_functions() {
-            if should_skip_fn_test(func.ident()) {
+            if should_skip_fn_test(func.path()) {
                 continue;
             }
 
+            let ident = ast::escape_item_path(func);
             let item = TestForeignFn {
-                test_name: foreign_fn_test_ident(func.ident()),
-                id: func.ident().into(),
+                test_name: foreign_fn_test_ident(&ident),
+                id: ident.into(),
                 c_val: helper.c_ident(func).into_boxed_str(),
             };
 
@@ -461,9 +471,10 @@ impl TestTemplate {
         for static_ in helper.filtered_ffi_items.foreign_statics() {
             let rust_ty = static_.ty.to_token_stream().to_string().into_boxed_str();
 
+            let ident = ast::escape_item_path(static_);
             let item = TestForeignStatic {
-                test_name: static_test_ident(static_.ident()),
-                id: static_.ident().into(),
+                test_name: static_test_ident(&ident),
+                id: ident.into(),
                 c_val: helper.c_ident(static_).into_boxed_str(),
                 rust_ty,
             };
@@ -636,12 +647,12 @@ impl<'a> TranslateHelper<'a> {
                 generator
                     .skips
                     .iter()
-                    .any(|f| f(&MapInput::CEnumType(alias.ident())))
+                    .any(|f| f(&MapInput::CEnumType(alias.path())))
             });
 
             for item in skipped {
                 if generator.verbose_skip {
-                    eprintln!("Skipping C enum type {}", item.ident());
+                    eprintln!("Skipping C enum type {}", item.path());
                 }
             }
 
@@ -655,7 +666,7 @@ impl<'a> TranslateHelper<'a> {
 
             for item in skipped {
                 if generator.verbose_skip {
-                    eprintln!("Skipping C enum constant {}", item.ident());
+                    eprintln!("Skipping C enum constant {}", item.path());
                 }
             }
 
@@ -667,7 +678,7 @@ impl<'a> TranslateHelper<'a> {
                     });
                     for item in skipped {
                         if generator.verbose_skip {
-                            eprintln!("Skipping {} \"{}\"", $label, item.ident())
+                            eprintln!("Skipping {} \"{}\"", $label, item.path())
                         }
                     }
                 }};
@@ -700,18 +711,22 @@ impl<'a> TranslateHelper<'a> {
     pub(crate) fn c_type(&self, item: impl Into<MapInput<'a>>) -> Result<String, TranslationError> {
         let item: MapInput = item.into();
 
-        let (ident, ty) = match item {
-            MapInput::Const(c) => (c.ident(), self.translator.translate_type(&c.ty)?),
+        // [NOTE]: we fetch the whole item path here instead of the identifier
+        // through `ident`, because `item_path` gets used only for error
+        // reporting.
+        let (item_path, ty) = match item {
+            MapInput::Const(c) => (c.path(), self.translator.translate_type(&c.ty)?),
             MapInput::StructField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
             MapInput::UnionField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
-            MapInput::Static(s) => (s.ident(), self.translator.translate_type(&s.ty)?),
-            // For functions, their type would be a bare fn signature, which would need to be saved
-            // inside of `Fn` when parsed.
+            MapInput::Static(s) => (s.path(), self.translator.translate_type(&s.ty)?),
+            // For functions, their type would be a bare fn signature, which
+            // would need to be saved inside of `Fn` when parsed.
             MapInput::Fn(_) => unimplemented!(),
-            // For structs/unions/aliases, their type is the same as their identifier.
-            MapInput::Alias(a) => (a.ident(), cdecl::named(a.ident(), Constness::Mut)),
-            MapInput::Struct(s) => (s.ident(), cdecl::named(s.ident(), Constness::Mut)),
-            MapInput::Union(u) => (u.ident(), cdecl::named(u.ident(), Constness::Mut)),
+            // For structs/unions/aliases, their type is the same as their
+            // identifier.
+            MapInput::Alias(a) => (a.path(), cdecl::named(&a.ident(), Constness::Mut)),
+            MapInput::Struct(s) => (s.path(), cdecl::named(&s.ident(), Constness::Mut)),
+            MapInput::Union(u) => (u.path(), cdecl::named(&u.ident(), Constness::Mut)),
 
             MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
             MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
@@ -725,7 +740,7 @@ impl<'a> TranslateHelper<'a> {
         let ty = cdecl::cdecl(&ty, "".to_string()).map_err(|_| {
             TranslationError::new(
                 TranslationErrorKind::InvalidReturn,
-                ident,
+                item_path,
                 Span::call_site(),
             )
         })?;
@@ -746,7 +761,7 @@ fn tmp() {
     let file = syn::parse_file(file).unwrap();
     items.visit_file(&file);
     let mut generator = TestGenerator::new();
-    generator.skip_fn(|it| it.ident() == "t::r::ctime");
+    generator.skip_fn(|it| it.path() == "t::r::ctime");
     let mut translator = TranslateHelper::new(&items, &generator);
     println!("{:#?}", translator.filtered_ffi_items);
 }

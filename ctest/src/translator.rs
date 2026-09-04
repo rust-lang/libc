@@ -267,8 +267,7 @@ impl<'a> Translator<'a> {
         match ty {
             syn::Type::Path(path) => {
                 let ident = path.path.segments.last().unwrap().ident.clone();
-                if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.ident())
-                {
+                if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.path()) {
                     return self.is_signed(&aliased.ty);
                 }
                 match translate_primitive_type(&ident.to_string()).as_str() {
