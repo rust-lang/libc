@@ -5,30 +5,40 @@
     ":maintainLockFilesMonthly",
     "helpers:pinGitHubActionDigestsToSemver"
   ],
+  baseBranchPatterns: ["main", "libc-0.2"],
+  lockFileMaintenance: {
+    enabled: true,
+    // Biweekly at 12:00UTC on Monday
+    schedule: ["0 12 1-7,15-21 * 1"]
+  }
   packageRules: [
     {
-      matchCategories: [
-        "rust"
-      ],
-      matchJsonata: [
-        "isBreaking != true"
-      ],
+      matchCategories: ["rust"],
+      matchJsonata: ["isBreaking != true"],
       // Disable non-breaking change updates because they
       // are updated periodically with lockfile maintainance.
       enabled: false,
     },
     {
-      matchManagers: [
-        "github-actions"
-      ],
+      matchCategories: ["rust"],
+      // Separate PRs against main and 0.2
+      addLabels: ["stable-declined"],
+    },
+    {
+      matchManagers: ["github-actions"],
       // Every month
       schedule: "* 0 1 * *",
       groupName: "Github Actions",
+      // Separate PRs against main and 0.2
+      addLabels: ["stable-declined"],
     },
     {
       // Don't updates such as 23.10 -> mantic-20240530
-      "matchDatasources": ["docker"],
-      "pinDigests": false
+      matchDatasources: ["docker"],
+      // Only on main, we backport these
+      matchBaseBranches: ["main"],
+      addLabels: ["stable-nominated"],
+      pinDigests: false
     }
   ],
   // Receive any update that fixes security vulnerabilities.
