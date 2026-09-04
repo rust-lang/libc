@@ -269,8 +269,11 @@ impl<'a> Translator<'a> {
     /// signed, it recursively checks the underlying type of the alias.
     pub(crate) fn is_signed(&self, ty: &syn::Type) -> bool {
         match ty {
-            syn::Type::Path(path) => {
-                let ident = path.path.segments.last().unwrap().ident.clone();
+            syn::Type::Path(syn::TypePath {
+                path: syn::Path { segments, .. },
+                ..
+            }) => {
+                let ident = segments.last().unwrap().ident.clone();
                 if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.ident())
                 {
                     return self.is_signed(&aliased.ty);
