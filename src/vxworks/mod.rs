@@ -1776,6 +1776,10 @@ extern "C" {
     pub fn ftello(stream: *mut crate::FILE) -> off_t;
     pub fn mkstemp(template: *mut c_char) -> c_int;
 
+    #[deprecated(
+        since = "0.2.190",
+        note = "function is obsolete; prefer tmpfile, mkstemp, or similar"
+    )]
     pub fn tmpnam(ptr: *mut c_char) -> *mut c_char;
 
     pub fn openlog(ident: *const c_char, logopt: c_int, facility: c_int);
