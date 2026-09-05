@@ -85,6 +85,11 @@ s! {
         pub affinity: l4_sched_cpu_set_t,
         pub create_flags: c_uint,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: crate::msghdr,
+        pub msg_len: c_uint,
+    }
 }
 
 // L4Re requires a min stack size of 64k; that isn't defined in uClibc, but
