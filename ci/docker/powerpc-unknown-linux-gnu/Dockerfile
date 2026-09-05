@@ -1,4 +1,4 @@
-FROM ubuntu:23.10
+FROM ubuntu:mantic-20240530
 
 # FIXME(time): we are using an EOL release because 24.04 changes to 64-bit time
 RUN sed -i -E 's/(archive|security)\.ubuntu\.com/old-releases.ubuntu.com/g' \
