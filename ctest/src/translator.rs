@@ -267,7 +267,8 @@ impl<'a> Translator<'a> {
         match ty {
             syn::Type::Path(path) => {
                 let ident = path.path.segments.last().unwrap().ident.clone();
-                if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.path()) {
+                if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.ident())
+                {
                     return self.is_signed(&aliased.ty);
                 }
                 match translate_primitive_type(&ident.to_string()).as_str() {
@@ -288,7 +289,20 @@ impl<'a> Translator<'a> {
             MapInput::StructType(name)
         } else if self.ffi_items.contains_union(name) {
             MapInput::UnionType(name)
-        } else if self.generator.c_enums.iter().any(|f| f(name)) {
+        }
+        // [NOTE]: for each module (which itself is a separate `FfiItems`,) we
+        //         check first if there is some alias that corresponds with the
+        //         passed `name`, after which we can check if the global set of
+        //         aliases-as-C-`enum`s in `TestGenerator` (which applies to all
+        //         modules and uses the full path to items in its routines)
+        //         contains a remapping of the type alias (with its full path.)
+        else if let Some(ty) = self
+            .ffi_items
+            .aliases()
+            .iter()
+            .find(|ty| ty.ident() == name)
+            && self.generator.c_enums.iter().any(|f| f(ty.path()))
+        {
             MapInput::CEnumType(name)
         } else {
             MapInput::Type(name)

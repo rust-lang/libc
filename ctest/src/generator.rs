@@ -337,6 +337,7 @@ impl TestGenerator {
     /// Indicate that a type alias is actually a C enum.
     ///
     /// # Examples
+    ///
     /// ```no_run
     /// use ctest::TestGenerator;
     ///
