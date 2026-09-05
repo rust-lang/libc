@@ -436,6 +436,15 @@ class CheckAllTargets:
                 ]
                 new_checks.append(new)
 
+            if t.env == "uclibc" and t.bits == 32:
+                new = copy.deepcopy(base)
+                new.attributes = base.attributes | {"time_bits": "64"}
+                new.target_dir = base.target_dir / "time64"
+                new.extra_rustflags = base.extra_rustflags + [
+                    "--cfg=libc_unstable_uclibc_time64"
+                ]
+                new_checks.append(new)
+
             # Update the name field and check whether there are any targets that we
             # always need to skip, or that need flags.
             for check in new_checks:
