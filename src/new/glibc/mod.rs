@@ -18,6 +18,7 @@ mod bits {
     pub(crate) use super::sysdeps::unix::linux::bits::{
         sigaction,
         signum_arch,
+        socket,
         statvfs,
         types,
     };
@@ -36,6 +37,12 @@ mod posix {
 
 #[cfg(target_os = "linux")]
 pub(crate) mod signal;
+
+/// Source directory: `socket/`
+///
+/// <https://github.com/sailfishos-mirror/glibc/tree/master/socket>
+#[cfg(target_os = "linux")]
+mod socket;
 
 /// Source directory: `sysdeps/`
 ///
