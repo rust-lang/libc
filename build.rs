@@ -36,12 +36,12 @@ enum Cfg {
 
     VxworksLt25_09,
 
-    /// Corresponds to `__USE_TIME_BITS64` in UAPI
+    /// Corresponds to `__USE_TIME_BITS64` in UAPI. Implies 32-bit Linux target.
     LinuxTimeBits64,
-    /// Corresponds to `_FILE_OFFSET_BITS=64` in glibc
+    /// Corresponds to `_FILE_OFFSET_BITS=64` in glibc. Implies 32-bit GNU target.
     GnuFileOffsetBits64,
-    /// Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with
-    /// GNU to expose a 64-bit `time_t`.
+    /// Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with GNU
+    /// to expose a 64-bit `time_t`. Implies 32-bit GNU target and 64-bit `off_t`.
     GnuTimeBits64,
     /// Musl 1.2+. Implies `target_env = "musl"`
     MuslV1_2,
@@ -175,42 +175,49 @@ fn main() {
         );
     }
 
-    // The ABI of libc used by std is backward compatible with FreeBSD 12.
-    // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
-    //
-    // On CI, we detect the actual FreeBSD version and match its ABI exactly,
-    // running tests to ensure that the ABI is correct.
-    // Allow overriding the default version for testing
-    let which_freebsd = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION") {
-        let vers = version.parse().unwrap();
-        println!("cargo:warning=setting FreeBSD version to {vers}");
-        vers
-    } else if libc_ci {
-        which_freebsd().unwrap_or(12)
-    } else {
-        12
-    };
+    if target_os == "freebsd" {
+        // The ABI of libc used by std is backward compatible with FreeBSD 12.
+        // The ABI of libc from crates.io is backward compatible with FreeBSD 12.
+        //
+        // On CI, we detect the actual FreeBSD version and match its ABI exactly,
+        // running tests to ensure that the ABI is correct.
+        // Allow overriding the default version for testing
+        let which_freebsd = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION")
+        {
+            let vers = version.parse().unwrap();
+            println!("cargo:warning=setting FreeBSD version to {vers}");
+            vers
+        } else if libc_ci {
+            which_freebsd().unwrap_or(12)
+        } else {
+            12 // regardless of CARGO_FEATURE_RUSTC_DEP_OF_STD env var
+        };
 
-    match which_freebsd {
-        x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
-        10 => cfgs.push(Cfg::Freebsd10),
-        11 => cfgs.push(Cfg::Freebsd11),
-        12 => cfgs.push(Cfg::Freebsd12),
-        13 => cfgs.push(Cfg::Freebsd13),
-        14 => cfgs.push(Cfg::Freebsd14),
-        _ => cfgs.push(Cfg::Freebsd15),
+        match which_freebsd {
+            x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
+            10 => cfgs.push(Cfg::Freebsd10),
+            11 => cfgs.push(Cfg::Freebsd11),
+            12 => cfgs.push(Cfg::Freebsd12),
+            13 => cfgs.push(Cfg::Freebsd13),
+            14 => cfgs.push(Cfg::Freebsd14),
+            _ => cfgs.push(Cfg::Freebsd15),
+        }
     }
 
-    match emcc_version_code() {
-        Some(v) if (v < 30142) => cfgs.push(Cfg::EmscriptenOldStatAbi),
-        // Non-Emscripten or version >= 3.1.42.
-        _ => (),
+    if target_os == "emscripten" {
+        match emcc_version_code() {
+            Some(v) if (v < 30142) => cfgs.push(Cfg::EmscriptenOldStatAbi),
+            // Non-Emscripten or version >= 3.1.42.
+            _ => (),
+        }
     }
 
-    match vxworks_version_code() {
-        Some(v) if (v < (25, 9)) => cfgs.push(Cfg::VxworksLt25_09),
-        // VxWorks version >= 25.09
-        _ => (),
+    if target_os == "vxworks" {
+        match vxworks_version_code() {
+            Some(v) if (v < (25, 9)) => cfgs.push(Cfg::VxworksLt25_09),
+            // VxWorks version >= 25.09
+            _ => (),
+        }
     }
 
     let mut musl_v1_2 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
@@ -294,7 +301,9 @@ fn main() {
         };
 
         if timebits == "64" {
-            cfgs.push(Cfg::LinuxTimeBits64);
+            if target_os == "linux" {
+                cfgs.push(Cfg::LinuxTimeBits64);
+            }
             cfgs.push(Cfg::GnuFileOffsetBits64);
             cfgs.push(Cfg::GnuTimeBits64);
         }
@@ -319,6 +328,7 @@ fn main() {
 
     cfgs.sort_unstable();
     cfgs.dedup();
+    validate_cfg(&cfgs, &target_env, &target_os, &target_ptr_width);
 
     for cfg in cfgs {
         set_cfg(cfg);
@@ -401,6 +411,84 @@ fn rustc_minor_nightly() -> (u32, bool) {
     info!("detected rust 1.{minor}, nightly={nightly}");
 
     (minor, nightly)
+}
+
+/// Check that our list of cfg makes sense for the current target.
+fn validate_cfg(list: &[Cfg], target_env: &str, target_os: &str, target_ptr_width: &str) {
+    for cfg in list {
+        match cfg {
+            Cfg::LibcDenyWarnings => (),
+            Cfg::LibcElfv2 => (),
+            Cfg::LibcPauthtest => (),
+            Cfg::EspidfPicolibc => (),
+            Cfg::EspidfTime32 => (),
+
+            Cfg::EmscriptenOldStatAbi => {
+                assert_eq!(
+                    target_os, "emscripten",
+                    "{cfg:?} set on non-freebsd platform"
+                );
+            }
+
+            Cfg::Freebsd10
+            | Cfg::Freebsd11
+            | Cfg::Freebsd12
+            | Cfg::Freebsd13
+            | Cfg::Freebsd14
+            | Cfg::Freebsd15 => {
+                assert_eq!(target_os, "freebsd", "{cfg:?} set on non-freebsd platform");
+            }
+
+            Cfg::VxworksLt25_09 => {
+                assert_eq!(target_os, "vxworks", "{cfg:?} set on non-vxworks platform");
+            }
+
+            Cfg::GnuFileOffsetBits64 => {
+                assert_eq!(target_env, "gnu", "{cfg:?} set on non-gnu platform");
+                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
+            }
+            Cfg::GnuTimeBits64 => {
+                assert_eq!(target_env, "gnu", "{cfg:?} set on non-gnu platform");
+                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
+                assert!(
+                    list.contains(&Cfg::GnuFileOffsetBits64),
+                    "{cfg:?} set without 64-bit off_t"
+                )
+            }
+            Cfg::LinuxTimeBits64 => {
+                assert_eq!(target_os, "linux", "{cfg:?} set on non-linux platform");
+                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
+            }
+            Cfg::MuslV1_2 => {
+                assert!(
+                    matches!(target_env, "musl" | "ohos"),
+                    "{cfg:?} set with env {target_env}"
+                );
+            }
+            Cfg::Musl32Time64 => {
+                assert!(
+                    matches!(target_env, "musl" | "ohos"),
+                    "{cfg:?} set with env {target_env}"
+                );
+                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
+                assert!(
+                    list.contains(&Cfg::MuslV1_2),
+                    "{cfg:?} set on non-musl1.2 platform"
+                )
+            }
+            Cfg::MuslRedirTime64 => {
+                assert!(
+                    matches!(target_env, "musl" | "ohos"),
+                    "{cfg:?} set with env {target_env}"
+                );
+                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
+                assert!(
+                    list.contains(&Cfg::MuslV1_2),
+                    "{cfg:?} set on non-musl1.2 platform"
+                )
+            }
+        }
+    }
 }
 
 fn which_freebsd() -> Option<i32> {
