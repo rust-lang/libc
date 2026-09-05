@@ -16,4 +16,4 @@ pub const SIGKILL: c_int = 9;
 pub const SIGPIPE: c_int = 13;
 pub const SIGALRM: c_int = 14;
 
-pub use super::super::sysdeps::unix::linux::bits::signum_arch::*;
+pub use crate::new::glibc::bits::signum_arch::*;
