@@ -66,6 +66,12 @@ cfg_if! {
     } else if #[cfg(target_os = "freebsd")] {
         mod freebsd;
         pub(crate) use freebsd::*;
+        pub mod netlink {
+            pub use freebsd::netlink_::netlink::*;
+            pub use freebsd::netlink_::netlink_generic::*;
+
+            use super::freebsd;
+        }
     } else if #[cfg(target_os = "fuchsia")] {
         mod fuchsia;
         pub(crate) use fuchsia::*;

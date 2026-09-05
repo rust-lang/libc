@@ -2477,6 +2477,96 @@ fn test_android(t: &Target) {
 }
 
 fn test_freebsd(t: &Target) {
+    // Ensures we have only one place where the `netlink/netlink.h` constants
+    // are checked in. This is used both when generating the full test suite,
+    // and when generating the `netlink`-specific test suite.
+    fn is_netlink_const(it: &ctest::Const) -> bool {
+        matches!(
+            it.ident(),
+            "CTRL_CMD_UNSPEC"
+                | "CTRL_CMD_NEWFAMILY"
+                | "CTRL_CMD_DELFAMILY"
+                | "CTRL_CMD_GETFAMILY"
+                | "CTRL_CMD_NEWOPS"
+                | "CTRL_CMD_DELOPS"
+                | "CTRL_CMD_GETOPS"
+                | "CTRL_CMD_NEWMCAST_GRP"
+                | "CTRL_CMD_DELMCAST_GRP"
+                | "CTRL_CMD_GETMCAST_GRP"
+                | "CTRL_CMD_GETPOLICY"
+                | "CTRL_ATTR_UNSPEC"
+                | "CTRL_ATTR_FAMILY_ID"
+                | "CTRL_ATTR_FAMILY_NAME"
+                | "CTRL_ATTR_VERSION"
+                | "CTRL_ATTR_HDRSIZE"
+                | "CTRL_ATTR_MAXATTR"
+                | "CTRL_ATTR_OPS"
+                | "CTRL_ATTR_MCAST_GROUPS"
+                | "CTRL_ATTR_POLICY"
+                | "CTRL_ATTR_OP_POLICY"
+                | "CTRL_ATTR_OP"
+                | "CTRL_ATTR_MCAST_GRP_UNSPEC"
+                | "CTRL_ATTR_MCAST_GRP_NAME"
+                | "CTRL_ATTR_MCAST_GRP_ID"
+                | "SOL_NETLINK"
+                | "NETLINK_ADD_MEMBERSHIP"
+                | "NETLINK_DROP_MEMBERSHIP"
+                | "NETLINK_PKTINFO"
+                | "NETLINK_BROADCAST_ERROR"
+                | "NETLINK_NO_ENOBUFS"
+                | "NETLINK_RX_RING"
+                | "NETLINK_TX_RING"
+                | "NETLINK_LISTEN_ALL_NSID"
+                | "NETLINK_LIST_MEMBERSHIPS"
+                | "NETLINK_CAP_ACK"
+                | "NETLINK_EXT_ACK"
+                | "NETLINK_GET_STRICT_CHK"
+                | "NLM_F_REQUEST"
+                | "NLM_F_MULTI"
+                | "NLM_F_ACK"
+                | "NLM_F_ECHO"
+                | "NLM_F_DUMP_INTR"
+                | "NLM_F_DUMP_FILTERED"
+                | "NLM_F_ROOT"
+                | "NLM_F_MATCH"
+                | "NLM_F_ATOMIC"
+                | "NLM_F_DUMP"
+                | "NLM_F_REPLACE"
+                | "NLM_F_EXCL"
+                | "NLM_F_CREATE"
+                | "NLM_F_APPEND"
+                | "NLM_F_NONREC"
+                | "NLM_F_CAPPED"
+                | "NLM_F_ACK_TLVS"
+                | "NLMSG_NOOP"
+                | "NLMSG_ERROR"
+                | "NLMSG_DONE"
+                | "NLMSG_OVERRUN"
+                | "NETLINK_ROUTE"
+                | "NETLINK_UNUSED"
+                | "NETLINK_USERSOCK"
+                | "NETLINK_FIREWALL"
+                | "NETLINK_SOCK_DIAG"
+                | "NETLINK_NFLOG"
+                | "NETLINK_XFRM"
+                | "NETLINK_SELINUX"
+                | "NETLINK_ISCSI"
+                | "NETLINK_AUDIT"
+                | "NETLINK_FIB_LOOKUP"
+                | "NETLINK_CONNECTOR"
+                | "NETLINK_NETFILTER"
+                | "NETLINK_IP6_FW"
+                | "NETLINK_DNRTMSG"
+                | "NETLINK_KOBJECT_UEVENT"
+                | "NETLINK_GENERIC"
+                | "NL_ITEM_ALIGN_SIZE"
+                | "NLMSG_ALIGNTO"
+        )
+    }
+    fn is_netlink_struct(it: &ctest::Struct) -> bool {
+        matches!(it.ident(), "sockaddr_nl")
+    }
+
     assert!(t.freebsd());
     let mut cfg = ctest_cfg();
 
@@ -2523,6 +2613,23 @@ fn test_freebsd(t: &Target) {
     let freebsd13 = matches!(freebsd_ver, Some(n) if n >= 13);
     let freebsd14 = matches!(freebsd_ver, Some(n) if n >= 14);
     let freebsd15 = matches!(freebsd_ver, Some(n) if n >= 15);
+
+    let mut netlink_cfg = cfg.clone();
+    headers!(netlink_cfg, "netlink/netlink.h",);
+
+    // [NOTE]: all but the netlink interfaces must be tested here because
+    // otherwise ctest generates tests for all Rust items in the crate, but we
+    // only include the netlink header (right above this comment.)
+    netlink_cfg
+        .skip_struct(|ty| !is_netlink_struct(ty))
+        .skip_const(|c| !is_netlink_const(c))
+        .skip_union(|_| true)
+        .skip_alias(|_| true)
+        .skip_static(|_| true)
+        .skip_fn(|_| true)
+        .skip_c_enum(|_| true);
+
+    ctest::generate_test(&mut netlink_cfg, "../src/lib.rs", "netlink_ctest_output.rs").unwrap();
 
     headers!(
         cfg,
@@ -2697,6 +2804,10 @@ fn test_freebsd(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
+            // `netlink/netlink.h` constants. These are tests in a separate ctest
+            // invocation.
+            _ if is_netlink_const(constant) => true,
+
             // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
@@ -2982,6 +3093,8 @@ fn test_freebsd(t: &Target) {
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
+            _ if is_netlink_struct(struct_) => true,
+
             // `procstat` is a private struct
             "procstat" => true,
 
