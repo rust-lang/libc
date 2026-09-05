@@ -5,6 +5,9 @@
 
 pub(crate) mod pthread;
 
+#[cfg(target_os = "linux")]
+pub(crate) mod socket;
+
 /// Directory source: `libc/sysdeps`
 ///
 /// * Headers: <https://gogs.waldemar-brodkorb.de/oss/uclibc-ng/src/master/libc/sysdeps> (official)

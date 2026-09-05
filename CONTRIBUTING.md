@@ -132,6 +132,7 @@ Common sources include:
   <https://sourceware.org/git/?p=glibc.git;a=tree> (original)
 * Illumos: <https://github.com/illumos/illumos-gate> (official mirror),
   <https://code.illumos.org/plugins/gitiles/illumos-gate/+/refs/heads/master> (original)
+* L4RE: <https://github.com/kernkonzept/l4re-core> (original)
 * Linux uapi: <https://github.com/torvalds/linux/tree/master/include/uapi> (official mirror),
   <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/> (original)
 * Musl: <https://github.com/kraj/musl> (unofficial mirror),
@@ -141,6 +142,8 @@ Common sources include:
 * OpenBSD: <https://github.com/openbsd> (official mirror),
   <https://cvsweb.openbsd.org/src> (original)
 * RedoxOS: <https://gitlab.redox-os.org/redox-os/relibc>
+* Uclibc: <https://github.com/wbx-github/uclibc-ng> (mirror),
+  <https://git.uclibc-ng.org/git/uclibc-ng.git> (original)
 * Windows GNU: <https://github.com/mingw-w64/mingw-w64> (unofficial mirror),
   <https://sourceforge.net/p/mingw-w64/mingw-w64/ci/master/tree/> (original)
 * Windows MSVC: <https://github.com/microsoft/win32metadata>
