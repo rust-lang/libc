@@ -176,7 +176,6 @@ fn test_apple(t: &Target) {
         (macos, "libproc.h"),
         "limits.h",
         "locale.h",
-        "mach/mach.h",
         "malloc/malloc.h",
         (macos, "net/bpf.h"),
         (macos, "net/dlil.h"),
