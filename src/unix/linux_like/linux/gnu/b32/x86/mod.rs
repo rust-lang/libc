@@ -376,9 +376,6 @@ pub const ENOTRECOVERABLE: c_int = 131;
 pub const EHWPOISON: c_int = 133;
 pub const ERFKILL: c_int = 132;
 
-pub const SOCK_STREAM: c_int = 1;
-pub const SOCK_DGRAM: c_int = 2;
-
 cfg_if! {
     if #[cfg(gnu_file_offset_bits64)] {
         pub const F_GETLK: c_int = 12;

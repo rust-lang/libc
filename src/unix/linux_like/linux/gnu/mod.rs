@@ -550,8 +550,6 @@ pub const RTLD_DI_PROFILEOUT: c_int = 8;
 pub const RTLD_DI_TLS_MODID: c_int = 9;
 pub const RTLD_DI_TLS_DATA: c_int = 10;
 
-pub const SOCK_NONBLOCK: c_int = O_NONBLOCK;
-
 pub const SOL_RXRPC: c_int = 272;
 pub const SOL_PPPOL2TP: c_int = 273;
 pub const SOL_PNPIPE: c_int = 275;
@@ -588,11 +586,6 @@ pub const LC_ALL_MASK: c_int = crate::LC_CTYPE_MASK
     | LC_IDENTIFICATION_MASK;
 
 pub const ENOTSUP: c_int = EOPNOTSUPP;
-
-pub const SOCK_SEQPACKET: c_int = 5;
-pub const SOCK_DCCP: c_int = 6;
-#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
-pub const SOCK_PACKET: c_int = 10;
 
 pub const AF_IB: c_int = 27;
 pub const AF_MPLS: c_int = 28;
