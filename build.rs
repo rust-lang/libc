@@ -10,37 +10,97 @@ use std::{
     str,
 };
 
-// List of cfgs this build script is allowed to set. The list is needed to support check-cfg, as we
-// need to know all the possible cfgs that this script will set. If you need to set another cfg
-// make sure to add it to this list as well.
-const ALLOWED_CFGS: &[&str] = &[
-    "emscripten_old_stat_abi",
-    // Should be enabled by users if esp-idf (>=6.0) is build with picolibc instead of newlib.
-    "espidf_picolibc",
-    "espidf_time32",
-    "freebsd10",
-    "freebsd11",
-    "freebsd12",
-    "freebsd13",
-    "freebsd14",
-    "freebsd15",
-    // Corresponds to `_FILE_OFFSET_BITS=64` in glibc
-    "gnu_file_offset_bits64",
-    // Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with
-    // GNU to expose a 64-bit `time_t`.
-    "gnu_time_bits64",
-    "libc_deny_warnings",
-    "libc_elfv2",
-    // Corresponds to `__USE_TIME_BITS64` in UAPI
-    "linux_time_bits64",
-    "musl_v1_2",
-    // musl v1.2.0+ && 32-bit: time_t is i64, struct layouts change
-    "musl32_time64",
-    // Corresponds to `_REDIR_TIME64` in musl: symbol redirects to __*_time64
-    "musl_redir_time64",
-    "vxworks_lt_25_09",
-    "libc_pauthtest",
+/// All possible cfgs that may be set. Used for check-cfg as well as self checks.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+enum Cfg {
+    LibcDenyWarnings,
+    /// MSRV-friendly version of `target_abi = "elfv2"`.
+    LibcElfv2,
+    /// MSRV-friendly version of `target_abi = "pauthtest"`.
+    LibcPauthtest,
+
+    EmscriptenOldStatAbi,
+
+    /// Should be enabled by users if esp-idf (>=6.0) is build with picolibc instead of newlib. Not
+    /// set by `libc` itself.
+    EspidfPicolibc,
+    /// Not set by `libc` itself.
+    EspidfTime32,
+
+    Freebsd10,
+    Freebsd11,
+    Freebsd12,
+    Freebsd13,
+    Freebsd14,
+    Freebsd15,
+
+    VxworksLt25_09,
+
+    /// Corresponds to `__USE_TIME_BITS64` in UAPI
+    LinuxTimeBits64,
+    /// Corresponds to `_FILE_OFFSET_BITS=64` in glibc
+    GnuFileOffsetBits64,
+    /// Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with
+    /// GNU to expose a 64-bit `time_t`.
+    GnuTimeBits64,
+    /// Musl 1.2+. Implies `target_env = "musl"`
+    MuslV1_2,
+    /// musl v1.2.0+ && 32-bit: time_t is i64, struct layouts change. Implies `musl_v1_2` and
+    /// 32-bit arch.
+    Musl32Time64,
+    /// Corresponds to `_REDIR_TIME64` in musl, i.e. 32-bit platforms that existed prior to the
+    /// transition to 64-bit `time_t` and thus need `__*_time64` redirects. Implies `musl_v1_2`
+    /// and 32-bit arch.
+    MuslRedirTime64,
+}
+
+const ALLOWED_CFGS: &[Cfg] = &[
+    Cfg::LibcDenyWarnings,
+    Cfg::EmscriptenOldStatAbi,
+    Cfg::EspidfPicolibc,
+    Cfg::EspidfTime32,
+    Cfg::Freebsd10,
+    Cfg::Freebsd11,
+    Cfg::Freebsd12,
+    Cfg::Freebsd13,
+    Cfg::Freebsd14,
+    Cfg::Freebsd15,
+    Cfg::LibcElfv2,
+    Cfg::VxworksLt25_09,
+    Cfg::LibcPauthtest,
+    Cfg::GnuFileOffsetBits64,
+    Cfg::GnuTimeBits64,
+    Cfg::LinuxTimeBits64,
+    Cfg::MuslV1_2,
+    Cfg::Musl32Time64,
+    Cfg::MuslRedirTime64,
 ];
+
+impl Cfg {
+    fn name(self) -> &'static str {
+        match self {
+            Cfg::LibcDenyWarnings => "libc_deny_warnings",
+            Cfg::EmscriptenOldStatAbi => "emscripten_old_stat_abi",
+            Cfg::EspidfPicolibc => "espidf_picolibc",
+            Cfg::EspidfTime32 => "espidf_time32",
+            Cfg::Freebsd10 => "freebsd10",
+            Cfg::Freebsd11 => "freebsd11",
+            Cfg::Freebsd12 => "freebsd12",
+            Cfg::Freebsd13 => "freebsd13",
+            Cfg::Freebsd14 => "freebsd14",
+            Cfg::Freebsd15 => "freebsd15",
+            Cfg::LibcElfv2 => "libc_elfv2",
+            Cfg::VxworksLt25_09 => "vxworks_lt_25_09",
+            Cfg::LibcPauthtest => "libc_pauthtest",
+            Cfg::GnuFileOffsetBits64 => "gnu_file_offset_bits64",
+            Cfg::GnuTimeBits64 => "gnu_time_bits64",
+            Cfg::LinuxTimeBits64 => "linux_time_bits64",
+            Cfg::MuslV1_2 => "musl_v1_2",
+            Cfg::Musl32Time64 => "musl32_time64",
+            Cfg::MuslRedirTime64 => "musl_redir_time64",
+        }
+    }
+}
 
 // Extra values to allow for check-cfg.
 const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
@@ -86,6 +146,8 @@ fn main() {
         VERBOSE_BUILD.store(true, Relaxed);
     }
 
+    let mut cfgs = Vec::new();
+
     let (rustc_minor_ver, _is_nightly) = rustc_minor_nightly();
     let libc_ci = env_flag("LIBC_CI");
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
@@ -98,10 +160,10 @@ fn main() {
     // of translating its values. `target_abi` cannot be used directly in cfg
     // expressions on the current MSRV.
     if target_abi == "elfv2" {
-        set_cfg("libc_elfv2");
+        cfgs.push(Cfg::LibcElfv2);
     }
     if target_abi == "pauthtest" {
-        set_cfg("libc_pauthtest");
+        cfgs.push(Cfg::LibcPauthtest);
     }
 
     // FIXME: this can be removed in 1-2 releases
@@ -131,22 +193,22 @@ fn main() {
 
     match which_freebsd {
         x if x < 10 => panic!("FreeBSD older than 10 is not supported"),
-        10 => set_cfg("freebsd10"),
-        11 => set_cfg("freebsd11"),
-        12 => set_cfg("freebsd12"),
-        13 => set_cfg("freebsd13"),
-        14 => set_cfg("freebsd14"),
-        _ => set_cfg("freebsd15"),
+        10 => cfgs.push(Cfg::Freebsd10),
+        11 => cfgs.push(Cfg::Freebsd11),
+        12 => cfgs.push(Cfg::Freebsd12),
+        13 => cfgs.push(Cfg::Freebsd13),
+        14 => cfgs.push(Cfg::Freebsd14),
+        _ => cfgs.push(Cfg::Freebsd15),
     }
 
     match emcc_version_code() {
-        Some(v) if (v < 30142) => set_cfg("emscripten_old_stat_abi"),
+        Some(v) if (v < 30142) => cfgs.push(Cfg::EmscriptenOldStatAbi),
         // Non-Emscripten or version >= 3.1.42.
         _ => (),
     }
 
     match vxworks_version_code() {
-        Some(v) if (v < (25, 9)) => set_cfg("vxworks_lt_25_09"),
+        Some(v) if (v < (25, 9)) => cfgs.push(Cfg::VxworksLt25_09),
         // VxWorks version >= 25.09
         _ => (),
     }
@@ -180,19 +242,19 @@ fn main() {
     }
 
     if musl && musl_v1_2 {
-        set_cfg("musl_v1_2");
+        cfgs.push(Cfg::MuslV1_2);
         if target_ptr_width == "32" {
-            set_cfg("musl32_time64");
-            set_cfg("linux_time_bits64");
+            cfgs.push(Cfg::Musl32Time64);
+            cfgs.push(Cfg::LinuxTimeBits64);
         }
         if MUSL_REDIR_TIME64_ARCHES.contains(&target_arch.as_str()) {
-            set_cfg("musl_redir_time64");
+            cfgs.push(Cfg::MuslRedirTime64);
         }
     }
 
     let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
     if target_env == "uclibc" && uclibc_use_time64 {
-        set_cfg("linux_time_bits64");
+        cfgs.push(Cfg::LinuxTimeBits64);
     }
 
     if target_env == "gnu"
@@ -232,27 +294,34 @@ fn main() {
         };
 
         if timebits == "64" {
-            set_cfg("linux_time_bits64");
-            set_cfg("gnu_file_offset_bits64");
-            set_cfg("gnu_time_bits64");
+            cfgs.push(Cfg::LinuxTimeBits64);
+            cfgs.push(Cfg::GnuFileOffsetBits64);
+            cfgs.push(Cfg::GnuTimeBits64);
         }
     }
 
     // On CI: deny all warnings
     if libc_ci {
-        set_cfg("libc_deny_warnings");
+        cfgs.push(Cfg::LibcDenyWarnings);
     }
 
     // Since Rust 1.80, configuration that isn't recognized by default needs to be provided to
     // avoid warnings.
     if rustc_minor_ver >= 80 {
         for cfg in ALLOWED_CFGS {
-            println!("cargo:rustc-check-cfg=cfg({cfg})");
+            println!("cargo:rustc-check-cfg=cfg({})", cfg.name());
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
             println!("cargo:rustc-check-cfg=cfg({name},values(\"{values}\"))");
         }
+    }
+
+    cfgs.sort_unstable();
+    cfgs.dedup();
+
+    for cfg in cfgs {
+        set_cfg(cfg);
     }
 }
 
@@ -392,13 +461,9 @@ fn vxworks_version_code() -> Option<(u32, u32)> {
     Some((major, minor))
 }
 
-fn set_cfg(cfg: &str) {
-    assert!(
-        ALLOWED_CFGS.contains(&cfg),
-        "trying to set cfg {cfg}, but it is not in ALLOWED_CFGS",
-    );
-    println!("cargo:rustc-cfg={cfg}");
-    info!("setting config `{cfg}`");
+fn set_cfg(cfg: Cfg) {
+    println!("cargo:rustc-cfg={}", cfg.name());
+    info!("setting config `{}`", cfg.name());
 }
 
 /// Return true if the env is set to a value other than `0`.
