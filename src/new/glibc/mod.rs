@@ -8,10 +8,23 @@
 
 /// Source directory: `bits/`
 ///
+/// This directory contains default
+///
 /// <https://github.com/sailfishos-mirror/glibc/tree/master/bits>
 mod bits {
     #[cfg(target_os = "linux")]
     pub(crate) mod signum_generic;
+    #[cfg(target_os = "linux")]
+    pub(crate) use super::sysdeps::unix::linux::bits::{
+        sigaction,
+        signum_arch,
+        statvfs,
+        types,
+    };
+}
+
+mod io {
+    pub(crate) mod sys;
 }
 
 /// Source directory: `posix/`
@@ -23,14 +36,6 @@ mod posix {
 
 #[cfg(target_os = "linux")]
 pub(crate) mod signal;
-
-/// Source directory: `io/sys/`
-///
-/// <https://github.com/sailfishos-mirror/glibc/tree/master/io/sys>
-pub(crate) mod sys {
-    #[cfg(target_os = "linux")]
-    pub(crate) mod statvfs;
-}
 
 /// Source directory: `sysdeps/`
 ///
@@ -44,6 +49,8 @@ mod sysdeps {
     // You'll notice some directories that provide a `bits` module. These are included via
     // `path = "..."` wherever the generic implementation lives.
 }
+
+pub(crate) mod sys;
 
 pub(crate) use posix::*;
 // FIXME(pthread): eventually all platforms should use this module
