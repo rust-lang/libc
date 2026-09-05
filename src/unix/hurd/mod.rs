@@ -80,6 +80,7 @@ pub type wchar_t = c_int;
 pub type wint_t = c_uint;
 pub type gid_t = __gid_t;
 pub type uid_t = __uid_t;
+pub type sighandler_t = size_t;
 
 cfg_if! {
     if #[cfg(any(target_pointer_width = "64", gnu_file_offset_bits64))] {
@@ -451,7 +452,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: sighandler_t,
         pub sa_mask: __sigset_t,
         pub sa_flags: c_int,
     }
@@ -3732,6 +3733,8 @@ extern "C" {
     pub fn mkfifoat(__fd: c_int, __path: *const c_char, __mode: __mode_t) -> c_int;
 
     pub fn mknodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, dev: dev_t) -> c_int;
+
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
 
     pub fn __libc_current_sigrtmin() -> c_int;
 

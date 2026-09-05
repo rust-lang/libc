@@ -3317,7 +3317,7 @@ pub const XDP_PGOFF_TX_RING: crate::off_t = 0x80000000u32 as crate::off_t;
 pub const XDP_UMEM_PGOFF_FILL_RING: crate::c_ulonglong = 0x100000000;
 pub const XDP_UMEM_PGOFF_COMPLETION_RING: crate::c_ulonglong = 0x180000000;
 
-pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: crate::c_int = 48;
+pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: c_int = 48;
 pub const XSK_UNALIGNED_BUF_ADDR_MASK: crate::c_ulonglong =
     (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
 

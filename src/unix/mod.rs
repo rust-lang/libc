@@ -18,7 +18,6 @@ pub type ssize_t = isize;
 pub type pid_t = i32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
-pub type sighandler_t = size_t;
 pub type cc_t = c_uchar;
 
 cfg_if! {
@@ -250,9 +249,23 @@ pub const INT_MIN: c_int = c_int::MIN;
 #[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
 pub const INT_MAX: c_int = c_int::MAX;
 
-pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
-pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
-pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
+cfg_if! {
+    if #[cfg(any(
+        target_os = "linux",
+        target_os = "l4re",
+        target_os = "android",
+        target_os = "emscripten",
+        target_os = "hurd"
+    ))] {
+        pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
+        pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
+        pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
+    } else {
+        pub const SIG_DFL: size_t = 0;
+        pub const SIG_IGN: size_t = 1;
+        pub const SIG_ERR: size_t = !0;
+    }
+}
 
 cfg_if! {
     if #[cfg(all(
@@ -1340,24 +1353,6 @@ extern "C" {
     pub fn truncate(path: *const c_char, length: off_t) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "ftruncate64")]
     pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
-
-    #[cfg(not(any(
-        target_vendor = "apple",
-        target_os = "freebsd",
-        target_os = "dragonfly",
-        target_os = "netbsd",
-        target_os = "openbsd"
-    )))]
-    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
-
-    #[cfg(any(
-        target_vendor = "apple",
-        target_os = "freebsd",
-        target_os = "dragonfly",
-        target_os = "netbsd",
-        target_os = "openbsd"
-    ))]
-    pub fn signal(signum: c_int, handler: sig_t) -> sig_t;
 
     #[cfg_attr(target_os = "netbsd", link_name = "__getrusage50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__getrusage64")]

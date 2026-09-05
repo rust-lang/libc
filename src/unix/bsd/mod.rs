@@ -29,7 +29,7 @@ pub type nfds_t = c_uint;
 pub type regoff_t = c_int;
 #[cfg(not(target_os = "dragonfly"))]
 pub type regoff_t = off_t;
-pub type sig_t = Option<unsafe extern "C" fn(crate::c_int)>;
+pub type sig_t = Option<unsafe extern "C" fn(c_int)>;
 
 s! {
     pub struct sockaddr {
@@ -877,6 +877,7 @@ extern "C" {
     pub fn devname(dev: crate::dev_t, mode_t: crate::mode_t) -> *mut c_char;
 
     pub fn issetugid() -> c_int;
+    pub fn signal(signum: c_int, handler: sig_t) -> sig_t;
 }
 
 cfg_if! {
