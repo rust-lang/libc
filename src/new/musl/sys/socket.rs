@@ -63,3 +63,24 @@ cfg_if! {
         pub const SOCK_DGRAM: c_int = 2;
     }
 }
+
+pub const SOCK_SEQPACKET: c_int = 5;
+pub const SOCK_DCCP: c_int = 6;
+#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
+pub const SOCK_PACKET: c_int = 10;
+
+pub const SOCK_NONBLOCK: c_int = crate::O_NONBLOCK;
+
+pub const PF_IB: c_int = 27;
+pub const PF_MPLS: c_int = 28;
+
+pub const PF_NFC: c_int = 39;
+pub const PF_VSOCK: c_int = 40;
+
+pub const PF_XDP: c_int = 44;
+
+pub const AF_IB: c_int = PF_IB;
+pub const AF_MPLS: c_int = PF_MPLS;
+pub const AF_NFC: c_int = PF_NFC;
+pub const AF_VSOCK: c_int = PF_VSOCK;
+pub const AF_XDP: c_int = PF_XDP;
