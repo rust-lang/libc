@@ -35,6 +35,23 @@ pub(crate) mod bits {
     )]
     pub(crate) mod signum_arch;
 
+    #[cfg_attr(
+        any(
+            target_arch = "mips",
+            target_arch = "mips32r6",
+            target_arch = "mips",
+            target_arch = "mips32r6",
+        ),
+        path = "../mips/bits/socket_type.rs"
+    )]
+    #[cfg_attr(
+        any(target_arch = "sparc", target_arch = "sparc64"),
+        path = "../sparc/bits/socket_type.rs"
+    )]
+    pub(crate) mod socket_type;
+
+    pub(crate) mod socket;
+
     pub(crate) mod statvfs;
 
     pub(crate) mod types;
