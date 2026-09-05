@@ -8,9 +8,10 @@
   baseBranchPatterns: ["main", "libc-0.2"],
   lockFileMaintenance: {
     enabled: true,
-    // Biweekly at 12:00UTC on Monday
-    schedule: ["0 12 1-7,15-21 * 1"]
-  }
+    // Every other Monday. Renovate requires a range, hence `* *` rather
+    // than `0 0`.
+    schedule: ["* * 1-7,15-21 * 1"]
+  },
   packageRules: [
     {
       matchCategories: ["rust"],
