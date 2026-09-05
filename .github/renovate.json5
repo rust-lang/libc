@@ -13,6 +13,8 @@
     // than `0 0`.
     schedule: ["* * 1-7,15-21 * 1"],
   },
+  // Don't update docker files that need an old version
+  ignorePaths: ["ci/docker/{arm,powerpc}-unknown-linux-gnu*"],
   packageRules: [
     {
       matchCategories: ["rust"],
@@ -31,6 +33,8 @@
       // Every other Monday
       schedule: "* * 1-7,15-21 * 1",
       commitMessagePrefix: "ci:",
+      // Group all updates into one PR
+      groupName: "Github Actions"
     },
     {
       matchManagers: ["github-actions"],
