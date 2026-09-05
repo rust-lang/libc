@@ -1189,6 +1189,7 @@ futimes
 getdomainname
 getdtablesize
 getentropy
+getexecpath
 getfsstat
 getgrent
 getgrgid
