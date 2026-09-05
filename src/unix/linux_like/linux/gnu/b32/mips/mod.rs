@@ -729,9 +729,6 @@ pub const MAP_POPULATE: c_int = 0x10000;
 pub const MAP_NONBLOCK: c_int = 0x20000;
 pub const MAP_STACK: c_int = 0x40000;
 
-pub const SOCK_STREAM: c_int = 2;
-pub const SOCK_DGRAM: c_int = 1;
-
 pub const POLLWRNORM: c_short = 0x004;
 pub const POLLWRBAND: c_short = 0x100;
 
