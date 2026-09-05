@@ -171,19 +171,7 @@ are preferred because they become part of history.)
 Including links to manpages is not required but can also be very helpful to
 include. Some platforms also publish manpages but not sources.
 
-Common web manuals:
-
-* AIX: <https://www.ibm.com/docs/en/aix/7.3.0>
-* Apple: <https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man5/manpages.5.html>
-  is the only known official site but it is severly outdated. <https://manp.gs/mac/>
-  or <https://ss64.com/mac/> are better options.
-* DragonFlyBSD: <https://www.dragonflybsd.org/cgi/web-man>
-* FreeBSD: <https://man.freebsd.org/cgi/man.cgi>
-* Illumos: <https://illumos.org/man/>
-* NetBSD: <https://man.netbsd.org/>
-* OpenBSD: <https://man.openbsd.org/>
-* Solaris: <https://docs.oracle.com/cd/E88353_01/>
-* Windows MSVC: <https://learn.microsoft.com/en-us/cpp/c-runtime-library/c-run-time-library-reference?view=msvc-180>
+See documentation in `src/lib.rs` for links to online manuals.
 
 ## Breaking change policy
 
