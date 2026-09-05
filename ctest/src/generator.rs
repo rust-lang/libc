@@ -1193,6 +1193,9 @@ impl TestGenerator {
 
     /// Maps Rust identifiers or types to C counterparts, or defaults to the
     /// original name.
+    ///
+    /// The Rust identifiers and types appearing within nested modules are
+    /// mapped with the last segment of their paths alone.
     pub(crate) fn rty_to_cty<'a>(&self, item: impl Into<MapInput<'a>>) -> String {
         let item = item.into();
         if let Some(mapped) = self.mapped_names.iter().find_map(|f| f(&item)) {

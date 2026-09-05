@@ -144,9 +144,10 @@ impl TestTemplate {
                 self.const_cstr_tests.push(item.clone());
                 self.test_idents.push(item.test_name);
             } else {
+                // [NOTE]: see the above notes.
                 let item = TestConst {
-                    id: constant.path().into(),
-                    test_name: const_test_ident(constant.path()),
+                    id: constant.ident().into(),
+                    test_name: const_test_ident(&ast::escape_item_path(constant)),
                     rust_val: constant.path().into(),
                     rust_ty: constant.ty.to_token_stream().to_string().into_boxed_str(),
                     c_val: helper.c_ident(constant).into(),
@@ -463,7 +464,8 @@ impl TestTemplate {
         Ok(())
     }
 
-    /// Populates tests for foreign statics, keeping track of the names of each test.
+    /// Populates tests for foreign statics, keeping track of the names of each
+    /// test.
     fn populate_foreign_static_tests(
         &mut self,
         helper: &TranslateHelper,
@@ -490,15 +492,15 @@ impl TestTemplate {
 /* Many test structures have the following fields:
  *
  * - `test_name`: The function name.
- * - `id`       : An identifier that can be used to create functions related to
- *                this type without conflict, usually also part of `test_name`.
+ * - `id`       : An identifier that can be used to create functions related
+ *   to this type without conflict, usually also part of `test_name`.
  * - `rust_val` : Identifier for a Rust value, with path qualifications if
- *                needed.
- * - `rust_ty`  : The Rust type of the relevant item, with path qualifications
- *                if needed.
+ *   needed.
+ * - `rust_ty`  : The Rust type of the relevant item, with path
+ *   qualifications if needed.
  * - `c_val`    : Identifier for a C value (e.g. `#define`)
- * - `c_ty`     : The C type of the constant, qualified with `struct` or `union`
- *                if needed.
+ * - `c_ty`     : The C type of the constant, qualified with `struct` or
+ *   `union` if needed.
  */
 
 #[derive(Clone, Debug)]
@@ -728,11 +730,21 @@ impl<'a> TranslateHelper<'a> {
             MapInput::Struct(s) => (s.path(), cdecl::named(&s.ident(), Constness::Mut)),
             MapInput::Union(u) => (u.path(), cdecl::named(&u.ident(), Constness::Mut)),
 
-            MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
-            MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
-            MapInput::CEnumType(_) => panic!("MapInput::CEnumType is not allowed!"),
-            MapInput::StructFieldType(_, _) => panic!("MapInput::StructFieldType is not allowed!"),
-            MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
+            MapInput::StructType(_) => {
+                panic!("MapInput::StructType is not allowed!")
+            }
+            MapInput::UnionType(_) => {
+                panic!("MapInput::UnionType is not allowed!")
+            }
+            MapInput::CEnumType(_) => {
+                panic!("MapInput::CEnumType is not allowed!")
+            }
+            MapInput::StructFieldType(_, _) => {
+                panic!("MapInput::StructFieldType is not allowed!")
+            }
+            MapInput::UnionFieldType(_, _) => {
+                panic!("MapInput::UnionFieldType is not allowed!")
+            }
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
             MapInput::Module(_) => panic!("MapInput::Module is not allowed!"),
         };
