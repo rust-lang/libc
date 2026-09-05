@@ -656,13 +656,19 @@ macro_rules! c_enum {
     ($(
         $(#[repr($repr:ty)])?
         $vis:vis enum $($ty_name:ident)? $(#$anon:ident)? {
-            $($field_vis:vis $variant:ident $(= $value:expr)?,)+
+            $(
+                $(#[$meta:meta])*
+                $field_vis:vis $variant:ident $(= $value:expr)?,
+            )+
         }
     )+) => {
         $(c_enum!(@single;
             $(#[repr($repr)])?
             $vis enum $($ty_name)? $(#$anon)? {
-                $($field_vis $variant $(= $value)?,)+
+                $(
+                    $(#[$meta])*
+                    $field_vis $variant $(= $value)?,
+                )+
             }
         );)+
     };
@@ -671,7 +677,10 @@ macro_rules! c_enum {
     (@single;
         $(#[repr($repr:ty)])?
         $vis:vis enum $ty_name:ident {
-            $($field_vis:vis $variant:ident $(= $value:expr)?,)+
+            $(
+                $(#[$meta:meta])*
+                $field_vis:vis $variant:ident $(= $value:expr)?,
+            )+
         }
     ) => {
         $vis type $ty_name = c_enum!(@ty $($repr)?);
@@ -679,7 +688,10 @@ macro_rules! c_enum {
             @variant;
             ty: $ty_name;
             default: 0;
-            variants: [$($field_vis $variant $(= $value)?,)+]
+            variants: [$(
+                $(#[$meta])*
+                $field_vis $variant $(= $value)?,
+            )+]
         }
     };
 
@@ -687,28 +699,41 @@ macro_rules! c_enum {
     (@single;
         $(#[repr($repr:ty)])?
         $vis:vis enum #anon {
-            $($field_vis:vis $variant:ident $(= $value:expr)?,)+
+            $(
+                $(#[$meta:meta])*
+                $field_vis:vis $variant:ident $(= $value:expr)?,
+            )+
         }
     ) => {
         c_enum! {
             @variant;
             ty: c_enum!(@ty $($repr)?);
             default: 0;
-            variants: [$($field_vis $variant $(= $value)?,)+]
+            variants: [$(
+                $(#[$meta])*
+                $field_vis $variant $(= $value)?,
+            )+]
         }
     };
 
     // Matcher for variants: eats a single variant then recurses with the rest
-    (@variant; ty: $_ty_name:ty; default: $_idx:expr; variants: []) => { /* end of the chain */ };
+    (@variant;
+        ty: $_ty_name:ty;
+        default: $_idx:expr;
+        variants: []
+    ) => { /* end of the chain */ };
     (
         @variant;
         ty: $ty_name:ty;
         default: $default_val:expr;
         variants: [
+            $(#[$meta:meta])*
             $field_vis:vis $variant:ident $(= $value:expr)?,
             $($tail:tt)*
         ]
     ) => {
+        $(#[$meta])*
+        #[allow(deprecated)]
         $field_vis const $variant: $ty_name = {
             #[allow(unused_variables)]
             let r = $default_val;
@@ -947,6 +972,31 @@ mod tests {
         // Verify that the default is private. If `PRIV_ON_1` was actually public in `priv1`, this
         // would be an ambiguous import and/or type mismatch error.
         assert_eq!(PRIV_ON_1, 42u16);
+    }
+
+    #[test]
+    fn c_enum_attrs() {
+        // Note this can't work with `#[cfg]` currently because our expansion uses `previous + 1`
+        c_enum! {
+            pub enum e {
+                VAR0,
+                WITH_CFG = if cfg!(target_arch = "x86_64") { 86 } else { 1234 },
+                #[deprecated]
+                DEPRECATED,
+                NOT_DEPRECATED,
+            }
+        }
+
+        if cfg!(target_arch = "x86_64") {
+            assert_eq!(WITH_CFG, 86);
+        } else {
+            assert_eq!(WITH_CFG, 1234);
+        }
+
+        #[expect(deprecated)]
+        let _ = DEPRECATED;
+        #[deny(deprecated)]
+        let _ = NOT_DEPRECATED;
     }
 
     #[test]

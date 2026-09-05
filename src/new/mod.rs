@@ -204,6 +204,7 @@ cfg_if! {
         pub use self::{
             net::route::*,
             signal::*,
+            sys::socket::*,
             sys::statvfs::*,
         };
     } else if #[cfg(target_vendor = "apple")] {

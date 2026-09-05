@@ -610,6 +610,11 @@ s! {
         pub flags: crate::__u32,
         __reserved: Padding<crate::__u32>,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: crate::msghdr,
+        pub msg_len: c_uint,
+    }
 }
 
 s_no_extra_traits! {

@@ -280,9 +280,6 @@ pub const ENOTRECOVERABLE: c_int = 133;
 pub const EHWPOISON: c_int = 135;
 pub const ERFKILL: c_int = 134;
 
-pub const SOCK_STREAM: c_int = 1;
-pub const SOCK_DGRAM: c_int = 2;
-
 pub const POLLWRNORM: c_short = 4;
 pub const POLLWRBAND: c_short = 0x100;
 

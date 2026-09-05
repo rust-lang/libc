@@ -305,9 +305,6 @@ pub const ENOTRECOVERABLE: c_int = 131;
 pub const EHWPOISON: c_int = 133;
 pub const ERFKILL: c_int = 132;
 
-pub const SOCK_STREAM: c_int = 1;
-pub const SOCK_DGRAM: c_int = 2;
-
 pub const MCL_CURRENT: c_int = 0x2000;
 pub const MCL_FUTURE: c_int = 0x4000;
 pub const MCL_ONFAULT: c_int = 0x8000;

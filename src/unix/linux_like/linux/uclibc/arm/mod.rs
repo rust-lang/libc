@@ -504,10 +504,6 @@ pub const SIGXFSZ: c_int = 0x19;
 pub const SIG_BLOCK: c_int = 0;
 pub const SIG_SETMASK: c_int = 0x2;
 pub const SIG_UNBLOCK: c_int = 0x1;
-pub const SOCK_DGRAM: c_int = 0x2;
-pub const SOCK_NONBLOCK: c_int = 0o0004000;
-pub const SOCK_SEQPACKET: c_int = 0x5;
-pub const SOCK_STREAM: c_int = 0x1;
 
 pub const TAB1: c_int = 0x800;
 pub const TAB2: c_int = 0x1000;
