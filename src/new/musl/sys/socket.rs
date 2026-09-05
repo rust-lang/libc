@@ -33,6 +33,11 @@ s! {
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: crate::msghdr,
+        pub msg_len: c_uint,
+    }
 }
 
 extern "C" {
@@ -52,6 +57,10 @@ extern "C" {
     ) -> c_int;
 }
 
+pub const SHUT_RD: c_int = 0;
+pub const SHUT_WR: c_int = 1;
+pub const SHUT_RDWR: c_int = 2;
+
 cfg_if! {
     if #[cfg(any(target_arch = "mips", target_arch = "mips64"))] {
         pub use crate::bits::socket::{
@@ -64,12 +73,24 @@ cfg_if! {
     }
 }
 
+pub const SOCK_RAW: c_int = 3;
+pub const SOCK_RDM: c_int = 4;
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOCK_DCCP: c_int = 6;
 #[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
-pub const SOCK_NONBLOCK: c_int = crate::O_NONBLOCK;
+cfg_if! {
+    if #[cfg(any(target_arch = "mips", target_arch = "mips64"))] {
+        pub use crate::bits::socket::{
+            SOCK_CLOEXEC,
+            SOCK_NONBLOCK,
+        };
+    } else {
+        pub const SOCK_CLOEXEC: c_int = 0o2000000;
+        pub const SOCK_NONBLOCK: c_int = 0o4000;
+    }
+}
 
 pub const PF_IB: c_int = 27;
 pub const PF_MPLS: c_int = 28;

@@ -85,7 +85,22 @@ s! {
         pub affinity: l4_sched_cpu_set_t,
         pub create_flags: c_uint,
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: crate::msghdr,
+        pub msg_len: c_uint,
+    }
 }
+
+// socket.h
+
+pub const SHUT_RD: c_int = 0;
+pub const SHUT_WR: c_int = 1;
+pub const SHUT_RDWR: c_int = 2;
+
+pub const SOCK_RAW: c_int = 3;
+pub const SOCK_RDM: c_int = 4;
+pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
 
 // L4Re requires a min stack size of 64k; that isn't defined in uClibc, but
 // somewhere in the core libraries. uClibc wants 16k, but that's not enough.

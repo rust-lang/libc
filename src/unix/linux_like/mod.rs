@@ -213,11 +213,6 @@ s! {
         pub ar_op: u16,
     }
 
-    pub struct mmsghdr {
-        pub msg_hdr: crate::msghdr,
-        pub msg_len: c_uint,
-    }
-
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [c_char; 108],
@@ -487,8 +482,6 @@ pub const RUSAGE_SELF: c_int = 0;
 pub const O_RDONLY: c_int = 0;
 pub const O_WRONLY: c_int = 1;
 pub const O_RDWR: c_int = 2;
-
-pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
 
 pub const S_IFIFO: mode_t = 0o1_0000;
 pub const S_IFCHR: mode_t = 0o2_0000;
@@ -816,8 +809,6 @@ pub const MSG_CMSG_CLOEXEC: c_int = 0x40000000;
 
 pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 
-pub const SOCK_RAW: c_int = 3;
-pub const SOCK_RDM: c_int = 4;
 pub const IP_TOS: c_int = 1;
 pub const IP_TTL: c_int = 2;
 pub const IP_HDRINCL: c_int = 3;
@@ -1068,10 +1059,6 @@ cfg_if! {
 }
 
 pub const SO_DEBUG: c_int = 1;
-
-pub const SHUT_RD: c_int = 0;
-pub const SHUT_WR: c_int = 1;
-pub const SHUT_RDWR: c_int = 2;
 
 pub const LOCK_SH: c_int = 1;
 pub const LOCK_EX: c_int = 2;
