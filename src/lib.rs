@@ -1,5 +1,44 @@
 //! Raw FFI bindings to platform system libraries.
 //!
+//! # Documentation
+//!
+//! `libc` only provides the bindings, not instructions on how to use them. For this, please refer
+//! to the relevant C documentation.
+//!
+//! POSIX provides OS-agnostic API definitions, which most platforms aim to comply with. Its
+//! specifications are often the best place to look:
+//!
+//! * POSIX Base Definitions: <https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/toc.html>.
+//!   Types and structures are defined within the _Headers_ section.
+//! * POSIX System Interfaces: <https://pubs.opengroup.org/onlinepubs/9799919799/functions/toc.html>.
+//!   Functions are defined under the _System Interfaces_ section.
+//!
+//! For platform-specific API and caveats to the standard API, platform-specific manual pages are
+//! usually the place to look. Locally you can run commands like `man 2 stat` or `man 3 printf`
+//! (2 for kernel interfaces, 3 for standard library) to get documentation, but there are also
+//! a number of platforms with manual pages available online:
+//!
+//! * Apple: Official manpages exist at <https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man5/manpages.5.html>
+//!   but are severly outdated. <https://developer.apple.com/documentation/kernel> exists but
+//!   only provides API signatures without documenttion. <https://manp.gs/mac/> or
+//!   <https://ss64.com/mac/> are better options.
+//! * DragonFlyBSD: <https://www.dragonflybsd.org/cgi/web-man>
+//! * FreeBSD: <https://man.freebsd.org/cgi/man.cgi>
+//! * IBM AIX: <https://www.ibm.com/docs/en/aix/7.3.0>
+//! * Illumos: <https://illumos.org/man/>
+//! * Linux:
+//!   * <https://man7.org/linux/man-pages/index.html> or <https://linux.die.net/man/> provide
+//!     documentation of Linux API as well as the C library, with a focus on glibc.
+//!   * Glibc-specific documentation is available at
+//!     <https://sourceware.org/glibc/manual/latest/html_mono/libc.html>.
+//!   * Musl documentation states to refer to POSIX, linked above, and the C standard, available at
+//!     <https://www.open-std.org/JTC1/SC22/WG14/www/projects#9899> (published versions must be
+//!     purchased but the drafts are free).
+//! * NetBSD: <https://man.netbsd.org/>
+//! * OpenBSD: <https://man.openbsd.org/>
+//! * Solaris: <https://docs.oracle.com/cd/E88353_01/>
+//! * Windows MSVC: <https://learn.microsoft.com/en-us/cpp/c-runtime-library/c-run-time-library-reference?view=msvc-180>
+//!
 //! # Usage Guidelines
 //!
 //! `libc` exposes non-Rust interfaces in Rust, which makes for some caveats to its use that are
