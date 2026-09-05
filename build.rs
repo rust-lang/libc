@@ -121,10 +121,6 @@ const CHECK_CFG_EXTRA: &[(&str, &[&str])] = &[
     ),
 ];
 
-/// Musl architectures that define `_REDIR_TIME64` (i.e. those that transitioned
-/// from 32-bit to 64-bit `time_t` and need `__*_time64` symbol redirects).
-const MUSL_REDIR_TIME64_ARCHES: &[&str] = &["arm", "mips", "powerpc", "x86"];
-
 /// Read from env, print more debug output via `cargo:warning` if set.
 static VERBOSE_BUILD: AtomicBool = AtomicBool::new(false);
 
@@ -220,93 +216,96 @@ fn main() {
         }
     }
 
-    let mut musl_v1_2 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
-    if let Ok(old_musl_v1_2_3) = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") {
+    let mut musl_v1_2_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
+    if let Ok(old_musl_v1_2_3_env) = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") {
         println!(
             "cargo:warning=`--cfg=libc_unstable_musl_v1_2_3` will be removed; \
             set `--cfg=libc_unstable_musl_v1_2`instead"
         );
-        musl_v1_2 |= old_musl_v1_2_3 != "0";
+        musl_v1_2_env |= old_musl_v1_2_3_env != "0";
     }
-    if let Ok(old_musl_v1_2_3) = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3") {
+    if let Ok(old_musl_v1_2_3_env) = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3") {
         println!(
             "cargo:warning=RUST_LIBC_UNSTABLE_MUSL_V1_2_3 will be removed; \
             set `--cfg=libc_unstable_musl_v1_2` via RUSTFLAGS instead"
         );
-        musl_v1_2 |= old_musl_v1_2_3 != "0";
+        musl_v1_2_env |= old_musl_v1_2_3_env != "0";
     }
+
+    // Targets that only exist with recent musl. 32-bit targets not in this list need
+    // `_REDIR_TIME64` for 64-bit `time_t`.
+    let only_v1_2_on_musl = target_arch == "loongarch64"
+        || target_arch == "hexagon"
+        || target_arch == "riscv32"
+        || target_env == "ohos"
+        || target_abi == "pauthtest";
 
     // OpenHarmony uses a fork of the musl libc
     let musl = target_env == "musl" || target_env == "ohos";
+    let musl_v1_2 = musl && (musl_v1_2_env || only_v1_2_on_musl);
 
-    // loongarch64, hexagon, ohos and pauthtest only exist with recent musl
-    if target_arch == "loongarch64"
-        || target_arch == "hexagon"
-        || target_env == "ohos"
-        || target_abi == "pauthtest"
-    {
-        musl_v1_2 = true;
-    }
-
-    if musl && musl_v1_2 {
+    if musl_v1_2 {
         cfgs.push(Cfg::MuslV1_2);
         if target_ptr_width == "32" {
             cfgs.push(Cfg::Musl32Time64);
             cfgs.push(Cfg::LinuxTimeBits64);
-        }
-        if MUSL_REDIR_TIME64_ARCHES.contains(&target_arch.as_str()) {
-            cfgs.push(Cfg::MuslRedirTime64);
+            if !only_v1_2_on_musl {
+                // Older 32-bit arches need the redirects
+                cfgs.push(Cfg::MuslRedirTime64);
+            }
         }
     }
 
-    let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
-    if target_env == "uclibc" && uclibc_use_time64 {
+    let uclibc_time64_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
+    let uclibc_time64 = target_env == "uclibc" && uclibc_time64_env;
+    if uclibc_time64 {
         cfgs.push(Cfg::LinuxTimeBits64);
     }
 
-    if target_env == "gnu"
-        && matches!(target_os.as_str(), "linux" | "windows" | "hurd")
-        && target_ptr_width == "32"
-        && target_arch != "riscv32"
-        && target_arch != "x86_64"
+    let mut gnu_tb_env = env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS");
+
+    // FIXME: remove these fallbacks in a few releases
+    if let Ok(old_gnu_tb_env) = env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
+        println!(
+            "cargo:warning=RUST_LIBC_UNSTABLE_GNU_TIME_BITS will be removed; \
+            set `--cfg=libc_unstable_gnu_time_bits=\"...\"` via RUSTFLAGS instead"
+        );
+        gnu_tb_env = gnu_tb_env.or(Ok(old_gnu_tb_env));
+    }
+    if env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS").is_ok()
+        || env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS").is_ok()
     {
-        let defaultbits = "32";
+        println!(
+            "cargo:warning=glibc file offset can no longer be set independently of \
+            `gnu_time_bits`"
+        );
+    }
 
-        let mut tb_env = env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS");
-
-        // FIXME: remove these fallbacks in a few releases
-        if let Ok(old_tb_env) = env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
-            println!(
-                "cargo:warning=RUST_LIBC_UNSTABLE_GNU_TIME_BITS will be removed; \
-                set `--cfg=libc_unstable_gnu_time_bits=\"...\"` via RUSTFLAGS instead"
-            );
-            tb_env = tb_env.or(Ok(old_tb_env));
+    let gnu32_timebits = match gnu_tb_env.as_deref() {
+        Err(_) => "32", // default to 32
+        Ok(tb) if tb == "64" => tb,
+        Ok(tb) if tb == "32" => tb,
+        Ok(_) => {
+            panic!("Invalid value for libc_unstable_gnu_time_bits. Must be 32, 64, or unset.")
         }
-        if env::var("RUST_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS").is_ok()
-            || env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_FILE_OFFSET_BITS").is_ok()
-        {
-            println!(
-                "cargo:warning=glibc file offset can no longer be set independently of \
-                `gnu_time_bits`"
-            );
-        }
+    };
 
-        let timebits = match tb_env.as_deref() {
-            Err(_) => defaultbits,
-            Ok(tb) if tb == "64" => tb,
-            Ok(tb) if tb == "32" => tb,
-            Ok(_) => {
-                panic!("Invalid value for libc_unstable_gnu_time_bits. Must be 32, 64, or unset.")
-            }
-        };
+    // 32-bit arches with 64-bit time_t by default. rv32 is 64-only, `x86_64` covers the x32 arch,
+    // `!(linux|windows|hurd)` covers vxworks and future platforms.
+    let gnu32_already_time64 = target_arch == "riscv32"
+        || target_arch == "x86_64"
+        || !matches!(target_os.as_str(), "linux" | "windows" | "hurd");
+    let gnu = target_env == "gnu";
+    let gnu32_time64 = gnu && target_ptr_width == "32" && gnu32_timebits == "64";
 
-        if timebits == "64" {
-            if target_os == "linux" {
-                cfgs.push(Cfg::LinuxTimeBits64);
-            }
-            cfgs.push(Cfg::GnuFileOffsetBits64);
-            cfgs.push(Cfg::GnuTimeBits64);
+    if gnu32_time64 && !gnu32_already_time64 {
+        // These configs all set up nonstandard options. They are not needed on platforms like
+        // riscv32, where 64-bit `time_t` is the default.
+        if target_os == "linux" {
+            cfgs.push(Cfg::LinuxTimeBits64);
         }
+        cfgs.push(Cfg::GnuFileOffsetBits64);
+        cfgs.push(Cfg::GnuTimeBits64);
     }
 
     // On CI: deny all warnings
