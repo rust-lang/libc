@@ -530,12 +530,6 @@ pub const PTHREAD_STACK_MIN: size_t = 2048;
 
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
-pub const SOCK_SEQPACKET: c_int = 5;
-pub const SOCK_DCCP: c_int = 6;
-pub const SOCK_NONBLOCK: c_int = O_NONBLOCK;
-#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
-pub const SOCK_PACKET: c_int = 10;
-
 pub const SOMAXCONN: c_int = 128;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
@@ -577,17 +571,6 @@ pub const PTRACE_LISTEN: c_int = 0x4208;
 pub const PTRACE_PEEKSIGINFO: c_int = 0x4209;
 pub const PTRACE_GETSIGMASK: c_uint = 0x420a;
 pub const PTRACE_SETSIGMASK: c_uint = 0x420b;
-
-pub const AF_IB: c_int = 27;
-pub const AF_MPLS: c_int = 28;
-pub const AF_NFC: c_int = 39;
-pub const AF_VSOCK: c_int = 40;
-pub const AF_XDP: c_int = 44;
-pub const PF_IB: c_int = AF_IB;
-pub const PF_MPLS: c_int = AF_MPLS;
-pub const PF_NFC: c_int = AF_NFC;
-pub const PF_VSOCK: c_int = AF_VSOCK;
-pub const PF_XDP: c_int = AF_XDP;
 
 pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
