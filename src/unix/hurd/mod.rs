@@ -2173,7 +2173,7 @@ pub const S_IPTRANS: mode_t = 0o1000_0000;
 pub const S_IATRANS: mode_t = 0o2000_0000;
 pub const S_IROOT: mode_t = 0o4000_0000;
 pub const S_ITRANS: mode_t = 0o7000_0000;
-pub const S_IMMAP0: mode_t = 0o10000_0000;
+pub const S_IMMAP0: mode_t = 0o1_0000_0000;
 pub const CMASK: mode_t = 18;
 pub const UF_SETTABLE: c_uint = 65535;
 pub const UF_NODUMP: c_uint = 1;
@@ -3527,7 +3527,7 @@ f! {
     }
 
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
