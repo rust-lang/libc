@@ -26,6 +26,7 @@ use crate::{
     Field,
     Language,
     MapInput,
+    Module,
     Parameter,
     Result,
     Static,
@@ -336,6 +337,7 @@ impl TestGenerator {
     /// Indicate that a type alias is actually a C enum.
     ///
     /// # Examples
+    ///
     /// ```no_run
     /// use ctest::TestGenerator;
     ///
@@ -467,6 +469,32 @@ impl TestGenerator {
     /// ```
     pub fn array_arg(&mut self, f: impl Fn(crate::Fn, Parameter) -> bool + 'static) -> &mut Self {
         self.array_arg = Some(Rc::new(f));
+        self
+    }
+
+    /// Skip a specific module in the crate.
+    ///
+    /// Module paths are given relative to the crate root, so for example the
+    /// identifier of a module `bar` inside a top-level module `foo` would be
+    /// `foo::bar`, and not `crate::foo::bar`. This is returned by the
+    /// [`Module::path`] function.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_module(|module| module.ident() == "foo::bar");
+    /// ```
+    pub fn skip_module(&mut self, f: impl Fn(&Module) -> bool + 'static) -> &mut Self {
+        self.skips.push(Rc::new(move |item| {
+            if let MapInput::Module(module) = item {
+                f(module)
+            } else {
+                false
+            }
+        }));
         self
     }
 
@@ -1163,19 +1191,23 @@ impl TestGenerator {
         Ok(output_file_path)
     }
 
-    /// Maps Rust identifiers or types to C counterparts, or defaults to the original name.
+    /// Maps Rust identifiers or types to C counterparts, or defaults to the
+    /// original name.
+    ///
+    /// The Rust identifiers and types appearing within nested modules are
+    /// mapped with the last segment of their paths alone.
     pub(crate) fn rty_to_cty<'a>(&self, item: impl Into<MapInput<'a>>) -> String {
         let item = item.into();
         if let Some(mapped) = self.mapped_names.iter().find_map(|f| f(&item)) {
             return mapped;
         }
         match item {
-            MapInput::Const(c) => c.ident().to_string(),
-            MapInput::Fn(f) => f.ident().to_string(),
-            MapInput::Static(s) => s.ident().to_string(),
-            MapInput::Struct(s) => s.ident().to_string(),
-            MapInput::Union(u) => u.ident().to_string(),
-            MapInput::Alias(t) => t.ident().to_string(),
+            MapInput::Const(c) => c.ident(),
+            MapInput::Fn(f) => f.ident(),
+            MapInput::Static(s) => s.ident(),
+            MapInput::Struct(s) => s.ident(),
+            MapInput::Union(u) => u.ident(),
+            MapInput::Alias(t) => t.ident(),
             MapInput::StructField(_, f) => f.ident().to_string(),
             MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
@@ -1184,6 +1216,8 @@ impl TestGenerator {
             MapInput::StructFieldType(_, f) => f.ident().to_string(),
             MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => translate_primitive_type(ty),
+
+            MapInput::Module(_) => unreachable!("modules don't get tested on the c side of things"),
         }
     }
 }

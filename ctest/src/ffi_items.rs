@@ -1,9 +1,15 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
+use std::borrow::Borrow;
 use std::ops::Deref;
 
+use quote::ToTokens;
+use syn::Visibility;
 use syn::punctuated::Punctuated;
-use syn::visit::Visit;
+use syn::visit::{
+    self,
+    Visit,
+};
 
 use crate::{
     Abi,
@@ -11,6 +17,7 @@ use crate::{
     Const,
     Field,
     Fn,
+    Module,
     Parameter,
     Static,
     Struct,
@@ -18,10 +25,13 @@ use crate::{
     Union,
 };
 
-/// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
+/// Represents a collected set of top-level Rust items relevant to FFI
+/// generation or analysis.
 ///
-/// Includes foreign functions/statics, type aliases, structs, unions, and constants.
-#[derive(Default, Clone, Debug)]
+/// Includes foreign functions/statics, type aliases, structs, unions, and
+/// constants. Modules are collected as recursive `FfiItems`, and currently used
+/// to narrow down tested items to those in a specific module.
+#[derive(Clone, Debug)]
 pub(crate) struct FfiItems {
     pub(crate) aliases: Vec<Type>,
     pub(crate) structs: Vec<Struct>,
@@ -29,6 +39,12 @@ pub(crate) struct FfiItems {
     pub(crate) constants: Vec<Const>,
     pub(crate) foreign_functions: Vec<Fn>,
     pub(crate) foreign_statics: Vec<Static>,
+    pub(crate) modules: Vec<Module>,
+
+    /// This is used while recursing through parsed modules to gather absolute
+    /// paths to them as identifiers for both the modules and the items within
+    /// them.
+    current_module: syn::Path,
 }
 
 impl FfiItems {
@@ -78,6 +94,48 @@ impl FfiItems {
     pub(crate) fn foreign_statics(&self) -> &Vec<Static> {
         &self.foreign_statics
     }
+}
+
+impl Default for FfiItems {
+    fn default() -> Self {
+        Self {
+            aliases: Default::default(),
+            structs: Default::default(),
+            unions: Default::default(),
+            constants: Default::default(),
+            foreign_functions: Default::default(),
+            foreign_statics: Default::default(),
+            modules: Default::default(),
+            current_module: syn::Path {
+                leading_colon: None,
+                segments: Default::default(),
+            },
+        }
+    }
+}
+
+/// Appends a new module-local item to an absolute path that does *not* start
+/// with `crate`.
+///
+/// This is used whenever we need to create paths for either items or modules.
+fn append_path(base: impl Borrow<syn::Path>, new: impl Borrow<syn::Ident>) -> syn::Path {
+    let base = base.borrow();
+    let new = new.borrow();
+    if base.segments.is_empty() {
+        syn::parse_quote! { #new }
+    } else {
+        syn::parse_quote! { #base::#new }
+    }
+}
+
+/// Returns a stringified `syn::Path` that is meant to match one-to-one the path
+/// to the item from the crate root.
+fn path_to_string(path: impl Borrow<syn::Path>) -> BoxStr {
+    path.borrow()
+        .into_token_stream()
+        .to_string()
+        .replace(|c: char| c.is_ascii_whitespace(), "")
+        .into_boxed_str()
 }
 
 /// Determine whether an item is visible to other crates.
@@ -135,7 +193,8 @@ fn extract_single_link_name(attrs: &[syn::Attribute]) -> Option<BoxStr> {
 fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi) {
     let public = is_visible(&i.vis);
     let abi = abi.clone();
-    let ident = i.sig.ident.to_string().into_boxed_str();
+    let path = append_path(&table.current_module, &i.sig.ident);
+    let ident = path_to_string(&path);
     let parameters = i
         .sig
         .inputs
@@ -165,6 +224,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         public,
         abi,
         ident,
+        path,
         link_name,
         parameters,
         return_type,
@@ -174,7 +234,8 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
 fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, abi: &Abi) {
     let public = is_visible(&i.vis);
     let abi = abi.clone();
-    let ident = i.ident.to_string().into_boxed_str();
+    let path = append_path(&table.current_module, &i.ident);
+    let ident = path_to_string(&path);
     let ty = i.ty.deref().clone();
     let link_name = extract_single_link_name(&i.attrs);
 
@@ -182,6 +243,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
         public,
         abi,
         ident,
+        path,
         link_name,
         ty,
     });
@@ -190,15 +252,22 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
 impl<'ast> Visit<'ast> for FfiItems {
     fn visit_item_type(&mut self, i: &'ast syn::ItemType) {
         let public = is_visible(&i.vis);
+        let path = append_path(&self.current_module, &i.ident);
+        let ident = path_to_string(&path);
         let ty = i.ty.deref().clone();
-        let ident = i.ident.to_string().into_boxed_str();
 
-        self.aliases.push(Type { public, ident, ty });
+        self.aliases.push(Type {
+            public,
+            ident,
+            path,
+            ty,
+        });
     }
 
     fn visit_item_struct(&mut self, i: &'ast syn::ItemStruct) {
         let public = is_visible(&i.vis);
-        let ident = i.ident.to_string().into_boxed_str();
+        let path = append_path(&self.current_module, &i.ident);
+        let ident = path_to_string(&path);
         let fields = match &i.fields {
             syn::Fields::Named(fields) => collect_fields(&fields.named),
             syn::Fields::Unnamed(fields) => collect_fields(&fields.unnamed),
@@ -208,28 +277,37 @@ impl<'ast> Visit<'ast> for FfiItems {
         self.structs.push(Struct {
             public,
             ident,
+            path,
             fields,
         });
     }
 
     fn visit_item_union(&mut self, i: &'ast syn::ItemUnion) {
         let public = is_visible(&i.vis);
-        let ident = i.ident.to_string().into_boxed_str();
+        let path = append_path(&self.current_module, &i.ident);
+        let ident = path_to_string(&path);
         let fields = collect_fields(&i.fields.named);
 
         self.unions.push(Union {
             public,
             ident,
+            path,
             fields,
         });
     }
 
     fn visit_item_const(&mut self, i: &'ast syn::ItemConst) {
         let public = is_visible(&i.vis);
-        let ident = i.ident.to_string().into_boxed_str();
+        let path = append_path(&self.current_module, &i.ident);
+        let ident = path_to_string(&path);
         let ty = i.ty.deref().clone();
 
-        self.constants.push(Const { public, ident, ty });
+        self.constants.push(Const {
+            public,
+            ident,
+            path,
+            ty,
+        });
     }
 
     fn visit_item_foreign_mod(&mut self, i: &'ast syn::ItemForeignMod) {
@@ -252,5 +330,22 @@ impl<'ast> Visit<'ast> for FfiItems {
                 _ => (),
             }
         }
+    }
+
+    fn visit_item_mod(&mut self, i: &'ast syn::ItemMod) {
+        let syn::ItemMod { vis, ident, .. } = i;
+        let public = matches!(vis, Visibility::Public(_));
+        let path = append_path(&self.current_module, ident);
+        let ident = path_to_string(&path);
+        let mut items = FfiItems::new();
+        items.current_module = path.clone();
+        visit::visit_item_mod(&mut items, i);
+
+        self.modules.push(Module {
+            public,
+            ident,
+            path,
+            items,
+        });
     }
 }
