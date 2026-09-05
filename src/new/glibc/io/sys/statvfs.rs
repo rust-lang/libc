@@ -1,6 +1,6 @@
 //! Header: `io/sys/statvfs.h`
 
-pub use super::super::sysdeps::unix::linux::bits::statvfs::*;
+pub use crate::new::glibc::bits::statvfs::*;
 use crate::prelude::*;
 
 extern "C" {

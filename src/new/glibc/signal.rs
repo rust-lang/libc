@@ -1,8 +1,8 @@
 //! Header: `signal/signal.h`
 
-pub use super::bits::signum_generic::*;
-pub use super::sysdeps::unix::linux::bits::sigaction::*;
-pub use super::sysdeps::unix::linux::bits::types::siginfo_t::*;
+pub use crate::new::glibc::bits::sigaction::*;
+pub use crate::new::glibc::bits::signum_generic::*;
+pub use crate::new::glibc::bits::types::siginfo_t::*;
 use crate::prelude::*;
 
 extern "C" {
