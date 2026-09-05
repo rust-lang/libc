@@ -71,7 +71,7 @@ jobs:
           - toolchain: nightly
             half: 2
           - toolchain: beta
-            only: '(aarch64|x86_64)' # just a spot check for beta
+            only: "(aarch64|x86_64)" # just a spot check for beta
           - toolchain: stable
           - toolchain: 1.65.0 # msrv
     runs-on: ubuntu-26.04
@@ -386,34 +386,34 @@ jobs:
     env:
       RUSTFLAGS: "" # No need to check warnings on old MSRV, clear `-Dwarnings`
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    - run: |
-        msrv="$(
-          cargo metadata --format-version 1 |
-          jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
-        )"
-        echo "MSRV: $msrv"
-        echo "MSRV=$msrv" >> "$GITHUB_ENV"
-    - name: Install Rust
-      run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-    - run: cargo build -p ctest
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: |
+          msrv="$(
+            cargo metadata --format-version 1 |
+            jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
+          )"
+          echo "MSRV: $msrv"
+          echo "MSRV=$msrv" >> "$GITHUB_ENV"
+      - name: Install Rust
+        run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - run: cargo build -p ctest
 
   docs:
     name: Ensure docs build
     runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    - name: Install Rust
-      # FIXME(rust-lang/rust#160439): unpin once the issue is fixed
-      run: rustup update nightly-2026-08-02 --no-self-update && rustup default nightly-2026-08-02
-    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-    - run: cargo doc --workspace --no-deps
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        # FIXME(rust-lang/rust#160439): unpin once the issue is fixed
+        run: rustup update nightly-2026-08-02 --no-self-update && rustup default nightly-2026-08-02
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - run: cargo doc --workspace --no-deps
 
   zizmor:
     name: Zizmor (Static analysis for GitHub Actions)

@@ -736,6 +736,7 @@ fn test_windows(t: &Target) {
     }
     cfg.define("_WIN32_WINNT", Some("0x8000"));
 
+    let time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_TIME64");
     let win_gnu_x86_time64 = match env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS") {
         Ok(v) if v == "64" => true,
         Ok(v) if v == "32" => false,
@@ -748,7 +749,7 @@ fn test_windows(t: &Target) {
     // Needed for the Windows `time_t` test.
     println!("cargo::rustc-check-cfg=cfg(gnu_time_bits64)");
 
-    if x86_32 && gnu && win_gnu_x86_time64 {
+    if x86_32 && gnu && (win_gnu_x86_time64 || time64) {
         cfg.cfg("gnu_time_bits64", None);
         println!("cargo::rustc-cfg=gnu_time_bits64");
     }
@@ -3864,6 +3865,7 @@ fn config_gnu_bits(t: &Target, cfg: &mut ctest::TestGenerator) {
     if t.gnu() && t.linux() && !t.x32() && !t.riscv32() && t.pointer_width == P32 {
         let defaultbits = "32";
         let mut tb_env = env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS");
+        let time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_TIME64");
 
         // FIXME: remove these fallbacks in a few releases
         if let Ok(old_tb_env) = env::var("RUST_LIBC_UNSTABLE_GNU_TIME_BITS") {
@@ -3892,7 +3894,7 @@ fn config_gnu_bits(t: &Target, cfg: &mut ctest::TestGenerator) {
             }
         };
 
-        if timebits == "64" {
+        if timebits == "64" || time64 {
             cfg.define("_TIME_BITS", Some("64"));
             cfg.define("_FILE_OFFSET_BITS", Some("64"));
             cfg.cfg("linux_time_bits64", None);
@@ -3957,6 +3959,8 @@ fn test_linux(t: &Target) {
         None => panic!("failed to detect kernel version for Linux target {t:?}",),
     };
 
+    let time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_TIME64");
+
     let mut musl_v1_2 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
     if musl_v1_2 {
         assert!(musl);
@@ -3971,7 +3975,7 @@ fn test_linux(t: &Target) {
 
     let mut cfg = ctest_cfg();
 
-    if musl_v1_2 {
+    if musl && (musl_v1_2 || time64) {
         cfg.cfg("musl_v1_2", None);
         if p32 {
             cfg.cfg("musl32_time64", None);
@@ -3983,7 +3987,7 @@ fn test_linux(t: &Target) {
     }
 
     let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
-    if uclibc && uclibc_use_time64 {
+    if uclibc && (uclibc_use_time64 || time64) {
         cfg.cfg("linux_time_bits64", None);
     }
     cfg.define("_GNU_SOURCE", None)
