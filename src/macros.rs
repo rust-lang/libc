@@ -854,6 +854,7 @@ macro_rules! offset_of {
 #[cfg(test)]
 mod tests {
     use core::any::TypeId;
+    use core::prelude::v1::*;
 
     use crate::types::CEnumRepr;
 
@@ -1171,6 +1172,8 @@ mod tests {
 #[cfg(test)]
 #[allow(unused)]
 mod macro_checks {
+    use core::prelude::v1::*;
+
     s! {
         pub struct S1 {
             pub a: u32,
