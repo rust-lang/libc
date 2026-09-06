@@ -25,7 +25,7 @@ jobs:
       - name: Install Rust (rustup)
         run: rustup update stable --no-self-update && rustup default stable
       - name: Run release-plz
-        uses: release-plz/action@2eb1d8bcb770b4c48ccfaad919734b38b51958c9 # v0.5.131
+        uses: release-plz/action@aec534bbd8631793b9b3b8f1ee6cd886c322e17f # v0.5.133
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
