@@ -771,7 +771,7 @@ s_no_extra_traits! {
     // form would be bogus and it would potentially change the size of the data type. On QNX SDP 8, this
     // got fixed and both C and C++ are using the same definition.
     pub struct max_align_t {
-        _ll: crate::c_longlong,
+        _ll: c_longlong,
         _ld: i128,
     }
 }
