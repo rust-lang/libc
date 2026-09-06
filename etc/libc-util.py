@@ -14,6 +14,7 @@ import re
 import shlex
 import subprocess as sp
 import sys
+import time
 from dataclasses import dataclass
 from enum import StrEnum
 from inspect import cleandoc
@@ -479,6 +480,8 @@ class CheckAllTargets:
         failures = []
         matched_only_already_skipped = []
 
+        start = time.time()
+
         if only is not None:
             for t in checks:
                 if t.pattern_matches(only):
@@ -556,8 +559,9 @@ class CheckAllTargets:
             if len(failures) > self.failure_limit:
                 break
 
+        elapsed = round(time.time() - start, 2)
         print(
-            f"finished checking {ran} targets. {passed} passed, "
+            f"finished checking {ran} targets in {elapsed} seconds. {passed} passed, "
             f"{len(failures)} failed, {skipped} skipped"
         )
         if len(matched_only_already_skipped) > 0:
