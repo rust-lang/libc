@@ -131,7 +131,6 @@ version = "0.1.0"
 dependencies = [
  "cc",
  "ctest",
- "libc 1.0.0-alpha.4",
 ]
 
 [[package]]

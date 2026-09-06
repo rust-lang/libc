@@ -12,9 +12,6 @@ cc = "1.4.2"
 [dev-dependencies]
 ctest = { path = "../ctest" }
 
-[dependencies]
-libc = { path = ".." }
-
 [[bin]]
 name = "t1"
 test = false
