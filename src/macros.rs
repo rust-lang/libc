@@ -74,7 +74,14 @@ macro_rules! prelude {
             #[allow(unused_imports)]
             pub(crate) use core::clone::Clone;
             #[allow(unused_imports)]
+            pub(crate) use core::cmp::{
+                Eq,
+                PartialEq,
+            };
+            #[allow(unused_imports)]
             pub(crate) use core::default::Default;
+            #[allow(unused_imports)]
+            pub(crate) use core::iter::Iterator;
             #[allow(unused_imports)]
             pub(crate) use core::marker::{
                 Copy,
@@ -89,12 +96,14 @@ macro_rules! prelude {
             pub(crate) use core::{
                 assert,
                 cfg,
+                compile_error,
                 debug_assert,
                 fmt,
                 hash,
                 iter,
                 mem,
                 ptr,
+                unimplemented,
             };
 
             #[allow(unused_imports)]
@@ -176,7 +185,11 @@ macro_rules! s {
         )]
         #[cfg_attr(
             feature = "extra_traits",
-            ::core::prelude::v1::derive(PartialEq, Eq, Hash)
+            ::core::prelude::v1::derive(
+                ::core::cmp::PartialEq,
+                ::core::cmp::Eq,
+                ::core::hash::Hash,
+            )
         )]
         #[allow(deprecated)]
         $(#[$attr])*
@@ -201,7 +214,11 @@ macro_rules! s_paren {
         )]
         #[cfg_attr(
             feature = "extra_traits",
-            ::core::prelude::v1::derive(PartialEq, Eq, Hash)
+            ::core::prelude::v1::derive(
+                ::core::cmp::PartialEq,
+                ::core::cmp::Eq,
+                ::core::hash::Hash,
+            )
         )]
         $(#[$attr])*
         $pub struct $i ( $($field)* );
@@ -266,7 +283,11 @@ macro_rules! s_with_default {
                 )]
                 #[cfg_attr(
                     feature = "extra_traits",
-                    ::core::prelude::v1::derive(PartialEq, Eq, Hash)
+                    ::core::prelude::v1::derive(
+                        ::core::cmp::PartialEq,
+                        ::core::cmp::Eq,
+                        ::core::hash::Hash,
+                    )
                 )]
                 #[allow(deprecated)]
             }

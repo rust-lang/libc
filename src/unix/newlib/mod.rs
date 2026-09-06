@@ -25,7 +25,7 @@ cfg_if! {
         pub type ino_t = u32;
         pub type off_t = i64;
     } else {
-        core::compile_error!("unsupported target");
+        compile_error!("unsupported target");
     }
 }
 
@@ -1026,6 +1026,6 @@ cfg_if! {
         mod rtems;
         pub use self::rtems::*;
     } else {
-        core::compile_error!("unsupported target");
+        compile_error!("unsupported target");
     }
 }
