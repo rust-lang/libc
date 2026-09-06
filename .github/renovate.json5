@@ -43,17 +43,9 @@
       addLabels: ["stable-declined"],
     },
     {
-      // Only on main, we backport these
+      // We do docker updates manually
       matchDatasources: ["docker"],
-      matchBaseBranches: ["libc-0.2"],
       enabled: false,
-    },
-    {
-      matchDatasources: ["docker"],
-      commitMessagePrefix: "ci:",
-      addLabels: ["stable-nominated"],
-      // Don't updates such as 23.10 -> mantic-20240530
-      pinDigests: false,
     },
   ],
   // Receive any update that fixes security vulnerabilities.
