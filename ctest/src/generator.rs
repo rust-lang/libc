@@ -494,7 +494,7 @@ impl TestGenerator {
     /// Module paths are given relative to the crate root, so for example the
     /// identifier of a module `bar` inside a top-level module `foo` would be
     /// `foo::bar`, and not `crate::foo::bar`. This is returned by the
-    /// [`Module::ident`] function.
+    /// [`Module::path`] function.
     ///
     /// # Examples
     ///
@@ -1193,12 +1193,12 @@ impl TestGenerator {
             return mapped;
         }
         match item {
-            MapInput::Const(c) => c.ident().to_string(),
-            MapInput::Fn(f) => f.ident().to_string(),
-            MapInput::Static(s) => s.ident().to_string(),
-            MapInput::Struct(s) => s.ident().to_string(),
-            MapInput::Union(u) => u.ident().to_string(),
-            MapInput::Alias(t) => t.ident().to_string(),
+            MapInput::Const(c) => c.ident(),
+            MapInput::Fn(f) => f.ident(),
+            MapInput::Static(s) => s.ident(),
+            MapInput::Struct(s) => s.ident(),
+            MapInput::Union(u) => u.ident(),
+            MapInput::Alias(t) => t.ident(),
             MapInput::StructField(_, f) => f.ident().to_string(),
             MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
