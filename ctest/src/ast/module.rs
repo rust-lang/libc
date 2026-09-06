@@ -12,8 +12,22 @@ pub struct Module {
 }
 
 impl Module {
-    /// Returns the identifier of the parsed module.
-    pub fn ident(&self) -> &str {
+    /// Returns the full path to the module item.
+    ///
+    /// If inside a nested module, this will return a top-level-relative path,
+    /// but not a crate-relative path. For some item `foo` in module
+    /// `crate::bar`, the returned string will be `bar::foo`, and not
+    /// `crate::bar::foo`.
+    pub fn path(&self) -> &str {
         &self.ident
+    }
+
+    /// Returns the last path of the identifier, from the absolute path returned
+    /// by [`Module::path`].
+    pub fn ident(&self) -> String {
+        let Some(syn::PathSegment { ident, .. }) = self.path.segments.last() else {
+            unreachable!("all parsed items have at least one element in their path")
+        };
+        ident.to_string()
     }
 }
