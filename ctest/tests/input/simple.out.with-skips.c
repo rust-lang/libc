@@ -60,7 +60,7 @@ CTEST_EXTERN uint32_t ctest_signededness_of__volatile_char(void) {
 #endif
 
 #ifdef __GNUC__
-    // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
+    // GCC emits a warning with `-Wextra` if we return a typedef to a type marked `volatile`.
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif
