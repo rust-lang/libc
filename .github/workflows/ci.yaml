@@ -86,7 +86,7 @@ jobs:
         run: ./ci/install-rust.sh
 
       - name: Install semver-checks
-        uses: taiki-e/install-action@5b4d68e2e660441203ab128a23676f1e4faf1532 # v2.86.3
+        uses: taiki-e/install-action@7b8d4719ee4aaa279bdf55df38dacb9ebfe12a6c # v2.87.6
         if: matrix.toolchain == 'stable'
         with:
           tool: cargo-semver-checks
@@ -280,7 +280,7 @@ jobs:
 
       - name: Install `cargo-apple-runner`
         if: matrix.cargo-apple-runner
-        uses: taiki-e/install-action@6c6fd71fe4fb72c3697d269963d0e15df8adedad # v2.85.10
+        uses: taiki-e/install-action@7b8d4719ee4aaa279bdf55df38dacb9ebfe12a6c # v2.87.6
         with:
           tool: cargo-apple-runner
 
@@ -328,7 +328,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Test on FreeBSD
-        uses: vmactions/freebsd-vm@83b151f58c6047089f4c80eb5ba2039d158ce093 # v1.5.3
+        uses: vmactions/freebsd-vm@f0552d3b69211736abd97f02ff3d4674c56b73b1 # v1.5.5
         if: contains(matrix.target, 'freebsd')
         with:
           release: ${{ matrix.release }}
@@ -343,7 +343,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: Test on Solaris
-        uses: vmactions/solaris-vm@315163f088b66e55bbcc45928bd224d4973b2312 # v1.3.8
+        uses: vmactions/solaris-vm@96d8d976f9e67d82ec6c7e8ce9c1060731f9e21c # v1.3.9
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
@@ -355,7 +355,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@00081e82b14bc40114eb97f32b4455306828516b # v1.4.6
+        uses: vmactions/netbsd-vm@7f23a491dcc69c34195721ab67934917707f84c7 # v1.4.9
         if: contains(matrix.target, 'netbsd')
         with:
           release: "10.1"
@@ -367,7 +367,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on illumos
-        uses: vmactions/omnios-vm@027e3ec08fed6fb740ab5f300c2605f9de02997a # v1.3.4
+        uses: vmactions/omnios-vm@317e4f8069dad8a65e1520808f1a68ef3fd20565 # v1.3.6
         if: contains(matrix.target, 'illumos')
         with:
           # Use the latest LTS
@@ -428,7 +428,7 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        uses: zizmorcore/zizmor-action@70fb788f84895a7701f5643d103d587e460b5c99 # v0.6.3
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
