@@ -63,14 +63,14 @@ s! {
 
     pub struct stat64 {
         pub st_dev: c_ulonglong,
-        pub __pad1: c_uint,
+        __pad1: Padding<c_uint>,
         pub __st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: c_ulonglong,
-        pub __pad2: c_uint,
+        __pad2: Padding<c_uint>,
         pub st_size: off64_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt64_t,

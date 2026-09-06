@@ -208,7 +208,7 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: u32,
         pub st_gen: u32,
-        pub st_spare: [u32; 2],
+        st_spare: Padding<[u32; 2]>,
     }
 
     pub struct addrinfo {
