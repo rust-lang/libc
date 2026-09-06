@@ -7,6 +7,7 @@ use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering::Relaxed;
 use std::{
     env,
+    fmt,
     str,
 };
 
@@ -77,9 +78,9 @@ const ALLOWED_CFGS: &[Cfg] = &[
     Cfg::MuslRedirTime64,
 ];
 
-impl Cfg {
-    fn name(self) -> &'static str {
-        match self {
+impl fmt::Display for Cfg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
             Cfg::LibcDenyWarnings => "libc_deny_warnings",
             Cfg::EmscriptenOldStatAbi => "emscripten_old_stat_abi",
             Cfg::EspidfPicolibc => "espidf_picolibc",
@@ -99,7 +100,7 @@ impl Cfg {
             Cfg::MuslV1_2 => "musl_v1_2",
             Cfg::Musl32Time64 => "musl32_time64",
             Cfg::MuslRedirTime64 => "musl_redir_time64",
-        }
+        })
     }
 }
 
@@ -318,7 +319,7 @@ fn main() {
     // avoid warnings.
     if rustc_minor_ver >= 80 {
         for cfg in ALLOWED_CFGS {
-            println!("cargo:rustc-check-cfg=cfg({})", cfg.name());
+            println!("cargo:rustc-check-cfg=cfg({cfg})");
         }
         for &(name, values) in CHECK_CFG_EXTRA {
             let values = values.join("\",\"");
@@ -550,8 +551,8 @@ fn vxworks_version_code() -> Option<(u32, u32)> {
 }
 
 fn set_cfg(cfg: Cfg) {
-    println!("cargo:rustc-cfg={}", cfg.name());
-    info!("setting config `{}`", cfg.name());
+    println!("cargo:rustc-cfg={cfg}");
+    info!("setting config `{cfg}`");
 }
 
 /// Return true if the env is set to a value other than `0`.
