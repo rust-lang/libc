@@ -19,6 +19,7 @@ use crate::{
     TestGenerator,
     TranslationError,
     VolatileItemKind,
+    ast,
     cdecl,
 };
 
@@ -127,18 +128,27 @@ impl TestTemplate {
                 && matches!(ptr.mutability, syn::PointerMutability::Const(_))
             {
                 let item = TestCStr {
+                    // [NOTE]: the test name needs the full path to the item
+                    //         with path separators escaped as `_`.
+                    test_name: cstr_test_ident(&ast::escape_item_path(constant)),
+                    // [NOTE]: the item's identifier ought be the last segment
+                    //         of its path because it is used in the C tests.
                     id: constant.ident().into(),
-                    test_name: cstr_test_ident(constant.ident()),
-                    rust_val: constant.ident().into(),
+                    // [NOTE]: the item's Rust identifier ought be the full,
+                    //         unescaped path to the item (as it itself is not
+                    //         used as an identifier for some other item in the
+                    //         generated tests but as a standalone identifier.)
+                    rust_val: constant.path().into(),
                     c_val: helper.c_ident(constant).into(),
                 };
                 self.const_cstr_tests.push(item.clone());
                 self.test_idents.push(item.test_name);
             } else {
+                // [NOTE]: see the above notes.
                 let item = TestConst {
                     id: constant.ident().into(),
-                    test_name: const_test_ident(constant.ident()),
-                    rust_val: constant.ident().into(),
+                    test_name: const_test_ident(&ast::escape_item_path(constant)),
+                    rust_val: constant.path().into(),
                     rust_ty: constant.ty.to_token_stream().to_string().into_boxed_str(),
                     c_val: helper.c_ident(constant).into(),
                     c_ty: helper.c_type(constant)?.into(),
@@ -160,9 +170,9 @@ impl TestTemplate {
     ) -> Result<(), TranslationError> {
         for alias in helper.filtered_ffi_items.aliases() {
             let item = TestSizeAlign {
-                test_name: size_align_test_ident(alias.ident()),
+                test_name: size_align_test_ident(&ast::escape_item_path(alias)),
                 id: alias.ident().into(),
-                rust_ty: alias.ident().into(),
+                rust_ty: alias.path().into(),
                 c_ty: helper.c_type(alias)?.into(),
             };
             self.size_align_tests.push(item.clone());
@@ -170,9 +180,9 @@ impl TestTemplate {
         }
         for struct_ in helper.filtered_ffi_items.structs() {
             let item = TestSizeAlign {
-                test_name: size_align_test_ident(struct_.ident()),
+                test_name: size_align_test_ident(&ast::escape_item_path(struct_)),
                 id: struct_.ident().into(),
-                rust_ty: struct_.ident().into(),
+                rust_ty: struct_.path().into(),
                 c_ty: helper.c_type(struct_)?.into(),
             };
             self.size_align_tests.push(item.clone());
@@ -180,9 +190,9 @@ impl TestTemplate {
         }
         for union_ in helper.filtered_ffi_items.unions() {
             let item = TestSizeAlign {
-                test_name: size_align_test_ident(union_.ident()),
+                test_name: size_align_test_ident(&ast::escape_item_path(union_)),
                 id: union_.ident().into(),
-                rust_ty: union_.ident().into(),
+                rust_ty: union_.path().into(),
                 c_ty: helper.c_type(union_)?.into(),
             };
             self.size_align_tests.push(item.clone());
@@ -204,13 +214,13 @@ impl TestTemplate {
                 .generator
                 .skip_signededness
                 .as_ref()
-                .is_some_and(|skip| skip(alias.ident()));
+                .is_some_and(|skip| skip(alias.path()));
 
             if !helper.translator.is_signed(&alias.ty) || should_skip_signededness_test {
                 continue;
             }
             let item = TestSignededness {
-                test_name: signededness_test_ident(alias.ident()),
+                test_name: signededness_test_ident(&ast::escape_item_path(alias)),
                 id: alias.ident().into(),
                 c_ty: helper.c_type(alias)?.into(),
             };
@@ -240,7 +250,7 @@ impl TestTemplate {
             })
             .map(|(struct_, field)| {
                 (
-                    struct_.ident(),
+                    MapInput::Struct(struct_),
                     field,
                     helper.c_type(struct_),
                     helper.c_ident(MapInput::StructField(struct_, field)),
@@ -256,19 +266,29 @@ impl TestTemplate {
             })
             .map(|(union_, field)| {
                 (
-                    union_.ident(),
+                    MapInput::Union(union_),
                     field,
                     helper.c_type(union_),
                     helper.c_ident(MapInput::UnionField(union_, field)),
                 )
             });
 
-        for (id, field, c_ty, c_field) in struct_fields.chain(union_fields) {
+        for (ty, field, c_ty, c_field) in struct_fields.chain(union_fields) {
+            let (escaped_path, id, path) = match ty {
+                MapInput::Struct(s) => (ast::escape_item_path(s), s.ident(), s.path()),
+                MapInput::Union(u) => (ast::escape_item_path(u), u.ident(), u.path()),
+
+                _ => unreachable!(
+                    "we consider only records and untagged unions in field \
+                     size/offset tests"
+                ),
+            };
             let item = TestFieldSizeOffset {
-                test_name: field_size_offset_test_ident(id, field.ident()),
+                test_name: field_size_offset_test_ident(&escaped_path, field.ident()),
                 id: id.into(),
-                c_ty: c_ty?.into(),
                 field: field.clone(),
+                rust_ty: path.into(),
+                c_ty: c_ty?.into(),
                 c_field: c_field.into_boxed_str(),
             };
             self.field_size_offset_tests.push(item.clone());
@@ -290,16 +310,13 @@ impl TestTemplate {
             if let syn::Type::Array(_) = alias.ty {
                 continue;
             }
-            let c_ty = helper.c_type(alias)?;
-            self.add_roundtrip_test(helper, alias.ident(), &[], &c_ty, true);
+            self.add_roundtrip_test(helper, MapInput::Alias(alias), &[], true)?;
         }
         for struct_ in helper.filtered_ffi_items.structs() {
-            let c_ty = helper.c_type(struct_)?;
-            self.add_roundtrip_test(helper, struct_.ident(), &struct_.fields, &c_ty, false);
+            self.add_roundtrip_test(helper, MapInput::Struct(struct_), &struct_.fields, false)?;
         }
         for union_ in helper.filtered_ffi_items.unions() {
-            let c_ty = helper.c_type(union_)?;
-            self.add_roundtrip_test(helper, union_.ident(), &union_.fields, &c_ty, false);
+            self.add_roundtrip_test(helper, MapInput::Union(union_), &union_.fields, false)?;
         }
 
         Ok(())
@@ -308,27 +325,54 @@ impl TestTemplate {
     fn add_roundtrip_test(
         &mut self,
         helper: &TranslateHelper,
-        ident: &str,
+        input: MapInput,
         fields: &[Field],
-        c_ty: &str,
         is_alias: bool,
-    ) {
+    ) -> Result<(), TranslationError> {
+        let (escaped_path, ident, path, c_ty) = match input {
+            MapInput::Struct(s) => (
+                ast::escape_item_path(s),
+                s.ident(),
+                s.path(),
+                helper.c_type(s)?,
+            ),
+            MapInput::Union(u) => (
+                ast::escape_item_path(u),
+                u.ident(),
+                u.path(),
+                helper.c_type(u)?,
+            ),
+            MapInput::Alias(a) => (
+                ast::escape_item_path(a),
+                a.ident(),
+                a.path(),
+                helper.c_type(a)?,
+            ),
+
+            _ => unreachable!("other rust items are not tested for roundtrip tests"),
+        };
         let should_skip_roundtrip_test = helper
             .generator
             .skip_roundtrip
             .as_ref()
-            .is_some_and(|skip| skip(ident));
+            .is_some_and(|skip| skip(path));
         if !should_skip_roundtrip_test {
             let item = TestRoundtrip {
-                test_name: roundtrip_test_ident(ident),
+                test_name: roundtrip_test_ident(&escaped_path),
                 id: ident.into(),
-                fields: fields.iter().filter(|f| f.public).cloned().collect(),
+                fields: fields
+                    .iter()
+                    .filter(|Field { public, .. }| *public)
+                    .cloned()
+                    .collect(),
+                rust_ty: path.into(),
                 c_ty: c_ty.into(),
                 is_alias,
             };
             self.roundtrip_tests.push(item.clone());
             self.test_idents.push(item.test_name);
         }
+        Ok(())
     }
 
     /// Populates field tests for structs/unions.
@@ -352,16 +396,15 @@ impl TestTemplate {
             })
             .map(|(s, f)| {
                 (
-                    s.ident(),
+                    MapInput::Struct(s),
                     f,
                     helper.c_type(s),
                     helper.c_ident(MapInput::StructField(s, f)),
-                    if !helper.generator.volatile_items.is_empty()
-                        && helper
-                            .generator
-                            .volatile_items
-                            .iter()
-                            .any(|vf| vf(VolatileItemKind::StructField(s.clone(), f.clone())))
+                    if helper
+                        .generator
+                        .volatile_items
+                        .iter()
+                        .any(|vf| vf(VolatileItemKind::StructField(s.clone(), f.clone())))
                     {
                         "volatile "
                     } else {
@@ -381,7 +424,7 @@ impl TestTemplate {
             })
             .map(|(u, f)| {
                 (
-                    u.ident(),
+                    MapInput::Union(u),
                     f,
                     helper.c_type(u),
                     helper.c_ident(MapInput::UnionField(u, f)),
@@ -389,7 +432,16 @@ impl TestTemplate {
                 )
             });
 
-        for (id, field, c_ty, c_field, volatile_keyword) in struct_fields.chain(union_fields) {
+        for (ty, field, c_ty, c_field, volatile_keyword) in struct_fields.chain(union_fields) {
+            let (escaped_path, id, path) = match ty {
+                MapInput::Struct(s) => (ast::escape_item_path(s), s.ident(), s.path()),
+                MapInput::Union(u) => (ast::escape_item_path(u), u.ident(), u.path()),
+
+                _ => unreachable!(
+                    "we consider only records and untagged unions in field \
+                     size/offset tests"
+                ),
+            };
             let field_return_type = cdecl::cdecl(
                 &cdecl::ptr(
                     helper.translator.translate_type(&field.ty)?,
@@ -406,10 +458,11 @@ impl TestTemplate {
             })?
             .into_boxed_str();
             let item = TestFieldPtr {
-                test_name: field_ptr_test_ident(id, field.ident()),
+                test_name: field_ptr_test_ident(&escaped_path, field.ident()),
                 id: id.into(),
                 c_ty: c_ty?.into(),
                 field: field.clone(),
+                rust_ty: path.into(),
                 c_field: c_field.into_boxed_str(),
                 volatile_keyword: volatile_keyword.into(),
                 field_return_type,
@@ -428,22 +481,23 @@ impl TestTemplate {
         &mut self,
         helper: &TranslateHelper,
     ) -> Result<(), TranslationError> {
-        let should_skip_fn_test = |ident| {
+        let should_skip_fn_test = |path| {
             helper
                 .generator
                 .skip_fn_ptrcheck
                 .as_ref()
-                .is_some_and(|skip| skip(ident))
+                .is_some_and(|skip| skip(path))
         };
         for func in helper.filtered_ffi_items.foreign_functions() {
-            if should_skip_fn_test(func.ident()) {
+            if should_skip_fn_test(func.path()) {
                 continue;
             }
 
             let item = TestForeignFn {
-                test_name: foreign_fn_test_ident(func.ident()),
+                test_name: foreign_fn_test_ident(&ast::escape_item_path(func)),
                 id: func.ident().into(),
-                c_val: helper.c_ident(func).into_boxed_str(),
+                rust_ty: func.path().into(),
+                c_val: helper.c_ident(func).into(),
             };
 
             self.foreign_fn_tests.push(item.clone());
@@ -463,10 +517,11 @@ impl TestTemplate {
             let rust_ty = static_.ty.to_token_stream().to_string().into_boxed_str();
 
             let item = TestForeignStatic {
-                test_name: static_test_ident(static_.ident()),
+                test_name: static_test_ident(&ast::escape_item_path(static_)),
                 id: static_.ident().into(),
                 c_val: helper.c_ident(static_).into_boxed_str(),
                 rust_ty,
+                rust_val: static_.path().into(),
             };
 
             self.foreign_static_tests.push(item.clone());
@@ -531,6 +586,7 @@ pub(crate) struct TestFieldPtr {
     pub test_name: BoxStr,
     pub id: BoxStr,
     pub field: Field,
+    pub rust_ty: BoxStr,
     pub c_field: BoxStr,
     pub c_ty: BoxStr,
     pub volatile_keyword: BoxStr,
@@ -542,6 +598,7 @@ pub(crate) struct TestFieldSizeOffset {
     pub test_name: BoxStr,
     pub id: BoxStr,
     pub field: Field,
+    pub rust_ty: BoxStr,
     pub c_field: BoxStr,
     pub c_ty: BoxStr,
 }
@@ -551,6 +608,7 @@ pub(crate) struct TestRoundtrip {
     pub test_name: BoxStr,
     pub id: BoxStr,
     pub fields: Vec<Field>,
+    pub rust_ty: BoxStr,
     pub c_ty: BoxStr,
     pub is_alias: bool,
 }
@@ -559,6 +617,7 @@ pub(crate) struct TestRoundtrip {
 pub(crate) struct TestForeignFn {
     pub test_name: BoxStr,
     pub c_val: BoxStr,
+    pub rust_ty: BoxStr,
     pub id: BoxStr,
 }
 
@@ -568,6 +627,7 @@ pub(crate) struct TestForeignStatic {
     pub id: BoxStr,
     pub c_val: BoxStr,
     pub rust_ty: BoxStr,
+    pub rust_val: BoxStr,
 }
 
 fn signededness_test_ident(ident: &str) -> BoxStr {
@@ -637,12 +697,12 @@ impl<'a> TranslateHelper<'a> {
                 generator
                     .skips
                     .iter()
-                    .any(|f| f(&MapInput::CEnumType(alias.ident())))
+                    .any(|f| f(&MapInput::CEnumType(alias.path())))
             });
 
             for item in skipped {
                 if generator.verbose_skip {
-                    eprintln!("Skipping C enum type {}", item.ident());
+                    eprintln!("Skipping C enum type {}", item.path());
                 }
             }
 
@@ -656,7 +716,7 @@ impl<'a> TranslateHelper<'a> {
 
             for item in skipped {
                 if generator.verbose_skip {
-                    eprintln!("Skipping C enum constant {}", item.ident());
+                    eprintln!("Skipping C enum constant {}", item.path());
                 }
             }
 
@@ -668,7 +728,7 @@ impl<'a> TranslateHelper<'a> {
                     });
                     for item in skipped {
                         if generator.verbose_skip {
-                            eprintln!("Skipping {} \"{}\"", $label, item.ident())
+                            eprintln!("Skipping {} \"{}\"", $label, item.path())
                         }
                     }
                 }};
@@ -701,24 +761,38 @@ impl<'a> TranslateHelper<'a> {
     pub(crate) fn c_type(&self, item: impl Into<MapInput<'a>>) -> Result<String, TranslationError> {
         let item: MapInput = item.into();
 
-        let (ident, ty) = match item {
-            MapInput::Const(c) => (c.ident(), self.translator.translate_type(&c.ty)?),
+        // [NOTE]: we fetch the whole item path here instead of the identifier
+        // through `ident`, because `item_path` gets used only for error
+        // reporting.
+        let (item_path, ty) = match item {
+            MapInput::Const(c) => (c.path(), self.translator.translate_type(&c.ty)?),
             MapInput::StructField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
             MapInput::UnionField(_, f) => (f.ident(), self.translator.translate_type(&f.ty)?),
-            MapInput::Static(s) => (s.ident(), self.translator.translate_type(&s.ty)?),
-            // For functions, their type would be a bare fn signature, which would need to be saved
-            // inside of `Fn` when parsed.
+            MapInput::Static(s) => (s.path(), self.translator.translate_type(&s.ty)?),
+            // For functions, their type would be a bare fn signature, which
+            // would need to be saved inside of `Fn` when parsed.
             MapInput::Fn(_) => unimplemented!(),
-            // For structs/unions/aliases, their type is the same as their identifier.
-            MapInput::Alias(a) => (a.ident(), cdecl::named(a.ident(), Constness::Mut)),
-            MapInput::Struct(s) => (s.ident(), cdecl::named(s.ident(), Constness::Mut)),
-            MapInput::Union(u) => (u.ident(), cdecl::named(u.ident(), Constness::Mut)),
+            // For structs/unions/aliases, their type is the same as their
+            // identifier.
+            MapInput::Alias(a) => (a.path(), cdecl::named(&a.ident(), Constness::Mut)),
+            MapInput::Struct(s) => (s.path(), cdecl::named(&s.ident(), Constness::Mut)),
+            MapInput::Union(u) => (u.path(), cdecl::named(&u.ident(), Constness::Mut)),
 
-            MapInput::StructType(_) => panic!("MapInput::StructType is not allowed!"),
-            MapInput::UnionType(_) => panic!("MapInput::UnionType is not allowed!"),
-            MapInput::CEnumType(_) => panic!("MapInput::CEnumType is not allowed!"),
-            MapInput::StructFieldType(_, _) => panic!("MapInput::StructFieldType is not allowed!"),
-            MapInput::UnionFieldType(_, _) => panic!("MapInput::UnionFieldType is not allowed!"),
+            MapInput::StructType(_) => {
+                panic!("MapInput::StructType is not allowed!")
+            }
+            MapInput::UnionType(_) => {
+                panic!("MapInput::UnionType is not allowed!")
+            }
+            MapInput::CEnumType(_) => {
+                panic!("MapInput::CEnumType is not allowed!")
+            }
+            MapInput::StructFieldType(_, _) => {
+                panic!("MapInput::StructFieldType is not allowed!")
+            }
+            MapInput::UnionFieldType(_, _) => {
+                panic!("MapInput::UnionFieldType is not allowed!")
+            }
             MapInput::Type(_) => panic!("MapInput::Type is not allowed!"),
             MapInput::Module(_) => panic!("MapInput::Module is not allowed!"),
         };
@@ -726,7 +800,7 @@ impl<'a> TranslateHelper<'a> {
         let ty = cdecl::cdecl(&ty, "".to_string()).map_err(|_| {
             TranslationError::new(
                 TranslationErrorKind::InvalidReturn,
-                ident,
+                item_path,
                 Span::call_site(),
             )
         })?;
@@ -747,7 +821,7 @@ fn tmp() {
     let file = syn::parse_file(file).unwrap();
     items.visit_file(&file);
     let mut generator = TestGenerator::new();
-    generator.skip_fn(|it| it.ident() == "t::r::ctime");
-    let mut translator = TranslateHelper::new(&items, &generator);
+    generator.skip_fn(|it| it.path() == "t::r::ctime");
+    let translator = TranslateHelper::new(&items, &generator);
     println!("{:#?}", translator.filtered_ffi_items);
 }
