@@ -863,7 +863,7 @@ impl siginfo_t {
             _uid: crate::uid_t,
             _utime: crate::clock_t,
             _stime: crate::clock_t,
-            _status: crate::c_int,
+            _status: c_int,
         }
         (*(self as *const siginfo_t).cast::<siginfo_proc>())._status
     }
