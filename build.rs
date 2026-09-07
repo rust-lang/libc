@@ -40,8 +40,9 @@ enum Cfg {
     LinuxTimeBits64,
     /// Corresponds to `_FILE_OFFSET_BITS=64` in glibc. Implies 32-bit GNU target.
     GnuFileOffsetBits64,
-    /// Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with GNU
-    /// to expose a 64-bit `time_t`. Implies 32-bit GNU target and 64-bit `off_t`.
+    /// Corresponds to `_TIME_BITS=64` in glibc. Also used in x86 Windows with GNU to expose a
+    /// 64-bit `time_t`. Implies 32-bit GNU target and, on platforms other than Windows, 64-bit
+    /// `off_t`.
     GnuTimeBits64,
     /// Musl 1.2+. Implies `target_env = "musl"`
     MuslV1_2,
