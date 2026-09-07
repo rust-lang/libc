@@ -269,7 +269,7 @@ s! {
         pub st_flags: crate::fflags_t,
         pub st_gen: u64,
         pub st_filerev: u64,
-        pub st_spare: [u64; 9],
+        st_spare: Padding<[u64; 9]>,
     }
 
     pub struct dirent {

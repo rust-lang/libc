@@ -75,7 +75,7 @@ s! {
         pub st_ctime: crate::time_t,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
-        pub st_spare4: [c_long; 2usize],
+        st_spare4: Padding<[c_long; 2usize]>,
     }
 
     #[repr(align(8))]

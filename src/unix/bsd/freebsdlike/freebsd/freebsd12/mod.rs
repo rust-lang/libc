@@ -252,7 +252,7 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: crate::fflags_t,
         pub st_gen: u64,
-        pub st_spare: [u64; 10],
+        st_spare: Padding<[u64; 10]>,
     }
 
     pub struct dirent {

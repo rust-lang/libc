@@ -333,8 +333,8 @@ s! {
         pub st_blksize: blksize_t,
         pub st_flags: u32,
         pub st_gen: u32,
-        pub st_lspare: i32,
-        pub st_qspare: [i64; 2],
+        st_lspare: Padding<i32>,
+        st_qspare: Padding<[i64; 2]>,
     }
 
     pub struct siginfo_t {
