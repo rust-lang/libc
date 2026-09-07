@@ -9,6 +9,8 @@
   baseBranchPatterns: ["main", "libc-0.2"],
   lockFileMaintenance: {
     enabled: true,
+    // See https://github.com/renovatebot/renovate/discussions/45739#discussioncomment-18324060
+    branchTopic: "{{baseBranch}}-lock-file-maintenance",
     // Every other Monday. Renovate requires a range, hence `* *` rather
     // than `0 0`.
     schedule: ["* * 1-7,15-21 * 1"],
