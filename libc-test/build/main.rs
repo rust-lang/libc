@@ -411,6 +411,7 @@ fn test_openbsd(t: &Target) {
         "wchar.h",
         "ctype.h",
         "dirent.h",
+        "sys/sensors.h",
         "sys/socket.h",
         (x86_64, "machine/fpu.h"),
         "net/if.h",
@@ -506,6 +507,10 @@ fn test_openbsd(t: &Target) {
 
             "sa_sigaction" if struct_ == "sigaction" => "sa_handler".to_string(),
 
+            // Field is named `type` in C but that is a Rust keyword,
+            // so these fields are translated to `type_` in the bindings.
+            "type_" if struct_ == "sensor" => "type".to_string(),
+
             _ => return None,
         };
         Some(replacement)
@@ -525,6 +530,11 @@ fn test_openbsd(t: &Target) {
 
     cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
     cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
+
+    cfg.alias_is_c_enum(move |ty| match ty {
+        "sensor_type" | "sensor_status" => true,
+        _ => false,
+    });
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
