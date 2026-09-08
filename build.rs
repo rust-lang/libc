@@ -220,17 +220,21 @@ fn main() {
 
     let mut musl_v1_2_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
     if let Ok(old_musl_v1_2_3_env) = env::var("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2_3") {
-        println!(
-            "cargo:warning=`--cfg=libc_unstable_musl_v1_2_3` will be removed; \
-            set `--cfg=libc_unstable_musl_v1_2`instead"
-        );
+        if !musl_v1_2_env {
+            println!(
+                "cargo:warning=`--cfg=libc_unstable_musl_v1_2_3` will be removed; \
+                set `--cfg=libc_unstable_musl_v1_2`instead"
+            );
+        }
         musl_v1_2_env |= old_musl_v1_2_3_env != "0";
     }
     if let Ok(old_musl_v1_2_3_env) = env::var("RUST_LIBC_UNSTABLE_MUSL_V1_2_3") {
-        println!(
-            "cargo:warning=RUST_LIBC_UNSTABLE_MUSL_V1_2_3 will be removed; \
-            set `--cfg=libc_unstable_musl_v1_2` via RUSTFLAGS instead"
-        );
+        if !musl_v1_2_env {
+            println!(
+                "cargo:warning=RUST_LIBC_UNSTABLE_MUSL_V1_2_3 will be removed; \
+                set `--cfg=libc_unstable_musl_v1_2` via RUSTFLAGS instead"
+            );
+        }
         musl_v1_2_env |= old_musl_v1_2_3_env != "0";
     }
 
