@@ -45,12 +45,17 @@
 //! not present in most Rust libraries. Observing the following guidelines are recommended to help
 //! avoid soundness and stability pitfalls.
 //!
-//! 1. *Never* construct a `libc` struct with `MaybeUninit::uninit()`, initialize it, then call
-//!    `assume_init`. Many structures have padding fields or may gain fields in the future, and
-//!    it is far too easy to end up calling `assume_init` on partially initialized data.
+//! 1. *Never* construct a `libc` struct with `MaybeUninit::uninit()`, call a `libc` function with
+//!    it, then call `assume_init`. Library functions do not always initialize all fields; this
+//!    includes obvious cases like padding fields, but also less obvious cases like fields present
+//!    in the `libc` struct but not on older versions of the platform's C library. It is far too
+//!    easy to end up with a bogus `assume_init` because not all fields have been written.
 //!
 //!    Instead, use `MaybeUninit::zeroed()` or the `Default` implementations that are slowly being
 //!    added. Alternatively, access fields only via raw pointer without ever using `assume_init`.
+//!
+//!    See also the safety docs for `MaybeUninit::assume_init`
+//!    <https://doc.rust-lang.org/beta/std/mem/union.MaybeUninit.html#method.assume_init>.
 //!
 //! 2. Avoid relying on the exact value of constants, the exact length of arrays, or the exact
 //!    types of type aliases, as they may change across `libc` versions. That is, if `libc`
