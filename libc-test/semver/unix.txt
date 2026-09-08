@@ -783,7 +783,6 @@ sigaddset
 sigdelset
 sigemptyset
 sigfillset
-sighandler_t
 sigismember
 signal
 sigpending
