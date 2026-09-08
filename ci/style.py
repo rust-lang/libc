@@ -26,7 +26,7 @@ def main():
         fmt_files.extend(iglob(f"{dir}/**/*.rs", recursive=True))
 
     for file in fmt_files:
-        if file in IGNORE_FILES:
+        if Path(file).as_posix() in IGNORE_FILES:
             continue
         fmt_one(Path(file), check_only)
 
