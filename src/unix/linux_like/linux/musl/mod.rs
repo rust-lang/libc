@@ -503,9 +503,9 @@ pub const F_OFD_GETLK: c_int = 36;
 pub const F_OFD_SETLK: c_int = 37;
 pub const F_OFD_SETLKW: c_int = 38;
 
-pub const F_RDLCK: c_int = 0;
-pub const F_WRLCK: c_int = 1;
-pub const F_UNLCK: c_int = 2;
+pub const F_RDLCK: c_short = 0;
+pub const F_WRLCK: c_short = 1;
+pub const F_UNLCK: c_short = 2;
 
 pub const SA_NODEFER: c_int = 0x40000000;
 pub const SA_RESETHAND: c_int = u32_cast_int(0x80000000);

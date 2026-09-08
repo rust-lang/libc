@@ -678,9 +678,9 @@ pub const PTRACE_SETREGS: c_uint = 13;
 
 pub const EFD_NONBLOCK: c_int = 0x80;
 
-pub const F_RDLCK: c_int = 0;
-pub const F_WRLCK: c_int = 1;
-pub const F_UNLCK: c_int = 2;
+pub const F_RDLCK: c_short = 0;
+pub const F_WRLCK: c_short = 1;
+pub const F_UNLCK: c_short = 2;
 pub const F_GETLK: c_int = 14;
 pub const F_GETOWN: c_int = 23;
 pub const F_SETOWN: c_int = 24;
