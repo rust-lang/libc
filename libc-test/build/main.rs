@@ -2340,6 +2340,9 @@ fn test_android(t: &Target) {
             // FIXME(android): Requires >= 6.9 kernel headers.
             "AT_HWCAP3" | "AT_HWCAP4" | "RWF_NOAPPEND" => true,
 
+            // FIXME(android): Requires >= 6.10 kernel headers.
+            "BCACHEFS_SUPER_MAGIC" => true,
+
             // FIXME(android): Requires >= 6.11 kernel headers.
             "RWF_ATOMIC" => true,
 
@@ -4824,6 +4827,7 @@ fn test_linux(t: &Target) {
             // Recent additions
             "AT_HWCAP3" | "AT_HWCAP4" if old_musl => true,
             "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
+            "BCACHEFS_SUPER_MAGIC" => kernel < (6, 10),
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
             "TLS_INFO_TX_MAX_PAYLOAD_LEN" | "TLS_INFO_MAX" => kernel < (6, 19),
 
