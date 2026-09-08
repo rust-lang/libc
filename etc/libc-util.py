@@ -355,11 +355,11 @@ class CheckAllTargets:
         ("x86_64-lynx-lynxos178", "libc error, unresolved import"),
         ("x86_64-pc-nto-qnx800", "libc error, unsupported arch"),
         ("x86_64-unknown-linux-none", "libc error, unresolved import"),
+        ("m68k-unknown-.*", "libc error, duplicate definition"),
         # rustc problems
         ("xtensa-esp32.*", "target string mismatch in rustc"),
         ("amdgcn-amd-amdhsa", "unsupported instructions with some CPUs"),
         # llvm problems
-        ("m68k-unknown-.*", "llvm crash building core"),
         ("mipsisa32r6(el)?-.*", "llvm crash building core"),
     ]
 
@@ -584,7 +584,7 @@ class CheckAllTargets:
     @staticmethod
     def get_cache_toolchain() -> str:
         # Arbitrary but reasonably recent default if unset.
-        return os.environ.get("RUSTC_CACHE_TOOLCHAIN") or "nightly-2026-06-24"
+        return os.environ.get("RUSTC_CACHE_TOOLCHAIN") or "nightly-2026-09-01"
 
 
 @dataclass(kw_only=True)
