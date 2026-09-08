@@ -22,6 +22,7 @@ mod generated_tests {
     #[allow(unused_imports)]
     use std::mem::{MaybeUninit, offset_of};
 
+    #[allow(unused)]
     use super::*;
 
     pub static FAILED: AtomicBool = AtomicBool::new(false);
@@ -30,6 +31,7 @@ mod generated_tests {
     /// Check that the value returned from the Rust and C side in a certain test is equivalent.
     ///
     /// Internally it will remember which checks failed and how many tests have been run.
+    #[allow(unused)]
     fn check_same<T: PartialEq + Debug>(rust: T, c: T, attr: &str) {
         if rust != c {
             eprintln!("bad {attr}: rust: {rust:?} != c {c:?}");
@@ -39,6 +41,7 @@ mod generated_tests {
         }
     }
 
+    #[allow(unused)]
     fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
         if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
@@ -184,18 +187,18 @@ mod generated_tests {
             fn ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
         }
 
-        let uninit_ty = MaybeUninit::<{{ item.id }}>::zeroed();
+        let uninit_ty = MaybeUninit::<{{ item.rust_ty }}>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
 
         {# /* SAFETY: we assume the field access doesn't wrap */ #}
-        let ty_ptr = unsafe { &raw const (*uninit_ty).{{ item.field.rust_ident() }}   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).{{ item.field.rust_ident() }} };
         {# /* SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
             * test should be skipped. */ #}
         let val = unsafe { ty_ptr.read_unaligned() };
 
         {# /* SAFETY: FFI call with no preconditions */ #}
         let ctest_field_offset = unsafe { ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() };
-        check_same(offset_of!({{ item.id }}, {{ item.field.rust_ident() }}) as u64, ctest_field_offset,
+        check_same(offset_of!({{ item.rust_ty }}, {{ item.field.rust_ident() }}) as u64, ctest_field_offset,
             "field offset `{{ item.field.rust_ident() }}` of `{{ item.id }}`");
         {# /* SAFETY: FFI call with no preconditions */ #}
         let ctest_field_size = unsafe { ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() };
@@ -213,7 +216,7 @@ mod generated_tests {
             fn ctest_field_ptr__{{ item.id }}__{{ item.field.ident() }}(a: *const {{ item.id }}) -> *mut u8;
         }
 
-        let uninit_ty = MaybeUninit::<{{ item.id }}>::zeroed();
+        let uninit_ty = MaybeUninit::<{{ item.rust_ty }}>::zeroed();
         let ty_ptr = uninit_ty.as_ptr();
         // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
         // The assumption is made that this does not wrap the address space.
@@ -242,14 +245,14 @@ mod generated_tests {
     fn roundtrip_padding__{{ item.id }}() -> Vec<bool> {
         if {{ item.fields.len() }} == 0 {
             {# /* FIXME(ctest): What if it's an alias to a struct/union? */ #}
-            return vec![!{{ item.is_alias }}; size_of::<{{ item.id }}>()]
+            return vec![!{{ item.is_alias }}; size_of::<{{ item.rust_ty }}>()]
         }
 
         {# /* If there are no fields, v and bar become unused. */ #}
         #[allow(unused_mut)]
         let mut v = Vec::<(usize, usize)>::new();
         #[allow(unused_variables)]
-        let bar = MaybeUninit::<{{ item.id }}>::zeroed();
+        let bar = MaybeUninit::<{{ item.rust_ty }}>::zeroed();
         #[allow(unused_variables)]
         let bar = bar.as_ptr();
         {%- for field in item.fields +%}
@@ -258,7 +261,7 @@ mod generated_tests {
         let val = unsafe { ty_ptr.read_unaligned() };
 
         let size = size_of_val(&val);
-        let off = offset_of!({{ item.id }}, {{ field.rust_ident() }});
+        let off = offset_of!({{ item.rust_ty }}, {{ field.rust_ident() }});
         v.push((off, size));
         {%- endfor +%}
         {# /* This vector contains `true` if the byte is padding and `false` if the byte is not
@@ -266,7 +269,7 @@ mod generated_tests {
          *  - padding if we have fields, this means that only the fields will be checked
          *  - no-padding if we have a type alias: if this causes problems the type alias should
          *    be skipped */ #}
-        let mut is_padding_byte = vec![true; size_of::<{{ item.id }}>()];
+        let mut is_padding_byte = vec![true; size_of::<{{ item.rust_ty }}>()];
         for (off, size) in &v {
             for i in 0..*size {
                 is_padding_byte[off + i] = false;
@@ -280,7 +283,7 @@ mod generated_tests {
      * It checks if the size is the same as well as if the padding bytes are all in the
      * correct place. For this test to be sound, `T` must be valid for any bitpattern. */ #}
     pub fn {{ item.test_name }}() {
-        type U = {{ item.id }};
+        type U = {{ item.rust_ty }};
         {{ ctest_extern }} "C" {
             fn ctest_size_of__{{ item.id }}() -> u64;
             fn ctest_roundtrip__{{ item.id }}(
@@ -320,7 +323,7 @@ mod generated_tests {
             return;
         }
 
-        let mut c_value_bytes = vec![0; size_of::<{{ item.id }}>()];
+        let mut c_value_bytes = vec![0; size_of::<{{ item.rust_ty }}>()];
         let r: U = unsafe {
             ctest_roundtrip__{{ item.id }}(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
         };
@@ -359,7 +362,7 @@ mod generated_tests {
             fn ctest_foreign_fn__{{ item.id }}() -> unsafe extern "C" fn();
         }
         let actual = unsafe { ctest_foreign_fn__{{ item.id }}() } as u64;
-        let expected = {{ item.id }} as *const () as u64;
+        let expected = {{ item.rust_ty }} as *const () as u64;
         check_same(actual, expected, "`{{ item.id }}` function pointer");
     }
 {%- endfor +%}
@@ -371,7 +374,7 @@ mod generated_tests {
         {{ ctest_extern }} "C" {
             fn ctest_static__{{ static_.id }}() -> *const {{ static_.rust_ty }};
         }
-        let actual = (&raw const {{ static_.id }}).addr();
+        let actual = (&raw const {{ static_.rust_val }}).addr();
         let expected = unsafe {
             ctest_static__{{ static_.id }}().addr()
         };

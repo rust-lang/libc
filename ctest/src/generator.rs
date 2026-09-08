@@ -26,6 +26,7 @@ use crate::{
     Field,
     Language,
     MapInput,
+    Module,
     Parameter,
     Result,
     Static,
@@ -40,8 +41,8 @@ use crate::{
 /// The default Rust edition used to generate the code.
 const DEFAULT_EDITION: u32 = 2021;
 
-/// A function that takes a mappable input and returns its mapping as `Some`, otherwise
-/// use the default name if `None`.
+/// A function that takes a mappable input and returns its mapping as `Some`,
+/// otherwise use the default name if `None`.
 type MappedName = Rc<dyn Fn(&MapInput) -> Option<String>>;
 /// A function that determines whether to skip an item or not.
 type Skip = Rc<dyn Fn(&MapInput) -> bool>;
@@ -49,7 +50,8 @@ type Skip = Rc<dyn Fn(&MapInput) -> bool>;
 type VolatileItem = Rc<dyn Fn(VolatileItemKind) -> bool>;
 /// A function that determines whether a function argument is an array.
 type ArrayArg = Rc<dyn Fn(crate::Fn, Parameter) -> bool>;
-/// A function that determines whether to skip a test, taking in the identifier name.
+/// A function that determines whether to skip a test, taking in the identifier
+/// name.
 type SkipTest = Rc<dyn Fn(&str) -> bool>;
 /// A function that determines whether a type alias is a c enum.
 type CEnum = Rc<dyn Fn(&str) -> bool>;
@@ -58,10 +60,10 @@ type CEnum = Rc<dyn Fn(&str) -> bool>;
 #[derive(Clone, Default)]
 #[expect(missing_debug_implementations)]
 pub struct TestGenerator {
-    /// A vector of tuples, the left side being the header itself, and the right
-    /// being a list of defines that the header is associated with. Note that
-    /// these defines are only valid for the header, they are immediately undefined
-    /// afterwards.
+    /// A vector of tuples, the left side being the header itself, and the
+    /// right being a list of defines that the header is associated with.
+    /// Note that these defines are only valid for the header, they are
+    /// immediately undefined afterwards.
     pub(crate) headers: Vec<(BoxStr, Vec<BoxStr>)>,
     /// The target that the tests run on. Defaults to the native target.
     pub(crate) target: Option<String>,
@@ -69,7 +71,8 @@ pub struct TestGenerator {
     pub(crate) includes: Vec<PathBuf>,
     /// The directory to output the generated test files.
     out_dir: Option<PathBuf>,
-    /// A list of flags to pass to the compiler with checking if they are supported.
+    /// A list of flags to pass to the compiler with checking if they are
+    /// supported.
     pub(crate) flags: Vec<String>,
     /// A list of flags that are passed to the compiler if supported.
     pub(crate) flags_if_supported: Vec<String>,
@@ -79,7 +82,8 @@ pub struct TestGenerator {
     cfg: Vec<(String, Option<String>)>,
     /// A list of functions that remaps names used in the tests.
     mapped_names: Vec<MappedName>,
-    /// Extra command line args to pass to cargo when generating macro expansions.
+    /// Extra command line args to pass to cargo when generating macro
+    /// expansions.
     macro_expansion_cargo_args: Vec<String>,
     /// Crate name to use when performing macro expansion.
     crate_name: Option<String>,
@@ -93,7 +97,8 @@ pub struct TestGenerator {
     pub(crate) volatile_items: Vec<VolatileItem>,
     /// A list of functions that determine if an item is a C style enum.
     pub(crate) c_enums: Vec<CEnum>,
-    /// A list of functions that determine if a type is actually an array argument.
+    /// A list of functions that determine if a type is actually an array
+    /// argument.
     pub(crate) array_arg: Option<ArrayArg>,
     /// Whether to skip testing private items.
     pub(crate) skip_private: bool,
@@ -110,19 +115,23 @@ pub struct TestGenerator {
 /// An error that occurs when generating the test files.
 #[derive(Debug, Error)]
 pub enum GenerationError {
-    /// An error that occurs when `rustc -Zunpretty=expand` fails to expand the crate.
+    /// An error that occurs when `rustc -Zunpretty=expand` fails to expand the
+    /// crate.
     #[error("unable to expand crate {0}: {1}")]
     MacroExpansion(PathBuf, String),
-    /// An error that occurs when `syn` is unable to parse the expanded crate due to invalid syntax.
+    /// An error that occurs when `syn` is unable to parse the expanded crate
+    /// due to invalid syntax.
     #[error("unable to parse expanded crate {0}: {1}")]
     RustSyntax(String, String),
     /// An error that occurs when the Rust to C translation fails.
     #[error("unable to prepare template input: {0}")]
     Translation(#[from] TranslationError),
-    /// An error that occurs when there are errors in the Rust side of the test template.
+    /// An error that occurs when there are errors in the Rust side of the test
+    /// template.
     #[error("unable to render Rust template: {0}")]
     RustTemplateRender(askama::Error),
-    /// An error that occurs when there are errors in the C side of the test template.
+    /// An error that occurs when there are errors in the C side of the test
+    /// template.
     #[error("unable to render C template: {0}")]
     CTemplateRender(askama::Error),
     #[error("unable to create or write template file: {0}")]
@@ -151,20 +160,20 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.header("foo.h")
-    ///    .header("bar.h");
+    /// cfg.header("foo.h").header("bar.h");
     /// ```
     pub fn header(&mut self, header: &str) -> &mut Self {
         self.headers.push((header.into(), vec![]));
         self
     }
 
-    /// Add a header to be included as part of the generated C file, as well as defines for it.
+    /// Add a header to be included as part of the generated C file, as well as
+    /// defines for it.
     ///
     /// The generated C test will be compiled by a C compiler, and this can be
     /// used to ensure that all the necessary header files are included to test
-    /// all FFI definitions. The defines are only set for the inclusion of that header file, and are
-    /// undefined immediately after.
+    /// all FFI definitions. The defines are only set for the inclusion of that
+    /// header file, and are undefined immediately after.
     ///
     /// # Examples
     ///
@@ -173,7 +182,7 @@ impl TestGenerator {
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.header_with_defines("foo.h", Vec::<String>::new())
-    ///    .header_with_defines("bar.h", vec!["DEBUG", "DEPRECATED"]);
+    ///     .header_with_defines("bar.h", vec!["DEBUG", "DEPRECATED"]);
     /// ```
     pub fn header_with_defines(
         &mut self,
@@ -189,13 +198,17 @@ impl TestGenerator {
 
     /// Sets the programming language, by default it is C.
     ///
-    /// This determines what compiler is chosen to compile the C/C++ tests, as well as adding
-    /// external linkage to the tests if set to C++, so that they can be used in Rust.
+    /// This determines what compiler is chosen to compile the C/C++ tests, as
+    /// well as adding external linkage to the tests if set to C++, so that
+    /// they can be used in Rust.
     ///
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator, Language};
+    /// use ctest::{
+    ///     Language,
+    ///     TestGenerator,
+    /// };
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.language(Language::CXX);
@@ -244,7 +257,7 @@ impl TestGenerator {
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.cfg("foo", None) // cfg!(foo)
-    ///    .cfg("bar", Some("baz")); // cfg!(bar = "baz")
+    ///     .cfg("bar", Some("baz")); // cfg!(bar = "baz")
     /// ```
     pub fn cfg(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.cfg.push((k.to_string(), v.map(|s| s.to_string())));
@@ -336,6 +349,7 @@ impl TestGenerator {
     /// Indicate that a type alias is actually a C enum.
     ///
     /// # Examples
+    ///
     /// ```no_run
     /// use ctest::TestGenerator;
     ///
@@ -352,7 +366,10 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator, VolatileItemKind};
+    /// use ctest::{
+    ///     TestGenerator,
+    ///     VolatileItemKind,
+    /// };
     ///
     /// let mut cfg = TestGenerator::new();
     /// cfg.volatile_struct_field(|s, f| {
@@ -378,12 +395,13 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator, VolatileItemKind};
+    /// use ctest::{
+    ///     TestGenerator,
+    ///     VolatileItemKind,
+    /// };
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.volatile_static(|s| {
-    ///     s.ident() == "foo_t"
-    /// });
+    /// cfg.volatile_static(|s| s.ident() == "foo_t");
     /// ```
     pub fn volatile_static(&mut self, f: impl Fn(Static) -> bool + 'static) -> &mut Self {
         self.volatile_items.push(Rc::new(move |item| {
@@ -401,12 +419,13 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator, VolatileItemKind};
+    /// use ctest::{
+    ///     TestGenerator,
+    ///     VolatileItemKind,
+    /// };
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.volatile_fn_arg(|f, _p| {
-    ///     f.ident() == "size_of_T"
-    /// });
+    /// cfg.volatile_fn_arg(|f, _p| f.ident() == "size_of_T");
     /// ```
     pub fn volatile_fn_arg(
         &mut self,
@@ -427,12 +446,13 @@ impl TestGenerator {
     /// # Examples
     ///
     /// ```no_run
-    /// use ctest::{TestGenerator, VolatileItemKind};
+    /// use ctest::{
+    ///     TestGenerator,
+    ///     VolatileItemKind,
+    /// };
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.volatile_fn_return_type(|f| {
-    ///     f.ident() == "size_of_T"
-    /// });
+    /// cfg.volatile_fn_return_type(|f| f.ident() == "size_of_T");
     /// ```
     pub fn volatile_fn_return_type(
         &mut self,
@@ -450,8 +470,8 @@ impl TestGenerator {
 
     /// Indicate that a function pointer argument is an array.
     ///
-    /// This closure should return true if a pointer argument to a function should be generated
-    /// with `T foo[]` syntax rather than `T *foo`.
+    /// This closure should return true if a pointer argument to a function
+    /// should be generated with `T foo[]` syntax rather than `T *foo`.
     ///
     /// # Examples
     ///
@@ -459,14 +479,39 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.array_arg(|func, arg| {
-    ///     match (func.ident(), arg.ident()) {
-    ///         ("foo", "bar") => true,
-    ///         _ => false,
-    /// }});
+    /// cfg.array_arg(|func, arg| match (func.ident().as_str(), arg.ident()) {
+    ///     ("foo", "bar") => true,
+    ///     _ => false,
+    /// });
     /// ```
     pub fn array_arg(&mut self, f: impl Fn(crate::Fn, Parameter) -> bool + 'static) -> &mut Self {
         self.array_arg = Some(Rc::new(f));
+        self
+    }
+
+    /// Skip a specific module in the crate.
+    ///
+    /// Module paths are given relative to the crate root, so for example the
+    /// identifier of a module `bar` inside a top-level module `foo` would be
+    /// `foo::bar`, and not `crate::foo::bar`. This is returned by the
+    /// [`Module::path`] function.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use ctest::TestGenerator;
+    ///
+    /// let mut cfg = TestGenerator::new();
+    /// cfg.skip_module(|module| module.ident() == "foo::bar");
+    /// ```
+    pub fn skip_module(&mut self, f: impl Fn(&Module) -> bool + 'static) -> &mut Self {
+        self.skips.push(Rc::new(move |item| {
+            if let MapInput::Module(module) = item {
+                f(module)
+            } else {
+                false
+            }
+        }));
         self
     }
 
@@ -478,9 +523,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_struct(|s| {
-    ///     s.ident().starts_with("foo_")
-    /// });
+    /// cfg.skip_struct(|s| s.ident().starts_with("foo_"));
     /// ```
     pub fn skip_struct(&mut self, f: impl Fn(&Struct) -> bool + 'static) -> &mut Self {
         self.skips.push(Rc::new(move |item| {
@@ -501,9 +544,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_union(|u| {
-    ///     u.ident().starts_with("foo_")
-    /// });
+    /// cfg.skip_union(|u| u.ident().starts_with("foo_"));
     /// ```
     pub fn skip_union(&mut self, f: impl Fn(&Union) -> bool + 'static) -> &mut Self {
         self.skips.push(Rc::new(move |item| {
@@ -573,9 +614,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_alias(|a| {
-    ///     a.ident().starts_with("foo_")
-    /// });
+    /// cfg.skip_alias(|a| a.ident().starts_with("foo_"));
     /// ```
     pub fn skip_alias(&mut self, f: impl Fn(&Type) -> bool + 'static) -> &mut Self {
         self.skips.push(Rc::new(move |item| {
@@ -596,9 +635,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_const(|s| {
-    ///     s.ident().starts_with("FOO_")
-    /// });
+    /// cfg.skip_const(|s| s.ident().starts_with("FOO_"));
     /// ```
     pub fn skip_const(&mut self, f: impl Fn(&Const) -> bool + 'static) -> &mut Self {
         self.skips.push(Rc::new(move |item| {
@@ -619,9 +656,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_static(|s| {
-    ///     s.ident().starts_with("foo_")
-    /// });
+    /// cfg.skip_static(|s| s.ident().starts_with("foo_"));
     /// ```
     pub fn skip_static(&mut self, f: impl Fn(&Static) -> bool + 'static) -> &mut Self {
         self.skips.push(Rc::new(move |item| {
@@ -642,9 +677,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_fn(|s| {
-    ///     s.ident().starts_with("foo_")
-    /// });
+    /// cfg.skip_fn(|s| s.ident().starts_with("foo_"));
     /// ```
     pub fn skip_fn(&mut self, f: impl Fn(&crate::Fn) -> bool + 'static) -> &mut Self {
         self.skips.push(Rc::new(move |item| {
@@ -659,8 +692,9 @@ impl TestGenerator {
 
     /// Configures whether tests for a C enum are generated.
     ///
-    /// A C enum consists of a type alias, as well as constants that have the same type. Tests
-    /// for both the alias as well as the constants are skipped.
+    /// A C enum consists of a type alias, as well as constants that have the
+    /// same type. Tests for both the alias as well as the constants are
+    /// skipped.
     ///
     /// # Examples
     ///
@@ -710,8 +744,9 @@ impl TestGenerator {
 
     /// Set a `-D` flag for the C compiler being called.
     ///
-    /// This can be used to define various global variables to configure how header
-    /// files are included or what APIs are exposed from header files.
+    /// This can be used to define various global variables to configure how
+    /// header files are included or what APIs are exposed from header
+    /// files.
     ///
     /// # Examples
     ///
@@ -719,8 +754,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.define("_GNU_SOURCE", None)
-    ///    .define("_WIN32_WINNT", Some("0x8000"));
+    /// cfg.define("_GNU_SOURCE", None).define("_WIN32_WINNT", Some("0x8000"));
     /// ```
     pub fn define(&mut self, k: &str, v: Option<&str>) -> &mut Self {
         self.global_defines
@@ -736,9 +770,9 @@ impl TestGenerator {
 
     /// Configures the crate name which should be used during macro expansion.
     ///
-    /// If the tested crate uses `#![crate_name = "..."]`, this must be called with the
-    /// same name. Otherwise, there will be an error about `--crate-name` not
-    /// matching.
+    /// If the tested crate uses `#![crate_name = "..."]`, this must be called
+    /// with the same name. Otherwise, there will be an error about
+    /// `--crate-name` not matching.
     pub fn crate_name(&mut self, name: String) -> &mut Self {
         self.crate_name = Some(name);
         self
@@ -822,9 +856,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.rename_constant(|c| {
-    ///     (c.ident() == "FOO").then_some("BAR".to_string())
-    /// });
+    /// cfg.rename_constant(|c| (c.ident() == "FOO").then_some("BAR".to_string()));
     /// ```
     pub fn rename_constant(&mut self, f: impl Fn(&Const) -> Option<String> + 'static) -> &mut Self {
         self.mapped_names.push(Rc::new(move |item| {
@@ -962,9 +994,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.rename_type(|ty| {
-    ///     Some(format!("{}_t", ty))
-    /// });
+    /// cfg.rename_type(|ty| Some(format!("{}_t", ty)));
     /// ```
     pub fn rename_type(&mut self, f: impl Fn(&str) -> Option<String> + 'static) -> &mut Self {
         self.mapped_names.push(Rc::new(move |item| {
@@ -989,9 +1019,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.rename_struct_ty(|ty| {
-    ///     (ty == "timeval").then(|| format!("{ty}_t"))
-    /// });
+    /// cfg.rename_struct_ty(|ty| (ty == "timeval").then(|| format!("{ty}_t")));
     /// ```
     pub fn rename_struct_ty(&mut self, f: impl Fn(&str) -> Option<String> + 'static) -> &mut Self {
         self.mapped_names.push(Rc::new(move |item| {
@@ -1016,9 +1044,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.rename_struct_ty(|ty| {
-    ///     (ty == "T1Union").then(|| format!("__{ty}"))
-    /// });
+    /// cfg.rename_struct_ty(|ty| (ty == "T1Union").then(|| format!("__{ty}")));
     /// ```
     pub fn rename_union_ty(&mut self, f: impl Fn(&str) -> Option<String> + 'static) -> &mut Self {
         self.mapped_names.push(Rc::new(move |item| {
@@ -1045,9 +1071,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_roundtrip(|s| {
-    ///     s.starts_with("foo_")
-    /// });
+    /// cfg.skip_roundtrip(|s| s.starts_with("foo_"));
     /// ```
     pub fn skip_roundtrip(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
         self.skip_roundtrip = Some(Rc::new(f));
@@ -1067,9 +1091,7 @@ impl TestGenerator {
     /// use ctest::TestGenerator;
     ///
     /// let mut cfg = TestGenerator::new();
-    /// cfg.skip_signededness(|s| {
-    ///     s.starts_with("foo_")
-    /// });
+    /// cfg.skip_signededness(|s| s.starts_with("foo_"));
     /// ```
     pub fn skip_signededness(&mut self, f: impl Fn(&str) -> bool + 'static) -> &mut Self {
         self.skip_signededness = Some(Rc::new(f));
@@ -1163,19 +1185,20 @@ impl TestGenerator {
         Ok(output_file_path)
     }
 
-    /// Maps Rust identifiers or types to C counterparts, or defaults to the original name.
+    /// Maps Rust identifiers or types to C counterparts, or defaults to the
+    /// original name.
     pub(crate) fn rty_to_cty<'a>(&self, item: impl Into<MapInput<'a>>) -> String {
         let item = item.into();
         if let Some(mapped) = self.mapped_names.iter().find_map(|f| f(&item)) {
             return mapped;
         }
         match item {
-            MapInput::Const(c) => c.ident().to_string(),
-            MapInput::Fn(f) => f.ident().to_string(),
-            MapInput::Static(s) => s.ident().to_string(),
-            MapInput::Struct(s) => s.ident().to_string(),
-            MapInput::Union(u) => u.ident().to_string(),
-            MapInput::Alias(t) => t.ident().to_string(),
+            MapInput::Const(c) => c.ident(),
+            MapInput::Fn(f) => f.ident(),
+            MapInput::Static(s) => s.ident(),
+            MapInput::Struct(s) => s.ident(),
+            MapInput::Union(u) => u.ident(),
+            MapInput::Alias(t) => t.ident(),
             MapInput::StructField(_, f) => f.ident().to_string(),
             MapInput::UnionField(_, f) => f.ident().to_string(),
             MapInput::StructType(ty) => format!("struct {ty}"),
@@ -1184,6 +1207,10 @@ impl TestGenerator {
             MapInput::StructFieldType(_, f) => f.ident().to_string(),
             MapInput::UnionFieldType(_, f) => f.ident().to_string(),
             MapInput::Type(ty) => translate_primitive_type(ty),
+
+            MapInput::Module(_) => {
+                unreachable!("modules don't get tested on the c side of things")
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ mod generated_tests {
     #[allow(unused_imports)]
     use std::mem::{MaybeUninit, offset_of};
 
+    #[allow(unused)]
     use super::*;
 
     pub static FAILED: AtomicBool = AtomicBool::new(false);
@@ -26,6 +27,7 @@ mod generated_tests {
     /// Check that the value returned from the Rust and C side in a certain test is equivalent.
     ///
     /// Internally it will remember which checks failed and how many tests have been run.
+    #[allow(unused)]
     fn check_same<T: PartialEq + Debug>(rust: T, c: T, attr: &str) {
         if rust != c {
             eprintln!("bad {attr}: rust: {rust:?} != c {c:?}");
@@ -35,6 +37,7 @@ mod generated_tests {
         }
     }
 
+    #[allow(unused)]
     fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
         if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
@@ -79,45 +82,8 @@ mod generated_tests {
  * This performs a byte by byte comparison of the constant value.
  */
 
-    pub fn ctest_const_ON() {
-        type T = bool;
-        extern "C" {
-            fn ctest_const__ON() -> *const T;
-        }
-
-        
-
-        let r_val: T = ON;
-        let r_bytes = unsafe {
-            slice::from_raw_parts(ptr::from_ref(&r_val).cast::<u8>(), size_of::<T>())
-        };
-
-        let c_bytes = unsafe {
-            let c_ptr: *const T = ctest_const__ON();
-            slice::from_raw_parts(c_ptr.cast::<u8>(), size_of::<T>())
-        };
-
-        check_same_bytes(r_bytes, c_bytes, "`ON` value");
-    }
-
 
 /* Compare the size and alignment of the type in Rust and C, making sure they are the same. */
-
-    pub fn ctest_size_align_in6_addr() {
-        extern "C" {
-            fn ctest_size_of__in6_addr() -> u64;
-            fn ctest_align_of__in6_addr() -> u64;
-        }
-
-        let rust_size = size_of::<in6_addr>() as u64;
-        let c_size = unsafe { ctest_size_of__in6_addr() };
-
-        let rust_align = align_of::<in6_addr>() as u64;
-        let c_align = unsafe { ctest_align_of__in6_addr() };
-
-        check_same(rust_size, c_size, "`in6_addr` size");
-        check_same(rust_align, c_align, "`in6_addr` align");
-    }
 
 
 /* Make sure that the signededness of a type alias in Rust and C is the same.
@@ -126,17 +92,6 @@ mod generated_tests {
  * this would result in a value larger than zero. For signed types, this results in a value
  * smaller than 0.
  */
-
-    pub fn ctest_signededness_in6_addr() {
-        extern "C" {
-            fn ctest_signededness_of__in6_addr() -> u32;
-        }
-        let all_ones = !(0 as in6_addr);
-        let all_zeros = 0 as in6_addr;
-        let c_is_signed = unsafe { ctest_signededness_of__in6_addr() };
-
-        check_same((all_ones < all_zeros) as u32, c_is_signed, "`in6_addr` signed");
-    }
 
 
 /* Make sure that the offset and size of a field in a struct/union is the same. */
@@ -155,121 +110,9 @@ mod generated_tests {
  * go through each field and figure out the padding.
  */
 
-    fn roundtrip_padding__in6_addr() -> Vec<bool> {
-        if 0 == 0 {
-            
-            return vec![!true; size_of::<in6_addr>()]
-        }
-
-        
-        #[allow(unused_mut)]
-        let mut v = Vec::<(usize, usize)>::new();
-        #[allow(unused_variables)]
-        let bar = MaybeUninit::<in6_addr>::zeroed();
-        #[allow(unused_variables)]
-        let bar = bar.as_ptr();
-        
-        let mut is_padding_byte = vec![true; size_of::<in6_addr>()];
-        for (off, size) in &v {
-            for i in 0..*size {
-                is_padding_byte[off + i] = false;
-            }
-        }
-        is_padding_byte
-    }
-
-    
-    pub fn ctest_roundtrip_in6_addr() {
-        type U = in6_addr;
-        extern "C" {
-            fn ctest_size_of__in6_addr() -> u64;
-            fn ctest_roundtrip__in6_addr(
-                input: MaybeUninit<U>, is_padding_byte: *const bool, value_bytes: *mut u8
-            ) -> U;
-        }
-
-        const SIZE: usize = size_of::<U>();
-
-        let is_padding_byte = roundtrip_padding__in6_addr();
-        let mut expected = vec![0u8; SIZE];
-        let mut input = MaybeUninit::<U>::zeroed();
-
-        let input_ptr = input.as_mut_ptr().cast::<u8>();
-
-        
-        for i in 0..SIZE {
-            let c: u8 = (i % 256) as u8;
-            let c = if c == 0 { 42 } else { c };
-            let d: u8 = 255_u8 - (i % 256) as u8;
-            let d = if d == 0 { 42 } else { d };
-            unsafe {
-                input_ptr.add(i).write_volatile(c);
-                expected[i] = d;
-            }
-        }
-
-        let c_size = unsafe { ctest_size_of__in6_addr() } as usize;
-        if SIZE != c_size {
-            FAILED.store(true, Ordering::Relaxed);
-            eprintln!(
-                "size of `in6_addr` is {c_size} in C and {SIZE} in Rust\n",
-            );
-            return;
-        }
-
-        let mut c_value_bytes = vec![0; size_of::<in6_addr>()];
-        let r: U = unsafe {
-            ctest_roundtrip__in6_addr(input, is_padding_byte.as_ptr(), c_value_bytes.as_mut_ptr())
-        };
-
-        
-        for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
-            if *is_padding_byte { continue; }
-            let rust = unsafe { *input_ptr.add(i) };
-            let c = c_value_bytes[i];
-            if rust != c {
-                eprintln!("rust[{}] = {} != {} (C): Rust `in6_addr` -> C", i, rust, c);
-                FAILED.store(true, Ordering::Relaxed);
-            }
-        }
-
-        
-        for (i, is_padding_byte) in is_padding_byte.iter().enumerate() {
-            if *is_padding_byte { continue; }
-            let rust = expected[i] as usize;
-            let c = unsafe { (&raw const r).cast::<u8>().add(i).read_volatile() as usize };
-            if rust != c {
-                eprintln!(
-                    "rust [{i}] = {rust} != {c} (C): C `in6_addr` -> Rust",
-                );
-                FAILED.store(true, Ordering::Relaxed);
-            }
-        }
-    }
-
 /* Check if the Rust and C side function pointers point to the same underlying function. */
 
-    pub fn ctest_foreign_fn_malloc() {
-        extern "C" {
-            fn ctest_foreign_fn__malloc() -> unsafe extern "C" fn();
-        }
-        let actual = unsafe { ctest_foreign_fn__malloc() } as u64;
-        let expected = malloc as *const () as u64;
-        check_same(actual, expected, "`malloc` function pointer");
-    }
-
 /* Tests if the pointer to the static variable matches in both Rust and C. */
-
-    pub fn ctest_static_in6addr_any() {
-        extern "C" {
-            fn ctest_static__in6addr_any() -> *const in6_addr;
-        }
-        let actual = (&raw const in6addr_any).addr();
-        let expected = unsafe {
-            ctest_static__in6addr_any().addr()
-        };
-        check_same(actual, expected, "`in6addr_any` static");
-    }
 }
 
 use generated_tests::*;
@@ -291,10 +134,4 @@ fn main() {
 // FIXME(ctest): Maybe consider running the tests in parallel, since everything is independent
 // and we already use atomics.
 fn run_all() {
-    ctest_const_ON();
-    ctest_size_align_in6_addr();
-    ctest_signededness_in6_addr();
-    ctest_roundtrip_in6_addr();
-    ctest_foreign_fn_malloc();
-    ctest_static_in6addr_any();
 }

@@ -230,7 +230,7 @@ ctest_field_ptr__Word__byte(union Word *b) {
 #endif
 
 #ifdef __GNUC__
-    // GCC emits a warning with `-Wextra` if we return a typedef to a type  marked `volatile`.
+    // GCC emits a warning with `-Wextra` if we return a typedef to a type marked `volatile`.
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #endif

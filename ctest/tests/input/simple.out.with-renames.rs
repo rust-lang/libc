@@ -18,6 +18,7 @@ mod generated_tests {
     #[allow(unused_imports)]
     use std::mem::{MaybeUninit, offset_of};
 
+    #[allow(unused)]
     use super::*;
 
     pub static FAILED: AtomicBool = AtomicBool::new(false);
@@ -26,6 +27,7 @@ mod generated_tests {
     /// Check that the value returned from the Rust and C side in a certain test is equivalent.
     ///
     /// Internally it will remember which checks failed and how many tests have been run.
+    #[allow(unused)]
     fn check_same<T: PartialEq + Debug>(rust: T, c: T, attr: &str) {
         if rust != c {
             eprintln!("bad {attr}: rust: {rust:?} != c {c:?}");
@@ -35,6 +37,7 @@ mod generated_tests {
         }
     }
 
+    #[allow(unused)]
     fn check_same_bytes(rust: &[u8], c: &[u8], attr: &str) {
         if rust == c {
             NTESTS.fetch_add(1, Ordering::Relaxed);
@@ -326,7 +329,7 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         
-        let ty_ptr = unsafe { &raw const (*uninit_ty).name   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).name };
         
         let val = unsafe { ty_ptr.read_unaligned() };
 
@@ -350,7 +353,7 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         
-        let ty_ptr = unsafe { &raw const (*uninit_ty).age   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).age };
         
         let val = unsafe { ty_ptr.read_unaligned() };
 
@@ -374,7 +377,7 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         
-        let ty_ptr = unsafe { &raw const (*uninit_ty).job   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).job };
         
         let val = unsafe { ty_ptr.read_unaligned() };
 
@@ -398,7 +401,7 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         
-        let ty_ptr = unsafe { &raw const (*uninit_ty).favorite_color   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).favorite_color };
         
         let val = unsafe { ty_ptr.read_unaligned() };
 
@@ -422,7 +425,7 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         
-        let ty_ptr = unsafe { &raw const (*uninit_ty).word   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).word };
         
         let val = unsafe { ty_ptr.read_unaligned() };
 
@@ -446,7 +449,7 @@ mod generated_tests {
         let uninit_ty = uninit_ty.as_ptr();
 
         
-        let ty_ptr = unsafe { &raw const (*uninit_ty).byte   };
+        let ty_ptr = unsafe { &raw const (*uninit_ty).byte };
         
         let val = unsafe { ty_ptr.read_unaligned() };
 
