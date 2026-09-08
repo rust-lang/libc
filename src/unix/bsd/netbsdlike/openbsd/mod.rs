@@ -2061,6 +2061,7 @@ extern "C" {
     pub fn getfsstat(buf: *mut statfs, bufsize: size_t, flags: c_int) -> c_int;
 
     pub fn elf_aux_info(aux: c_int, buf: *mut c_void, buflen: c_int) -> c_int;
+    pub fn getexecpath(buf: *mut c_char, bufsize: size_t) -> c_int;
 }
 
 #[link(name = "execinfo")]
