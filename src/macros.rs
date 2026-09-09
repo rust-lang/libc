@@ -1,11 +1,10 @@
 /// A macro for defining #[cfg] if-else statements.
 ///
-/// This is similar to the `if/elif` C preprocessor macro by allowing definition
-/// of a cascade of `#[cfg]` cases, emitting the implementation which matches
-/// first.
+/// This is similar to the `if/elif` C preprocessor macro by allowing definition of a cascade of
+/// `#[cfg]` cases, emitting the implementation which matches first.
 ///
-/// This allows you to conveniently provide a long list #[cfg]'d blocks of code
-/// without having to rewrite each clause multiple times.
+/// This allows you to conveniently provide a long list #[cfg]'d blocks of code without having to
+/// rewrite each clause multiple times.
 macro_rules! cfg_if {
     // match if/else chains with a final `else`
     ($(
@@ -162,8 +161,8 @@ macro_rules! prelude {
 ///
 /// Also mark the type with `repr(C)`.
 ///
-/// Use [`s_no_extra_traits`] for structs where the `extra_traits` feature does not
-/// make sense, and for unions.
+/// Use [`s_no_extra_traits`] for structs where the `extra_traits` feature does not make sense, and
+/// for unions.
 macro_rules! s {
     ($(
         $(#[$attr:meta])*
@@ -197,8 +196,8 @@ macro_rules! s {
     );
 }
 
-/// Implement `Clone`, `Copy`, and `Debug` for a tuple struct, as well as `PartialEq`, `Eq`,
-/// and `Hash` if the `extra_traits` feature is enabled.
+/// Implement `Clone`, `Copy`, and `Debug` for a tuple struct, as well as `PartialEq`, `Eq`, and
+/// `Hash` if the `extra_traits` feature is enabled.
 ///
 /// Unlike `s!`, this does *not* mark the type with `repr(C)`. Users should provide their own
 /// `repr` attribute via `$attr` as necessary.
@@ -257,23 +256,40 @@ macro_rules! s_no_extra_traits {
     );
 }
 
-/// Like [`s`], but also generates a `Default` impl for every struct in the block.
-macro_rules! s_with_default {
+/// Like [`s`], but (1) generates a `Default` impl for every struct in the block, and (2) adds a
+/// private field to the struct to replicate the effects of the `non_exhaustive` attribute while
+/// rust-lang/rust#132699 gets sorted out.
+///
+/// To opt out of having the private field added, annotate the struct with an `exhaustive`
+/// attribute, as in:
+///
+/// ```ignore
+/// s2! {
+///     #[exhaustive]
+///     struct Something {
+///         ...
+///     }
+/// }
+/// ```
+///
+/// See [`custom_struct`] for details.
+macro_rules! s2 {
     ($(
         $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_with_default!(it: $(#$attr)* $pub $t $i { $($field)* });
+        s2!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
     (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
         compile_error!(
-            "unions cannot derive extra traits, use s_no_extra_traits_with_default instead"
+            "unions cannot derive extra traits, use `s_no_extra_traits2` \
+             instead"
         );
     );
 
     (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
-        struct_with_default! {
+        custom_struct! {
             attrs: {
                 #[repr(C)]
                 #[::core::prelude::v1::derive(
@@ -296,16 +312,30 @@ macro_rules! s_with_default {
     );
 }
 
-/// Like [`s_no_extra_traits`], but also generates a `Default` impl for every struct in the block.
+/// Like [`s_no_extra_traits`], but (1) generates a `Default` impl for every struct in the block,
+/// and (2) adds a private field to replicate the effects of the built-in `non_exhaustive` attribute
+/// while rust-lang/rust#132699 gets sorted out.
 ///
-/// Unions are emitted just like `s_no_extra_traits!` does, with no `Default`. A struct field of
+/// Unions are emitted just like `s_no_extra_traits!` does, with no `Default`.  A struct field of
 /// union type supplies its own default via `#[custom_default(...)]`.
-macro_rules! s_no_extra_traits_with_default {
+///
+/// To opt out of having the private field added, annotate the struct with an `exhaustive`
+/// attribute, as in:
+///
+/// ```ignore
+/// s_no_extra_traits2! {
+///     #[exhaustive]
+///     struct Something {
+///         ...
+///     }
+/// }
+/// ```
+macro_rules! s_no_extra_traits2 {
     ($(
         $(#$attr:tt)*
         $pub:vis $t:ident $i:ident { $($field:tt)* }
     )*) => ($(
-        s_no_extra_traits_with_default!(it: $(#$attr)* $pub $t $i { $($field)* });
+        s_no_extra_traits2!(it: $(#$attr)* $pub $t $i { $($field)* });
     )*);
 
     (it: $(#$attr:tt)* $pub:vis union $i:ident { $($field:tt)* }) => (
@@ -315,7 +345,7 @@ macro_rules! s_no_extra_traits_with_default {
     );
 
     (it: $(#$attr:tt)* $pub:vis struct $i:ident { $($field:tt)* }) => (
-        struct_with_default! {
+        custom_struct! {
             attrs: {
                 #[repr(C)]
                 #[::core::prelude::v1::derive(
@@ -332,8 +362,8 @@ macro_rules! s_no_extra_traits_with_default {
 /// Emit a union plus its `Debug` impl.
 ///
 /// Unions can't derive `Debug`, so it is written out here. Attributes are split like
-/// [`struct_with_default`] does. Everything goes on the union, but only the `cfg`s are repeated
-/// on the impl, otherwise a union that is configured out leaves an impl behind.
+/// [`custom_struct`] does. Everything goes on the union, but only the `cfg`s are repeated on the
+/// impl, otherwise a union that is configured out leaves an impl behind.
 macro_rules! union_with_debug {
     (
         $(#$attr:tt)*
@@ -427,7 +457,9 @@ macro_rules! union_with_debug {
     };
 }
 
-/// Emit a struct with the given derive attributes plus a generated `Default` impl.
+/// Emit a struct with the given derive attributes plus a generated `Default` impl. Ensure that the
+/// record has an additional private field added to replicate `#[non_exhaustive]`, unless it is
+/// annotated with `#[exhaustive]`.
 ///
 /// Fields default to `Default::default()`. A field whose default can't be derived must carry
 /// `#[custom_default(EXPR)]` as its *first* attribute, and `EXPR` is used instead.
@@ -436,25 +468,30 @@ macro_rules! union_with_debug {
 /// attribute's contents are added to `processed_field_defaults` and will be used in the expansion
 /// for `Default`. If it does not exist, `Default::default()` is used instead. In either case, the
 /// field is added to `processed_fields` with `#[custom_default]` stripped if necessary, and
-/// `struct_with_default` is invoked again with the remaining fields.
+/// `custom_struct` is invoked again with the remaining fields.
 ///
-/// Attributes are split into `cfg_attrs` and `other_attrs` before the fields are scanned. Both
-/// go on the struct, but only the `cfg`s are repeated on the `Default` impl. A `cfg` decides
-/// whether the type exists at all, so without it a configured-out struct leaves an impl behind
-/// referring to a type that isn't there.
-macro_rules! struct_with_default {
-    // entry; `attrs` is the attribute block the caller wants on the struct (repr, derives, etc.),
-    // which is merged with the struct's own attributes.
+/// Attributes are split into `cfg_attrs` and `other_attrs` before the fields are scanned. Both go
+/// on the struct, but only the `cfg`s are repeated on the `Default` impl. A `cfg` decides whether
+/// the type exists at all, so without it a configured-out struct leaves an impl behind referring to
+/// a type that isn't there.
+///
+/// Out of `other_attrs`, we scan for `#[exhaustive]`. If found, we remove it but take into account
+/// that the record should be expanded _without_ an additional private field. The scan for both
+/// `cfg` attributes and the (non-existent) `exhaustive` attribute is done in one linear pass.
+macro_rules! custom_struct {
+    // entry; `attrs` is the attribute block the caller wants on the struct
+    // (repr, derives, etc.), which is merged with the struct's own attributes.
     (
         attrs: { $($attrs:tt)* }
         $(#$attr:tt)*
         $vis:vis struct $name:ident { $($body:tt)* }
     ) => {
-        struct_with_default! {
+        custom_struct! {
             @split_attrs
             cfg_attrs: { }
             other_attrs: { }
             remaining_attrs: { $($attrs)* $(#$attr)* }
+            found_exhaustive_attr: { false }
             vis: { $vis }
             name: { $name }
             body: { $($body)* }
@@ -470,15 +507,44 @@ macro_rules! struct_with_default {
             #[cfg($($cfg:tt)*)]
             $($tail:tt)*
         }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         body: { $($body:tt)* }
     ) => {
-        struct_with_default! {
+        custom_struct! {
             @split_attrs
             cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] }
             other_attrs: { $($other_attrs)* }
             remaining_attrs: { $($tail)* }
+            found_exhaustive_attr: { $found_exhaustive }
+            vis: { $vis }
+            name: { $name }
+            body: { $($body)* }
+        }
+    };
+
+    // `exhaustive` must be taken into account as many times as it appears,
+    // though the effect is the same with a single annotation.
+    (
+        @split_attrs
+        cfg_attrs: { $($cfg_attrs:tt)* }
+        other_attrs: { $($other_attrs:tt)* }
+        remaining_attrs: {
+            #[exhaustive]
+            $($tail:tt)*
+        }
+        found_exhaustive_attr: { $_:tt }
+        vis: { $vis:vis }
+        name: { $name:ident }
+        body: { $($body:tt)* }
+    ) => {
+        custom_struct! {
+            @split_attrs
+            cfg_attrs: { $($cfg_attrs)* }
+            other_attrs: { $($other_attrs)* }
+            remaining_attrs: { $($tail)* }
+            found_exhaustive_attr: { true }
             vis: { $vis }
             name: { $name }
             body: { $($body)* }
@@ -494,15 +560,17 @@ macro_rules! struct_with_default {
             #$other:tt
             $($tail:tt)*
         }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         body: { $($body:tt)* }
     ) => {
-        struct_with_default! {
+        custom_struct! {
             @split_attrs
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* #$other }
             remaining_attrs: { $($tail)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             body: { $($body)* }
@@ -515,14 +583,16 @@ macro_rules! struct_with_default {
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
         remaining_attrs: { }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         body: { $($body:tt)* }
     ) => {
-        struct_with_default! {
+        custom_struct! {
             @struct
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             processed_fields: { }
@@ -536,6 +606,7 @@ macro_rules! struct_with_default {
         @struct
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -547,10 +618,11 @@ macro_rules! struct_with_default {
             $($tail:tt)*
         }
     ) => {
-        struct_with_default! {
+        custom_struct! {
             @struct
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -567,6 +639,7 @@ macro_rules! struct_with_default {
         @struct
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
@@ -577,10 +650,11 @@ macro_rules! struct_with_default {
             $($tail:tt)*
         }
     ) => {
-        struct_with_default! {
+        custom_struct! {
             @struct
             cfg_attrs: { $($cfg_attrs)* }
             other_attrs: { $($other_attrs)* }
+            found_exhaustive_attr: { $found_exhaustive }
             vis: { $vis }
             name: { $name }
             processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
@@ -597,36 +671,85 @@ macro_rules! struct_with_default {
         @struct
         cfg_attrs: { $($cfg_attrs:tt)* }
         other_attrs: { $($other_attrs:tt)* }
+        found_exhaustive_attr: { $found_exhaustive:tt }
         vis: { $vis:vis }
         name: { $name:ident }
         processed_fields: { $($processed_fields:tt)* }
         processed_field_defaults: { $($processed_field_defaults:tt)* }
         remaining_fields: { }
     ) => {
-        $($other_attrs)*
-        $($cfg_attrs)*
-        $vis struct $name { $($processed_fields)* }
+        emit_struct_definition! {
+            found_exhaustive_attr: $found_exhaustive,
+            body: {
+                $($other_attrs)*
+                $($cfg_attrs)*
+                $vis $name { $($processed_fields)* }
+            }
+        }
 
         $($cfg_attrs)*
-        // The impl names the type and its fields, which warns if either is deprecated.
+        // The impl names the type and its fields, which warns if either is
+        // deprecated.
         #[allow(deprecated)]
         impl ::core::default::Default for $name {
-            // Field attributes (`#[cfg]`, doc comments) get forwarded to the initializer too.
-            // Docs are harmless there but trip the lint, so silence it.
+            // Field attributes (`#[cfg]`, doc comments) get forwarded to the
+            // initializer too. Docs are harmless there but trip the lint, so
+            // silence it.
             #[allow(unused_doc_comments)]
             fn default() -> Self {
-                Self { $($processed_field_defaults)* }
+                emit_struct_default_body! {
+                    found_exhaustive_attr: $found_exhaustive,
+                    body: { $($processed_field_defaults)* }
+                }
             }
         }
     };
 }
 
-/// Create an uninhabited type that can't be constructed. It implements `Debug`, `Clone`,
-/// and `Copy`, but these aren't meaningful for extern types so they should eventually
-/// be removed.
+/// Expands the definition of the record defined at [`custom_struct`], with either one of an
+/// additional private field or with its verbatim fields.
+macro_rules! emit_struct_definition {
+    (
+        found_exhaustive_attr: false,
+        body: { $(#[$attr:meta])* $vis:vis $name:ident { $($field:tt)* } }
+    ) => {
+        #[allow(clippy::manual_non_exhaustive)]
+        $(#[$attr])*
+        $vis struct $name { $($field)* __non_exhaustive: () }
+    };
+
+    (
+        found_exhaustive_attr: true,
+        body: { $(#[$attr:meta])* $vis:vis $name:ident { $($field:tt)* } }
+    ) => {
+        $(#[$attr])*
+        $vis struct $name { $($field)* }
+    };
+}
+
+/// Expands the `Default` implementation of the record defined at [`custom_struct`], with either one
+/// of an additional private field initialized to the unit value, or the record's fields verbatim.
+macro_rules! emit_struct_default_body {
+    (
+        found_exhaustive_attr: false,
+        body: { $($field_default:tt)* }
+    ) => {
+        Self { $($field_default)* __non_exhaustive: () }
+    };
+
+    (
+        found_exhaustive_attr: true,
+        body: { $($field_default:tt)* }
+    ) => {
+        Self { $($field_default)* }
+    };
+}
+
+/// Create an uninhabited type that can't be constructed. It implements `Debug`, `Clone`, and
+/// `Copy`, but these aren't meaningful for extern types so they should eventually be removed.
 ///
-/// Really what we want here is something that also can't be named without indirection (in
-/// ADTs or function signatures), but this doesn't exist.
+/// Really what we want here is something that also can't be named without indirection (in ADTs or
+/// function signatures), but this doesn't exist.
 macro_rules! extern_ty {
     ($(
         $(#[$attr:meta])*
@@ -843,7 +966,8 @@ macro_rules! offset_of {
         let ptr = data.as_ptr();
         // nested unsafe, see f!
         #[allow(unused_unsafe)]
-        // SAFETY: computed address is inbounds since we have a stack alloc for T
+        // SAFETY: computed address is inbounds since we have a stack alloc for
+        // T
         let fptr = unsafe { core::ptr::addr_of!((*ptr).$field) };
         let off = (fptr as usize).checked_sub(ptr as usize).unwrap();
         core::assert!(off <= core::mem::size_of::<$Ty>());
@@ -939,8 +1063,8 @@ mod tests {
 
     #[test]
     fn c_enum_multiple_set_value() {
-        // C enums always take one more than the previous value, unless set to a specific
-        // value. Duplicates are allowed.
+        // C enums always take one more than the previous value, unless set to a
+        // specific value. Duplicates are allowed.
         c_enum! {
             pub enum e {
                 VAR0,
@@ -991,8 +1115,9 @@ mod tests {
         assert_eq!(TypeId::of::<e2>(), TypeId::of::<u16>());
         assert_eq!(PUB1, 10u8 * 2);
         assert_eq!(PUB2, 42u16 * 2);
-        // Verify that the default is private. If `PRIV_ON_1` was actually public in `priv1`, this
-        // would be an ambiguous import and/or type mismatch error.
+        // Verify that the default is private. If `PRIV_ON_1` was actually
+        // public in `priv1`, this would be an ambiguous import and/or type
+        // mismatch error.
         assert_eq!(PRIV_ON_1, 42u16);
     }
 
@@ -1069,9 +1194,60 @@ mod tests {
     }
 
     #[test]
-    fn s_with_default_uses_custom_default() {
-        // A non-default value proves `custom_default` is used rather than a derived default.
-        s_with_default! {
+    fn s2_is_non_exhaustive() {
+        // Without `#[exhaustive]`, the record should have an additional field
+        // added at the end. If this test compiles, it has it.
+        s2! {
+            struct Something {
+                a: u32,
+            }
+        }
+
+        let s = Something::default();
+        assert_eq!(s.__non_exhaustive, ());
+    }
+
+    #[test]
+    fn s2_uses_exhaustive() {
+        // With `#[exhaustive]`, the record should be regurgitated as-is. If
+        // this test compiles, then it works.
+        s2! {
+            #[exhaustive]
+            struct Something {
+                a: u32,
+            }
+        }
+
+        #[allow(unused)]
+        let s = Something {
+            a: Default::default(),
+        };
+    }
+
+    #[test]
+    fn s2_uses_mixed_exhaustive() {
+        // `#[exhaustive]` should work when sandwiched between attributes. If
+        // the test compiles, then it works.
+        s2! {
+            #[repr(align(8))]
+            #[exhaustive]
+            #[repr(align(2))]
+            struct Something {
+                a: u32,
+            }
+        }
+
+        #[allow(unused)]
+        let s = Something {
+            a: Default::default(),
+        };
+    }
+
+    #[test]
+    fn s2_uses_custom_default() {
+        // A non-default value proves `custom_default` is used rather than a
+        // derived default.
+        s2! {
             struct CustomDefault {
                 a: u32,
                 #[custom_default([1; 64])]
@@ -1085,10 +1261,10 @@ mod tests {
     }
 
     #[test]
-    fn s_with_default_keeps_field_attrs() {
-        // If `custom_default` stripping ate the other field attributes, the two `a` fields
-        // would collide.
-        s_with_default! {
+    fn s2_keeps_field_attrs() {
+        // If `custom_default` stripping ate the other field attributes, the two
+        // `a` fields would collide.
+        s2! {
             struct FieldAttrs {
                 #[cfg(target_arch = "x86_64")]
                 a: u8,
@@ -1105,10 +1281,10 @@ mod tests {
     }
 
     #[test]
-    fn s_with_default_single_cfg_field() {
-        // this field only exists on x86_64, so its default init needs the same cfg or
-        // Default won't build on other arches
-        s_with_default! {
+    fn s2_single_cfg_field() {
+        // This field only exists on x86_64, so its default init needs the same
+        // `cfg` or `Default` won't build on other arches.
+        s2! {
             struct SingleCfg {
                 common: u32,
                 #[cfg(target_arch = "x86_64")]
@@ -1123,9 +1299,10 @@ mod tests {
     }
 
     #[test]
-    fn s_no_extra_traits_with_default_zeroes_union() {
-        // A union field's default is supplied by `custom_default(unsafe { mem::zeroed })`.
-        s_no_extra_traits_with_default! {
+    fn s_no_extra_traits2_zeroes_union() {
+        // A union field's default is supplied by
+        // `custom_default(unsafe { mem::zeroed })`.
+        s_no_extra_traits2! {
             union U {
                 a: u32,
                 b: f32,
@@ -1144,10 +1321,11 @@ mod tests {
     }
 
     #[test]
-    fn s_with_default_keeps_struct_cfg() {
-        // The opposite of the configured-out types in `macro_checks`. With the `cfg` true the
-        // type and its `Default` both exist, and the other attributes still apply.
-        s_with_default! {
+    fn s2_keeps_struct_cfg() {
+        // The opposite of the configured-out types in `macro_checks`. With the
+        // `cfg` true the type and its `Default` both exist, and the other
+        // attributes still apply.
+        s2! {
             #[cfg(true)]
             #[repr(align(8))]
             /// a doc comment
@@ -1213,7 +1391,7 @@ mod macro_checks {
         pub type Bar;
     }
 
-    s_with_default! {
+    s2! {
         pub struct S3 {
             pub a: u32,
             #[custom_default([1; 64])]
@@ -1226,7 +1404,7 @@ mod macro_checks {
         }
     }
 
-    s_no_extra_traits_with_default! {
+    s_no_extra_traits2! {
         pub union U3 {
             pub a: u32,
             b: f32,
@@ -1246,9 +1424,10 @@ mod macro_checks {
         assert_impls_default::<S4>();
     }
 
-    // Types configured out entirely, checking that the generated impls carry the same `cfg` as
-    // the type. Without it they fail to compile with "cannot find type".
-    s_with_default! {
+    // Types configured out entirely, checking that the generated impls carry
+    // the same `cfg` as the type. Without it they fail to compile with "cannot
+    // find type".
+    s2! {
         #[cfg(false)]
         pub struct S5 {
             pub a: u32,
@@ -1265,7 +1444,7 @@ mod macro_checks {
         }
     }
 
-    s_no_extra_traits_with_default! {
+    s_no_extra_traits2! {
         #[cfg(false)]
         pub union U5 {
             pub a: u32,
@@ -1278,12 +1457,13 @@ mod macro_checks {
         }
     }
 
-    // The generated impls name the type and its fields, so they need to allow deprecation.
-    // `deny` turns the warning into an error if that ever stops being the case.
+    // The generated impls name the type and its fields, so they need to allow
+    // deprecation.  `deny` turns the warning into an error if that ever stops
+    // being the case.
     mod deprecated_checks {
         #![deny(deprecated)]
 
-        s_with_default! {
+        s2! {
             #[deprecated(since = "0.0.0", note = "check that generated impls don't warn")]
             pub struct S7 {
                 pub a: u32,
@@ -1298,7 +1478,7 @@ mod macro_checks {
             }
         }
 
-        s_no_extra_traits_with_default! {
+        s_no_extra_traits2! {
             #[deprecated(since = "0.0.0", note = "check that generated impls don't warn")]
             pub union U7 {
                 pub a: u32,

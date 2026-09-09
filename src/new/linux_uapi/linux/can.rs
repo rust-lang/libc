@@ -37,7 +37,7 @@ pub const CANXL_MAX_DLC_MASK: c_int = 0x07FF;
 pub const CANXL_MIN_DLEN: usize = 1;
 pub const CANXL_MAX_DLEN: usize = 2048;
 
-s_with_default! {
+s2! {
     #[repr(align(8))]
     pub struct can_frame {
         pub can_id: canid_t,
@@ -54,7 +54,7 @@ pub const CANFD_BRS: c_int = 0x01;
 pub const CANFD_ESI: c_int = 0x02;
 pub const CANFD_FDF: c_int = 0x04;
 
-s_with_default! {
+s2! {
     #[repr(align(8))]
     pub struct canfd_frame {
         pub can_id: canid_t,
@@ -70,7 +70,8 @@ s_with_default! {
 pub const CANXL_XLF: c_int = 0x80;
 pub const CANXL_SEC: c_int = 0x01;
 
-s_with_default! {
+s2! {
+    #[exhaustive]
     pub struct canxl_frame {
         pub prio: canid_t,
         pub flags: u8,
@@ -103,7 +104,8 @@ pub const CAN_NPROTO: c_int = 8;
 
 pub const SOL_CAN_BASE: c_int = 100;
 
-s_no_extra_traits_with_default! {
+s_no_extra_traits2! {
+    #[exhaustive]
     pub struct sockaddr_can {
         pub can_family: crate::sa_family_t,
         pub can_ifindex: c_int,
@@ -116,17 +118,20 @@ s_no_extra_traits_with_default! {
         pub j1939: __c_anonymous_sockaddr_can_j1939,
     }
 
+    #[exhaustive]
     pub struct __c_anonymous_sockaddr_can_tp {
         pub rx_id: canid_t,
         pub tx_id: canid_t,
     }
 
+    #[exhaustive]
     pub struct __c_anonymous_sockaddr_can_j1939 {
         pub name: u64,
         pub pgn: u32,
         pub addr: u8,
     }
 
+    #[exhaustive]
     pub struct can_filter {
         pub can_id: canid_t,
         pub can_mask: canid_t,
