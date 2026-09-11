@@ -51,6 +51,37 @@ cd "$cf_dir"
 # boots ranged from 16 to 22 minutes for the same configuration, against
 # roughly one for x86_64. It is only here to bound a hang, not to enforce a
 # target.
+# launch_cvd -daemon prints nothing until the guest has finished booting,
+# which on an emulated guest is around twenty silent minutes. Follow the
+# device's own logs meanwhile so the job shows progress, and so a boot that
+# hangs leaves something to read instead of just hitting the timeout.
+#
+# cvd keeps the runtime under a per-group directory rather than $cf_dir, and
+# creates it as it goes, so wait for the instance directory to appear and let
+# tail -F pick the files up from there once they exist. Match the instance
+# itself rather than any "logs" directory: cvd keeps its own tool logs in
+# /var/tmp/cvd/<uid>/logs, which does not hold either of these.
+follow_device_logs() {
+    local instance
+    while :; do
+        instance=$(find /var/tmp/cvd "$cf_dir" -type d \
+            -path '*/instances/cvd-[0-9]' 2>/dev/null | head -1)
+        [ -n "$instance" ] && break
+        sleep 2
+    done
+    # exec so this background job *is* tail, and killing it below is enough.
+    exec tail -n +1 -F "$instance/logs/launcher.log" "$instance/kernel.log"
+}
+
+follow_device_logs &
+follow_pid=$!
+
+stop_following() {
+    kill "$follow_pid" 2>/dev/null || true
+    wait "$follow_pid" 2>/dev/null || true
+}
+trap stop_following EXIT
+
 HOME="$cf_dir" timeout "${CUTTLEFISH_BOOT_TIMEOUT:-45m}" ./bin/launch_cvd \
     -daemon \
     "${vm_manager_args[@]}" \
@@ -65,6 +96,11 @@ HOME="$cf_dir" timeout "${CUTTLEFISH_BOOT_TIMEOUT:-45m}" ./bin/launch_cvd \
     -report_anonymous_usage_stats=no \
     -cpus=2 \
     -memory_mb=4096
+
+# The device is up; stop following so the checks below aren't interleaved
+# with the guest's own logging.
+stop_following
+trap - EXIT
 
 # Check the guest's adbd is reachable on the port the test runner uses,
 # and log the Android version and ABI actually being tested. The ABI
