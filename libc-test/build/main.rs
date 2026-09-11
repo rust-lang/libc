@@ -5023,9 +5023,6 @@ fn test_linux(t: &Target) {
 
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
-            // this is actually a union on linux, so we can't represent it well and
-            // just insert some padding.
-            ("siginfo_t", "_pad") => true,
             // musl names this __dummy1 but it's still there
             ("glob_t", "gl_flags") if musl => true,
             // musl seems to define this as an *anonymous* bitfield
