@@ -69,11 +69,12 @@ run() {
     mkdir -p target
 
     extra_args=()
-    # x86_64-linux-android boots a Cuttlefish virtual device inside the
+    # The 64-bit Android targets boot a Cuttlefish virtual device inside the
     # container. Give it the virtualization device nodes and NET_ADMIN it needs.
     # These are the same flags Google's android-cuttlefish project uses for its
     # own containerized CI.
-    if [ "$run_target" = "x86_64-linux-android" ]; then
+    if [ "$run_target" = "x86_64-linux-android" ] ||
+        [ "$run_target" = "aarch64-linux-android" ]; then
         extra_args+=(
             --device /dev/kvm
             --device /dev/net/tun
@@ -81,10 +82,18 @@ run() {
             --device /dev/vhost-vsock
             --cap-add NET_ADMIN
             --security-opt seccomp=unconfined
-            --env CUTTLEFISH_BUILD
-            --env CUTTLEFISH_TARGET
             --env HOST_UID="$(id -u)"
         )
+        # Each image describes its own device via ENV; these are only
+        # overrides. `--env VAR` for a variable that is unset out here defines
+        # it as empty inside the container, which shadows the image's ENV
+        # rather than leaving it alone, so pass through just the ones set.
+        for cf_var in CUTTLEFISH_BUILD CUTTLEFISH_TARGET CUTTLEFISH_HOST_TARGET \
+            CUTTLEFISH_VM_MANAGER CUTTLEFISH_BOOT_TIMEOUT; do
+            if [ -n "${!cf_var:-}" ]; then
+                extra_args+=(--env "$cf_var")
+            fi
+        done
     else
         extra_args+=(--user "$(id -u)":"$(id -g)")
         if [ -w /dev/kvm ]; then
