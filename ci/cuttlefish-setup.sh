@@ -33,6 +33,28 @@ cvd fetch \
 
 cd "$cf_dir"
 
+# launch_cvd -daemon is silent until the guest has booted, so tail the
+# device logs meanwhile. cvd creates them under /var/tmp/cvd as it goes.
+follow_device_logs() {
+    local instance
+    while :; do
+        instance=$(find /var/tmp/cvd "$cf_dir" -type d \
+            -path '*/instances/cvd-[0-9]' 2>/dev/null | head -1)
+        [ -n "$instance" ] && break
+        sleep 2
+    done
+    exec tail -n +1 -F "$instance/logs/launcher.log" "$instance/kernel.log"
+}
+
+follow_device_logs &
+follow_pid=$!
+
+stop_following() {
+    kill "$follow_pid" 2>/dev/null || true
+    wait "$follow_pid" 2>/dev/null || true
+}
+trap stop_following EXIT
+
 # -daemon exits only once the guest has fully booted.
 # -enable_sandbox=false is needed because crosvm's minijail device sandbox
 #  (auto-enabled when /var/empty exists) requires unprivileged user
@@ -52,6 +74,9 @@ HOME="$cf_dir" timeout "${CUTTLEFISH_BOOT_TIMEOUT:-45m}" ./bin/launch_cvd \
     -report_anonymous_usage_stats=no \
     -cpus=2 \
     -memory_mb=4096
+
+stop_following
+trap - EXIT
 
 # Check the guest's adbd is reachable on the port the test runner uses,
 # and log the Android version and ABI actually being tested.
