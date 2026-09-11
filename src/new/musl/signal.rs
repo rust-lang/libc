@@ -63,17 +63,17 @@ s_no_extra_traits! {
         si_arch: c_uint,
     }
 
-    struct __c_anonymous___si_common___first {
+    union __c_anonymous___si_common___first {
         __piduid: __c_anonymous___first___piduid,
         __timer: __c_anonymous___first___timer,
     }
 
-    struct __c_anonymous___si_common___second {
+    union __c_anonymous___si_common___second {
         si_value: crate::sigval,
         __sigchld: __c_anonymous___second___sigchld,
     }
 
-    struct __c_anonymous___sigfault___first {
+    union __c_anonymous___sigfault___first {
         __addr_band: __c_anonymous___first___addr_band,
         si_pkey: c_uint,
     }
