@@ -1018,8 +1018,8 @@ pub const OLCUC: crate::tcflag_t = 0o000_004;
 pub const OCRNL: crate::tcflag_t = 0o000_010;
 pub const ONOCR: crate::tcflag_t = 0o000_020;
 pub const ONLRET: crate::tcflag_t = 0o000_040;
-pub const OFILL: crate::tcflag_t = 0o0000_100;
-pub const OFDEL: crate::tcflag_t = 0o0000_200;
+pub const OFILL: crate::tcflag_t = 0o0_000_100;
+pub const OFDEL: crate::tcflag_t = 0o0_000_200;
 
 pub const B0: speed_t = 0o000_000;
 pub const B50: speed_t = 0o000_001;
