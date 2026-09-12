@@ -4854,6 +4854,12 @@ fn test_linux(t: &Target) {
             // eabihf targets are tested using an older version of glibc
             "AT_HANDLE_FID" if musl || eabihf => true,
 
+            // Added in 7.2
+            "FUTEX_ROBUST_UNLOCK" => kernel < (7, 2),
+            "FUTEX_ROBUST_LIST32" => kernel < (7, 2),
+            // Value changed in 7.2
+            "FUTEX_CMD_MASK" => kernel < (7, 2),
+
             _ => false,
         }
     });
