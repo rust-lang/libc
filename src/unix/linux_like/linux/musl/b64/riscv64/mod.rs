@@ -78,7 +78,7 @@ s! {
 
 s_no_extra_traits! {
     pub struct ucontext_t {
-        pub __uc_flags: c_ulong,
+        pub uc_flags: c_ulong,
         pub uc_link: *mut ucontext_t,
         pub uc_stack: crate::stack_t,
         pub uc_sigmask: crate::sigset_t,
