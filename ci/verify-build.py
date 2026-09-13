@@ -80,15 +80,17 @@ class TargetResult:
 FREEBSD_VERSIONS = [11, 12, 13, 14, 15]
 
 TARGETS = [
-    # Tier 1
+    # Tier 1 with host tools
     Target("aarch64-apple-darwin"),
     Target("aarch64-pc-windows-msvc"),
     Target("aarch64-unknown-linux-gnu"),
-    Target("i686-pc-windows-msvc"),
     Target("i686-unknown-linux-gnu"),
     Target("x86_64-pc-windows-gnu"),
     Target("x86_64-pc-windows-msvc"),
     Target("x86_64-unknown-linux-gnu"),
+    #
+    # Tier 1 without host tools
+    Target("i686-pc-windows-msvc"),
     #
     # Tier 2 with host tools
     Target("aarch64-pc-windows-gnullvm", min_toolchain=Toolchain.STABLE),
