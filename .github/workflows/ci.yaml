@@ -228,6 +228,10 @@ jobs:
             env: { TEST_MUSL_V1_2: 1 }
             artifact-tag: new-musl
           - target: riscv64gc-unknown-linux-gnu
+          - target: riscv64gc-unknown-linux-musl
+          - target: riscv64gc-unknown-linux-musl
+            env: { TEST_MUSL_V1_2: 1 }
+            artifact-tag: new-musl
           - target: s390x-unknown-linux-gnu
           - target: sparc64-unknown-linux-gnu
           - target: wasm32-unknown-emscripten
