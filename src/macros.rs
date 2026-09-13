@@ -88,7 +88,11 @@ macro_rules! prelude {
                 Sync,
             };
             #[allow(unused_imports)]
-            pub(crate) use core::option::Option;
+            pub(crate) use core::option::Option::{
+                self,
+                None,
+                Some,
+            };
             #[allow(unused_imports)]
             pub(crate) use core::prelude::v1::derive;
             #[allow(unused_imports)]
@@ -101,6 +105,7 @@ macro_rules! prelude {
                 hash,
                 iter,
                 mem,
+                panic,
                 ptr,
                 unimplemented,
             };
