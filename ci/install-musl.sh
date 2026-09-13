@@ -107,6 +107,13 @@ case ${1} in
             ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
         make install -j4
         ;;
+    riscv64)
+        musl_arch=riscv64
+        kernel_arch=riscv
+        CC=riscv64-linux-gnu-gcc \
+            ./configure --prefix="/musl-${musl_arch}" --enable-wrapper=yes
+        make install -j4
+        ;;
     *)
         echo "Unknown target arch: \"${1}\""
         exit 1
