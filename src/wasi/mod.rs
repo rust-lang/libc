@@ -670,12 +670,18 @@ pub const SO_TYPE: c_int = 3;
 
 f! {
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
+        if fd < 0 || fd >= FD_SETSIZE {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        }
         let set = &*set;
         let n = set.__nfds;
         return set.__fds[..n].iter().any(|p| *p == fd);
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
+        if fd < 0 || fd >= FD_SETSIZE {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        }
         let set = &mut *set;
         let n = set.__nfds;
         if !set.__fds[..n].iter().any(|p| *p == fd) {
