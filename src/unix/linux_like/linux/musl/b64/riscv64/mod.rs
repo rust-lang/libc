@@ -412,6 +412,7 @@ pub const SYS_mount_setattr: c_long = 442;
 pub const SYS_landlock_create_ruleset: c_long = 444;
 pub const SYS_landlock_add_rule: c_long = 445;
 pub const SYS_landlock_restrict_self: c_long = 446;
+pub const SYS_futex_waitv: c_long = 449;
 
 pub const O_APPEND: c_int = 1024;
 pub const O_DIRECT: c_int = 0x4000;
