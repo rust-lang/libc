@@ -657,4 +657,3 @@ pub const REG_S0: usize = 8;
 pub const REG_S1: usize = 9;
 pub const REG_A0: usize = 10;
 pub const REG_S2: usize = 18;
-pub const REG_NARGS: usize = 8;
