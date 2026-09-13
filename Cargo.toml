@@ -24,15 +24,17 @@ default-target = "x86_64-unknown-linux-gnu"
 targets = [
     # Note: Keep this in sync with ci/verify-build.py
     #
-    # Tier 1
+    # Tier 1 with host tools
     "aarch64-apple-darwin",
     "aarch64-pc-windows-msvc",
     "aarch64-unknown-linux-gnu",
-    "i686-pc-windows-msvc",
     "i686-unknown-linux-gnu",
     "x86_64-pc-windows-gnu",
     "x86_64-pc-windows-msvc",
     "x86_64-unknown-linux-gnu",
+    #
+    # Tier 1 without host tools
+    "i686-pc-windows-msvc",
     #
     # Tier 2 with host tools
     "aarch64-pc-windows-gnullvm",
