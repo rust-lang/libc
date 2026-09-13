@@ -52,12 +52,10 @@ s! {
         pub gid: crate::gid_t,
         pub cuid: crate::uid_t,
         pub cgid: crate::gid_t,
-        pub mode: c_ushort,
-        __pad1: Padding<c_ushort>,
-        pub __seq: c_ushort,
-        __pad2: Padding<c_ushort>,
-        __unused1: Padding<c_ulong>,
-        __unused2: Padding<c_ulong>,
+        pub mode: crate::mode_t,
+        pub __ipc_perm_seq: c_int,
+        __pad1: Padding<c_long>,
+        __pad2: Padding<c_long>,
     }
 
     #[repr(align(8))]
