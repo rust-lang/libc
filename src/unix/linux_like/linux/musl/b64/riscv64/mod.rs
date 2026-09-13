@@ -649,11 +649,3 @@ pub const TOSTOP: crate::tcflag_t = 0x00000100;
 pub const FLUSHO: crate::tcflag_t = 0x00001000;
 
 pub const NGREG: usize = 32;
-pub const REG_PC: usize = 0;
-pub const REG_RA: usize = 1;
-pub const REG_SP: usize = 2;
-pub const REG_TP: usize = 4;
-pub const REG_S0: usize = 8;
-pub const REG_S1: usize = 9;
-pub const REG_A0: usize = 10;
-pub const REG_S2: usize = 18;
