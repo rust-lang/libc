@@ -100,8 +100,9 @@ And for that matter, you could have instead module
 
 / Module ```rust crate::bar```:
   ```rust
-  use foo::*;
+  // use foo::*; // `foo` comes from `barfoo`'s reexport below
   mod barfoo;
+  use barfoo::foo::*;
   ```
 
 The above situation is one of a number of potentially complex item resolution
@@ -120,4 +121,151 @@ Then we can assume all imports that have not been resolved yet need special
 attention in subsequent passes. After the first pass, we have expanded the
 "importable" items, so we should be capable of resolving all "delayed" imports.
 
-This is just theory, though.
+Following up from the prior example, we can say that the first pass would yield
+the following information:
+
+```rust
+// module `crate::bar`
+use foo::*; // [UNRESOLVED]
+mod barfoo;
+use barfoo::*; // [RESOLVED]
+```
+
+The resulting ```rust FfiItems``` for module ```rust crate::bar``` would contain
+one module, and all items from that one child module.
+
+That would leave us with an ```rust FfiItems``` for module ```rust crate::bar```
+consisting of two modules; Module `barfoo` and module `barfoo::foo`. But
+resolving solely modules this way is useless.
+
+Instead, the algorithm could be something along the lines of:
+
+/ Algorithm 1: \
+  Inputs:
+
+  - An ```rust FfiItems``` with the parsed contents of a full crate. This will
+    be referred to interchangeably as both the current module and the current
+    module's ```rust FfiItems``` in the algorithm steps.
+
+  Outputs:
+
+  - *Pending*.
+
+  Steps:
+
+  + Match on the list of child modules to the current module.
+
+    - If there are no child modules, return unity (*Pending*.)
+
+    - If there are any modules, extract the next module.
+
+      + Match on the list of reexports in the extracted module.
+
+        - If there are no reexports, run algorithm 1. Set its input to be the
+          current ```rust FfiItems``` with its modules as the tail list of the
+          current list of modules.
+
+        - If there are any reexports, extract the next reexport.
+
+          + Run algorithm 3. Set the input import to the extracted reexport.
+
+          + Match on the result of step 1.b.1.b.1.
+
+            - If matching against a _glob_ reexport type, proceed as follows.
+
+              + Run algorithm 2. Set the input to algorithm 2 to be the
+                extracted reexport, and the current input to algorithm 1.
+
+            - If matching against a _specific_ reexport type, proceed as
+              follows.
+
+              + *Pending*.
+
+          + Repeat from step 1.b.1 with the tail list of reexports.
+
+/ Algorithm 2: \
+  Inputs:
+
+  - An import ```rust use``` statement that is known to be a glob reexport.
+
+  - A base ```rust FfiItems``` corresponding to the module where the above
+    reexport lives at.
+
+  Outputs:
+
+  - A list of ```rust FfiItems``` instances corresponding with the tail modules
+    contained in the input import statement (the potentially non-direct
+    descendedants of the second input.)
+
+  Steps:
+
+  + Match against the type of input import path.
+
+    - If the import is a path, proceed as follows.
+
+      + *Pending*.
+
+    - *Pending*.
+
+  + Perform a lookup of this identifier in the running state's list of child
+    modules.
+
+    - If a match is found, repeat from step 2. Set the running state to be the
+      ```rust FfiItems``` associated to the matched module. Set the input path
+      to be the current input path trimmed from its initial segment.
+
+    - If a match is not found, ...
+
+/ Algorithm 3: \
+  Inputs:
+
+  - An import used in a ```rust use``` statement.
+
+  Outputs:
+
+  - The type of reexport the input ```rust use``` statement was. This can be one
+    of a _glob_ reexport or a _specific_ reexport.
+
+  Steps:
+
+  + Match against the type of input import path.
+
+    - If the import is a path, run algorithm 3. Set the input path to be the
+      newly-found rightmost import.
+
+    - If the import is a glob, return a _glob_ reexport type.
+
+    - If the import is an identifier or a renamed identifier, return a
+      _specific_ reexport type.
+
+    - If the import is a group, proceed as follows.
+
+      + Run a list mapping algorithm over the list of elements in the group. Set
+        the transform to be algorithm 3.
+
+      + Run a list reduction algorithm over the result of step 1.d.1. Set the
+        transform to be algorithm 4.
+
+      + Match against the result of step 1.d.2.
+
+        - If the reduction yield some value, return the value.
+        - Otherwise, return a _specific_ reexport type.
+
+/ Algorithm 4: \
+  Inputs:
+
+  - A reexport type as described in the outputs of algorithm 3.
+  - A reexport type as described in the outputs of algorithm 3.
+
+  Outputs:
+
+  - A reexport type as described in the outputs of algorithm 3.
+
+  Steps:
+
+  + Match against an ordered pair of the two inputs.
+
+    - If the leftmost element or the rightmost element are _glob_ reexport
+      types, return a _glob_ reexport type.
+
+    - Otherwise, return a _specific_ reexport type.
