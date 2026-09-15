@@ -234,13 +234,14 @@ Bellman-Ford except without proof of correctness:)
         - If a match is found for the identifier or original identifier (in the
           case of a rename,) proceed as follows.
 
-          + Return a single-element list. The element should consist of a new
+          + Return a singleton list. The one element should consist of a new
             ```rust FfiItems``` instance containing solely the found item,
             wrapped by a _resolved_ data constructor.
 
-        - If no match is found, return a single-element list. The element should
-          consist of the value returned from calling the _unresolved_ data
-          constructor.
+        - If no match is found, proceed as follows.
+
+          + Return a singleton list. The element should consist of the value
+            returned from calling the _unresolved_ data constructor.
 
     - If the import is a glob, return a single-element list. The element should
       wrap the input ```rust FfiItems``` instance with a _resolved_ data
@@ -262,22 +263,35 @@ Bellman-Ford except without proof of correctness:)
               + Match against the list of modules of the input
                 ```rust FfiItems```.
 
-                - If a match is found for the path segment or identifier,
-                  proceed as follows.
+                - If a match is found for the path segment, proceed as follows.
 
                   + Run algorithm 2. Set the input import statement to be the
                     extracted path. Set the input ```rust FfiItems``` to be the
-                    matched module among the current input's children.
+                    matched module.
 
-                - If a match is not found for the path segment or identifier,
-                  proceed as follows.
+                - If a match is not found for the path segment, proceed as
+                  follows.
 
-                  + Call the _unresolved_ data constructor.
+                  + Call the _unresolved_ data constructor. Construct a
+                    singleton list with the value returned from this call.
 
             - If the import is an identifier (or a renamed identifier), extract
               the (original) identifier and proceed as follows.
 
-              + *Pending*.
+              + Match against the list of all items of the input
+                ```rust FfiItems```.
+
+                - If a match is found for the identifier, proceed as follows.
+
+                  + Return a singleton list. Its one element should be a new
+                    ```rust FfiItems``` instance containing the matched item,
+                    wrapped by the _resolved_ data constructor.
+
+                - If a match is not found for the identifier, proceed as
+                  follows.
+
+                  + Return a singleton list. Its one element should be the value
+                    returned from calling the _unresolved_ data constructor.
 
 / Algorithm 3: \
   Inputs:
