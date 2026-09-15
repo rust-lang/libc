@@ -1391,7 +1391,7 @@ pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
 pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
 
 const fn CMSG_ALIGN(len: usize) -> usize {
-    len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
+    (len + size_of::<usize>() - 1) & !(size_of::<usize>() - 1)
 }
 
 f! {
@@ -1404,7 +1404,7 @@ f! {
     }
 
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        (cmsg as *mut c_uchar).offset(CMSG_ALIGN(size_of::<cmsghdr>()) as isize)
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub const unsafe fn CMSG_SPACE(length: c_uint) -> c_uint {
