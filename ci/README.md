@@ -31,12 +31,17 @@ builds are run on stable/beta/nightly, but are the only ones that do so.
 
 The remaining architectures look like:
 
-* Android x86_64 tests run on a [Cuttlefish](https://source.android.com/docs/devices/cuttlefish)
+* Android x86_64 and aarch64 tests run on a [Cuttlefish](https://source.android.com/docs/devices/cuttlefish)
   virtual device booted on the CI host by `cuttlefish-setup.sh`; the
   [docker image][android-docker] cross-compiles the tests with the NDK and
-  drives the device over adb. The remaining Android targets run in docker
-  images with the legacy SDK emulator, the NDK, and the SDK already set up,
-  with the entire build happening within the docker image.
+  drives the device over adb. x86_64 uses the default crosvm backend with
+  KVM. aarch64 has no matching hardware to accelerate it (GitHub's arm64
+  runners expose no `/dev/kvm`), so it boots the same way through qemu
+  instead, emulating the guest architecture, which is much slower. The
+  one remaining Android target, 32-bit arm, runs in a docker image with the
+  legacy SDK emulator, the NDK, and the SDK already set up, with the entire
+  build happening within the docker image. (An i686 image is still present
+  but that target is currently disabled in the workflow.)
 * The MIPS, ARM, and AArch64 builds all use the QEMU userspace emulator to run
   the generated binary to actually verify the tests pass.
 * The MUSL build just has to download a MUSL compiler and target libraries and
