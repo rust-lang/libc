@@ -93,7 +93,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: sighandler_t,
+        pub sa_sigaction: size_t,
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
     }
@@ -1840,6 +1840,11 @@ const fn CMSG_ALIGN(len: usize) -> usize {
 }
 
 extern "C" {
+    pub fn signal(
+        signum: c_int,
+        handler: Option<unsafe extern "C" fn(c_int)>,
+    ) -> Option<unsafe extern "C" fn(c_int)>;
+
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
     pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
 

@@ -541,7 +541,7 @@ s! {
     }
 
     pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t, // FIXME(union): this field is actually a union
+        pub sa_sigaction: size_t, // FIXME(union): this field is actually a union
         pub sa_mask: sigset_t,
         pub sa_flags: c_int,
     }
@@ -2863,6 +2863,11 @@ extern "C" {
 }
 
 extern "C" {
+    pub fn signal(
+        signum: c_int,
+        handler: Option<unsafe extern "C" fn(c_int)>,
+    ) -> Option<unsafe extern "C" fn(c_int)>;
+
     pub fn acct(filename: *mut c_char) -> c_int;
     #[link_name = "_posix_aio_cancel"]
     pub fn aio_cancel(fildes: c_int, aiocbp: *mut crate::aiocb) -> c_int;

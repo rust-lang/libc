@@ -265,7 +265,7 @@ s! {
 
     pub struct sigaction {
         pub sa_flags: c_int,
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: size_t,
         pub sa_mask: sigset_t,
     }
 
@@ -2322,6 +2322,11 @@ f! {
 }
 
 extern "C" {
+    pub fn signal(
+        signum: c_int,
+        handler: Option<unsafe extern "C" fn(c_int)>,
+    ) -> Option<unsafe extern "C" fn(c_int)>;
+
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
 
