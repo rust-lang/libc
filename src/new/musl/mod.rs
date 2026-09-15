@@ -11,9 +11,17 @@ mod arch;
 pub(crate) mod bits {
     cfg_if! {
         if #[cfg(target_arch = "mips")] {
-            pub(crate) use super::arch::mips::bits::socket;
+            pub(crate) use super::arch::mips::bits::{
+                socket,
+                statfs,
+            };
         } else if #[cfg(target_arch = "mips64")] {
-            pub(crate) use super::arch::mips64::bits::socket;
+            pub(crate) use super::arch::mips64::bits::{
+                socket,
+                statfs,
+            };
+        } else if #[cfg(target_arch = "s390x")] {
+            pub(crate) use super::arch::s390x::bits::statfs;
         } else {
             // Reexports from generic will live here once we need them.
         }
@@ -28,6 +36,7 @@ pub(crate) mod pthread;
 /// * Headers: <https://github.com/kraj/musl/tree/master/include/sys> (mirror)
 pub(crate) mod sys {
     pub(crate) mod socket;
+    pub(crate) mod statfs;
 }
 
 pub(crate) mod sched;
