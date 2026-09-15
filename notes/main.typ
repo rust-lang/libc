@@ -94,7 +94,8 @@ And for that matter, you could have instead module
 
 / Module ```rust crate::bar::barfoo```:
   ```rust
-  mod foo:
+  mod foo;
+  mod test;
   use foo::*;
   ```
 
@@ -102,7 +103,7 @@ And for that matter, you could have instead module
   ```rust
   // use foo::*; // `foo` comes from `barfoo`'s reexport below
   mod barfoo;
-  use barfoo::foo::*;
+  use barfoo::foo::{test, Bar};
   ```
 
 The above situation is one of a number of potentially complex item resolution
@@ -138,14 +139,15 @@ That would leave us with an ```rust FfiItems``` for module ```rust crate::bar```
 consisting of two modules; Module `barfoo` and module `barfoo::foo`. But
 resolving solely modules this way is useless.
 
-Instead, the algorithm could be something along the lines of:
+Instead, the algorithm could be something along the lines of (a bit like
+Bellman-Ford except without proof of correctness:)
 
 / Algorithm 1: \
   Inputs:
 
   - An ```rust FfiItems``` with the parsed contents of a full crate. This will
     be referred to interchangeably as both the current module and the current
-    module's ```rust FfiItems``` in the algorithm steps.
+    module's ```rust FfiItems``` in the steps below.
 
   Outputs:
 
@@ -163,7 +165,8 @@ Instead, the algorithm could be something along the lines of:
 
         - If there are no reexports, run algorithm 1. Set its input to be the
           current ```rust FfiItems``` with its modules as the tail list of the
-          current list of modules.
+          current list of modules (i.e. discard the extracted
+          ```rust FfiItems```.)
 
         - If there are any reexports, extract the next reexport.
 
@@ -186,35 +189,95 @@ Instead, the algorithm could be something along the lines of:
 / Algorithm 2: \
   Inputs:
 
-  - An import ```rust use``` statement that is known to be a glob reexport.
+  - An import ```rust use``` statement.
 
   - A base ```rust FfiItems``` corresponding to the module where the above
-    reexport lives at.
+    import statement lives at.
 
   Outputs:
 
-  - A list of ```rust FfiItems``` instances corresponding with the tail modules
-    contained in the input import statement (the potentially non-direct
-    descendedants of the second input.)
+  - A list of a coproduct type. The type considers two data constructors; One
+    for _resolved_ modules, and another for _unresolved_ modules. The former
+    takes a single parameter of type ```rust FfiItems```.
+
+    This returns a list instead of a single ```rust FfiItems``` instance because
+    a given ```rust use``` statement could refer to a group in its tail segment.
+    Each element of the group could itself expand to an arbitrary reexport.
 
   Steps:
 
-  + Match against the type of input import path.
+  + Match against the type of input import.
 
     - If the import is a path, proceed as follows.
 
-      + *Pending*.
+      + Match against the list of modules in the input ```rust FfiItems```,
+        searching for the leftmost extracted segment of the input import's path.
 
-    - *Pending*.
+        - If the list of modules contains a match against the path, proceed as
+          follows.
 
-  + Perform a lookup of this identifier in the running state's list of child
-    modules.
+          + Run algorithm 2. Set the input ```rust use``` statement to be the
+            rhs of the current import statement. Set the input
+            ```rust FfiItems``` to be the match found in step 1.a.1.a.
 
-    - If a match is found, repeat from step 2. Set the running state to be the
-      ```rust FfiItems``` associated to the matched module. Set the input path
-      to be the current input path trimmed from its initial segment.
+          + Return the result of step 1.a.1.a.1.
 
-    - If a match is not found, ...
+        - If the list of modules does not contain a match, return a
+          single-element list. The element should consist of the value returned
+          from calling the _unresolved_ data constructor.
+
+    - If the import is an identifier or a renamed identifier, proceed as
+      follows.
+
+      + Match against the input ```rust FfiItems```'s list of items.
+
+        - If a match is found for the identifier or original identifier (in the
+          case of a rename,) proceed as follows.
+
+          + Return a single-element list. The element should consist of a new
+            ```rust FfiItems``` instance containing solely the found item,
+            wrapped by a _resolved_ data constructor.
+
+        - If no match is found, return a single-element list. The element should
+          consist of the value returned from calling the _unresolved_ data
+          constructor.
+
+    - If the import is a glob, return a single-element list. The element should
+      wrap the input ```rust FfiItems``` instance with a _resolved_ data
+      constructor.
+
+    - If the import is a group, proceed as follows.
+
+      + Match on the next element of the group.
+
+        - If there are no elements left, return the empty list.
+
+        - If there are any elements left, extract the next element and proceed
+          as follows.
+
+          + Match against the extracted element's import type.
+
+            - If the import is a path, extract the path and proceed as follows.
+
+              + Match against the list of modules of the input
+                ```rust FfiItems```.
+
+                - If a match is found for the path segment or identifier,
+                  proceed as follows.
+
+                  + Run algorithm 2. Set the input import statement to be the
+                    extracted path. Set the input ```rust FfiItems``` to be the
+                    matched module among the current input's children.
+
+                - If a match is not found for the path segment or identifier,
+                  proceed as follows.
+
+                  + Call the _unresolved_ data constructor.
+
+            - If the import is an identifier (or a renamed identifier), extract
+              the (original) identifier and proceed as follows.
+
+              + *Pending*.
 
 / Algorithm 3: \
   Inputs:
