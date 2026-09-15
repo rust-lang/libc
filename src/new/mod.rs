@@ -272,6 +272,7 @@ cfg_if! {
         pub use signal::*;
         pub use sys::socket::*;
         pub use sys::statfs::*;
+        pub use sys::statvfs::*;
     }
 }
 

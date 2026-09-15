@@ -37,6 +37,7 @@ pub(crate) mod pthread;
 pub(crate) mod sys {
     pub(crate) mod socket;
     pub(crate) mod statfs;
+    pub(crate) mod statvfs;
 }
 
 pub(crate) mod sched;
