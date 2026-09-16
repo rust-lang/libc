@@ -283,9 +283,8 @@ Bellman-Ford except without proof of correctness:)
 
                 - If a match is found for the identifier, proceed as follows.
 
-                  + Return a singleton list. Its one element should be a new
-                    ```rust FfiItems``` instance containing the matched item,
-                    wrapped by the _resolved_ data constructor.
+                  + Call the _resolved_ data constructor with a newly created
+                    ```rust FfiItems``` containig solely the matched item.
 
                 - If a match is not found for the identifier, proceed as
                   follows.
