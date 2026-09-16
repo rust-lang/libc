@@ -145,9 +145,9 @@ Bellman-Ford except without proof of correctness:)
 / Algorithm 1: \
   Inputs:
 
-  - An ```rust FfiItems``` with the parsed contents of a full crate. This will
-    be referred to interchangeably as both the current module and the current
-    module's ```rust FfiItems``` in the steps below.
+  - An ```rust FfiItems``` instance with the parsed contents of a full crate.
+    The parsed contents must contain both currently parsed items and import
+    statements (so just items.)
 
   Outputs:
 
@@ -155,7 +155,7 @@ Bellman-Ford except without proof of correctness:)
 
   Steps:
 
-  + Match on the list of child modules to the current module.
+  + Match on the list of child modules to the input ```rust FfiItems```.
 
     - If there are no child modules, return unity (*Pending*.)
 
@@ -163,28 +163,17 @@ Bellman-Ford except without proof of correctness:)
 
       + Match on the list of reexports in the extracted module.
 
-        - If there are no reexports, run algorithm 1. Set its input to be the
-          current ```rust FfiItems``` with its modules as the tail list of the
-          current list of modules (i.e. discard the extracted
-          ```rust FfiItems```.)
+        - If there are no reexports, proceed as follows.
+
+          + Run algorithm 1. Set its input to be a new ```rust FfiItems``` with
+            its modules as the tail list of the current list of modules, barring
+            the extracted module.
 
         - If there are any reexports, extract the next reexport.
 
-          + Run algorithm 3. Set the input import to the extracted reexport.
-
-          + Match on the result of step 1.b.1.b.1.
-
-            - If matching against a _glob_ reexport type, proceed as follows.
-
-              + Run algorithm 2. Set the input to algorithm 2 to be the
-                extracted reexport, and the current input to algorithm 1.
-
-            - If matching against a _specific_ reexport type, proceed as
-              follows.
-
-              + *Pending*.
-
-          + Repeat from step 1.b.1 with the tail list of reexports.
+          + Run algorithm 2. Set the input import statement to be the extracted
+            reexport. Set the input ```rust FfiItems``` to be the current
+            input's ```rust FfiItems```.
 
 / Algorithm 2: \
   Inputs:
@@ -204,10 +193,6 @@ Bellman-Ford except without proof of correctness:)
     a given ```rust use``` statement could refer to a group in its tail segment.
     Each element of the group could itself expand to an arbitrary reexport.
 
-    All reexports are flattened into a single list of either resolved or
-    unresolved reexports. We differentiate between these with the above sum
-    type.
-
   Steps:
 
   + Match against the type of input import.
@@ -222,13 +207,14 @@ Bellman-Ford except without proof of correctness:)
 
           + Run algorithm 2. Set the input ```rust use``` statement to be the
             rhs of the current import statement. Set the input
-            ```rust FfiItems``` to be the match found in step 1.a.1.a.
+            ```rust FfiItems``` to be the match module.
 
           + Return the result of step 1.a.1.a.1.
 
-        - If the list of modules does not contain a match, return a
-          single-element list. The element should consist of the value returned
-          from calling the _unresolved_ data constructor.
+        - If the list of modules does not contain a match, proceed as follows.
+
+          + Return a single-element list. Its one element should consist of the
+            value returned from calling the _unresolved_ data constructor.
 
     - If the import is an identifier or a renamed identifier, proceed as
       follows.
@@ -238,7 +224,7 @@ Bellman-Ford except without proof of correctness:)
         - If a match is found for the identifier or original identifier (in the
           case of a rename,) proceed as follows.
 
-          + Return a singleton list. The one element should consist of a new
+          + Return a singleton list. Its one element should consist of a new
             ```rust FfiItems``` instance containing solely the found item,
             wrapped by a _resolved_ data constructor.
 
@@ -247,103 +233,48 @@ Bellman-Ford except without proof of correctness:)
           + Return a singleton list. The element should consist of the value
             returned from calling the _unresolved_ data constructor.
 
-    - If the import is a glob, return a single-element list. The element should
-      wrap the input ```rust FfiItems``` instance with a _resolved_ data
-      constructor.
+    - If the import is a glob, proceed as follows.
+
+      + Return a single-element list. Its one element should wrap the input
+        ```rust FfiItems``` instance with a _resolved_ data constructor.
 
     - If the import is a group, proceed as follows.
 
-      + Match on the next element of the group.
+      + Run algorithm 3. Set the input list to be the matched group. Set the
+        input ```rust FfiItems``` to be the current input's ```rust FfiItems```.
 
-        - If there are no elements left, return the empty list.
-
-        - If there are any elements left, extract the next element and proceed
-          as follows.
-
-          + Match against the extracted element's import type.
-
-            - If the import is a path, extract the path and proceed as follows.
-
-              + Match against the list of modules of the input
-                ```rust FfiItems```.
-
-                - If a match is found for the path segment, proceed as follows.
-
-                  + Run algorithm 2. Set the input import statement to be the
-                    extracted path. Set the input ```rust FfiItems``` to be the
-                    matched module.
-
-                - If a match is not found for the path segment, proceed as
-                  follows.
-
-                  + Call the _unresolved_ data constructor.
-
-            - If the import is an identifier (or a renamed identifier), extract
-              the (original) identifier and proceed as follows.
-
-              + Match against the list of all items of the input
-                ```rust FfiItems```.
-
-                - If a match is found for the identifier, proceed as follows.
-
-                  + Call the _resolved_ data constructor with a newly created
-                    ```rust FfiItems``` containig solely the matched item.
-
-                - If a match is not found for the identifier, proceed as
-                  follows.
-
-                  + Call the _resolved_ data constructor.
+      + Return the result of step 1.d.1.
 
 / Algorithm 3: \
   Inputs:
 
-  - An import used in a ```rust use``` statement.
+  - A list of grouped elements in the tail of an import statement.
+
+  - An ```rust FfiItems``` instance where the reexport from which the above
+    input is sourced (i.e. the instance containing the whole ```rust use```
+    statement.)
 
   Outputs:
 
-  - The type of reexport the input ```rust use``` statement was. This can be one
-    of a _glob_ reexport or a _specific_ reexport.
+  - A list of ```rust FfiItems``` wrapped with the same sum type as outlined in
+    the outputs of algorithm 2.
 
   Steps:
 
-  + Match against the type of input import path.
+  + Match against the input list.
 
-    - If the import is a path, run algorithm 3. Set the input path to be the
-      newly-found rightmost import.
+    - If there are no elements left in the group, return the empty list.
 
-    - If the import is a glob, return a _glob_ reexport type.
+    - If there are any elements left, extract the next element and proceed as
+      follows.
 
-    - If the import is an identifier or a renamed identifier, return a
-      _specific_ reexport type.
+      + Run algorithm 2. Set the input import statement to be the extracted
+        element. Set the input ```rust FfiItems``` to be the current input
+        ```rust FfiItems```.
 
-    - If the import is a group, proceed as follows.
+      + Run algorithm 3. Set te input list to be the tail list of elements after
+        extracting the above element. Set the ```rust FfiItems``` instance to be
+        the same input instance as we currently have as input.
 
-      + Run a list mapping algorithm over the list of elements in the group. Set
-        the transform to be algorithm 3.
-
-      + Run a list reduction algorithm over the result of step 1.d.1. Set the
-        transform to be algorithm 4.
-
-      + Match against the result of step 1.d.2.
-
-        - If the reduction yield some value, return the value.
-        - Otherwise, return a _specific_ reexport type.
-
-/ Algorithm 4: \
-  Inputs:
-
-  - A reexport type as described in the outputs of algorithm 3.
-  - A reexport type as described in the outputs of algorithm 3.
-
-  Outputs:
-
-  - A reexport type as described in the outputs of algorithm 3.
-
-  Steps:
-
-  + Match against an ordered pair of the two inputs.
-
-    - If the leftmost element or the rightmost element are _glob_ reexport
-      types, return a _glob_ reexport type.
-
-    - Otherwise, return a _specific_ reexport type.
+      + Return the resulting list from appending the lists from step 1.b.1 to
+        the lists from step 1.b.2.
