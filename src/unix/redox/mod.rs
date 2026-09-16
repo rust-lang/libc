@@ -1190,6 +1190,7 @@ pub const X_OK: c_int = 1;
 
 // stdio.h
 pub const BUFSIZ: c_uint = 1024;
+pub const FILENAME_MAX: c_int = 4096;
 pub const _IOFBF: c_int = 0;
 pub const _IOLBF: c_int = 1;
 pub const _IONBF: c_int = 2;
