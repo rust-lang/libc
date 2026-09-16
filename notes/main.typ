@@ -204,6 +204,10 @@ Bellman-Ford except without proof of correctness:)
     a given ```rust use``` statement could refer to a group in its tail segment.
     Each element of the group could itself expand to an arbitrary reexport.
 
+    All reexports are flattened into a single list of either resolved or
+    unresolved reexports. We differentiate between these with the above sum
+    type.
+
   Steps:
 
   + Match against the type of input import.
@@ -272,8 +276,7 @@ Bellman-Ford except without proof of correctness:)
                 - If a match is not found for the path segment, proceed as
                   follows.
 
-                  + Call the _unresolved_ data constructor. Construct a
-                    singleton list with the value returned from this call.
+                  + Call the _unresolved_ data constructor.
 
             - If the import is an identifier (or a renamed identifier), extract
               the (original) identifier and proceed as follows.
@@ -289,8 +292,7 @@ Bellman-Ford except without proof of correctness:)
                 - If a match is not found for the identifier, proceed as
                   follows.
 
-                  + Return a singleton list. Its one element should be the value
-                    returned from calling the _unresolved_ data constructor.
+                  + Call the _resolved_ data constructor.
 
 / Algorithm 3: \
   Inputs:
