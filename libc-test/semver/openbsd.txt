@@ -1403,6 +1403,7 @@ sem_unlink
 sendmmsg
 sendmsg
 sensor
+sensordev
 setdomainname
 setgrent
 setgroups
