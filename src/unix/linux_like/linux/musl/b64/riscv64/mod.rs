@@ -94,7 +94,7 @@ s_no_extra_traits! {
     pub struct __riscv_mc_q_ext_state {
         pub __f: [c_ulonglong; 64],
         pub __fcsr: c_uint,
-        pub __glibc_reserved: [c_uint; 3],
+        __reserved: Padding<[c_uint; 3]>,
     }
 }
 
