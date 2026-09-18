@@ -101,9 +101,9 @@ And for that matter, you could have instead module
 
 / Module ```rust crate::bar```:
   ```rust
-  // use foo::*; // `foo` comes from `barfoo`'s reexport below
+  use foo::*; // `foo` comes from `barfoo`'s reexport below
   mod barfoo;
-  use barfoo::foo::{test, Bar};
+  use barfoo::*;
   ```
 
 The above situation is one of a number of potentially complex item resolution
@@ -213,8 +213,8 @@ Bellman-Ford except without proof of correctness:)
 
         - If the list of modules does not contain a match, proceed as follows.
 
-          + Return a single-element list. Its one element should consist of the
-            value returned from calling the _unresolved_ data constructor.
+          + Return a singleton list. Its one element should consist of the value
+            returned from calling the _unresolved_ data constructor.
 
     - If the import is an identifier or a renamed identifier, proceed as
       follows.
@@ -278,3 +278,32 @@ Bellman-Ford except without proof of correctness:)
 
       + Return the resulting list from appending the lists from step 1.b.1 to
         the lists from step 1.b.2.
+
+/ Algorithm 4: \
+  Inputs:
+
+  - An instance of ```rust FfiItems```.
+
+  Outputs:
+
+  - A list of all reexports in the input ```rust FfiItems``` mapped to the type
+    outlined in the outputs of algorithm 2.
+
+  Steps:
+
+  + Match against the list of reexports in the input ```rust FfiItems```.
+
+    - If there are no reexports, return the empty list.
+
+    - If there are any reexports left, proceed as follows.
+
+      + Run algorithm 2. Set the input import to be the matched reexport. Set
+        the input ```rust FfiItems``` to be the current input's
+        ```rust FfiItems```.
+
+      + Run algorithm 4. Set the input ```rust FfiItems``` to be a new
+        ```rust FfiItems``` instance whose modules contain the current input's
+        tail list of modules, barring the extracted reexport.
+
+      + Return the result of appending the resulting list from step 1.b.1 to the
+        resulting list from step 1.b.2.
