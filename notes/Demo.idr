@@ -29,11 +29,16 @@ normalize : FfiItems -> FfiItems
 normalize it = { uses $= foldr f [] } it where
   total
   f : UseTree -> List UseTree -> List UseTree
-  f = (++) . f' where total f' : UseTree -> List UseTree
-                      f' (Name id)   = [ Name id ]
-                      f' Glob        = [ Glob ]
-                      f' (Path id t) = assert_total map (\t => Path id t) (f' t)
-                      f' (Group l)   = assert_total map f' l |> join
+  f = (++) . f' where
+    -- [NOTE]: this function requires asserting to the totality checker that the
+    -- trees rooted at paths and group imports are always bound to be smaller
+    -- than the trees rooted one level above. This is not encoded in the
+    -- `UseTree` type to keep things simple to port to Rust.
+    total f' : UseTree -> List UseTree
+    f' (Name id)     = [ Name id ]
+    f' Glob          = [ Glob ]
+    f' o@(Path id t) = map (\t => Path id t) (f' $ assert_smaller o t)
+    f' o@(Group l)   = map (\t => f' $ assert_smaller o t) l |> join
 
 partial
 resolveOne : FfiItems -> List Resolution
