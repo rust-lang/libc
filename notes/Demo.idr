@@ -2,6 +2,8 @@ module Demo
 
 import Data.List
 
+%default total
+
 data UseTree : Type where Path  : String -> UseTree -> UseTree
                           Name  : String -> UseTree
                           Glob  : UseTree
@@ -20,78 +22,77 @@ record FfiItems where
 data Resolution : Type where Resolved   : UseTree -> FfiItems -> Resolution
                              Unresolved : UseTree -> Resolution
 
-total
+data Ungrouped : UseTree -> Type where NameWitness :  Ungrouped (Name _)
+                                       GlobWitness :  Ungrouped Glob
+                                       PathWitness :  {auto 0 _ : Ungrouped t}
+                                                   -> Ungrouped (Path _ t)
+
+data UngroupedItems : FfiItems -> Type where
+  ItemsEmptyWitness :  UngroupedItems (MkFfiItems _ _ _ [])
+  ItemsNameWitness  :  UngroupedItems (MkFfiItems _ _ _ ((Name _) :: _))
+  ItemsGlobWitness  :  UngroupedItems (MkFfiItems _ _ _ (Glob :: _))
+  ItemsPathWitness  :  {auto 0 _ : Ungrouped t}
+                    -> UngroupedItems (MkFfiItems _ _ _ ((Path _ t) :: _))
+
 empty : String -> FfiItems
 empty s = MkFfiItems s [] [] []
 
-total
-normalize : FfiItems -> FfiItems
-normalize it = { uses $= foldr f [] } it where
-  total
+normalize : FfiItems -> (i : FfiItems ** UngroupedItems i)
+normalize it = let normalized = { uses $= foldr f [] } it in
+                   (normalized ** _) where
   f : UseTree -> List UseTree -> List UseTree
   f = (++) . f' where
     -- [NOTE]: this function requires asserting to the totality checker that the
     -- trees rooted at paths and group imports are always bound to be smaller
     -- than the trees rooted one level above. This is not encoded in the
     -- `UseTree` type to keep things simple to port to Rust.
-    total f' : UseTree -> List UseTree
+    f' : UseTree -> List UseTree
     f' (Name id)     = [ Name id ]
     f' Glob          = [ Glob ]
     f' o@(Path id t) = map (\t => Path id t) (f' $ assert_smaller o t)
     f' o@(Group l)   = map (\t => f' $ assert_smaller o t) l |> join
 
-partial
-resolveOne : FfiItems -> List Resolution
+resolveOne : (i : FfiItems ** UngroupedItems i) -> List Resolution
 resolveOne it = join . (map $ \u => resolveReexport u u it) . uses $ it where
   data Ty = Mod FfiItems | Item String
 
-  total
   f : String -> FfiItems -> Maybe Ty
   f id (MkFfiItems _ is ms _) = find c (map Item is ++ map Mod ms) where
     c : Ty -> Bool
     c (Mod (MkFfiItems mid _ _ _)) = mid == id
     c (Item s) = s == id
 
-  -- [NOTE]: this function is not even covering because that would require
-  -- making the `UseTree` type a GADT. That is not worth it for a PoC.
-  partial
-  resolveReexport : UseTree -> UseTree -> FfiItems -> List Resolution
-  resolveReexport oid (Name id) it@(MkFfiItems mid _ _ _) =
+  resolveReexport :  UseTree
+                  -> (t : UseTree)
+                  -> {auto 0 prf : Ungrouped t}
+                  -> FfiItems
+                  -> List Resolution
+  resolveReexport oid (Name id) {prf = NameWitness} it@(MkFfiItems mid _ _ _) =
     case f id it of
-         Just (Mod m)  => [ Resolved oid (({ mods := [ m ] } . empty) mid) ]
-         Just (Item i) => [ Resolved oid (({ items := [ i ] } . empty) mid) ]
+         Just (Mod m)  => [ Resolved oid ({ mods := [ m ] } . empty $ mid) ]
+         Just (Item i) => [ Resolved oid ({ items := [ i ] } . empty $ mid) ]
          Nothing       => [ Unresolved oid ]
-  resolveReexport oid Glob it                             = [ Resolved oid it ]
-  resolveReexport oid (Path id t) it                      =
+  resolveReexport oid Glob {prf = GlobWitness} it = [ Resolved oid it ]
+  resolveReexport oid (Path id t) {prf = PathWitness} it =
     case f id it of Just (Mod m) => resolveReexport oid t m
                     Just _       => [ Unresolved oid ]
                     Nothing      => [ Unresolved oid ]
 
-total
-merge : FfiItems -> List Resolution -> FfiItems
-merge it [] = it
+merge : (i : FfiItems ** UngroupedItems i) -> List Resolution -> FfiItems
+merge (it ** _) [] = it
 merge it ((Unresolved _) :: t) = merge it t
-merge it ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge mit t where
-  mit : FfiItems
-  mit = { items $= (++ is)
-        , mods  $= (++ ms)
-        , uses  $= deleteBy f oid } it where
-          -- [NOTE]: this function is semantically partial because it handles
-          -- not the case for a group import. The wildcard case, which is used
-          -- for combinations of the considered (partial) cases, makes the
-          -- function covering even though it is meant to be partial. We use
-          -- `deleteBy` instead of implementing `Eq` for `UseTree` because
-          -- partial functions are painful enough.
-          total
-          f : UseTree -> UseTree -> Bool
-          f (Name id1) (Name id2) = id1 == id2
-          f Glob Glob = True
-          f (Path id1 t1) (Path id2 t2) = id1 == id2 && f t1 t2
-          f _ _ = False
+merge (it ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge mit t where
+  mit : (i : FfiItems ** UngroupedItems i)
+  mit = let base = { items $= (++ is)
+                   , mods  $= (++ ms)
+                   , uses  $= deleteBy f oid } it in (base ** _) where
+                     f : UseTree -> UseTree -> Bool
+                     f (Name id1) (Name id2) = id1 == id2
+                     f Glob Glob = True
+                     f (Path id1 t1) (Path id2 t2) = id1 == id2 && f t1 t2
+                     f _ _ = False
 
-partial
+covering
 resolve : FfiItems -> FfiItems
-resolve it = (merge nit) . resolveOne . { mods $= map resolve } $ nit where
-  total
-  nit : FfiItems
-  nit = normalize it
+resolve it = let nit = normalize . { mods $= map resolve } $ it in
+                 (merge nit) . resolveOne $ nit
