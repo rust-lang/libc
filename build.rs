@@ -54,6 +54,8 @@ enum Cfg {
     /// transition to 64-bit `time_t` and thus need `__*_time64` redirects. Implies `musl_v1_2`
     /// and 32-bit arch.
     MuslRedirTime64,
+    /// Corresonds to `__USE_FILE_OFFSET64` in uClibc-ng.
+    UclibcFileOffsetBits64,
 }
 
 const ALLOWED_CFGS: &[Cfg] = &[
@@ -76,6 +78,7 @@ const ALLOWED_CFGS: &[Cfg] = &[
     Cfg::MuslV1_2,
     Cfg::Musl32Time64,
     Cfg::MuslRedirTime64,
+    Cfg::UclibcFileOffsetBits64,
 ];
 
 impl fmt::Display for Cfg {
@@ -100,6 +103,7 @@ impl fmt::Display for Cfg {
             Cfg::MuslV1_2 => "musl_v1_2",
             Cfg::Musl32Time64 => "musl32_time64",
             Cfg::MuslRedirTime64 => "musl_redir_time64",
+            Cfg::UclibcFileOffsetBits64 => "uclibc_file_offset_bits64",
         })
     }
 }
@@ -263,9 +267,16 @@ fn main() {
     }
 
     let uclibc_time64_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
+    let uclibc_off64_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_OFF64");
+
     let uclibc_time64 = target_env == "uclibc" && uclibc_time64_env;
+    let uclibc_off64 = target_env == "uclibc" && target_ptr_width == "32" && uclibc_off64_env;
+
     if uclibc_time64 {
         cfgs.push(Cfg::LinuxTimeBits64);
+    }
+    if uclibc_off64 {
+        cfgs.push(Cfg::UclibcFileOffsetBits64);
     }
 
     let mut gnu_tb_env = env::var("CARGO_CFG_LIBC_UNSTABLE_GNU_TIME_BITS");
@@ -491,6 +502,10 @@ fn validate_cfg(list: &[Cfg], target_env: &str, target_os: &str, target_ptr_widt
                     list.contains(&Cfg::MuslV1_2),
                     "{cfg:?} set on non-musl1.2 platform"
                 )
+            }
+            Cfg::UclibcFileOffsetBits64 => {
+                assert_eq!(target_env, "uclibc", "{cfg:?} set with env {target_env}");
+                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
             }
         }
     }
