@@ -220,13 +220,13 @@ s! {
         pub shm_perm: crate::ipc_perm,
         pub shm_segsz: size_t,
         pub shm_atime: crate::time_t,
-        #[cfg(not(linux_time_bits64))]
+        #[cfg(not(uclibc32_time64))]
         __unused1: Padding<c_ulong>,
         pub shm_dtime: crate::time_t,
-        #[cfg(not(linux_time_bits64))]
+        #[cfg(not(uclibc32_time64))]
         __unused2: Padding<c_ulong>,
         pub shm_ctime: crate::time_t,
-        #[cfg(not(linux_time_bits64))]
+        #[cfg(not(uclibc32_time64))]
         __unused3: Padding<c_ulong>,
         pub shm_cpid: crate::pid_t,
         pub shm_lpid: crate::pid_t,
