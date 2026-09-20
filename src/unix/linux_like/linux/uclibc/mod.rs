@@ -14,7 +14,7 @@ pub type __priority_which_t = c_uint;
 
 cfg_if! {
     // Set `--cfg=libc_unstable_uclibc_time64` in RUSTFLAGS if your uClibc has 64-bit `time_t`.
-    if #[cfg(linux_time_bits64)] {
+    if #[cfg(uclibc32_time64)] {
         pub type time_t = i64;
         pub type suseconds_t = i64;
     } else {
