@@ -37,7 +37,8 @@ enum Cfg {
 
     VxworksLt25_09,
 
-    /// Corresponds to `__USE_TIME_BITS64` in UAPI. Implies 32-bit Linux target.
+    /// Corresponds to `__USE_TIME_BITS64` in UAPI. Implies Linux and 64-bit `time_t`, but is set
+    /// on both 32-bit and 64-bit platforms.
     LinuxTimeBits64,
     /// Corresponds to `_FILE_OFFSET_BITS=64` in glibc. Implies 32-bit GNU target.
     GnuFileOffsetBits64,
@@ -260,9 +261,9 @@ fn main() {
 
     if musl_v1_2 {
         cfgs.push(Cfg::MuslV1_2);
+        cfgs.push(Cfg::LinuxTimeBits64);
         if target_ptr_width == "32" {
             cfgs.push(Cfg::Musl32Time64);
-            cfgs.push(Cfg::LinuxTimeBits64);
             if !only_v1_2_on_musl {
                 // Older 32-bit arches need the redirects
                 cfgs.push(Cfg::MuslRedirTime64);
@@ -325,6 +326,11 @@ fn main() {
             cfgs.push(Cfg::LinuxTimeBits64);
         }
         cfgs.push(Cfg::Uclibc32Time64);
+    }
+
+    // `__USE_TIME_BITS64` is set on any platform if `time_t` is 64 bits.
+    if target_os == "linux" && target_ptr_width == "64" {
+        cfgs.push(Cfg::LinuxTimeBits64);
     }
 
     // On CI: deny all warnings
@@ -475,7 +481,6 @@ fn validate_cfg(list: &[Cfg], target_env: &str, target_os: &str, target_ptr_widt
             }
             Cfg::LinuxTimeBits64 => {
                 assert_eq!(target_os, "linux", "{cfg:?} set on non-linux platform");
-                assert_eq!(target_ptr_width, "32", "{cfg:?} set on non-32-bit platform");
             }
             Cfg::MuslV1_2 => {
                 assert!(
