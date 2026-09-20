@@ -3923,6 +3923,7 @@ fn test_linux(t: &Target) {
     let mips = t.mips();
     let mips32 = t.mips32();
     let pauthtest = t.pauthtest();
+    let p64 = t.p64();
     let p32 = t.p32();
     let versions = &*VERSIONS;
     let kernel = match versions.linux {
@@ -3950,9 +3951,9 @@ fn test_linux(t: &Target) {
 
     if musl && musl_v1_2 {
         cfg.cfg("musl_v1_2", None);
+        cfg.cfg("linux_time_bits64", None);
         if p32 {
             cfg.cfg("musl32_time64", None);
-            cfg.cfg("linux_time_bits64", None);
         }
         if arm32 || ppc32 || x86_32 || mips32 {
             cfg.cfg("musl_redir_time64", None);
@@ -3965,6 +3966,10 @@ fn test_linux(t: &Target) {
     if uclibc32_time64 {
         cfg.cfg("linux_time_bits64", None);
         cfg.cfg("uclibc32_time64", None);
+    }
+
+    if p64 {
+        cfg.cfg("linux_time_bits64", None);
     }
 
     cfg.define("_GNU_SOURCE", None)
