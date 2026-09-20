@@ -30,6 +30,11 @@ pub type regoff_t = c_int;
 #[cfg(not(target_os = "dragonfly"))]
 pub type regoff_t = off_t;
 pub type sig_t = Option<unsafe extern "C" fn(c_int)>;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform; use sig_t instead."
+)]
+pub type sighandler_t = size_t;
 
 s! {
     pub struct sockaddr {

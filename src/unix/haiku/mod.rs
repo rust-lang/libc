@@ -48,6 +48,11 @@ pub type pthread_condattr_t = crate::uintptr_t;
 pub type pthread_mutexattr_t = crate::uintptr_t;
 pub type pthread_rwlockattr_t = crate::uintptr_t;
 pub type sigset_t = u64;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform."
+)]
+pub type sighandler_t = size_t;
 pub type fsblkcnt_t = i64;
 pub type fsfilcnt_t = i64;
 pub type pthread_attr_t = *mut c_void;

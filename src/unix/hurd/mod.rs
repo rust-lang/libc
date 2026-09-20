@@ -80,6 +80,7 @@ pub type wchar_t = c_int;
 pub type wint_t = c_uint;
 pub type gid_t = __gid_t;
 pub type uid_t = __uid_t;
+pub type sighandler_t = size_t;
 
 cfg_if! {
     if #[cfg(any(target_pointer_width = "64", gnu_file_offset_bits64))] {
