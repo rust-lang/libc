@@ -192,7 +192,8 @@ TARGETS = [
     Target("powerpc-unknown-netbsd", dist=False),
     Target("powerpc-wrs-vxworks", dist=False),
     Target("powerpc-wrs-vxworks-spe", dist=False),
-    Target("powerpc64-ibm-aix", dist=False),
+    # FIXME(rust-lang/rust#162979)
+    # Target("powerpc64-ibm-aix", dist=False),
     Target("powerpc64-unknown-freebsd", dist=False),
     Target("powerpc64-unknown-linux-gnuelfv2", dist=False),
     Target("powerpc64-wrs-vxworks", dist=False),
