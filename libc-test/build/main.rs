@@ -3995,10 +3995,14 @@ fn test_linux(t: &Target) {
         }
     }
 
-    let uclibc_use_time64 = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
-    if uclibc && uclibc_use_time64 {
+    let uclibc_time64_env = env_flag("CARGO_CFG_LIBC_UNSTABLE_UCLIBC_TIME64");
+    let uclibc32_time64 = uclibc && p32 && uclibc_time64_env;
+
+    if uclibc32_time64 {
         cfg.cfg("linux_time_bits64", None);
+        cfg.cfg("uclibc32_time64", None);
     }
+
     cfg.define("_GNU_SOURCE", None)
         // This macro re-defines fscanf,scanf,sscanf to link to the symbols that are
         // deprecated since glibc >= 2.29. This allows Rust binaries to link against
