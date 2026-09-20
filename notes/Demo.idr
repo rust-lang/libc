@@ -28,14 +28,14 @@ data Resolution : Type where Resolved   : UseTree -> FfiItems -> Resolution
 
 data Ungrouped : UseTree -> Type where NameWitness :  Ungrouped (Name _)
                                        GlobWitness :  Ungrouped Glob
-                                       PathWitness :  {auto 0 prf : Ungrouped t}
+                                       PathWitness :  {auto prf : Ungrouped t}
                                                    -> Ungrouped (Path _ t)
 
 data UngroupedItems : FfiItems -> Type where
   EmptyWitness :  UngroupedItems (MkFfiItems _ _ _ [])
-  Witness      :  {auto 0 prfs : UngroupedItems (MkFfiItems _ _ _ ts)}
-               -> {auto 0 prf : Ungrouped t}
-               -> UngroupedItems (MkFfiItems _ _ _ (t :: ts))
+  Witness      :  {auto prfs : UngroupedItems (MkFfiItems mid is ms ts)}
+               -> {auto prf : Ungrouped t}
+               -> UngroupedItems (MkFfiItems mid is ms (t :: ts))
 
 empty : String -> FfiItems
 empty s = MkFfiItems s [] [] []
@@ -64,18 +64,28 @@ normalize it = let nl = (foldr f []) . uses $ it in fin nl it where
     f' o@(Group l) =
       map (\t => f' $ assert_smaller o t) l |> join
 
-  -- [NOTE]: this builds up a proof tree by deconstructing the already proven
-  -- trees of group-clean imports. The goal is to explain to the type-checker
-  -- that these imports will make up a module that is guaranteed to be clean of
-  -- group imports.
-  fin :  List (u : UseTree ** Ungrouped u)
-      -> FfiItems
-      -> (i : FfiItems ** UngroupedItems i)
-  fin [] (MkFfiItems mid is ms _) =
-    (MkFfiItems mid is ms [] ** EmptyWitness)
-  fin ((h ** hw) :: t) i          =
-    let (MkFfiItems mid is ms us ** w) = fin t i in
-        (MkFfiItems mid is ms (h :: us) ** Witness {prfs = w} {prf = hw})
+-- [NOTE]: this deconstructs a module that is proven to contain no group
+-- imports, into its list of imports (also proven to not contain group imports.)
+-- The inverse of this is done by the `re` function.
+ex : (i : FfiItems ** UngroupedItems i) -> List (u : UseTree ** Ungrouped u)
+ex ((MkFfiItems _ _ _ []) ** _)                              =
+  []
+ex a@(MkFfiItems mid is ms (h :: t) ** Witness {prfs} {prf}) =
+  let na = ((MkFfiItems mid is ms t) ** prfs) in
+      (h ** prf) :: (ex $ assert_smaller a na)
+
+-- [NOTE]: this builds up a proof tree by deconstructing the already proven
+-- trees of group-clean imports. The goal is to explain to the type-checker
+-- that these imports will make up a module that is guaranteed to be clean of
+-- group imports. The inverse of this is done by the `ex` function.
+re :  List (u : UseTree ** Ungrouped u)
+   -> FfiItems
+   -> (i : FfiItems ** UngroupedItems i)
+re [] (MkFfiItems mid is ms _) =
+  (MkFfiItems mid is ms [] ** EmptyWitness)
+re ((h ** hw) :: t) i          =
+  let (MkFfiItems mid is ms us ** w) = re t i in
+      (MkFfiItems mid is ms (h :: us) ** Witness {prfs = w} {prf = hw})
 
 -- resolveOne : (i : FfiItems ** UngroupedItems i) -> List Resolution
 -- resolveOne a@(it ** _) =
@@ -85,12 +95,6 @@ resolveOne _ =
   -- join . (map $ \(u ** _) => resolveReexport u u it) . ex $ a where
     data T : Type where Mod  : FfiItems -> T
                         Item : String -> T
-
-    ex : (i : FfiItems ** UngroupedItems i) -> List (u : UseTree ** Ungrouped u)
-    ex ((MkFfiItems _ _ _ []) ** _)            =
-      []
-    ex a@(it@(MkFfiItems _ _ _ (h :: t)) ** _) =
-      (h ** _) :: (ex $ assert_smaller a (({ uses := t } it) ** _))
 
     f : String -> FfiItems -> Maybe T
     f id (MkFfiItems _ is ms _) = find c ((map Item is) ++ (map Mod ms)) where
@@ -119,18 +123,20 @@ resolveOne _ =
                         Nothing      => [ Unresolved oid ]
 
 merge : (i : FfiItems ** UngroupedItems i) -> List Resolution -> FfiItems
-merge (it ** _) []                                           = it
-merge it@(_ ** _) ((Unresolved _) :: t)                      = merge it t
-merge (it ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge nit t where
-  nit : (i : FfiItems ** UngroupedItems i)
-  nit = let base = { items $= (++ is)
-                   , mods  $= (++ ms)
-                   , uses  $= deleteBy f oid } it in (base ** _) where
-                     f : UseTree -> UseTree -> Bool
-                     f (Name id1) (Name id2) = id1 == id2
-                     f Glob Glob = True
-                     f (Path id1 t1) (Path id2 t2) = id1 == id2 && f t1 t2
-                     f _ _ = False
+merge (it ** _) []                                             = it
+merge it@(_ ** _) ((Unresolved _) :: t)                        = merge it t
+merge it@(_ ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge nit t
+  where nit : (i : FfiItems ** UngroupedItems i)
+        nit = let nus = (deleteBy f oid) . ex $ it in re nus where
+          f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
+          f (Name id1) (Name id2 ** _)                       =
+            id1 == id2
+          f Glob (Glob ** _)                                 =
+            True
+          f (Path id1 t1) (Path id2 t2 ** PathWitness {prf}) =
+            id1 == id2 && f t1 (t2 ** prf)
+          f _ _                                              =
+            False
 
 covering
 resolve : FfiItems -> FfiItems
