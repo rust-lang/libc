@@ -149,7 +149,7 @@ s! {
         pub st_ctime_nsec: c_long,
         pub st_size: off_t,
         pub st_blocks: i64,
-        pub __old_st_blksize: u32,
+        __old_st_blksize: u32,
         pub st_flags: u32,
         pub st_gen: u32,
         st_lspare: Padding<i32>,
