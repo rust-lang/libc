@@ -22,20 +22,20 @@ record FfiItems where
 data Resolution : Type where Resolved   : UseTree -> FfiItems -> Resolution
                              Unresolved : UseTree -> Resolution
 
+-- [NOTE]: the next two types are only used as proof witnesses and will not get
+-- ported over to Rust. Instead, a new, refined type will be used in Rust to
+-- express the constraints imposed by the below dependent types.
+
 data Ungrouped : UseTree -> Type where NameWitness :  Ungrouped (Name _)
                                        GlobWitness :  Ungrouped Glob
                                        PathWitness :  {auto 0 prf : Ungrouped t}
                                                    -> Ungrouped (Path _ t)
 
 data UngroupedItems : FfiItems -> Type where
-  ItemsEmptyWitness :  UngroupedItems (MkFfiItems _ _ _ [])
-  ItemsNameWitness  :  UngroupedItems (MkFfiItems _ _ _ t)
-                    -> UngroupedItems (MkFfiItems _ _ _ ((Name _) :: t))
-  ItemsGlobWitness  :  UngroupedItems (MkFfiItems _ _ _ t)
-                    -> UngroupedItems (MkFfiItems _ _ _ (Glob :: t))
-  ItemsPathWitness  :  UngroupedItems (MkFfiItems _ _ _ t)
-                    -> {auto 0 prf : Ungrouped st}
-                    -> UngroupedItems (MkFfiItems _ _ _ ((Path _ st) :: t))
+  EmptyWitness :  UngroupedItems (MkFfiItems _ _ _ [])
+  Witness      :  {auto 0 prfs : UngroupedItems (MkFfiItems _ _ _ ts)}
+               -> {auto 0 prf : Ungrouped t}
+               -> UngroupedItems (MkFfiItems _ _ _ (t :: ts))
 
 empty : String -> FfiItems
 empty s = MkFfiItems s [] [] []
@@ -55,27 +55,27 @@ normalize it = let nl = (foldr f []) . uses $ it in fin nl it where
     -> List (u : UseTree ** Ungrouped u)
   f = (++) . f' where
     f' : UseTree -> List (u : UseTree ** Ungrouped u)
-    f' (Name id)   = [ ((Name id) ** NameWitness) ]
-    f' Glob        = [ (Glob ** GlobWitness) ]
+    f' (Name id)   =
+      [ ((Name id) ** NameWitness) ]
+    f' Glob        =
+      [ (Glob ** GlobWitness) ]
     f' (Path id t) =
-      map (\(t ** w) => (Path id t ** (PathWitness {prf = w}))) (f' t)
-    f' o@(Group l) = map (\t => f' $ assert_smaller o t) l |> join
+      map (\(t ** w) => (Path id t ** PathWitness {prf = w})) (f' t)
+    f' o@(Group l) =
+      map (\t => f' $ assert_smaller o t) l |> join
 
+  -- [NOTE]: this builds up a proof tree by deconstructing the already proven
+  -- trees of group-clean imports. The goal is to explain to the type-checker
+  -- that these imports will make up a module that is guaranteed to be clean of
+  -- group imports.
   fin :  List (u : UseTree ** Ungrouped u)
       -> FfiItems
       -> (i : FfiItems ** UngroupedItems i)
   fin [] (MkFfiItems mid is ms _) =
-    ((MkFfiItems mid is ms []) ** ItemsEmptyWitness)
-  fin (((Name h) ** _) :: t) i    =
-    let ((MkFfiItems mid is ms us) ** w) = fin t i in
-        ((MkFfiItems mid is ms ((Name h) :: us)) ** (ItemsNameWitness w))
-  fin ((Glob ** _) :: t) i        =
-    let ((MkFfiItems mid is ms us) ** w) = fin t i in
-        ((MkFfiItems mid is ms (Glob :: us)) ** (ItemsGlobWitness w))
-  fin (((Path hid ht) ** htw) :: t) i  =
-    let ((MkFfiItems mid is ms us) ** w) = fin t i in
-        ((MkFfiItems mid is ms ((Path hid ht) :: us)) **
-          (ItemsPathWitness w {prf = htw}))
+    (MkFfiItems mid is ms [] ** EmptyWitness)
+  fin ((h ** hw) :: t) i          =
+    let (MkFfiItems mid is ms us ** w) = fin t i in
+        (MkFfiItems mid is ms (h :: us) ** Witness {prfs = w} {prf = hw})
 
 -- resolveOne : (i : FfiItems ** UngroupedItems i) -> List Resolution
 -- resolveOne a@(it ** _) =
