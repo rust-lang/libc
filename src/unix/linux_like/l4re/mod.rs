@@ -129,7 +129,7 @@ pub const RLIM_NLIMITS: crate::__rlimit_resource_t = 16;
 
 pub const SOL_SOCKET: c_int = 1;
 
-// pub const SO_DEBUG: c_int = 1;
+pub const SO_DEBUG: c_int = 1;
 pub const SO_REUSEADDR: c_int = 2;
 pub const SO_TYPE: c_int = 3;
 pub const SO_ERROR: c_int = 4;
@@ -159,6 +159,8 @@ pub const SO_PEERNAME: c_int = 28;
 
 pub const SO_ACCEPTCONN: c_int = 30;
 pub const SO_PEERSEC: c_int = 31;
+
+pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 
 pub const TCGETS: Ioctl = 0x5401;
 pub const TCSETS: Ioctl = 0x5402;

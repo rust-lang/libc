@@ -807,8 +807,6 @@ pub const MSG_WAITFORONE: c_int = 0x10000;
 pub const MSG_FASTOPEN: c_int = 0x20000000;
 pub const MSG_CMSG_CLOEXEC: c_int = 0x40000000;
 
-pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
-
 pub const IP_TOS: c_int = 1;
 pub const IP_TTL: c_int = 2;
 pub const IP_HDRINCL: c_int = 3;
@@ -1057,8 +1055,6 @@ cfg_if! {
         pub const TCP_MD5SIG_MAXKEYLEN: usize = 80;
     }
 }
-
-pub const SO_DEBUG: c_int = 1;
 
 pub const LOCK_SH: c_int = 1;
 pub const LOCK_EX: c_int = 2;
