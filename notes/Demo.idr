@@ -137,11 +137,12 @@ merge it@(iit ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge nit t
 
 covering
 resolve : FfiItems -> FfiItems
-resolve it = let nit = normalize . { mods $= map resolve } $ it in
-                 let (it ** _) = f . f $ nit in it where
-                   f :  (i : FfiItems ** UngroupedItems i)
-                     -> (i : FfiItems ** UngroupedItems i)
-                   f it = (merge it) . resolveOne $ it
+resolve it = let nit       := normalize . { mods $= map resolve } $ it
+                 (it ** _) := f . f $ nit
+             in it where
+               f :  (i : FfiItems ** UngroupedItems i)
+                 -> (i : FfiItems ** UngroupedItems i)
+               f it = (merge it) . resolveOne $ it
 
 test1 : FfiItems
 test1 = let bar := { items := [ "Foo" ] } . empty $ "bar"
