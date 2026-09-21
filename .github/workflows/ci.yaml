@@ -95,14 +95,9 @@ jobs:
         if: matrix.toolchain == 'stable'
         run: ./ci/prep-semver-baseline.sh
 
-      # FIXME(ci): These `du` statements are temporary for debugging cache
-      - name: Target size before restoring cache
-        run: du -sh target | sort -k 2 || true
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
-      - name: Target size after restoring cache
-        run: du -sh target | sort -k 2 || true
 
       - name: Execute build check
         run: |
@@ -124,8 +119,6 @@ jobs:
             ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
             ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
             ${{ matrix.half && format('--half "{0}"', matrix.half) }}
-      - name: Target size after job completion
-        run: du -sh target | sort -k 2
 
   test_tier1:
     name: Test tier1
