@@ -1159,6 +1159,7 @@ pub const DCCP_SOCKOPT_CCID_TX_INFO: c_int = 192;
 /// maximum number of services provided on the same listening port
 pub const DCCP_SERVICE_LIST_MAX_LEN: c_int = 32;
 
+pub const SO_DEBUG: c_int = 1;
 pub const SO_REUSEADDR: c_int = 2;
 pub const SO_TYPE: c_int = 3;
 pub const SO_ERROR: c_int = 4;
@@ -1209,7 +1210,7 @@ pub const SO_TIMESTAMPING_NEW: c_int = 65;
 pub const SO_DETACH_REUSEPORT_BPF: c_int = 68;
 
 // Defined in unix/linux_like/mod.rs
-// pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
+pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 pub const SCM_TIMESTAMPNS: c_int = SO_TIMESTAMPNS;
 pub const SCM_TIMESTAMPING: c_int = SO_TIMESTAMPING;
 
