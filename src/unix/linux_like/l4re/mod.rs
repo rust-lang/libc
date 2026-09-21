@@ -129,7 +129,7 @@ pub const RLIM_NLIMITS: crate::__rlimit_resource_t = 16;
 
 pub const SOL_SOCKET: c_int = 1;
 
-// pub const SO_DEBUG: c_int = 1;
+pub const SO_DEBUG: c_int = 1;
 pub const SO_REUSEADDR: c_int = 2;
 pub const SO_TYPE: c_int = 3;
 pub const SO_ERROR: c_int = 4;

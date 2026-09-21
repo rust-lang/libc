@@ -1096,6 +1096,7 @@ pub const B3500000: crate::speed_t = 0o010016;
 pub const B4000000: crate::speed_t = 0o010017;
 
 pub const SO_BINDTODEVICE: c_int = 25;
+pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 pub const SO_TIMESTAMP: c_int = 63;
 pub const SO_MARK: c_int = 36;
 pub const SO_RXQ_OVFL: c_int = 40;
@@ -1164,6 +1165,7 @@ pub const IPPROTO_MAX: c_int = 263;
 
 pub const SOL_SOCKET: c_int = 1;
 
+pub const SO_DEBUG: c_int = 1;
 pub const SO_REUSEADDR: c_int = 2;
 pub const SO_TYPE: c_int = 3;
 pub const SO_ERROR: c_int = 4;
