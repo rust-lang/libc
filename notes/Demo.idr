@@ -104,13 +104,16 @@ resolveOne a@(it ** _) =
     resolveReexport oid (Name id) {prf = NameWitness} it@(MkFfiItems mid _ _ _)
       = case f id it of
              Just (Left i)  =>
-               [ Resolved oid ({ items := [ i ] } . empty $ mid) ]
+               [ oid |> Resolved $ { items := [ i ] } . empty $ mid ]
              Just (Right m) =>
-               [ Resolved oid ({ mods := [ m ] } . empty $ mid) ]
+               case uses m of
+                    [] => [ oid |> Resolved $ { mods := [ m ] } . empty $ mid ]
+                    _  => [ Unresolved oid ]
              Nothing        =>
                [ Unresolved oid ]
     resolveReexport oid Glob {prf = GlobWitness} it
-      = [ Resolved oid it ]
+      = case uses it of []  => [ Resolved oid it ]
+                        _ => [ Unresolved oid ]
     resolveReexport oid (Path id t) {prf = PathWitness {prf}} it
       = case f id it of Just (Right m) => resolveReexport oid t {prf} m
                         Just _         => [ Unresolved oid ]
@@ -135,4 +138,6 @@ merge it@(iit ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge nit t
 covering
 resolve : FfiItems -> FfiItems
 resolve it = let nit = normalize . { mods $= map resolve } $ it in
-                 (merge nit) . resolveOne $ nit
+                 f . f $ nit where
+                   f : FfiItems -> FfiItems
+                   f it = (merge it) . resolveOne $ it
