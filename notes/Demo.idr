@@ -106,38 +106,58 @@ resolveOne a@(it ** _) =
              Just (Left i)  =>
                [ oid |> Resolved $ { items := [ i ] } . empty $ mid ]
              Just (Right m) =>
-               case uses m of
-                    [] => [ oid |> Resolved $ { mods := [ m ] } . empty $ mid ]
-                    _  => [ Unresolved oid ]
+               [ oid |> Resolved $ { mods := [ m ] } . empty $ mid ]
              Nothing        =>
                [ Unresolved oid ]
     resolveReexport oid Glob {prf = GlobWitness} it
-      = case uses it of []  => [ Resolved oid it ]
-                        _ => [ Unresolved oid ]
+      = [ Resolved oid it ]
     resolveReexport oid (Path id t) {prf = PathWitness {prf}} it
       = case f id it of Just (Right m) => resolveReexport oid t {prf} m
                         Just _         => [ Unresolved oid ]
                         Nothing        => [ Unresolved oid ]
 
-merge : (i : FfiItems ** UngroupedItems i) -> List Resolution -> FfiItems
-merge (it ** _) []                                               = it
+merge :  (i : FfiItems ** UngroupedItems i)
+      -> List Resolution
+      -> (i : FfiItems ** UngroupedItems i)
+merge it@(_ ** _) []                                             = it
 merge it@(_ ** _) ((Unresolved _) :: t)                          = merge it t
 merge it@(iit ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge nit t
   where nit : (i : FfiItems ** UngroupedItems i)
-        nit = let nus = (deleteBy f oid) . ex $ it in re nus iit where
-          f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
-          f (Name id1) (Name id2 ** _)                       =
-            id1 == id2
-          f Glob (Glob ** _)                                 =
-            True
-          f (Path id1 t1) (Path id2 t2 ** PathWitness {prf}) =
-            id1 == id2 && f t1 (t2 ** prf)
-          f _ _                                              =
-            False
+        nit = let nus = (deleteBy f oid) . ex $ it
+              in { items $= (++ is), mods $= (++ ms) } iit |> re nus where
+                f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
+                f (Name id1) (Name id2 ** _)                       =
+                  id1 == id2
+                f Glob (Glob ** _)                                 =
+                  True
+                f (Path id1 t1) (Path id2 t2 ** PathWitness {prf}) =
+                  id1 == id2 && f t1 (t2 ** prf)
+                f _ _                                              =
+                  False
 
 covering
 resolve : FfiItems -> FfiItems
 resolve it = let nit = normalize . { mods $= map resolve } $ it in
-                 f . f $ nit where
-                   f : FfiItems -> FfiItems
+                 let (it ** _) = f . f $ nit in it where
+                   f :  (i : FfiItems ** UngroupedItems i)
+                     -> (i : FfiItems ** UngroupedItems i)
                    f it = (merge it) . resolveOne $ it
+
+test1 : FfiItems
+test1 = let bar := { items := [ "Foo" ] } . empty $ "bar"
+            foo := { mods := [ bar ] } . empty $ "foo"
+        in { mods := [ foo ]
+           , uses := [ Path "bar" Glob, Path "foo" Glob ] } . empty $ ""
+
+test2 : FfiItems
+test2 =
+  let g := [ Name "TypeId", Name "Any" ]
+  in { uses := [ Path "std" (Path "any" (Group g)) ] } . empty $ ""
+
+test3 : FfiItems
+test3 =
+  let g := [ Path "foo" (Path "bar" (Group [ Name "Ty"
+                                          , Path "test" (Name "foobar") ]))
+           , Name "TypeId"
+           , Name "Any" ]
+  in { uses := [ Path "std" (Path "any" (Group g)) ] } . empty $ ""
