@@ -4781,9 +4781,6 @@ fn test_linux(t: &Target) {
             // FIXME(linux32): Requires >= 6.6 kernel headers.
             "XDP_USE_SG" | "XDP_PKT_CONTD" if p32 => kernel < (6, 6),
 
-            // FIXME(linux): Missing only on this platform for some reason
-            "PR_MDWE_NO_INHERIT" if gnueabihf => true,
-
             // FIXME(musl): Not yet in musl
             // FIXME(linux32): Requires >= 6.8 kernel headers.
             "XDP_UMEM_TX_SW_CSUM"
@@ -4842,6 +4839,7 @@ fn test_linux(t: &Target) {
             "AT_HWCAP3" | "AT_HWCAP4" if old_musl => true,
             "AT_HWCAP3" | "AT_HWCAP4" => kernel < (6, 9),
             "BCACHEFS_SUPER_MAGIC" => kernel < (6, 10),
+            "PR_MDWE_NO_INHERIT" => kernel < (6, 7),
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
             "TLS_INFO_TX_MAX_PAYLOAD_LEN" | "TLS_INFO_MAX" => kernel < (6, 19),
 
