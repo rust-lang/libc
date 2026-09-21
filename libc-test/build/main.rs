@@ -3940,7 +3940,6 @@ fn test_linux(t: &Target) {
     }
 
     let arm32 = t.arm32();
-    let eabihf = t.eabihf();
     let aarch64 = t.aarch64();
     let ppc = t.ppc();
     let ppc64 = t.ppc64();
@@ -3969,6 +3968,7 @@ fn test_linux(t: &Target) {
         None if l4re => (0, 0),
         None => panic!("failed to detect kernel version for Linux target {t:?}",),
     };
+    let glibc = versions.glibc;
 
     let mut musl_v1_2 = env_flag("CARGO_CFG_LIBC_UNSTABLE_MUSL_V1_2");
     if musl_v1_2 {
@@ -4845,6 +4845,10 @@ fn test_linux(t: &Target) {
             "PTRACE_SET_SYSCALL_INFO" => kernel < (6, 16),
             "TLS_INFO_TX_MAX_PAYLOAD_LEN" | "TLS_INFO_MAX" => kernel < (6, 19),
 
+            // Available in fcntl since kernel 6.5 but we don't import that header, so can only
+            // get it via recent glibc.
+            "AT_HANDLE_FID" => kernel < (6, 5) || glibc.is_some_and(|v| v < (2, 39)) || musl,
+
             // statx mask and attribute bits
             "STATX_MNT_ID_UNIQUE" => kernel < (6, 8),
             "STATX_SUBVOL" => kernel < (6, 10),
@@ -4863,10 +4867,6 @@ fn test_linux(t: &Target) {
                     true
                 }
             }
-
-            // FIXME(musl): This value is not yet in musl.
-            // eabihf targets are tested using an older version of glibc
-            "AT_HANDLE_FID" if musl || eabihf => true,
 
             // Added in 7.2
             "FUTEX_ROBUST_UNLOCK" => kernel < (7, 2),
