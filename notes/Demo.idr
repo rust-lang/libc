@@ -137,24 +137,33 @@ merge it@(iit ** _) ((Resolved oid (MkFfiItems _ is ms _)) :: t) = merge nit t
 
 covering
 resolve : FfiItems -> FfiItems
-resolve it = let nit       := normalize . { mods $= map resolve } $ it
-                 (it ** _) := f . f $ nit
-             in it where
-               f :  (i : FfiItems ** UngroupedItems i)
-                 -> (i : FfiItems ** UngroupedItems i)
-               f it = (merge it) . resolveOne $ it
+resolve it = let nit := normalize . { mods $= map resolve } $ it
+             in f nit where
+               e : FfiItems -> Nat
+               e (MkFfiItems _ _ _ us) = length us
 
+               f : (i : FfiItems ** UngroupedItems i) -> FfiItems
+               f a@(it ** _) = let na@(nit ** _) := (merge a) . resolveOne $ a
+                               in case e it == e nit of True  => nit
+                                                        False => f na
+
+-- [NOTE]: the following tests comprise only test data. To test it out, the
+-- Idris REPL is required.
+
+-- [NOTE]: this test is for the resolution function `resolve`.
 test1 : FfiItems
 test1 = let bar := { items := [ "Foo" ] } . empty $ "bar"
             foo := { mods := [ bar ] } . empty $ "foo"
         in { mods := [ foo ]
            , uses := [ Path "bar" Glob, Path "foo" Glob ] } . empty $ ""
 
+-- [NOTE]: this test is for the normalization function `normalize`.
 test2 : FfiItems
 test2 =
   let g := [ Name "TypeId", Name "Any" ]
   in { uses := [ Path "std" (Path "any" (Group g)) ] } . empty $ ""
 
+-- [NOTE]: this test is for the normalization function `normalize`.
 test3 : FfiItems
 test3 =
   let g := [ Path "foo" (Path "bar" (Group [ Name "Ty"
@@ -162,3 +171,22 @@ test3 =
            , Name "TypeId"
            , Name "Any" ]
   in { uses := [ Path "std" (Path "any" (Group g)) ] } . empty $ ""
+
+-- [NOTE]: this test is for the resolution function `resolve`.
+test4 : FfiItems
+test4 =
+  let uses   := [ Path "std" (Path "os" (Path "raw" (Name "c_void")))
+                , Path "level1" Glob ]
+      level1 := { items := [ "Foo", "bar", "Word" ] } . empty $ "level1"
+      mods   := [ level1 ]
+      items  := [ "Array", "baz", "malloc" ]
+  in { items := items, mods := mods, uses := uses } . empty $ ""
+
+-- [NOTE]: this test is for the resolution function `resolve`.
+test5 : FfiItems
+test5 =
+  let foobar := { items := [ "Foo" ] } . empty $ "foobar"
+      bar    := { mods := [ foobar ] } . empty $ "bar"
+      foo    := { mods := [ bar ] } . empty $ "foo"
+  in { uses := [ Path "foobar" Glob, Path "bar" Glob, Path "foo" (Name "bar") ]
+     , mods := [ foo ] } . empty $ ""
