@@ -178,7 +178,7 @@ s2! {
     }
 
     #[exhaustive] // FIXME(exhaustive): review for 1.0
-    #[cfg(not(target_os = "horizon"))]
+    #[cfg(not(any(target_os = "horizon", target_os = "nuttx")))]
     pub struct pollfd {
         pub fd: c_int,
         pub events: c_short,
