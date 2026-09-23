@@ -708,4 +708,8 @@ extern "C" {
     pub fn eventfd(count: c_uint, flags: c_int) -> c_int;
     // unistd.h
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
+
+    pub fn sem_init(sem: *mut sem_t, pshared: c_int, value: c_uint) -> c_int;
+    pub fn sem_destroy(sem: *mut sem_t) -> c_int;
+    pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
 }
