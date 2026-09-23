@@ -163,7 +163,7 @@ s! {
         pub iov_len: size_t,
     }
 
-    #[cfg(not(target_os = "horizon"))]
+    #[cfg(all(not(target_os = "horizon"), not(target_os = "nuttx")))]
     pub struct pollfd {
         pub fd: c_int,
         pub events: c_short,
