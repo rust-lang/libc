@@ -307,11 +307,11 @@ const __DEFAULT_RESERVED_SIZE__: usize = 2;
 
 const __SOCKADDR_STORAGE_SIZE__: usize = 36;
 const __PTHREAD_ATTR_SIZE__: usize = 5;
-const __PTHREAD_MUTEX_SIZE__: usize = 9;
-const __PTHREAD_COND_SIZE__: usize = 7;
+const __PTHREAD_MUTEX_SIZE__: usize = 14; // Assumes CONFIG_LIBC_MUTEX_BACKTRACE=0
+const __PTHREAD_COND_SIZE__: usize = 13;
 const __PTHREAD_CONDATTR_SIZE__: usize = 5;
-const __PTHREAD_RWLOCK_SIZE__: usize = 17;
-const __SEM_SIZE__: usize = 6;
+const __PTHREAD_RWLOCK_SIZE__: usize = 30;
+const __SEM_SIZE__: usize = 11;
 const __NAME_MAX__: usize = 64;
 const __FDSET_SIZE__: usize = 10;
 const __SIGSET_SIZE__: usize = 8;
