@@ -2731,6 +2731,19 @@ fn test_freebsd(t: &Target) {
                 true
             }
 
+            // FIXME(freebsd): `AT_RENAME_NOREPLACE` and `RENAME_NOREPLACE` were
+            // introduced in FreeBSD 15.1, `AT_RENAME_EXCHANGE` and `RENAME_EXCHANGE`
+            // in 15-STABLE. CI runs 14.4 and 15.0, and `freebsd_ver` only tracks the
+            // major version, so skip these until CI moves to a release that has them.
+            "AT_RENAME_NOREPLACE"
+            | "AT_RENAME_EXCHANGE"
+            | "RENAME_NOREPLACE"
+            | "RENAME_EXCHANGE"
+                if Some(16) > freebsd_ver =>
+            {
+                true
+            }
+
             // These aliases were introduced in FreeBSD 13:
             // (note however that the constants themselves work on any version)
             "CLOCK_BOOTTIME" | "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE"
