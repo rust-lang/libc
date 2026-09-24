@@ -20,7 +20,7 @@ success=false
 while [ $count -lt 3 ]; do
     $deps && success=true || true
     [ $success = true ] && break
-    sleep 3s
+    sleep 3
     count=$(( count + 1))
 done
 
