@@ -1628,6 +1628,18 @@ s! {
     }
 }
 
+s2! {
+    pub struct ifaliasreq {
+        pub ifra_name: [c_char; crate::IFNAMSIZ],
+        #[custom_default(unsafe { mem::zeroed::<crate::sockaddr>() })]
+        pub ifra_addr: crate::sockaddr,
+        #[custom_default(unsafe { mem::zeroed::<crate::sockaddr>() })]
+        pub ifra_broadaddr: crate::sockaddr,
+        #[custom_default(unsafe { mem::zeroed::<crate::sockaddr>() })]
+        pub ifra_mask: crate::sockaddr,
+    }
+}
+
 s_no_extra_traits! {
     #[repr(packed(4))]
     pub struct ifconf {
