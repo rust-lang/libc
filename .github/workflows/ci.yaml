@@ -416,7 +416,7 @@ jobs:
 
   zizmor:
     name: Zizmor (Static analysis for GitHub Actions)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       security-events: write
     timeout-minutes: 10
