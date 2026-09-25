@@ -738,7 +738,7 @@ impl TestGenerator {
     ///
     /// If the tested crate uses `#![crate_name = "..."]`, this must be called with the
     /// same name. Otherwise, there will be an error about `--crate-name` not
-    /// matching.
+    /// matching. Ignored when the crate is given by its `Cargo.toml`.
     pub fn crate_name(&mut self, name: String) -> &mut Self {
         self.crate_name = Some(name);
         self
@@ -1101,6 +1101,8 @@ impl TestGenerator {
     }
 
     /// Generate the Rust and C testing files.
+    ///
+    /// `crate_path` is the crate's `Cargo.toml`, or the root file of a crate without dependencies.
     ///
     /// Returns the path to the generated file.
     pub fn generate_files(

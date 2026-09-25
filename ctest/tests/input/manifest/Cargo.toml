@@ -1,0 +1,9 @@
+[package]
+name = "manifest"
+edition = "2021"
+
+[dependencies]
+manifest-dep = { path = "dep" }
+
+# Keeps this fixture out of the `libc` workspace.
+[workspace]
