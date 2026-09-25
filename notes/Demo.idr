@@ -24,8 +24,15 @@ namespace FfiItems
     mods  : List (FfiItems (S n))
     uses  : List UseTree
 
-data Resolution : Type where Resolved   : UseTree -> FfiItems _ -> Resolution
-                             Unresolved : UseTree -> Resolution
+record ResolvedItem where
+  constructor MkResolved
+  items : List String
+  mods  : List (FfiItems depth)
+  uses  : List UseTree
+
+data Resolution : Type where
+  Resolved   : UseTree -> ResolvedItem -> Resolution
+  Unresolved : UseTree -> Resolution
 
 record StatefulItems (n : Nat) where
   constructor MkState
@@ -132,19 +139,28 @@ namespace ResolveNode
            True  => case findParent st of
                          Just m  =>
                            [ oid |> Resolved $
-                             { mods := [ m ] } . (empty mp) $ mid ]
+                             MkResolved { items = [ ]
+                                        , mods = [ m ]
+                                        , uses = [ ] } ]
                          Nothing => idris_crash "[TODO]"
            False => case f id it of
                          Just (Left i)  =>
                            [ oid |> Resolved $
-                             { items := [ i ] } . (empty mp) $ mid ]
+                             MkResolved { items = [ i ]
+                                        , mods = [ ]
+                                        , uses = [ ]
+                                        , depth = Z } ]
                          Just (Right m) =>
                            [ oid |> Resolved $
-                             { mods := [ m ] } . (empty mp) $ mid ]
+                             MkResolved { items = [ ]
+                                        , mods = [ m ]
+                                        , uses = [ ] } ]
                          Nothing        =>
                            [ Unresolved oid ]
   resolveReexport oid Glob {prf = Glob} (MkState { state = _, current = it })
-    = [ Resolved oid it ]
+    = [ Resolved oid $ MkResolved { items = items it
+                                  , mods = mods it
+                                  , uses = uses it } ]
   resolveReexport oid (Path id t) {prf = Path {prf}}
                   ist@(MkState { state = st, current = it })
     = case id == "super" of
@@ -169,13 +185,20 @@ namespace ResolveRoot
                   (MkState { state = _, current = it@(MkFfiItems mp mid _ _ _) })
     = case f id it of
            Just (Left i)  =>
-             [ oid |> Resolved $ { items := [ i ] } . (empty mp) $ mid ]
+             [ oid |> Resolved $ MkResolved { items = [ i ]
+                                            , mods = [ ]
+                                            , uses = [ ]
+                                            , depth = Z } ]
            Just (Right m) =>
-             [ oid |> Resolved $ { mods := [ m ] } . (empty mp) $ mid ]
+             [ oid |> Resolved $ MkResolved { items = [ ]
+                                            , mods = [ m ]
+                                            , uses = [ ] } ]
            Nothing        =>
              [ Unresolved oid ]
   resolveReexport oid Glob {prf = Glob} (MkState { state = _, current = it })
-    = [ Resolved oid it ]
+    = [ Resolved oid $ MkResolved { items = items it
+                                  , mods = mods it
+                                  , uses = uses it } ]
   resolveReexport oid (Path id t) {prf = Path {prf}}
                   (MkState { state = st, current = it })
     = case f id it of Just (Right m) =>
@@ -203,21 +226,27 @@ resolveOne a@(it ** _) st = join . (map $ f) . ex $ a where
 merge :  (i : FfiItems n ** UngroupedItems i)
       -> List Resolution
       -> (i : FfiItems n ** UngroupedItems i)
-merge it@(_ ** _) []                                               = it
-merge it@(_ ** _) ((Unresolved _) :: t)                            = merge it t
-merge it@(iit ** _) ((Resolved oid (MkFfiItems _ _ is ms _)) :: t) = merge nit t
-  where nit : (i : FfiItems n ** UngroupedItems i)
---         nit = let nus = (deleteBy f oid) . ex $ it
---               in { items $= (++ is), mods $= (++ ms) } iit |> re nus where
---                 f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
---                 f (Name id1) (Name id2 ** _)                       =
---                   id1 == id2
---                 f Glob (Glob ** _)                                 =
---                   True
---                 f (Path id1 t1) (Path id2 t2 ** Path {prf}) =
---                   id1 == id2 && f t1 (t2 ** prf)
---                 f _ _                                              =
---                   False
+merge it@(_ ** _) []                                           = it
+merge it@(_ ** _) ((Unresolved _) :: t)                        = merge it t
+merge it@(iit ** _) ((Resolved oid (MkResolved is ms _)) :: t) = merge nit t
+  where
+    transform :  FfiItems _
+              -> (FfiItems m, List (FfiItems m))
+              -> FfiItems (S m)
+    transform it (st, its) = (++ [ ident it ]) . path $ st |> empty $ ?transformrest
+
+    nit : (i : FfiItems n ** UngroupedItems i)
+    nit = let nus = (deleteBy f oid) . ex $ it
+          in { items $= (++ is), mods $= (++ ms) } iit |> re nus where
+            f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
+            f (Name id1) (Name id2 ** _)                =
+              id1 == id2
+            f Glob (Glob ** _)                          =
+              True
+            f (Path id1 t1) (Path id2 t2 ** Path {prf}) =
+              id1 == id2 && f t1 (t2 ** prf)
+            f _ _                                       =
+              False
 
 -- [TODO]: implement this function correctly.
 covering
@@ -238,11 +267,12 @@ resolveDriver (MkState { state = st, current = it }) =
       in (nst, nit :: its)
 
     f : (i : FfiItems n ** UngroupedItems i) -> FfiItems Z -> StatefulItems n
-    f a@(it ** _) st = let na@(nit ** _) := st |> resolveOne a |> merge a
-                           nst           := updateMod nit st
-                       in case (length . uses $ it) == (length . uses $ nit) of
-                               True  => MkState { state = nst, current = nit }
-                               False => f na nst
+    f a@(it ** _) st =
+      let na@(nit ** _) := st |> resolveOne a |> merge a
+          nst           := updateMod nit st
+      in case (List.length . uses $ it) == (List.length . uses $ nit) of
+              True  => MkState { state = nst, current = nit }
+              False => f na nst
 
 partial
 resolve : FfiItems Z -> FfiItems Z
