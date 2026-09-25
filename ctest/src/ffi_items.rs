@@ -95,6 +95,26 @@ impl FfiItems {
     pub(crate) fn foreign_statics(&self) -> &Vec<Static> {
         &self.foreign_statics
     }
+
+    /// Entry point to parse a [`syn::File`].
+    ///
+    /// This will also resolve `use`-trees such that the resulting `FfiItems`
+    /// instance is always left with no reexports that are not sourced from
+    /// third-party crates.
+    pub(crate) fn visit_file(&mut self, file: &syn::File) {
+        let syn::File { attrs, items: mod_items, .. } = file;
+        let file_mod = syn::ItemMod {
+            attrs: attrs,
+            vis: syn::parse_quote! { pub },
+            unsafety: None,
+            mod_token: syn::token::Mod::default(),
+            ident: syn::Ident::new("__ctest_root_mod", proc_macro2::Span::call_site()),
+            content: Some((syn::token::Brace::default(), mod_items)),
+            semi: None,
+        };
+        items.visit_item_mod(&file_mod);
+        *self = resolve_use_trees(self.clone());
+    }
 }
 
 impl Default for FfiItems {
@@ -114,6 +134,10 @@ impl Default for FfiItems {
             },
         }
     }
+}
+
+fn resolve_use_trees(module: FfiItems) -> FfiItems {
+    todo!();
 }
 
 /// Appends a new module-local item to an absolute path that does *not* start
@@ -359,15 +383,7 @@ impl<'ast> Visit<'ast> for FfiItems {
         // but rather make all items in the module become the items of the
         // current module (the crate root.)
         if ident == "__ctest_root_mod" {
-            mod_items.iter().for_each(|it| {
-                match it {
-                    Type(t) => visit::visit_item_type(self, &t)
-                    Struct(s) => visit::visit_item_struct(self, &s),
-                    Union(u) => visit::visit_item_union(self, &u),
-                    Const(c) => visit::visit_item_const(self, &c),
-                    ForeginMod(m) => visit::visit_item_foreign_mod(self, &md),
-                }
-            });
+            visit::visit_item_mod(self, i);
             self.uses = uses;
         } else {
             let public = matches!(vis, Visibility::Public(_));
@@ -376,6 +392,7 @@ impl<'ast> Visit<'ast> for FfiItems {
             let mut items = FfiItems::new();
             items.current_module = path.clone();
             visit::visit_item_mod(&mut items, i);
+            items.uses = uses;
             self.modules.push(Module {
                 public,
                 ident,
@@ -389,11 +406,13 @@ impl<'ast> Visit<'ast> for FfiItems {
 #[test]
 fn tmp() {
     let source = r#"
-    use std::*;
+use std::*;
 
-    fn main() {
-        use std::any::*;
-    }
+mod test { use std::any::*; pub struct Foo; }
+
+fn main() {
+    use std::any::*;
+}
     "#;
     let mut items = FfiItems::default();
     let syn::File { attrs, items: mod_items, .. } = syn::parse_file(source).unwrap();
@@ -407,5 +426,5 @@ fn tmp() {
         semi: None,
     };
     items.visit_item_mod(&file_mod);
-    println!("{:#?}", items.modules.last().unwrap());
+    println!("{:#?}", items);
 }
