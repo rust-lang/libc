@@ -39,6 +39,7 @@ pub(crate) struct FfiItems {
     pub(crate) constants: Vec<Const>,
     pub(crate) foreign_functions: Vec<Fn>,
     pub(crate) foreign_statics: Vec<Static>,
+    pub(crate) uses: Vec<syn::ItemUse>,
     pub(crate) modules: Vec<Module>,
 
     /// This is used while recursing through parsed modules to gather absolute
@@ -106,6 +107,7 @@ impl Default for FfiItems {
             foreign_functions: Default::default(),
             foreign_statics: Default::default(),
             modules: Default::default(),
+            uses: Default::default(),
             current_module: syn::Path {
                 leading_colon: None,
                 segments: Default::default(),
@@ -336,19 +338,74 @@ impl<'ast> Visit<'ast> for FfiItems {
     }
 
     fn visit_item_mod(&mut self, i: &'ast syn::ItemMod) {
-        let syn::ItemMod { vis, ident, .. } = i;
-        let public = matches!(vis, Visibility::Public(_));
-        let path = append_path(&self.current_module, ident);
-        let ident = path_to_string(&path);
-        let mut items = FfiItems::new();
-        items.current_module = path.clone();
-        visit::visit_item_mod(&mut items, i);
+        let syn::ItemMod { vis, ident, content: Some((_, mod_items)), .. } = i else {
+            unreachable!("this runs post cargo-expand, which inlines all modules");
+        };
+        let uses: Vec<_> = mod_items
+            .iter()
+            .cloned()
+            .filter_map(|it| {
+                if let syn::Item::Use(it) = it {
+                    Some(it)
+                } else {
+                    None
+                }
+            })
+            .collect();
 
-        self.modules.push(Module {
-            public,
-            ident,
-            path,
-            items,
-        });
+        // [NOTE]: if the module is known to keep be the virtual module that we
+        // create to process the items in the crate root, then we require not
+        // creating a new module that will become a child to the current one,
+        // but rather make all items in the module become the items of the
+        // current module (the crate root.)
+        if ident == "__ctest_root_mod" {
+            mod_items.iter().for_each(|it| {
+                match it {
+                    Type(t) => visit::visit_item_type(self, &t)
+                    Struct(s) => visit::visit_item_struct(self, &s),
+                    Union(u) => visit::visit_item_union(self, &u),
+                    Const(c) => visit::visit_item_const(self, &c),
+                    ForeginMod(m) => visit::visit_item_foreign_mod(self, &md),
+                }
+            });
+            self.uses = uses;
+        } else {
+            let public = matches!(vis, Visibility::Public(_));
+            let path = append_path(&self.current_module, ident);
+            let ident = path_to_string(&path);
+            let mut items = FfiItems::new();
+            items.current_module = path.clone();
+            visit::visit_item_mod(&mut items, i);
+            self.modules.push(Module {
+                public,
+                ident,
+                path,
+                items,
+            });
+        }
     }
+}
+
+#[test]
+fn tmp() {
+    let source = r#"
+    use std::*;
+
+    fn main() {
+        use std::any::*;
+    }
+    "#;
+    let mut items = FfiItems::default();
+    let syn::File { attrs, items: mod_items, .. } = syn::parse_file(source).unwrap();
+    let file_mod: syn::ItemMod = syn::ItemMod {
+        attrs: attrs,
+        vis: syn::parse_quote! { pub },
+        unsafety: None,
+        mod_token: syn::token::Mod::default(),
+        ident: syn::Ident::new("__ctest_root_mod", proc_macro2::Span::call_site()),
+        content: Some((syn::token::Brace::default(), mod_items)),
+        semi: None,
+    };
+    items.visit_item_mod(&file_mod);
+    println!("{:#?}", items.modules.last().unwrap());
 }

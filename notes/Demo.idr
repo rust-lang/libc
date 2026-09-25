@@ -1,8 +1,7 @@
 module Demo
 
 import Data.List
-import Data.List.Quantifiers
-import Data.List1
+import Data.Vect
 
 %default total
 
@@ -13,53 +12,29 @@ namespace UseTree
                             Glob  : UseTree
                             Group : List UseTree -> UseTree
 
-namespace RootUseTree
-  public export
-  data RootUseTree : Type where
-    Path  :  (s : String)
-          -> { auto prf : Not (s = "super") }
-          -> RootUseTree
-          -> RootUseTree
-    Name  : (s : String) -> { auto prf : Not (s = "super") } -> RootUseTree
-    Group : List RootUseTree -> RootUseTree
-    Glob  : RootUseTree
+ModulePath : Nat -> Type
+ModulePath n = Vect n String
 
-ModulePath : Type
-ModulePath = List String
+namespace FfiItems
+  record FfiItems (n : Nat) where
+    constructor MkFfiItems
+    path  : Vect n String
+    ident : String
+    items : List String
+    mods  : List (FfiItems (S n))
+    uses  : List UseTree
 
-data ModuleKind = Root | Node
-
-determineModulePath : ModuleKind -> Type
-determineModulePath Root = Void
-determineModulePath Node = List1 String
-
-determineModuleUseTree : ModuleKind -> Type
-determineModuleUseTree Root = RootUseTree
-determineModuleUseTree Node = UseTree
-
--- [NOTE]: we do not currently consider item paths. We consider solely
--- identifiers. This applies to both `FfiItems` and its list of items
--- (themselves solely identifiers.)
-record FfiItems (s : ModuleKind) where
-  constructor MkFfiItems
-  path  : determineModulePath s
-  ident : String
-  items : List String
-  mods  : List (FfiItems Node)
-  uses  : List (determineModuleUseTree s)
-
-data Resolution : Type where Resolved   : UseTree -> FfiItems -> Resolution
+data Resolution : Type where Resolved   : UseTree -> FfiItems _ -> Resolution
                              Unresolved : UseTree -> Resolution
 
-record StatefulItems where
+record StatefulItems (n : Nat) where
   constructor MkState
-  state : FfiItems
-  new   : FfiItems
+  state : FfiItems Z
+  current   : FfiItems n
 
--- [NOTE]: the next types are only used as proof witnesses and will not get
--- ported over to Rust. Instead, a new, refined type will be used in Rust to
--- express the constraints imposed by the below dependent types.
-
+-- [NOTE]: these types are only used as proof witnesses and will not get ported
+-- over to Rust. Instead, a new, refined type will be used in Rust to express
+-- the constraints imposed by the below dependent types.
 namespace Ungrouped
   public export
   data Ungrouped : UseTree -> Type where Name :  Ungrouped (Name _)
@@ -68,64 +43,19 @@ namespace Ungrouped
                                               -> Ungrouped (Path _ t)
 
   public export
-  data UngroupedItems : FfiItems -> Type where
+  data UngroupedItems : FfiItems _ -> Type where
     Empty   :  UngroupedItems (MkFfiItems _ _ _ _ [])
     Witness :  {auto prfs : UngroupedItems (MkFfiItems mp mid is ms ts)}
             -> {auto prf : Ungrouped t}
             -> UngroupedItems (MkFfiItems mp mid is ms (t :: ts))
 
--- [NOTE]: this is just a forward definition of the proof that is given later on
--- to show that a module has a non-empty path. It is needed for the proof that a
--- given module is the root module, and using a mutual block often negatively
--- impacts the type-checker.
-namespace NodeModule
-  public export
-  data NodeModule : FfiItems -> Type
-
-namespace RootModule
-  namespace Constraints
-    export
-    data IdUseTree : UseTree -> Type where Name : IdUseTree (Name _)
-                                           Path : IdUseTree (Path _ _)
-
-    export
-    data NonIdUseTree : UseTree -> Type where Glob  : NonIdUseTree Glob
-                                              Group : NonIdUseTree (Group _)
-
-  public export
-  data RootModule : FfiItems -> Type where
-    Empty  :  RootModule (MkFfiItems [] "" _ [] [])
-    Module :  { auto prfs : RootModule (MkFfiItems mp mid is ms us) }
-           -> { auto prf : NodeModule nm }
-           -> RootModule (MkFfiItems mp mid is (nm :: ms) us)
-    Name   :  { auto prfs : RootModule (MkFfiItems mp mid is ms us) }
-           -> { auto prf1 : Not (s = "super") }
-           -> { auto prf2 : IdUseTree (Name s) }
-           -> RootModule (MkFfiItems mp mid is ms ((Name s) :: us))
-    Path   :  { auto prfs : RootModule (MkFfiItems mp mid is ms us) }
-           -> { auto prf1 : Not (s = "super") }
-           -> { auto prf2 : IdUseTree (Path s t) }
-           -> RootModule (MkFfiItems mp mid is ms ((Path s t) :: us))
-    Other  :  { auto prfs : RootModule (MkFfiItems mp mid is ms us) }
-           -> { auto prf : NonIdUseTree o }
-           -> RootModule (MkFfiItems mp mid is ms (o :: us))
-
-namespace NodeModule
-  public export
-  data NodeModule : FfiItems -> Type where
-    Empty  :  { auto prf : Not (s = "") }
-           -> NodeModule (MkFfiItems (_ :: _) s _ [] _)
-    Module :  { auto prfs : NodeModule (MkFfiItems mp mid is ms us) }
-           -> { auto prf : NodeModule nm }
-           -> NodeModule (MkFfiItems mp mid is (nm :: ms) us)
-
-empty : ModulePath -> String -> FfiItems
+empty : ModulePath n -> String -> FfiItems n
 empty p id = MkFfiItems p id [] [] []
 
 -- [NOTE]: this deconstructs a module that is proven to contain no group
 -- imports, into its list of imports (also proven to not contain group imports.)
 -- The inverse of this is done by the `re` function.
-ex : (i : FfiItems ** UngroupedItems i) -> List (u : UseTree ** Ungrouped u)
+ex : (i : FfiItems _ ** UngroupedItems i) -> List (u : UseTree ** Ungrouped u)
 ex ((MkFfiItems _ _ _ _ []) ** _)                            =
   []
 ex a@(MkFfiItems mp mid is ms (h :: t) ** Witness {prfs} {prf}) =
@@ -133,23 +63,22 @@ ex a@(MkFfiItems mp mid is ms (h :: t) ** Witness {prfs} {prf}) =
       (h ** prf) :: (ex $ assert_smaller a na)
 
 -- [NOTE]: this builds up a proof tree by deconstructing the already proven
--- trees of group-clean imports. The goal is to explain to the type-checker
--- that these imports will make up a module that is guaranteed to be clean of
+-- trees of group-clean imports. The goal is to explain to the type-checker that
+-- these imports will make up a module that is guaranteed to be clean of
 -- group imports. The inverse of this is done by the `ex` function.
 re :  List (u : UseTree ** Ungrouped u)
-   -> FfiItems
-   -> (i : FfiItems ** UngroupedItems i)
+   -> FfiItems n
+   -> (i : FfiItems n ** UngroupedItems i)
 re [] (MkFfiItems mp mid is ms _) =
   (MkFfiItems mp mid is ms [] ** Empty)
 re ((h ** hw) :: t) i          =
   let (MkFfiItems mp mid is ms us ** w) = re t i in
       (MkFfiItems mp mid is ms (h :: us) ** Witness {prfs = w} {prf = hw})
 
-normalize : FfiItems -> (i : FfiItems ** UngroupedItems i)
+normalize : FfiItems n -> (i : FfiItems n ** UngroupedItems i)
 normalize it = let nl = (foldr f []) . uses $ it in re nl it where
   -- [NOTE]: this function requires asserting to the totality checker that the
-  -- trees rooted at group imports are always bound to be smaller than the trees
-  -- rooted one level above. This is because the shape of the `UseTree` type in
+  -- trees ro(t : Nat)oted at group imports are always bound to be smaller than the trees rooted one level above. This is because the shape of the `UseTree` type in
   -- group imports stops "growing" when it finds lists. The items of these lists
   -- (themselves trees) could then be found to be potentially larger than the
   -- top-level parent group. This is a contradiction because a path's tail's
@@ -169,111 +98,155 @@ normalize it = let nl = (foldr f []) . uses $ it in re nl it where
     f' o@(Group l) =
       map (\t => f' $ assert_smaller o t) l |> join
 
-resolveOne : (i : FfiItems ** UngroupedItems i) -> FfiItems -> List Resolution
-resolveOne a@(it ** _) st =
-  let p := MkState { state = st, new = it }
-  in join . (map $ \(u ** prf) => resolveReexport u u {prf} p) . ex $ a where
-    f : String -> FfiItems -> Maybe (Either String FfiItems)
-    f id (MkFfiItems _ _ is ms _) =
-      find c ((map Left is) ++ (map Right ms)) where
-        c : Either String FfiItems -> Bool
-        c (Left s) = s == id
-        c (Right (MkFfiItems _ mid _ _ _)) = mid == id
+-- [TODO]: reimplement this.
+f :  String -> FfiItems n -> Maybe (Either String (FfiItems (S n)))
 
-    trimSuper :  (t : UseTree ** Ungrouped t)
-              -> (Nat, (t : UseTree ** Ungrouped t))
-    trimSuper t = f t Z where
-      f :  (t : UseTree ** Ungrouped t)
-        -> Nat
-        -> (Nat, (t : UseTree ** Ungrouped t))
-      f (Path "super" nt ** Path {prf}) s = S s |> f (nt ** prf)
-      f t@(_ ** _) s                             = (s, t)
+samePath : ModulePath _ -> ModulePath _ -> Bool
+samePath [] [] = True
+samePath (h1 :: t1) (h2 :: t2) = h1 == h2 && samePath t1 t2
+samePath _ _ = False
 
-    findSuper : FfiItems -> ModulePath -> FfiItems
-    -- findSuper it p = let np := reverse . tail . reverse $ p
-    --                  in ?rhs
+covering
+findParent : StatefulItems (S n) -> Maybe (FfiItems n)
+findParent (MkState { state = st, current = (MkFfiItems cmp _ _ _ _) }) =
+  f st where r : FfiItems _ -> Maybe (FfiItems n) -> Maybe (FfiItems n)
+             f : FfiItems _ -> Maybe (FfiItems n)
+             r it Nothing = f it
+             r _ p        = p
+             f it@(MkFfiItems mp _ _ ms _) =
+               case samePath (reverse . tail . reverse $ cmp) mp of
+                    True  => believe_me $ Just it
+                    False => foldr r Nothing ms
 
-    resolveReexport :  UseTree
-                    -> (t : UseTree)
-                    -> {auto 0 prf : Ungrouped t}
-                    -> StatefulItems
-                    -> List Resolution
-    resolveReexport oid (Name id) {prf = Name}
-                    (MkState { state = _, new = it@(MkFfiItems mp mid _ _ _) })
-      = case f id it of
-             Just (Left i)  =>
-               [ oid |> Resolved $ { items := [ i ] } . (empty mp) $ mid ]
-             Just (Right m) =>
-               [ oid |> Resolved $ { mods := [ m ] } . (empty mp) $ mid ]
-             Nothing        =>
-               [ Unresolved oid ]
-    resolveReexport oid Glob {prf = Glob}
-                    (MkState { state = _, new = it })
-      = [ Resolved oid it ]
-    resolveReexport oid (Path id t) {prf = Path {prf}}
-                    (MkState { state = st, new = it })
-      = case f id it of Just (Right m) =>
-                          let np := MkState { state = st, new = m }
-                          in resolveReexport oid t {prf} np
-                        Just _         => [ Unresolved oid ]
-                        Nothing        => [ Unresolved oid ]
+namespace ResolveNode
+  public export partial
+  resolveReexport :  UseTree
+                  -> (t : UseTree)
+                  -> {auto 0 prf : Ungrouped t}
+                  -> StatefulItems (S _)
+                  -> List Resolution
+  resolveReexport oid (Name id) {prf = Name}
+                  st@(MkState { state = _
+                              , current = it@(MkFfiItems mp mid _ _ _) })
+    = case id == "super" of
+           True  => case findParent st of
+                         Just m  =>
+                           [ oid |> Resolved $
+                             { mods := [ m ] } . (empty mp) $ mid ]
+                         Nothing => idris_crash "[TODO]"
+           False => case f id it of
+                         Just (Left i)  =>
+                           [ oid |> Resolved $
+                             { items := [ i ] } . (empty mp) $ mid ]
+                         Just (Right m) =>
+                           [ oid |> Resolved $
+                             { mods := [ m ] } . (empty mp) $ mid ]
+                         Nothing        =>
+                           [ Unresolved oid ]
+  resolveReexport oid Glob {prf = Glob} (MkState { state = _, current = it })
+    = [ Resolved oid it ]
+  resolveReexport oid (Path id t) {prf = Path {prf}}
+                  ist@(MkState { state = st, current = it })
+    = case id == "super" of
+           True  => case findParent ist of
+                         Just m  => ?rhspath
+                         Nothing => idris_crash "[TODO]"
+           False => case f id it of
+                         Just (Right m) =>
+                           let np := MkState { state = st, current = m }
+                           in ResolveNode.resolveReexport oid t {prf} np
+                         Just _         => [ Unresolved oid ]
+                         Nothing        => [ Unresolved oid ]
 
-merge :  (i : FfiItems ** UngroupedItems i)
+namespace ResolveRoot
+  public export
+  resolveReexport :  UseTree
+                  -> (t : UseTree)
+                  -> {auto 0 prf : Ungrouped t}
+                  -> StatefulItems _
+                  -> List Resolution
+  resolveReexport oid (Name id) {prf = Name}
+                  (MkState { state = _, current = it@(MkFfiItems mp mid _ _ _) })
+    = case f id it of
+           Just (Left i)  =>
+             [ oid |> Resolved $ { items := [ i ] } . (empty mp) $ mid ]
+           Just (Right m) =>
+             [ oid |> Resolved $ { mods := [ m ] } . (empty mp) $ mid ]
+           Nothing        =>
+             [ Unresolved oid ]
+  resolveReexport oid Glob {prf = Glob} (MkState { state = _, current = it })
+    = [ Resolved oid it ]
+  resolveReexport oid (Path id t) {prf = Path {prf}}
+                  (MkState { state = st, current = it })
+    = case f id it of Just (Right m) =>
+                        let np := MkState { state = st, current = m }
+                        in ResolveRoot.resolveReexport oid t {prf} np
+                      Just _         => [ Unresolved oid ]
+                      Nothing        => [ Unresolved oid ]
+
+
+partial
+resolveOne :  { n : _ }
+           -> (i : FfiItems n ** UngroupedItems i)
+           -> FfiItems Z
+           -> List Resolution
+resolveOne a@(it ** _) st = join . (map $ f) . ex $ a where
+  p : StatefulItems n
+  p = MkState st it
+
+  f : (u : UseTree ** Ungrouped u) -> List Resolution
+  f (u ** prf) = case n of
+                      Z   => ResolveRoot.resolveReexport u u {prf} p
+                      S _ => ResolveNode.resolveReexport u u {prf} p
+
+
+merge :  (i : FfiItems n ** UngroupedItems i)
       -> List Resolution
-      -> (i : FfiItems ** UngroupedItems i)
+      -> (i : FfiItems n ** UngroupedItems i)
 merge it@(_ ** _) []                                               = it
 merge it@(_ ** _) ((Unresolved _) :: t)                            = merge it t
 merge it@(iit ** _) ((Resolved oid (MkFfiItems _ _ is ms _)) :: t) = merge nit t
-  where nit : (i : FfiItems ** UngroupedItems i)
-        nit = let nus = (deleteBy f oid) . ex $ it
-              in { items $= (++ is), mods $= (++ ms) } iit |> re nus where
-                f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
-                f (Name id1) (Name id2 ** _)                       =
-                  id1 == id2
-                f Glob (Glob ** _)                                 =
-                  True
-                f (Path id1 t1) (Path id2 t2 ** Path {prf}) =
-                  id1 == id2 && f t1 (t2 ** prf)
-                f _ _                                              =
-                  False
+  where nit : (i : FfiItems n ** UngroupedItems i)
+--         nit = let nus = (deleteBy f oid) . ex $ it
+--               in { items $= (++ is), mods $= (++ ms) } iit |> re nus where
+--                 f : UseTree -> (u : UseTree ** Ungrouped u) -> Bool
+--                 f (Name id1) (Name id2 ** _)                       =
+--                   id1 == id2
+--                 f Glob (Glob ** _)                                 =
+--                   True
+--                 f (Path id1 t1) (Path id2 t2 ** Path {prf}) =
+--                   id1 == id2 && f t1 (t2 ** prf)
+--                 f _ _                                              =
+--                   False
 
+-- [TODO]: implement this function correctly.
 covering
-updateMod : FfiItems -> FfiItems -> FfiItems
-updateMod nit@(MkFfiItems nmp _ _ _ _) st@(MkFfiItems mp _ _ _ _) =
-  case nmp == mp of True  => nit
-                    False => f nit st
-  where
-    f : FfiItems -> FfiItems -> FfiItems
-    f nit@(MkFfiItems nmp _ _ _ _) st =
-      { mods $= (foldr f' []) . (map (updateMod nit)) } $ st where
-        f' : FfiItems -> List FfiItems -> List FfiItems
-        f' it@(MkFfiItems mp _ _ _ _) l = case mp == nmp of True  => nit :: l
-                                                            False => it :: l
+updateMod : FfiItems n -> FfiItems Z -> FfiItems Z
 
-covering
-resolveDriver : StatefulItems -> StatefulItems
-resolveDriver (MkState { state = st, new = it }) =
+partial
+resolveDriver : { n : _ } -> StatefulItems n -> StatefulItems n
+resolveDriver (MkState { state = st, current = it }) =
   let (nst, nms) := (foldr r (st, [])) . mods $ it
       nit        := normalize . { mods := nms } $ it
   in f nit nst where
-    r :  FfiItems
-      -> (FfiItems, List FfiItems)
-      -> (FfiItems, List FfiItems)
+    r :  FfiItems (S n)
+      -> (FfiItems Z, List (FfiItems (S n)))
+      -> (FfiItems Z, List (FfiItems (S n)))
     r it (st, its) =
-      let (MkState { state = nst, new = nit }) :=
-          resolveDriver (MkState { state = st , new = it })
+      let (MkState { state = nst, current = nit }) :=
+          resolveDriver (MkState { state = st , current = it })
       in (nst, nit :: its)
 
-    f : (i : FfiItems ** UngroupedItems i) -> FfiItems -> StatefulItems
+    f : (i : FfiItems n ** UngroupedItems i) -> FfiItems Z -> StatefulItems n
     f a@(it ** _) st = let na@(nit ** _) := st |> resolveOne a |> merge a
                            nst           := updateMod nit st
                        in case (length . uses $ it) == (length . uses $ nit) of
-                               True  => MkState { state = nst, new = nit }
+                               True  => MkState { state = nst, current = nit }
                                False => f na nst
 
-covering
-resolve : FfiItems -> FfiItems
-resolve it = MkState it it |> resolveDriver |> new
+partial
+resolve : FfiItems Z -> FfiItems Z
+resolve it = MkState it it |> resolveDriver |> current
 
 -- [NOTE]: the following tests comprise only test data. To test it out, the
 -- Idris REPL is required.
