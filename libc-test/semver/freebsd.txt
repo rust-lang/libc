@@ -2328,6 +2328,7 @@ regfree
 register_t
 regmatch_t
 regoff_t
+renameat2
 rt_metrics
 rt_msghdr
 rtprio
