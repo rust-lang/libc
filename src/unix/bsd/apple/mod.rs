@@ -1621,6 +1621,13 @@ s! {
         pub ifr_ifru: __c_anonymous_ifr_ifru,
     }
 
+    pub struct ifaliasreq {
+        pub ifra_name: [c_char; crate::IFNAMSIZ],
+        pub ifra_addr: crate::sockaddr,
+        pub ifra_broadaddr: crate::sockaddr,
+        pub ifra_mask: crate::sockaddr,
+    }
+
     #[cfg(target_os = "macos")]
     pub struct in6_ifreq {
         pub ifr_name: [c_char; crate::IFNAMSIZ],
