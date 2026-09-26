@@ -614,6 +614,10 @@ fanotify_event_info_pidfd
 fgetgrent_r
 fgetpwent_r
 fgetspent_r
+fsconfig
+fsmount
+fsopen
+fspick
 futimes
 getauxval
 getentropy
@@ -647,10 +651,13 @@ malloc_trim
 malloc_usable_size
 mallopt
 mempcpy
+mount_setattr
+move_mount
 mq_notify
 ntp_adjtime
 ntp_gettime
 ntptimeval
+open_tree
 open_wmemstream
 posix_basename
 posix_spawn_file_actions_addchdir_np
