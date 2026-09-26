@@ -4905,6 +4905,13 @@ fn test_linux(t: &Target) {
         let name = function.ident();
         // skip those that are manually verified
         match name {
+            "fsconfig" | "fsmount" | "fsopen" | "fspick" | "mount_setattr" | "move_mount"
+            | "open_tree"
+                if !gnu || versions.glibc.unwrap_or_default() < (2, 36) =>
+            {
+                true
+            }
+
             // There are two versions of the sterror_r function, see
             //
             // https://linux.die.net/man/3/strerror_r
