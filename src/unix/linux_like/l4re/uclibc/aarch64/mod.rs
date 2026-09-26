@@ -43,7 +43,7 @@ s! {
     pub struct stat64 {
         pub st_dev: c_ulong,
         __pad1: Padding<c_uint>,
-        pub __st_ino: crate::ino_t,
+        __st_ino: crate::ino_t,
         pub st_mode: crate::mode_t,
         pub st_nlink: nlink_t,
         pub st_uid: crate::uid_t,
