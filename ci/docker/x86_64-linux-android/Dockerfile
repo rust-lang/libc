@@ -38,5 +38,5 @@ ENV PATH=$PATH:/rust/bin:/android/linux-x86_64/bin \
     HOME=/tmp
 
 ADD runtest-android.rs /tmp/runtest.rs
-COPY cuttlefish-setup.sh docker/x86_64-linux-android/cuttlefish-entrypoint.sh /android/
+COPY cuttlefish-setup.sh cuttlefish-entrypoint.sh /android/
 ENTRYPOINT ["/android/cuttlefish-entrypoint.sh"]
