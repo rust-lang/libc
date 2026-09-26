@@ -4762,6 +4762,30 @@ extern "C" {
         fd: c_int,
         newfd: c_int,
     ) -> c_int;
+    // Available starting with macOS 10.15.
+    #[cfg(target_os = "macos")]
+    pub fn posix_spawn_file_actions_addchdir_np(
+        actions: *mut posix_spawn_file_actions_t,
+        path: *const c_char,
+    ) -> c_int;
+    // Available starting with macOS 10.15.
+    #[cfg(target_os = "macos")]
+    pub fn posix_spawn_file_actions_addfchdir_np(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
+    // Available starting with macOS 26.0.
+    #[cfg(target_os = "macos")]
+    pub fn posix_spawn_file_actions_addchdir(
+        actions: *mut posix_spawn_file_actions_t,
+        path: *const c_char,
+    ) -> c_int;
+    // Available starting with macOS 26.0.
+    #[cfg(target_os = "macos")]
+    pub fn posix_spawn_file_actions_addfchdir(
+        actions: *mut posix_spawn_file_actions_t,
+        fd: c_int,
+    ) -> c_int;
     pub fn uname(buf: *mut crate::utsname) -> c_int;
 
     pub fn connectx(

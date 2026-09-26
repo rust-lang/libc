@@ -189,6 +189,10 @@ in6_addrlifetime
 in6_ifreq
 in6_ifstat
 memmem
+posix_spawn_file_actions_addchdir
+posix_spawn_file_actions_addchdir_np
+posix_spawn_file_actions_addfchdir
+posix_spawn_file_actions_addfchdir_np
 proc_bsdinfo
 proc_bsdshortinfo
 proc_kmsgbuf
