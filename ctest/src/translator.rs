@@ -67,17 +67,20 @@ pub(crate) enum TranslationErrorKind {
     #[error("unsupported type")]
     UnsupportedType,
 
-    /// A reference to a non-primitive type was encountered, which is not supported.
+    /// A reference to a non-primitive type was encountered, which is not
+    /// supported.
     #[error("references to non-primitive types are not allowed")]
     NonPrimitiveReference,
 
-    /// Lifetimes were found in the type or function signature, which are not supported.
+    /// Lifetimes were found in the type or function signature, which are not
+    /// supported.
     #[error("lifetimes cannot be translated")]
     HasLifetimes,
 
     /// A type that is not ffi compatible was found.
     #[error(
-        "this type is not guaranteed to have a C compatible layout. See improper_ctypes_definitions lint"
+        "this type is not guaranteed to have a C compatible layout. See \
+         improper_ctypes_definitions lint"
     )]
     NotFfiCompatible,
 
@@ -217,7 +220,8 @@ impl<'a> Translator<'a> {
         if let syn::PathArguments::AngleBracketed(args) = &last.arguments
             && let syn::GenericArgument::Type(inner_ty) = args.args.first().unwrap()
         {
-            // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
+            // Option<T> is ONLY ffi-safe if it contains a function pointer, or
+            // a reference.
             match inner_ty {
                 syn::Type::Reference(_) | syn::Type::FnPtr(_) => {
                     return self.translate_type(inner_ty);
@@ -260,13 +264,16 @@ impl<'a> Translator<'a> {
 
     /// Determine whether a C type is a signed type.
     ///
-    /// For primitive types it checks against a known list of signed types, but for aliases
-    /// which are the only thing other than primitives that can be signed, it recursively checks
-    /// the underlying type of the alias.
+    /// For primitive types it checks against a known list of signed types, but
+    /// for aliases which are the only thing other than primitives that can be
+    /// signed, it recursively checks the underlying type of the alias.
     pub(crate) fn is_signed(&self, ty: &syn::Type) -> bool {
         match ty {
-            syn::Type::Path(path) => {
-                let ident = path.path.segments.last().unwrap().ident.clone();
+            syn::Type::Path(syn::TypePath {
+                path: syn::Path { segments, .. },
+                ..
+            }) => {
+                let ident = segments.last().unwrap().ident.clone();
                 if let Some(aliased) = self.ffi_items.aliases().iter().find(|a| ident == a.ident())
                 {
                     return self.is_signed(&aliased.ty);
@@ -289,7 +296,20 @@ impl<'a> Translator<'a> {
             MapInput::StructType(name)
         } else if self.ffi_items.contains_union(name) {
             MapInput::UnionType(name)
-        } else if self.generator.c_enums.iter().any(|f| f(name)) {
+        }
+        // [NOTE]: for each module (which itself is a separate `FfiItems`,) we
+        //         check first if there is some alias that corresponds with the
+        //         passed `name`, after which we can check if the global set of
+        //         aliases-as-C-`enum`s in `TestGenerator` (which applies to all
+        //         modules and uses the full path to items in its routines)
+        //         contains a remapping of the type alias (with its full path.)
+        else if let Some(ty) = self
+            .ffi_items
+            .aliases()
+            .iter()
+            .find(|ty| ty.ident() == name)
+            && self.generator.c_enums.iter().any(|f| f(ty.path()))
+        {
             MapInput::CEnumType(name)
         } else {
             MapInput::Type(name)
@@ -346,9 +366,10 @@ pub(crate) fn translate_primitive_type(ty: &str) -> String {
 
 /// Construct a CTy and modify the constness of the inner type.
 ///
-/// Basically, `syn` always gives us the `constness` of the inner type of a pointer.
-/// However `cdecl::ptr` wants the `constness` of the pointer. So we just modify
-/// the way it is built so that `cdecl::ptr` takes the `constness` of the inner type.
+/// Basically, `syn` always gives us the `constness` of the inner type of a
+/// pointer. However `cdecl::ptr` wants the `constness` of the pointer. So we
+/// just modify the way it is built so that `cdecl::ptr` takes the `constness`
+/// of the inner type.
 pub(crate) fn ptr_with_inner(inner: cdecl::CTy, constness: Constness) -> cdecl::CTy {
     let mut ty = Box::new(inner);
     match ty.deref_mut() {
@@ -368,8 +389,8 @@ pub(crate) fn ptr_with_inner(inner: cdecl::CTy, constness: Constness) -> cdecl::
 
 /// Translate a simple Rust expression to C.
 ///
-/// This function will just pass the expression as is in most cases. In more complex cases it can
-/// convert `Type as u8 + 5` to `(uint8_t)CType + 5`.
+/// This function will just pass the expression as is in most cases. In more
+/// complex cases it can convert `Type as u8 + 5` to `(uint8_t)CType + 5`.
 pub(crate) fn translate_expr(expr: &syn::Expr) -> String {
     match expr {
         syn::Expr::Index(i) => {

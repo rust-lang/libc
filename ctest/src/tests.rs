@@ -68,12 +68,24 @@ fn test_extraction_ffi_items() {
     let mut ffi_items = FfiItems::new();
     ffi_items.visit_file(&ast);
 
-    assert_eq!(collect_idents!(ffi_items.aliases()), ["Foo"]);
-    assert_eq!(collect_idents!(ffi_items.constants()), ["bar"]);
+    assert!(collect_idents!(ffi_items.aliases()).is_empty());
+    assert_eq!(
+        collect_idents!(ffi_items.modules.first().unwrap().items.aliases()),
+        ["Foo"]
+    );
+    assert!(collect_idents!(ffi_items.constants()).is_empty());
+    assert_eq!(
+        collect_idents!(ffi_items.modules.first().unwrap().items.constants()),
+        ["bar"]
+    );
     assert_eq!(collect_idents!(ffi_items.foreign_functions()), ["malloc"]);
     assert_eq!(collect_idents!(ffi_items.foreign_statics()), ["baz"]);
     assert_eq!(collect_idents!(ffi_items.structs()), ["Array"]);
-    assert_eq!(collect_idents!(ffi_items.unions()), ["Word"]);
+    assert!(collect_idents!(ffi_items.unions()).is_empty());
+    assert_eq!(
+        collect_idents!(ffi_items.modules.first().unwrap().items.unions()),
+        ["Word"]
+    );
 }
 
 #[test]
