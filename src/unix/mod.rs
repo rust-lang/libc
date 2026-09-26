@@ -18,7 +18,6 @@ pub type ssize_t = isize;
 pub type pid_t = i32;
 pub type in_addr_t = u32;
 pub type in_port_t = u16;
-pub type sighandler_t = size_t;
 pub type cc_t = c_uchar;
 
 cfg_if! {
@@ -250,8 +249,11 @@ pub const INT_MIN: c_int = c_int::MIN;
 #[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
 pub const INT_MAX: c_int = c_int::MAX;
 
+#[allow(deprecated)]
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
+#[allow(deprecated)]
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
+#[allow(deprecated)]
 pub const SIG_ERR: sighandler_t = !0 as sighandler_t;
 
 cfg_if! {
@@ -1341,6 +1343,7 @@ extern "C" {
     #[cfg_attr(gnu_file_offset_bits64, link_name = "ftruncate64")]
     pub fn ftruncate(fd: c_int, length: off_t) -> c_int;
 
+    #[allow(deprecated)]
     #[cfg(not(any(
         target_vendor = "apple",
         target_os = "freebsd",
