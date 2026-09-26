@@ -3964,6 +3964,7 @@ fn test_linux(t: &Target) {
     let mips = t.mips();
     let mips32 = t.mips32();
     let pauthtest = t.pauthtest();
+    let p64 = t.p64();
     let p32 = t.p32();
     let versions = &*VERSIONS;
     let kernel = match versions.linux {
@@ -4006,6 +4007,10 @@ fn test_linux(t: &Target) {
     if uclibc32_time64 {
         cfg.cfg("linux_time_bits64", None);
         cfg.cfg("uclibc32_time64", None);
+    }
+
+    if p64 {
+        cfg.cfg("linux_time_bits64", None);
     }
 
     cfg.define("_GNU_SOURCE", None)
