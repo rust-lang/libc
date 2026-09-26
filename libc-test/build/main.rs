@@ -4855,6 +4855,13 @@ fn test_linux(t: &Target) {
             "posix_spawn_file_actions_addclosefrom_np" if gnu && sparc64 => true,
             // Needs glibc 2.35 or later.
             "posix_spawn_file_actions_addtcsetpgrp_np" if gnu && sparc64 => true,
+            // Needs glibc 2.36 or later.
+            "fsconfig" | "fsmount" | "fsopen" | "fspick" | "mount_setattr" | "move_mount"
+            | "open_tree"
+                if gnu && versions.glibc.unwrap() < (2, 36) =>
+            {
+                true
+            }
             // Needs glibc 2.42 or later.
             "pthread_gettid_np" if gnu && versions.glibc.unwrap() < (2, 42) => true,
 

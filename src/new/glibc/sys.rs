@@ -11,3 +11,8 @@ pub(crate) mod statvfs {
 pub(crate) mod socket {
     pub use super::super::socket::sys::socket::*;
 }
+
+#[cfg(target_os = "linux")]
+pub(crate) mod mount {
+    pub use super::super::sysdeps::unix::linux::sys::mount::*;
+}
