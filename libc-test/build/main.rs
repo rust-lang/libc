@@ -3098,6 +3098,11 @@ fn test_freebsd(t: &Target) {
             // Those are introduced in FreeBSD 14.1.
             "kcmp" => true,
 
+            // FIXME(freebsd): `renameat2` was introduced in FreeBSD 15.1, and
+            // `freebsd_ver` only tracks the major version, so skip it until CI
+            // moves to a release that has it.
+            "renameat2" if Some(16) > freebsd_ver => true,
+
             _ => false,
         }
     });
