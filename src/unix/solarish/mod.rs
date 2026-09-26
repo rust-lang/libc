@@ -705,7 +705,7 @@ s_no_extra_traits! {
 
 impl siginfo_t {
     unsafe fn sidata<T: Copy>(&self) -> T {
-        *((&self.__data_pad) as *const c_int as *const T)
+        *core::ptr::addr_of!(self.__data_pad).cast()
     }
     pub unsafe fn si_addr(&self) -> *mut c_void {
         let sifault: siginfo_fault = self.sidata();
