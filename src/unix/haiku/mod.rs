@@ -938,6 +938,7 @@ pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 pub const BUFSIZ: c_uint = 8192;
 pub const FILENAME_MAX: c_uint = 256;
 pub const FOPEN_MAX: c_uint = 128;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const L_tmpnam: c_uint = 512;
 pub const TMP_MAX: c_uint = 32768;
 
