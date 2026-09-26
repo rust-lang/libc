@@ -493,6 +493,7 @@ pub const NOSTR: crate::nl_item = 0x50003;
 
 pub const FILENAME_MAX: c_uint = 4096;
 pub const L_tmpnam: c_uint = 20;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const _PC_LINK_MAX: c_int = 0;
 pub const _PC_MAX_CANON: c_int = 1;
 pub const _PC_MAX_INPUT: c_int = 2;
