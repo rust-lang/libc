@@ -202,6 +202,8 @@ pub const IPV6_LEAVE_GROUP: c_int = 21;
 // Different than Gnu.
 pub const FILENAME_MAX: c_uint = 4095;
 
+pub const HOST_NAME_MAX: c_int = 64;
+
 pub const PRIO_PROCESS: crate::__priority_which_t = 0;
 pub const PRIO_PGRP: crate::__priority_which_t = 1;
 pub const PRIO_USER: crate::__priority_which_t = 2;

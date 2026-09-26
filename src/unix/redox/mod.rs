@@ -445,6 +445,7 @@ cfg_if! {
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
 pub const PATH_MAX: c_int = 4096;
+pub const HOST_NAME_MAX: c_int = 255;
 
 // fcntl.h
 pub const F_GETLK: c_int = 5;
