@@ -50,9 +50,9 @@ fn main() {
     // Include the directory where the header files are defined
     cfg.include("path/to/include");
 
-    // Generate the tests, passing the path to the `*-sys` library as well as
-    // the module to generate.
-    ctest::generate_test(&mut cfg, "../mylib-sys/lib.rs", "all.rs");
+    // Generate the tests, passing the manifest of the `*-sys` crate (or its
+    // root `.rs` file, if it has no dependencies) as well as the module to generate.
+    ctest::generate_test(&mut cfg, "../mylib-sys/Cargo.toml", "all.rs");
 }
 ```
 
