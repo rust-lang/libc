@@ -6,6 +6,7 @@ use std::ops::Deref;
 use quote::ToTokens;
 use syn::Visibility;
 use syn::punctuated::Punctuated;
+use syn::UseTree;
 use syn::visit::{
     self,
     Visit,
@@ -39,7 +40,7 @@ pub(crate) struct FfiItems {
     pub(crate) constants: Vec<Const>,
     pub(crate) foreign_functions: Vec<Fn>,
     pub(crate) foreign_statics: Vec<Static>,
-    pub(crate) uses: Vec<syn::ItemUse>,
+    pub(crate) uses: Vec<RefinedUse>,
     pub(crate) modules: Vec<Module>,
 
     /// This is used while recursing through parsed modules to gather absolute
@@ -104,15 +105,15 @@ impl FfiItems {
     pub(crate) fn visit_file(&mut self, file: &syn::File) {
         let syn::File { attrs, items: mod_items, .. } = file;
         let file_mod = syn::ItemMod {
-            attrs: attrs,
+            attrs: attrs.clone(),
             vis: syn::parse_quote! { pub },
             unsafety: None,
             mod_token: syn::token::Mod::default(),
             ident: syn::Ident::new("__ctest_root_mod", proc_macro2::Span::call_site()),
-            content: Some((syn::token::Brace::default(), mod_items)),
+            content: Some((syn::token::Brace::default(), mod_items.clone())),
             semi: None,
         };
-        items.visit_item_mod(&file_mod);
+        self.visit_item_mod(&file_mod);
         *self = resolve_use_trees(self.clone());
     }
 }
@@ -138,6 +139,51 @@ impl Default for FfiItems {
 
 fn resolve_use_trees(module: FfiItems) -> FfiItems {
     todo!();
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct RefinedUsePath {
+    ident: syn::Ident,
+    tree: Box<RefinedUseTree>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum RefinedUseTree {
+    Path(RefinedUsePath),
+    Name(syn::UseName),
+    Rename(syn::UseRename),
+    Glob(syn::UseGlob),
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct RefinedUse {
+    is_public: bool,
+    tree: RefinedUseTree,
+}
+
+/// Gets rid of group reexports in a `use` statement by flattenning them into a
+/// set of individual reexports.
+fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
+    match path {
+        UseTree::Name(n) => vec![RefinedUseTree::Name(n)],
+        UseTree::Rename(r) => vec![RefinedUseTree::Rename(r)],
+        UseTree::Glob(g) => vec![RefinedUseTree::Glob(g)],
+
+        UseTree::Path(syn::UsePath { ident, tree, .. }) => {
+            normalize_path(*tree)
+                .into_iter()
+                .map(Box::new)
+                .map(|tree| RefinedUseTree::Path(RefinedUsePath {
+                    ident: ident.clone(),
+                    tree
+                }))
+                .collect()
+        }
+
+        UseTree::Group(syn::UseGroup { items, .. }) => {
+            items.into_iter().map(normalize_path).flatten().collect()
+        }
+    }
 }
 
 /// Appends a new module-local item to an absolute path that does *not* start
@@ -369,12 +415,19 @@ impl<'ast> Visit<'ast> for FfiItems {
             .iter()
             .cloned()
             .filter_map(|it| {
-                if let syn::Item::Use(it) = it {
-                    Some(it)
+                if let syn::Item::Use(syn::ItemUse { vis, tree, .. }) = it {
+                    normalize_path(tree)
+                        .into_iter()
+                        .map(move |tree| RefinedUse {
+                            is_public: matches!(vis, syn::Visibility::Public(_)),
+                            tree,
+                        })
+                        .into()
                 } else {
                     None
                 }
             })
+            .flatten()
             .collect();
 
         // [NOTE]: if the module is known to keep be the virtual module that we
