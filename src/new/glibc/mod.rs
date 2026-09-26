@@ -66,3 +66,5 @@ pub(crate) use posix::*;
 pub(crate) use sysdeps::nptl::pthread;
 #[cfg(target_os = "linux")]
 pub(crate) use sysdeps::unix::linux::net;
+#[cfg(target_os = "linux")]
+pub(crate) use sysdeps::unix::linux::sys::mount;
