@@ -1988,9 +1988,9 @@ extern "C" {
     #[cfg(not(target_os = "l4re"))]
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statfs64")]
-    pub fn statfs(path: *const c_char, buf: *mut statfs) -> c_int;
+    pub fn statfs(path: *const c_char, buf: *mut crate::statfs) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatfs64")]
-    pub fn fstatfs(fd: c_int, buf: *mut statfs) -> c_int;
+    pub fn fstatfs(fd: c_int, buf: *mut crate::statfs) -> c_int;
     pub fn memrchr(cx: *const c_void, c: c_int, n: size_t) -> *mut c_void;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "posix_fadvise64")]
     pub fn posix_fadvise(fd: c_int, offset: off_t, len: off_t, advise: c_int) -> c_int;
