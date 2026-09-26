@@ -301,6 +301,9 @@ fn test_apple(t: &Target) {
             // FIXME(macos): bumped up on macOS/iOS/... 27, from 16 to 32
             "AIO_LISTIO_MAX" => apple.unwrap() < (27, 0),
 
+            // In C, these are function pointers, but in Rust they are `size_t`.
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
+
             _ => false,
         }
     });
@@ -352,9 +355,6 @@ fn test_apple(t: &Target) {
             .contains(&ty)
             .then_some(ty.to_string())
     });
-
-    // OSX calls this something else
-    cfg.rename_type(|ty| (ty == "sighandler_t").then_some("sig_t".to_string()));
 
     cfg.rename_struct_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
     cfg.rename_union_ty(|ty| ty.ends_with("_t").then_some(ty.to_string()));
@@ -477,12 +477,6 @@ fn test_openbsd(t: &Target) {
         "sys/auxv.h",
         "paths.h",
     );
-
-    cfg.rename_type(|ty| match ty {
-        // FIXME(openbsd): https://github.com/rust-lang/libc/issues/1273
-        "sighandler_t" => Some("sig_t".to_string()),
-        _ => None,
-    });
 
     cfg.rename_struct_ty(move |ty| {
         match ty {
@@ -660,9 +654,6 @@ fn test_cygwin(t: &Target) {
 
     cfg.skip_signededness(move |c| match c {
         n if n.starts_with("pthread") => true,
-
-        // For consistency with other platforms. Actually a function ptr.
-        "sighandler_t" => true,
 
         _ => false,
     });
@@ -1031,11 +1022,6 @@ fn test_solarish(t: &Target) {
         headers!(cfg, "sys/lgrp_user_impl.h",);
     }
 
-    cfg.skip_alias(move |ty| match ty.ident() {
-        "sighandler_t" => true,
-        _ => false,
-    });
-
     cfg.rename_union_ty(|ty| match ty {
         t if t.ends_with("_t") => Some(t.to_string()),
         _ => None,
@@ -1064,7 +1050,7 @@ fn test_solarish(t: &Target) {
         "DT_FIFO" | "DT_CHR" | "DT_DIR" | "DT_BLK" | "DT_REG" | "DT_LNK" | "DT_SOCK"
         | "USRQUOTA" | "GRPQUOTA" | "PRIO_MIN" | "PRIO_MAX" => true,
 
-        // skip sighandler_t assignments
+        // In C, these are function pointers, but in Rust they are `size_t`.
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
         "DT_UNKNOWN" => true,
@@ -1163,9 +1149,6 @@ fn test_solarish(t: &Target) {
             //
             // FIXME(solarish): unskip these for next major release
             "setpriority" | "personality" => true,
-
-            // signal is defined in terms of sighandler_t, so ignore
-            "signal" => true,
 
             // Currently missing
             "cfmakeraw" | "cfsetspeed" => true,
@@ -1322,15 +1305,6 @@ fn test_netbsd(t: &Target) {
         "paths.h",
     );
 
-    cfg.rename_type(move |ty| {
-        match ty {
-            // OSX calls this something else
-            "sighandler_t" => Some("sig_t".to_string()),
-
-            _ => None,
-        }
-    });
-
     cfg.rename_struct_ty(|ty| match ty {
         // Just pass all these through, no need for a "struct" prefix
         "FILE" | "fd_set" | "Dl_info" | "DIR" | "Elf32_Phdr" | "Elf64_Phdr" | "Elf32_Shdr"
@@ -1355,8 +1329,6 @@ fn test_netbsd(t: &Target) {
 
     cfg.skip_alias(move |ty| {
         match ty.ident() {
-            // FIXME(netbsd): sighandler_t is crazy across platforms
-            "sighandler_t" => true,
             // Incomplete type in C
             "cpuset_t" => true,
             "eventfd_t" if netbsd9 => true,
@@ -1395,7 +1367,8 @@ fn test_netbsd(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
-            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+            // In C, these are function pointers, but in Rust they are `size_t`.
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
             // deprecated, obsolete upstream
             "PT_LWPINFO" | "PL_EVENT_NONE" | "PL_EVENT_SIGNAL" | "PL_EVENT_SUSPENDED" => true,
@@ -1638,16 +1611,12 @@ fn test_dragonflybsd(t: &Target) {
         }
     });
 
-    cfg.rename_type(|ty| {
-        match ty {
-            // FIXME(dragonflybsd): OSX calls this something else
-            "sighandler_t" => Some("sig_t".to_string()),
-            "lwpstat" => Some("enum lwpstat".to_string()),
-            "procstat" => Some("enum procstat".to_string()),
-            "vm_map_t" => Some("struct vm_map *".to_string()),
-            "vm_map_entry_t" => Some("struct vm_map_entry *".to_string()),
-            _ => None,
-        }
+    cfg.rename_type(|ty| match ty {
+        "lwpstat" => Some("enum lwpstat".to_string()),
+        "procstat" => Some("enum procstat".to_string()),
+        "vm_map_t" => Some("struct vm_map *".to_string()),
+        "vm_map_entry_t" => Some("struct vm_map_entry *".to_string()),
+        _ => None,
     });
 
     cfg.rename_struct_field(move |struct_, field| {
@@ -1661,14 +1630,6 @@ fn test_dragonflybsd(t: &Target) {
             // so these fields are translated to `type_` in the bindings.
             "type_" if struct_.ident() == "rtprio" => Some("type".to_string()),
             _ => None,
-        }
-    });
-
-    cfg.skip_alias(move |ty| {
-        match ty.ident() {
-            // sighandler_t is crazy across platforms
-            "sighandler_t" => true,
-            _ => false,
         }
     });
 
@@ -1706,7 +1667,8 @@ fn test_dragonflybsd(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
-            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true, // sighandler_t weirdness
+            // In C, these are function pointers, but in Rust they are `size_t`.
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
             // Kernel-only symbols in DragonFly headers.
             "DTYPE_VNODE" | "DTYPE_SOCKET" | "DTYPE_PIPE" | "DTYPE_FIFO" | "DTYPE_KQUEUE"
@@ -1786,8 +1748,6 @@ fn test_dragonflybsd(t: &Target) {
 
     cfg.skip_alias(move |ty| {
         match ty.ident() {
-            // sighandler_t is crazy across platforms
-            "sighandler_t" => true,
             // Same as FreeBSD: `kvm_t` is an opaque handle used through
             // pointers, and libc does not bind the private `struct __kvm`.
             "kvm_t" => true,
@@ -2661,12 +2621,6 @@ fn test_freebsd(t: &Target) {
         "wchar.h",
     );
 
-    cfg.rename_type(|ty| match ty {
-        // FIXME(freebsd): https://github.com/rust-lang/libc/issues/1273
-        "sighandler_t" => Some("sig_t".to_string()),
-        _ => None,
-    });
-
     cfg.rename_struct_ty(|ty| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
@@ -2712,6 +2666,9 @@ fn test_freebsd(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
+            // In C, these are function pointers, but in Rust they are `size_t`.
+            "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
+
             // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
             | "F_SEAL_WRITE"
@@ -3624,10 +3581,6 @@ fn test_neutrino(t: &Target) {
 
     cfg.skip_alias(move |ty| {
         match ty.ident() {
-            // FIXME(sighandler): `sighandler_t` type is incorrect, see:
-            // https://github.com/rust-lang/libc/issues/1359
-            "sighandler_t" => true,
-
             // Does not exist in Neutrino
             "locale_t" => true,
 
@@ -3673,9 +3626,6 @@ fn test_neutrino(t: &Target) {
     cfg.skip_fn(move |func| {
         // skip those that are manually verified
         match func.ident() {
-            // wrong signature
-            "signal" => true,
-
             // wrong signature of callback ptr
             "__cxa_atexit" => true,
 
@@ -5534,7 +5484,6 @@ fn test_haiku(t: &Target) {
             // FIXME(haiku): locale_t does not exist on Haiku
             "locale_t" => true,
             // These cause errors, to be reviewed in the future
-            "sighandler_t" => true,
             "pthread_t" => true,
             "pthread_condattr_t" => true,
             "pthread_mutexattr_t" => true,
@@ -5785,9 +5734,6 @@ fn test_aix(t: &Target) {
     );
 
     cfg.skip_alias(move |ty| match ty.ident() {
-        // AIX does not define type 'sighandler_t'.
-        "sighandler_t" => true,
-
         // The alignment of 'double' does not agree between C and Rust for AIX.
         // We are working on a resolution.
         "c_double" => true,
@@ -5802,7 +5748,7 @@ fn test_aix(t: &Target) {
     });
 
     cfg.skip_const(move |constant| match constant.ident() {
-        // Skip 'sighandler_t' assignments.
+        // In C, these are function pointers, but in Rust they are `size_t`.
         "SIG_DFL" | "SIG_ERR" | "SIG_IGN" => true,
 
         // _ALL_SOURCE defines ENOTEMPTY as an alias of EEXIST, but POSIX
@@ -5899,9 +5845,6 @@ fn test_aix(t: &Target) {
 
     cfg.skip_fn(move |func| {
         match func.ident() {
-            // 'sighandler_t' is not defined on AIX.
-            "signal" => true,
-
             // The function is only available under macro _USE_IRS in 'netdb.h'.
             "hstrerror" => true,
 
@@ -6017,8 +5960,9 @@ fn test_qurt(t: &Target) {
             | "suseconds_t" | "useconds_t" | "timer_t" | "dev_t" | "ino_t" | "mode_t"
             | "nlink_t" | "off_t" | "blkcnt_t" | "blksize_t" | "uid_t" | "gid_t" | "socklen_t"
             | "sa_family_t" | "in_addr_t" | "in_port_t" | "fpos_t" | "clock_t" | "nfds_t"
-            | "va_list" | "c_schar" | "wchar_t" | "errno_t" | "rlim_t" | "speed_t" | "tcflag_t"
-            | "sighandler_t" => true,
+            | "va_list" | "c_schar" | "wchar_t" | "errno_t" | "rlim_t" | "speed_t" | "tcflag_t" => {
+                true
+            }
             // fd_set is defined in mqueue.h as a struct, but libc has it as c_ulong
             "fd_set" => true,
             // sem_t is a struct in QuRT but an alias in libc
