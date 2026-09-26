@@ -53,6 +53,22 @@ fn do_cc(t: &Target) {
     {
         cc::Build::new().file("src/sigrt.c").compile("sigrt");
     }
+    if (t.linux() && !t.wasm32())
+        || t.android()
+        || t.apple()
+        || t.dragonfly()
+        || t.emscripten()
+        || t.freebsd()
+        || t.fuchsia()
+        || t.illumos()
+        || t.netbsd()
+        || t.openbsd()
+        || t.solaris()
+    {
+        cc::Build::new()
+            .file("src/icmp6_filter.c")
+            .compile("icmp6_filter");
+    }
 }
 
 fn do_ctest(t: &Target) {
@@ -194,6 +210,7 @@ fn test_apple(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet6/scope6_var.h",
         (macos, "netinet6/in6_var.h"),
         "os/clock.h",
@@ -422,6 +439,7 @@ fn test_openbsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "net/bpf.h",
         "regex.h",
         "resolv.h",
@@ -969,6 +987,7 @@ fn test_solarish(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "port.h",
         "pthread.h",
@@ -1262,6 +1281,7 @@ fn test_netbsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "pthread.h",
         "pwd.h",
@@ -1563,6 +1583,7 @@ fn test_dragonflybsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "paths.h",
         "poll.h",
         "pthread.h",
@@ -2030,6 +2051,7 @@ fn test_android(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netpacket/packet.h",
         "poll.h",
         "pthread.h",
@@ -2581,6 +2603,7 @@ fn test_freebsd(t: &Target) {
         "netinet/sctp.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet6/in6_var.h",
         "paths.h",
         "poll.h",
@@ -3218,6 +3241,7 @@ fn test_emscripten(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netpacket/packet.h",
         "poll.h",
         "pthread.h",
@@ -3498,6 +3522,7 @@ fn test_neutrino(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet/ip_var.h",
         "sys/poll.h",
         "pthread.h",
@@ -3804,6 +3829,7 @@ fn test_vxworks(t: &Target) {
         "sys/mman.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet/in.h",
         "netinet6/in6.h",
         "syslog.h",
@@ -4054,6 +4080,7 @@ fn test_linux(t: &Target) {
         "netinet/tcp.h",
         "netinet/udp.h",
         (gnu, "netiucv/iucv.h"),
+        "netinet/icmp6.h",
         (l4re, "netpacket/packet.h"),
         "poll.h",
         "pthread.h",
