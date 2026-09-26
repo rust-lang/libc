@@ -1247,6 +1247,7 @@ pub const _SC_PHYS_PAGES: c_int = 500;
 pub const _SC_AVPHYS_PAGES: c_int = 501;
 pub const _SC_NPROCESSORS_CONF: c_int = 502;
 pub const _SC_NPROCESSORS_ONLN: c_int = 503;
+pub const HOST_NAME_MAX: c_int = 255;
 
 pub const FD_SETSIZE: c_int = 1024;
 

@@ -752,6 +752,7 @@ pub const FALLOC_FL_UNSHARE_RANGE: c_int = 0x40;
 pub const BUFSIZ: c_uint = 1024;
 pub const FILENAME_MAX: c_uint = 4096;
 pub const FOPEN_MAX: c_uint = 20;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const POSIX_FADV_DONTNEED: c_int = 4;
 pub const POSIX_FADV_NOREUSE: c_int = 5;
 pub const POSIX_SPAWN_RESETIDS: c_short = 1;

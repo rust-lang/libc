@@ -543,6 +543,7 @@ pub const _SC_THREAD_ROBUST_PRIO_INHERIT: c_int = 247;
 pub const _SC_THREAD_ROBUST_PRIO_PROTECT: c_int = 248;
 pub const _SC_MINSIGSTKSZ: c_int = 249;
 pub const _SC_SIGSTKSZ: c_int = 250;
+pub const HOST_NAME_MAX: c_int = 255;
 
 // unsafe code here is required in the stable, but not in nightly
 #[allow(unused_unsafe)]

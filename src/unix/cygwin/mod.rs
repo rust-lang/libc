@@ -907,6 +907,7 @@ pub const PIPE_BUF: usize = 4096;
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
 pub const NGROUPS_MAX: c_int = 1024;
+pub const HOST_NAME_MAX: c_int = 255;
 
 pub const FILENAME_MAX: c_int = 4096;
 

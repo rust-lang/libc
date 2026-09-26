@@ -520,6 +520,7 @@ pub const BUFSIZ: c_uint = 1024;
 pub const TMP_MAX: c_uint = 10000;
 pub const FOPEN_MAX: c_uint = 1000;
 pub const FILENAME_MAX: c_uint = 4096;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const O_PATH: c_int = 0o10000000;
 pub const O_EXEC: c_int = 0o10000000;
 pub const O_SEARCH: c_int = 0o10000000;
