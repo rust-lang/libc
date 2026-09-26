@@ -63,3 +63,8 @@ pub(crate) mod bits {
 pub(crate) mod net {
     pub(crate) mod route;
 }
+
+/// Directory: `sys/`
+///
+/// Source directory: `sysdeps/unix/sysv/linux/sys/`
+pub(crate) mod sys;

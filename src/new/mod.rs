@@ -202,6 +202,7 @@ cfg_if! {
         pub use self::{
             net::route::*,
             signal::*,
+            sys::mount::*,
             sys::socket::*,
             sys::statvfs::*,
         };
