@@ -598,9 +598,9 @@ s! {
     }
 
     pub struct prop_info {
-        __name: [c_char; 32],
         __serial: c_uint,
         __value: [c_char; 92],
+        __name: [c_char; 0],
     }
 
     // linux/futex.h
