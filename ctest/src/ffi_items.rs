@@ -2,6 +2,8 @@
 
 use std::borrow::Borrow;
 use std::ops::Deref;
+use std::iter;
+use std::ops::ControlFlow;
 
 use quote::ToTokens;
 use syn::Visibility;
@@ -46,7 +48,7 @@ pub(crate) struct FfiItems {
     /// This is used while recursing through parsed modules to gather absolute
     /// paths to them as identifiers for both the modules and the items within
     /// them.
-    current_module: syn::Path,
+    pub(crate) current_module: syn::Path,
 }
 
 impl FfiItems {
@@ -114,7 +116,16 @@ impl FfiItems {
             semi: None,
         };
         self.visit_item_mod(&file_mod);
-        *self = resolve_use_trees(self.clone());
+        let root_module = Module {
+            public: bool::default(),
+            ident: String::new().into_boxed_str(),
+            path: syn::Path {
+                leading_colon: None,
+                segments: Punctuated::new(),
+            },
+            items: self.clone(),
+        };
+        *self = resolve_use_trees(root_module).items;
     }
 }
 
@@ -135,10 +146,6 @@ impl Default for FfiItems {
             },
         }
     }
-}
-
-fn resolve_use_trees(module: FfiItems) -> FfiItems {
-    todo!();
 }
 
 #[derive(Clone, Debug)]
@@ -184,6 +191,49 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
             items.into_iter().map(normalize_path).flatten().collect()
         }
     }
+}
+
+enum Resolution {
+    Resolved { original_use: RefinedUse, module: FfiItems },
+    Unresolved { original_use: RefinedUse }
+}
+
+fn resolve_use_trees(root: Module) -> Module {
+    let resolved_children = root.items.modules.into_iter().map(resolve_use_trees).collect();
+    let root = {
+        let items = FfiItems {
+            modules: resolved_children,
+            ..root.items
+        };
+        Module { items, ..root }
+    };
+    let (ControlFlow::Continue(root) | ControlFlow::Break(root)) =
+        iter::repeat(()).try_fold(root, |root, _| {
+            let resolved_uses = resolve_one(root.clone());
+            let new_root = merge_module(root.clone(), resolved_uses);
+            match root.items.uses.len() == new_root.items.uses.len() {
+                true => ControlFlow::Break(new_root),
+                false => ControlFlow::Continue(new_root)
+            }
+        });
+    root
+}
+
+fn resolve_one(src: Module) -> Vec<Resolution> {
+    src.items.uses
+        .clone()
+        .into_iter()
+        .map(|u| (u, src.clone()))
+        .map(|(u, m)| resolve_use(u, m))
+        .collect()
+}
+
+fn resolve_use(r#use: RefinedUse, state: Module) -> Resolution {
+    todo!();
+}
+
+fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
+    todo!();
 }
 
 /// Appends a new module-local item to an absolute path that does *not* start
@@ -468,16 +518,7 @@ fn main() {
 }
     "#;
     let mut items = FfiItems::default();
-    let syn::File { attrs, items: mod_items, .. } = syn::parse_file(source).unwrap();
-    let file_mod: syn::ItemMod = syn::ItemMod {
-        attrs: attrs,
-        vis: syn::parse_quote! { pub },
-        unsafety: None,
-        mod_token: syn::token::Mod::default(),
-        ident: syn::Ident::new("__ctest_root_mod", proc_macro2::Span::call_site()),
-        content: Some((syn::token::Brace::default(), mod_items)),
-        semi: None,
-    };
-    items.visit_item_mod(&file_mod);
+    let file = syn::parse_file(source).unwrap();
+    items.visit_file(&file);
     println!("{:#?}", items);
 }

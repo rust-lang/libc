@@ -102,10 +102,15 @@ normalize it@(MkFfiItems { uses = us, _ }) = foldr f [] us |> re <| it where
     f' Glob        = [ (Glob ** Glob) ]
     f' (Path id t) =         f' t |> flip map <| \(t ** _) => (  Path id t
                                                               ** Path)
-    f' o@(Group l) = join <| l    |> flip map <| \t => f' $ assert_smaller o t
+    f' o@(Group l) = join <| l    |> flip map <| \t        => f' $
+                                                              assert_smaller o t
 
--- [TODO]: reimplement this.
 findItem : String -> FfiItems n -> Maybe (Either String (FfiItems (S n)))
+findItem id (MkFfiItems { items = is, mods = ms, _ }) =
+  find c $ map Left is ++ map Right ms  where
+    c : Either String (FfiItems (S n)) -> Bool
+    c (Left s)                              = s == id
+    c (Right (MkFfiItems { ident = s, _ })) = s == id
 
 samePath : ModulePath _ -> ModulePath _ -> Bool
 samePath []         []         = True
@@ -114,15 +119,49 @@ samePath _          _          = False
 
 covering
 findParent : StatefulItems (S n) -> Maybe (FfiItems n)
-findParent (MkState { state = st, current = (MkFfiItems cmp _ _ _ _) }) =
+findParent (MkState { state = st, current = MkFfiItems { path = cmp, _ } }) =
   f st where r : FfiItems _ -> Maybe (FfiItems n) -> Maybe (FfiItems n)
              f : FfiItems _ -> Maybe (FfiItems n)
-             r it Nothing                  = f it
-             r _  p                        = p
-             f it@(MkFfiItems mp _ _ ms _) =
+             r it                          Nothing = f it
+             r _                           p       = p
+             f it@(MkFfiItems mp _ _ ms _)         =
                case cmp |> samePath . reverse . tail . reverse <| mp of
                     True  => believe_me $ Just it
                     False => foldr r Nothing ms
+
+namespace ResolveRoot
+  public export
+  resolveReexport :  UseTree
+                  -> (t : UseTree)
+                  -> {auto 0 prf : Ungrouped t}
+                  -> StatefulItems _
+                  -> List Resolution
+  resolveReexport oid (Name id) (MkState { current = it, _ })
+    = case findItem id it of
+           Just (Left i)  =>
+             [ oid |> Resolved <| MkResolved { items = [ i ]
+                                             , mods  = [ ]
+                                             , uses  = [ ]
+                                             , depth = Z } ]
+           Just (Right m) =>
+             [ oid |> Resolved <| MkResolved { items = [ ]
+                                             , mods  = [ m ]
+                                             , uses  = [ ] } ]
+           Nothing        =>
+             [ Unresolved oid ]
+  resolveReexport oid Glob (MkState { current = (MkFfiItems { items = is
+                                                            , mods  = ms
+                                                            , uses  = us
+                                                            , _ })
+                                    , _ })
+    = [ Resolved oid $ MkResolved { items = is, mods = ms, uses = us } ]
+  resolveReexport oid (Path id t) {prf = Path {prf}} (MkState { state   = st
+                                                              , current = it })
+    = case findItem id it of
+           Just (Right m) => ResolveRoot.resolveReexport oid t $
+                               MkState { state = st, current = m }
+           Just _         => [ Unresolved oid ]
+           Nothing        => [ Unresolved oid ]
 
 namespace ResolveNode
   public export partial
@@ -162,7 +201,16 @@ namespace ResolveNode
                   ist@(MkState { state = st, current = it })
     = case id == "super" of
            True  => case findParent ist of
-                         Just m  => ?rhspath
+                         Just m  =>
+                           case length . path $ m of
+                                Z       =>
+                                  ResolveRoot.resolveReexport oid t $
+                                    MkState { state = st, current = m }
+                                o@(S _) =>
+                                  let nst : StatefulItems o
+                                      nst = believe_me $ MkState { state = st
+                                                                 , current = m }
+                                  in ResolveNode.resolveReexport oid t nst
                          Nothing => idris_crash "[TODO]"
            False => case findItem id it of
                          Just (Right m) => ResolveNode.resolveReexport oid t $
@@ -170,40 +218,6 @@ namespace ResolveNode
                                                      , current = m }
                          Just _         => [ Unresolved oid ]
                          Nothing        => [ Unresolved oid ]
-
-namespace ResolveRoot
-  public export
-  resolveReexport :  UseTree
-                  -> (t : UseTree)
-                  -> {auto 0 prf : Ungrouped t}
-                  -> StatefulItems _
-                  -> List Resolution
-  resolveReexport oid (Name id) (MkState { current = it, _ })
-    = case findItem id it of
-           Just (Left i)  =>
-             [ oid |> Resolved <| MkResolved { items = [ i ]
-                                             , mods  = [ ]
-                                             , uses  = [ ]
-                                             , depth = Z } ]
-           Just (Right m) =>
-             [ oid |> Resolved <| MkResolved { items = [ ]
-                                             , mods  = [ m ]
-                                             , uses  = [ ] } ]
-           Nothing        =>
-             [ Unresolved oid ]
-  resolveReexport oid Glob (MkState { current = (MkFfiItems { items = is
-                                                            , mods  = ms
-                                                            , uses  = us
-                                                            , _ })
-                                    , _ })
-    = [ Resolved oid $ MkResolved { items = is, mods = ms, uses = us } ]
-  resolveReexport oid (Path id t) {prf = Path {prf}} (MkState { state   = st
-                                                              , current = it })
-    = case findItem id it of
-           Just (Right m) => ResolveRoot.resolveReexport oid t $
-                               MkState { state = st, current = m }
-           Just _         => [ Unresolved oid ]
-           Nothing        => [ Unresolved oid ]
 
 partial
 resolveOne :  { n : _ }
@@ -235,7 +249,7 @@ merge it@(iit ** _) ((Resolved oid (MkResolved is ms _)) :: t) = merge nit t
       ( st
       , { path := np
         , mods := mods it |>
-                  foldr transform (empty np $ ident it, []) |> snd } it :: its)
+                  foldr transform (empty np $ ident it, []) |> snd } it :: its )
 
     covering
     nit : (i : FfiItems n ** UngroupedItems i)
@@ -254,9 +268,15 @@ merge it@(iit ** _) ((Resolved oid (MkResolved is ms _)) :: t) = merge nit t
         f _             _                           =
           False
 
--- [TODO]: implement this function correctly. Potentially use `StatefulItems`.
 covering
 updateMod : FfiItems n -> FfiItems Z -> FfiItems Z
+updateMod it@(MkFfiItems { path = itp, _ }) st@(MkFfiItems { path = stp, _ }) =
+  case samePath stp itp of True  => believe_me it
+                           False => { mods $= foldr f [] } st
+  where f : FfiItems m -> List (FfiItems m) -> List (FfiItems m)
+        f fit@(MkFfiItems { path = fitp, _ }) fits =
+          case samePath fitp itp of True  => believe_me it :: fits
+                                    False => { mods $= foldr f [] } fit :: fits
 
 partial
 resolveDriver : { n : _ } -> StatefulItems n -> StatefulItems n
