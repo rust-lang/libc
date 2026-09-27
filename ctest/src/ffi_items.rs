@@ -28,6 +28,16 @@ use crate::{
     Union,
 };
 
+enum GenericItem {
+    Type(Type),
+    Struct(Struct),
+    Union(Union),
+    Const(Const),
+    Fn(Fn),
+    Static(Static),
+    Module(Module),
+}
+
 /// Represents a collected set of top-level Rust items relevant to FFI
 /// generation or analysis.
 ///
@@ -127,6 +137,45 @@ impl FfiItems {
         };
         *self = resolve_use_trees(root_module).items;
     }
+
+    /// Searches for an item in the container, and returns an owned instance of
+    /// that item.
+    ///
+    /// The generic item may be pattern-matched to find out specifically which
+    /// item was found.
+    fn search(&self, ident: syn::Ident) -> Option<GenericItem> {
+        let aliases = self.aliases.clone().into_iter().map(GenericItem::Type);
+        let structs = self.structs.clone().into_iter().map(GenericItem::Struct);
+        let unions = self.unions.clone().into_iter().map(GenericItem::Union);
+        let constants = self.constants.clone().into_iter().map(GenericItem::Const);
+        let foreign_functions = self.foreign_functions.clone().into_iter().map(GenericItem::Fn);
+        let foreign_statics = self.foreign_statics.clone().into_iter().map(GenericItem::Static);
+        let mut items: Vec<_> = self.modules
+            .clone()
+            .into_iter()
+            .map(GenericItem::Module)
+            .chain(foreign_statics)
+            .chain(foreign_functions)
+            .chain(constants)
+            .chain(unions)
+            .chain(structs)
+            .chain(aliases)
+            .collect();
+        let key_fn = |it: &GenericItem| match it {
+            GenericItem::Type(t) => t.ident(),
+            GenericItem::Struct(s) => s.ident(),
+            GenericItem::Union(u) => u.ident(),
+            GenericItem::Const(c) => c.ident(),
+            GenericItem::Fn(f) => f.ident(),
+            GenericItem::Static(s) => s.ident(),
+            GenericItem::Module(m) => m.ident(),
+        };
+        items.sort_unstable_by_key(key_fn);
+        let Ok(idx) = items.binary_search_by_key(&ident.to_string(), key_fn) else {
+            return None;
+        };
+        items.swap_remove(idx).into()
+    }
 }
 
 impl Default for FfiItems {
@@ -194,8 +243,8 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
 }
 
 enum Resolution {
-    Resolved { original_use: RefinedUse, module: FfiItems },
-    Unresolved { original_use: RefinedUse }
+    Resolved { original_use: RefinedUse, items: FfiItems },
+    Unresolved,
 }
 
 fn resolve_use_trees(root: Module) -> Module {
@@ -223,13 +272,60 @@ fn resolve_one(src: Module) -> Vec<Resolution> {
     src.items.uses
         .clone()
         .into_iter()
-        .map(|u| (u, src.clone()))
-        .map(|(u, m)| resolve_use(u, m))
+        .map(|u| (u.clone(), u, src.clone()))
+        .map(|(ou, u, m)| resolve_use(ou, u, m))
         .collect()
 }
 
-fn resolve_use(r#use: RefinedUse, state: Module) -> Resolution {
-    todo!();
+fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Resolution {
+    match &r#use.tree {
+        RefinedUseTree::Name(syn::UseName { ident }) => {
+            macro_rules! single_item {
+                ($field:ident: $it:ident) => {{
+                    let items = FfiItems {
+                        $field: vec![$it],
+                        ..Default::default()
+                    };
+                    Resolution::Resolved {
+                        original_use,
+                        items,
+                    }
+                }};
+            }
+
+            match state.items.search(ident.clone()) {
+                Some(GenericItem::Type(t)) => single_item!(aliases: t),
+                Some(GenericItem::Struct(s)) => single_item!(structs: s),
+                Some(GenericItem::Union(u)) => single_item!(unions: u),
+                Some(GenericItem::Const(c)) => single_item!(constants: c),
+                Some(GenericItem::Fn(f)) => single_item!(foreign_functions: f),
+                Some(GenericItem::Static(s)) => single_item!(foreign_statics: s),
+                Some(GenericItem::Module(m)) => single_item!(modules: m),
+                None => Resolution::Unresolved,
+            }
+        }
+        RefinedUseTree::Glob(_) => Resolution::Resolved { original_use, items: state.items },
+        RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => todo!(),
+
+        RefinedUseTree::Path(RefinedUsePath { ident, tree }) => {
+            let new_use = RefinedUse {
+                is_public: r#use.is_public,
+                tree: *tree.clone(),
+            };
+            let new_state = match state.items.search(ident.clone()) {
+                Some(GenericItem::Module(m)) => m,
+                None => return Resolution::Unresolved,
+                Some(_) => unreachable!(
+                    "paths we parse in ctest include only modules, and not \
+                     enum variants; update this in the future if we start \
+                     supporting enum variants and thus start having imports \
+                     that can span multiple segments of a span without \
+                     strictly being nested modules"
+                ),
+            };
+            resolve_use(original_use, new_use, new_state)
+        }
+    }
 }
 
 fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
