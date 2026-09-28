@@ -208,7 +208,7 @@ pub(crate) enum RefinedUseTree {
     Path(RefinedUsePath),
     Name(syn::UseName),
     Rename(syn::UseRename),
-    Glob(syn::UseGlob),
+    Glob,
 }
 
 #[derive(Clone, Debug)]
@@ -223,7 +223,7 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
     match path {
         UseTree::Name(n) => vec![RefinedUseTree::Name(n)],
         UseTree::Rename(r) => vec![RefinedUseTree::Rename(r)],
-        UseTree::Glob(g) => vec![RefinedUseTree::Glob(g)],
+        UseTree::Glob(g) => vec![RefinedUseTree::Glob],
 
         UseTree::Path(syn::UsePath { ident, tree, .. }) => {
             normalize_path(*tree)
@@ -292,7 +292,6 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                     }
                 }};
             }
-
             match state.items.search(ident.clone()) {
                 Some(GenericItem::Type(t)) => single_item!(aliases: t),
                 Some(GenericItem::Struct(s)) => single_item!(structs: s),
@@ -304,8 +303,35 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                 None => Resolution::Unresolved,
             }
         }
-        RefinedUseTree::Glob(_) => Resolution::Resolved { original_use, items: state.items },
-        RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => todo!(),
+        RefinedUseTree::Glob => Resolution::Resolved { original_use, items: state.items },
+        RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => {
+            macro_rules! single_item {
+                ($field:ident , $it:tt : $ty:tt) => {{
+                    let mut new_path = $it.path;
+                    new_path.pop();
+                    new_path.push(rename);
+                    let new_item = $ty {
+                        ident: path_to_string(&new_path),
+                        path: same_path,
+                        ..$id,
+                    };
+                    Resolution::Resolved {
+                        original_use,
+                        items: FfiItems { $field: new_item, ..Default::default() },
+                    }
+                }};
+            }
+            match state.items.search(ident.clone()) {
+                Some(GenericItem::Module(m)) => todo!(),
+                Some(GenericItem::Type(t)) => single_item!(aliases, t: Type),
+                Some(GenericItem::Struct(s)) => single_item!(structs, s: Struct),
+                Some(GenericItem::Union(u)) => single_item!(unions, u: Union),
+                Some(GenericItem::Const(c)) => single_item!(constants, c: Const),
+                Some(GenericItem::Fn(f)) => single_item!(foreign_functions, f: Fn),
+                Some(GenericItem::Static(s)) => single_item!(foreign_statics, s: Static),
+                None => Resolution::Unresolved
+            }
+        }
 
         RefinedUseTree::Path(RefinedUsePath { ident, tree }) => {
             let new_use = RefinedUse {
@@ -366,10 +392,10 @@ fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module
         ..Default::default()
     };
     Module {
-        public: root.public,
         ident: new_root_cache,
         path: new_root_path,
         items: new_items,
+        ..root
     }
 }
 

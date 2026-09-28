@@ -86,9 +86,151 @@ manipulation proposition is that there exists a potential issue with the way it
 handles the traits implemented by the passed closure.
 
 The trat implementation of the passed closure is also required to be Clone
-because otherwise there are issues with using it in the item list mappings
+because otherwise there are issues with using it in the item-list-mapping
 closures. This constraint seems not feasible lest closures implement Clone.
 
 It would seem closures do implement Clone. Constraining the closure trait any
-further than with an immutable and recallable trait seems neither feasible. The
-FnMut trait is not required, and FnOnce is only known to be a one-off thing.
+further with an immutable and recallable trait seems neither feasible. The FnMut
+trait is not required, and FnOnce can only be assumed to be a one-off thing.
+
+The only worrying thing about the path manipulation strategy, as well as all
+other propositions whose proofs use recursiveness, is that the Rust runtime
+ensures not unboundedness of recursion in most cases.
+
+This consideration will be left for later. Current endeavors are rather focused
+on the renaming function to complete case handling during single-reexport
+resolution, and on the merging function. These are the only two things left.
+
+The renaming case may now more easily proceed by using the path manipulation
+proposition. Looking back on it, the refined type for use statements seems like
+it could benefit from making the glob injection be a const functor.
+
+Collapsing the contents of a glob seems feasible because it contains no
+information of use. Now back to the rename case. In this instance, it is known
+that the rename case holds both a source identifier and a rename.
+
+The first thing to do here would be a lookup of the source identifier. If found,
+then the returned item (if not a module) would suffer in-place modification of
+its path by creating a new (non-module) item.
+
+If the returned item were to be a module, then the renamed identifier alongside
+the yield module would have to be used with the path manipulation proposition.
+Let the proof be written up to this point.
+
+Further discussion is merited on the side of renaming non-module items. The path
+of the item should be changed; One can be sure that post-parsing there are no
+items whose paths are empty.
+
+Beyond that, the last segment of the path can be readily removed from the
+original path segments. Then the renamed identifier can be pushed anew into the
+punctuated list of segments.
+
+This process is mechanical enough for each item type that it could potentially
+be automated by means of an MBE. The path field is always available, no matter
+the item; All but the final operation is then item-independent.
+
+The last required action is to reconstruct the item with the updated path, and
+the updated cache for the path. This should be fairly simple to accomplish.
+
+= Idris community tutorial
+Before starting with the Idris community tutorial, it would be best to finish
+the attempt at providing a proof tha the vector splitting proposition is
+correct. This was part of an initial attempt during early hours with Idris.
+
+The proposition requires there being a vector that implies another proposition.
+This other proposition assumes a natural and implies a pair of a vector with
+some TBD length, and some vector with some other TBD length.
+
+The splitting logic would dictate that the splitting index must fall between 0
+and the length of the vector. Constraining that type is likely possible through
+finite sets, but it may prove more instructive to do so by hand.
+
+The proposition constraining some natural number to exist within a range should
+be indexed by a natural. If one assumes an inductive definition for the type,
+there is one vacuously true case; Natural zero is always in bounds.
+
+Thus, one case of the proposition constructs a finite set from the zeroth
+natural. One other case follows then; Provided an existing finite set, there
+exists another finite set representing the successor to the existing finite set.
+
+This would dictate that some finite set indexed by 2 can be deconstructed into a
+finite set that was constructed from a finite set indexed by 1, and that was
+itself constructed from a finite indexed by 2.
+
+Would this proposition be enough to reflect that there exists no natural, that
+upon being dependently paired with a finite set, would not surpass its index?
+This can be readily tested by producing a dependent natural with a finite set.
+
+It would seem the above design for finite sets constrains the natural to be a
+specific number, and not to fall within a specific range. Consider the case of a
+natural 2, which should fall within the finite set bounded from above at 3.
+
+The construction of the finite set follows the same construction as that of a
+natural. The successor to some existing finite set builds from the prior finite
+set. This allows not one to retrieve the finite set that would limit a range.
+
+Construction of the proof requires being capable of constructing the type of the
+finite set. For some natural, if a finite set represents an upper bound, the
+building of the finite set must allow representing the natural.
+
+Except it may very well be that the test case itself is flawed. The type of the
+dependent pair specifically uses the dependant natural as the index to the
+dependee finite set. This implies the natural must be the upper bound itself.
+
+A better test case may be found if instead the finite set is used to constrain a
+natural that exists in another context. An ideal example would seem to be a
+length-indexed vector whose implicit for the length were bounded by the set.
+
+It would seem a more precise test case may go through the proofing of an
+indexing propostion for a length-indexed vector. This would consider a finite
+set that represented some non-zero natural, and a vector with that length.
+
+The finite set would have be indexed by the successor to some natural, and the
+vector length would have to also be the successor the same natural. This would
+ensure the finite set represents at least numbers greater than zero.
+
+The proofing of this may not be as simple, though. The basecase would seem to
+correspond with a proposition with a finite set for the successor of zero. This
+would yield the only element in the vector.
+
+This could be assumed to be the inductive hypothesis. The only other case would
+be for the finite set to represent the successor of some other finite set, and
+thus for the vector to hold more than one element.
+
+In the proof, this would pattern match with the finite set as mentioned above,
+and with the vector as a destructuring of its head from its tail. The only issue
+to this is that this would always fetch the first element of the vector.
+
+The only possible cases to consider would be those. It seems the finite set as
+conceived represents not a bounded natural, but the idea of a bounded natural.
+One can not destructure the set into any one natural in the bounded range.
+
+For the indexing to work, the natural indicating the index of the element in the
+vector would have to be bounded. The natural would thus require existing as a
+dependent pair alongside a proposition indexed by the limit and natural.
+
+This proposition to limit a natural knowing the upper bound seems expressed by
+the finite set. The problem with the finite set is that the natural is not
+accessbile; Only the limit is known.
+
+A better proposition would have to build on both ideas; It would have to be
+indexed by a limit and a natural. The latter would indicate the natural in
+question to bound, while the former would indicate the limit of the natural.
+
+This seems a lot like a less-than-or-equal binary relation. It is indexed by two
+naturals, and indicates the lhs is strictly smaller than or equal to the rhs.
+This idea seems exactly like what vector indexing needs.
+
+One would wonder then what is the point of finite sets, then. It would seem
+finite sets alone do not provide much value; std implements a bunch of utilities
+for roundtripping between a finite set and a natural.
+
+These utilites deal with integer overloads between naturals and integers, and
+then between naturals and finite sets. This sometimes implies use of type system
+subversion through belive_me. This is unrelated to the topic at hand.
+
+It would seem providing a finite set then, so long as there existed a way of
+converting from a natural to a finite set, is acceptable. This would mean that
+the finite set exists within the limits of the vector.
+
+Let there be a pause to go back to Rust matters.
