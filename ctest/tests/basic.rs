@@ -111,13 +111,13 @@ fn test_skip_simple() {
     let library_path = "simple.out.with-skips.a";
 
     let (mut gen_, out_dir) = default_generator(1, Some("simple.h")).unwrap();
-    gen_.skip_const(|c| c.ident() == "B" || c.ident() == "A")
+    gen_.skip_const(|c| c.path() == "B" || c.path() == "A")
         .skip_c_enum(|e| e == "Color")
-        .skip_alias(|a| a.ident() == "Byte" || a.ident() == "gregset_t")
-        .skip_struct(|s| s.ident() == "Person")
-        .skip_union(|u| u.ident() == "Word")
-        .skip_fn(|f| f.ident() == "calloc")
-        .skip_static(|s| s.ident() == "byte");
+        .skip_alias(|a| a.path() == "Byte" || a.path() == "gregset_t")
+        .skip_struct(|s| s.path() == "Person")
+        .skip_union(|u| u.path() == "Word")
+        .skip_fn(|f| f.path() == "calloc")
+        .skip_static(|s| s.path() == "byte");
 
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
@@ -130,7 +130,7 @@ fn test_map_simple() {
     let library_path = "simple.out.with-renames.a";
 
     let (mut gen_, out_dir) = default_generator(1, Some("simple.h")).unwrap();
-    gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()))
+    gen_.rename_constant(|c| (c.path() == "B").then(|| "C_B".to_string()))
         .alias_is_c_enum(|e| e == "Color")
         .skip_signededness(|ty| ty == "Color");
 

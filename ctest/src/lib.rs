@@ -27,6 +27,7 @@ pub use ast::{
     Const,
     Field,
     Fn,
+    Module,
     Parameter,
     Static,
     Struct,
@@ -90,6 +91,7 @@ pub(crate) enum MapInput<'a> {
     CEnumType(&'a str),
     StructFieldType(&'a Struct, &'a Field),
     UnionFieldType(&'a Union, &'a Field),
+    Module(&'a Module),
 }
 
 /// The language used to generate the tests.
@@ -165,5 +167,11 @@ impl<'a> From<&'a Struct> for MapInput<'a> {
 impl<'a> From<&'a Union> for MapInput<'a> {
     fn from(u: &'a Union) -> Self {
         MapInput::Union(u)
+    }
+}
+
+impl<'a> From<&'a Module> for MapInput<'a> {
+    fn from(value: &'a Module) -> Self {
+        MapInput::Module(value)
     }
 }
