@@ -1,7 +1,7 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
 use std::borrow::Borrow;
-use std::ops::Deref;
+use std::ops::{self, Deref};
 use std::iter;
 use std::ops::ControlFlow;
 
@@ -319,12 +319,57 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                     "paths we parse in ctest include only modules, and not \
                      enum variants; update this in the future if we start \
                      supporting enum variants and thus start having imports \
-                     that can span multiple segments of a span without \
+                     that can span multiple segments of a path without \
                      strictly being nested modules"
                 ),
             };
             resolve_use(original_use, new_use, new_state)
         }
+    }
+}
+
+fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module) -> Module {
+    let new_root_path = f(root.path.clone());
+    let new_root_cache = path_to_string(&new_root_path);
+    macro_rules! map_items {
+        ($field:ident: $ty:tt) => {{
+            root.items.$field
+                .clone()
+                .into_iter()
+                .map(|it| {
+                    let new_path = f(it.path);
+                    $ty { path: new_path, ..it }
+                })
+                .collect::<Vec<_>>()
+        }};
+    }
+    let new_aliases = map_items!(aliases: Type);
+    let new_structs = map_items!(structs: Struct);
+    let new_unions = map_items!(unions: Union);
+    let new_constants = map_items!(constants: Const);
+    let new_foreign_functions = map_items!(foreign_functions: Fn);
+    let new_foreign_statics = map_items!(foreign_statics: Static);
+    let new_modules: Vec<_> = root.items.modules
+        .clone()
+        .into_iter()
+        .map(|m| (f.clone(), m))
+        .map(|(f, m)| manipulate_path(f, m))
+        .collect();
+    let new_items = FfiItems {
+        aliases: new_aliases,
+        structs: new_structs,
+        unions: new_unions,
+        constants: new_constants,
+        foreign_functions: new_foreign_functions,
+        foreign_statics: new_foreign_statics,
+        modules: new_modules,
+        ..Default::default()
+    };
+    Module {
+        public: root.public,
+        ident: new_root_cache,
+        path: new_root_path,
+        items: new_items,
     }
 }
 

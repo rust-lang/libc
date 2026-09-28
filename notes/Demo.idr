@@ -289,7 +289,7 @@ resolveDriver (MkState { state = st, current = it }) =
       -> (FfiItems Z, List (FfiItems (S n)))
     r it (st, its) =
       let (MkState { state = nst, current = nit }) :=
-          resolveDriver (MkState { state = st , current = it })
+          resolveDriver $ MkState { state = st, current = it }
       in (nst, nit :: its)
 
     f : (i : FfiItems n ** UngroupedItems i) -> FfiItems Z -> StatefulItems n
