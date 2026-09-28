@@ -130,7 +130,48 @@ be automated by means of an MBE. The path field is always available, no matter
 the item; All but the final operation is then item-independent.
 
 The last required action is to reconstruct the item with the updated path, and
-the updated cache for the path. This should be fairly simple to accomplish.
+the updated cache for the path. This should be fairly simple to accomplish. The
+only case left to address is that of modules.
+
+When matching against a module in the rename case, the proof should instead use
+the path manipulation proposition. The closure assumed true in that proposition
+should capture the original path of the subtree root module.
+
+Then for each path passed to the closure, it should extract whatever is left of
+the path after the root set of segments, and prepend to that the updated path to
+the root module. This goes through potentially caching the updated path.
+
+This idea is still fuzzy; How does one find the base path of the passed root
+module in the path of each item? This can be accomplished by first taking the
+length of the base path, and then removing that suffix from the path segments.
+
+The length can be obtained from the ancestor module outside of the closure. The
+type in syn for representing path segments does not allow removal from the
+front. One simple alternative is to perform random-access insertion.
+
+Firstly, the length of the ancestor module's path gets stored outside the
+closure. Then an iterator from this length to the length of the path passed in
+the closure fetches each segment pertaining only to the item's path.
+
+Then this gets gathered into a vector, the elements of which are iterated over
+to be inserted into the updated and cached base path of the root module living
+outside the closure.
+
+An even better approach may be to get first the difference of the length of the
+item's path with respect to the module's path, and then pop from the back as
+many times as that difference indicates.
+
+Then this can be gathered in a vector, to be reversed prior to being iterated
+over and added to a new copy of the cached and updated version of the root
+module's path (again, living outside the closure.)
+
+Or a simpler idea would be to iterate over all segments of the item's path,
+skipping first through the length of the ancestor module's path length. Then the
+remaining segments can be gathered into a vector.
+
+The vector would then be folded with a seed value consisting of a copy of the
+cached new ancestor path, to which all previoulsy collected, item-specific path
+segments would be appended.
 
 = Idris community tutorial
 Before starting with the Idris community tutorial, it would be best to finish

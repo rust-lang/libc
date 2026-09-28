@@ -307,22 +307,51 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
         RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => {
             macro_rules! single_item {
                 ($field:ident , $it:tt : $ty:tt) => {{
-                    let mut new_path = $it.path;
-                    new_path.pop();
-                    new_path.push(rename);
+                    let mut new_segments = $it.path.segments;
+                    new_segments.pop();
+                    new_segments.push(syn::PathSegment {
+                        ident: rename.clone(),
+                        arguments: syn::PathArguments::None,
+                    });
+                    let new_path = syn::Path { segments: new_segments, ..$it.path };
                     let new_item = $ty {
                         ident: path_to_string(&new_path),
-                        path: same_path,
-                        ..$id,
+                        path: new_path,
+                        ..$it
                     };
                     Resolution::Resolved {
                         original_use,
-                        items: FfiItems { $field: new_item, ..Default::default() },
+                        items: FfiItems { $field: vec![new_item], ..Default::default() },
                     }
                 }};
             }
             match state.items.search(ident.clone()) {
-                Some(GenericItem::Module(m)) => todo!(),
+                Some(GenericItem::Module(m)) => {
+                    let new_path = {
+                        let mut base_path_segments = m.path.segments.clone();
+                        base_path_segments.pop();
+                        base_path_segments.push(syn::PathSegment {
+                            ident: rename.clone(),
+                            arguments: syn::PathArguments::None,
+                        });
+                        syn::Path { segments: base_path_segments, ..m.path }
+                    };
+                    let new_cache = path_to_string(&new_path);
+                    let new_path_len = new_path.segments.len();
+                    let new_module = manipulate_path(|p| {
+                        let new_path = p.segments
+                            .clone()
+                            .into_iter()
+                            .skip(new_path_len)
+                            .fold(new_path.clone(), |mut p, s| {
+                                p.segments.push(s);
+                                p
+                            });
+                        syn::Path { leading_colon: p.leading_colon, ..new_path }
+                    }, m);
+                    let new_items = FfiItems { modules: vec![new_module], ..Default::default() };
+                    Resolution::Resolved { original_use, items: new_items }
+                }
                 Some(GenericItem::Type(t)) => single_item!(aliases, t: Type),
                 Some(GenericItem::Struct(s)) => single_item!(structs, s: Struct),
                 Some(GenericItem::Union(u)) => single_item!(unions, u: Union),
