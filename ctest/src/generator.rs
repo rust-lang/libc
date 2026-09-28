@@ -10,7 +10,6 @@ use std::path::{
 use std::rc::Rc;
 
 use askama::Template;
-use syn::visit::Visit;
 use thiserror::Error;
 
 use crate::ffi_items::FfiItems;

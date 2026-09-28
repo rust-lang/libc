@@ -1,17 +1,22 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
 use std::borrow::Borrow;
-use std::ops::{self, Deref};
 use std::iter;
-use std::ops::ControlFlow;
+use std::ops::{
+    self,
+    ControlFlow,
+    Deref,
+};
 
 use quote::ToTokens;
-use syn::Visibility;
 use syn::punctuated::Punctuated;
-use syn::UseTree;
 use syn::visit::{
     self,
     Visit,
+};
+use syn::{
+    UseTree,
+    Visibility,
 };
 
 use crate::{
@@ -115,7 +120,11 @@ impl FfiItems {
     /// instance is always left with no reexports that are not sourced from
     /// third-party crates.
     pub(crate) fn visit_file(&mut self, file: &syn::File) {
-        let syn::File { attrs, items: mod_items, .. } = file;
+        let syn::File {
+            attrs,
+            items: mod_items,
+            ..
+        } = file;
         let file_mod = syn::ItemMod {
             attrs: attrs.clone(),
             vis: syn::parse_quote! { pub },
@@ -148,9 +157,18 @@ impl FfiItems {
         let structs = self.structs.clone().into_iter().map(GenericItem::Struct);
         let unions = self.unions.clone().into_iter().map(GenericItem::Union);
         let constants = self.constants.clone().into_iter().map(GenericItem::Const);
-        let foreign_functions = self.foreign_functions.clone().into_iter().map(GenericItem::Fn);
-        let foreign_statics = self.foreign_statics.clone().into_iter().map(GenericItem::Static);
-        let mut items: Vec<_> = self.modules
+        let foreign_functions = self
+            .foreign_functions
+            .clone()
+            .into_iter()
+            .map(GenericItem::Fn);
+        let foreign_statics = self
+            .foreign_statics
+            .clone()
+            .into_iter()
+            .map(GenericItem::Static);
+        let mut items: Vec<_> = self
+            .modules
             .clone()
             .into_iter()
             .map(GenericItem::Module)
@@ -197,13 +215,13 @@ impl Default for FfiItems {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RefinedUsePath {
     ident: syn::Ident,
     tree: Box<RefinedUseTree>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub(crate) enum RefinedUseTree {
     Path(RefinedUsePath),
     Name(syn::UseName),
@@ -211,7 +229,7 @@ pub(crate) enum RefinedUseTree {
     Glob,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RefinedUse {
     is_public: bool,
     tree: RefinedUseTree,
@@ -223,18 +241,18 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
     match path {
         UseTree::Name(n) => vec![RefinedUseTree::Name(n)],
         UseTree::Rename(r) => vec![RefinedUseTree::Rename(r)],
-        UseTree::Glob(g) => vec![RefinedUseTree::Glob],
+        UseTree::Glob(_) => vec![RefinedUseTree::Glob],
 
-        UseTree::Path(syn::UsePath { ident, tree, .. }) => {
-            normalize_path(*tree)
-                .into_iter()
-                .map(Box::new)
-                .map(|tree| RefinedUseTree::Path(RefinedUsePath {
+        UseTree::Path(syn::UsePath { ident, tree, .. }) => normalize_path(*tree)
+            .into_iter()
+            .map(Box::new)
+            .map(|tree| {
+                RefinedUseTree::Path(RefinedUsePath {
                     ident: ident.clone(),
-                    tree
-                }))
-                .collect()
-        }
+                    tree,
+                })
+            })
+            .collect(),
 
         UseTree::Group(syn::UseGroup { items, .. }) => {
             items.into_iter().map(normalize_path).flatten().collect()
@@ -243,12 +261,20 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
 }
 
 enum Resolution {
-    Resolved { original_use: RefinedUse, items: FfiItems },
+    Resolved {
+        original_use: RefinedUse,
+        items: FfiItems,
+    },
     Unresolved,
 }
 
 fn resolve_use_trees(root: Module) -> Module {
-    let resolved_children = root.items.modules.into_iter().map(resolve_use_trees).collect();
+    let resolved_children = root
+        .items
+        .modules
+        .into_iter()
+        .map(resolve_use_trees)
+        .collect();
     let root = {
         let items = FfiItems {
             modules: resolved_children,
@@ -262,14 +288,15 @@ fn resolve_use_trees(root: Module) -> Module {
             let new_root = merge_module(root.clone(), resolved_uses);
             match root.items.uses.len() == new_root.items.uses.len() {
                 true => ControlFlow::Break(new_root),
-                false => ControlFlow::Continue(new_root)
+                false => ControlFlow::Continue(new_root),
             }
         });
     root
 }
 
 fn resolve_one(src: Module) -> Vec<Resolution> {
-    src.items.uses
+    src.items
+        .uses
         .clone()
         .into_iter()
         .map(|u| (u.clone(), u, src.clone()))
@@ -303,7 +330,10 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                 None => Resolution::Unresolved,
             }
         }
-        RefinedUseTree::Glob => Resolution::Resolved { original_use, items: state.items },
+        RefinedUseTree::Glob => Resolution::Resolved {
+            original_use,
+            items: state.items,
+        },
         RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => {
             macro_rules! single_item {
                 ($field:ident , $it:tt : $ty:tt) => {{
@@ -313,7 +343,10 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                         ident: rename.clone(),
                         arguments: syn::PathArguments::None,
                     });
-                    let new_path = syn::Path { segments: new_segments, ..$it.path };
+                    let new_path = syn::Path {
+                        segments: new_segments,
+                        ..$it.path
+                    };
                     let new_item = $ty {
                         ident: path_to_string(&new_path),
                         path: new_path,
@@ -321,7 +354,10 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                     };
                     Resolution::Resolved {
                         original_use,
-                        items: FfiItems { $field: vec![new_item], ..Default::default() },
+                        items: FfiItems {
+                            $field: vec![new_item],
+                            ..Default::default()
+                        },
                     }
                 }};
             }
@@ -334,23 +370,36 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                             ident: rename.clone(),
                             arguments: syn::PathArguments::None,
                         });
-                        syn::Path { segments: base_path_segments, ..m.path }
+                        syn::Path {
+                            segments: base_path_segments,
+                            ..m.path
+                        }
                     };
-                    let new_cache = path_to_string(&new_path);
                     let new_path_len = new_path.segments.len();
-                    let new_module = manipulate_path(|p| {
-                        let new_path = p.segments
-                            .clone()
-                            .into_iter()
-                            .skip(new_path_len)
-                            .fold(new_path.clone(), |mut p, s| {
-                                p.segments.push(s);
-                                p
-                            });
-                        syn::Path { leading_colon: p.leading_colon, ..new_path }
-                    }, m);
-                    let new_items = FfiItems { modules: vec![new_module], ..Default::default() };
-                    Resolution::Resolved { original_use, items: new_items }
+                    let new_module = manipulate_path(
+                        |p| {
+                            let new_path = p.segments.clone().into_iter().skip(new_path_len).fold(
+                                new_path.clone(),
+                                |mut p, s| {
+                                    p.segments.push(s);
+                                    p
+                                },
+                            );
+                            syn::Path {
+                                leading_colon: p.leading_colon,
+                                ..new_path
+                            }
+                        },
+                        m,
+                    );
+                    let new_items = FfiItems {
+                        modules: vec![new_module],
+                        ..Default::default()
+                    };
+                    Resolution::Resolved {
+                        original_use,
+                        items: new_items,
+                    }
                 }
                 Some(GenericItem::Type(t)) => single_item!(aliases, t: Type),
                 Some(GenericItem::Struct(s)) => single_item!(structs, s: Struct),
@@ -358,7 +407,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                 Some(GenericItem::Const(c)) => single_item!(constants, c: Const),
                 Some(GenericItem::Fn(f)) => single_item!(foreign_functions, f: Fn),
                 Some(GenericItem::Static(s)) => single_item!(foreign_statics, s: Static),
-                None => Resolution::Unresolved
+                None => Resolution::Unresolved,
             }
         }
 
@@ -388,12 +437,16 @@ fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module
     let new_root_cache = path_to_string(&new_root_path);
     macro_rules! map_items {
         ($field:ident: $ty:tt) => {{
-            root.items.$field
+            root.items
+                .$field
                 .clone()
                 .into_iter()
                 .map(|it| {
                     let new_path = f(it.path);
-                    $ty { path: new_path, ..it }
+                    $ty {
+                        path: new_path,
+                        ..it
+                    }
                 })
                 .collect::<Vec<_>>()
         }};
@@ -404,7 +457,9 @@ fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module
     let new_constants = map_items!(constants: Const);
     let new_foreign_functions = map_items!(foreign_functions: Fn);
     let new_foreign_statics = map_items!(foreign_statics: Static);
-    let new_modules: Vec<_> = root.items.modules
+    let new_modules: Vec<_> = root
+        .items
+        .modules
         .clone()
         .into_iter()
         .map(|m| (f.clone(), m))
@@ -429,7 +484,134 @@ fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module
 }
 
 fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
-    todo!();
+    let new_path = dst.path.clone();
+    src.into_iter()
+        .filter_map(|r| {
+            if let Resolution::Resolved {
+                original_use,
+                items,
+            } = r
+            {
+                Some((original_use, items))
+            } else {
+                None
+            }
+        })
+        .map(
+            |(
+                ou,
+                FfiItems {
+                    aliases,
+                    structs,
+                    unions,
+                    constants,
+                    foreign_functions,
+                    foreign_statics,
+                    modules,
+
+                    uses,
+                    current_module,
+                },
+            )| {
+                macro_rules! single_item {
+                    ($field:ident: $ty:tt) => {{
+                        $field
+                            .into_iter()
+                            .map(|it| {
+                                let Some(ident) = it.path.segments.last().cloned() else {
+                                    unreachable!(
+                                        "all parsed items have at least one \
+                                         segment in their paths"
+                                    );
+                                };
+                                let mut new_path = new_path.clone();
+                                new_path.segments.push(ident);
+                                $ty {
+                                    path: new_path,
+                                    ..it
+                                }
+                            })
+                            .collect::<Vec<_>>()
+                    }};
+                }
+                let new_aliases = single_item!(aliases: Type);
+                let new_structs = single_item!(structs: Struct);
+                let new_unions = single_item!(unions: Union);
+                let new_constants = single_item!(constants: Const);
+                let new_foreign_functions = single_item!(foreign_functions: Fn);
+                let new_foreign_statics = single_item!(foreign_statics: Static);
+                let new_modules = modules
+                    .into_iter()
+                    .map(|m| {
+                        manipulate_path(
+                            |p| {
+                                let Some(ident) = p.segments.last().cloned() else {
+                                    unreachable!(
+                                        "all parsed items have at least one \
+                                         segment in their paths"
+                                    )
+                                };
+                                let mut new_path = new_path.clone();
+                                new_path.segments.push(ident);
+                                new_path
+                            },
+                            m,
+                        )
+                    })
+                    .collect();
+                (
+                    ou,
+                    FfiItems {
+                        aliases: new_aliases,
+                        structs: new_structs,
+                        unions: new_unions,
+                        constants: new_constants,
+                        foreign_functions: new_foreign_functions,
+                        foreign_statics: new_foreign_statics,
+                        modules: new_modules,
+                        uses,
+                        current_module,
+                    },
+                )
+            },
+        )
+        .fold(
+            dst,
+            |mut dst,
+             (
+                ou,
+                FfiItems {
+                    aliases,
+                    structs,
+                    unions,
+                    constants,
+                    foreign_functions,
+                    foreign_statics,
+                    modules,
+                    ..
+                },
+            )| {
+                let Some(idx) = dst.items.uses.iter().position(|u| *u == ou) else {
+                    unreachable!(
+                        "the use statement was sourced from the module which \
+                         this fold is using as seed value"
+                    )
+                };
+                dst.items.uses.swap_remove(idx);
+                dst.items.aliases.extend_from_slice(&aliases);
+                dst.items.structs.extend_from_slice(&structs);
+                dst.items.unions.extend_from_slice(&unions);
+                dst.items.constants.extend_from_slice(&constants);
+                dst.items
+                    .foreign_functions
+                    .extend_from_slice(&foreign_functions);
+                dst.items
+                    .foreign_statics
+                    .extend_from_slice(&foreign_statics);
+                dst.items.modules.extend_from_slice(&modules);
+                dst
+            },
+        )
 }
 
 /// Appends a new module-local item to an absolute path that does *not* start
@@ -654,7 +836,13 @@ impl<'ast> Visit<'ast> for FfiItems {
     }
 
     fn visit_item_mod(&mut self, i: &'ast syn::ItemMod) {
-        let syn::ItemMod { vis, ident, content: Some((_, mod_items)), .. } = i else {
+        let syn::ItemMod {
+            vis,
+            ident,
+            content: Some((_, mod_items)),
+            ..
+        } = i
+        else {
             unreachable!("this runs post cargo-expand, which inlines all modules");
         };
         let uses: Vec<_> = mod_items

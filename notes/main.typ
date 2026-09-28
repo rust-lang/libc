@@ -171,7 +171,25 @@ remaining segments can be gathered into a vector.
 
 The vector would then be folded with a seed value consisting of a copy of the
 cached new ancestor path, to which all previoulsy collected, item-specific path
-segments would be appended.
+segments would be appended. It would seem the proposition for handling
+single-use-statement resolution has had its proof finished. The only thing left
+is to provide proof for the merging proposition. In this case, this is known to
+iterate through the resolution items, ignoring those that are marked unresolved.
+For each resolved item, the associated use statement should be removed from the
+module. Beyond that, merging should integrate the items in the container carried
+for this one injection of the resolution coproduct, into the destination module.
+This, as mentioned during elaboration of the path manipulation function,
+requires renaming all paths in both items and module subtrees rooted at the
+items to merge, such that everything but their last path segment is replaced
+with the destination's module path segment. In other words, merging of resolved
+items requires considering the case for non-module items, and the case for
+modules. Something similar was already proofed in the rename case of the
+single-use-statement resolution proposition. Maybe this is worth abstracting, or
+maybe not. Either way, it seems clear items should have everything but their
+trailing path segment replaced with the path of the module into which to merge.
+Modules need to be fed into the path manipulation proposition, with a closure
+that, again, extracts the last segment of the path, and prepends to it the path
+of the module into which to merge.
 
 = Idris community tutorial
 Before starting with the Idris community tutorial, it would be best to finish
@@ -274,4 +292,35 @@ It would seem providing a finite set then, so long as there existed a way of
 converting from a natural to a finite set, is acceptable. This would mean that
 the finite set exists within the limits of the vector.
 
-Let there be a pause to go back to Rust matters.
+The role of finite sets is then only to provide some bound in the type signature
+of a proposition. The actual work of transforming the integer into a natural in
+the range denoted by the finite set is delegated to some other function.
+
+This would mean that the finite set is always useless outside of the guarantees
+it provides at the type level. There's always need for a supporting
+infrastructure to hold up the transformation between a natural and the set.
+
+This then means that a custom finite set is not enough for none of the indexing
+nor the vector splitting routine. There seems to be an interface for converting
+between integers and some other type, which is used by std's finite sets.
+
+Implementing integer to finite set conversion seems not to be a simple endeavor.
+The integer cannot be merely any integer, and neither can it be cast first into
+a natural, and pattern-matched to be used in constructing a finite set.
+
+The finite set is already defined in the propositions for the Num interface as
+providing a bound for some natural. This means integer overloading could fail.
+Most notably, a negative integer would not be good enough.
+
+One should only be capable of constructing a finite set off of an unsigned
+integer literal. One could introduce such a constraint prior to the propositions
+in the Num interface, and use the constrained integer for overloading.
+
+It would seem setting up constraints prior to introducing the interface
+constraint is possible. With that in mind, it then becomes possible to establish
+that provided a certain integer n, this integer will only become a finite set if
+another proposition determines that this is possible. This other proposition
+would imply a type that would serve as proposition requirement and would either
+have to be proof-searched or otherwise manually provided. In theory, a proof
+search seems feasible because this exists for the sole purpose of handling
+overloaded literals.
