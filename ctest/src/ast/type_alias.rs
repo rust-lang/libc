@@ -4,7 +4,7 @@ use crate::BoxStr;
 #[derive(Debug, Clone)]
 pub struct Type {
     pub(crate) public: bool,
-    pub(crate) ident: BoxStr,
+    pub(crate) cached_path: BoxStr,
     pub(crate) path: syn::Path,
     pub(crate) ty: syn::Type,
 }
@@ -17,7 +17,7 @@ impl Type {
     /// `crate::bar`, the returned string will be `bar::foo`, and not
     /// `crate::bar::foo`.
     pub fn path(&self) -> &str {
-        &self.ident
+        &self.cached_path
     }
 
     /// Returns the last path of the identifier, from the absolute path returned

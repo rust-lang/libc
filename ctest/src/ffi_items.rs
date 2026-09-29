@@ -137,7 +137,7 @@ impl FfiItems {
         self.visit_item_mod(&file_mod);
         let root_module = Module {
             public: bool::default(),
-            ident: String::new().into_boxed_str(),
+            cached_path: String::new().into_boxed_str(),
             path: syn::Path {
                 leading_colon: None,
                 segments: Punctuated::new(),
@@ -348,7 +348,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: Module) -> Re
                         ..$it.path
                     };
                     let new_item = $ty {
-                        ident: path_to_string(&new_path),
+                        cached_path: path_to_string(&new_path),
                         path: new_path,
                         ..$it
                     };
@@ -443,7 +443,9 @@ fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module
                 .into_iter()
                 .map(|it| {
                     let new_path = f(it.path);
+                    let new_cache = path_to_string(&new_path);
                     $ty {
+                        cached_path: new_cache,
                         path: new_path,
                         ..it
                     }
@@ -476,7 +478,7 @@ fn manipulate_path(f: impl ops::Fn(syn::Path) -> syn::Path + Clone, root: Module
         ..Default::default()
     };
     Module {
-        ident: new_root_cache,
+        cached_path: new_root_cache,
         path: new_root_path,
         items: new_items,
         ..root
@@ -508,52 +510,73 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     foreign_functions,
                     foreign_statics,
                     modules,
-
-                    uses,
-                    current_module,
+                    ..
                 },
             )| {
-                macro_rules! single_item {
-                    ($field:ident: $ty:tt) => {{
-                        $field
-                            .into_iter()
-                            .map(|it| {
-                                let Some(ident) = it.path.segments.last().cloned() else {
-                                    unreachable!(
-                                        "all parsed items have at least one \
-                                         segment in their paths"
-                                    );
-                                };
-                                let mut new_path = new_path.clone();
-                                new_path.segments.push(ident);
-                                $ty {
-                                    path: new_path,
-                                    ..it
-                                }
-                            })
-                            .collect::<Vec<_>>()
-                    }};
-                }
-                let new_aliases = single_item!(aliases: Type);
-                let new_structs = single_item!(structs: Struct);
-                let new_unions = single_item!(unions: Union);
-                let new_constants = single_item!(constants: Const);
-                let new_foreign_functions = single_item!(foreign_functions: Fn);
-                let new_foreign_statics = single_item!(foreign_statics: Static);
-                let new_modules = modules
+                // [NOTE]: this sequence must have at least one segment, because
+                // the invariant assumed in the closure for path manipulation of
+                // the items to merge assuems so. This is true for all items to
+                // merge, but this module wrapping all those items is only
+                // virtual in nature; The containig items (post-path-renaming)
+                // will be extracted, and the module trashed. But the module,
+                // even though a dummy, will also have the clsoure further down
+                // below applied to its path, so it needs to be non-empty.
+                let mut dummy_segment = syn::punctuated::Punctuated::new();
+                dummy_segment.push(syn::PathSegment {
+                    ident: syn::Ident::new("dummy", proc_macro2::Span::call_site()),
+                    arguments: syn::PathArguments::None,
+                });
+                let items_without_modules = FfiItems {
+                    aliases,
+                    structs,
+                    unions,
+                    constants,
+                    foreign_functions,
+                    foreign_statics,
+                    ..Default::default()
+                };
+                let module = Module {
+                    public: false,
+                    cached_path: String::new().into_boxed_str(),
+                    path: syn::Path {
+                        leading_colon: None,
+                        segments: dummy_segment,
+                    },
+                    items: items_without_modules,
+                };
+                let new_module = manipulate_path(
+                    |p| {
+                        let Some(ident) = p.segments.last().cloned() else {
+                            unreachable!(
+                                "all parsed items have at least one segment in \
+                                 their paths"
+                            )
+                        };
+                        let mut new_path = new_path.clone();
+                        new_path.segments.push(ident);
+                        new_path
+                    },
+                    module,
+                );
+                let new_nested_modules: Vec<_> = modules
                     .into_iter()
                     .map(|m| {
+                        let Some(base_path) = m.path.segments.last().cloned() else {
+                            unreachable!(
+                                "all items post-parsing have at least one \
+                                 segment in their paths"
+                            );
+                        };
                         manipulate_path(
                             |p| {
-                                let Some(ident) = p.segments.last().cloned() else {
-                                    unreachable!(
-                                        "all parsed items have at least one \
-                                         segment in their paths"
-                                    )
-                                };
-                                let mut new_path = new_path.clone();
-                                new_path.segments.push(ident);
-                                new_path
+                                p.segments
+                                    .clone()
+                                    .into_iter()
+                                    .skip_while(|s| *s != base_path)
+                                    .fold(new_path.clone(), |mut p, s| {
+                                        p.segments.push(s);
+                                        p
+                                    })
                             },
                             m,
                         )
@@ -562,15 +585,8 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                 (
                     ou,
                     FfiItems {
-                        aliases: new_aliases,
-                        structs: new_structs,
-                        unions: new_unions,
-                        constants: new_constants,
-                        foreign_functions: new_foreign_functions,
-                        foreign_statics: new_foreign_statics,
-                        modules: new_modules,
-                        uses,
-                        current_module,
+                        modules: new_nested_modules,
+                        ..new_module.items
                     },
                 )
             },
@@ -694,7 +710,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
     let public = is_visible(&i.vis);
     let abi = abi.clone();
     let path = append_path(&table.current_module, &i.sig.ident);
-    let ident = path_to_string(&path);
+    let cached_path = path_to_string(&path);
     let parameters = i
         .sig
         .inputs
@@ -726,7 +742,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
     table.foreign_functions.push(Fn {
         public,
         abi,
-        ident,
+        cached_path,
         path,
         link_name,
         parameters,
@@ -738,14 +754,14 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
     let public = is_visible(&i.vis);
     let abi = abi.clone();
     let path = append_path(&table.current_module, &i.ident);
-    let ident = path_to_string(&path);
+    let cached_path = path_to_string(&path);
     let ty = i.ty.deref().clone();
     let link_name = extract_single_link_name(&i.attrs);
 
     table.foreign_statics.push(Static {
         public,
         abi,
-        ident,
+        cached_path,
         path,
         link_name,
         ty,
@@ -756,12 +772,12 @@ impl<'ast> Visit<'ast> for FfiItems {
     fn visit_item_type(&mut self, i: &'ast syn::ItemType) {
         let public = is_visible(&i.vis);
         let path = append_path(&self.current_module, &i.ident);
-        let ident = path_to_string(&path);
+        let cached_path = path_to_string(&path);
         let ty = i.ty.deref().clone();
 
         self.aliases.push(Type {
             public,
-            ident,
+            cached_path,
             path,
             ty,
         });
@@ -770,7 +786,7 @@ impl<'ast> Visit<'ast> for FfiItems {
     fn visit_item_struct(&mut self, i: &'ast syn::ItemStruct) {
         let public = is_visible(&i.vis);
         let path = append_path(&self.current_module, &i.ident);
-        let ident = path_to_string(&path);
+        let cached_path = path_to_string(&path);
         let fields = match &i.fields {
             syn::Fields::Named(fields) => collect_fields(&fields.named),
             syn::Fields::Unnamed(fields) => collect_fields(&fields.unnamed),
@@ -779,7 +795,7 @@ impl<'ast> Visit<'ast> for FfiItems {
 
         self.structs.push(Struct {
             public,
-            ident,
+            cached_path,
             path,
             fields,
         });
@@ -788,12 +804,12 @@ impl<'ast> Visit<'ast> for FfiItems {
     fn visit_item_union(&mut self, i: &'ast syn::ItemUnion) {
         let public = is_visible(&i.vis);
         let path = append_path(&self.current_module, &i.ident);
-        let ident = path_to_string(&path);
+        let cached_path = path_to_string(&path);
         let fields = collect_fields(&i.fields.named);
 
         self.unions.push(Union {
             public,
-            ident,
+            cached_path,
             path,
             fields,
         });
@@ -802,12 +818,12 @@ impl<'ast> Visit<'ast> for FfiItems {
     fn visit_item_const(&mut self, i: &'ast syn::ItemConst) {
         let public = is_visible(&i.vis);
         let path = append_path(&self.current_module, &i.ident);
-        let ident = path_to_string(&path);
+        let cached_path = path_to_string(&path);
         let ty = i.ty.deref().clone();
 
         self.constants.push(Const {
             public,
-            ident,
+            cached_path,
             path,
             ty,
         });
@@ -875,14 +891,14 @@ impl<'ast> Visit<'ast> for FfiItems {
         } else {
             let public = matches!(vis, Visibility::Public(_));
             let path = append_path(&self.current_module, ident);
-            let ident = path_to_string(&path);
+            let cached_path = path_to_string(&path);
             let mut items = FfiItems::new();
             items.current_module = path.clone();
             visit::visit_item_mod(&mut items, i);
             items.uses = uses;
             self.modules.push(Module {
                 public,
-                ident,
+                cached_path,
                 path,
                 items,
             });
@@ -893,13 +909,11 @@ impl<'ast> Visit<'ast> for FfiItems {
 #[test]
 fn tmp() {
     let source = r#"
-use std::*;
+use test2::*;
 
-mod test { use std::any::*; pub struct Foo; }
+use test::*;
 
-fn main() {
-    use std::any::*;
-}
+mod test { mod test2 { pub struct Foo; } }
     "#;
     let mut items = FfiItems::default();
     let file = syn::parse_file(source).unwrap();

@@ -6,7 +6,7 @@ use crate::ffi_items::FfiItems;
 #[derive(Debug, Clone)]
 pub struct Module {
     pub(crate) public: bool,
-    pub(crate) ident: BoxStr,
+    pub(crate) cached_path: BoxStr,
     pub(crate) path: syn::Path,
     pub(crate) items: FfiItems,
 }
@@ -19,7 +19,7 @@ impl Module {
     /// `crate::bar`, the returned string will be `bar::foo`, and not
     /// `crate::bar::foo`.
     pub fn path(&self) -> &str {
-        &self.ident
+        &self.cached_path
     }
 
     /// Returns the last path of the identifier, from the absolute path returned
