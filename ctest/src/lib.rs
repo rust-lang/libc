@@ -84,11 +84,7 @@ pub use ast::{
 pub use generator::TestGenerator;
 pub use macro_expansion::expand;
 #[expect(deprecated)]
-pub use runner::{
-    __compile_test,
-    __run_test,
-    generate_test,
-};
+pub use runner::generate_test;
 pub use translator::TranslationError;
 
 use crate::generator::GenerationError;
