@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6-dev \
     make \
     patch \
+    file \
     rsync \
     qemu-user \
     xz-utils

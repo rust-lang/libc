@@ -17,9 +17,9 @@ echo "RUSTFLAGS: '$RUSTFLAGS'"
 uname -a
 dpkg -l | grep libc- || true
 
-cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}" -p ctest -p ctest-test -- --nocapture
+cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"} -p ctest -p ctest-test -- --nocapture"
 test_flags="--skip check_style"
-
+$cmd
 exit
 
 # # Run tests in the `libc` crate

@@ -3,6 +3,7 @@ FROM ubuntu:26.04
 RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
+        file \
         curl \
         gcc-multilib \
         git \
