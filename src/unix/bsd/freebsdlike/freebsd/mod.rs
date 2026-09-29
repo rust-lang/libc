@@ -3246,6 +3246,10 @@ pub const AT_SYMLINK_FOLLOW: c_int = 0x400;
 pub const AT_REMOVEDIR: c_int = 0x800;
 pub const AT_RESOLVE_BENEATH: c_int = 0x2000;
 pub const AT_EMPTY_PATH: c_int = 0x4000;
+pub const AT_RENAME_NOREPLACE: c_int = 0x0001;
+pub const AT_RENAME_EXCHANGE: c_int = 0x0002;
+pub const RENAME_NOREPLACE: c_uint = AT_RENAME_NOREPLACE as c_uint;
+pub const RENAME_EXCHANGE: c_uint = AT_RENAME_EXCHANGE as c_uint;
 
 pub const AT_NULL: c_int = 0;
 pub const AT_IGNORE: c_int = 1;
