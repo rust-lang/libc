@@ -2601,6 +2601,8 @@ fn test_freebsd(t: &Target) {
         (13, _) => cfg.cfg("freebsd13", None),
         (14, _) => cfg.cfg("freebsd14", None),
         (15, _) => cfg.cfg("freebsd15", None),
+        // Until we have a need to treat them separately, treat FreeBSD 16 like 15
+        (16, _) => cfg.cfg("freebsd15", None),
         _ => panic!("unknown FreeBSD version {freebsd:?}"),
     };
 
@@ -3038,6 +3040,12 @@ fn test_freebsd(t: &Target) {
             | "PROC_LOGSIGEXIT_CTL_FORCE_ENABLE"
             | "PROC_LOGSIGEXIT_CTL_FORCE_DISABLE" => freebsd < (15, 0),
 
+            // Removed in FreeBSD 15.1
+            "SF_SYNC" => freebsd >= (15, 1),
+
+            // Removed in FreeBSD 16
+            "IFF_RENAMING" | "IPPROTO_OLD_DIVERT" | "IPPROTO_DIVERT" => freebsd >= (16, 0),
+
             _ => false,
         }
     });
@@ -3094,6 +3102,16 @@ fn test_freebsd(t: &Target) {
 
             // Extern types
             "DIR" | "FILE" | "fpos_t" | "timezone" => true,
+
+            // The definition changed in FreeBSD 16.  These structs no longer exist, but their
+            // parent (in_conninfo) still does, and is binary-compatible.
+            "in_endpoints" | "in_addr_4in6" => freebsd >= (16, 0),
+
+            // FreeBSD 16 relaxed the alignment of this struct, and renamed some fields
+            "ifi2creq" => freebsd >= (16, 0),
+            // FreeBSD 16 changed the size of this struct, but its size doesn't matter.  Only its
+            // alignment does.
+            "max_align_t" => freebsd >= (16, 0),
 
             _ => false,
         }
@@ -3223,9 +3241,22 @@ fn test_freebsd(t: &Target) {
             // mc_spare can change in size between OS releases.  It's a spare field, after all.
             ("__mcontext", "mc_spare") => true,
 
+            // The definition changed in FreeBSD 16 but in a binary-compatible way
+            ("in_conninfo", "inc_ie") => freebsd >= (16, 0),
+
             _ => false,
         }
     });
+
+    cfg.skip_union(move |union_| {
+        match union_.ident() {
+            // Removed in FreeBSD 16
+            "in_dependaddr" => freebsd >= (16, 0),
+
+            _ => false,
+        }
+    });
+
     if t.arm32() {
         cfg.skip_roundtrip(move |s| match s {
             // Can't return an array from a C function.
