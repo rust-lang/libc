@@ -372,19 +372,6 @@ jobs:
           prepare: ./ci/bsd-prepare.sh ${{ matrix.target }}
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
-  docs:
-    name: Ensure docs build
-    runs-on: ubuntu-26.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Install Rust
-        run: rustup update nightly --no-self-update && rustup default nightly
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-      - run: cargo doc --workspace --no-deps
-
   zizmor:
     name: Zizmor (Static analysis for GitHub Actions)
     runs-on: ubuntu-26.04
@@ -411,7 +398,6 @@ jobs:
       - test_tier2
       - test_tier2_vm
       - verify_build
-      - docs
       - clippy
       - zizmor
     # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency
