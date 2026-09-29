@@ -20,7 +20,6 @@ esac
 
 if [ "$os" = "windows" ] && [ -n "${TARGET:-}" ]; then
     toolchain="$toolchain-${RUST_HOST:-$TARGET}"
-    rustup set profile minimal
 fi
 
 rustup set profile minimal
