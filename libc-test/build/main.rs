@@ -2703,6 +2703,12 @@ fn test_freebsd(t: &Target) {
             // These constants were introduced in FreeBSD 13:
             "O_DSYNC" | "O_PATH" | "O_EMPTY_PATH" | "AT_EMPTY_PATH" => freebsd < (13, 0),
 
+            // These constants were introduced in FreeBSD 15.1:
+            "AT_RENAME_NOREPLACE" | "RENAME_NOREPLACE" => freebsd < (15, 1),
+
+            // These constants were introduced in FreeBSD 15.2:
+            "AT_RENAME_EXCHANGE" | "RENAME_EXCHANGE" => freebsd < (15, 2),
+
             // These aliases were introduced in FreeBSD 13:
             // (note however that the constants themselves work on any version)
             "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE" => freebsd < (13, 0),
