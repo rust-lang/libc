@@ -56,6 +56,8 @@ $cmd -- $test_flags
 # shellcheck disable=SC2086
 $cmd --features extra_traits -- $test_flags
 
+cargo doc --target "$target" --workspace --no-deps
+
 # On relevant platforms, also test with our optional settings
 
 if [ "$env" = "gnu" ] && [ "$bits" = "32" ]; then
