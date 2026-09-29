@@ -2595,38 +2595,13 @@ fn test_android(t: &Target) {
 fn test_freebsd(t: &Target) {
     assert!(t.freebsd());
     let mut cfg = ctest_cfg();
-
-    // FIXME: this can be removed in 1-2 releases
-    println!("cargo:rerun-if-env-changed=RUST_LIBC_UNSTABLE_FREEBSD_VERSION");
-    if env::var("RUST_LIBC_UNSTABLE_FREEBSD_VERSION").is_ok() {
-        println!(
-            "cargo:warning=RUST_LIBC_UNSTABLE_FREEBSD_VERSION has been removed; set \
-            the cfg libc_unstable_freebsd_version via RUSTFLAGS instead"
-        );
-    }
-
-    let freebsd_ver = if let Ok(version) = env::var("CARGO_CFG_LIBC_UNSTABLE_FREEBSD_VERSION") {
-        let vers = version.parse().unwrap();
-        println!("cargo:warning=setting FreeBSD version to {vers}");
-        Some(vers)
-    } else {
-        match &try_command_output("freebsd-version", &[]) {
-            Some(s) if s.starts_with("10") => Some(10),
-            Some(s) if s.starts_with("11") => Some(11),
-            Some(s) if s.starts_with("12") => Some(12),
-            Some(s) if s.starts_with("13") => Some(13),
-            Some(s) if s.starts_with("14") => Some(14),
-            Some(s) if s.starts_with("15") => Some(15),
-            Some(_) | None => None,
-        }
-    };
-
-    match freebsd_ver {
-        Some(12) => cfg.cfg("freebsd12", None),
-        Some(13) => cfg.cfg("freebsd13", None),
-        Some(14) => cfg.cfg("freebsd14", None),
-        Some(15) => cfg.cfg("freebsd15", None),
-        _ => &mut cfg,
+    let freebsd = VERSIONS.freebsd.unwrap();
+    match freebsd {
+        (12, _) => cfg.cfg("freebsd12", None),
+        (13, _) => cfg.cfg("freebsd13", None),
+        (14, _) => cfg.cfg("freebsd14", None),
+        (15, _) => cfg.cfg("freebsd15", None),
+        _ => panic!("unknown FreeBSD version {freebsd:?}"),
     };
 
     // For sched linux compat fn
@@ -2636,9 +2611,9 @@ fn test_freebsd(t: &Target) {
     // Required for making freebsd11_stat available in the headers
     cfg.define("_WANT_FREEBSD11_STAT", None);
 
-    let freebsd13 = matches!(freebsd_ver, Some(n) if n >= 13);
-    let freebsd14 = matches!(freebsd_ver, Some(n) if n >= 14);
-    let freebsd15 = matches!(freebsd_ver, Some(n) if n >= 15);
+    let freebsd_ge_13 = matches!(freebsd, (n, _) if n >= 13);
+    let freebsd_ge_14 = matches!(freebsd, (n, _) if n >= 14);
+    let freebsd_ge_15 = matches!(freebsd, (n, _) if n >= 15);
 
     headers!(
         cfg,
@@ -2705,7 +2680,7 @@ fn test_freebsd(t: &Target) {
         "sys/domainset.h",
         "sys/eui64.h",
         "sys/event.h",
-        (freebsd13, "sys/eventfd.h"),
+        (freebsd_ge_13, "sys/eventfd.h"),
         "sys/extattr.h",
         "sys/file.h",
         "sys/ioctl.h",
@@ -2726,15 +2701,18 @@ fn test_freebsd(t: &Target) {
         "sys/shm.h",
         "sys/socket.h",
         "sys/socketvar.h",
-        (freebsd15, "sys/ktls.h"),
+        (freebsd_ge_15, "sys/ktls.h"),
         "netinet/in_pcb.h", // must be after sys/socketvar.h, sys/ktls.h
         "sys/stat.h",
         "sys/statvfs.h",
         "sys/sysctl.h",
         "sys/thr.h",
         "sys/time.h",
-        (freebsd14 || freebsd15, "sys/timerfd.h"),
-        (freebsd13 || freebsd14 || freebsd15, "dev/evdev/input.h"),
+        (freebsd_ge_14 || freebsd_ge_15, "sys/timerfd.h"),
+        (
+            freebsd_ge_13 || freebsd_ge_14 || freebsd_ge_15,
+            "dev/evdev/input.h"
+        ),
         "sys/times.h",
         "sys/timex.h",
         "sys/types.h",
@@ -2819,30 +2797,20 @@ fn test_freebsd(t: &Target) {
         match constant.ident() {
             // These constants were introduced in FreeBSD 13:
             "F_ADD_SEALS" | "F_GET_SEALS" | "F_SEAL_SEAL" | "F_SEAL_SHRINK" | "F_SEAL_GROW"
-            | "F_SEAL_WRITE"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
+            | "F_SEAL_WRITE" => freebsd < (13, 0),
 
             // These constants were introduced in FreeBSD 13:
-            "EFD_CLOEXEC" | "EFD_NONBLOCK" | "EFD_SEMAPHORE" if Some(13) > freebsd_ver => true,
+            "EFD_CLOEXEC" | "EFD_NONBLOCK" | "EFD_SEMAPHORE" => freebsd < (13, 0),
 
             // These constants were introduced in FreeBSD 12:
-            "AT_RESOLVE_BENEATH" | "O_RESOLVE_BENEATH" if Some(12) > freebsd_ver => true,
+            "AT_RESOLVE_BENEATH" | "O_RESOLVE_BENEATH" => freebsd < (12, 0),
 
             // These constants were introduced in FreeBSD 13:
-            "O_DSYNC" | "O_PATH" | "O_EMPTY_PATH" | "AT_EMPTY_PATH" if Some(13) > freebsd_ver => {
-                true
-            }
+            "O_DSYNC" | "O_PATH" | "O_EMPTY_PATH" | "AT_EMPTY_PATH" => freebsd < (13, 0),
 
             // These aliases were introduced in FreeBSD 13:
             // (note however that the constants themselves work on any version)
-            "CLOCK_BOOTTIME" | "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
+            "CLOCK_REALTIME_COARSE" | "CLOCK_MONOTONIC_COARSE" => freebsd < (13, 0),
 
             // FIXME(deprecated): These are deprecated - remove in a couple of releases.
             // These constants were removed in FreeBSD 11 (svn r262489),
@@ -2898,10 +2866,10 @@ fn test_freebsd(t: &Target) {
             // This was changed to 96(0x60) in FreeBSD 13:
             // https://github.com/freebsd/freebsd/
             // commit/06b00ceaa914a3907e4e27bad924f44612bae1d7
-            "MINCORE_SUPER" if Some(13) <= freebsd_ver => true,
+            "MINCORE_SUPER" => freebsd < (13, 0),
 
             // Added in FreeBSD 13.0 (r356667)
-            "GRND_INSECURE" if Some(13) > freebsd_ver => true,
+            "GRND_INSECURE" => freebsd < (13, 0),
 
             // Added in FreeBSD 13.0 (r349609)
             "PROC_PROTMAX_CTL"
@@ -2918,17 +2886,13 @@ fn test_freebsd(t: &Target) {
             | "PROC_WXMAP_STATUS"
             | "PROC_WX_MAPPINGS_PERMIT"
             | "PROC_WX_MAPPINGS_DISALLOW_EXEC"
-            | "PROC_WXORX_ENFORCE"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
+            | "PROC_WXORX_ENFORCE" => freebsd < (13, 0),
 
             // Added in FreeBSD 13.0 (r367776 and r367287)
-            "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" if Some(13) > freebsd_ver => true,
+            "SCM_CREDS2" | "LOCAL_CREDS_PERSISTENT" => freebsd < (13, 0),
 
             // Added in FreeBSD 14
-            "SPACECTL_DEALLOC" if Some(14) > freebsd_ver => true,
+            "SPACECTL_DEALLOC" => freebsd < (14, 0),
 
             // Added in FreeBSD 13.
             "KERN_PROC_SIGFASTBLK"
@@ -2940,42 +2904,26 @@ fn test_freebsd(t: &Target) {
             | "P2_PROTMAX_ENABLE"
             | "P2_PROTMAX_DISABLE"
             | "CTLFLAG_NEEDGIANT"
-            | "CTL_SYSCTL_NEXTNOSKIP"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
-
+            | "CTL_SYSCTL_NEXTNOSKIP" => freebsd < (13, 0),
             // Added in freebsd 14.
-            "IFCAP_MEXTPG" if Some(14) > freebsd_ver => true,
+            "IFCAP_MEXTPG" => freebsd < (14, 0),
             // Added in freebsd 13.
             "IFCAP_TXTLS4" | "IFCAP_TXTLS6" | "IFCAP_VXLAN_HWCSUM" | "IFCAP_VXLAN_HWTSO"
-            | "IFCAP_TXTLS_RTLMT" | "IFCAP_TXTLS"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
+            | "IFCAP_TXTLS_RTLMT" | "IFCAP_TXTLS" => freebsd < (13, 0),
+
             // Added in FreeBSD 13.
-            "PS_FST_TYPE_EVENTFD" if Some(13) > freebsd_ver => true,
+            "PS_FST_TYPE_EVENTFD" => freebsd < (13, 0),
 
             // Added in FreeBSD 14.
-            "MNT_RECURSE" | "MNT_DEFERRED" if Some(14) > freebsd_ver => true,
+            "MNT_RECURSE" | "MNT_DEFERRED" => freebsd < (14, 0),
 
             // Added in FreeBSD 13.
             "MNT_EXTLS" | "MNT_EXTLSCERT" | "MNT_EXTLSCERTUSER" | "MNT_NOCOVER"
-            | "MNT_EMPTYDIR"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
+            | "MNT_EMPTYDIR" => freebsd < (13, 0),
 
             // Added in FreeBSD 14.
             "PT_COREDUMP" | "PC_ALL" | "PC_COMPRESS" | "PT_GETREGSET" | "PT_SETREGSET"
-            | "PT_SC_REMOTE"
-                if Some(14) > freebsd_ver =>
-            {
-                true
-            }
+            | "PT_SC_REMOTE" => freebsd < (14, 0),
 
             // Added in FreeBSD 14.
             "F_KINFO" => true, // FIXME(freebsd): depends how frequent freebsd 14 is updated on CI, this addition went this week only.
@@ -2999,11 +2947,7 @@ fn test_freebsd(t: &Target) {
             | "MFD_HUGE_512MB"
             | "MFD_HUGE_1GB"
             | "MFD_HUGE_2GB"
-            | "MFD_HUGE_16GB"
-                if Some(13) > freebsd_ver =>
-            {
-                true
-            }
+            | "MFD_HUGE_16GB" => freebsd < (13, 0),
 
             // Flags introduced in FreeBSD 14.
             "TCP_MAXUNACKTIME"
@@ -3015,24 +2959,19 @@ fn test_freebsd(t: &Target) {
             | "TCP_SHARED_CWND_ALLOWED"
             | "TCP_PROC_ACCOUNTING"
             | "TCP_USE_CMP_ACKS"
-            | "TCP_PERF_INFO"
-            | "TCP_LRD"
-                if Some(14) > freebsd_ver =>
-            {
-                true
-            }
+            | "TCP_PERF_INFO" => freebsd < (14, 0),
 
             // Introduced in FreeBSD 14 then removed ?
-            "TCP_LRD" if freebsd_ver >= Some(15) => true,
+            "TCP_LRD" => freebsd.0 != 14,
 
             // Added in FreeBSD 14
-            "LIO_READV" | "LIO_WRITEV" | "LIO_VECTORED" if Some(14) > freebsd_ver => true,
+            "LIO_READV" | "LIO_WRITEV" | "LIO_VECTORED" => freebsd < (14, 0),
 
             // Added in FreeBSD 13
-            "FIOSSHMLPGCNF" if Some(13) > freebsd_ver => true,
+            "FIOSSHMLPGCNF" => freebsd < (13, 0),
 
             // Added in FreeBSD 14
-            "IFCAP_NV" if Some(14) > freebsd_ver => true,
+            "IFCAP_NV" => freebsd < (14, 0),
 
             // FIXME(freebsd): Removed in https://reviews.freebsd.org/D38574 and https://reviews.freebsd.org/D38822
             // We maybe should deprecate them once a stable release ships them.
@@ -3042,33 +2981,29 @@ fn test_freebsd(t: &Target) {
             "KERN_VNODE" => true,
 
             // Added in FreeBSD 14
-            "EV_KEEPUDATA" if Some(14) > freebsd_ver => true,
+            "EV_KEEPUDATA" => freebsd < (14, 0),
 
             // Added in FreeBSD 13.2
-            "AT_USRSTACKBASE" | "AT_USRSTACKLIM" if Some(13) > freebsd_ver => true,
+            "AT_USRSTACKBASE" | "AT_USRSTACKLIM" => freebsd < (13, 0),
 
             // Added in FreeBSD 14
-            "TFD_CLOEXEC" | "TFD_NONBLOCK" | "TFD_TIMER_ABSTIME" | "TFD_TIMER_CANCEL_ON_SET"
-                if Some(14) > freebsd_ver =>
-            {
-                true
+            "TFD_CLOEXEC" | "TFD_NONBLOCK" | "TFD_TIMER_ABSTIME" | "TFD_TIMER_CANCEL_ON_SET" => {
+                freebsd < (14, 0)
             }
 
             // Added in FreeBSD 14.1
-            "KCMP_FILE" | "KCMP_FILEOBJ" | "KCMP_FILES" | "KCMP_SIGHAND" | "KCMP_VM"
-                if Some(14) > freebsd_ver =>
-            {
-                true
+            "KCMP_FILE" | "KCMP_FILEOBJ" | "KCMP_FILES" | "KCMP_SIGHAND" | "KCMP_VM" => {
+                freebsd < (14, 0)
             }
 
             // FIXME(freebsd): Removed in FreeBSD 15:
-            "LOCAL_CONNWAIT" if freebsd_ver >= Some(15) => true,
+            "LOCAL_CONNWAIT" => freebsd >= (15, 0),
 
             // FIXME(freebsd): The values has been changed in FreeBSD 15:
-            "CLOCK_BOOTTIME" if Some(15) <= freebsd_ver => true,
+            "CLOCK_BOOTTIME" => freebsd < (13, 0) || freebsd >= (15, 0),
 
             // Added in FreeBSD 14.0
-            "TCP_FUNCTION_ALIAS" if Some(14) > freebsd_ver => true,
+            "TCP_FUNCTION_ALIAS" => freebsd < (14, 0),
 
             // These constants may change or disappear in future OS releases, and they probably
             // have no legitimate use in applications anyway.
@@ -3079,27 +3014,23 @@ fn test_freebsd(t: &Target) {
             "TCP_PCAP_OUT" | "TCP_PCAP_IN" => true,
 
             // Added in FreeBSD 14.2
-            "SO_SPLICE" if Some(14) > freebsd_ver => true,
+            "SO_SPLICE" => freebsd < (14, 2),
 
             // FIXME(deprecated): deprecated in 0.2, removed in main
             "TIOCMGDTRWAIT" | "TIOCMSDTRWAIT" => true,
 
             // Added in FreeBSD 15
-            "AT_HWCAP3" | "AT_HWCAP4" if Some(15) > freebsd_ver => true,
+            "AT_HWCAP3" | "AT_HWCAP4" => freebsd < (15, 0),
 
             // Added in FreeBSD 15
-            "DTYPE_INOTIFY" | "DTYPE_JAILDESC" if Some(15) > freebsd_ver => true,
+            "DTYPE_INOTIFY" | "DTYPE_JAILDESC" => freebsd < (15, 0),
 
             // Added in FreeBSD 15
             "PROC_LOGSIGEXIT_CTL"
             | "PROC_LOGSIGEXIT_STATUS"
             | "PROC_LOGSIGEXIT_CTL_NOFORCE"
             | "PROC_LOGSIGEXIT_CTL_FORCE_ENABLE"
-            | "PROC_LOGSIGEXIT_CTL_FORCE_DISABLE"
-                if Some(15) > freebsd_ver =>
-            {
-                true
-            }
+            | "PROC_LOGSIGEXIT_CTL_FORCE_DISABLE" => freebsd < (15, 0),
 
             _ => false,
         }
@@ -3111,7 +3042,7 @@ fn test_freebsd(t: &Target) {
             // for now, it doesn't matter too much...
             "kvm_t" => true,
             // `eventfd(2)` and things come with it are added in FreeBSD 13
-            "eventfd_t" if Some(13) > freebsd_ver => true,
+            "eventfd_t" => freebsd < (13, 0),
 
             _ => false,
         }
@@ -3123,17 +3054,17 @@ fn test_freebsd(t: &Target) {
             "procstat" => true,
 
             // `spacectl_range` was introduced in FreeBSD 14
-            "spacectl_range" if Some(14) > freebsd_ver => true,
+            "spacectl_range" => freebsd < (14, 0),
 
             // `ptrace_coredump` introduced in FreeBSD 14.
-            "ptrace_coredump" if Some(14) > freebsd_ver => true,
+            "ptrace_coredump" => freebsd < (14, 0),
             // `ptrace_sc_remote` introduced in FreeBSD 14.
-            "ptrace_sc_remote" if Some(14) > freebsd_ver => true,
+            "ptrace_sc_remote" => freebsd < (14, 0),
 
             // `sockcred2` is not available in FreeBSD 12.
-            "sockcred2" if Some(13) > freebsd_ver => true,
+            "sockcred2" => freebsd < (13, 0),
             // `shm_largepage_conf` was introduced in FreeBSD 13.
-            "shm_largepage_conf" if Some(13) > freebsd_ver => true,
+            "shm_largepage_conf" => freebsd < (13, 0),
 
             // Those are private types
             "memory_type" => true,
@@ -3147,13 +3078,13 @@ fn test_freebsd(t: &Target) {
             | "sctp_stream_reset_event" => true,
 
             // FIXME(freebsd): Changed in FreeBSD 15
-            "tcp_info" | "sockstat" if Some(15) >= freebsd_ver => true,
+            "tcp_info" | "sockstat" => freebsd >= (15, 0),
 
             // `splice` introduced in FreeBSD 14.2
-            "splice" if Some(14) > freebsd_ver => true,
+            "splice" => freebsd < (14, 2),
 
             // Those are introduced in FreeBSD 15.
-            "xktls_session_onedir" | "xktls_session" if Some(15) > freebsd_ver => true,
+            "xktls_session_onedir" | "xktls_session" => freebsd < (15, 0),
 
             // Extern types
             "DIR" | "FILE" | "fpos_t" | "timezone" => true,
@@ -3182,11 +3113,7 @@ fn test_freebsd(t: &Target) {
 
             // Those are introduced in FreeBSD 12.
             "clock_nanosleep" | "getrandom" | "elf_aux_info" | "setproctitle_fast"
-            | "timingsafe_bcmp" | "timingsafe_memcmp"
-                if Some(12) > freebsd_ver =>
-            {
-                true
-            }
+            | "timingsafe_bcmp" | "timingsafe_memcmp" => freebsd < (12, 0),
 
             // Those are introduced in FreeBSD 13.
             "memfd_create"
@@ -3200,31 +3127,21 @@ fn test_freebsd(t: &Target) {
             | "aio_writev"
             | "copy_file_range"
             | "eventfd_read"
-            | "eventfd_write"
-                if Some(13) > freebsd_ver =>
-            {
-                true
+            | "eventfd_write" => freebsd < (13, 0),
+
+            // Those are introduced in FreeBSD 14.
+            "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu" | "fspacectl" => {
+                freebsd < (14, 0)
             }
 
             // Those are introduced in FreeBSD 14.
-            "sched_getaffinity" | "sched_setaffinity" | "sched_getcpu" | "fspacectl"
-                if Some(14) > freebsd_ver =>
-            {
-                true
-            }
-
-            // Those are introduced in FreeBSD 14.
-            "timerfd_create" | "timerfd_gettime" | "timerfd_settime" if Some(14) > freebsd_ver => {
-                true
-            }
+            "timerfd_create" | "timerfd_gettime" | "timerfd_settime" => freebsd < (14, 0),
 
             // Those are introduced in FreeBSD 14.1.
-            "kcmp" => true,
+            "kcmp" => freebsd < (14, 1),
 
-            // FIXME(freebsd): `renameat2` was introduced in FreeBSD 15.1, and
-            // `freebsd_ver` only tracks the major version, so skip it until CI
-            // moves to a release that has it.
-            "renameat2" if Some(16) > freebsd_ver => true,
+            // Those are introduced in FreeBSD 15.1.
+            "renameat2" => freebsd < (15, 1),
 
             _ => false,
         }
