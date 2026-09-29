@@ -534,6 +534,8 @@ fn which_freebsd() -> Option<i32> {
         s if s.starts_with("13") => Some(13),
         s if s.starts_with("14") => Some(14),
         s if s.starts_with("15") => Some(15),
+        // Until we have a need to treat them separately, treat FreeBSD 16 like 15
+        s if s.starts_with("16") => Some(15),
         _ => None,
     }
 }

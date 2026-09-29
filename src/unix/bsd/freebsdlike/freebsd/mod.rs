@@ -778,7 +778,9 @@ s! {
         pub offset: u8,
         /// read length
         pub len: u8,
+        // "page" on FreeBSD 16
         spare0: Padding<u8>,
+        // "bank" plus "spare" on FreeBSD 16
         spare1: Padding<u32>,
         /// read buffer
         pub data: [u8; 8],
@@ -2200,7 +2202,6 @@ pub const NOTE_EXIT: u32 = 0x80000000;
 pub const NOTE_FORK: u32 = 0x40000000;
 pub const NOTE_EXEC: u32 = 0x20000000;
 pub const NOTE_PDATAMASK: u32 = 0x000fffff;
-pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
 pub const NOTE_TRACK: u32 = 0x00000001;
 pub const NOTE_TRACKERR: u32 = 0x00000002;
 pub const NOTE_CHILD: u32 = 0x00000004;
@@ -3292,7 +3293,6 @@ pub const _UUID_NODE_LEN: usize = 6;
 // Flags which can be passed to pdfork(2)
 pub const PD_DAEMON: c_int = 0x00000001;
 pub const PD_CLOEXEC: c_int = 0x00000002;
-pub const PD_ALLOWED_AT_FORK: c_int = PD_DAEMON | PD_CLOEXEC;
 
 // Values for struct rtprio (type_ field)
 pub const RTP_PRIO_REALTIME: c_ushort = 2;
