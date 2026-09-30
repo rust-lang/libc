@@ -1773,12 +1773,13 @@ s_no_extra_traits2! {
         pub ifc_len: c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
-
+    #[unsafe(union_default_via_zeroed)]
     pub union __c_anonymous_ifk_data {
         pub ifk_ptr: *mut c_void,
         pub ifk_value: c_int,
     }
 
+    #[unsafe(union_default_via_zeroed)]
     pub union __c_anonymous_ifr_ifru {
         pub ifru_addr: crate::sockaddr,
         pub ifru_dstaddr: crate::sockaddr,
@@ -1798,33 +1799,17 @@ s_no_extra_traits2! {
         pub ifru_functional_type: u32,
     }
 
+    #[unsafe(union_default_via_zeroed)]
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut c_char,
         pub ifcu_req: *mut ifreq,
     }
 }
 
-impl Default for __c_anonymous_ifk_data {
-    fn default() -> Self {
-        unsafe { mem::zeroed() }
-    }
-}
-
-impl Default for __c_anonymous_ifr_ifru {
-    fn default() -> Self {
-        unsafe { mem::zeroed() }
-    }
-}
-
-impl Default for __c_anonymous_ifc_ifcu {
-    fn default() -> Self {
-        unsafe { mem::zeroed() }
-    }
-}
-
 cfg_if! {
     if #[cfg(target_os = "macos")] {
         s_no_extra_traits2! {
+            #[unsafe(union_default_via_zeroed)]
             pub union __c_anonymous_ifr_ifru6 {
                 pub ifru_addr: crate::sockaddr_in6,
                 pub ifru_dstaddr: crate::sockaddr_in6,
@@ -1839,13 +1824,6 @@ cfg_if! {
                 pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
             }
         }
-    }
-}
-
-#[cfg(target_os = "macos")]
-impl Default for __c_anonymous_ifr_ifru6 {
-    fn default() -> Self {
-        unsafe { mem::zeroed() }
     }
 }
 

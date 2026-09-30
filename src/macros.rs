@@ -374,6 +374,7 @@ macro_rules! union_with_debug {
             cfg_attrs: { },
             other_attrs: { },
             remaining_attrs: { $(#$attr)* },
+            found_default_via_unsafe_zeroed: false,
             vis: $vis,
             name: $name,
             body: { $($body)* },
@@ -389,6 +390,7 @@ macro_rules! union_with_debug {
             #[cfg($($cfg:tt)*)]
             $($tail:tt)*
         },
+        found_default_via_unsafe_zeroed: $found_default:tt,
         vis: $vis:vis,
         name: $name:ident,
         body: { $($body:tt)* },
@@ -398,6 +400,33 @@ macro_rules! union_with_debug {
             cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] },
             other_attrs: { $($other_attrs)* },
             remaining_attrs: { $($tail)* },
+            found_default_via_unsafe_zeroed: $found_default,
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
+        }
+    };
+
+    // a `cfg` also has to gate the impl
+    (
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
+        remaining_attrs: {
+            #[unsafe(union_default_via_zeroed)]
+            $($tail:tt)*
+        },
+        found_default_via_unsafe_zeroed: $found_default:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
+    ) => {
+        union_with_debug! {
+            @split_attrs,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* },
+            remaining_attrs: { $($tail)* },
+            found_default_via_unsafe_zeroed: true,
             vis: $vis,
             name: $name,
             body: { $($body)* },
@@ -413,6 +442,7 @@ macro_rules! union_with_debug {
             #$other:tt
             $($tail:tt)*
         },
+        found_default_via_unsafe_zeroed: $found_default:tt,
         vis: $vis:vis,
         name: $name:ident,
         body: { $($body:tt)* },
@@ -422,6 +452,7 @@ macro_rules! union_with_debug {
             cfg_attrs: { $($cfg_attrs)* },
             other_attrs: { $($other_attrs)* #$other },
             remaining_attrs: { $($tail)* },
+            found_default_via_unsafe_zeroed: $found_default,
             vis: $vis,
             name: $name,
             body: { $($body)* },
@@ -434,6 +465,7 @@ macro_rules! union_with_debug {
         cfg_attrs: { $($cfg_attrs:tt)* },
         other_attrs: { $($other_attrs:tt)* },
         remaining_attrs: { },
+        found_default_via_unsafe_zeroed: $found_default:tt,
         vis: $vis:vis,
         name: $name:ident,
         body: { $($body:tt)* },
@@ -452,6 +484,35 @@ macro_rules! union_with_debug {
         impl ::core::fmt::Debug for $name {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
                 f.debug_struct(::core::stringify!($name)).finish_non_exhaustive()
+            }
+        }
+
+        emit_union_default_via_unsafe_zeroed! {
+            found_default_via_unsafe_zeroed: $found_default,
+            cfg_attrs: { $($cfg_attrs)* },
+            name: $name,
+        }
+    };
+}
+
+/// Add a `Default` impl that is just `mem::zeroed`.
+macro_rules! emit_union_default_via_unsafe_zeroed {
+    (
+        found_default_via_unsafe_zeroed: false,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        name: $name:ident,
+    ) => {
+    };
+
+    (
+        found_default_via_unsafe_zeroed: true,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        name: $name:ident,
+    ) => {
+        $($cfg_attrs)*
+        impl ::core::default::Default for $name {
+            fn default() -> Self {
+                unsafe { ::core::mem::zeroed() }
             }
         }
     };
@@ -1344,6 +1405,33 @@ mod tests {
         assert_eq!(align_of::<EnabledCfg>(), 8);
         #[cfg(target_arch = "x86_64")]
         assert_eq!(s.x86_only, 0);
+    }
+
+    #[test]
+    fn s2_union_default() {
+        s_no_extra_traits2! {
+            #[unsafe(union_default_via_zeroed)]
+            union Foo {
+                a: u32,
+                b: u64
+            }
+
+            #[expect(unused)]
+            union Bar {
+                a: u32,
+                b: u64
+            }
+        }
+
+        let f: Foo = Foo::default();
+        assert_eq!(unsafe { f.b }, 0);
+
+        // Ensure it isn't always implemented, otherwise we would get a conflict.
+        impl Default for Bar {
+            fn default() -> Self {
+                unimplemented!()
+            }
+        }
     }
 }
 
