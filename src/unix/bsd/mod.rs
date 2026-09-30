@@ -12,13 +12,15 @@ pub type regoff_t = c_int;
 #[cfg(not(target_os = "dragonfly"))]
 pub type regoff_t = off_t;
 
-s! {
+s2! {
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sockaddr {
         pub sa_len: u8,
         pub sa_family: sa_family_t,
         pub sa_data: [c_char; 14],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sockaddr_in6 {
         pub sin6_len: u8,
         pub sin6_family: sa_family_t,
@@ -28,15 +30,22 @@ s! {
         pub sin6_scope_id: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct passwd {
+        #[custom_default(ptr::null_mut())]
         pub pw_name: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub pw_passwd: *mut c_char,
         pub pw_uid: crate::uid_t,
         pub pw_gid: crate::gid_t,
         pub pw_change: crate::time_t,
+        #[custom_default(ptr::null_mut())]
         pub pw_class: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub pw_gecos: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub pw_dir: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub pw_shell: *mut c_char,
         pub pw_expire: crate::time_t,
 
@@ -44,13 +53,20 @@ s! {
         pub pw_fields: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ifaddrs {
+        #[custom_default(ptr::null_mut())]
         pub ifa_next: *mut ifaddrs,
+        #[custom_default(ptr::null_mut())]
         pub ifa_name: *mut c_char,
         pub ifa_flags: c_uint,
+        #[custom_default(ptr::null_mut())]
         pub ifa_addr: *mut crate::sockaddr,
+        #[custom_default(ptr::null_mut())]
         pub ifa_netmask: *mut crate::sockaddr,
+        #[custom_default(ptr::null_mut())]
         pub ifa_dstaddr: *mut crate::sockaddr,
+        #[custom_default(ptr::null_mut())]
         pub ifa_data: *mut c_void,
         #[cfg(any(target_os = "dragonfly", target_os = "netbsd"))]
         pub ifa_addrflags: c_uint,
@@ -69,16 +85,21 @@ s! {
         fds_bits: [i32; FD_SETSIZE as usize / 32],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct msghdr {
+        #[custom_default(ptr::null_mut())]
         pub msg_name: *mut c_void,
         pub msg_namelen: crate::socklen_t,
+        #[custom_default(ptr::null_mut())]
         pub msg_iov: *mut crate::iovec,
         pub msg_iovlen: c_int,
+        #[custom_default(ptr::null_mut())]
         pub msg_control: *mut c_void,
         pub msg_controllen: crate::socklen_t,
         pub msg_flags: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct cmsghdr {
         pub cmsg_len: crate::socklen_t,
         pub cmsg_level: c_int,
@@ -89,52 +110,69 @@ s! {
         __fsid_val: [i32; 2],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct if_nameindex {
         pub if_index: c_uint,
+        #[custom_default(ptr::null_mut())]
         pub if_name: *mut c_char,
     }
 
     pub struct regex_t {
         __re_magic: c_int,
         __re_nsub: size_t,
+        #[custom_default(ptr::null_mut())]
         __re_endp: *const c_char,
+        #[custom_default(ptr::null_mut())]
         __re_g: *mut c_void,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct regmatch_t {
         pub rm_so: regoff_t,
         pub rm_eo: regoff_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct option {
+        #[custom_default(ptr::null_mut())]
         pub name: *const c_char,
         pub has_arg: c_int,
+        #[custom_default(ptr::null_mut())]
         pub flag: *mut c_int,
         pub val: c_int,
     }
+
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sockaddr_un {
         pub sun_len: u8,
         pub sun_family: sa_family_t,
+        #[custom_default([0; 104])]
         pub sun_path: [c_char; 104],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct utsname {
+        #[custom_default([0; 256])]
         #[cfg(not(target_os = "dragonfly"))]
         pub sysname: [c_char; 256],
         #[cfg(target_os = "dragonfly")]
         pub sysname: [c_char; 32],
+        #[custom_default([0; 256])]
         #[cfg(not(target_os = "dragonfly"))]
         pub nodename: [c_char; 256],
         #[cfg(target_os = "dragonfly")]
         pub nodename: [c_char; 32],
+        #[custom_default([0; 256])]
         #[cfg(not(target_os = "dragonfly"))]
         pub release: [c_char; 256],
         #[cfg(target_os = "dragonfly")]
         pub release: [c_char; 32],
+        #[custom_default([0; 256])]
         #[cfg(not(target_os = "dragonfly"))]
         pub version: [c_char; 256],
         #[cfg(target_os = "dragonfly")]
         pub version: [c_char; 32],
+        #[custom_default([0; 256])]
         #[cfg(not(target_os = "dragonfly"))]
         pub machine: [c_char; 256],
         #[cfg(target_os = "dragonfly")]
