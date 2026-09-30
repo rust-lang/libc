@@ -370,73 +370,73 @@ macro_rules! union_with_debug {
         $vis:vis union $name:ident { $($body:tt)* }
     ) => {
         union_with_debug! {
-            @split_attrs
-            cfg_attrs: { }
-            other_attrs: { }
-            remaining_attrs: { $(#$attr)* }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { },
+            other_attrs: { },
+            remaining_attrs: { $(#$attr)* },
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // a `cfg` also has to gate the impl
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
         remaining_attrs: {
             #[cfg($($cfg:tt)*)]
             $($tail:tt)*
-        }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        },
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         union_with_debug! {
-            @split_attrs
-            cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] }
-            other_attrs: { $($other_attrs)* }
-            remaining_attrs: { $($tail)* }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] },
+            other_attrs: { $($other_attrs)* },
+            remaining_attrs: { $($tail)* },
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // anything else belongs to the union only
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
         remaining_attrs: {
             #$other:tt
             $($tail:tt)*
-        }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        },
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         union_with_debug! {
-            @split_attrs
-            cfg_attrs: { $($cfg_attrs)* }
-            other_attrs: { $($other_attrs)* #$other }
-            remaining_attrs: { $($tail)* }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* #$other },
+            remaining_attrs: { $($tail)* },
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // done
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
-        remaining_attrs: { }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
+        remaining_attrs: { },
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         #[repr(C)]
         #[::core::prelude::v1::derive(
@@ -487,196 +487,196 @@ macro_rules! custom_struct {
         $vis:vis struct $name:ident { $($body:tt)* }
     ) => {
         custom_struct! {
-            @split_attrs
-            cfg_attrs: { }
-            other_attrs: { }
-            remaining_attrs: { $($attrs)* $(#$attr)* }
-            found_exhaustive_attr: { false }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { },
+            other_attrs: { },
+            remaining_attrs: { $($attrs)* $(#$attr)* },
+            found_exhaustive_attr: false,
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // a `cfg` also has to gate the impl
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
         remaining_attrs: {
             #[cfg($($cfg:tt)*)]
             $($tail:tt)*
-        }
-        found_exhaustive_attr: { $found_exhaustive:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        },
+        found_exhaustive_attr: $found_exhaustive:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         custom_struct! {
-            @split_attrs
-            cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] }
-            other_attrs: { $($other_attrs)* }
-            remaining_attrs: { $($tail)* }
-            found_exhaustive_attr: { $found_exhaustive }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { $($cfg_attrs)* #[cfg($($cfg)*)] },
+            other_attrs: { $($other_attrs)* },
+            remaining_attrs: { $($tail)* },
+            found_exhaustive_attr: $found_exhaustive,
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // `exhaustive` must be taken into account as many times as it appears,
     // though the effect is the same with a single annotation.
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
         remaining_attrs: {
             #[exhaustive]
             $($tail:tt)*
-        }
-        found_exhaustive_attr: { $_:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        },
+        found_exhaustive_attr: $_:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         custom_struct! {
-            @split_attrs
-            cfg_attrs: { $($cfg_attrs)* }
-            other_attrs: { $($other_attrs)* }
-            remaining_attrs: { $($tail)* }
-            found_exhaustive_attr: { true }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* },
+            remaining_attrs: { $($tail)* },
+            found_exhaustive_attr: true,
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // anything else belongs to the struct only
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
         remaining_attrs: {
             #$other:tt
             $($tail:tt)*
-        }
-        found_exhaustive_attr: { $found_exhaustive:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        },
+        found_exhaustive_attr: $found_exhaustive:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         custom_struct! {
-            @split_attrs
-            cfg_attrs: { $($cfg_attrs)* }
-            other_attrs: { $($other_attrs)* #$other }
-            remaining_attrs: { $($tail)* }
-            found_exhaustive_attr: { $found_exhaustive }
-            vis: { $vis }
-            name: { $name }
-            body: { $($body)* }
+            @split_attrs,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* #$other },
+            remaining_attrs: { $($tail)* },
+            found_exhaustive_attr: $found_exhaustive,
+            vis: $vis,
+            name: $name,
+            body: { $($body)* },
         }
     };
 
     // attributes are split, move on to the fields
     (
-        @split_attrs
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
-        remaining_attrs: { }
-        found_exhaustive_attr: { $found_exhaustive:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        body: { $($body:tt)* }
+        @split_attrs,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
+        remaining_attrs: { },
+        found_exhaustive_attr: $found_exhaustive:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        body: { $($body:tt)* },
     ) => {
         custom_struct! {
-            @struct
-            cfg_attrs: { $($cfg_attrs)* }
-            other_attrs: { $($other_attrs)* }
-            found_exhaustive_attr: { $found_exhaustive }
-            vis: { $vis }
-            name: { $name }
-            processed_fields: { }
-            processed_field_defaults: { }
-            remaining_fields: { $($body)* }
+            @struct,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* },
+            found_exhaustive_attr: $found_exhaustive,
+            vis: $vis,
+            name: $name,
+            processed_fields: { },
+            processed_field_defaults: { },
+            remaining_fields: { $($body)* },
         }
     };
 
     // field led by #[custom_default(...)]
     (
-        @struct
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
-        found_exhaustive_attr: { $found_exhaustive:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        processed_fields: { $($processed_fields:tt)* }
-        processed_field_defaults: { $($processed_field_defaults:tt)* }
+        @struct,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
+        found_exhaustive_attr: $found_exhaustive:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        processed_fields: { $($processed_fields:tt)* },
+        processed_field_defaults: { $($processed_field_defaults:tt)* },
         remaining_fields: {
             #[custom_default($default:expr)]
             $(#[$fattr:meta])*
             $fvis:vis $fname:ident: $fty:ty,
             $($tail:tt)*
-        }
+        },
     ) => {
         custom_struct! {
-            @struct
-            cfg_attrs: { $($cfg_attrs)* }
-            other_attrs: { $($other_attrs)* }
-            found_exhaustive_attr: { $found_exhaustive }
-            vis: { $vis }
-            name: { $name }
-            processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
+            @struct,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* },
+            found_exhaustive_attr: $found_exhaustive,
+            vis: $vis,
+            name: $name,
+            processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, },
             processed_field_defaults: {
                 $($processed_field_defaults)*
                 $(#[$fattr])* $fname: $default,
-            }
-            remaining_fields: { $($tail)* }
+            },
+            remaining_fields: { $($tail)* },
         }
     };
 
     // plain field
     (
-        @struct
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
-        found_exhaustive_attr: { $found_exhaustive:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        processed_fields: { $($processed_fields:tt)* }
-        processed_field_defaults: { $($processed_field_defaults:tt)* }
+        @struct,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
+        found_exhaustive_attr: $found_exhaustive:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        processed_fields: { $($processed_fields:tt)* },
+        processed_field_defaults: { $($processed_field_defaults:tt)* },
         remaining_fields: {
             $(#[$fattr:meta])*
             $fvis:vis $fname:ident: $fty:ty,
             $($tail:tt)*
-        }
+        },
     ) => {
         custom_struct! {
-            @struct
-            cfg_attrs: { $($cfg_attrs)* }
-            other_attrs: { $($other_attrs)* }
-            found_exhaustive_attr: { $found_exhaustive }
-            vis: { $vis }
-            name: { $name }
-            processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, }
+            @struct,
+            cfg_attrs: { $($cfg_attrs)* },
+            other_attrs: { $($other_attrs)* },
+            found_exhaustive_attr: $found_exhaustive,
+            vis: $vis,
+            name: $name,
+            processed_fields: { $($processed_fields)* $(#[$fattr])* $fvis $fname: $fty, },
             processed_field_defaults: {
                 $($processed_field_defaults)*
                 $(#[$fattr])* $fname: ::core::default::Default::default(),
-            }
-            remaining_fields: { $($tail)* }
+            },
+            remaining_fields: { $($tail)* },
         }
     };
 
     // done
     (
-        @struct
-        cfg_attrs: { $($cfg_attrs:tt)* }
-        other_attrs: { $($other_attrs:tt)* }
-        found_exhaustive_attr: { $found_exhaustive:tt }
-        vis: { $vis:vis }
-        name: { $name:ident }
-        processed_fields: { $($processed_fields:tt)* }
-        processed_field_defaults: { $($processed_field_defaults:tt)* }
-        remaining_fields: { }
+        @struct,
+        cfg_attrs: { $($cfg_attrs:tt)* },
+        other_attrs: { $($other_attrs:tt)* },
+        found_exhaustive_attr: $found_exhaustive:tt,
+        vis: $vis:vis,
+        name: $name:ident,
+        processed_fields: { $($processed_fields:tt)* },
+        processed_field_defaults: { $($processed_field_defaults:tt)* },
+        remaining_fields: { },
     ) => {
         emit_struct_definition! {
             found_exhaustive_attr: $found_exhaustive,
