@@ -2,8 +2,7 @@
 
 use crate::prelude::*;
 
-s! {
-    #[derive(Default)]
+s2! {
     pub struct timeval32 {
         pub tv_sec: i32,
         pub tv_usec: i32,
@@ -41,6 +40,7 @@ s! {
         ifi_reserved2: Padding<u32>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct bpf_hdr {
         pub bh_tstamp: crate::timeval32,
