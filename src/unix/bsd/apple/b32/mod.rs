@@ -4,7 +4,7 @@ use crate::prelude::*;
 
 pub type boolean_t = c_int;
 
-s! {
+s2! {
     pub struct if_data {
         pub ifi_type: c_uchar,
         pub ifi_typelen: c_uchar,
@@ -37,6 +37,7 @@ s! {
         ifi_reserved2: Padding<u32>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct bpf_hdr {
         pub bh_tstamp: crate::timeval,
@@ -50,7 +51,7 @@ s! {
     }
 }
 
-s_no_extra_traits! {
+s_no_extra_traits2! {
     #[repr(align(16))]
     pub struct max_align_t {
         priv_: [f64; 2],
