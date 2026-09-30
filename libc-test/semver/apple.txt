@@ -1920,6 +1920,7 @@ if_freenameindex
 if_msghdr
 if_nameindex
 ifaddrs
+ifaliasreq
 ifconf
 ifkpi
 ifreq
