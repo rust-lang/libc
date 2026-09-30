@@ -236,27 +236,32 @@ impl Clone for sysdir_search_path_domain_mask_t {
     }
 }
 
-s! {
+s2! {
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ip_mreq {
         pub imr_multiaddr: in_addr,
         pub imr_interface: in_addr,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ip_mreqn {
         pub imr_multiaddr: in_addr,
         pub imr_address: in_addr,
         pub imr_ifindex: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ip_mreq_source {
         pub imr_multiaddr: in_addr,
         pub imr_sourceaddr: in_addr,
         pub imr_interface: in_addr,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_offset: off_t,
+        #[custom_default(ptr::null_mut())]
         pub aio_buf: *mut c_void,
         pub aio_nbytes: size_t,
         pub aio_reqprio: c_int,
@@ -269,6 +274,7 @@ s! {
         __unused1: Padding<c_int>,
         pub gl_offs: size_t,
         __unused2: Padding<c_int>,
+        #[custom_default(ptr::null_mut())]
         pub gl_pathv: *mut *mut c_char,
 
         __unused3: Padding<*mut c_void>,
@@ -280,6 +286,7 @@ s! {
         __unused8: Padding<*mut c_void>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct tm {
         pub tm_sec: c_int,
         pub tm_min: c_int,
@@ -291,20 +298,26 @@ s! {
         pub tm_yday: c_int,
         pub tm_isdst: c_int,
         pub tm_gmtoff: c_long,
+        #[custom_default(ptr::null_mut())]
         pub tm_zone: *mut c_char,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct addrinfo {
         pub ai_flags: c_int,
         pub ai_family: c_int,
         pub ai_socktype: c_int,
         pub ai_protocol: c_int,
         pub ai_addrlen: crate::socklen_t,
+        #[custom_default(ptr::null_mut())]
         pub ai_canonname: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub ai_addr: *mut crate::sockaddr,
+        #[custom_default(ptr::null_mut())]
         pub ai_next: *mut addrinfo,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_timebase_info {
@@ -312,6 +325,7 @@ s! {
         pub denom: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct stat {
         pub st_dev: dev_t,
         pub st_mode: mode_t,
@@ -344,12 +358,14 @@ s! {
         pub si_pid: crate::pid_t,
         pub si_uid: crate::uid_t,
         pub si_status: c_int,
+        #[custom_default(ptr::null_mut())]
         pub si_addr: *mut c_void,
         //Requires it to be union for tests
         //pub si_value: crate::sigval,
         _pad: Padding<[usize; 9]>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sigaction {
         // FIXME(union): this field is actually a union
         pub sa_sigaction: crate::sighandler_t,
@@ -357,12 +373,15 @@ s! {
         pub sa_flags: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct stack_t {
+        #[custom_default(ptr::null_mut())]
         pub ss_sp: *mut c_void,
         pub ss_size: size_t,
         pub ss_flags: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct fstore_t {
         pub fst_flags: c_uint,
         pub fst_posmode: c_int,
@@ -371,6 +390,7 @@ s! {
         pub fst_bytesalloc: off_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct fpunchhole_t {
         pub fp_flags: c_uint, /* unused */
         pub reserved: c_uint, /* (to maintain 8-byte alignment) */
@@ -378,11 +398,13 @@ s! {
         pub fp_length: off_t, /* IN: size of the region */
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ftrimactivefile_t {
         pub fta_offset: off_t,
         pub fta_length: off_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct fspecread_t {
         pub fsr_flags: c_uint,
         pub reserved: c_uint,
@@ -390,11 +412,13 @@ s! {
         pub fsr_length: off_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct radvisory {
         pub ra_offset: off_t,
         pub ra_count: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct statvfs {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
@@ -409,13 +433,19 @@ s! {
         pub f_namemax: c_ulong,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct Dl_info {
+        #[custom_default(ptr::null_mut())]
         pub dli_fname: *const c_char,
+        #[custom_default(ptr::null_mut())]
         pub dli_fbase: *mut c_void,
+        #[custom_default(ptr::null_mut())]
         pub dli_sname: *const c_char,
+        #[custom_default(ptr::null_mut())]
         pub dli_saddr: *mut c_void,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sockaddr_in {
         pub sin_len: u8,
         pub sin_family: crate::sa_family_t,
@@ -424,6 +454,7 @@ s! {
         pub sin_zero: [c_char; 8],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct kevent64_s {
         pub ident: u64,
         pub filter: i16,
@@ -434,6 +465,7 @@ s! {
         pub ext: [u64; 2],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct dqblk {
         pub dqb_bhardlimit: u64,
         pub dqb_bsoftlimit: u64,
@@ -447,6 +479,7 @@ s! {
         pub dqb_spare: [u32; 4],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct if_msghdr {
         pub ifm_msglen: c_ushort,
         pub ifm_version: c_uchar,
@@ -457,6 +490,7 @@ s! {
         pub ifm_data: if_data,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ifa_msghdr {
         pub ifam_msglen: c_ushort,
         pub ifam_version: c_uchar,
@@ -467,6 +501,7 @@ s! {
         pub ifam_metric: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ifma_msghdr {
         pub ifmam_msglen: c_ushort,
         pub ifmam_version: c_uchar,
@@ -476,6 +511,7 @@ s! {
         pub ifmam_index: c_ushort,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ifma_msghdr2 {
         pub ifmam_msglen: c_ushort,
         pub ifmam_version: c_uchar,
@@ -487,6 +523,7 @@ s! {
     }
 
     #[cfg(target_os = "macos")]
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rt_metrics {
         pub rmx_locks: u32,
         pub rmx_mtu: u32,
@@ -504,6 +541,7 @@ s! {
         pub rmx_filler: [u32; 3],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct rt_msghdr {
         pub rtm_msglen: c_ushort,
@@ -520,6 +558,7 @@ s! {
         pub rtm_rmx: rt_metrics,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct rt_msghdr2 {
         pub rtm_msglen: c_ushort,
@@ -536,6 +575,7 @@ s! {
         pub rtm_rmx: rt_metrics,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct termios {
         pub c_iflag: crate::tcflag_t,
         pub c_oflag: crate::tcflag_t,
@@ -546,6 +586,7 @@ s! {
         pub c_ospeed: crate::speed_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct flock {
         pub l_start: off_t,
         pub l_len: off_t,
@@ -554,23 +595,37 @@ s! {
         pub l_whence: c_short,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sf_hdtr {
+        #[custom_default(ptr::null_mut())]
         pub headers: *mut crate::iovec,
         pub hdr_cnt: c_int,
+        #[custom_default(ptr::null_mut())]
         pub trailers: *mut crate::iovec,
         pub trl_cnt: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct lconv {
+        #[custom_default(ptr::null_mut())]
         pub decimal_point: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub thousands_sep: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub grouping: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub int_curr_symbol: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub currency_symbol: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub mon_decimal_point: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub mon_thousands_sep: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub mon_grouping: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub positive_sign: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub negative_sign: *mut c_char,
         pub int_frac_digits: c_char,
         pub frac_digits: c_char,
@@ -588,6 +643,7 @@ s! {
         pub int_n_sign_posn: c_char,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct proc_taskinfo {
         pub pti_virtual_size: u64,
@@ -610,6 +666,7 @@ s! {
         pub pti_priority: i32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct proc_bsdinfo {
         pub pbi_flags: u32,
@@ -666,12 +723,14 @@ s! {
         pbsi_rfu: Padding<u32>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct proc_taskallinfo {
         pub pbsd: proc_bsdinfo,
         pub ptinfo: proc_taskinfo,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct xsw_usage {
         pub xsu_total: u64,
         pub xsu_avail: u64,
@@ -680,6 +739,7 @@ s! {
         pub xsu_encrypted: crate::boolean_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct xucred {
         pub cr_version: c_uint,
         pub cr_uid: crate::uid_t,
@@ -687,6 +747,7 @@ s! {
         pub cr_groups: [crate::gid_t; 16],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header {
@@ -699,6 +760,7 @@ s! {
         pub flags: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header_64 {
@@ -712,6 +774,7 @@ s! {
         pub reserved: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct segment_command {
         pub cmd: u32,
         pub cmdsize: u32,
@@ -726,6 +789,7 @@ s! {
         pub flags: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct segment_command_64 {
         pub cmd: u32,
         pub cmdsize: u32,
@@ -740,11 +804,13 @@ s! {
         pub flags: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct load_command {
         pub cmd: u32,
         pub cmdsize: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sockaddr_dl {
         pub sdl_len: c_uchar,
         pub sdl_family: c_uchar,
@@ -756,6 +822,7 @@ s! {
         pub sdl_data: [c_char; 12],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct sockaddr_inarp {
         pub sin_len: c_uchar,
@@ -767,6 +834,7 @@ s! {
         pub sin_other: c_ushort,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct sockaddr_ctl {
         pub sc_len: c_uchar,
@@ -777,12 +845,14 @@ s! {
         pub sc_reserved: [u32; 5],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct in_pktinfo {
         pub ipi_ifindex: c_uint,
         pub ipi_spec_dst: crate::in_addr,
         pub ipi_addr: crate::in_addr,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct in6_pktinfo {
         pub ipi6_addr: crate::in6_addr,
         pub ipi6_ifindex: c_uint,
@@ -790,6 +860,7 @@ s! {
 
     // sys/ipc.h:
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ipc_perm {
         pub uid: crate::uid_t,
         pub gid: crate::gid_t,
@@ -801,6 +872,7 @@ s! {
     }
 
     // sys/sem.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sembuf {
         pub sem_num: c_ushort,
         pub sem_op: c_short,
@@ -808,6 +880,7 @@ s! {
     }
 
     // sys/if_arp.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct arphdr {
         pub ar_hrd: u16,
@@ -817,11 +890,13 @@ s! {
         pub ar_op: u16,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct in_addr {
         pub s_addr: crate::in_addr_t,
     }
 
     // net/ndrv.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct sockaddr_ndrv {
         pub snd_len: c_uchar,
@@ -831,14 +906,18 @@ s! {
 
     // sys/socket.h
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sa_endpoints_t {
-        pub sae_srcif: c_uint,                   // optional source interface
+        pub sae_srcif: c_uint, // optional source interface
+        #[custom_default(ptr::null_mut())]
         pub sae_srcaddr: *const crate::sockaddr, // optional source address
-        pub sae_srcaddrlen: crate::socklen_t,    // size of source address
+        pub sae_srcaddrlen: crate::socklen_t, // size of source address
+        #[custom_default(ptr::null_mut())]
         pub sae_dstaddr: *const crate::sockaddr, // destination address
-        pub sae_dstaddrlen: crate::socklen_t,    // size of destination address
+        pub sae_dstaddrlen: crate::socklen_t, // size of destination address
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct timex {
         pub modes: c_uint,
         pub offset: c_long,
@@ -859,6 +938,7 @@ s! {
         pub stbcnt: c_long,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ntptimeval {
         pub time: crate::timespec,
         pub maxerror: c_long,
@@ -867,14 +947,17 @@ s! {
         pub time_state: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_standard_policy {
         pub no_data: natural_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_extended_policy {
         pub timeshare: boolean_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_time_constraint_policy {
         pub period: u32,
         pub computation: u32,
@@ -882,27 +965,33 @@ s! {
         pub preemptible: boolean_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_precedence_policy {
         pub importance: integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_affinity_policy {
         pub affinity_tag: integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_background_policy {
         pub priority: integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_latency_qos_policy {
         pub thread_latency_qos_tier: thread_latency_qos_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_throughput_qos_policy {
         pub thread_throughput_qos_tier: thread_throughput_qos_t,
     }
 
     // malloc/malloc.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct malloc_statistics_t {
         pub blocks_in_use: c_uint,
         pub size_in_use: size_t,
@@ -910,6 +999,7 @@ s! {
         pub size_allocated: size_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct mstats {
         pub bytes_total: size_t,
         pub chunks_used: size_t,
@@ -918,11 +1008,13 @@ s! {
         pub bytes_free: size_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct vm_range_t {
         pub address: crate::vm_address_t,
         pub size: crate::vm_size_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct vinfo_stat {
         pub vst_dev: u32,
@@ -948,6 +1040,7 @@ s! {
         pub vst_qspare: [i64; 2],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct vnode_info {
         pub vi_stat: vinfo_stat,
@@ -956,6 +1049,7 @@ s! {
         pub vi_fsid: crate::fsid_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct vnode_info_path {
         pub vip_vi: vnode_info,
@@ -964,12 +1058,14 @@ s! {
         pub vip_path: [[c_char; 32]; 32],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct proc_vnodepathinfo {
         pub pvi_cdir: vnode_info_path,
         pub pvi_rdir: vnode_info_path,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct vm_statistics {
         pub free_count: natural_t,
         pub active_count: natural_t,
@@ -988,11 +1084,13 @@ s! {
         pub speculative_count: natural_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct task_thread_times_info {
         pub user_time: time_value_t,
         pub system_time: time_value_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage_info_v0 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1007,6 +1105,7 @@ s! {
         pub ri_proc_exit_abstime: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage_info_v1 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1027,6 +1126,7 @@ s! {
         pub ri_child_elapsed_abstime: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage_info_v2 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1049,6 +1149,7 @@ s! {
         pub ri_diskio_byteswritten: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage_info_v3 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1080,6 +1181,7 @@ s! {
         pub ri_serviced_system_time: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage_info_v4 {
         pub ri_uuid: [u8; 16],
         pub ri_user_time: u64,
@@ -1119,11 +1221,13 @@ s! {
         pub ri_runnable_time: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct image_offset {
         pub uuid: crate::uuid_t,
         pub offset: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct attrlist {
         pub bitmapcount: c_ushort,
         pub reserved: u16,
@@ -1134,16 +1238,19 @@ s! {
         pub forkattr: attrgroup_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct attrreference_t {
         pub attr_dataoffset: i32,
         pub attr_length: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct vol_capabilities_attr_t {
         pub capabilities: vol_capabilities_set_t,
         pub valid: vol_capabilities_set_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct attribute_set_t {
         pub commonattr: attrgroup_t,
         pub volattr: attrgroup_t,
@@ -1152,6 +1259,7 @@ s! {
         pub forkattr: attrgroup_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct vol_attributes_attr_t {
         pub validattr: attribute_set_t,
         pub nativeattr: attribute_set_t,
@@ -1200,6 +1308,7 @@ s! {
         pub tcpi_rxretransmitpackets: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct in6_addrlifetime {
         pub ia6t_expire: time_t,
@@ -1208,6 +1317,7 @@ s! {
         pub ia6t_pltime: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct in6_ifstat {
         pub ifs6_in_receive: crate::u_quad_t,
@@ -1237,6 +1347,7 @@ s! {
         pub ifs6_defrtr_expiry_cnt: crate::u_quad_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct icmp6_ifstat {
         pub ifs6_in_msg: crate::u_quad_t,
@@ -1276,11 +1387,13 @@ s! {
     }
 
     // mach/host_info.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct host_cpu_load_info {
         pub cpu_ticks: [crate::natural_t; CPU_STATE_MAX as usize],
     }
 
     // net/if_mib.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct ifmibdata {
         /// Name of interface
@@ -1301,6 +1414,7 @@ s! {
         pub ifmd_data: if_data64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct ifs_iso_8802_3 {
         pub dot3StatsAlignmentErrors: u32,
@@ -1322,19 +1436,23 @@ s! {
     }
 
     // kern_control.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct ctl_info {
         pub ctl_id: u32,
+        #[custom_default([0; MAX_KCTL_NAME])]
         pub ctl_name: [c_char; MAX_KCTL_NAME],
     }
 
     // sys/proc_info.h
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct proc_fdinfo {
         pub proc_fd: i32,
         pub proc_fdtype: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct kevent {
         pub ident: crate::uintptr_t,
@@ -1342,9 +1460,11 @@ s! {
         pub flags: u16,
         pub fflags: u32,
         pub data: intptr_t,
+        #[custom_default(ptr::null_mut())]
         pub udata: *mut c_void,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct semid_ds {
         // Note the manpage shows different types than the system header.
@@ -1358,6 +1478,7 @@ s! {
         pub sem_pad3: [i32; 4],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct shmid_ds {
         pub shm_perm: ipc_perm,
@@ -1369,9 +1490,11 @@ s! {
         pub shm_dtime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
         pub shm_ctime: crate::time_t, // FIXME(macos): 64-bit wrong align => wrong offset
         // FIXME: 64-bit wrong align => wrong offset:
+        #[custom_default(ptr::null_mut())]
         pub shm_internal: *mut c_void,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct proc_threadinfo {
         pub pth_user_time: u64,
@@ -1384,9 +1507,11 @@ s! {
         pub pth_curpri: i32,
         pub pth_priority: i32,
         pub pth_maxpriority: i32,
+        #[custom_default([0; MAXTHREADNAMESIZE])]
         pub pth_name: [c_char; MAXTHREADNAMESIZE],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct statfs {
         pub f_bsize: u32,
         pub f_iosize: i32,
@@ -1400,19 +1525,24 @@ s! {
         pub f_type: u32,
         pub f_flags: u32,
         pub f_fssubtype: u32,
+        #[custom_default([0; 16])]
         pub f_fstypename: [c_char; 16],
+        #[custom_default([0; 1024])]
         pub f_mntonname: [c_char; 1024],
+        #[custom_default([0; 1024])]
         pub f_mntfromname: [c_char; 1024],
         pub f_flags_ext: u32,
         pub f_reserved: [u32; 7],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct dirent {
         pub d_ino: u64,
         pub d_seekoff: u64,
         pub d_reclen: u16,
         pub d_namlen: u16,
         pub d_type: u8,
+        #[custom_default([0; 1024])]
         pub d_name: [c_char; 1024],
     }
 
@@ -1421,16 +1551,19 @@ s! {
         pub ss_family: crate::sa_family_t,
         __ss_pad1: Padding<[u8; 6]>,
         __ss_align: i64,
+        #[custom_default(Padding::new([0; 112]))]
         __ss_pad2: Padding<[u8; 112]>,
     }
 
     // netinet/in.h: RFC 3678 multicast group membership requests.
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct group_req {
         pub gr_interface: u32,
         pub gr_group: crate::sockaddr_storage,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct group_source_req {
         pub gsr_interface: u32,
@@ -1439,12 +1572,14 @@ s! {
     }
 
     pub struct utmpx {
+        #[custom_default([0; _UTX_USERSIZE])]
         pub ut_user: [c_char; _UTX_USERSIZE],
         pub ut_id: [c_char; _UTX_IDSIZE],
         pub ut_line: [c_char; _UTX_LINESIZE],
         pub ut_pid: crate::pid_t,
         pub ut_type: c_short,
         pub ut_tv: crate::timeval,
+        #[custom_default([0; _UTX_HOSTSIZE])]
         pub ut_host: [c_char; _UTX_HOSTSIZE],
         ut_pad: Padding<[u32; 16]>,
     }
@@ -1454,13 +1589,16 @@ s! {
         pub sigev_signo: c_int,
         pub sigev_value: crate::sigval,
         __unused1: Padding<*mut c_void>, //actually a function pointer
+        #[custom_default(ptr::null_mut())]
         pub sigev_notify_attributes: *mut crate::pthread_attr_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct processor_cpu_load_info {
         pub cpu_ticks: [c_uint; CPU_STATE_MAX as usize],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct processor_basic_info {
         pub cpu_type: cpu_type_t,
         pub cpu_subtype: cpu_subtype_t,
@@ -1469,11 +1607,13 @@ s! {
         pub is_master: crate::boolean_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct processor_set_basic_info {
         pub processor_count: c_int,
         pub default_policy: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct processor_set_load_info {
         pub task_count: c_int,
         pub thread_count: c_int,
@@ -1481,11 +1621,13 @@ s! {
         pub mach_factor: integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct time_value_t {
         pub seconds: integer_t,
         pub microseconds: integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_basic_info {
         pub user_time: time_value_t,
         pub system_time: time_value_t,
@@ -1497,12 +1639,14 @@ s! {
         pub sleep_time: crate::integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_identifier_info {
         pub thread_id: u64,
         pub thread_handle: u64,
         pub dispatch_qaddr: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct thread_extended_info {
         pub pth_user_time: u64,
         pub pth_system_time: u64,
@@ -1514,9 +1658,11 @@ s! {
         pub pth_curpri: i32,
         pub pth_priority: i32,
         pub pth_maxpriority: i32,
+        #[custom_default([0; MAXTHREADNAMESIZE])]
         pub pth_name: [c_char; MAXTHREADNAMESIZE],
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct if_data64 {
         pub ifi_type: c_uchar,
@@ -1549,6 +1695,7 @@ s! {
         pub ifi_lastchange: timeval32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct if_msghdr2 {
         pub ifm_msglen: c_ushort,
@@ -1564,6 +1711,7 @@ s! {
         pub ifm_data: if_data64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(8))]
     pub struct vm_statistics64 {
         pub free_count: natural_t,
@@ -1625,6 +1773,7 @@ s! {
         pub phantom_ghosts_added: u64,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct mach_task_basic_info {
         pub virtual_size: mach_vm_size_t,
@@ -1636,6 +1785,7 @@ s! {
         pub suspend_count: integer_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct log2phys {
         pub l2p_flags: c_uint,
@@ -1647,6 +1797,7 @@ s! {
         _os_unfair_lock_opaque: u32,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(1))]
     pub struct sockaddr_vm {
         pub svm_len: c_uchar,
@@ -1656,12 +1807,14 @@ s! {
         pub svm_cid: c_uint,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ifdevmtu {
         pub ifdm_current: c_int,
         pub ifdm_min: c_int,
         pub ifdm_max: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct ifkpi {
         pub ifk_module_id: c_uint,
@@ -1669,11 +1822,13 @@ s! {
         pub ifk_data: __c_anonymous_ifk_data,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct ifreq {
         pub ifr_name: [c_char; crate::IFNAMSIZ],
         pub ifr_ifru: __c_anonymous_ifr_ifru,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(target_os = "macos")]
     pub struct in6_ifreq {
         pub ifr_name: [c_char; crate::IFNAMSIZ],
@@ -1681,12 +1836,14 @@ s! {
     }
 }
 
-s_no_extra_traits! {
+s_no_extra_traits2! {
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct ifconf {
         pub ifc_len: c_int,
         pub ifc_ifcu: __c_anonymous_ifc_ifcu,
     }
+
     pub union __c_anonymous_ifk_data {
         pub ifk_ptr: *mut c_void,
         pub ifk_value: c_int,
@@ -1717,9 +1874,27 @@ s_no_extra_traits! {
     }
 }
 
+impl Default for __c_anonymous_ifk_data {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+
+impl Default for __c_anonymous_ifr_ifru {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+
+impl Default for __c_anonymous_ifc_ifcu {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
+    }
+}
+
 cfg_if! {
     if #[cfg(target_os = "macos")] {
-        s_no_extra_traits! {
+        s_no_extra_traits2! {
             pub union __c_anonymous_ifr_ifru6 {
                 pub ifru_addr: crate::sockaddr_in6,
                 pub ifru_dstaddr: crate::sockaddr_in6,
@@ -1734,6 +1909,13 @@ cfg_if! {
                 pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
             }
         }
+    }
+}
+
+#[cfg(target_os = "macos")]
+impl Default for __c_anonymous_ifr_ifru6 {
+    fn default() -> Self {
+        unsafe { mem::zeroed() }
     }
 }
 
@@ -1771,7 +1953,7 @@ impl siginfo_t {
     }
 }
 
-s_no_extra_traits! {
+s_no_extra_traits2! {
     pub union semun {
         pub val: c_int,
         pub buf: *mut semid_ds,
@@ -3240,6 +3422,7 @@ pub const _CS_DARWIN_USER_CACHE_DIR: c_int = 65538;
 
 pub const OS_UNFAIR_LOCK_INIT: os_unfair_lock = os_unfair_lock {
     _os_unfair_lock_opaque: 0,
+    __non_exhaustive: (),
 };
 
 pub const OS_LOG_TYPE_DEFAULT: crate::os_log_type_t = 0x00;

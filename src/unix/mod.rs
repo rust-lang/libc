@@ -49,20 +49,25 @@ unsafe impl Sync for DIR {}
 #[cfg(not(target_os = "nuttx"))]
 pub type locale_t = *mut c_void;
 
-s! {
+s2! {
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct group {
+        #[custom_default(ptr::null_mut())]
         pub gr_name: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub gr_passwd: *mut c_char,
         pub gr_gid: crate::gid_t,
+        #[custom_default(ptr::null_mut())]
         pub gr_mem: *mut *mut c_char,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct utimbuf {
         pub actime: time_t,
         pub modtime: time_t,
     }
 
-    #[derive(Default)]
+    #[exhaustive] // This one is not likely to ever change
     pub struct timeval {
         pub tv_sec: time_t,
         #[cfg(not(gnu_time_bits64))]
@@ -75,7 +80,7 @@ s! {
 
     // linux x32 compatibility
     // See https://sourceware.org/bugzilla/show_bug.cgi?id=16437
-    #[derive(Default)]
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(not(target_env = "gnu"))]
     pub struct timespec {
         pub tv_sec: time_t,
@@ -89,11 +94,13 @@ s! {
         __pad0: Padding<u32>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rlimit {
         pub rlim_cur: rlim_t,
         pub rlim_max: rlim_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage {
         pub ru_utime: timeval,
         pub ru_stime: timeval,
@@ -144,6 +151,7 @@ s! {
         __reserved: Padding<[c_long; 16]>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(not(target_os = "nuttx"))]
     pub struct ipv6_mreq {
         pub ipv6mr_multiaddr: in6_addr,
@@ -153,20 +161,27 @@ s! {
         pub ipv6mr_interface: c_uint,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(all(not(target_os = "cygwin"), not(target_os = "horizon")))]
     pub struct hostent {
+        #[custom_default(ptr::null_mut())]
         pub h_name: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub h_aliases: *mut *mut c_char,
         pub h_addrtype: c_int,
         pub h_length: c_int,
+        #[custom_default(ptr::null_mut())]
         pub h_addr_list: *mut *mut c_char,
     }
 
+    #[exhaustive] // Shouldn't ever change
     pub struct iovec {
+        #[custom_default(ptr::null_mut())]
         pub iov_base: *mut c_void,
         pub iov_len: size_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(not(target_os = "horizon"))]
     pub struct pollfd {
         pub fd: c_int,
@@ -174,6 +189,7 @@ s! {
         pub revents: c_short,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct winsize {
         pub ws_row: c_ushort,
         pub ws_col: c_ushort,
@@ -181,24 +197,29 @@ s! {
         pub ws_ypixel: c_ushort,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[cfg(not(target_os = "cygwin"))]
     pub struct linger {
         pub l_onoff: c_int,
         pub l_linger: c_int,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sigval {
         // Actually a union of an int and a void*
+        #[custom_default(ptr::null_mut())]
         pub sival_ptr: *mut c_void,
     }
 
     // <sys/time.h>
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct itimerval {
         pub it_interval: crate::timeval,
         pub it_value: crate::timeval,
     }
 
     // <sys/times.h>
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct tms {
         pub tms_utime: crate::clock_t,
         pub tms_stime: crate::clock_t,
@@ -206,18 +227,25 @@ s! {
         pub tms_cstime: crate::clock_t,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct servent {
+        #[custom_default(ptr::null_mut())]
         pub s_name: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub s_aliases: *mut *mut c_char,
         #[cfg(target_os = "cygwin")]
         pub s_port: c_short,
         #[cfg(not(target_os = "cygwin"))]
         pub s_port: c_int,
+        #[custom_default(ptr::null_mut())]
         pub s_proto: *mut c_char,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct protoent {
+        #[custom_default(ptr::null_mut())]
         pub p_name: *mut c_char,
+        #[custom_default(ptr::null_mut())]
         pub p_aliases: *mut *mut c_char,
         #[cfg(not(target_os = "cygwin"))]
         pub p_proto: c_int,
@@ -225,6 +253,7 @@ s! {
         pub p_proto: c_short,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(align(4))]
     pub struct in6_addr {
         pub s6_addr: [u8; 16],
