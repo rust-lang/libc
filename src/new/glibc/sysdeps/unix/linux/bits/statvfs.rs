@@ -2,7 +2,7 @@
 
 use crate::prelude::*;
 
-s! {
+s2! {
     pub struct statvfs {
         pub f_bsize: c_ulong,
         pub f_frsize: c_ulong,
