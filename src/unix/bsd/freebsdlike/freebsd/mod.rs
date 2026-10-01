@@ -2213,6 +2213,8 @@ pub const NOTE_ABSTIME: u32 = 0x00000010;
 
 pub const MADV_PROTECT: c_int = 10;
 
+pub const INHERIT_ZERO: c_int = 3;
+
 pub const CTL_SYSCTL: c_int = 0;
 pub const CTL_KERN: c_int = 1;
 pub const CTL_VM: c_int = 2;
