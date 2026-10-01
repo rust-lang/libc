@@ -2229,5 +2229,6 @@ vol_capabilities_attr_t
 vol_capabilities_set_t
 wait4
 waitid
+wint_t
 xsw_usage
 xucred
