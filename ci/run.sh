@@ -56,7 +56,14 @@ $cmd -- $test_flags
 # shellcheck disable=SC2086
 $cmd --features extra_traits -- $test_flags
 
-cargo doc --target "$target" --workspace --no-deps
+doc_cmd="cargo doc --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"} --no-deps --workspace"
+
+if [ "${LIBC_CI_ZBUILD_STD:-}" ]; then
+    # ctest has no support for -Zbuild-std
+    doc_cmd="$doc_cmd --exclude ctest --exclude ctest-test"
+fi
+
+$doc_cmd
 
 # On relevant platforms, also test with our optional settings
 
