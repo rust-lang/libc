@@ -18,6 +18,7 @@ uname -a
 dpkg -l | grep libc- || true
 
 cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+doc_cmd="cargo doc --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"} --no-deps --workspace"
 test_flags="--skip check_style"
 
 # Run tests in the `libc` crate
@@ -36,6 +37,7 @@ esac
 if [ "${LIBC_CI_ZBUILD_STD:-}" ]; then
     # ctest test infrastructure has no support for -Zbuild-std
     cmd="$cmd --exclude ctest --exclude ctest-test"
+    doc_cmd="$doc_cmd --exclude ctest --exclude ctest-test"
 fi
 
 env="$(rustc --print cfg --target "$target" | sed -n 's/target_env="\(.*\)"/\1/p')"
@@ -48,7 +50,7 @@ $cmd -- $test_flags
 # shellcheck disable=SC2086
 $cmd --features extra_traits -- $test_flags
 
-cargo doc --target "$target" --workspace --no-deps
+$doc_cmd
 
 # On relevant platforms, also test with our optional settings
 
