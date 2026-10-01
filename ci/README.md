@@ -37,9 +37,10 @@ The remaining architectures look like:
   drives the device over adb. Android aarch64 tests run under the QEMU
   userspace emulator against the bionic linker and libraries extracted from
   a current Android build by `android-bionic-sysroot.sh`, with no Android
-  system booted. The remaining Android target (32-bit arm) runs in a docker
-  image with the legacy SDK emulator, the NDK, and the SDK already set up,
-  with the entire build happening within the docker image.
+  system booted. `TEST_ANDROID_CUTTLEFISH=1` boots a full (much slower)
+  Cuttlefish device under TCG instead. The remaining Android target (32-bit
+  arm) runs in a docker image with the legacy SDK emulator, the NDK, and the
+  SDK already set up, with the entire build happening within the docker image.
 * The MIPS, ARM, and AArch64 builds all use the QEMU userspace emulator to run
   the generated binary to actually verify the tests pass.
 * The MUSL build just has to download a MUSL compiler and target libraries and
