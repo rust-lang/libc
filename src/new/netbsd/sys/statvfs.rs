@@ -7,7 +7,7 @@ use crate::prelude::*;
 const _VFS_NAMELEN: usize = 32;
 const _VFS_MNAMELEN: usize = 1024;
 
-s! {
+s2! {
     pub struct statvfs {
         pub f_flag: c_ulong,
         pub f_bsize: c_ulong,
@@ -38,8 +38,11 @@ s! {
         // This type is updated in a future version
         f_spare: Padding<[u32; 4]>,
 
+        #[custom_default([0; _VFS_NAMELEN])]
         pub f_fstypename: [c_char; _VFS_NAMELEN],
+        #[custom_default([0; _VFS_MNAMELEN])]
         pub f_mntonname: [c_char; _VFS_MNAMELEN],
+        #[custom_default([0; _VFS_MNAMELEN])]
         pub f_mntfromname: [c_char; _VFS_MNAMELEN],
         // Added in NetBSD10
         // pub f_mntfromlabel: [c_char; _VFS_MNAMELEN],
