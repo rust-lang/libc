@@ -3,7 +3,7 @@
 use crate::prelude::*;
 
 s2! {
-    #[exhaustive] // FIXME(exhaustive): review for 1.0
+    #[exhaustive] // unlikely to change
     pub struct timeval32 {
         pub tv_sec: i32,
         pub tv_usec: i32,
