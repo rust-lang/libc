@@ -6,10 +6,7 @@ mod target;
 use std::env;
 use std::env::VarError;
 use std::io::Write;
-use std::process::{
-    Command,
-    Stdio,
-};
+use std::process::Stdio;
 use std::sync::LazyLock;
 
 use regex::Regex;
@@ -1523,13 +1520,7 @@ fn test_dragonflybsd(t: &Target) {
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
 
-    let dragonfly_version = if let Ok(version) = env::var("RUST_LIBC_UNSTABLE_DRAGONFLY_VERSION") {
-        let vers = parse_dragonfly_version(&version).unwrap();
-        println!("cargo:warning=setting DragonFly version to {vers}");
-        vers
-    } else {
-        which_dragonfly().unwrap_or(600_200)
-    };
+    let dragonfly = VERSIONS.dragonfly.unwrap();
 
     headers!(
         cfg,
@@ -1745,11 +1736,7 @@ fn test_dragonflybsd(t: &Target) {
             | "PROC_PDEATHSIG_CTL"
             | "PROC_PDEATHSIG_STATUS"
             | "KERN_STATIC_TLS_EXTRA"
-            | "KERN_MAXID"
-                if dragonfly_version < 600_000 =>
-            {
-                true
-            }
+            | "KERN_MAXID" => dragonfly < (6, 0),
 
             // weird signed extension or something like that?
             "MS_NOUSER" => true,
@@ -1766,20 +1753,19 @@ fn test_dragonflybsd(t: &Target) {
     cfg.skip_fn(move |func| {
         // skip those that are manually verified
         match func.ident() {
-            "getrlimit" | "getrlimit64" |    // non-int in 1st arg
-            "setrlimit" | "setrlimit64" |    // non-int in 1st arg
-            "prlimit" | "prlimit64"        // non-int in 2nd arg
-             => true,
+            // non-int in 1st arg
+            "getrlimit" | "getrlimit64" | "setrlimit" | "setrlimit64" => true,
+            // non-int in 2nd arg
+            "prlimit" | "prlimit64" => true,
 
             // These are exposed unconditionally by libc, but older DragonFly
             // headers cannot validate them.
-            "clock_nanosleep" | "fexecve" | "pthread_getname_np" | "pthread_setname_np"
-                if dragonfly_version < 600_000 => true,
-            "pthread_getaffinity_np" | "pthread_setaffinity_np" if dragonfly_version < 600_000 => {
-                true
-            },
-            "fdatasync" | "getentropy" | "posix_fallocate" if dragonfly_version < 600_200 => true,
-            "malloc_usable_size" if dragonfly_version < 600_400 => true,
+            "clock_nanosleep" | "fexecve" | "pthread_getname_np" | "pthread_setname_np" => {
+                dragonfly < (6, 0)
+            }
+            "pthread_getaffinity_np" | "pthread_setaffinity_np" => dragonfly < (6, 0),
+            "fdatasync" | "getentropy" | "posix_fallocate" => dragonfly < (6, 0),
+            "malloc_usable_size" => dragonfly < (6, 0),
             _ => false,
         }
     });
@@ -1802,7 +1788,7 @@ fn test_dragonflybsd(t: &Target) {
             // structs.
             "termios2" => true,
 
-            "ip_mreqn" if dragonfly_version < 600_000 => true,
+            "ip_mreqn" => dragonfly < (6, 0),
 
             _ => false,
         }
@@ -1839,39 +1825,6 @@ fn test_dragonflybsd(t: &Target) {
     });
 
     cfg.build_test("../src/lib.rs", "ctest_output.rs");
-}
-
-fn parse_dragonfly_version(version: &str) -> Option<u32> {
-    let version = version.trim();
-
-    if let Ok(version) = version.parse::<u32>() {
-        // DragonFly's __DragonFly_version uses major * 100_000 + minor * 100.
-        // Accept compact test override spellings like 58, 60, 62, and 602.
-        return Some(match version {
-            0..=9 => version * 100_000,
-            10..=99 => (version / 10) * 100_000 + (version % 10) * 100,
-            100..=999 => (version / 100) * 100_000 + (version % 100) * 100,
-            _ => version,
-        });
-    }
-
-    let mut pieces = version.split(['.', '-']);
-    let major = pieces.next()?.parse::<u32>().ok()?;
-    let minor = pieces.next()?.parse::<u32>().ok()?;
-    Some(major * 100_000 + minor * 100)
-}
-
-fn which_dragonfly() -> Option<u32> {
-    if env::var("CARGO_CFG_TARGET_OS").ok()?.as_str() != "dragonfly" {
-        return None;
-    }
-
-    if try_command_output("uname", &["-s"])?.trim() != "DragonFly" {
-        return None;
-    }
-
-    let stdout = try_command_output("uname", &["-r"])?;
-    parse_dragonfly_version(stdout.trim())
 }
 
 fn test_wasi(t: &Target) {
@@ -6183,6 +6136,7 @@ static VERSIONS: LazyLock<Versions> = LazyLock::new(Versions::init_from_cc);
 struct Versions {
     linux: Option<(u32, u32)>,
     glibc: Option<(u32, u32)>,
+    dragonfly: Option<(u32, u32)>,
     freebsd: Option<(u32, u32)>,
     openbsd: Option<(u32, u32)>,
     netbsd: Option<(u32, u32)>,
@@ -6226,10 +6180,12 @@ impl Versions {
             #include "android/api-level.h"
             #endif
 
-            #if defined(__FreeBSD__) \
+            #if defined(__DragonFly__) \
+                || defined(__FreeBSD__) \
                 || defined(__NetBSD__) \
                 || defined(__OpenBSD__)
-            /* FreeBSD: __FreeBSD_version (MMmmRxx string, e.g. 1600018)
+            /* DragonFlyBSD: __DragonFly_version (Mmmmpp string, e.g. 600401)
+             * FreeBSD: __FreeBSD_version (MMmmRxx string, e.g. 1600018)
              * NetBSD: __NetBSD_Version__ (MMmmrrpp00 string, e.g. 1001000000)
              * OpenBSD: OpenBSD (release date, e.g. 202510) and OpenBSDM_m (e.g. OpenBSD7_8)
              */
@@ -6317,6 +6273,13 @@ impl Versions {
                     // and is set on watchOS, tvOS and visionOS too).
                     ret.apple = Some((major, minor));
                 }
+                "__DragonFly_version" => {
+                    // DragonFly's __DragonFly_version uses major * 100_000 + minor * 100.
+                    let version = value.parse::<u32>().unwrap();
+                    let major = version / 100_000;
+                    let minor = (version % 100_000) / 100;
+                    ret.dragonfly = Some((major, minor));
+                }
                 "__FreeBSD_version" => {
                     // Format: MmmRxx where M is major (possibly multi-digit), mm is minor, R
                     // indicates release status, xx is some sequence.
@@ -6368,20 +6331,6 @@ impl Versions {
         println!("cargo:warning=detected versions: {ret:?}");
         ret
     }
-}
-
-/// Attempt to execute a command and collect its output, If the command fails for whatever
-/// reason, return `None`.
-fn try_command_output(cmd: &str, args: &[&str]) -> Option<String> {
-    let output = Command::new(cmd).args(args).output().ok()?;
-
-    if !output.status.success() {
-        return None;
-    }
-
-    let res = String::from_utf8(output.stdout)
-        .unwrap_or_else(|e| panic!("command {cmd} returned non-UTF-8 output: {e}"));
-    Some(res)
 }
 
 /// Return true if the env is set to a value other than `0`.
