@@ -56,7 +56,7 @@ jobs:
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
-      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+      - run: cargo clippy --locked --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
 
   # This runs `cargo build --target ...` for all T1 and T2 targets`
   verify_build:
