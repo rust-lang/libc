@@ -3,8 +3,8 @@
 name: Release-plz v0.2
 
 permissions:
-  pull-requests: write
   contents: write
+  id-token: write
 
 on:
   push:
