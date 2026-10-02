@@ -31,9 +31,23 @@ run() {
     run_target="$1"
     echo "Building docker container for target $run_target"
 
+    image="libc-$run_target"
+    dockerfile="ci/docker/$run_target/Dockerfile"
+
+    # aarch64-linux-android uses qemu-user unless TEST_ANDROID_CUTTLEFISH is set.
+    cuttlefish=0
+    if [ "$run_target" = "x86_64-linux-android" ]; then
+        cuttlefish=1
+    elif [ "$run_target" = "aarch64-linux-android" ] &&
+        [ -n "${TEST_ANDROID_CUTTLEFISH:-}" ]; then
+        cuttlefish=1
+        image="$image-cuttlefish"
+        dockerfile="$dockerfile.cuttlefish"
+    fi
+
     build_args=(
-        "--tag=libc-$run_target"
-        "--file=ci/docker/$run_target/Dockerfile"
+        "--tag=$image"
+        "--file=$dockerfile"
         "ci/"
     )
 
@@ -69,11 +83,11 @@ run() {
     mkdir -p target
 
     extra_args=()
-    # x86_64-linux-android boots a Cuttlefish virtual device inside the
-    # container. Give it the virtualization device nodes and NET_ADMIN it needs.
+    # The Cuttlefish Android jobs boot a virtual device inside the container.
+    # Give it the virtualization device nodes and NET_ADMIN it needs.
     # These are the same flags Google's android-cuttlefish project uses for its
     # own containerized CI.
-    if [ "$run_target" = "x86_64-linux-android" ]; then
+    if [ "$cuttlefish" = "1" ]; then
         extra_args+=(
             --device /dev/kvm
             --device /dev/net/tun
@@ -81,10 +95,15 @@ run() {
             --device /dev/vhost-vsock
             --cap-add NET_ADMIN
             --security-opt seccomp=unconfined
-            --env CUTTLEFISH_BUILD
-            --env CUTTLEFISH_TARGET
             --env HOST_UID="$(id -u)"
         )
+        # Only pass set overrides; an empty --env would shadow the image's ENV.
+        for cf_var in CUTTLEFISH_BUILD CUTTLEFISH_TARGET CUTTLEFISH_HOST_TARGET \
+            CUTTLEFISH_VM_MANAGER CUTTLEFISH_BOOT_TIMEOUT; do
+            if [ -n "${!cf_var:-}" ]; then
+                extra_args+=(--env "$cf_var")
+            fi
+        done
     else
         extra_args+=(--user "$(id -u)":"$(id -g)")
         if [ -w /dev/kvm ]; then
@@ -111,7 +130,7 @@ run() {
         --volume "$PWD"/target:/checkout/target \
         --init \
         --workdir /checkout \
-        "libc-$target" \
+        "$image" \
         sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh $target"
 }
 
