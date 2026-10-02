@@ -1,6 +1,3 @@
-// FIXME(ctest): this test doesn't work when cross compiling.
-#![cfg(target_arch = "x86_64")]
-
 use std::collections::HashSet;
 use std::env;
 use std::process::{
@@ -9,7 +6,7 @@ use std::process::{
 };
 
 /// Executes a command, returning stdout and stderr combined and it's status.
-fn output(cmd: &mut Command) -> (String, ExitStatus) {
+fn cmd(cmd: &mut Command) -> (String, ExitStatus) {
     eprintln!("command: {cmd:?}");
     let output = cmd.output().unwrap();
     let stdout = String::from_utf8(output.stdout).unwrap();
@@ -21,7 +18,13 @@ fn output(cmd: &mut Command) -> (String, ExitStatus) {
 #[test]
 fn t1() {
     // t1 must run to completion without any errors.
-    let (output, status) = output(&mut Command::new(env!("CARGO_BIN_EXE_t1")));
+    let (output, status) = cmd(&mut Command::new("file").arg(env!("CARGO_BIN_EXE_t1")));
+    dbg!(output, status);
+    let (output, status) = cmd(&mut Command::new("sh").arg("-c").arg("which").arg("file"));
+    dbg!(&output, status);
+    let (output, status) = cmd(&mut Command::new("file").arg(output));
+    dbg!(output, status);
+    let (output, status) = cmd(&mut Command::new(env!("CARGO_BIN_EXE_t1")));
     assert!(status.success(), "output: {output}");
     assert!(!output.contains("bad "), "{output}");
     eprintln!("output: {output}");
@@ -30,7 +33,9 @@ fn t1() {
 #[test]
 fn t2() {
     // t2 must fail to run to completion, and only have the errors we expect it to have.
-    let (output, status) = output(&mut Command::new(env!("CARGO_BIN_EXE_t2")));
+    let (output, status) = cmd(&mut Command::new("file").arg(env!("CARGO_BIN_EXE_t2")));
+    dbg!(output, status);
+    let (output, status) = cmd(&mut Command::new(env!("CARGO_BIN_EXE_t2")));
     assert!(!status.success(), "output: {output}");
     let errors = [
         "bad `T2Foo` signed",
