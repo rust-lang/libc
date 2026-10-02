@@ -12,6 +12,11 @@ pub type ino_t = u64;
 pub type key_t = c_longlong;
 pub type sa_family_t = u16;
 pub type socklen_t = c_int;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform."
+)]
+pub type sighandler_t = size_t;
 
 pub type off_t = c_long;
 pub type id_t = u32;
