@@ -23,7 +23,7 @@
 
 ### Changed
 
-- Restore `Send` and `Sync` for `DIR` ([35b062263401](https://github.com/rust-lang/libc/commit/35b062263401733cd89065c6a553640f2ba51ff1))
+- Restore `Send` and `Sync` for `DIR` ([ba6a6b56ae09](https://github.com/rust-lang/libc/commit/ba6a6b56ae09e0640a2b2e27f3f6abdb4b3d243f))
 
 These were removed in 0.2.187 because `libc` does not actually make `Send` and `Sync`
 guarantees about `DIR` (or other extern types), but this caused some crates to break.
