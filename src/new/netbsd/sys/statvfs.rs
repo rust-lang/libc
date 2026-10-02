@@ -35,8 +35,7 @@ s2! {
         pub f_namemax: c_ulong,
         pub f_owner: crate::uid_t,
 
-        // This type is updated in a future version
-        f_spare: Padding<[u32; 4]>,
+        f_spare: [u64; 4],
 
         #[custom_default([0; _VFS_NAMELEN])]
         pub f_fstypename: [c_char; _VFS_NAMELEN],
@@ -44,7 +43,6 @@ s2! {
         pub f_mntonname: [c_char; _VFS_MNAMELEN],
         #[custom_default([0; _VFS_MNAMELEN])]
         pub f_mntfromname: [c_char; _VFS_MNAMELEN],
-        // Added in NetBSD10
-        // pub f_mntfromlabel: [c_char; _VFS_MNAMELEN],
+        pub f_mntfromlabel: [c_char; _VFS_MNAMELEN],
     }
 }
