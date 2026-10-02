@@ -3,8 +3,8 @@
 name: Release-plz
 
 permissions:
-  pull-requests: write
-  contents: write
+  contents: read
+  id-token: write
 
 on:
   push:
