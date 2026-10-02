@@ -2467,7 +2467,6 @@ sigdelset
 sigemptyset
 sigevent
 sigfillset
-sighandler_t
 siginfo_t
 sigismember
 signal
