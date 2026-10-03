@@ -2745,6 +2745,10 @@ fn test_freebsd(t: &Target) {
             // be stable, and probably shouldn't be bound by libc at all.
             "RLIM_NLIMITS" => true,
 
+            // This constant was never intended to be stable, probably shouldn't have been bound by
+            // libc at all, and was changed for FreeBSD 15.2 (git 2bacbbecb16 and 547751e4efcef)
+            "NOTE_PCTRLMASK" => true,
+
             // This symbol changed in FreeBSD 14 (git 051e7d78b03), but the new
             // version should be safe to use on older releases.
             "IFCAP_CANTCHANGE" => true,
