@@ -3120,6 +3120,9 @@ fn test_freebsd(t: &Target) {
             // The definition changed in FreeBSD 16 but in a binary-compatible way
             ("in_conninfo", "inc_ie") => freebsd >= (16, 0),
 
+            // Field was widened in FreeBSD 14.0 (git 2ecbbcc7cab)
+            ("gpregs", "gp_spsr") => freebsd < (14, 0),
+
             _ => false,
         }
     });
