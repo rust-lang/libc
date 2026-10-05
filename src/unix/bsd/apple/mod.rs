@@ -176,7 +176,6 @@ pub type copyfile_callback_t = Option<
 pub type attrgroup_t = u32;
 pub type vol_capabilities_set_t = [u32; 4];
 
-#[cfg(target_os = "macos")]
 deprecated_mach! {
     pub type mach_timebase_info_data_t = mach_timebase_info;
 }
@@ -318,7 +317,6 @@ s2! {
     }
 
     #[exhaustive] // FIXME(exhaustive): review for 1.0
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_timebase_info {
         pub numer: u32,
@@ -4746,17 +4744,13 @@ extern "C" {
         newp: *mut c_void,
         newlen: size_t,
     ) -> c_int;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_absolute_time() -> u64;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn mach_timebase_info(info: *mut crate::mach_timebase_info) -> c_int;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_host_self() -> mach_port_t;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_thread_self() -> mach_port_t;
     pub fn pthread_cond_timedwait_relative_np(
@@ -5325,7 +5319,6 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> crate::kern_return_t;
 
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub static mut mach_task_self_: crate::mach_port_t;
     pub fn task_for_pid(
@@ -5451,7 +5444,6 @@ extern "C" {
 }
 
 #[allow(deprecated)]
-#[cfg(target_os = "macos")]
 #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
 pub unsafe fn mach_task_self() -> crate::mach_port_t {
     mach_task_self_
