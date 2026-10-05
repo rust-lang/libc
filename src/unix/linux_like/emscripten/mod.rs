@@ -40,7 +40,7 @@ cfg_if! {
     }
 }
 pub type rlim_t = u64;
-pub type nlink_t = u32;
+pub type nlink_t = c_ulong; // register_t
 
 // FIXME(1.0,deprecate): lfs binding to be removed
 pub type ino64_t = ino_t;
