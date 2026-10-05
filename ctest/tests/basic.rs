@@ -260,6 +260,22 @@ fn check_function_signatures(language: ctest::Language) {
         return;
     }
 
+    if matches!(language, ctest::Language::CXX) {
+        let compiler = cc::Build::new()
+            .cpp(true)
+            .target(env!("TARGET_PLATFORM"))
+            .host(env!("HOST_PLATFORM"))
+            .opt_level(1)
+            .try_get_compiler()
+            .unwrap();
+        if matches!(compiler.to_command().arg("--version").output(),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound)
+        {
+            eprintln!("skipping C++ signature checks: C++ compiler not found");
+            return;
+        }
+    }
+
     for (index, (header, signature, should_compile)) in [
         (
             "int signature(int);",
