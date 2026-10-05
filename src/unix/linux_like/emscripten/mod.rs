@@ -122,11 +122,15 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
+        #[cfg(target_endian = "little")]
         pub f_fsid: c_ulong,
-        __f_unused: Padding<c_int>,
+        #[cfg(target_pointer_width = "32")]
+        __pad: Padding<c_int>,
+        #[cfg(target_endian = "big")]
+        pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: Padding<[c_int; 6]>,
+        __f_reserved: Padding<[c_int; 6]>,
     }
 
     pub struct signalfd_siginfo {
