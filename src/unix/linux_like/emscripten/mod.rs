@@ -22,12 +22,12 @@ pub type pthread_key_t = c_uint;
 
 pub type clock_t = c_long;
 pub type time_t = i64;
-pub type suseconds_t = c_long;
+pub type suseconds_t = c_int;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i32;
 
-pub type blksize_t = c_long;
+pub type blksize_t = c_int;
 cfg_if! {
     // `fsblkcnt_t` and `fsfilcnt_t` are 64-bit since v4.0.12, see:
     // https://github.com/emscripten-core/emscripten/pull/24769
