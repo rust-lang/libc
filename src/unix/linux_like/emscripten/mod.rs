@@ -20,7 +20,7 @@ pub type idtype_t = c_uint;
 pub type loff_t = i64;
 pub type pthread_key_t = c_uint;
 
-pub type clock_t = c_long;
+pub type clock_t = c_int;
 pub type time_t = i64;
 pub type suseconds_t = c_int;
 pub type ino_t = u64;
