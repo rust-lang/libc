@@ -328,6 +328,14 @@ fn test_apple(t: &Target) {
         }
     });
 
+    cfg.skip_fn_ptrcheck(|func| match func {
+        // FIXME(apple): the C prototypes take const os_unfair_lock pointers.
+        "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
+        // FIXME(apple): the C prototype returns ssize_t, not int.
+        "freadlink" => true,
+        _ => false,
+    });
+
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // Anonymous ADT fields
