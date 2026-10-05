@@ -268,7 +268,7 @@ s! {
     }
 
     pub struct sem_t {
-        __val: [c_int; 4],
+        __val: [c_int; 4 * size_of::<c_long>() / size_of::<c_int>()],
     }
     pub struct stat {
         pub st_dev: crate::dev_t,
