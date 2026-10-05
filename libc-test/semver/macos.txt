@@ -192,14 +192,8 @@ icmp6_ifstat
 in6_addrlifetime
 in6_ifreq
 in6_ifstat
-mach_absolute_time
 mach_header
 mach_header_64
-mach_host_self
-mach_port_t
-mach_thread_self
-mach_timebase_info
-mach_timebase_info_data_t
 mach_vm_map
 memmem
 posix_spawn_file_actions_addchdir
