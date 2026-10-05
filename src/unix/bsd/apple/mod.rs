@@ -2650,6 +2650,8 @@ pub const F_THAW_FS: c_int = 54;
 pub const F_GLOBAL_NOCACHE: c_int = 55;
 pub const F_NODIRECT: c_int = 62;
 pub const F_LOG2PHYS_EXT: c_int = 65;
+pub const F_SETNOSIGPIPE: c_int = 73;
+pub const F_GETNOSIGPIPE: c_int = 74;
 pub const F_BARRIERFSYNC: c_int = 85;
 // See https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/fcntl.h
 pub const F_OFD_SETLK: c_int = 90; /* Acquire or release open file description lock */
