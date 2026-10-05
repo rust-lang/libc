@@ -5171,6 +5171,8 @@ fn test_linux(t: &Target) {
             result = result || s == "cfsetispeed";
             result = result || s == "cfsetospeed";
             result = result || s == "cfsetspeed";
+            // glibc marks swapcontext with a C-only indirect_return attribute on AArch64.
+            result = result || (aarch64 && s == "swapcontext");
             if mips || sparc {
                 result = result || s == "tcgetattr";
                 result = result || s == "tcsetattr";
