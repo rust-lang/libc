@@ -159,7 +159,7 @@ s! {
     }
 
     pub struct cpu_set_t {
-        bits: [u32; 32],
+        bits: [c_ulong; 128 / size_of::<c_long>()],
     }
 
     // System V IPC
