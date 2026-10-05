@@ -245,6 +245,89 @@ fn test_mismatched_struct_field_ty() {
     }
 }
 
+#[test]
+fn test_function_signatures() {
+    check_function_signatures(ctest::Language::C);
+}
+
+#[test]
+fn test_function_signatures_cpp() {
+    check_function_signatures(ctest::Language::CXX);
+}
+
+fn check_function_signatures(language: ctest::Language) {
+    if env::var("TARGET_PLATFORM") != env::var("HOST_PLATFORM") {
+        return;
+    }
+
+    for (index, (header, signature, should_compile)) in [
+        (
+            "int signature(int);",
+            "pub fn signature(arg: i32) -> i32;",
+            true,
+        ),
+        ("int signature(int);", "pub fn signature();", false),
+        (
+            "int signature(int);",
+            "pub fn signature(arg: f64) -> i32;",
+            false,
+        ),
+        (
+            "int signature(int);",
+            "pub fn signature(arg: i32) -> f64;",
+            false,
+        ),
+        (
+            "int signature(int);",
+            "pub fn signature(arg: i32, ...) -> i32;",
+            false,
+        ),
+        (
+            "int signature(int, ...);",
+            "pub fn signature(arg: i32, ...) -> i32;",
+            true,
+        ),
+        (
+            "int signature(int, ...);",
+            "pub fn signature(arg: i32) -> i32;",
+            false,
+        ),
+        ("void signature(void);", "pub fn signature();", true),
+        (
+            "void signature(const int *);",
+            "pub fn signature(arg: *const i32);",
+            true,
+        ),
+        (
+            "void signature(const int *);",
+            "pub fn signature(arg: *mut i32);",
+            false,
+        ),
+        (
+            "void signature(int (*)(int));",
+            "pub fn signature(arg: unsafe extern \"C\" fn(i32) -> i32);",
+            true,
+        ),
+        (
+            "void signature(int (*)(int));",
+            "pub fn signature(arg: unsafe extern \"C\" fn(f64) -> i32);",
+            false,
+        ),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let (mut gen_, out_dir) = default_generator(1, Some("signature.h")).unwrap();
+        gen_.include(out_dir.path()).language(language.clone());
+        fs::write(out_dir.path().join("signature.h"), header).unwrap();
+        let crate_path = out_dir.path().join(format!("signature_{index}.rs"));
+        fs::write(&crate_path, format!("extern \"C\" {{ {signature} }}")).unwrap();
+
+        let result = gen_.try_build_test(&crate_path, "signature.out.rs");
+        assert_eq!(result.is_ok(), should_compile, "{signature}: {result:?}");
+    }
+}
+
 /// Compiles a Rust source file and links it against a static library.
 ///
 /// Returns the path to the generated binary.
