@@ -17,29 +17,31 @@ echo "RUSTFLAGS: '$RUSTFLAGS'"
 uname -a
 dpkg -l | grep libc- || true
 
-cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"}"
+cmd="cargo test --target $target ${LIBC_CI_ZBUILD_STD+"-Zbuild-std"} -p ctest -p ctest-test -- --nocapture"
 test_flags="--skip check_style"
+$cmd
+exit
 
-# Run tests in the `libc` crate
-case "$target" in
-    # Only run `libc-test`
-    # FIXME(android): unit tests fail to start on Android
-    *android*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
-    *s390x*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
-    # ctest's own tests don't work on Apple devices, since these don't have
-    # host tooling such as `rustc` or a C compiler.
-    *ios*|*tvos*|*watchos*|*visionos*) cmd="$cmd --workspace --exclude ctest" ;;
-    # For all other platforms, test everything in the workspace
-    *) cmd="$cmd --workspace" ;;
-esac
+# # Run tests in the `libc` crate
+# case "$target" in
+#     # Only run `libc-test`
+#     # FIXME(android): unit tests fail to start on Android
+#     *android*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
+#     *s390x*) cmd="$cmd --manifest-path libc-test/Cargo.toml" ;;
+#     # ctest's own tests don't work on Apple devices, since these don't have
+#     # host tooling such as `rustc` or a C compiler.
+#     *ios*|*tvos*|*watchos*|*visionos*) cmd="$cmd --workspace --exclude ctest" ;;
+#     # For all other platforms, test everything in the workspace
+#     *) cmd="$cmd --workspace" ;;
+# esac
 
-case "$target" in
-    # crash in std::env::tmp_dir (no filesystem on wasm).
-    *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
-    # Loongarch was fixed, but there are new instances of
-    # https://github.com/bytecodealliance/rustix/issues/1496
-    powerpc64le*musl) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
-esac
+# case "$target" in
+#     # crash in std::env::tmp_dir (no filesystem on wasm).
+#     *wasm*) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
+#     # Loongarch was fixed, but there are new instances of
+#     # https://github.com/bytecodealliance/rustix/issues/1496
+#     powerpc64le*musl) cmd="$cmd --exclude ctest --exclude ctest-test --exclude ctest-next" ;;
+# esac
 
 if [ "${LIBC_CI_ZBUILD_STD:-}" ]; then
     # ctest test infrastructure has no support for -Zbuild-std

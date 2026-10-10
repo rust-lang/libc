@@ -3,6 +3,7 @@ FROM ubuntu:26.04
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     gcc \
+    file \
     gcc-14-loongarch64-linux-gnu \
     libc6-dev \
     libc6-dev-loong64-cross \

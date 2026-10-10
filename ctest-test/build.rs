@@ -1,3 +1,5 @@
+use std::process::Command;
+
 fn main() {
     use std::env;
     let opt_level = env::var("OPT_LEVEL")
@@ -53,12 +55,24 @@ fn do_cc() {
         .warnings(false)
         .file("src/t1.c")
         .compile("libt1.a");
+    println!(
+        "cargo:warning={:?}",
+        Command::new("file")
+            .arg(format!("{}/libt1.a", std::env::var("OUT_DIR").unwrap()))
+            .output()
+    );
     println!("cargo:rerun-if-changed=src/t1.c");
     println!("cargo:rerun-if-changed=src/t1.h");
     cc::Build::new()
         .warnings(false)
         .file("src/t2.c")
         .compile("libt2.a");
+    println!(
+        "cargo:warning={:?}",
+        Command::new("file")
+            .arg(format!("{}/libt2.a", std::env::var("OUT_DIR").unwrap()))
+            .output()
+    );
     println!("cargo:rerun-if-changed=src/t2.c");
     println!("cargo:rerun-if-changed=src/t2.h");
 }

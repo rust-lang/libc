@@ -123,6 +123,7 @@ jobs:
   test_tier1:
     name: Test tier1
     strategy:
+      fail-fast: false
       matrix:
         include:
           - target: aarch64-apple-darwin
@@ -182,9 +183,9 @@ jobs:
 
   test_tier2:
     name: Test tier2
-    needs: [test_tier1, style_check]
+    # needs: [test_tier1, style_check]
     strategy:
-      fail-fast: true
+      fail-fast: false
       max-parallel: 16
       matrix:
         include:
@@ -309,7 +310,8 @@ jobs:
     needs: [test_tier1, style_check]
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
+      # fail-fast: true
       matrix:
         include:
           - release: "15.0"
