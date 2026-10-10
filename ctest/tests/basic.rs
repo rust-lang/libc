@@ -317,6 +317,12 @@ fn check_function_signatures(language: ctest::Language) {
         (
             "void signature(const int *);",
             "pub fn signature(arg: *mut i32);",
+            // MSVC's C compiler accepts this qualifier mismatch. C++ rejects it.
+            matches!(language, ctest::Language::C) && env!("TARGET_PLATFORM").contains("msvc"),
+        ),
+        (
+            "void signature(const int *);",
+            "pub fn signature(arg: *const f64);",
             false,
         ),
         (
