@@ -171,13 +171,15 @@ extern "C" {
         num_desc: c_uint,
     ) -> c_int;
     pub fn door_create(
-        server_procedure: extern "C" fn(
-            cookie: *mut c_void,
-            argp: *mut c_char,
-            arg_size: size_t,
-            dp: *mut door_desc_t,
-            n_desc: c_uint,
-        ),
+        server_procedure: Option<
+            unsafe extern "C" fn(
+                cookie: *mut c_void,
+                argp: *mut c_char,
+                arg_size: size_t,
+                dp: *mut door_desc_t,
+                n_desc: c_uint,
+            ),
+        >,
         cookie: *mut c_void,
         attributes: door_attr_t,
     ) -> c_int;
