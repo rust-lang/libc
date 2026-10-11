@@ -111,6 +111,11 @@ s_no_extra_traits! {
         pub __fcsr: c_uint,
         __reserved: Padding<[c_uint; 3]>,
     }
+
+    #[repr(align(16))]
+    pub struct max_align_t {
+        priv_: [f32; 8],
+    }
 }
 
 pub const SYS_read: c_long = 63;
