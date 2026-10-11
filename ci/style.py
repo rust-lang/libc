@@ -5,6 +5,7 @@ import re
 import subprocess as sp
 import sys
 
+from concurrent.futures import ThreadPoolExecutor
 from difflib import unified_diff
 from glob import iglob
 from pathlib import Path
@@ -37,8 +38,9 @@ def main():
     else:
         run(["cargo", "+nightly", "fmt"])
 
+    semver_names = semver_file_names()
     for file in iglob("libc-test/semver/*.txt"):
-        check_semver_file(Path(file))
+        check_semver_file(Path(file), semver_names)
 
     # Style tests
     run(
@@ -140,12 +142,43 @@ def fmt_one(fpath: Path, check_only: bool):
     fpath.write_text(text)
 
 
-def check_semver_file(fpath: Path):
+def semver_file_names() -> set[str]:
+    """Every semver file name that `libc-test/build/semver.rs` can load for some target.
+
+    Files are picked by target cfg, so a file whose name doesn't match any target
+    would be skipped silently.
+    """
+    targets = check_output(["rustc", "--print", "target-list"]).split()
+    with ThreadPoolExecutor() as pool:
+        # Not `check_output`, to avoid printing one command per target.
+        cfgs = pool.map(
+            lambda t: sp.check_output(
+                ["rustc", "--print", "cfg", "--target", t], text=True, stderr=sp.DEVNULL
+            ),
+            targets,
+        )
+
+    names = {"solarish"}
+    for out in cfgs:
+        cfg = dict(re.findall(r'^target_(os|arch|env|vendor)="(.*)"$', out, re.MULTILINE))
+        os_, arch, env = cfg.get("os", ""), cfg.get("arch", ""), cfg.get("env", "")
+        names.update(re.findall(r'^target_family="(.*)"$', out, re.MULTILINE))
+        names.update([cfg.get("vendor", ""), os_, f"{os_}-{arch}"])
+        if env:
+            names.update([f"{os_}-{env}", f"{os_}-{env}-{arch}"])
+    return names
+
+
+def check_semver_file(fpath: Path, semver_names: set[str]):
     if "TODO" in str(fpath):
         eprint(f"Skipping semver file {fpath}")
         return
 
     eprint(f"Checking semver file {fpath}")
+
+    if fpath.stem not in semver_names:
+        eprint(f"ERROR: Semver file {fpath} does not match any target, so it is never checked")
+        exit(1)
 
     text = fpath.read_text()
     lines = text.splitlines()
