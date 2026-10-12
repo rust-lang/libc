@@ -335,3 +335,9 @@ number should correspond with one fewer segment than the path contains.
 The proposition to fetch a given module should first match on the path
 of the subtree with the target path. A mismatch indicates it should fold
 over the module's child paths. The fold should be prone to termination.
+There is need for a seed value. One knows the module can be found
+somewhere in the crate graph. That is the main use of the proposition.
+This could be generalized into implying a coproduct. One injection would
+correspond with an injective const functor. The other would correspond
+with the identity functor. The assumption that the module really does
+exist can be left to call-site.
