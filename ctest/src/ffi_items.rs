@@ -144,7 +144,7 @@ impl FfiItems {
         let root_module = Module {
             public: bool::default(),
             cached_path: String::new().into_boxed_str(),
-            path: syn::Path {
+            path: Path {
                 leading_colon: None,
                 segments: Punctuated::new(),
             },
@@ -261,7 +261,7 @@ impl Default for FfiItems {
             foreign_statics: Default::default(),
             modules: Default::default(),
             uses: Default::default(),
-            current_module: syn::Path {
+            current_module: Path {
                 leading_colon: None,
                 segments: Default::default(),
             },
@@ -269,12 +269,25 @@ impl Default for FfiItems {
     }
 }
 
+/// Refined type for [`syn::UsePath`] that does not consider group paths.
+///
+/// This is a lot like [`RefinedUse`] in that it only exists as replacement for
+/// [`syn::UsePath`] but uses [`RefinedUseTree`] instead of [`syn::UseTree`].
+/// See [`RefinedUseTree`] for details.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RefinedUsePath {
     ident: syn::Ident,
     tree: Box<RefinedUseTree>,
 }
 
+/// Refined type for [`syn::UseTree`] that does not consider group paths.
+///
+/// This is the byproduct of normalizing a `use` declaration's path through
+/// [`normalize_path`]. That function ensures some such path containing a group
+/// as its tail end is converted into a set of paths without groups.
+///
+/// This enumeration is thus equivalent to `syn::UseTree` but does not consider
+/// the case of `syn::UseTree::Group`.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum RefinedUseTree {
     Path(RefinedUsePath),
@@ -283,6 +296,11 @@ pub(crate) enum RefinedUseTree {
     Glob,
 }
 
+/// Refined type for `use` declarations that do not consider group paths.
+///
+/// This exists only for the purpose of refining [`syn::UseTree`], which is used
+/// within [`syn::ItemUse`]. See type [`RefinedUseTree`] for the actual
+/// refinement and details on the purpose of this type.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RefinedUse {
     is_public: bool,
@@ -314,6 +332,15 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
     }
 }
 
+/// Stateful pair carried through resolution passes.
+///
+/// Each `use` declaration requires access to either one of (1) the module where
+/// it was sourced from, or (2) the crate root's subtree, or (3) any one
+/// ascendant or descendant module of the module where it was sourced from.
+///
+/// Points (2) and (3) require having access to the entire crate's module tree.
+/// Some ancestor item is looked up by the parent path to the item being
+/// searched in respect of. Point (1) is satisfied by the `subtree` field.
 #[derive(Debug, Clone)]
 struct PassPair {
     subtree: Module,
@@ -346,6 +373,11 @@ fn resolve_all(root: Module) -> Module {
     m
 }
 
+/// Marks a `use` declaration and a set of items as resolved or unresolved.
+///
+/// This is the product of an attempt at resolving a given `use` declaration. It
+/// is then used in [`merge_module`] to merge whichever `use` declarations
+/// resolved to a set of items back into the module they were sourced from.
 #[derive(Debug, Clone)]
 enum Resolution {
     Resolved {
@@ -438,6 +470,7 @@ fn resolve_one(
 ///
 /// 1. Either the `use` declaration matches a specific module in the stateful
 ///    pair, or
+///
 /// 2. the `use` declaration is assumed to be unresolved in this resolution
 ///    pass.
 ///
@@ -457,12 +490,12 @@ fn resolve_one(
 /// to resolve ancestor paths (when `super` is found) and absolute paths (when
 /// `crate` is found.)
 fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> Resolution {
-    macro_rules! single_module {
-        ($it:expr) => {
+    macro_rules! single_item {
+        ($field:ident: $it:expr) => {
             return Resolution::Resolved {
                 original_use: original_use.clone(),
                 items: FfiItems {
-                    modules: vec![$it],
+                    $field: vec![$it],
                     ..Default::default()
                 },
             }
@@ -470,17 +503,6 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
     }
     match &r#use.tree {
         RefinedUseTree::Name(syn::UseName { ident }) => {
-            macro_rules! single_item {
-                ($field:ident: $it:ident) => {{
-                    Resolution::Resolved {
-                        original_use: original_use.clone(),
-                        items: FfiItems {
-                            $field: vec![$it],
-                            ..Default::default()
-                        },
-                    }
-                }};
-            }
             // [NOTE]: self may not appear as the name basecase of a well-formed
             // path. And yet it is still considered here. That is because of
             // path normalization. self may appear as part of a tail group in a
@@ -492,7 +514,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
             // declaration under no circumstances, so that case is not
             // considered.
             if is_self(ident.clone()) {
-                single_module!(state.subtree.clone());
+                single_item!(modules: state.subtree.clone());
             } else if is_super(ident.clone()) {
                 let parent_path = get_parent_path(state.subtree.clone());
                 let Some(parent) = get_module(parent_path.clone(), state.whole_crate.clone())
@@ -509,7 +531,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
                          considered malformed input."
                     );
                 };
-                single_module!(parent.clone());
+                single_item!(modules: parent.clone());
             }
             match state.subtree.items.search(ident.clone()) {
                 Some(GenericItem::Type(t)) => single_item!(aliases: t),
@@ -527,7 +549,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
             items: state.subtree.items,
         },
         RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => {
-            macro_rules! single_item {
+            macro_rules! renamed_single_item {
                 ($field:ident , $it:tt : $ty:tt) => {{
                     let mut new_segments = $it.path.segments.clone();
                     new_segments.pop();
@@ -544,13 +566,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
                         path: new_path,
                         ..$it
                     };
-                    Resolution::Resolved {
-                        original_use,
-                        items: FfiItems {
-                            $field: vec![new_item],
-                            ..Default::default()
-                        },
-                    }
+                    single_item!($field: new_item);
                 }};
             }
             let renamer = |m: Module| {
@@ -582,7 +598,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
                 })
             };
             if is_self(ident.clone()) {
-                single_module!(renamer(state.subtree.clone()));
+                single_item!(modules: renamer(state.subtree.clone()));
             } else if is_super(ident.clone()) {
                 let parent_path = get_parent_path(state.subtree.clone());
                 let Some(parent) = get_module(parent_path.clone(), state.whole_crate.clone())
@@ -592,18 +608,18 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
                          applies here."
                     );
                 };
-                single_module!(renamer(parent.clone()));
+                single_item!(modules: renamer(parent.clone()));
             } else if is_crate(ident.clone()) {
-                single_module!(renamer(state.whole_crate.clone()));
+                single_item!(modules: renamer(state.whole_crate.clone()));
             }
             match state.subtree.items.search(ident.clone()) {
-                Some(GenericItem::Module(m)) => single_module!(renamer(m)),
-                Some(GenericItem::Type(t)) => single_item!(aliases, t: Type),
-                Some(GenericItem::Struct(s)) => single_item!(structs, s: Struct),
-                Some(GenericItem::Union(u)) => single_item!(unions, u: Union),
-                Some(GenericItem::Const(c)) => single_item!(constants, c: Const),
-                Some(GenericItem::Fn(f)) => single_item!(foreign_functions, f: Fn),
-                Some(GenericItem::Static(s)) => single_item!(foreign_statics, s: Static),
+                Some(GenericItem::Module(m)) => single_item!(modules: renamer(m)),
+                Some(GenericItem::Type(t)) => renamed_single_item!(aliases, t: Type),
+                Some(GenericItem::Struct(s)) => renamed_single_item!(structs, s: Struct),
+                Some(GenericItem::Union(u)) => renamed_single_item!(unions, u: Union),
+                Some(GenericItem::Const(c)) => renamed_single_item!(constants, c: Const),
+                Some(GenericItem::Fn(f)) => renamed_single_item!(foreign_functions, f: Fn),
+                Some(GenericItem::Static(s)) => renamed_single_item!(foreign_statics, s: Static),
                 None => Resolution::Unresolved,
             }
         }
