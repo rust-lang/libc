@@ -1,3 +1,6 @@
+use syn::Path;
+use syn::punctuated::Punctuated;
+
 use crate::BoxStr;
 use crate::ffi_items::FfiItems;
 
@@ -7,21 +10,8 @@ use crate::ffi_items::FfiItems;
 pub struct Module {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
-    pub(crate) path: syn::Path,
+    pub(crate) path: Path,
     pub(crate) items: FfiItems,
-}
-
-// [NOTE]: a custom implementation is used because FfiItems does not have a
-// PartialEq implementation. It is best if it does not have one. The
-// current_module field in FfiItems is not meant for use post-parse-time. It
-// would likely be unintuitive to have its PartialEq not take into account.
-impl PartialEq for Module {
-    fn eq(&self, other: &Self) -> bool {
-        self.public == other.public
-            && self.cached_path == other.cached_path
-            && self.path == other.path
-            && self.items.custom_eq(&other.items)
-    }
 }
 
 impl Module {
@@ -42,5 +32,32 @@ impl Module {
             unreachable!("all parsed items have at least one element in their path")
         };
         ident.to_string()
+    }
+}
+
+impl Default for Module {
+    fn default() -> Self {
+        Self {
+            public: bool::default(),
+            cached_path: String::new().into_boxed_str(),
+            path: Path {
+                leading_colon: None,
+                segments: Punctuated::new(),
+            },
+            items: FfiItems::default(),
+        }
+    }
+}
+
+// [NOTE]: a custom implementation is used because FfiItems does not have a
+// PartialEq implementation. It is best if it does not have one. The
+// current_module field in FfiItems is not meant for use post-parse-time. It
+// would likely be unintuitive to have its PartialEq not take into account.
+impl PartialEq for Module {
+    fn eq(&self, other: &Self) -> bool {
+        self.public == other.public
+            && self.cached_path == other.cached_path
+            && self.path == other.path
+            && self.items.custom_eq(&other.items)
     }
 }

@@ -11,16 +11,23 @@ use std::ops::{
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::punctuated::Punctuated;
-use syn::token::Brace;
+use syn::token::{
+    Brace,
+    Mod,
+};
 use syn::visit::{
     self,
     Visit,
 };
 use syn::{
+    File,
     Ident,
+    ItemMod,
     Path,
     PathArguments,
     PathSegment,
+    UseName,
+    UseRename,
     UseTree,
     Visibility,
 };
@@ -126,31 +133,26 @@ impl FfiItems {
     /// instance is always left with no reexports that are not sourced from
     /// third-party crates.
     pub(crate) fn visit_file(&mut self, file: &syn::File) {
-        let syn::File {
+        let File {
             attrs,
             items: mod_items,
             ..
         } = file;
-        let file_mod = syn::ItemMod {
+        let file_mod = ItemMod {
             attrs: attrs.clone(),
             vis: syn::parse_quote! { pub },
             unsafety: None,
-            mod_token: syn::token::Mod::default(),
+            mod_token: Mod::default(),
             ident: Ident::new("__ctest_root_mod", Span::call_site()),
             content: Some((Brace::default(), mod_items.clone())),
             semi: None,
         };
         self.visit_item_mod(&file_mod);
         let root_module = Module {
-            public: bool::default(),
-            cached_path: String::new().into_boxed_str(),
-            path: Path {
-                leading_colon: None,
-                segments: Punctuated::new(),
-            },
             items: self.clone(),
+            ..Default::default()
         };
-        *self = resolve_all(root_module).items;
+        *self = resolve_all(root_module.clone()).items.clone();
     }
 
     /// Performs a comparison for equality between FfiItems without taking field
@@ -355,7 +357,7 @@ struct PassPair {
 /// termination.
 fn resolve_all(root: Module) -> Module {
     let (ControlFlow::Break(m) | ControlFlow::Continue(m)) =
-        iter::repeat(()).try_fold(root, |root, _| {
+        iter::repeat(()).try_fold(root.clone(), |root, _| {
             // [NOTE]: it holds that a pass over the crate root will yield the
             // crate root as its subtree. It is thus safe to ignore the
             // whole-crate module tree. They are the same at this point.
@@ -373,17 +375,14 @@ fn resolve_all(root: Module) -> Module {
     m
 }
 
-/// Marks a `use` declaration and a set of items as resolved or unresolved.
+/// Represents a resolved or unresolved `use` declaration.
 ///
-/// This is the product of an attempt at resolving a given `use` declaration. It
-/// is then used in [`merge_module`] to merge whichever `use` declarations
-/// resolved to a set of items back into the module they were sourced from.
+/// The state of resolution may change across resolution passes. It is used in
+/// [`merge_module`] to merge whichever `use` declarations resolved to a set of
+/// items back into the module they were sourced from.
 #[derive(Debug, Clone)]
 enum Resolution {
-    Resolved {
-        original_use: RefinedUse,
-        items: FfiItems,
-    },
+    Resolved(FfiItems),
     Unresolved,
 }
 
@@ -453,7 +452,6 @@ fn resolve_one(
         .into_iter()
         .map(|u| {
             resolve_use(
-                u.clone(),
                 u,
                 PassPair {
                     subtree: root.clone(),
@@ -489,20 +487,17 @@ fn resolve_one(
 /// The other element of the pair is the whole-crate module tree. That is used
 /// to resolve ancestor paths (when `super` is found) and absolute paths (when
 /// `crate` is found.)
-fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> Resolution {
+fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     macro_rules! single_item {
         ($field:ident: $it:expr) => {
-            return Resolution::Resolved {
-                original_use: original_use.clone(),
-                items: FfiItems {
-                    $field: vec![$it],
-                    ..Default::default()
-                },
-            }
+            return Resolution::Resolved(FfiItems {
+                $field: vec![$it],
+                ..Default::default()
+            })
         };
     }
     match &r#use.tree {
-        RefinedUseTree::Name(syn::UseName { ident }) => {
+        RefinedUseTree::Name(UseName { ident }) => {
             // [NOTE]: self may not appear as the name basecase of a well-formed
             // path. And yet it is still considered here. That is because of
             // path normalization. self may appear as part of a tail group in a
@@ -544,11 +539,8 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
                 None => Resolution::Unresolved,
             }
         }
-        RefinedUseTree::Glob => Resolution::Resolved {
-            original_use,
-            items: state.subtree.items,
-        },
-        RefinedUseTree::Rename(syn::UseRename { ident, rename, .. }) => {
+        RefinedUseTree::Glob => Resolution::Resolved(state.subtree.items),
+        RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
             macro_rules! renamed_single_item {
                 ($field:ident , $it:tt : $ty:tt) => {{
                     let mut new_segments = $it.path.segments.clone();
@@ -651,13 +643,11 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
                     ),
                 }
             };
-            let new_use = RefinedUse {
-                is_public: r#use.is_public.clone(),
-                tree: *tree.clone(),
-            };
             resolve_use(
-                original_use,
-                new_use,
+                RefinedUse {
+                    is_public: r#use.is_public.clone(),
+                    tree: *tree.clone(),
+                },
                 PassPair {
                     subtree: new_subtree.clone(),
                     whole_crate: state.whole_crate.clone(),
@@ -669,7 +659,7 @@ fn resolve_use(original_use: RefinedUse, r#use: RefinedUse, state: PassPair) -> 
 
 /// Attempts to find a given module path (`target`) within a module subtree
 /// (`root`).
-fn get_module(target: syn::Path, root: Module) -> Option<Module> {
+fn get_module(target: Path, root: Module) -> Option<Module> {
     if root.path == target {
         return root.into();
     }
@@ -718,7 +708,7 @@ fn get_parent_path(root: Module) -> syn::Path {
             p.push(s);
             p
         });
-    syn::Path {
+    Path {
         leading_colon: None,
         segments: new_segments,
     }
@@ -771,7 +761,7 @@ fn update_tree(src: Module, dst: Module) -> Module {
 ///
 /// The subtree root module itself also gets the transform applied to its path.
 /// The `cached_path` field of each item is updated accordingly.
-fn manipulate_path(root: Module, f: impl ops::Fn(syn::Path) -> syn::Path + Clone) -> Module {
+fn manipulate_path(root: Module, f: impl ops::Fn(syn::Path) -> Path + Clone) -> Module {
     let new_root_path = f(root.path.clone());
     let new_root_cache = path_to_string(&new_root_path);
     macro_rules! map_items {
@@ -836,30 +826,23 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
     let new_path = dst.path.clone();
     src.into_iter()
         .filter_map(|r| {
-            if let Resolution::Resolved {
-                original_use,
-                items,
-            } = r
-            {
-                Some((original_use, items))
+            if let Resolution::Resolved(items) = r {
+                Some(items)
             } else {
                 None
             }
         })
         .map(
-            |(
-                ou,
-                FfiItems {
-                    aliases,
-                    structs,
-                    unions,
-                    constants,
-                    foreign_functions,
-                    foreign_statics,
-                    modules,
-                    ..
-                },
-            )| {
+            |FfiItems {
+                 aliases,
+                 structs,
+                 unions,
+                 constants,
+                 foreign_functions,
+                 foreign_statics,
+                 modules,
+                 ..
+             }| {
                 // [NOTE]: this sequence must have at least one segment, because
                 // the invariant assumed in the closure for path manipulation of
                 // the items to merge assumes so. This is true for all items to
@@ -923,38 +906,25 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                         })
                     })
                     .collect();
-                (
-                    ou,
-                    FfiItems {
-                        modules: new_nested_modules,
-                        ..new_module.items
-                    },
-                )
+                FfiItems {
+                    modules: new_nested_modules,
+                    ..new_module.items
+                }
             },
         )
         .fold(
             dst,
             |mut dst,
-             (
-                ou,
-                FfiItems {
-                    aliases,
-                    structs,
-                    unions,
-                    constants,
-                    foreign_functions,
-                    foreign_statics,
-                    modules,
-                    ..
-                },
-            )| {
-                let Some(idx) = dst.items.uses.iter().position(|u| *u == ou) else {
-                    unreachable!(
-                        "the use statement was sourced from the module which \
-                         this fold is using as seed value"
-                    )
-                };
-                dst.items.uses.swap_remove(idx);
+             FfiItems {
+                 aliases,
+                 structs,
+                 unions,
+                 constants,
+                 foreign_functions,
+                 foreign_statics,
+                 modules,
+                 ..
+             }| {
                 dst.items.aliases.extend_from_slice(&aliases);
                 dst.items.structs.extend_from_slice(&structs);
                 dst.items.unions.extend_from_slice(&unions);

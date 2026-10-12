@@ -340,4 +340,26 @@ somewhere in the crate graph. That is the main use of the proposition.
 This could be generalized into implying a coproduct. One injection would
 correspond with an injective const functor. The other would correspond
 with the identity functor. The assumption that the module really does
-exist can be left to call-site.
+exist can be left to call-site. The proof for all propositions in the
+revised algorithm seems complete. To humanly verify everything in it,
+let use review the workings on the revised algorithm. The algorithm is
+based off of the idea that repeated resolution of the module tree will
+eventually converge to a snapshot of the tree that is unchanged after
+performing another resolution pass. To that extent, the algorithm driver
+consists solely of a use of the resolution proposition, and a recursive
+comparison of the resulting tree with the pre-pass tree. If such
+comparison happens to imply boolean truth, then one may safely assume
+that another pass will not reveal further information. Termination thus
+follows. Now onto the resolution proposition. The proof for this one is
+ever so slightly more intricate; It really only has more steps. The
+assumptions consist solely of a pair of a module subtree and of the
+whole-crate module tree. The former is the one from which use
+declarations are meant to be sourced from. The latter serves in both
+potentially resolving some of those use declarations, and in updating
+itself with the result of those resolutions. Such update only takes
+place after the target module is itself updated. This one's update is
+the merging proposition. That takes in the module where the use
+declarations were sourced from, and the potentially empty set of
+resolution items yield from the single-module resolution proposition.
+Let that on hold for a moment. The proof for the pass proposition has
+not been explained in full.
