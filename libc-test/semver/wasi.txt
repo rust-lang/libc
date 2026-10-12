@@ -157,4 +157,6 @@ _SC_XOPEN_XPG2
 _SC_XOPEN_XPG3
 _SC_XOPEN_XPG4
 fd_set
+pthread_condattr_getclock
+pthread_condattr_setclock
 select
