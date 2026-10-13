@@ -4405,6 +4405,36 @@ pub const SSTOP: u32 = 4;
 /// Awaiting collection by parent.
 pub const SZOMB: u32 = 5;
 
+// Flags kept in `extern_proc::p_flag`.
+pub const P_ADVLOCK: c_int = 0x00000001;
+pub const P_CONTROLT: c_int = 0x00000002;
+pub const P_LP64: c_int = 0x00000004;
+pub const P_NOCLDSTOP: c_int = 0x00000008;
+pub const P_PPWAIT: c_int = 0x00000010;
+pub const P_PROFIL: c_int = 0x00000020;
+pub const P_SELECT: c_int = 0x00000040;
+pub const P_CONTINUED: c_int = 0x00000080;
+pub const P_SUGID: c_int = 0x00000100;
+pub const P_SYSTEM: c_int = 0x00000200;
+pub const P_TIMEOUT: c_int = 0x00000400;
+pub const P_TRACED: c_int = 0x00000800;
+pub const P_DISABLE_ASLR: c_int = 0x00001000;
+pub const P_WEXIT: c_int = 0x00002000;
+pub const P_EXEC: c_int = 0x00004000;
+pub const P_OWEUPC: c_int = 0x00008000;
+pub const P_AFFINITY: c_int = 0x00010000;
+pub const P_TRANSLATED: c_int = 0x00020000;
+pub const P_DELAYIDLESLEEP: c_int = 0x00040000;
+pub const P_CHECKOPENEVT: c_int = 0x00080000;
+pub const P_DEPENDENCY_CAPABLE: c_int = 0x00100000;
+pub const P_REBOOT: c_int = 0x00200000;
+pub const P_THCWD: c_int = 0x01000000;
+pub const P_ADOPTPERSONA: c_int = 0x04000000;
+pub const P_NOSHLIB: c_int = 0x10000000;
+pub const P_FORCEQUOTA: c_int = 0x20000000;
+pub const P_NOCLDWAIT: c_int = 0x40000000;
+pub const P_NOREMOTEHANG: c_int = u32_cast_int(0x80000000);
+
 // sys/vsock.h
 pub const VMADDR_CID_ANY: c_uint = 0xFFFFFFFF;
 pub const VMADDR_CID_HYPERVISOR: c_uint = 0;
