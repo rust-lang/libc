@@ -479,4 +479,116 @@ declaration with a trailing self keyword that is not part of a nested
 use declaration (of course, within a group.) Long story short; We need
 to handle both the self case and the super case in the name basecase of
 the single-use resolution proposition even though these would get
-flagged as malformed input by the compiler.
+considered malformed input by the compiler. Let's get going then. Let us
+first discuss which of the keywords or the case of a regular identifier
+should come first. The former is fairly simple to check for as the
+Display implementation of syn's Ident lets you pry into the "raw" token
+that was parsed. That only leaves the latter case, which happens to also
+be fairly straightforward. A use declaration refers to some name in the
+module tree, and for all we know in this instance, that name must be
+found in the current subtree of the stateful pair we keep across passes.
+If the original use declaration was actually made out of a larger
+fraction of path segments, it is not our responsibility (nor do we even
+have the information) to track whether the stateful subtree is, indeed,
+the module where we'll find the identifier in question. We decide to
+handle first the case of keywords, though this would not matter much;
+Rust raw identifiers do not allow any one of the above three keywords to
+be used for items. The case of the self keyword means the current
+stateful subtree ought be implied as-is. The case of super implies a
+lookup of the parent module is in order. That is where two other
+anciliary propositions come in; One to determine the parent path to some
+module, and another one to search for a module path provided a module
+subtree. The former's proof is fairly straightforward; A module path (or
+any item's path, for that matter) is made out of segments, the last of
+which is the module's identifier. It thus holds that the parent path is
+the path resulting of destructuring those segments and discarding the
+last one. Functional programming languages have an operation exactly for
+this, but we have to make do with an iterator that takes the first n - 1
+segments of the path, where n is the number of segments in the path. Of
+note is the fact that the proposition will yield a path with no segments
+if the assumed module happens to live in the crate root itself. That is
+because absolute paths, which are the ones stored in each parsed item,
+are crate-unprepended. This means all items that appear in the crate
+root have single-segment absolute paths, instead of two-segment paths
+with crate prepended to them. This has thus far not caused any issues,
+so it has been left untouched from initial work on the whole ctest
+extension (back when the parsing facilities were extended.) The implied
+path of this proposition then becomes the first assumption of the
+module-fetching proposition. Its second assumption is the subtree in
+which to search for that path. The proof is, again, fairly simple; The
+path is matched against the passed subtree. If it matches, then we have
+an answer. Otherwise, we lazily seek through the list of child modules
+in search of the target path by inductively using the same proposition.
+Much like the tree-update proposition's proof, whole-crate traversal
+will only take place if either (1) the target path happens to match the
+very last module in a left-to-right DFS, or (2) the target path matches
+that of no module in the assumed subtree. This latter case merits some
+further discussion. We have a notion that this proposition only ever
+gets used by providing as subtree in the very first call the whole-crate
+module tree. The search performed in the proof could end up yielding an
+const functor injective to the unit, which would mean the search failed
+to find a module with that path. We could unwrap the coproduct holding
+the injection with the above const functor, but that's just assuming
+risks in the proposition's proof that are best left to call-site. So
+this proposition actually implies a coproduct with two injections; An
+identity functor, and an injective const functor. Now back to the
+single-use resolution proposition. This had been left in the super case,
+where we had been getting ready a lookup of the parent module to the
+current stateful subtree. That used the two propositions just reviewed
+to first fetch the parent path of the current stateful module, such that
+it could attempt to find that path in the whole-crate module tree. That
+just about makes up the keywords subcase in the name basecase of the
+overarching proposition. The next subcase is that of regular
+identifiers; These need to be looked up in the stateful subtree. But
+that's about it. The lookup uses the search proposition associated to an
+item container, which itself is fairly straightforward. It first gathers
+into a single container all items that are not use declarations, to then
+sort that container, perform a binary search on it, and then index the
+container with all gathered items. This smells like a performance
+bottleneck. It may be a good idea to just perform a lazy linear-cost
+traversal of the container with all gathered items, as we end up
+incurring unnecessary costs for sorting and searching. That seems to get
+the job done just fine. It is also more obvious what the proof is doing
+at first glance. Now back at the single-use resolution proposition. We
+had left this one at the point where the matched identifier was being
+looked up as an item in the stateful subtree. If no item's identifier
+matched the passed identifier, then we have no further way of attempting
+to resolve the use declaration; It's unresolved. Otherwise, the matched
+item (resulting from the look up) is packed in an item container. It may
+now be a good idea to make a quick review of the basecases considered in
+the single-use resolution proposition's proof. There are a total of
+three; One is the single-name basecase we just explained above, another
+one is the glob basecase, and the other one is the rename basecase. The
+only recursive path through the proof is the path case, where the tail
+end of the path makes up another use declaration to munch through. The
+glob basecase is the simplest of them all; The item container within the
+stateful subtree ought be returned as-is. Note that the item container
+packed with resolved resolution items will be deconstructed in the
+merging proposition's proof, and each of its fields will extend the same
+field in the item container of the module into which to merge. A glob
+import brings into scope all items from the module making up the head
+segment of a path, so there is need to return the items of the stateful
+subtree and not an item container wrapping it. This contrasts with a
+path that refers to a specific module or set of modules, which must
+itself be wrapped in an item container, such that items of the module(s)
+themselves do not get merged, but rather the module in its entirety. The
+next and last basecase in the proof is the rename case. This is
+essentially the same as the name case, except we have to rewrite a bunch
+of item paths. Due to their similarity, we shall skip over the entire
+details of the proof, and only discuss the details of renaming. These
+are fairly simple to explain for non-module items, but will require
+introducing an anciliary proposition for module items. The former only
+require replacing the last segment of their paths with the renamed
+identifier. Modules, on the other hand, need to take into consideration
+the subtree rooted in them. A module's path dictates the path of both
+its items and the child modules contained within it. The child modules
+and its item are also affected by the path of the parent module. This
+goes on and on until we hit the leaf modules. Renaming a module thus
+requires both changing its path and changing the path of all items in
+the subtree rooted at that module. This is also used when rewriting item
+paths in the merging proposition's proof, so it was thought best to
+abstract the whole thing into a path manipulation proposition. This is
+the same as that devised for the first revision of the algorithm, so we
+won't go into the details of the proposition's proof. It's best if we
+focus on the closure that is passed to the proposition in the rename
+case of the single-use resolution proposition.

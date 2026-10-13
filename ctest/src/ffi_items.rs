@@ -195,8 +195,7 @@ impl FfiItems {
             .clone()
             .into_iter()
             .map(GenericItem::Static);
-        let mut items: Vec<_> = self
-            .modules
+        self.modules
             .clone()
             .into_iter()
             .map(GenericItem::Module)
@@ -206,21 +205,24 @@ impl FfiItems {
             .chain(unions)
             .chain(structs)
             .chain(aliases)
-            .collect();
-        let key_fn = |it: &GenericItem| match it {
-            GenericItem::Type(t) => t.ident(),
-            GenericItem::Struct(s) => s.ident(),
-            GenericItem::Union(u) => u.ident(),
-            GenericItem::Const(c) => c.ident(),
-            GenericItem::Fn(f) => f.ident(),
-            GenericItem::Static(s) => s.ident(),
-            GenericItem::Module(m) => m.ident(),
-        };
-        items.sort_unstable_by_key(key_fn);
-        let Ok(idx) = items.binary_search_by_key(&ident.to_string(), key_fn) else {
-            return None;
-        };
-        items.swap_remove(idx).into()
+            .find(|it| {
+                macro_rules! cmp {
+                    ($($var:tt),+ $(,)?) => {
+                        match it {$(
+                            GenericItem::$var(it) => it.ident() == ident.to_string(),
+                        )+}
+                    };
+                }
+                cmp! {
+                    Type,
+                    Struct,
+                    Union,
+                    Const,
+                    Fn,
+                    Static,
+                    Module,
+                }
+            })
     }
 
     /// Deduplicates the items in an item container by their path. Items of
@@ -544,7 +546,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 None => Resolution::Unresolved,
             }
         }
-        RefinedUseTree::Glob => Resolution::Resolved(state.subtree.items),
+        RefinedUseTree::Glob => Resolution::Resolved(state.subtree.items.clone()),
         RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
             macro_rules! renamed_single_item {
                 ($field:ident , $it:tt : $ty:tt) => {{
@@ -663,24 +665,16 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
 }
 
 /// Attempts to find a given module path (`target`) within a module subtree
-/// (`root`).
+/// (`root`.)
 fn get_module(target: Path, root: Module) -> Option<Module> {
-    if root.path == target {
-        return root.into();
+    if root.path.clone() == target.clone() {
+        return root.clone().into();
     }
-    let (ControlFlow::Break(m) | ControlFlow::Continue(m)) = root
-        .items
+    root.items
         .modules
         .clone()
         .into_iter()
-        .try_fold(None, |_, m| {
-            if let m @ Some(_) = get_module(target.clone(), m) {
-                ControlFlow::Break(m)
-            } else {
-                ControlFlow::Continue(None)
-            }
-        });
-    m
+        .find_map(|m| get_module(target.clone(), m.clone()))
 }
 
 /// Fetches the parent path to a given module.
@@ -715,7 +709,7 @@ fn get_parent_path(root: Module) -> syn::Path {
         });
     Path {
         leading_colon: None,
-        segments: new_segments,
+        segments: new_segments.clone(),
     }
 }
 
