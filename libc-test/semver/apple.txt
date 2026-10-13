@@ -182,6 +182,7 @@ CMSG_LEN
 CMSG_NXTHDR
 CMSG_SPACE
 CODESET
+COMAPT_MAXLOGNAME
 CONNECT_DATA_AUTHENTICATED
 CONNECT_DATA_IDEMPOTENT
 CONNECT_RESUME_ON_READ_WRITE
@@ -320,6 +321,8 @@ EOF
 EOWNERDEAD
 EPROCLIM
 EPROCUNAVAIL
+EPROC_CTTY
+EPROC_SLEADER
 EPROGMISMATCH
 EPROGUNAVAIL
 EPWROFF
@@ -1607,6 +1610,7 @@ VT1
 VTDLY
 VWERASE
 WEXITED
+WMESGLEN
 WNOWAIT
 WSTOPPED
 XATTR_CREATE
@@ -1788,6 +1792,8 @@ __PTHREAD_RWLOCKATTR_SIZE__
 __PTHREAD_RWLOCK_SIZE__
 __darwin_mcontext64
 __error
+_pcred
+_ucred
 abs
 acct
 aio_cancel
@@ -1815,6 +1821,7 @@ backtrace_symbols_fd
 basename
 boolean_t
 bsearch
+caddr_t
 chflags
 chroot
 clearerr
@@ -1845,6 +1852,8 @@ endgrent
 endpwent
 endservent
 endutxent
+eproc
+extern_proc
 faccessat
 fchdir
 fchflags
@@ -1852,6 +1861,7 @@ fclonefileat
 fdopendir
 fgetattrlist
 fgetxattr
+fixpt_t
 flistxattr
 fmemopen
 fmount
@@ -1939,6 +1949,7 @@ kevent64
 kevent64_s
 key_t
 killpg
+kinfo_proc
 kqueue
 labs
 lchflags
@@ -2130,6 +2141,7 @@ sched_param
 seekdir
 segment_command
 segment_command_64
+segsz_t
 sem_close
 sem_open
 sem_unlink
@@ -2226,6 +2238,7 @@ vm_inherit_t
 vm_map_t
 vm_prot_t
 vm_size_t
+vmspace
 vol_attributes_attr_t
 vol_capabilities_attr_t
 vol_capabilities_set_t

@@ -340,8 +340,17 @@ fn test_apple(t: &Target) {
     });
 
     cfg.skip_struct_field_type(move |struct_, field| {
-        // The type of `bfl_u` is an anonymous union
-        (struct_.ident(), field.ident()) == ("bpf_dltlist", "bfl_u")
+        match (struct_.ident(), field.ident()) {
+            // The type of `bfl_u` is an anonymous union
+            ("bpf_dltlist", "bfl_u") => true,
+            // Anonymous union
+            ("extern_proc", "p_un") => true,
+            // Pointers to kernel structs that are not bound, declared as `*mut c_void`
+            ("extern_proc", "p_sigacts" | "p_tracep" | "p_textvp" | "p_pgrp" | "p_addr") => true,
+            ("eproc", "e_paddr" | "e_sess" | "e_tsess") => true,
+            ("_pcred", "pc_ucred") => true,
+            _ => false,
+        }
     });
 
     cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");

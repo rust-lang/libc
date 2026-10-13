@@ -44,6 +44,9 @@ pub type vm_size_t = crate::uintptr_t;
 pub type vm_address_t = vm_offset_t;
 pub type quad_t = i64;
 pub type u_quad_t = u64;
+pub type caddr_t = *mut c_char;
+pub type segsz_t = i32;
+pub type fixpt_t = u32;
 
 pub type posix_spawnattr_t = *mut c_void;
 pub type posix_spawn_file_actions_t = *mut c_void;
@@ -713,6 +716,74 @@ s2! {
         pub cr_uid: crate::uid_t,
         pub cr_ngroups: c_short,
         pub cr_groups: [crate::gid_t; 16],
+    }
+
+    // sys/vm.h
+    /// The user-space definition of `struct vmspace`, as embedded in [`eproc`].
+    pub struct vmspace {
+        dummy: Padding<i32>,
+        dummy2: Padding<caddr_t>,
+        dummy3: Padding<[i32; 5]>,
+        dummy4: Padding<[caddr_t; 3]>,
+    }
+
+    // sys/sysctl.h
+    pub struct _pcred {
+        #[custom_default([0; 72])]
+        pub pc_lock: [c_char; 72],
+        // This is normally "struct ucred".
+        #[custom_default(ptr::null_mut())]
+        pub pc_ucred: *mut c_void,
+        pub p_ruid: crate::uid_t,
+        pub p_svuid: crate::uid_t,
+        pub p_rgid: crate::gid_t,
+        pub p_svgid: crate::gid_t,
+        pub p_refcnt: c_int,
+    }
+
+    pub struct _ucred {
+        pub cr_ref: i32,
+        pub cr_uid: crate::uid_t,
+        pub cr_ngroups: c_short,
+        pub cr_groups: [crate::gid_t; 16],
+    }
+
+    /// The `kp_eproc` member of [`kinfo_proc`].
+    pub struct eproc {
+        // This is normally "struct proc".
+        #[custom_default(ptr::null_mut())]
+        pub e_paddr: *mut c_void,
+        // This is normally "struct session".
+        #[custom_default(ptr::null_mut())]
+        pub e_sess: *mut c_void,
+        pub e_pcred: _pcred,
+        pub e_ucred: _ucred,
+        pub e_vm: vmspace,
+        pub e_ppid: crate::pid_t,
+        pub e_pgid: crate::pid_t,
+        pub e_jobc: c_short,
+        pub e_tdev: dev_t,
+        pub e_tpgid: crate::pid_t,
+        // This is normally "struct session".
+        #[custom_default(ptr::null_mut())]
+        pub e_tsess: *mut c_void,
+        pub e_wmesg: [c_char; WMESGLEN + 1],
+        pub e_xsize: segsz_t,
+        pub e_xrssize: c_short,
+        pub e_xccount: c_short,
+        pub e_xswrss: c_short,
+        pub e_flag: i32,
+        pub e_login: [c_char; COMAPT_MAXLOGNAME],
+        e_spare: Padding<[i32; 4]>,
+    }
+
+    pub struct __c_anonymous_p_st1 {
+        // This is normally "struct proc".
+        #[custom_default(ptr::null_mut())]
+        pub __p_forw: *mut c_void,
+        // This is normally "struct proc".
+        #[custom_default(ptr::null_mut())]
+        pub __p_back: *mut c_void,
     }
 
     #[exhaustive] // FIXME(exhaustive): review for 1.0
@@ -1803,6 +1874,82 @@ s_no_extra_traits2! {
     pub union __c_anonymous_ifc_ifcu {
         pub ifcu_buf: *mut c_char,
         pub ifcu_req: *mut ifreq,
+    }
+
+    // sys/proc.h
+    #[unsafe(union_default_via_zeroed)]
+    pub union __c_anonymous_p_un {
+        pub p_st1: __c_anonymous_p_st1,
+        pub __p_starttime: crate::timeval,
+    }
+
+    /// The process information exported by the `KERN_PROC` sysctls, as the `kp_proc` member of
+    /// [`kinfo_proc`].
+    pub struct extern_proc {
+        pub p_un: __c_anonymous_p_un,
+        #[custom_default(ptr::null_mut())]
+        pub p_vmspace: *mut vmspace,
+        // This is normally "struct sigacts".
+        #[custom_default(ptr::null_mut())]
+        pub p_sigacts: *mut c_void,
+        pub p_flag: c_int,
+        pub p_stat: c_char,
+        pub p_pid: crate::pid_t,
+        pub p_oppid: crate::pid_t,
+        pub p_dupfd: c_int,
+        #[custom_default(ptr::null_mut())]
+        pub user_stack: caddr_t,
+        #[custom_default(ptr::null_mut())]
+        pub exit_thread: *mut c_void,
+        pub p_debugger: c_int,
+        pub sigwait: crate::boolean_t,
+        pub p_estcpu: c_uint,
+        pub p_cpticks: c_int,
+        pub p_pctcpu: fixpt_t,
+        #[custom_default(ptr::null_mut())]
+        pub p_wchan: *mut c_void,
+        #[custom_default(ptr::null_mut())]
+        pub p_wmesg: *mut c_char,
+        pub p_swtime: c_uint,
+        pub p_slptime: c_uint,
+        pub p_realtimer: crate::itimerval,
+        pub p_rtime: crate::timeval,
+        pub p_uticks: u_quad_t,
+        pub p_sticks: u_quad_t,
+        pub p_iticks: u_quad_t,
+        pub p_traceflag: c_int,
+        // This is normally "struct vnode".
+        #[custom_default(ptr::null_mut())]
+        pub p_tracep: *mut c_void,
+        pub p_siglist: c_int,
+        // This is normally "struct vnode".
+        #[custom_default(ptr::null_mut())]
+        pub p_textvp: *mut c_void,
+        pub p_holdcnt: c_int,
+        pub p_sigmask: sigset_t,
+        pub p_sigignore: sigset_t,
+        pub p_sigcatch: sigset_t,
+        pub p_priority: c_uchar,
+        pub p_usrpri: c_uchar,
+        pub p_nice: c_char,
+        pub p_comm: [c_char; MAXCOMLEN + 1],
+        // This is normally "struct pgrp".
+        #[custom_default(ptr::null_mut())]
+        pub p_pgrp: *mut c_void,
+        // This is normally "struct user".
+        #[custom_default(ptr::null_mut())]
+        pub p_addr: *mut c_void,
+        pub p_xstat: c_ushort,
+        pub p_acflag: c_ushort,
+        #[custom_default(ptr::null_mut())]
+        pub p_ru: *mut crate::rusage,
+    }
+
+    // sys/sysctl.h
+    /// An element of the array returned by the `KERN_PROC` sysctls.
+    pub struct kinfo_proc {
+        pub kp_proc: extern_proc,
+        pub kp_eproc: eproc,
     }
 }
 
@@ -3497,6 +3644,10 @@ pub const KERN_PROC_TTY: c_int = 4;
 pub const KERN_PROC_UID: c_int = 5;
 pub const KERN_PROC_RUID: c_int = 6;
 pub const KERN_PROC_LCID: c_int = 7;
+pub const WMESGLEN: usize = 7;
+pub const EPROC_CTTY: i32 = 0x01;
+pub const EPROC_SLEADER: i32 = 0x02;
+pub const COMAPT_MAXLOGNAME: usize = 12;
 pub const KERN_SUCCESS: c_int = 0;
 pub const KERN_INVALID_ADDRESS: c_int = 1;
 pub const KERN_PROTECTION_FAILURE: c_int = 2;
