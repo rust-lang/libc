@@ -362,4 +362,121 @@ the merging proposition. That takes in the module where the use
 declarations were sourced from, and the potentially empty set of
 resolution items yield from the single-module resolution proposition.
 Let that on hold for a moment. The proof for the pass proposition has
-not been explained in full.
+not been explained in full. This proposition will first recurse through
+all child modules of the module being currently processed. That should
+not be necessary to do first, but it is the more intricate part of the
+proposition's proof, so we're best off getting it out of the way sooner
+rather than later. The nifty part about this is that it is not enough to
+simply have each of the child modules recursively resolved; Recall each
+call provides proof of the stateful pair of a subtree and the
+whole-crate module tree. In other words, there is need for a fold over
+the list of child modules, such that the whole-crate part of the
+stateful pair is aware of the result of resolving each of the child
+modules. This is because, as mentioned above, each resolution pass ends
+with an "updating" of the whole-crate element of the stateful pair
+(though still a pure computation) carried across recursive calls to the
+resolution proposition. This fold is seeded by an unlabeled product
+comprising the stateful pair and the list of resolved child modules,
+which starts empty. For each child module, it first calls into the same
+resolution proposition as we are in right now. The input pair here is
+the whole-crate module tree as received from the fold and the child
+module in question, also as received from the fold. The list of child
+modules is then updated with the resolved subtree implied from that use
+of the single-pass proposition. The updated pair in the fold is then
+comprised of this updated subtree (the child module), and of the
+whole-crate module tree that was implied in the above use of the
+single-pass resolution proposition. And that just about makes the more
+complex part of the single-pass resolution proposition's proof. The next
+steps just build up a new module with the updated child modules, and
+feed that into the proposition that actually attempts to resolve the
+list of use declarations in a given module, alongside the snapshot of
+the whole-crate module tree obtained from the above fold. The
+proposition that attempts to resolve the use declarations in a given
+module is fairly simple in that it simply maps over all use declarations
+in the passed subtree. The map transform is the single-use declaration
+resolution proposition, which we shall explain later on. Now back to the
+single-pass resolution proposition's proof. Once the list of use
+declarations has yield a potentially non-empty list of resolution items,
+these are to be merged back into the module where the use declarations
+were sourced from. That is handed off to the merging proposition. This
+proposition goes through a two-stage pipeline; It first gets rid of the
+unresolved use declarations in the pass, and then goes through each of
+the resolved ones to extract the set of items that the use declaration
+referred to. These then get their paths modified such that they are
+correctly integrated into the module into which to merge, and then the
+resulting lists get appended to the existing lists of items in the
+module into which to merge. That merits some further discussion, but
+that will be left for later. Now back again to the single-pass
+resolution proposition. We now have an updated subtree, which makes up
+the first half of the stateful pair used across passes, and the only
+thing left is to update the whole-crate module tree. To achieve that, we
+delegate to another proposition that attempts to find some module a into
+another module b, and, if found, integrates module a into module b's
+subtree. Module a could very well be module b itself, in which case the
+proposition would imply module a anew. Otherwise, if module a is within
+some arbitrarily deep layer of the subtree rooted at module b, that one
+subtree will be found and replaced with module a (which itself is a
+subtree, of course.) The tree-update proposition's proof is fairly
+simple in nature. It checks if the path of module b matches that of
+module a and implies the latter if such is the case; Otherwise, it
+attempts to map over the list of child modules in module b, where the
+map transform is the same tree-update proposition. That either yields
+the module untouched (if its path did not match that of module a,) or
+otherwise yields module a. This is actually quite nice in that it will
+halt the search+replace as soon as the module in question is found.
+Granted, the whole list of child items will be processed, but that does
+not seem like a huge deal. There's likely more pressing performance
+bottlenecks. The updated whole-tree module tree, back up at the
+single-pass resolution proposition, is now ready, and with that, the
+proof is done. The implied stateful pair is comprised of the latest
+snapshot of the subtree being resolved, and of a snapshot of the
+whole-crate module tree that is aware of this updated subtree (for it
+has just been integrated into it.) The only core proposition that
+remains to be reviewed is the single-use declaration proposition. The
+proof for this one is, at least at a high-level, simple to grasp. It
+recursively munches through the use declaration's path. The ever so
+slightly more complex parts of it are concerned with handling cases such
+as a use declaration that introduces renamed items. Then there's also
+the three keywords Rust accepts in paths, which either (1) introduce an
+item by its crate-relative (absolute) path, or (2) introduce some
+ancestor module through a super-relative path, or (3) introduce some
+descendant module, if not themselves, through a self-relative path.
+Those will all be explained shortly. We shall start by deconstructing
+the proof for each of the cases that a use declaration may represent. A
+use declaration could be a single identifier. That identifier, as parsed
+by syn, could be one of the super, self or crate keywords, or could
+refer to some genuine identifier that was not a Rust keyword.
+Thankfully, syn parsing takes place after macro expansion, which itself
+takes place after a cargo-check run (or it should, in principle,) and
+use-declaration resolution takes place after syn parsing. This means we
+can trust all input is well-formed input; That also means we can discard
+the possibility for a single identifier use declaration to refer to the
+crate keyword. No matter whether the use declaration really was made out
+of a single segment, or if we got to this basecase after munching
+through some larger (multi-segment) use declaration, the crate keyword
+simply cannot appear at the tail end of a use declaration. The crate
+keyword, as per the Rust Reference, may only appear as part of the start
+of a use declaration's path. The path may not necessarily be a
+multi-path segment referring to some other item, so long as the use
+declaration introduces a renamed identifier for the crate keyword. That
+means the crate keyword can only logically appear as either the head of
+a longer path, or as a part of a renamed use declaration. That only
+leaves the self and super keywords for consideration. These need some
+further explanation, as the muncher proof must be ready for technically
+malformed input. According to the Rust Reference, the self keyword in a
+use declaration may only appear at the start or end of a use declaration
+not containing any groups. The latter case, much like with the crate
+keyword, requires the use declaration to introduce a renamed identifier
+for the self (current) module. The nifty part about this is that these
+rules apply to use declarations that do not contain a group at its tail
+end. If a use declaration does contain a group, the self keyword may
+appear bare (without renames) at some top-level, nested use declaration
+introduced in the group. The ctest-specific parsing logic performs
+"normalization" of paths in use declarations, such that if they contain
+some group, this group is deconstructed into a set of use declarations.
+This, in turn, means that we could very well stumble upon some use
+declaration with a trailing self keyword that is not part of a nested
+use declaration (of course, within a group.) Long story short; We need
+to handle both the self case and the super case in the name basecase of
+the single-use resolution proposition even though these would get
+flagged as malformed input by the compiler.

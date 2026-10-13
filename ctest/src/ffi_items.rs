@@ -398,18 +398,23 @@ enum Resolution {
 /// may have had new items added to it. The whole-crate module tree is
 /// guaranteed to have integrated these changes.
 fn resolve_pass(src: PassPair) -> PassPair {
-    let (PassPair { whole_crate, .. }, resolved_children) =
-        src.subtree.items.modules.clone().into_iter().fold(
-            (src.clone(), Vec::new()),
-            |(PassPair { whole_crate, .. }, mut children), m| {
-                let pair = resolve_pass(PassPair {
-                    subtree: m,
-                    whole_crate: whole_crate.clone(),
-                });
-                children.push(pair.subtree.clone());
-                (pair, children)
-            },
-        );
+    let (
+        PassPair {
+            whole_crate: whole_crate_with_resolved_children,
+            ..
+        },
+        resolved_children,
+    ) = src.subtree.items.modules.clone().into_iter().fold(
+        (src.clone(), Vec::new()),
+        |(PassPair { whole_crate, .. }, mut children), m| {
+            let pair = resolve_pass(PassPair {
+                subtree: m,
+                whole_crate: whole_crate.clone(),
+            });
+            children.push(pair.subtree.clone());
+            (pair, children)
+        },
+    );
     let root_with_resolved_children = Module {
         items: FfiItems {
             modules: resolved_children,
@@ -419,14 +424,14 @@ fn resolve_pass(src: PassPair) -> PassPair {
     };
     let resolved_uses = resolve_one(PassPair {
         subtree: root_with_resolved_children.clone(),
-        whole_crate: whole_crate.clone(),
+        whole_crate: whole_crate_with_resolved_children.clone(),
     });
     let new_root = merge_module(root_with_resolved_children, resolved_uses);
     let new_root = Module {
         items: new_root.items.dedup(),
         ..new_root
     };
-    let new_whole_crate = update_tree(new_root.clone(), whole_crate);
+    let new_whole_crate = update_tree(new_root.clone(), whole_crate_with_resolved_children.clone());
     PassPair {
         subtree: new_root,
         whole_crate: new_whole_crate,
@@ -452,7 +457,7 @@ fn resolve_one(
         .into_iter()
         .map(|u| {
             resolve_use(
-                u,
+                u.clone(),
                 PassPair {
                     subtree: root.clone(),
                     whole_crate: state.clone(),
@@ -738,22 +743,22 @@ fn is_super(ident: syn::Ident) -> bool {
 /// If not found, `dst` is returned unmodified. `src` may also match `dst`
 /// itself. That would return `src`.
 fn update_tree(src: Module, dst: Module) -> Module {
-    if src.path == dst.path {
-        return src.into();
+    if src.path.clone() == dst.path.clone() {
+        return src.clone().into();
     }
-    let new_children = dst
+    let new_children: Vec<_> = dst
         .items
         .modules
         .clone()
         .into_iter()
-        .map(|m| update_tree(src.clone(), m))
+        .map(|m| update_tree(src.clone(), m.clone()))
         .collect();
     Module {
         items: FfiItems {
-            modules: new_children,
-            ..dst.items
+            modules: new_children.clone(),
+            ..dst.items.clone()
         },
-        ..dst
+        ..dst.clone()
     }
 }
 
@@ -821,7 +826,7 @@ fn manipulate_path(root: Module, f: impl ops::Fn(syn::Path) -> Path + Clone) -> 
 ///
 /// Note that, during merging, the items to be merged may end up duplicating
 /// existing items on `dst`. It is call-site's responsibility to deduplicate
-/// those through `FfiItems::dedup`.
+/// those through [`FfiItems::dedup`].
 fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
     let new_path = dst.path.clone();
     src.into_iter()
@@ -866,13 +871,12 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     ..Default::default()
                 };
                 let module = Module {
-                    public: false,
-                    cached_path: String::new().into_boxed_str(),
                     path: syn::Path {
                         leading_colon: None,
                         segments: dummy_segment,
                     },
                     items: items_without_modules,
+                    ..Default::default()
                 };
                 let new_module = manipulate_path(module, |p| {
                     let Some(ident) = p.segments.last().cloned() else {
