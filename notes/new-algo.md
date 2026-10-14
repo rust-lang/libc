@@ -591,4 +591,75 @@ abstract the whole thing into a path manipulation proposition. This is
 the same as that devised for the first revision of the algorithm, so we
 won't go into the details of the proposition's proof. It's best if we
 focus on the closure that is passed to the proposition in the rename
-case of the single-use resolution proposition.
+case of the single-use resolution proposition. The first cases to
+consider are the keywords. In this instance, it is completely legal to
+find any one of the three keywords that are expected in use declartion
+paths. The treatment itself is the same as that in the regular name
+basecase of the proposition. The only difference is in the fact each of
+the implied modules (the current stateful subtree, or the parent to the
+statful subtree, or the crate-root module) require having their paths
+and the paths of all items in the tree rooted at them changed. The
+renaming consists of first renaming the module in question by changing
+the last segment of its path, and then using the path manipulation
+proposition mentioned above. The closure passed to the path manipulation
+proposition discards as many segments off of of the item's path as the
+new length of the renamed tree root contains, and yields the rest. These
+are then prepended the new root module's path. An example is the path
+std::any getting renamed to std::dynamic. Items such as std::any::TypeId
+discard as many segments from their left as the length of the tree root
+(here std::any) contains. That leaves std::any::TypeId's path with a
+single segment, TypeId. This segment then gets prepended the renamed
+path of the tree root, such that it ends up as std::dynamic::TypeId. Of
+note is that the path manipulation proposition will apply the transform
+to both the items in the given module tree, as well as the module tree
+root itself. The above strategy still works when applied to the tree
+root, because all segments of its path will be discarded, and the new
+path would be prepended to an empty path, yielding the new path anew.
+This works thanks to the fact path segments make up a semigroup and a
+monoid functor. The neutral element is a list of empty segments, and the
+append operation is intuitive enough. The details of the implementation
+have been changed to reflect a less verbose approach that does not
+repeat the same path manipulation logic for the top-level module. This
+applies in much the same way to other non-module items, which implies
+one need not repeat the same logic for both non-modules and modules.
+This now lives as a macro within the scope of the renamed case of the
+single-use resolution proposition. With that, a review of this case
+seems done, and the only case left is the inductive path case. This one
+behaves in much the same way as one would expect from a functional
+approach to a right fold proof. The head of the path is extracted, and
+first matched against the set of keywords we conceive possible in use
+declarations. Each of these will imply a new stateful subtree that will
+be paired up anew with the stateful whole-crate module tree when
+inductively using the use-declaration proposition with the tail end of
+the path. The self case is, again, fairly straightforward; The same
+stateful subtree as carried thus far is implied as the stateful subtree
+for the rest of the path. The super case requires performing the same
+parent module look up as explained in prior cases of the single-use
+resolution proposition. The crate case simply yields the stateful
+whole-crate module tree, which makes the next use of this proposition
+have as stateful pair the same elements (for the subtree is now
+structurally equal to the whole-crate module tree.) The subcase for
+items is, again, much the same as in other cases of the single-use
+resolution proposition. A look up is performed on the stateful subtree
+and only if a module is found does use-declaration munching continue.
+The case of any other item is made to crash the whole thing because that
+is simply impossible; Except this could potentially be incorrect. ctest
+parses all use declarations in a crate. This brings with it both
+resolvable and unresolvable use declarations. Thus far, it had been
+assumed that the latter could only consist of use declarations that
+refer to items from third-party crates. But this may not be entirely
+correct. Users have the entire, unrestricted power of the Rust module
+system in their hands. They could very well have use declarations that
+at first seem like they are resolvable, for they refer to an item we can
+find in the crate root, but that refer to a glob import of the variants
+of an enumeration. The unconceivable subsubcase explained above would
+make the whole thing crash instead of implying an unresolved path. On
+second thought, there is no way the look up yields an item and the item
+turns out to be an enumeration because enumerations don't even get
+parsed in the first place. This implies there is just no way an item
+gets returned from the path lookup without it being a module. Still,
+it's best if we imply an unresolved resolution instead of crashing,
+considering the effects of such implication simply mean no other item
+will get merged into the module where the use declarations are currently
+being sourced from. That should do it for the single-use resolution
+proposition, which means the review is technically done.
