@@ -662,4 +662,91 @@ it's best if we imply an unresolved resolution instead of crashing,
 considering the effects of such implication simply mean no other item
 will get merged into the module where the use declarations are currently
 being sourced from. That should do it for the single-use resolution
-proposition, which means the review is technically done.
+proposition, which means the review is technically done. A larger
+surface area of the code has been made pure, which should hopefully
+avoid issues unrelated to the core logic. Before testing things out, it
+would be best to attempt to reason through the high level idea of the
+algorithm. We're trying to resolve use declarations, which here means
+that as many use declarations as possible should be resolvable. To that
+extent, the algorith performs crate-wide resolution passes until the
+state of the post-pass crate module tree is structurally equal to that
+of the pre-pass state. There is no difference between procedures across
+passes, and unlike the first revision of the algorithm, the logic
+depends not on the removal of use declarations after each pass. Each
+pass first bottoms out on the module tree, and actually starts resolving
+use declarations from the leaf modules up. After a complete pass over
+the use declrations of a given module are finished, the resolution items
+are merged into that source module. Then this module is integrated into
+the crate root that is used to perform resolution of absolute paths and
+super-relative paths during use declaration resolution. This repeats
+itself with all modules in the crate's module tree, each one receving an
+updated snapshot of the whole-crate module tree, which is used when
+attempting to resolve its own set of use declarations. This idea works
+because no matter how may times a single use declaration is resolved,
+the set of items that are effectively merged into the module where the
+use declaration was sourced from always has its list of items
+deduplicated by their paths. Path rewriting happens during merging,
+right before the items become part of the module into which to merge. It
+seems like the logic is solid. Time to test things out. It would seem
+the latest test worked out just fine. Now onto testing out the new
+functionality. Resolution enters an infinite loop when testing with a
+super-relative use declaration. The test ought be first minimized to
+something that really only causes the loop. So the issue does not happen
+in a very simplified case. That means there must be some edge case that
+is causing non-termination of the iterations over the resolution pass.
+The failing test had multiple cycles in the graph where use declarations
+are edges, modules are nodes and the direction of an edge is given by
+the module where the referred-to item(s) are. I think I can start
+guessing why the test fails, and it may very well be due to cyclic use
+declarations. Suppose we have a contrived example of a crate root with
+one child module, where the child module contains a super-relative glob
+import, and the crate root contains an glob import of the child module's
+items. As per the current algorithm, the child module will be resolved
+first. The use declaration will be resolvable, and all items in the
+crate root will be imported over to the child module. This means the
+child module will contain itself. Then comes the root module. The one
+and only use declaration within it is also going to be resolved quite
+easily. After one pass, diffing notices there has been progress and so
+it decides to perform another pass. The issue comes from the fact we
+just imported into the list of child modules of both the crate root and
+the leaf module the dual module with its list of use declarations. In
+the next resolution pass, there will be more use declarations to resolve
+than there were before, including twice as many as there were before.
+The invariant about the number of use declarations being fixed is thus
+broken. This also hints at the fact deduplication is not good enough.
+Two items with the same paths getting removed at random does not satisfy
+the needs of the algorithm. For non-module items, this gets the job done
+just fine. For modules, though, it becomes a necessity to keep, among
+duplicate modules, the one module that currently has the largest subtree
+rooted at it. This should hold because use declaration resolution always
+expands or leaves unmodified a module tree. This discussion has thus
+revealed that there is need to modify two things; The handling of merged
+modules, and the deduplication proposition. During mering, the subtrees
+rooted at the modules to merge should be stripped of all use
+declarations. That is likely to require an anciliary proposition. The
+removal of use declarations at merge-time is done. It happens right
+after the modules to merge get their paths updated, and right before
+they are about to become part of the module into which to merge. Now
+comes deduplication, where modules need special attention. Sorting them
+is likely going to be necessary, so that is going to be left in. Though
+sorting based on the path will not be enough. The path should continue
+being the primary way of sorting, but upon hitting some two modules
+whose paths turn out to compare equal, we should further compare the
+sizes of the subtrees, and invert the resulting ordering. This is so
+that the largest subtree appears first, and we can use the same
+comparison closure for the deduplication proposition (which keeps only
+the first item of a run of consecutive items.) The logic seems done but
+it may be potentially faulty. The comparison logic first considers the
+paths of the modules, after which it recursively compares the subtrees
+rooted at them. The issue may come from the fact that the subtree
+recursion calls back again into the proposition for the top-level
+modules. This means that if some two modules have the same path, and yet
+post-resolution one of them got a new child module, but this one's path
+happened to compare lexicographically smaller than some other
+pre-existing module, then the module we'd stick with first would end up
+being the older snapshot. Something else that doesn't quite strike me as
+correct is the comparison used to determine equality among modules durin
+deduplication. This can not be the same as the one used when sorting the
+list of modules, because we need all modules whose paths compare equal
+to be considered for removal; Only the first one among such set, which
+is the first thanks to the other comparison logic, will remain.

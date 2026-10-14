@@ -1,5 +1,10 @@
-use syn::Path;
+use std::cmp::Ordering;
+
 use syn::punctuated::Punctuated;
+use syn::{
+    Path,
+    PathSegment,
+};
 
 use crate::BoxStr;
 use crate::ffi_items::FfiItems;
@@ -28,10 +33,21 @@ impl Module {
     /// Returns the last path of the identifier, from the absolute path returned
     /// by [`Module::path`].
     pub fn ident(&self) -> String {
-        let Some(syn::PathSegment { ident, .. }) = self.path.segments.last() else {
+        let Some(PathSegment { ident, .. }) = self.path.segments.last() else {
             unreachable!("all parsed items have at least one element in their path")
         };
         ident.to_string()
+    }
+
+    /// Comparison function for use when sorting modules in [`FfiItems::dedup`].
+    ///
+    /// This is not implemented as part of [`Ord`] because the implementation is
+    /// inconsistent with the [`PartialEq`] implementation.
+    pub(crate) fn custom_cmp(&self, other: &Self) -> Ordering {
+        match self.cached_path.cmp(&other.cached_path) {
+            Ordering::Equal => self.items.custom_cmp(&other.items),
+            other => other,
+        }
     }
 }
 

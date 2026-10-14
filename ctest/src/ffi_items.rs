@@ -1,5 +1,6 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
+use std::cmp::Ordering;
 use std::iter;
 use std::ops::{
     self,
@@ -21,7 +22,9 @@ use syn::visit::{
 use syn::{
     File,
     Ident,
+    Item,
     ItemMod,
+    ItemUse,
     Path,
     PathArguments,
     PathSegment,
@@ -174,6 +177,31 @@ impl FfiItems {
             && self.modules == other.modules
     }
 
+    /// Comparison function for use when sorting and deduplicating modules in
+    /// [`FfiItems::dedup`].
+    ///
+    /// This is used in [`Module::custom_cmp`]. It trusts that the modules to
+    /// compare have the same overall shape, and one will be a "natural"
+    /// extension of the other.
+    ///
+    /// We consider extension here to mean that one module subtree is based on
+    /// the other, and thus only contains both the items from the other and
+    /// possibly more.
+    pub(super) fn custom_cmp(&self, other: &Self) -> Ordering {
+        let (ours, theirs) = (self.modules.len(), other.modules.len());
+        match ours.cmp(&theirs) {
+            Ordering::Equal => self
+                .modules
+                .clone()
+                .into_iter()
+                .zip(other.modules.clone())
+                .fold(Ordering::Equal, |_, (our_m, their_m)| {
+                    our_m.items.custom_cmp(&their_m.items)
+                }),
+            other => other.reverse(),
+        }
+    }
+
     /// Searches for an item in the container, and returns an owned instance of
     /// that item.
     ///
@@ -230,26 +258,42 @@ impl FfiItems {
     ///
     /// A consequence of calling this method is that the items are also sorted
     /// by their paths.
-    fn dedup(mut self) -> FfiItems {
+    fn dedup(self) -> FfiItems {
         macro_rules! key_fn {
             () => {
                 |it| it.cached_path.clone()
             };
         }
         macro_rules! dedup {
-            ($it:ident) => {{
-                self.$it.sort_by_key(key_fn!());
-                self.$it.dedup_by_key(key_fn!());
+            ($($it:tt),+ $(,)?) => {{
+                let items = self.clone();
+                $(
+                    let mut $it = self.$it.clone();
+                    $it.sort_unstable_by_key(key_fn!());
+                    $it.dedup_by_key(key_fn!());
+                    let items = FfiItems {
+                        $it: $it.clone(),
+                        ..items.clone()
+                    };
+                )+
+                items
             }};
         }
-        dedup!(aliases);
-        dedup!(structs);
-        dedup!(unions);
-        dedup!(constants);
-        dedup!(foreign_functions);
-        dedup!(foreign_statics);
-        dedup!(modules);
-        self
+        let new_items = dedup!(
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+        );
+        let mut new_modules = self.modules.clone();
+        new_modules.sort_unstable_by(Module::custom_cmp);
+        new_modules.dedup_by(|lhs, rhs| lhs.path == rhs.path);
+        FfiItems {
+            modules: new_modules.clone(),
+            ..new_items.clone()
+        }
     }
 }
 
@@ -871,7 +915,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     let new_path = new_path.clone();
                     new_path.clone()
                 });
-                let new_nested_modules: Vec<_> = modules
+                let nested_modules_with_new_paths: Vec<_> = modules
                     .clone()
                     .into_iter()
                     .map(|m| {
@@ -894,6 +938,32 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                                 })
                         })
                     })
+                    .collect();
+                fn remove_uses(m: Module) -> Module {
+                    let new_modules: Vec<_> = m
+                        .items
+                        .modules
+                        .clone()
+                        .into_iter()
+                        .map(remove_uses)
+                        .collect();
+                    Module {
+                        items: FfiItems {
+                            uses: vec![],
+                            modules: new_modules.clone(),
+                            ..m.items.clone()
+                        },
+                        ..m.clone()
+                    }
+                }
+                // [NOTE]: this removes all use declarations in all descendant
+                // modules of the subtrees to merge because otherwise merged
+                // modules can increase the number of use declarations in the
+                // crate's module tree, which causes non-termination.
+                let new_nested_modules: Vec<_> = nested_modules_with_new_paths
+                    .clone()
+                    .into_iter()
+                    .map(remove_uses)
                     .collect();
                 FfiItems {
                     modules: new_nested_modules.clone(),
@@ -1153,13 +1223,13 @@ fn visit_item_foreign_mod(table: &mut FfiItems, i: &syn::ItemForeignMod) {
 }
 
 impl<'ast> Visit<'ast> for FfiItems {
-    fn visit_item_mod(&mut self, i: &'ast syn::ItemMod) {
-        let syn::ItemMod {
+    fn visit_item_mod(&mut self, i: &'ast ItemMod) {
+        let ItemMod {
             vis,
             ident,
             content: Some((_, mod_items)),
             ..
-        } = i
+        } = i.clone()
         else {
             unreachable!(
                 "This runs post cargo-expand, which inlines all \
@@ -1167,43 +1237,43 @@ impl<'ast> Visit<'ast> for FfiItems {
             );
         };
         let is_crate_root = ident == "__ctest_root_mod";
-        let mut running_items = if is_crate_root {
+        let running_items = if is_crate_root {
             self.clone()
         } else {
-            let out = FfiItems {
+            FfiItems {
                 current_module: append_path(self.current_module.clone(), ident.clone()),
                 ..Default::default()
-            };
-            out
+            }
         };
+        let mut running_items = running_items.clone();
         let uses: Vec<_> = mod_items
             .iter()
             .cloned()
             .filter_map(|it| match it {
-                syn::Item::Type(t) => {
+                Item::Type(t) => {
                     visit_item_type(&mut running_items, &t);
                     None
                 }
-                syn::Item::Struct(s) => {
+                Item::Struct(s) => {
                     visit_item_struct(&mut running_items, &s);
                     None
                 }
-                syn::Item::Union(u) => {
+                Item::Union(u) => {
                     visit_item_union(&mut running_items, &u);
                     None
                 }
-                syn::Item::Const(c) => {
+                Item::Const(c) => {
                     visit_item_const(&mut running_items, &c);
                     None
                 }
-                syn::Item::ForeignMod(m) => {
+                Item::ForeignMod(m) => {
                     visit_item_foreign_mod(&mut running_items, &m);
                     None
                 }
-                syn::Item::Use(syn::ItemUse { vis, tree, .. }) => normalize_path(tree)
+                Item::Use(ItemUse { vis, tree, .. }) => normalize_path(tree)
                     .into_iter()
                     .map(move |tree| RefinedUse {
-                        is_public: matches!(vis, syn::Visibility::Public(_)),
+                        is_public: matches!(vis, Visibility::Public(_)),
                         tree,
                     })
                     .into(),
@@ -1211,18 +1281,17 @@ impl<'ast> Visit<'ast> for FfiItems {
             })
             .flatten()
             .collect();
-
         visit::visit_item_mod(&mut running_items, i);
-        running_items.uses = uses;
-
+        running_items.uses = uses.clone();
+        let running_items = running_items.clone();
         if is_crate_root {
-            *self = running_items;
+            *self = running_items.clone();
         } else {
             self.modules.push(Module {
                 public: matches!(vis, Visibility::Public(_)),
                 cached_path: path_to_string(running_items.current_module.clone()),
                 path: running_items.current_module.clone(),
-                items: running_items,
+                items: running_items.clone(),
             });
         }
     }
@@ -1248,7 +1317,7 @@ mod test1 {
         mod test3 {
             pub struct Foo;
 
-            fn failure() {
+            fn foo() {
                 extern "C" {
                     fn ctime();
                 }
@@ -1257,8 +1326,27 @@ mod test1 {
     }
 }
     "#;
-    let mut items = FfiItems::default();
     let file = syn::parse_file(source).unwrap();
+    let items = FfiItems::default();
+    let mut items = items.clone();
     items.visit_file(&file);
+    let items = items.clone();
+    println!("{:#?}", items);
+}
+
+#[test]
+fn tmp1() {
+    let source = r#"
+use test1::*;
+
+pub struct Foo;
+
+mod test1 { use super::*; }
+    "#;
+    let file = syn::parse_file(source).unwrap();
+    let items = FfiItems::default();
+    let mut items = items.clone();
+    items.visit_file(&file);
+    let items = items.clone();
     println!("{:#?}", items);
 }
