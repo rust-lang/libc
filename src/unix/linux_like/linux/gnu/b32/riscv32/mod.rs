@@ -594,6 +594,7 @@ pub const SYS_lremovexattr: c_long = 15;
 pub const SYS_fremovexattr: c_long = 16;
 pub const SYS_tkill: c_long = 130;
 pub const SYS_futex_time64: c_long = 422;
+pub const SYS_futex: c_long = SYS_futex_time64;
 pub const SYS_sched_setaffinity: c_long = 122;
 pub const SYS_sched_getaffinity: c_long = 123;
 pub const SYS_io_setup: c_long = 0;
