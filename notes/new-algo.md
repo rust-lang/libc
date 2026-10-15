@@ -843,4 +843,77 @@ us describe the ideal result in the above example; The glob import in
 the leaf module should have been resolved as it currently does, but the
 next resolution pass should have performed resolution with respect to
 the original whole-crate module-tree, and not to the state of the
-whole-crate module tree after the first resolution pass was done.
+whole-crate module tree after the first resolution pass was done. The
+solution could be in performing subsequent resolution passes with the
+initial state of the crate's module tree. The issue then would be that
+no resolution pass would provide updated information to subsequent
+resolution passes. Even the first pass would be futile; In the above
+example, the leaf module would get the items from the crate root, then
+another pass would run after diffing with the pre-pass module tree with
+the post-pass state. This second pass would attempt to resolve the same
+use declaration, and this would actually turn out well. The initial
+snapshot of the leaf module without itself nested would be removed
+during deduplication, leaving the larger one-level deep node module in
+its stead. For this to work out, the whole-crate module tree would have
+to be updated back at the resolution driver only to perform the diff.
+And yet each subsequent resolution would be fed the initial whole-crate
+module tree. Does even rustc allow this? It does. It also allows
+arbitrarily nested modules within the module with the super-relative
+glob import, and subsequent references to their items through the name
+of the module (which is only made visible thanks to the import.) Maybe
+resolution of super imports can be delayed? Nay, because a single
+super-relative glob import is enough for non-termination. No matter the
+state of the crate, super-relative imports that affect the list of child
+modules in the source module seem to be the root cause of this issue.
+This can likely also be extended to absolute imports that refer to some
+ancestor module. Maybe the issue can be solved by identifying paths in
+the module graph. Two examples come to mind that could be solved by this
+strategy. Suppose the module graph consists of a two-level deep
+hierarchy with a crate root, a node module and a leaf module. Assume the
+crate root contains a glob import of the items in the leaf module. Then
+assume the leaf module contains a glob import of the items in the node
+module. If we think of the use declarations as directed edges, we can
+draw a path from the crate root all the way up to the node module.
+Resolution should thus take place by walking the reverse path; The
+super-relative module should be resolved first, and only then should the
+use declaration in the crate root be resolved. Let us explain the second
+example; Suppose we are resolving the same module hierarchy as presented
+above. This time, the crate root contains a glob import of the leaf
+module's items, and the node module contains a glob import of the crate
+root's items. Then again, we find that a path is drawn where, if walked
+in reverse, the crate root import would be resolved first, and only then
+would the super-relative import be resolved. Indeed, it seems use
+declaration resolution reduces to the problem of finding connected
+components and walking paths in reverse. But there's two things here
+that aren't entirely clear; How would the ideal situation proceed when
+posed with multiple possible paths in the walk, and how would cycles be
+handled? Say in the second example above the crate root had another glob
+import of the node module's items. This would mean there would be two
+possible paths to be walked from the node module. Both would have their
+first stop at the crate root, but then they could follow up on either
+one of the leaf module or the node module. Let us assume cycles are
+discarded upon detection. Then only one path could be walked. But should
+cycles really be discarded? The idea currently seems to be as follows.
+
+- Build a directed graph where the nodes are the modules, and the edges
+  are the use declarations, such that the direction of the edges is
+  given by the module where the target item(s) of the use declaration
+  lives in.
+
+- Detect all connected components in the graph. This should be fairly
+  straightforward.
+
+- For each connected component, compute all paths and subsequently sort
+  the paths by whether they aren't cycles or not. The non-cyclic paths
+  should come first.
+
+- For each component, and for each computed path in the sorted list
+  obtained above, perform a reverse walk of the path, resolving the use
+  declarations in the order they are found in this reverse walk. Remove
+  any resolved use declaration.
+
+This leaves open the question about initially unresolvable use
+declarations, which require information introduced by another use
+declaration to even attempt resolution. It would seem the list of graph
+paths would have to be updated each time a graph path were resolved in
+full.
