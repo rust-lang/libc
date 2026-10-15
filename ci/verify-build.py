@@ -412,7 +412,7 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     run([*cmd, "--features=extra_traits"], rustflags=rustflags)
 
     if (
-        ("gnu" in target_env and target_bits == "32")
+        ("gnu" in target_env and target_bits == "32" and "hurd" not in target_os)
         or "musl" in target_env
         or "uclibc" in target_env
     ):

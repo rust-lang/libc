@@ -50,6 +50,7 @@ fi
 
 env="$(rustc --print cfg --target "$target" | sed -n 's/target_env="\(.*\)"/\1/p')"
 bits="$(rustc --print cfg --target "$target" | sed -n 's/target_pointer_width="\(.*\)"/\1/p')"
+os="$(rustc --print cfg --target "$target" | sed -n 's/target_os="\(.*\)"/\1/p')"
 
 # shellcheck disable=SC2086
 $cmd --no-default-features -- $test_flags
@@ -62,7 +63,7 @@ $doc_cmd
 
 # On relevant platforms, also test with our optional settings
 
-if [ "$env" = "gnu" ] && [ "$bits" = "32" ]; then
+if [ "$env" = "gnu" ] && [ "$bits" = "32" ] && [ "$os" != "hurd" ]; then
     # shellcheck disable=SC2086
     RUSTFLAGS="$RUSTFLAGS --cfg=libc_unstable_time64" $cmd -- $test_flags
 fi

@@ -36,6 +36,7 @@ fn do_cc(t: &Target) {
             || t.emscripten()
             || t.fuchsia()
             || t.dragonfly()
+            || t.hurd()
             || t.triple.contains("bsd")
             || t.cygwin()
         {
@@ -48,7 +49,13 @@ fn do_cc(t: &Target) {
     if t.linux() && !t.wali() {
         cc::Build::new().file("src/nlmsg.c").compile("nlmsg");
     }
-    if (t.linux() || t.l4re() || t.android() || t.emscripten() || t.solaris() || t.illumos())
+    if (t.linux()
+        || t.l4re()
+        || t.android()
+        || t.emscripten()
+        || t.solaris()
+        || t.illumos()
+        || t.hurd())
         && !t.wali()
     {
         cc::Build::new().file("src/sigrt.c").compile("sigrt");
@@ -63,6 +70,7 @@ fn do_ctest(t: &Target) {
         t if t.emscripten() => test_emscripten(t),
         t if t.freebsd() => test_freebsd(t),
         t if t.haiku() => test_haiku(t),
+        t if t.hurd() => test_hurd(t),
         t if t.l4re() => test_linux(t),
         t if t.linux() => test_linux(t),
         t if t.netbsd() => test_netbsd(t),
@@ -339,6 +347,7 @@ fn test_apple(t: &Target) {
         }
     });
 
+    // The C field's type cannot be spelled: anonymous union/struct, other signature, other tag.
     cfg.skip_struct_field_type(move |struct_, field| {
         // The type of `bfl_u` is an anonymous union
         (struct_.ident(), field.ident()) == ("bpf_dltlist", "bfl_u")
@@ -2148,6 +2157,7 @@ fn test_android(t: &Target) {
     // Include Android-specific headers:
     headers!(cfg, "android/set_abort_message.h",);
 
+    // glibc's <elf.h> only provides the Elf32_/Elf64_ names.
     cfg.rename_type(move |ty| match ty {
         "Ioctl" => Some("int".to_string()),
         // `stat64` is an alias of `struct stat`, so it needs the "struct" prefix:
@@ -3877,6 +3887,253 @@ fn config_gnu_bits(t: &Target, cfg: &mut ctest::TestGenerator) {
             cfg.cfg("gnu_file_offset_bits64", None);
         }
     }
+}
+
+// The GNU/Hurd, using glibc.  Not Linux-like enough to share `test_linux`.
+fn test_hurd(t: &Target) {
+    assert!(t.hurd());
+
+    let p64 = t.p64();
+
+    let mut cfg = ctest_cfg();
+    cfg.flag("-Wno-deprecated-declarations");
+    cfg.define("_GNU_SOURCE", None);
+
+    headers!(
+        cfg,
+        "aio.h",
+        "arpa/inet.h",
+        "arpa/nameser.h",
+        "assert.h",
+        "complex.h",
+        "ctype.h",
+        "dirent.h",
+        "dlfcn.h",
+        "elf.h",
+        "errno.h",
+        "execinfo.h",
+        "fcntl.h",
+        "fenv.h",
+        "fnmatch.h",
+        "ftw.h",
+        "getopt.h",
+        "glob.h",
+        "gnu/libc-version.h",
+        "grp.h",
+        "hurd.h",
+        "hurd/ioctl.h",
+        "iconv.h",
+        "ifaddrs.h",
+        "langinfo.h",
+        "libgen.h",
+        "limits.h",
+        "link.h",
+        "locale.h",
+        "malloc.h",
+        "math.h",
+        "mntent.h",
+        "monetary.h",
+        "mqueue.h",
+        "net/ethernet.h",
+        "net/if.h",
+        "net/if_arp.h",
+        "net/if_ether.h",
+        "net/route.h",
+        "netdb.h",
+        "netinet/in.h",
+        "netinet/ip.h",
+        "netinet/tcp.h",
+        "netinet/udp.h",
+        "nl_types.h",
+        "paths.h",
+        "poll.h",
+        "pthread.h",
+        "pty.h",
+        "pwd.h",
+        "regex.h",
+        "resolv.h",
+        "sched.h",
+        "search.h",
+        "semaphore.h",
+        "setjmp.h",
+        "shadow.h",
+        "signal.h",
+        "spawn.h",
+        "stddef.h",
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "string.h",
+        "strings.h",
+        "sys/auxv.h",
+        "sys/file.h",
+        "sys/ioctl.h",
+        "sys/ipc.h",
+        "sys/mman.h",
+        "sys/msg.h",
+        "sys/param.h",
+        "sys/ptrace.h",
+        "sys/random.h",
+        "sys/reboot.h",
+        "sys/resource.h",
+        "sys/select.h",
+        "sys/sem.h",
+        "sys/sendfile.h",
+        "sys/shm.h",
+        "sys/socket.h",
+        "sys/stat.h",
+        "sys/statvfs.h",
+        "sys/swap.h",
+        "sys/sysinfo.h",
+        "sys/syslog.h",
+        "sys/time.h",
+        "sys/times.h",
+        "sys/ttychars.h",
+        "sys/ttydefaults.h",
+        "sys/types.h",
+        "sys/ucontext.h",
+        "sys/uio.h",
+        "sys/un.h",
+        "sys/utsname.h",
+        "sys/wait.h",
+        "sys/xattr.h",
+        "syslog.h",
+        "termios.h",
+        "time.h",
+        "ucontext.h",
+        "unistd.h",
+        "utime.h",
+        "utmp.h",
+        "utmpx.h",
+        "wchar.h",
+        "wctype.h",
+        "wordexp.h",
+    );
+
+    cfg.skip_struct(move |struct_| {
+        match struct_.ident() {
+            // Extern types
+            "DIR" | "FILE" | "_IO_FILE" | "fpos64_t" | "timezone" => true,
+            // Incomplete in C
+            "__locale_data" | "__pthread" => true,
+            // Crate-only: the C field is an anonymous struct.
+            "__timeval" => true,
+            _ => false,
+        }
+    });
+
+    // The `tcpi_snd_rcv_wscale` maps two bitfield fields stored in a u8.
+    cfg.skip_struct_field(move |struct_, field| {
+        match (struct_.ident(), field.ident()) {
+            ("tcp_info", "tcpi_snd_rcv_wscale") => true,
+            // Conflicting with the `p_type` macro from <resolv.h>.
+            ("Elf32_Phdr", "p_type") | ("Elf64_Phdr", "p_type") => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_struct_field_type(move |struct_, field| {
+        matches!(
+            (struct_.ident(), field.ident()),
+            ("ifreq", "ifr_ifru")
+                | ("ifconf", "ifc_ifcu")
+                | ("ifaddrs", "ifa_ifu")
+                | ("sigaction", "sa_sigaction")
+                | ("__pthread_attr", "__schedparam")
+                | ("utmpx", "ut_tv")
+                | ("fpregset_t", "fp_reg_set")
+        )
+    });
+
+    // aio_buf is "volatile void*" and Rust does not have volatile pointers.
+    cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
+
+    // The C type is a function pointer.
+    cfg.skip_signededness(move |c| c == "sighandler_t");
+
+    cfg.skip_const(move |constant| {
+        match constant.ident() {
+            // Depends on `_POSIX_VDISABLE` visibility.
+            "CEOL" | "CBRK" => true,
+            // Only defined with `_XOPEN_SOURCE` and without `__USE_XOPEN2K`.
+            "XCASE" => true,
+            _ => false,
+        }
+    });
+
+    cfg.skip_alias(move |ty| {
+        match ty.ident() {
+            // Long double has no Rust equivalent.
+            "_Float64x" => true,
+            _ => false,
+        }
+    });
+
+    cfg.rename_type(move |ty| match ty {
+        "Elf_Addr" => Some(if p64 { "Elf64_Addr" } else { "Elf32_Addr" }.to_string()),
+        "Elf_Half" => Some(if p64 { "Elf64_Half" } else { "Elf32_Half" }.to_string()),
+        "Elf_Ehdr" => Some(if p64 { "Elf64_Ehdr" } else { "Elf32_Ehdr" }.to_string()),
+        "Elf_Phdr" => Some(if p64 { "Elf64_Phdr" } else { "Elf32_Phdr" }.to_string()),
+        "Elf_Shdr" => Some(if p64 { "Elf64_Shdr" } else { "Elf32_Shdr" }.to_string()),
+        "Elf_Sym" => Some(if p64 { "Elf64_Sym" } else { "Elf32_Sym" }.to_string()),
+        _ => None,
+    });
+
+    cfg.rename_alias(move |ty| match ty.ident() {
+        "Elf_Addr" => Some(if p64 { "Elf64_Addr" } else { "Elf32_Addr" }.to_string()),
+        "Elf_Half" => Some(if p64 { "Elf64_Half" } else { "Elf32_Half" }.to_string()),
+        "Elf_Ehdr" => Some(if p64 { "Elf64_Ehdr" } else { "Elf32_Ehdr" }.to_string()),
+        "Elf_Phdr" => Some(if p64 { "Elf64_Phdr" } else { "Elf32_Phdr" }.to_string()),
+        "Elf_Shdr" => Some(if p64 { "Elf64_Shdr" } else { "Elf32_Shdr" }.to_string()),
+        "Elf_Sym" => Some(if p64 { "Elf64_Sym" } else { "Elf32_Sym" }.to_string()),
+        _ => None,
+    });
+
+    cfg.skip_fn(move |function| {
+        match function.ident() {
+            // glibc has two versions of basename(3).
+            "posix_basename" | "gnu_basename" => true,
+            // `fallocate` is a Linux-specific extension in glibc.
+            "fallocate64" => true,
+            // The C23 `__isoc23_*` redirect gives these a different address.
+            "strtol" | "strtoll" | "strtoul" | "strtoull" | "fscanf" | "scanf" | "sscanf" => true,
+            // XSI vs GNU versions; the crate binds the XSI one.
+            "strerror_r" => true,
+            _ => false,
+        }
+    });
+
+    cfg.alias_is_c_enum(move |ty| match ty {
+        "__error_t_codes"
+        | "__ioctl_datum"
+        | "__ioctl_dir"
+        | "__priority_which"
+        | "__rlimit_resource"
+        | "__rusage_who"
+        | "__pthread_contentionscope"
+        | "__pthread_detachstate"
+        | "__pthread_inheritsched"
+        | "__pthread_mutex_protocol"
+        | "__pthread_mutex_robustness"
+        | "__pthread_mutex_type"
+        | "__pthread_process_shared"
+        | "tcp_ca_state" => true,
+        _ => false,
+    });
+
+    cfg.rename_struct_ty(move |ty| {
+        match ty {
+            // Typedef'd names, not `struct` tags.
+            "FILE" | "DIR" | "Dl_info" | "fd_set" | "Elf32_Ehdr" | "Elf32_Shdr" | "Elf32_Phdr"
+            | "Elf32_Sym" | "Elf64_Ehdr" | "Elf64_Shdr" | "Elf64_Phdr" | "Elf64_Sym" => {
+                Some(ty.to_string())
+            }
+            t if t.ends_with("_t") => Some(t.to_string()),
+            _ => None,
+        }
+    });
+
+    cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
 // This also covers the L4Re targets since they have a similar API surface

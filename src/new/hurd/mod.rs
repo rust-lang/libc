@@ -1,2 +1,6 @@
 //! GNU Hurd libc.
-// FIXME(hurd): link to headers needed.
+//!
+//! * Headers: <https://github.com/sailfishos-mirror/glibc/tree/master/hurd>
+//! * Source: <https://git.savannah.gnu.org/cgit/hurd/hurd.git>
+
+pub(crate) mod hurd_;

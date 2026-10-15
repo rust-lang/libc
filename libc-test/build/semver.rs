@@ -33,11 +33,14 @@ pub(crate) fn do_semver() {
     // NOTE: Android doesn't include the unix file (or the Linux file) because
     // there are some many definitions missing it's actually easier just to
     // maintain a file for Android.
-    // NOTE: AIX, L4Re and QNX do not include the unix file because there are
-    // definitions missing on these systems. It is easier to maintain separate
-    // files for them.
+    // NOTE: AIX, L4Re, QNX and the Hurd do not include the unix file because
+    // there are definitions missing on these systems. It is easier to maintain
+    // separate files for them.
     if family != os
-        && !matches!(os.as_str(), "android" | "aix" | "l4re" | "nto" | "qnx")
+        && !matches!(
+            os.as_str(),
+            "android" | "aix" | "hurd" | "l4re" | "nto" | "qnx"
+        )
         && os != "vxworks"
     {
         process_semver_file(&mut output, &mut semver_root, &family);

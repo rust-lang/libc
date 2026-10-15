@@ -7,6 +7,7 @@
     target_os = "emscripten",
     target_os = "freebsd",
     target_os = "fuchsia",
+    target_os = "hurd",
     target_os = "linux",
     target_os = "netbsd",
     target_os = "openbsd",
@@ -86,6 +87,17 @@ fn test_android_like() {
             }
         }
         compare(major, (1 << 20) - 1);
+    }
+}
+
+// The Hurd keeps 8 bits of major and 24 bits of minor (bits 8..15 are dropped)
+#[test]
+#[cfg(target_os = "hurd")]
+fn test_hurd_like() {
+    for major in [0, 1, 255, 256, 0x1234, c_uint::MAX] {
+        for minor in [0, 1, 255, 256, 0x5678, (1 << 24) - 1, c_uint::MAX] {
+            compare(major, minor);
+        }
     }
 }
 

@@ -242,6 +242,10 @@ impl Target {
         self.os == "haiku"
     }
 
+    pub fn hurd(&self) -> bool {
+        self.os == "hurd"
+    }
+
     pub fn illumos(&self) -> bool {
         self.os == "illumos"
     }

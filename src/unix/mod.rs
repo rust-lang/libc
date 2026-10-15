@@ -311,6 +311,7 @@ cfg_if! {
 
 cfg_if! {
     if #[cfg(not(any(
+        target_os = "hurd",
         target_os = "nto",
         target_os = "qnx",
         target_os = "l4re"
@@ -1571,7 +1572,8 @@ extern "C" {
             target_os = "freebsd",
             target_os = "cygwin",
             target_os = "dragonfly",
-            target_os = "haiku"
+            target_os = "haiku",
+            target_os = "hurd"
         ),
         link_name = "__res_init"
     )]

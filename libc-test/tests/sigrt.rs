@@ -7,6 +7,7 @@
     target_os = "emscripten",
     target_os = "solaris",
     target_os = "illumos",
+    target_os = "hurd",
 ))]
 mod t {
     use libc;

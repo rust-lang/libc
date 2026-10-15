@@ -84,6 +84,7 @@ cfg_if! {
     } else if #[cfg(target_os = "hurd")] {
         mod hurd;
         // pub(crate) use hurd::*;
+        pub use hurd::hurd_::*;
     } else if #[cfg(target_os = "illumos")] {
         mod illumos;
         pub(crate) use illumos::*;

@@ -313,6 +313,11 @@ fn main() {
     let gnu32_time64 = gnu && target_ptr_width == "32" && (gnu32_timebits == "64" || time64);
 
     if gnu32_time64 && !gnu32_already_time64 {
+        // glibc does not implement `_TIME_BITS=64` on the Hurd.
+        assert!(
+            target_os != "hurd",
+            "`gnu_time_bits = \"64\"` is not supported on the Hurd"
+        );
         // These configs all set up nonstandard options. They are not needed on platforms like
         // riscv32, where 64-bit `time_t` is the default.
         if target_os == "linux" {
