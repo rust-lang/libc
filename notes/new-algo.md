@@ -796,4 +796,51 @@ performing module deduplication this way is to, during merging, attempt
 to find all modules about to be merged in the module into which to
 merge, then remove those off of the latter, and then merge the modules
 packed as part of the resolution item. That would avoid the need for
-deduplicating modules after merging
+deduplicating modules after merging. Either way, it seems best not to
+get rid of the current infrastructure until it is proven incorrect. The
+first thing to attempt should be a test of the module merging
+proposition, which may be the source of issues as it is the one place
+where use declarations are removed. The test should exercise two things;
+For one, the module into which to merge should end up with duplicate
+modules. But the use declarations of the modules to merge should not be
+brought over to the former. It would seem use declarations do get
+properly cleaned up. Control flow isn't even entering the path case of
+the use declaration, which may prompt at the fact the issue is way
+before that. It would seem the issue is in the fact stdout is not being
+emitted by the test harness. There's probably some option to fix this.
+The whole thing works only in the child module, and at that point it
+just keeps on going on an infinite loop. The issue has been identified.
+The problem lies in the perspective the rest of the crate has of a given
+subtree after a resolution pass. Suppose we have a one-level deep module
+tree with two modules; A crate root and a leaf module. Assume the leaf
+module contains a glob import of all items in the crate root. After the
+first pass on the leaf module, the use declaration resolved to the leaf
+module itself, which nests it in the module tree. At this point, the
+module tree contains a two-level deep module hierarchy, with the crate
+root, a node module and a leaf module. The leaf module contains no use
+declarations; The crate root contains no use declarations and the node
+module continues to have one use declaration. The current revision of
+the algorithm will still resolve the use declaration, which this time
+contains a snapshot of a one-level deep subtree rooted at the leaf
+module. This happens to be "larger" as per our comparison proposition
+than the 0-depth module tree containing solely the nested leaf module.
+The natural consequence to this is that the node module keeps the larger
+snapshot and the resolution driver determines it should go for another
+pass. The next pass goes through the same motions; Namely, it resolves
+the use declaration anew, and finds the "largest" subtree to keep in the
+node module is the now three-level deep subtree rooted at it (which is
+represented in the current snapshot of the whole-crate module tree.)
+This keeps repeating endlessly because each time the driver diffs the
+pre-pass and post-pass states, it notices there are changes, so it
+decides to go for another round. The way the algorithm was initially
+conceived failed to realize that each subsequent resolution pass to the
+one where all use declarations converged will still differ from the last
+resolution pass. In other words, the algorithm was assuming that each
+new resolution would see the module tree's state as it was after the
+pass where convergence took place. The issue with this assumption is
+that one can not determine when is it that convergence took place. Let
+us describe the ideal result in the above example; The glob import in
+the leaf module should have been resolved as it currently does, but the
+next resolution pass should have performed resolution with respect to
+the original whole-crate module-tree, and not to the state of the
+whole-crate module tree after the first resolution pass was done.

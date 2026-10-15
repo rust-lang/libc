@@ -1,3 +1,6 @@
+use syn::Path;
+use syn::punctuated::Punctuated;
+
 use crate::{
     BoxStr,
     Field,
@@ -30,5 +33,19 @@ impl Struct {
             unreachable!("all parsed items have at least one element in their path")
         };
         ident.to_string()
+    }
+}
+
+impl Default for Struct {
+    fn default() -> Self {
+        Self {
+            public: bool::default(),
+            cached_path: String::new().into_boxed_str(),
+            path: Path {
+                leading_colon: None,
+                segments: Punctuated::new(),
+            },
+            fields: vec![],
+        }
     }
 }

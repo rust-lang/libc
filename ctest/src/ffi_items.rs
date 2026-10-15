@@ -142,7 +142,7 @@ impl FfiItems {
         } = file;
         let file_mod = ItemMod {
             attrs: attrs.clone(),
-            vis: syn::parse_quote! { pub },
+            vis: Visibility::Public(syn::Token![pub](Span::call_site())),
             unsafety: None,
             mod_token: Mod::default(),
             ident: Ident::new("__ctest_root_mod", Span::call_site()),
@@ -333,8 +333,17 @@ impl Default for FfiItems {
 /// See [`RefinedUseTree`] for details.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RefinedUsePath {
-    ident: syn::Ident,
+    ident: Ident,
     tree: Box<RefinedUseTree>,
+}
+
+impl Default for RefinedUsePath {
+    fn default() -> Self {
+        Self {
+            ident: Ident::new("__dummy", Span::call_site()),
+            tree: Box::default(),
+        }
+    }
 }
 
 /// Refined type for [`syn::UseTree`] that does not consider group paths.
@@ -345,11 +354,12 @@ pub(crate) struct RefinedUsePath {
 ///
 /// This enumeration is thus equivalent to `syn::UseTree` but does not consider
 /// the case of `syn::UseTree::Group`.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub(crate) enum RefinedUseTree {
     Path(RefinedUsePath),
-    Name(syn::UseName),
-    Rename(syn::UseRename),
+    Name(UseName),
+    Rename(UseRename),
+    #[default]
     Glob,
 }
 
@@ -358,7 +368,7 @@ pub(crate) enum RefinedUseTree {
 /// This exists only for the purpose of refining [`syn::UseTree`], which is used
 /// within [`syn::ItemUse`]. See type [`RefinedUseTree`] for the actual
 /// refinement and details on the purpose of this type.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub(crate) struct RefinedUse {
     is_public: bool,
     tree: RefinedUseTree,
@@ -483,12 +493,21 @@ fn resolve_pass(src: PassPair) -> PassPair {
         subtree: root_with_resolved_children.clone(),
         whole_crate: whole_crate_with_resolved_children.clone(),
     });
-    let new_root = merge_module(root_with_resolved_children.clone(), resolved_uses.clone());
+    let new_root_with_duplicates =
+        merge_module(root_with_resolved_children.clone(), resolved_uses.clone());
     let new_root = Module {
-        items: new_root.items.clone().dedup(),
-        ..new_root.clone()
+        items: new_root_with_duplicates.items.clone().dedup(),
+        ..new_root_with_duplicates.clone()
     };
     let new_whole_crate = update_tree(new_root.clone(), whole_crate_with_resolved_children.clone());
+    println!(
+        "finished module pass on module {}",
+        if &*new_root.cached_path == "" {
+            "root".into()
+        } else {
+            new_root.cached_path.clone()
+        },
+    );
     PassPair {
         subtree: new_root.clone(),
         whole_crate: new_whole_crate.clone(),
@@ -503,6 +522,15 @@ fn resolve_pass(src: PassPair) -> PassPair {
 ///
 /// See [`resolve_pass`] for details.
 fn resolve_one(state: PassPair) -> Vec<Resolution> {
+    println!(
+        "found {} use declarations in module {}",
+        state.subtree.items.uses.len(),
+        if &*state.subtree.cached_path == "" {
+            "root".into()
+        } else {
+            state.subtree.cached_path.clone()
+        },
+    );
     state
         .subtree
         .items
@@ -542,13 +570,18 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     macro_rules! single_item {
         ($field:ident: $it:expr) => {
             return Resolution::Resolved(FfiItems {
-                $field: vec![$it.clone()],
+                $field: Vec::from([$it.clone()]),
                 ..Default::default()
             })
         };
     }
     match r#use.tree.clone() {
         RefinedUseTree::Name(UseName { ident }) => {
+            println!(
+                "entered name resolution case with {} in module {}",
+                ident.clone(),
+                state.subtree.cached_path.clone()
+            );
             // [NOTE]: self may not appear as the name basecase of a well-formed
             // path. And yet it is still considered here. That is because of
             // path normalization. self may appear as part of a tail group in a
@@ -590,8 +623,27 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 None => Resolution::Unresolved,
             }
         }
-        RefinedUseTree::Glob => Resolution::Resolved(state.subtree.items.clone()),
+        RefinedUseTree::Glob => {
+            println!(
+                "entered glob resolution case in module {}",
+                if &*state.subtree.cached_path == "" {
+                    "root".into()
+                } else {
+                    state.subtree.cached_path.clone()
+                },
+            );
+            Resolution::Resolved(state.subtree.items.clone())
+        }
         RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
+            println!(
+                "entered rename resolution case with {:?} in module {}",
+                UseRename {
+                    ident: ident.clone(),
+                    as_token: syn::Token![as](Span::call_site()),
+                    rename: rename.clone(),
+                },
+                state.subtree.cached_path.clone()
+            );
             macro_rules! new_path {
                 ($it:expr) => {{
                     let mut new_segments = $it.path.segments.clone();
@@ -627,8 +679,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                         |p, s| {
                             let mut p = p.clone();
                             p.segments.push(s);
-                            let p = p.clone();
-                            p
+                            p.clone()
                         },
                     );
                     Path {
@@ -667,6 +718,11 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
         }
 
         RefinedUseTree::Path(RefinedUsePath { ident, tree }) => {
+            println!(
+                "entered path resolution case with {} in module {}",
+                ident.clone(),
+                state.subtree.cached_path.clone()
+            );
             let new_subtree = if is_self(ident.clone()) {
                 state.subtree.clone()
             } else if is_super(ident.clone()) {
@@ -719,7 +775,7 @@ fn get_module(target: Path, root: Module) -> Option<Module> {
 /// If the module is a top-level item (i.e. it appears at the crate root,) the
 /// returned path will be empty. This follows from the parsing strategy for
 /// paths in `FfiItems`. The absolute paths are all `crate`-_unprepended_.
-fn get_parent_path(root: Module) -> syn::Path {
+fn get_parent_path(root: Module) -> Path {
     // [NOTE]: this performs a `saturating_sub` because there is one and only
     // one item in the crate's module tree that has an empty path; The crate
     // root. That is only wrapped in a `Module` of its own only after parsing.
@@ -1346,18 +1402,14 @@ mod test1 {
 #[test]
 fn tmp1() {
     let source = r#"
-// use test1::*;
-
 pub struct Foo;
 
 mod test1 { use super::*; }
     "#;
     let file = syn::parse_file(source).unwrap();
-    let items = FfiItems::default();
-    let mut items = items.clone();
+    let mut items = FfiItems::default();
     items.visit_file(&file);
-    let items = items.clone();
-    println!("{:#?}", items);
+    println!("{:#?}", items.clone());
 }
 
 #[test]
@@ -1378,4 +1430,59 @@ fn tmp2() {
     let mut ms = vec![m1, m2];
     ms.sort_unstable_by(Module::custom_cmp);
     println!("{:#?}", ms.clone());
+}
+
+#[test]
+fn tmp3() {
+    let dst_child_path = Path {
+        leading_colon: None,
+        segments: {
+            let mut out = Punctuated::new();
+            out.push(PathSegment {
+                ident: Ident::new("foo", Span::call_site()),
+                arguments: PathArguments::None,
+            });
+            out.clone()
+        },
+    };
+    let dst = Module {
+        items: FfiItems {
+            modules: Vec::from([Module {
+                path: dst_child_path.clone(),
+                cached_path: path_to_string(dst_child_path.clone()),
+                items: FfiItems {
+                    structs: Vec::from([{
+                        let path = Path {
+                            leading_colon: None,
+                            segments: Punctuated::new(),
+                        };
+                        Struct {
+                            path: path.clone(),
+                            cached_path: path_to_string(path.clone()),
+                            ..Default::default()
+                        }
+                    }]),
+                    ..Default::default()
+                },
+                ..Default::default()
+            }]),
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+    let src = Vec::from([Resolution::Resolved(FfiItems {
+        modules: Vec::from([Module {
+            path: dst_child_path.clone(),
+            cached_path: path_to_string(dst_child_path.clone()),
+            items: FfiItems {
+                modules: Vec::from([Module::default()]),
+                uses: Vec::from([RefinedUse::default()]),
+                ..Default::default()
+            },
+            ..Default::default()
+        }]),
+        ..Default::default()
+    })]);
+    let merged = merge_module(dst.clone(), src.clone());
+    println!("{:#?}", merged.clone());
 }
