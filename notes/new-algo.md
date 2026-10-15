@@ -738,15 +738,62 @@ comparison closure for the deduplication proposition (which keeps only
 the first item of a run of consecutive items.) The logic seems done but
 it may be potentially faulty. The comparison logic first considers the
 paths of the modules, after which it recursively compares the subtrees
-rooted at them. The issue may come from the fact that the subtree
-recursion calls back again into the proposition for the top-level
-modules. This means that if some two modules have the same path, and yet
+rooted at them. The issue may come from the fact that subtree recursion
+calls back again into the proposition for the top-level modules. This
+means that if some two modules have the same path, and yet
 post-resolution one of them got a new child module, but this one's path
 happened to compare lexicographically smaller than some other
 pre-existing module, then the module we'd stick with first would end up
 being the older snapshot. Something else that doesn't quite strike me as
-correct is the comparison used to determine equality among modules durin
-deduplication. This can not be the same as the one used when sorting the
-list of modules, because we need all modules whose paths compare equal
-to be considered for removal; Only the first one among such set, which
-is the first thanks to the other comparison logic, will remain.
+correct is the comparison used to determine equality among modules
+during deduplication. This can not be the same as the one used when
+sorting the list of modules, because we need all modules whose paths
+compare equal to be considered for removal; Only the first one among
+such set, which is the first thanks to the other comparison logic, will
+remain. One place where there could be issues concerning use
+declarations is the single-use resolution proposition. The case for glob
+imports brings over everything from the target module, but this should,
+in theory, not cause any issues. Even if the resolution item packs use
+declarations, these are ignored during merging so it should be safe to
+leave the logic as-is. It may be worth to add a comment noting that to
+the single-use resolution proposition. But before that, testing is in
+order. The same reduced failing test should be run anew. It fails again.
+Something is causing it to enter an infinite loop. Debugging this would
+be great. Maybe there's some information out there on rust-lldb. That
+seems like a timesink, so it would be best if we first tried to think
+about the problem some more. Debugging will not work without spending a
+significant amount of time looking into it. Best to try and reason
+through the program logic. The use declaration in the leaf module will
+be resolved first, and that will import over all items from the
+whole-crate module tree. The merging would yield a child module that
+contains a child module of its own referring to itself. The difference
+here is that this nested self should not contain use statements. This
+hints at the fact, which has just been confirmed, that the failing test
+can be further reduced not just to the case of a set of cyclic use
+declarations, but to a single super-relative use declaration. The
+current failing test has a single module beyond the crate root, where
+the former contains a use declaration that glob imports the crate root's
+items. The correct course here would be for the leaf module to import
+itself and remove its one use declaration before moving on. Then this
+would be integrated into the whole-crate module tree and resolution
+would move on to the crate root. At this point, resolution should find
+there is nothing to do in the crate root. That should finish the first
+pass. The diffing should have decided that another pass is in order, as
+it should have noticed that there is a subtree size mismatch between the
+pre-pass and post-pass states. The infinite loop did not take place in
+the absence of cyclic use declarations before the deduplication routine
+got tweaked, which likely hints at the fact the underlying issue may be
+in the refactoring. A test to sort a bunch of modules should be devised.
+This may reveal the infinite loop is taking place during sorting. The
+test does not fail when basing one off of purely item paths. That hints
+at the fact the issue may be in the secondary sorting condition. Sorting
+by the subtree structure also seems to work. That does imply the issue
+may not be in the sorting routine at all, though maybe these tests are
+too contrived compared with the scenario faced in the test. It could
+also be that the comparison function does not implement a total order,
+and that causes issues when comparing sizes. One alternative to
+performing module deduplication this way is to, during merging, attempt
+to find all modules about to be merged in the module into which to
+merge, then remove those off of the latter, and then merge the modules
+packed as part of the resolution item. That would avoid the need for
+deduplicating modules after merging

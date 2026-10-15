@@ -184,11 +184,17 @@ impl FfiItems {
     /// compare have the same overall shape, and one will be a "natural"
     /// extension of the other.
     ///
-    /// We consider extension here to mean that one module subtree is based on
+    /// We consider "extension" here to mean that one module subtree is based on
     /// the other, and thus only contains both the items from the other and
-    /// possibly more.
+    /// possibly some more items.
     pub(super) fn custom_cmp(&self, other: &Self) -> Ordering {
         let (ours, theirs) = (self.modules.len(), other.modules.len());
+        // [NOTE]: the goal here is to have modules with "larger" subtrees
+        // appear first in the item container, so declaring them to be "smaller"
+        // is required for slice::sort_unstable_by to put them first in the
+        // sorted list of modules in FfiItems::dedup. The same applies the other
+        // way around with "smaller" subtrees that we would like to have appear
+        // later in the sorted list of modules.
         match ours.cmp(&theirs) {
             Ordering::Equal => self
                 .modules
@@ -196,6 +202,11 @@ impl FfiItems {
                 .into_iter()
                 .zip(other.modules.clone())
                 .fold(Ordering::Equal, |_, (our_m, their_m)| {
+                    // [NOTE]: this is intended to not start anew a "regular"
+                    // module comparison through Module::custom_cmp, but to
+                    // rather have all subsequent comparisons be based off of
+                    // the sizes of module subtrees rather than the
+                    // lexicographical comparison of their paths.
                     our_m.items.custom_cmp(&their_m.items)
                 }),
             other => other.reverse(),
@@ -252,12 +263,11 @@ impl FfiItems {
             })
     }
 
-    /// Deduplicates the items in an item container by their path. Items of
-    /// differing kind, like functions and constants, that may happen to have
-    /// the same path will not get deduplicated.
+    /// Deduplicates the items in an item container by their path.
     ///
-    /// A consequence of calling this method is that the items are also sorted
-    /// by their paths.
+    /// Items of differing kind, like functions and constants, that may happen
+    /// to have the same path will not get deduplicated. A consequence of
+    /// calling this method is that the items are also sorted by their paths.
     fn dedup(self) -> FfiItems {
         macro_rules! key_fn {
             () => {
@@ -996,13 +1006,12 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     .foreign_statics
                     .extend_from_slice(&foreign_statics);
                 dst.items.modules.extend_from_slice(&modules);
-                let dst = dst.clone();
                 dst.clone()
             },
         )
 }
 
-/// Appends a new module-local item to an absolute path that does *not* start
+/// Appends a new module-local item to an absolute path that does _not_ start
 /// with `crate`.
 ///
 /// This is used whenever we need to create paths for either items or modules.
@@ -1337,7 +1346,7 @@ mod test1 {
 #[test]
 fn tmp1() {
     let source = r#"
-use test1::*;
+// use test1::*;
 
 pub struct Foo;
 
@@ -1349,4 +1358,24 @@ mod test1 { use super::*; }
     items.visit_file(&file);
     let items = items.clone();
     println!("{:#?}", items);
+}
+
+#[test]
+fn tmp2() {
+    let m1 = Module {
+        cached_path: String::from("a").into_boxed_str(),
+        items: FfiItems::default(),
+        ..Default::default()
+    };
+    let m2 = Module {
+        cached_path: String::from("a").into_boxed_str(),
+        items: FfiItems {
+            modules: vec![Module::default()],
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+    let mut ms = vec![m1, m2];
+    ms.sort_unstable_by(Module::custom_cmp);
+    println!("{:#?}", ms.clone());
 }
