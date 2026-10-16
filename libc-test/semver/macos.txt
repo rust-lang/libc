@@ -169,10 +169,6 @@ SYSPROTO_EVENT
 UTUN_OPT_FLAGS
 UTUN_OPT_IFNAME
 __c_anonymous_bfl_u
-_dyld_get_image_header
-_dyld_get_image_name
-_dyld_get_image_vmaddr_slide
-_dyld_image_count
 arphdr
 bpf_dltlist
 bpf_hdr
@@ -196,9 +192,6 @@ in6_addrlifetime
 in6_aliasreq
 in6_ifreq
 in6_ifstat
-mach_header
-mach_header_64
-mach_vm_map
 memmem
 posix_spawn_file_actions_addchdir
 posix_spawn_file_actions_addchdir_np

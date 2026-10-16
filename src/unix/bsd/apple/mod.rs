@@ -746,7 +746,6 @@ s2! {
     }
 
     #[exhaustive] // FIXME(exhaustive): review for 1.0
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header {
         pub magic: u32,
@@ -759,7 +758,6 @@ s2! {
     }
 
     #[exhaustive] // FIXME(exhaustive): review for 1.0
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub struct mach_header_64 {
         pub magic: u32,
@@ -5044,17 +5042,13 @@ extern "C" {
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn sbrk(increment: c_int) -> *mut c_void;
     pub fn settimeofday(tv: *const crate::timeval, tz: *const crate::timezone) -> c_int;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_image_count() -> u32;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     #[allow(deprecated)]
     pub fn _dyld_get_image_header(image_index: u32) -> *const mach_header;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_vmaddr_slide(image_index: u32) -> intptr_t;
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn _dyld_get_image_name(image_index: u32) -> *const c_char;
 
@@ -5285,7 +5279,6 @@ extern "C" {
     pub fn _NSGetEnviron() -> *mut *mut *mut c_char;
     pub fn _NSGetProgname() -> *mut *mut c_char;
 
-    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_vm_map(
         target_task: crate::vm_map_t,
