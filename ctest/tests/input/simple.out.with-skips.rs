@@ -98,6 +98,22 @@ mod generated_tests {
         check_same(rust_align, c_align, "`volatile_char` align");
     }
 
+    pub fn ctest_size_align_VarBuf() {
+        extern "C" {
+            fn ctest_size_of__VarBuf() -> u64;
+            fn ctest_align_of__VarBuf() -> u64;
+        }
+
+        let rust_size = size_of::<VarBuf>() as u64;
+        let c_size = unsafe { ctest_size_of__VarBuf() };
+
+        let rust_align = align_of::<VarBuf>() as u64;
+        let c_align = unsafe { ctest_align_of__VarBuf() };
+
+        check_same(rust_size, c_size, "`VarBuf` size");
+        check_same(rust_align, c_align, "`VarBuf` align");
+    }
+
 
 /* Make sure that the signededness of a type alias in Rust and C is the same.
  *
@@ -120,8 +136,77 @@ mod generated_tests {
 
 /* Make sure that the offset and size of a field in a struct/union is the same. */
 
+    pub fn ctest_field_size_offset_VarBuf_len() {
+        extern "C" {
+            fn ctest_offset_of__VarBuf__len() -> u64;
+            fn ctest_size_of__VarBuf__len() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<VarBuf>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        
+        let ty_ptr = unsafe { &raw const (*uninit_ty).len   };
+        
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        
+        let ctest_field_offset = unsafe { ctest_offset_of__VarBuf__len() };
+        check_same(offset_of!(VarBuf, len) as u64, ctest_field_offset,
+            "field offset `len` of `VarBuf`");
+        
+        let ctest_field_size = unsafe { ctest_size_of__VarBuf__len() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size `len` of `VarBuf`");
+    }
+
+    pub fn ctest_field_size_offset_VarBuf_data() {
+        extern "C" {
+            fn ctest_offset_of__VarBuf__data() -> u64;
+        }
+
+        
+        let ctest_field_offset = unsafe { ctest_offset_of__VarBuf__data() };
+        check_same(offset_of!(VarBuf, data) as u64, ctest_field_offset,
+            "field offset `data` of `VarBuf`");
+    }
+
 
 /* Tests if the pointer to the field is the same in Rust and C. */
+
+    pub fn ctest_field_ptr_VarBuf_len() {
+        extern "C" {
+            fn ctest_field_ptr__VarBuf__len(a: *const VarBuf) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VarBuf>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).len) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VarBuf__len(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field pointer access `len` of `VarBuf`");
+    }
+
+    pub fn ctest_field_ptr_VarBuf_data() {
+        extern "C" {
+            fn ctest_field_ptr__VarBuf__data(a: *const VarBuf) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VarBuf>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).data) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VarBuf__data(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field pointer access `data` of `VarBuf`");
+    }
 
 /* Generates a padding map for a specific type.
  *
@@ -260,7 +345,12 @@ fn main() {
 // and we already use atomics.
 fn run_all() {
     ctest_size_align_volatile_char();
+    ctest_size_align_VarBuf();
     ctest_signededness_volatile_char();
+    ctest_field_size_offset_VarBuf_len();
+    ctest_field_size_offset_VarBuf_data();
+    ctest_field_ptr_VarBuf_len();
+    ctest_field_ptr_VarBuf_data();
     ctest_roundtrip_volatile_char();
     ctest_foreign_fn_printf();
 }

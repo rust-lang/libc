@@ -117,7 +117,9 @@ fn test_skip_simple() {
         .skip_struct(|s| s.ident() == "Person")
         .skip_union(|u| u.ident() == "Word")
         .skip_fn(|f| f.ident() == "calloc")
-        .skip_static(|s| s.ident() == "byte");
+        .skip_static(|s| s.ident() == "byte")
+        // Structs with a flexible array member should not be passed by value.
+        .skip_roundtrip(|s| s == "VarBuf");
 
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
@@ -132,7 +134,9 @@ fn test_map_simple() {
     let (mut gen_, out_dir) = default_generator(1, Some("simple.h")).unwrap();
     gen_.rename_constant(|c| (c.ident() == "B").then(|| "C_B".to_string()))
         .alias_is_c_enum(|e| e == "Color")
-        .skip_signededness(|ty| ty == "Color");
+        .skip_signededness(|ty| ty == "Color")
+        // Structs with a flexible array member should not be passed by value.
+        .skip_roundtrip(|s| s == "VarBuf");
 
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }

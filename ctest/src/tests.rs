@@ -131,6 +131,9 @@ fn test_translation_type_array() {
     );
     assert_r2cdecl("[u8; 10]", "uint8_t foo[10]");
     assert_r2cdecl("[[u8; 64]; 32]", "uint8_t foo[32][64]");
+    // Flexible array members become arrays of unknown size.
+    assert_r2cdecl("[u8; 0]", "uint8_t foo[]");
+    assert_r2cdecl("*mut [u8; 0]", "uint8_t (*foo)[]");
 }
 
 #[test]
