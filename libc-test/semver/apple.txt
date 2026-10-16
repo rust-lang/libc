@@ -2058,7 +2058,6 @@ mach_thread_self
 mach_timebase_info
 mach_timebase_info_data_t
 mach_vm_address_t
-mach_vm_map
 mach_vm_offset_t
 mach_vm_size_t
 madvise
