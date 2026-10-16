@@ -2054,6 +2054,8 @@ mach_header
 mach_header_64
 mach_host_self
 mach_port_t
+mach_task_self
+mach_task_self_
 mach_thread_self
 mach_timebase_info
 mach_timebase_info_data_t
