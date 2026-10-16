@@ -28,6 +28,11 @@ pub type clockid_t = c_int;
 pub type timer_t = c_int;
 pub type key_t = c_uint;
 pub type id_t = c_int;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform."
+)]
+pub type sighandler_t = size_t;
 
 pub type useconds_t = u32;
 pub type dev_t = u32;
