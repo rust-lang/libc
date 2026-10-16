@@ -144,6 +144,7 @@ Common sources include:
 * RedoxOS: <https://gitlab.redox-os.org/redox-os/relibc>
 * Uclibc: <https://github.com/wbx-github/uclibc-ng> (mirror),
   <https://git.uclibc-ng.org/git/uclibc-ng.git> (original)
+* WASI: <https://github.com/WebAssembly/wasi-libc>
 * Windows GNU: <https://github.com/mingw-w64/mingw-w64> (unofficial mirror),
   <https://sourceforge.net/p/mingw-w64/mingw-w64/ci/master/tree/> (original)
 * Windows MSVC: <https://github.com/microsoft/win32metadata>
