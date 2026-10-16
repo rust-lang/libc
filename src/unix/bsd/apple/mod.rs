@@ -5279,6 +5279,7 @@ extern "C" {
     pub fn _NSGetEnviron() -> *mut *mut *mut c_char;
     pub fn _NSGetProgname() -> *mut *mut c_char;
 
+    #[cfg(target_os = "macos")]
     #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
     pub fn mach_vm_map(
         target_task: crate::vm_map_t,

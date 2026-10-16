@@ -192,6 +192,7 @@ in6_addrlifetime
 in6_aliasreq
 in6_ifreq
 in6_ifstat
+mach_vm_map
 memmem
 posix_spawn_file_actions_addchdir
 posix_spawn_file_actions_addchdir_np
