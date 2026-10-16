@@ -285,9 +285,9 @@ cfg_if! {
 
         pub const PTRACE_DETACH: c_uint = 11;
 
-        pub const F_RDLCK: c_int = 1;
-        pub const F_WRLCK: c_int = 2;
-        pub const F_UNLCK: c_int = 3;
+        pub const F_RDLCK: c_short = 1;
+        pub const F_WRLCK: c_short = 2;
+        pub const F_UNLCK: c_short = 3;
 
         pub const SFD_CLOEXEC: c_int = 0x400000;
 
@@ -321,9 +321,9 @@ cfg_if! {
 
         pub const PTRACE_DETACH: c_uint = 17;
 
-        pub const F_RDLCK: c_int = 0;
-        pub const F_WRLCK: c_int = 1;
-        pub const F_UNLCK: c_int = 2;
+        pub const F_RDLCK: c_short = 0;
+        pub const F_WRLCK: c_short = 1;
+        pub const F_UNLCK: c_short = 2;
 
         pub const SFD_CLOEXEC: c_int = 0x080000;
 
