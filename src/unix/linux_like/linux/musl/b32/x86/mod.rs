@@ -174,6 +174,17 @@ s! {
         pub msg_ctime: crate::time_t,
     }
 
+    pub struct user_fpregs_struct {
+        pub cwd: c_long,
+        pub swd: c_long,
+        pub twd: c_long,
+        pub fip: c_long,
+        pub fcs: c_long,
+        pub foo: c_long,
+        pub fos: c_long,
+        pub st_space: [c_long; 20],
+    }
+
     pub struct user_fpxregs_struct {
         pub cwd: c_ushort,
         pub swd: c_ushort,
@@ -188,6 +199,44 @@ s! {
         pub st_space: [c_long; 32],
         pub xmm_space: [c_long; 32],
         padding: Padding<[c_long; 56]>,
+    }
+
+    pub struct user_regs_struct {
+        pub ebx: c_long,
+        pub ecx: c_long,
+        pub edx: c_long,
+        pub esi: c_long,
+        pub edi: c_long,
+        pub ebp: c_long,
+        pub eax: c_long,
+        pub xds: c_long,
+        pub xes: c_long,
+        pub xfs: c_long,
+        pub xgs: c_long,
+        pub orig_eax: c_long,
+        pub eip: c_long,
+        pub xcs: c_long,
+        pub eflags: c_long,
+        pub esp: c_long,
+        pub xss: c_long,
+    }
+
+    pub struct user {
+        pub regs: user_regs_struct,
+        pub u_fpvalid: c_int,
+        pub i387: user_fpregs_struct,
+        pub u_tsize: c_ulong,
+        pub u_dsize: c_ulong,
+        pub u_ssize: c_ulong,
+        pub start_code: c_ulong,
+        pub start_stack: c_ulong,
+        pub signal: c_long,
+        __reserved: Padding<c_int>,
+        pub u_ar0: *mut user_regs_struct,
+        pub u_fpstate: *mut user_fpregs_struct,
+        pub magic: c_ulong,
+        pub u_comm: [c_char; 32],
+        pub u_debugreg: [c_int; 8],
     }
 
     pub struct ucontext_t {
@@ -855,6 +904,7 @@ pub const SYS_process_mrelease: c_long = 448;
 pub const SYS_futex_waitv: c_long = 449;
 pub const SYS_set_mempolicy_home_node: c_long = 450;
 pub const SYS_fchmodat2: c_long = 452;
+pub const SYS_mseal: c_long = 462;
 
 // offsets in user_regs_structs, from sys/reg.h
 pub const EBX: c_int = 0;
