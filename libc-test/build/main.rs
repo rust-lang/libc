@@ -1979,10 +1979,6 @@ fn test_wasi(t: &Target) {
         _ => false,
     });
 
-    // d_name is declared as a flexible array in WASI libc, so it
-    // doesn't support sizeof.
-    cfg.skip_struct_field(|s, field| s.ident() == "dirent" && field.ident() == "d_name");
-
     cfg.build_test("../src/lib.rs", "ctest_output.rs");
 }
 
@@ -5058,16 +5054,12 @@ fn test_linux(t: &Target) {
             ("user_regs", _) if arm32 => true,
             // the `ifr_ifrn` field is an anonymous union
             ("iwreq", "ifr_ifrn") => true,
-            // the `key` field is a zero-sized array
-            ("iw_encode_ext", "key") => true,
             // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
             ("tcp_info", "tcpi_snd_rcv_wscale") => true,
             // the `tcpi_delivery_fastopen_bitfields` map two bitfield fields stored in a u8
             ("tcp_info", "tcpi_delivery_fastopen_bitfields") if musl => true,
             // either fsid_t or int[2] type
             ("fanotify_event_info_fid", "fsid") => true,
-            // `handle` is a flexible array member
-            ("fanotify_event_info_fid", "handle") => true,
             // `anonymous_1` is an anonymous union
             ("ptp_perout_request", "anonymous_1") => true,
             // `anonymous_2` is an anonymous union
@@ -5080,8 +5072,6 @@ fn test_linux(t: &Target) {
             {
                 true
             }
-            // invalid application of 'sizeof' to incomplete type 'long unsigned int[]'
-            ("mcontext_t", "__extcontext") if musl && loongarch64 => true,
             // glibc 2.39 took one of the six spares for `f_type`
             ("statvfs" | "statvfs64", "f_type" | "__f_spare")
                 if gnu && versions.glibc.unwrap() < (2, 39) =>
@@ -5092,11 +5082,6 @@ fn test_linux(t: &Target) {
             ("xsk_tx_metadata", "xsk_tx_metadata_union") => true,
             // After musl 1.2.0, the type becomes `int` instead of `long`.
             ("utmpx", "ut_session") if musl => true,
-            // `frames` is a flexible array member
-            ("bcm_msg_head", "frames") => true,
-            // FAM
-            ("af_alg_iv", "iv") => true,
-            ("file_handle", "f_handle") if musl || uclibc => true,
             // FIXME(ctest): ctest does not translate the rust code which computes the padding size
             ("pthread_cond_t", "__padding") if l4re => true,
             (
