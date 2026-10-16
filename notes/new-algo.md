@@ -1089,4 +1089,85 @@ module again, it should only remove this latter ocurrence and not the
 first nested ocurrence. But it should "mark" all items in the module
 where the first nested ocurrence appeared at as being addressable by an
 "infinite" path consisting of repeated occurrences of the path up to the
-point where the removed module appeared.
+point where the removed module appeared. On this same topic, how are
+paths for the same item reexported through different modules connected
+to each other? The whole point of having different paths available for a
+given item is that a skip over the path in a reexport will also skip
+over the original item, as otherwise it would not make much sense to
+have the reexporting module's test not include the item, but the source
+module include the item. That doesn't void the need for use declaration
+resolution, but does mean that the current approach is effectively
+useless at getting at this. Resolution should not import an item over to
+the module where the use declaration takes it into account; It should
+only add to that item's set of addressable paths the path of the target
+module. Doing that without resorting to an anciliary data structure
+seems doable until one looks into initially unresolvable use
+declarations. Those have a dependency on one or more other use
+declarations, which makes resolution as it is currently conceived
+necessary. But maybe both ideas can be merged. All items could have
+their path fields modified to consist of a collection of possible paths,
+which would be expanded each time a use declaration were resolved. This
+would require expanding the set of use declarations in both the source
+item and the newly imported item. That does mean the source module of
+the item (not the use declaration) would have to be kept as part of the
+resolution state in the single-use resolution proposition. But that's
+already getting into the details of the implementation; Those are best
+left for later. The goal here would be to have the set of addressable
+paths of the item in both the source and target modules consider all
+paths by which that one item can be referred to. This would allow
+fine-grained skipping, which does tno take into account more than one
+item at a time; It does perform deterministic traversals, so one could
+trust a given item could be the one to hold all addressable paths for
+itself, but that seems like unnecessary complexity at a potentially
+higher cost. Though this would also require changes to the skipping
+logic. The current skips are all bunched up as wrappers over each type
+of item, and exposed to the closures that the user feeds to the test
+generator. The simplest way to accomplish this would be to add
+documentation to the skipping functions mentioning that the user can
+access the set of paths by which an item can be referred to through some
+public method on the types used for each item. The current API to
+provide access to a single path would be removed in favor of providing
+access to a set of possible paths associated with the term. So to recap,
+the following changes are necessar to potentially have use declaration
+resolution be ready for use in other areas of ctest.
+
+- Modifying the path field of each item type to hold a collection of
+  paths instead of a singular path. During parsing, the parsed path
+  would make up the singleton list of paths considered for a given item.
+
+- Changing the merging proposition to stop renaming the paths of items
+  to be merged, in favor of adding the renamed path to the list of
+  addressable paths of the item.
+
+- Changing the merging proposition to traverse the whole-crate module
+  tree and add to the source item the renamed path obtained above. This
+  will need changing the first assumption of the proposition to instead
+  be a stateful pair of the subtree where the use declarations were
+  sourced from, and the whole-crate module tree to perform a search and
+  an update on.
+
+- Changing the deduplication proposition to add another step after
+  deduplicating the modules in the item container. This new step should
+  traverse the subtree and check that the root module of this subtree
+  does not appear more than once in a path down the tree.
+
+The first three points seem clear. The last point is going to need more
+discussion. Suppose we have a crate root with one child module, and the
+child contains another child module. Then assume the crate root contains
+an import of all items in the leaf module, and another import of all
+items in the node module. Then assume the node module has a glob import
+of all items in the crate root. Initially, the crate root can not
+resolve the use declaration that points to the leaf module because it
+has no knowledge of it; It first needs to bring over all items from the
+node module. The algorithm performs DFS so it reaches the node module
+before it gets to the crate root. That will attempt to resolve the crate
+root, which will add the crate root to the list of child modules to the
+node module. Then the crate root will resolve its own node module import
+to bring over a child module that contains a nested crate root. That
+should be the end state of the first resolution pass. Before starting
+the second pass, deduplication takes place, but will currently find
+nothing to deduplicate. The issue comes from having two duplicates down
+two different paths in the subtree rooted at the crate root. One
+corresponds with the crate root brought over from the node module, and
+the other corresponds with the crate root that is now a child of the
+node module.
