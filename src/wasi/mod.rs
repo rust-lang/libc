@@ -3,8 +3,6 @@
 //! `wasi-libc` project provides multiple libraries including emulated features, but we list only
 //! basic features with `libc.a` here.
 
-use core::iter::Iterator;
-
 use crate::prelude::*;
 
 pub type intmax_t = i64;
@@ -675,7 +673,7 @@ f! {
         }
         let set = &*set;
         let n = set.__nfds;
-        return set.__fds[..n].iter().any(|p| *p == fd);
+        return set.__fds[..n].contains(&fd);
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
@@ -684,7 +682,7 @@ f! {
         }
         let set = &mut *set;
         let n = set.__nfds;
-        if !set.__fds[..n].iter().any(|p| *p == fd) {
+        if !set.__fds[..n].contains(&fd) {
             set.__nfds = n + 1;
             set.__fds[n] = fd;
         }
