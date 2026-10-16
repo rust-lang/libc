@@ -916,4 +916,177 @@ This leaves open the question about initially unresolvable use
 declarations, which require information introduced by another use
 declaration to even attempt resolution. It would seem the list of graph
 paths would have to be updated each time a graph path were resolved in
-full.
+full. To recap, the algorithm will need to, after parse-time is done and
+before resolution starts, build a graph off of the use declarations and
+modules. Because the nodes are the modules, and the use declarations are
+the edges, we can likely base ourselves off of the same tree. But this
+discussion is not one we should be having now. The priority is to think
+through the handling of cyclic paths. How would ideal handling of this
+look like? Let us consider a cyclic example. Suppose the crate root
+contains both a child module and a glob import of the child's items.
+Suppose as well that the child module contains a glob import of the
+crate root's items. How would the ideal solution look like? The crate
+root should end up with the child's items but not with itself nested.
+This whole approach may not be the right way of thinking about it.
+Apparently, Rust allows the same arbitrary nesting behavior that was
+thought inadequate in the second revision of the algorithm. But it does
+not loop infinitely when resolving. In the same example as presented
+above, rustc will gladly allow the user to refer to some arbitrarily
+self-nested child module, which is exactly the behavior of repeated
+resolution in the second revision of the algorithm. For future
+reference, this is illustrated in the following code snippet.
+
+```rust
+mod foo {
+    pub struct Foo;
+
+    mod bar {
+        use super::*;
+
+        const FOO: bar::bar::bar::Foo = bar::bar::Foo;
+    }
+}
+```
+
+The fact rustc does hit termination even though it shouldn't terminate
+resolution is likely because they treat either one of paths or modules
+as codata. In other words, to rustc, the subtree rooted at a given
+module is possibly infinite. Of course, allowing codata requires knowing
+you're handling codata, as otherwise you can kiss goodbye to
+termination. This means the second revision of the algorithm is still
+feasible, so long as these potentially infinite trees can be detected.
+This prompts at the fact efforts should now focus on integrating another
+algorithm for codata detection. Maybe we can skim the literature to try
+and find out if there's something for this. But it's best if we give it
+a shot ourselves first. The one point at which we know for sure that
+termination took place is back at the resolution driver. This is because
+before that, we only really know we are resolving "some" module in the
+single-pass resolution proposition. Granted, one could compare the
+subtree module tree with the whole crate module tree, and do whatever
+then, but we do just this once the call unwinds back to the driver, so
+it seem like a waste to not profit the comparison that already takes
+place in the driver. Back at the resolution driver, the heuristic for
+termination will have to be improved. An additional pass must be made
+after each resolution pass that checks if some module contains itself.
+If it does, then we know for sure that whatever is under the subtree
+rooted at that module can be referred to through multiple paths that do
+not officially appear anywhere. This does mean items will need a new
+marker field that indicates whether their paths are propositionally
+equal to paths with each segment before the last repeated an arbitrary
+amount of times. But maybe this can generalized to any item. See, by the
+time we get to parsing and resolving use declarations, we know for sure
+that input is well-formed because it would not have passed cargo-check
+otherwise. That does mean every path by which an item is referred to is
+technically correct. Thus, any item that can be referred to by one of
+these infinitely nested paths can be safely assumed to also be skippable
+in ctest through one of these infinite paths. In other words, we can
+allow all items to be referred to by these infinite paths, and just
+about call it. Granted, if somebody used some such path for an item that
+does not allow it in the skips of the crate being tested, ctest would
+give it carte blanche. Maybe it's a good idea to ask Mr. Gross about
+this. But it would be best to have a working implementation that
+showcases the behavior first. To recap, the new pass that ought be added
+to the resolution driver should follow these steps:
+
+1. Traverse the whole-crate module tree anew, checking among the list of
+   child modules to a given module whether there exists some module for
+   which there is another child module with the same path.
+
+2. If there is, flag the module so as to know that the next resolution
+   pass, once it has resolved the module in question, should not attempt
+   to replace the nested self with some newly resolved self.
+
+3. Imply the whole-crate module tree before the recursive comparison
+   with the pre-pass state. The diffing should happen after the nested
+   self has been flagged, as otherwise we risk non-termination.
+
+It's unclear how would the diffing step ignore the nested self module.
+Is it supposed to be wary of the "flag" that these nested self modules
+are marked with? Likely not. The idea is lacking in some respect; The
+point of resolution is to eventually converge to a stable state where
+resolving any use declaration anew would not produce changes on the
+whole-crate module tree. What would the ideal case in a case such as the
+currently failing test look like? Let us include the code snippet of the
+test here.
+
+```rust
+pub struct Foo;
+
+mod foo {
+    use super::*;
+}
+```
+
+The tests fail at the point where the driver diffs the pre-pass state
+corresponding to the first pass, with the post-pass state after the
+second pass. The former contains the crate root, the foo module and a
+the foo module nested anew within it. The post-pass state contains the
+crate root, the foo module, then the foo module nested within it, and
+then the foo module nested again. But this is not the point where it
+should really detect that the foo module should not be nested any
+further. It actually is, though. The effects of the first pass are
+required to understand that the items in the subtree rooted at a given
+module can be referred to by an infinite number of paths. It is once the
+same module is nested a third time that resolution should remove the
+second level of nesting, essentially "normalizing" a potentially
+infinite subtree. This can happen during deduplication before returning
+to the resolution driver, where the "larger" subtree is scanned for a
+third ocurrence of the top-level module within a direct line of
+descendant modules. The idea is to perform a tree traversal that, for
+each module, checks the next two descendant modules and ensures they are
+not the same module. If they are, then the whole subtree rooted at the
+the third ocurrence of the module in question should be removed. Then
+the resolution driver can perform the diffing as it currently does, and
+the recursive comparison should consider the pre-pass and post-pass
+states to be structurally equal. Before getting into the weeds of it,
+though, it may be a better idea to think about edge cases where this
+will remove some nested self module that should not be removed. A
+simpler edge case may be an absolute path to the crate root followed by
+a rename. Say we have a crate root and a single child module, where the
+latter contains a fine-grained renamed import of the crate root. After
+the first pass, the child module contains the crate root as its own
+child module. After the second pass, the resolved crate root is "larger"
+than the prior crate root, so the child module gets the "new" crate
+root. The solution to this problem would notice that the same nested
+crate root exists within the larger subtree, and should favor removal of
+the nested crate root. Then it should flag all items that appear before
+the now removed self-module as being addressable through an "infinite"
+set of nested paths that repeat the non-removed segments of the path. To
+further illustrate this idea, consider the following example, which is
+much like the one in the currently failing test, but reduces the
+complexity of the type of use declaration to a renamed fine-grained
+import.
+
+```rust
+mod foo {
+    use crate as root;
+
+    pub struct Foo;
+
+    const FOO: root::foo::root::foo::root::foo::Foo = Foo;
+}
+```
+
+The crate root is imported through a renamed identifier, which on each
+subsequent pass allows further nestedness of the same crate root within
+module foo. rustc understands that there is potential non-termination if
+the use declaration resolution does not halt after the crate root is
+found in the subtree rooted at the crate root itself. That seems to be
+the pattern that identifies module subtrees as codata; Given some module
+a, another snapshot of module a may be found within the subtree rooted
+at module a. Though this seems to collide with having a set of child
+modules each contain an import referring to the crate root. Or not. If
+really "viewed" as a tree, a different copy of the crate root exists on
+each child module that has imported the crate root. A "linear" scan over
+all items in a given module, here the crate root, would attempt to
+remove the nested crate root off of each of the child modules containing
+it as a consequence of resolving the super-relative imports. That is
+undesired, because what is really needed here is to keep the first
+nested crate root, but not any subsequently nested crate roots. In other
+words, if a given tree traversal stumbles upon the same module where the
+traversal started on, and then further down the tree finds the same
+module again, it should only remove this latter ocurrence and not the
+first nested ocurrence. But it should "mark" all items in the module
+where the first nested ocurrence appeared at as being addressable by an
+"infinite" path consisting of repeated occurrences of the path up to the
+point where the removed module appeared.
