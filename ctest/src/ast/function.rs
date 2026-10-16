@@ -10,14 +10,12 @@ use crate::{
 #[derive(Debug, Clone)]
 pub struct Fn {
     pub(crate) public: bool,
-    #[expect(unused)]
     pub(crate) abi: Abi,
     pub(crate) ident: BoxStr,
     pub(crate) link_name: Option<BoxStr>,
-    #[expect(unused)]
     pub(crate) parameters: Vec<Parameter>,
-    #[expect(unused)]
     pub(crate) return_type: Option<syn::Type>,
+    pub(crate) variadic: bool,
 }
 
 impl Fn {

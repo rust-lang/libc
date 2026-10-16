@@ -189,7 +189,8 @@ CTEST_EXTERN {{ item.c_ty }} ctest_roundtrip__{{ item.id }}(
 {%- for item in ctx.foreign_fn_tests +%}
 
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__{{ item.id }}(void) {
-    return (ctest_void_func){{ item.c_val }};
+    {{ item.c_decl }} = {{ item.c_val }};
+    return (ctest_void_func)ctest_fn;
 }
 {%- endfor +%}
 

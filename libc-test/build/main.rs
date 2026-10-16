@@ -325,6 +325,14 @@ fn test_apple(t: &Target) {
         }
     });
 
+    cfg.skip_fn_ptrcheck(|func| match func {
+        // FIXME(apple): the C prototypes take const os_unfair_lock pointers.
+        "os_unfair_lock_assert_owner" | "os_unfair_lock_assert_not_owner" => true,
+        // FIXME(apple): the C prototype returns ssize_t, not int.
+        "freadlink" => true,
+        _ => false,
+    });
+
     cfg.skip_struct_field(move |struct_, field| {
         match (struct_.ident(), field.ident()) {
             // Anonymous ADT fields
@@ -4851,6 +4859,10 @@ fn test_linux(t: &Target) {
             // https://github.com/gnzlbg/ctest/issues/68
             "lio_listio" if musl => true,
 
+            // GNU mode uses an enum for the timer selector, while libc exposes the
+            // POSIX int parameter. Check these against the POSIX declarations below.
+            "getitimer" | "setitimer" if gnu => true,
+
             // Needs glibc 2.34 or later.
             "posix_spawn_file_actions_addclosefrom_np" if gnu && sparc64 => true,
             // Needs glibc 2.35 or later.
@@ -5117,6 +5129,8 @@ fn test_linux(t: &Target) {
             result = result || s == "cfsetispeed";
             result = result || s == "cfsetospeed";
             result = result || s == "cfsetspeed";
+            // glibc marks swapcontext with a C-only indirect_return attribute on AArch64.
+            result = result || (aarch64 && s == "swapcontext");
             if mips || sparc {
                 result = result || s == "tcgetattr";
                 result = result || s == "tcsetattr";
@@ -5146,6 +5160,19 @@ fn test_linux_like_apis(t: &Target) {
     let emscripten = t.emscripten();
     let android = t.android();
     assert!(linux || android || emscripten);
+
+    if gnu {
+        let mut cfg = ctest_cfg();
+        config_gnu_bits(t, &mut cfg);
+        cfg.header("sys/time.h")
+            .skip_alias(|_| true)
+            .skip_static(|_| true)
+            .skip_const(|_| true)
+            .skip_struct(|_| true)
+            .skip_union(|_| true)
+            .skip_fn(|function| !matches!(function.ident(), "getitimer" | "setitimer"));
+        cfg.build_test("../src/lib.rs", "linux_itimer.rs");
+    }
 
     let mut cfg = ctest_cfg();
     if linux || android || emscripten {
