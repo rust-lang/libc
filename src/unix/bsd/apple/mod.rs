@@ -5322,7 +5322,8 @@ extern "C" {
         out_processor_infoCnt: *mut mach_msg_type_number_t,
     ) -> crate::kern_return_t;
 
-    #[deprecated(since = "0.2.55", note = "Use the `mach2` crate instead")]
+    #[doc(hidden)] // technically public but is an internal implementation detail.
+    #[deprecated(since = "0.2.55", note = "use mach_task_self() instead")]
     pub static mut mach_task_self_: crate::mach_port_t;
     pub fn task_for_pid(
         host: crate::mach_port_t,
