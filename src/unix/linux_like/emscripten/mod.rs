@@ -1129,7 +1129,10 @@ pub const B4000000: crate::speed_t = 0o010017;
 
 pub const SO_BINDTODEVICE: c_int = 25;
 pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
+#[cfg(target_pointer_width = "32")]
 pub const SO_TIMESTAMP: c_int = 63;
+#[cfg(target_pointer_width = "64")]
+pub const SO_TIMESTAMP: c_int = 29;
 pub const SO_MARK: c_int = 36;
 pub const SO_RXQ_OVFL: c_int = 40;
 pub const SO_PEEK_OFF: c_int = 42;
@@ -1211,8 +1214,14 @@ pub const SO_LINGER: c_int = 13;
 pub const SO_REUSEPORT: c_int = 15;
 pub const SO_RCVLOWAT: c_int = 18;
 pub const SO_SNDLOWAT: c_int = 19;
+#[cfg(target_pointer_width = "32")]
 pub const SO_RCVTIMEO: c_int = 66;
+#[cfg(target_pointer_width = "64")]
+pub const SO_RCVTIMEO: c_int = 20;
+#[cfg(target_pointer_width = "32")]
 pub const SO_SNDTIMEO: c_int = 67;
+#[cfg(target_pointer_width = "64")]
+pub const SO_SNDTIMEO: c_int = 21;
 pub const SO_ACCEPTCONN: c_int = 30;
 
 pub const IPV6_RTHDR_LOOSE: c_int = 0;
@@ -1250,10 +1259,19 @@ pub const EXTPROC: crate::tcflag_t = 0x00010000;
 
 pub const MAP_HUGETLB: c_int = 0x040000;
 
+#[cfg(target_pointer_width = "32")]
 pub const F_GETLK: c_int = 12;
+#[cfg(target_pointer_width = "64")]
+pub const F_GETLK: c_int = 5;
 pub const F_GETOWN: c_int = 9;
+#[cfg(target_pointer_width = "32")]
 pub const F_SETLK: c_int = 13;
+#[cfg(target_pointer_width = "64")]
+pub const F_SETLK: c_int = 6;
+#[cfg(target_pointer_width = "32")]
 pub const F_SETLKW: c_int = 14;
+#[cfg(target_pointer_width = "64")]
+pub const F_SETLKW: c_int = 7;
 pub const F_SETOWN: c_int = 8;
 pub const F_OFD_GETLK: c_int = 36;
 pub const F_OFD_SETLK: c_int = 37;
