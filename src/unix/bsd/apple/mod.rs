@@ -421,6 +421,7 @@ s2! {
 
     #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct sockaddr_in {
+        /// Length of the socket address structure.
         pub sin_len: u8,
         pub sin_family: crate::sa_family_t,
         pub sin_port: crate::in_port_t,
