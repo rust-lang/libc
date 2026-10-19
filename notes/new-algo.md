@@ -1179,7 +1179,7 @@ config:
 ---
 graph
   root[Crate root] ==> node[Node module]
-  node ==> child[Child module]
+  node ==> child[Leaf module]
   root -.-> child
   root --> node
   node --> root
@@ -1206,11 +1206,11 @@ config:
 graph
   root[Crate root] ==> node[Node module]
 
-  node ==> child[Child module]
+  node ==> child[Leaf module]
   node ==> oldnode[Node module]
 
   subgraph old["&nbsp"]
-  oldnode ==> oldchild[Child module]
+  oldnode ==> oldchild[Leaf module]
   end
 
   root -.-> child
@@ -1235,7 +1235,7 @@ config:
 ---
 graph
   root[Crate root] ==> node[Node module]
-  root ==> newchild[Child module]
+  root ==> newchild[Leaf module]
   root ==> newnode[Node module]
 
   subgraph new["&nbsp"]
@@ -1244,16 +1244,172 @@ graph
   newnodechild
   end
 
-  newnode ==> newnodechild[Child module]
+  newnode ==> newnodechild[Leaf module]
 
-  node ==> child[Child module]
+  node ==> child[Leaf module]
   node ==> oldnode[Node module]
 
   subgraph old["&nbsp"]
-  oldnode ==> oldchild[Child module]
+  oldnode ==> oldchild[Leaf module]
   end
 
   root --> newchild
   root --> node
   node --> root
 ```
+
+The above graph makes it obvious that, during the second resolution
+pass, the reexport in the node module of all items in the crate root
+would bring over the child module and node module that are the children
+of the crate root, but those would be deduplicated with the ones in the
+node module. The one imported item that would not be deduplicated is the
+node module, which would be again nested in the node module. That would
+prompt non-termination, as the same pattern would repeat anew the next
+resolution pass. It would seem the natural solution is thus to add some
+further logic to the super case of the single-use resolution function.
+Super-relative use statements would first fetch the parent module, then
+they would strip from the parent module the child module where the use
+declaration currently lives at. In theory, some arbitrary chain of
+super-relative path segments can only appear at the start of a use
+declaration's path, so this should be extensible to the stateful subtree
+that we carry through resolution passes. Except the module that would
+have to have the codata pattern added to its set of items' possible
+paths would have to be the module where the use declaration is sourced
+from. That means that part of the strategy will have to be delayed until
+later on, potentially at merge time. This last thing isn't entirely
+clear just yet. It may be a good idea to first reconsider the above
+example and reproduce the graph without having super-relative imports
+bring over the module where the use declaration appears at. Suppose then
+that we are posed with the same crate module tree, where a crate root
+has one child module, and this child module has another child module.
+The crate root contains a glob import of the items in the node module
+and a glob import of the items in the leaf module. The latter one is not
+resolvable during the first pass because it requires having the leaf
+module accessible as a direct descendat of the crate root. This only
+happens when the crate root resolves its glob import of the node
+module's items (among which we find the leaf module.)
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+  node ==> child[Leaf module]
+  root -.-> child
+  root --> node
+  node --> root
+```
+
+During the first resolution pass, the first module that will attempt
+resolution is the node module. This follows the same depth-first
+approach as has already been mentioned above. The node module this time
+ends up with no new items, as the only item in the crate root is the
+node module itself, which we are now skipping. The next step of the
+resolution pass goes through resolving the glob-import in the crate root
+of the node module. That should import over the contents of the node
+module, which here means the leaf module. The end state after the first
+resolution pass would look as follows.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+  root ==> newchild[Leaf module]
+  node ==> child[Leaf module]
+  subgraph new["&nbsp"]
+  newchild
+  end
+  root --> newchild
+  root --> node
+  node --> root
+```
+
+After the first pass, the resolution driver would conclude that
+resolution must continue, as there have been changes between the pre-
+and post-pass states of the whole-crate module-tree. During the second
+resolution pass, the same depth-first order as before would be applied.
+Resolution of the node module's use declaration would be attempted, and
+that would import all items from the crate root but the stateful
+subtree, which here means the node root. That would bring over a
+duplicate of the leaf module to the list of child modules to the node
+module. During deduplication in the single-module resolution pass, the
+node module would have that duplicate leaf module cleansed. This would
+then mean that the final state of the second resolution pass would be
+equivalent to that of the first resolution pass. This would prompt the
+resolution driver to terminate. The graph does not take into account
+importing items, but the second resolution pass would also be capable of
+resolving the leaf module glob import found in the crate root. That
+would import all items in the leaf module over to the crate root, which
+would effectively make the resolution driver perform another pass. That
+would then bring over the leaf module's items to the node module,
+because of the glob import of the crate root's items found in the node
+module. But beyond that, no other use declaration in the third pass
+should change the module tree. The glob import of the node module's
+items in the crate root would end up deduplicating the leaf module's
+items and the leaf module itself. The glob import of the leaf module's
+items would also end up deduplicating this module's items after having
+already been added to the crate root in the second resolution pass. Now,
+how does the above graph, which represents the end state of the
+whole-crate module tree post-resolution, look like in comparison with
+the ideal case? In the ideal case, one may refer to the items in the
+node module with an arbitrarily nested chain of the node module's
+identifier. As an example, take the following code snippet, which is
+accepted by rustc and replicates the crate module tree considered in
+this running example.
+
+```rust
+mod foo {
+    pub use super::*;
+
+    pub struct Foo;
+
+    mod bar {
+        pub struct Bar;
+    }
+}
+
+pub use self::{bar::*, foo::*}
+```
+
+The above code would allow referring to both the Foo and Bar records
+through some arbitrarily nested foo::foo::... path. This does mean the
+codata pattern has do be expanded to all items in the subtrees rooted at
+the child modules of the module where the super-relative use declaration
+lives at. And I would say that's about it. Except that's not it. Notice
+how the codata pattern can also manifest itself through the imports of
+the node module's items at the crate root. If there were some function
+baz at the crate root that referred to record Foo by some path
+foo::foo::...::Foo, rustc would accept it. The reason for that is that
+the crate root is also meant to get a copy of the items in the node
+module with the codata pattern added to their list of addressable paths.
+That should be doable in the deduplication function, which now just
+orders and deduplicates non-modules by their paths. It will have to be
+refactored into deduplicating those items by the number of addresssable
+paths they contain. The more addressable paths an item has, the more
+up-to-date is their state is in the module tree. This should hold
+because we can say there's an invariant about an item's list of
+addressable paths. These will only ever be a singleton list or a larger
+list, and the list itself will never shrink. So as a quick recap for
+future me implementing this:
+
+* There is need to change all parsed items' types to have their path
+  field indicate a set of addressable paths instead of only a single
+  path.
+
+* There is need for the single-use resolution function to remove the use
+  declaration's module from the list of child modules of the parent
+  module fetched in the super subcase of both name and path cases.
+
+* There is need for the deduplication function to change the sorting
+  function to instead take into account both the cached path, and in the
+  case of equivalent cached paths, the length of the addressabele paths.
+
+  The latter should have those items with the longest lists appear first
+  post-sorting. This means it will have to adopt the same
+  reverse-ordering strategy as the special case when deduplicating
+  modules.
