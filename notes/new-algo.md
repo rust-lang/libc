@@ -895,19 +895,19 @@ one of the leaf module or the node module. Let us assume cycles are
 discarded upon detection. Then only one path could be walked. But should
 cycles really be discarded? The idea currently seems to be as follows.
 
-- Build a directed graph where the nodes are the modules, and the edges
+* Build a directed graph where the nodes are the modules, and the edges
   are the use declarations, such that the direction of the edges is
   given by the module where the target item(s) of the use declaration
   lives in.
 
-- Detect all connected components in the graph. This should be fairly
+* Detect all connected components in the graph. This should be fairly
   straightforward.
 
-- For each connected component, compute all paths and subsequently sort
+* For each connected component, compute all paths and subsequently sort
   the paths by whether they aren't cycles or not. The non-cyclic paths
   should come first.
 
-- For each component, and for each computed path in the sorted list
+* For each component, and for each computed path in the sorted list
   obtained above, perform a reverse walk of the path, resolving the use
   declarations in the order they are found in this reverse walk. Remove
   any resolved use declaration.
@@ -992,11 +992,11 @@ to the resolution driver should follow these steps:
    child modules to a given module whether there exists some module for
    which there is another child module with the same path.
 
-2. If there is, flag the module so as to know that the next resolution
+1. If there is, flag the module so as to know that the next resolution
    pass, once it has resolved the module in question, should not attempt
    to replace the nested self with some newly resolved self.
 
-3. Imply the whole-crate module tree before the recursive comparison
+1. Imply the whole-crate module tree before the recursive comparison
    with the pre-pass state. The diffing should happen after the nested
    self has been flagged, as otherwise we risk non-termination.
 
@@ -1128,25 +1128,25 @@ access the set of paths by which an item can be referred to through some
 public method on the types used for each item. The current API to
 provide access to a single path would be removed in favor of providing
 access to a set of possible paths associated with the term. So to recap,
-the following changes are necessar to potentially have use declaration
+the following changes are necessary to potentially have use declaration
 resolution be ready for use in other areas of ctest.
 
-- Modifying the path field of each item type to hold a collection of
+* Modifying the path field of each item type to hold a collection of
   paths instead of a singular path. During parsing, the parsed path
   would make up the singleton list of paths considered for a given item.
 
-- Changing the merging proposition to stop renaming the paths of items
+* Changing the merging proposition to stop renaming the paths of items
   to be merged, in favor of adding the renamed path to the list of
   addressable paths of the item.
 
-- Changing the merging proposition to traverse the whole-crate module
+* Changing the merging proposition to traverse the whole-crate module
   tree and add to the source item the renamed path obtained above. This
   will need changing the first assumption of the proposition to instead
   be a stateful pair of the subtree where the use declarations were
   sourced from, and the whole-crate module tree to perform a search and
   an update on.
 
-- Changing the deduplication proposition to add another step after
+* Changing the deduplication proposition to add another step after
   deduplicating the modules in the item container. This new step should
   traverse the subtree and check that the root module of this subtree
   does not appear more than once in a path down the tree.
@@ -1170,4 +1170,90 @@ nothing to deduplicate. The issue comes from having two duplicates down
 two different paths in the subtree rooted at the crate root. One
 corresponds with the crate root brought over from the node module, and
 the other corresponds with the crate root that is now a child of the
-node module.
+node module. To illustrate this, consider the following diagram.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+  node ==> child[Child module]
+  root -.-> child
+  root --> node
+  node --> root
+```
+
+The thicker directed edge indicates a connection in the graph, while the
+thinner lines indicate a reexport of the target node's modules. The
+crate root additionally has a dotted reexport to the child module, which
+indicates it is not resolvable during the first resolution pass. That
+one reexport depends on the glob import of the node module's items to
+the crate root. We'll describe now the states during the first pass. The
+algorithm performs DFS, so it will first reach the child module and find
+there's no reexports. At that point, it will move back to the node
+module, where it finds there's a reexport of all items in the crate
+root. This brings over the node module and the child module to the node
+module's list of child modules. That can been seen in the following
+graph.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+
+  node ==> child[Child module]
+  node ==> oldnode[Node module]
+
+  subgraph old["&nbsp"]
+  oldnode ==> oldchild[Child module]
+  end
+
+  root -.-> child
+  root --> node
+  node --> root
+```
+
+The imported-over items, during deduplication, also remove the use
+declarations in the imported modules. This means the nested node module
+(the only item in the crate root) gets the use declaration to the crate
+root removed. Still during the first pass, the algorithm reaches the
+crate root, and attempts to resolve the reexport of all items in the
+node module. This should bring over the child module to the crate root,
+and thus make the reexport of the child's items now resolvable. The
+crate root also ends up with the node module that contains itself
+nested. The end state of the first pass is as follows.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+  root ==> newchild[Child module]
+  root ==> newnode[Node module]
+
+  subgraph new["&nbsp"]
+  newchild
+  newnode
+  newnodechild
+  end
+
+  newnode ==> newnodechild[Child module]
+
+  node ==> child[Child module]
+  node ==> oldnode[Node module]
+
+  subgraph old["&nbsp"]
+  oldnode ==> oldchild[Child module]
+  end
+
+  root --> newchild
+  root --> node
+  node --> root
+```
