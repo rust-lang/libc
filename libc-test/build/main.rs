@@ -2370,6 +2370,7 @@ fn test_android(t: &Target) {
             }
 
             "getdomainname" | "setdomainname" if android < 26 => true,
+            "mallopt" if android < 26 => true,
 
             // FIXME(android): bad function pointers:
             "isalnum" | "isalpha" | "iscntrl" | "isdigit" | "isgraph" | "islower" | "isprint"
