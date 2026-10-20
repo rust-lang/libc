@@ -103,13 +103,6 @@ const SO_TIMESTAMP_OLD: c_int = 29;
 const SO_TIMESTAMPNS_OLD: c_int = 35;
 const SO_TIMESTAMPING_OLD: c_int = 37;
 
-const SO_TIMESTAMP_NEW: c_int = 63;
-const SO_TIMESTAMPNS_NEW: c_int = 64;
-const SO_TIMESTAMPING_NEW: c_int = 65;
-
-const SO_RCVTIMEO_NEW: c_int = 66;
-const SO_SNDTIMEO_NEW: c_int = 67;
-
 pub const SO_DETACH_REUSEPORT_BPF: c_int = 68;
 
 pub const SO_PREFER_BUSY_POLL: c_int = 69;
@@ -145,6 +138,13 @@ cfg_if! {
     } else {
         #[allow(deprecated)]
         const TIME_T_LONG: bool = size_of::<crate::time_t>() == size_of::<c_long>();
+
+        const SO_TIMESTAMP_NEW: c_int = 63;
+        const SO_TIMESTAMPNS_NEW: c_int = 64;
+        const SO_TIMESTAMPING_NEW: c_int = 65;
+
+        const SO_RCVTIMEO_NEW: c_int = 66;
+        const SO_SNDTIMEO_NEW: c_int = 67;
 
         pub const SO_TIMESTAMP: c_int = if TIME_T_LONG {
             SO_TIMESTAMP_OLD
