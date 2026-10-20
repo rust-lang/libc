@@ -530,6 +530,11 @@ pub const S_IROTH: u32 = 0x004;
 pub const S_IWOTH: u32 = 0x002;
 pub const S_IXOTH: u32 = 0x001;
 
+// termios.h
+pub const ICANON: tcflag_t = 1 << 1;
+pub const ECHO: tcflag_t = 1 << 3;
+pub const TCSANOW: c_int = 0;
+
 // sys/poll.h
 pub const POLLIN: pollevent_t = 0x01;
 pub const POLLRDNORM: pollevent_t = 0x01;
