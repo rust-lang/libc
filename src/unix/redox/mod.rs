@@ -22,6 +22,11 @@ pub type rlim_t = c_ulonglong;
 pub type sa_family_t = u16;
 pub type sem_t = *mut c_void;
 pub type sigset_t = c_ulonglong;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform."
+)]
+pub type sighandler_t = size_t;
 pub type socklen_t = u32;
 pub type speed_t = u32;
 pub type suseconds_t = c_int;
