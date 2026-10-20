@@ -1471,7 +1471,256 @@ though, the second pass would, again, attempt to resolve the use
 declaration pointing towards the items of the crate root. This would
 bring over the node module and whatever items lived in the crate root
 (in the above example, record Foo.) But that should be about it, because
-the leaf module would be removed off of the imported node module.
+the leaf module would be removed off of the imported node module before
+the resolution item were yield in the single-use resolution function.
 Without getting into the details of the implementation, it seems there's
-at least one thing to note here. What would be the codata pattern of all
-items' list of addressable paths under the leaf module?
+at least one thing that doesn't seem quite right here. What would be the
+codata pattern of all items' list of addressable paths under the leaf
+module? Expanding the code snippet with example uses may be in order.
+
+```rust
+mod foo {
+    mod bar {
+        use super::super::*;
+
+        const FOO: foo::bar::foo::bar::Foo = Foo;
+    }
+}
+
+pub struct Foo;
+```
+
+The codata pattern is in the two-segment fragment foo::bar. That means
+all items now living in the leaf module, among which we find record Foo,
+are meant to have the codata pattern associate the upward path of some
+ancestor modules except for the module where the item is sourced from.
+Here, this means that the items brought over to the lea module would
+have to be capable of being addressed by their absolute paths, except
+for the first segment of the path, which in this instance is "invisible"
+because it is the crate root. In other words, the codata pattern
+detection and addition to the list of addressable paths of the item must
+happen after the item is renamed to reflect the path of its new parent
+module. That doesn't currently happen nor can it possibly take place in
+the single-use resolution function because we do not keep track of the
+module where the use declaration was sourced from. That would mean that
+specific piece of logic would have to be moved to the merging function.
+This does change the plan outlined in the bullet points above.
+
+* Change the path field of all parsed items into accepting a set of
+  addressable paths instead of a single path.
+
+* Change the merge function to perform another step after renaming and
+  before extending the module into which to merge. This step should
+  consist of looking up each module to merge in search of the module
+  into which to merge within the subtree rooted at them.
+
+  This would ensure that the module into which to merge is not found
+  nested within the subtree it is a root of.
+
+This strategy has some fairly large flaws as it stands. We considered
+changing the super subcase of the name and path cases of the single-use
+resolution function, but that is not a great idea. See, that function
+takes into account some stateful pair of a subtree and the whole-crate
+module tree, as well as some use declaration. For all we know, once we
+unwind from the leaf module to the node module after munching through
+the first super segment, we will also remove the node module off of the
+crate root after stumbling upon the second super segment. That would
+return back to the leaf module a crate root that does not contain the
+node module. The resulting module tree is incorrect. One solution to
+this would be to extensively refactor the case of super-relative
+segments. Instead of individually munching through each segment, and
+yielding the immediate parent before moving on to the next segment, all
+super segments could be munched at once. Basically, it would go like
+this.
+
+* Have some auxiliary function that was used as soon as a super-relative
+  import were detected. This function would eagerly munch through all
+  super segments of the path, but only the super segments. As it went on
+  munching, it would count the number of super segments, and yield this
+  number upon hitting the basecase. The basecases here would be hit once
+  there were either no more segments left in the path, or the next
+  segment is a non-super-relative segment.
+
+* The returned number would indicate the amount of times we would have
+  to fetch the parent module of the current stateful subtree. This would
+  yield the target module after all super-relative segments are
+  processed.
+
+  This target module can then be used in the module fetching function to
+  obtain the "last" ancestor module the use declaration points at. This
+  module would then be rid of the current stateful subtree by attempting
+  to look up the latter in the former. This is the key part in avoiding
+  having some module nested within itself.
+
+So that's the non-termination problem solved. The next problem is about
+dealing with the codata pattern. This we could potentially also solve by
+integrating it into the above scheme. We know that the items brought
+over from the use declaration have to be addressable by a nested path.
+But that is only the first part of the story. Thus far, we've been
+considering fairly couth though still pathological cases. What about a
+super-relative import that, after going up to some ancestor module, goes
+back down into some unrelated branch of the whole-crate module tree?
+Consider the following code snippet example, as well as the accompanying
+graph.
+
+```rust
+mod foo {
+    mod bar {
+        use super::super::baz::*;
+    }
+}
+
+mod baz {
+    pub struct Baz;
+}
+```
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> foo & baz
+  foo ==> bar
+  bar --> baz
+```
+
+In this case, we would want the module tree post-resolution to look as
+follows.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> foo & baz
+  foo ==> bar
+  bar ==> baz2[baz]
+  bar --> baz2[baz]
+  subgraph n["&nbsp"]
+  baz2
+  end
+```
+
+The module resolution strategy would reach module bar, find the use
+declaration, and assuming the eager super munching strategy were used,
+it would first fetch the crate root, then it would strip bar off of the
+subtree in the crate root, and then it would continue munching through
+the rest of the super-relative use declaration, which points at the baz
+module (a child of the crate root.) The next case that would be hit in
+the single-use resolution function would be the name basecase, which
+would refer to module baz. This would then be looked up in the stateful
+subtree carried across passes, and it would be successfully resolved.
+All items from baz would be imported over to the bar module in the end.
+
+Further attempts at resolution would go through the same motions.
+Namely, and just in case, the crate root would be fetched anew, the bar
+module would be wiped off of its subtree, and the baz module would be
+found in the next call to the single-use resolution function. Then it
+would bring over all the items from module baz, which would be
+deduplicated with those already brought over from the first resolution
+pass.
+
+Now, how would this work with a super-relative glob import in the baz
+module? Suppose the baz module always comes second in the resolutions
+made of the child modules to the crate root. This would imply that the
+foo module would be processed first, and thus the bar module's use
+declaration would be processed first as well. The code snippet for this
+example and the accompanying graph would look as follows.
+
+```rust
+mod foo {
+    mod bar {
+        use super::super::baz::*;
+
+        const FOO: baz::baz::baz::baz::Foo = Foo;
+    }
+}
+
+pub struct Foo;
+
+mod baz {
+    pub use super::*;
+
+    pub const BAZ: baz::baz::baz::baz::Foo = Foo;
+}
+```
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> foo
+  root ==> baz
+  foo ==> bar
+  bar --> baz
+  baz --> root
+```
+
+In this case, we would want to have the end graph look as follows.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> foo
+  root ==> baz
+  foo ==> bar
+  bar ==> foo3[foo]
+  baz ==> foo2[foo]
+  foo2 ==> bar2[bar]
+  bar --> baz
+  baz --> root
+  subgraph n["&nbsp"]
+  foo2
+  bar2
+  end
+  subgraph n2["&nbsp"]
+  foo3
+  end
+```
+
+Resolution would follow first by going down the path where the bar
+module lies at. This would attempt to resolve the super-relative
+declaration that points towards the items of the baz module. That would
+yield no items whatsoever, because the baz module is still empty. Then
+resolution would reach the baz module, where it would attempt to resolve
+the crate root. It would resolve the super-relative module, then get rid
+of the baz module in the subtree rooted at the crate root, and bring
+over all remaining items. We're only considering modules in the graph,
+so that would bring over the foo module with the bar module nested
+within it. The use declaration in the baz module would bring over the
+foo module with the baz module within it, and, of course, all cleansed
+of use declarations.
+
+That would just about finish the first resolution pass, after which the
+resolution driver would conclude that another pass would be in order.
+
+The second pass would go through the bar module's use declaration again,
+but this time we would find that it would not remove itself off of the
+foo module child that is part of the items in baz. In other words, the
+graph for the ideal end-state would not be reached; The bar module would
+end up with itself nested, which means we actually haven't solved just
+yet the non-termination issue. Or does it? Recall how the proposed
+super-relative resolution proceeds. We munch through all super segments
+of the use declaration, and upon hitting the "last" ancestor module that
+the use declaration points at, we traverse the entire subtree rooted at
+that module to remove all occurrences of the stateful subtree in the
+single-use resolution function. This would mean that both the "original"
+bar and the one imported in the baz module as part of its use
+declaration would be removed. Then, single-use resolution would follow
+up with the last non-super segment of the path, which would point at
+module baz and then at all items in module baz. This would yield only
+module foo, because at this point we've been following resolution using
+as stateful subtree the crate root without any ocurrences of module bar.
+
+This does imply there is no need to change anything from the strategy
+followed thus far. So long as the super munching actually works, then we
+should be gold even in cases where the super-relative use declaration
+doesn't immediately glob-import all items from the ancestor module.
