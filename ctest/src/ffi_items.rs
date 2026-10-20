@@ -1182,7 +1182,8 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         abi,
         cached_path,
         cached_ident,
-        path,
+        path: path.clone(),
+        addressable_paths: vec![path.clone()],
         link_name,
         parameters,
         return_type,
@@ -1203,7 +1204,8 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
         abi,
         cached_path,
         cached_ident,
-        path,
+        path: path.clone(),
+        addressable_paths: vec![path.clone()],
         link_name,
         ty,
     });
@@ -1220,7 +1222,8 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
         public,
         cached_path,
         cached_ident,
-        path,
+        path: path.clone(),
+        addressable_paths: vec![path.clone()],
         ty,
     });
 }
@@ -1240,7 +1243,8 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
         public,
         cached_path,
         cached_ident,
-        path,
+        path: path.clone(),
+        addressable_paths: vec![path.clone()],
         fields,
     });
 }
@@ -1256,7 +1260,8 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
         public,
         cached_path,
         cached_ident,
-        path,
+        path: path.clone(),
+        addressable_paths: vec![path.clone()],
         fields,
     });
 }
@@ -1272,7 +1277,8 @@ fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
         public,
         cached_path,
         cached_ident,
-        path,
+        path: path.clone(),
+        addressable_paths: vec![path.clone()],
         ty,
     });
 }
@@ -1366,11 +1372,13 @@ impl<'ast> Visit<'ast> for FfiItems {
         if is_crate_root {
             *self = running_items.clone();
         } else {
+            let path = running_items.current_module.clone();
             self.modules.push(Module {
                 public: matches!(vis, Visibility::Public(_)),
                 cached_path: path_to_string(running_items.current_module.clone()),
                 cached_ident: ident.to_string().into_boxed_str(),
-                path: running_items.current_module.clone(),
+                path: path.clone(),
+                addressable_paths: vec![path.clone()],
                 items: running_items.clone(),
             });
         }

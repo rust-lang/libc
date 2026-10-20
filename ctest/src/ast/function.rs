@@ -1,3 +1,5 @@
+use syn::Path;
+
 use crate::{
     Abi,
     BoxStr,
@@ -14,7 +16,8 @@ pub struct Fn {
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
-    pub(crate) path: syn::Path,
+    pub(crate) path: Path,
+    pub(crate) addressable_paths: Vec<Path>,
     pub(crate) link_name: Option<BoxStr>,
     #[expect(unused)]
     pub(crate) parameters: Vec<Parameter>,

@@ -1,3 +1,5 @@
+use syn::Path;
+
 use crate::BoxStr;
 
 /// Represents a type alias defined in Rust.
@@ -6,7 +8,8 @@ pub struct Type {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
-    pub(crate) path: syn::Path,
+    pub(crate) path: Path,
+    pub(crate) addressable_paths: Vec<Path>,
     pub(crate) ty: syn::Type,
 }
 

@@ -1,3 +1,8 @@
+use syn::{
+    Path,
+    Type,
+};
+
 use crate::BoxStr;
 
 /// Represents a constant variable defined in Rust.
@@ -6,8 +11,9 @@ pub struct Const {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
-    pub(crate) path: syn::Path,
-    pub(crate) ty: syn::Type,
+    pub(crate) path: Path,
+    pub(crate) addressable_paths: Vec<Path>,
+    pub(crate) ty: Type,
 }
 
 impl Const {

@@ -1,3 +1,8 @@
+use syn::{
+    Path,
+    Type,
+};
+
 use crate::{
     Abi,
     BoxStr,
@@ -14,9 +19,10 @@ pub struct Static {
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
-    pub(crate) path: syn::Path,
+    pub(crate) path: Path,
+    pub(crate) addressable_paths: Vec<Path>,
     pub(crate) link_name: Option<BoxStr>,
-    pub(crate) ty: syn::Type,
+    pub(crate) ty: Type,
 }
 
 impl Static {

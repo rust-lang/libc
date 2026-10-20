@@ -1,3 +1,5 @@
+use syn::Path;
+
 use crate::{
     BoxStr,
     Field,
@@ -9,7 +11,8 @@ pub struct Union {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
-    pub(crate) path: syn::Path,
+    pub(crate) path: Path,
+    pub(crate) addressable_paths: Vec<Path>,
     pub(crate) fields: Vec<Field>,
 }
 

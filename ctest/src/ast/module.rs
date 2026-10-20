@@ -14,6 +14,7 @@ pub struct Module {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
+    pub(crate) addressable_paths: Vec<Path>,
     pub(crate) items: FfiItems,
 }
 
@@ -47,14 +48,16 @@ impl Module {
 
 impl Default for Module {
     fn default() -> Self {
+        let dpath = Path {
+            leading_colon: None,
+            segments: Punctuated::new(),
+        };
         Self {
             public: bool::default(),
             cached_path: String::new().into_boxed_str(),
             cached_ident: String::new().into_boxed_str(),
-            path: Path {
-                leading_colon: None,
-                segments: Punctuated::new(),
-            },
+            path: dpath.clone(),
+            addressable_paths: vec![dpath.clone()],
             items: FfiItems::default(),
         }
     }
