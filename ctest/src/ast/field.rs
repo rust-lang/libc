@@ -14,6 +14,21 @@ impl Field {
         &self.ident
     }
 
+    /// Whether this field is a zero-length array, `[T; 0]`.
+    ///
+    /// This is how a C flexible array member (`T field[]`) is written in Rust. C rejects
+    /// `sizeof` on these, so their size test is skipped.
+    pub fn is_flexible_array(&self) -> bool {
+        let syn::Type::Array(array) = &self.ty else {
+            return false;
+        };
+        matches!(
+            &array.len,
+            syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Int(len), .. })
+                if len.base10_parse::<usize>().is_ok_and(|len| len == 0)
+        )
+    }
+
     /// Return the identifier escaped for Rust source output when needed.
     pub fn rust_ident(&self) -> String {
         if is_rust_keyword(&self.ident) {
