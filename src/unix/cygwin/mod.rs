@@ -381,16 +381,12 @@ s! {
         pub st_gid: gid_t,
         pub st_rdev: dev_t,
         pub st_size: off_t,
-        pub st_atime: time_t,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: time_t,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: time_t,
-        pub st_ctime_nsec: c_long,
+        pub st_atim: timespec,
+        pub st_mtim: timespec,
+        pub st_ctim: timespec,
         pub st_blksize: blksize_t,
         pub st_blocks: blkcnt_t,
-        pub st_birthtime: time_t,
-        pub st_birthtime_nsec: c_long,
+        pub st_birthtim: timespec,
     }
 
     pub struct in_addr {
