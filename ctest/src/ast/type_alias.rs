@@ -5,6 +5,7 @@ use crate::BoxStr;
 pub struct Type {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
+    pub(crate) cached_ident: BoxStr,
     pub(crate) path: syn::Path,
     pub(crate) ty: syn::Type,
 }
@@ -20,12 +21,9 @@ impl Type {
         &self.cached_path
     }
 
-    /// Returns the last path of the identifier, from the absolute path returned
-    /// by [`Type::path`].
-    pub fn ident(&self) -> String {
-        let Some(syn::PathSegment { ident, .. }) = self.path.segments.last() else {
-            unreachable!("all parsed items have at least one element in their path")
-        };
-        ident.to_string()
+    /// Returns the last segment of the type alias's path; Namely, its
+    /// identifier.
+    pub fn ident(&self) -> &str {
+        &self.cached_ident
     }
 }

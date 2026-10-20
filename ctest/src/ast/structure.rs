@@ -11,6 +11,7 @@ use crate::{
 pub struct Struct {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
+    pub(crate) cached_ident: BoxStr,
     pub(crate) path: syn::Path,
     pub(crate) fields: Vec<Field>,
 }
@@ -26,13 +27,9 @@ impl Struct {
         &self.cached_path
     }
 
-    /// Returns the last path of the identifier, from the absolute path returned
-    /// by [`Struct::path`].
-    pub fn ident(&self) -> String {
-        let Some(syn::PathSegment { ident, .. }) = self.path.segments.last() else {
-            unreachable!("all parsed items have at least one element in their path")
-        };
-        ident.to_string()
+    /// Returns the last segment of the struct's path; Namely, its identifier.
+    pub fn ident(&self) -> &str {
+        &self.cached_ident
     }
 }
 
@@ -41,6 +38,7 @@ impl Default for Struct {
         Self {
             public: bool::default(),
             cached_path: String::new().into_boxed_str(),
+            cached_ident: String::new().into_boxed_str(),
             path: Path {
                 leading_colon: None,
                 segments: Punctuated::new(),

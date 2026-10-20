@@ -1,10 +1,7 @@
 use std::cmp::Ordering;
 
+use syn::Path;
 use syn::punctuated::Punctuated;
-use syn::{
-    Path,
-    PathSegment,
-};
 
 use crate::BoxStr;
 use crate::ffi_items::FfiItems;
@@ -15,6 +12,7 @@ use crate::ffi_items::FfiItems;
 pub struct Module {
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
+    pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
     pub(crate) items: FfiItems,
 }
@@ -30,13 +28,9 @@ impl Module {
         &self.cached_path
     }
 
-    /// Returns the last path of the identifier, from the absolute path returned
-    /// by [`Module::path`].
-    pub fn ident(&self) -> String {
-        let Some(PathSegment { ident, .. }) = self.path.segments.last() else {
-            unreachable!("all parsed items have at least one element in their path")
-        };
-        ident.to_string()
+    /// Returns the last segment of the module's path; Namely, its identifier.
+    pub fn ident(&self) -> &str {
+        &self.cached_ident
     }
 
     /// Comparison function for use when sorting modules in [`FfiItems::dedup`].
@@ -56,6 +50,7 @@ impl Default for Module {
         Self {
             public: bool::default(),
             cached_path: String::new().into_boxed_str(),
+            cached_ident: String::new().into_boxed_str(),
             path: Path {
                 leading_colon: None,
                 segments: Punctuated::new(),

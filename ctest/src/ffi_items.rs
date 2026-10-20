@@ -1145,6 +1145,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
     let abi = abi.clone();
     let path = append_path(table.current_module.clone(), i.sig.ident.clone());
     let cached_path = path_to_string(path.clone());
+    let cached_ident = i.sig.ident.to_string().into_boxed_str();
     let parameters = i
         .sig
         .inputs
@@ -1180,6 +1181,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         public,
         abi,
         cached_path,
+        cached_ident,
         path,
         link_name,
         parameters,
@@ -1192,6 +1194,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
     let abi = abi.clone();
     let path = append_path(table.current_module.clone(), i.ident.clone());
     let cached_path = path_to_string(path.clone());
+    let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
     let link_name = extract_single_link_name(&i.attrs);
 
@@ -1199,6 +1202,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
         public,
         abi,
         cached_path,
+        cached_ident,
         path,
         link_name,
         ty,
@@ -1209,11 +1213,13 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
     let cached_path = path_to_string(path.clone());
+    let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
 
     table.aliases.push(Type {
         public,
         cached_path,
+        cached_ident,
         path,
         ty,
     });
@@ -1223,6 +1229,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
     let cached_path = path_to_string(path.clone());
+    let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = match &i.fields {
         syn::Fields::Named(fields) => collect_fields(&fields.named),
         syn::Fields::Unnamed(fields) => collect_fields(&fields.unnamed),
@@ -1232,6 +1239,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
     table.structs.push(Struct {
         public,
         cached_path,
+        cached_ident,
         path,
         fields,
     });
@@ -1241,11 +1249,13 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
     let cached_path = path_to_string(path.clone());
+    let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = collect_fields(&i.fields.named);
 
     table.unions.push(Union {
         public,
         cached_path,
+        cached_ident,
         path,
         fields,
     });
@@ -1255,11 +1265,13 @@ fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
     let cached_path = path_to_string(path.clone());
+    let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
 
     table.constants.push(Const {
         public,
         cached_path,
+        cached_ident,
         path,
         ty,
     });
@@ -1302,7 +1314,8 @@ impl<'ast> Visit<'ast> for FfiItems {
             );
         };
         let is_crate_root = ident == "__ctest_root_mod";
-        let running_items = if is_crate_root {
+
+        let mut running_items = if is_crate_root {
             self.clone()
         } else {
             FfiItems {
@@ -1310,7 +1323,7 @@ impl<'ast> Visit<'ast> for FfiItems {
                 ..Default::default()
             }
         };
-        let mut running_items = running_items.clone();
+
         let uses: Vec<_> = mod_items
             .iter()
             .cloned()
@@ -1346,15 +1359,17 @@ impl<'ast> Visit<'ast> for FfiItems {
             })
             .flatten()
             .collect();
+
         visit::visit_item_mod(&mut running_items, i);
         running_items.uses = uses.clone();
-        let running_items = running_items.clone();
+
         if is_crate_root {
             *self = running_items.clone();
         } else {
             self.modules.push(Module {
                 public: matches!(vis, Visibility::Public(_)),
                 cached_path: path_to_string(running_items.current_module.clone()),
+                cached_ident: ident.to_string().into_boxed_str(),
                 path: running_items.current_module.clone(),
                 items: running_items.clone(),
             });
