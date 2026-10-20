@@ -1406,10 +1406,72 @@ future me implementing this:
   module fetched in the super subcase of both name and path cases.
 
 * There is need for the deduplication function to change the sorting
-  function to instead take into account both the cached path, and in the
-  case of equivalent cached paths, the length of the addressabele paths.
+  logic to instead take into account both the cached path, and in the
+  case of equivalent cached paths, the length of the addressable paths.
 
   The latter should have those items with the longest lists appear first
   post-sorting. This means it will have to adopt the same
   reverse-ordering strategy as the special case when deduplicating
   modules.
+
+There are some concerns about the first point, though. Consider the
+following example, and accompnying graph.
+
+```rust
+mod foo {
+    mod bar {
+        use super::super::*;
+    }
+}
+
+pub struct Foo;
+```
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+  node ==> leaf[Leaf module]
+  leaf --> root
+```
+
+In this instance, one would find that the first resolution step will
+attempt to resolve the use declaration in the leaf module. For that
+matter, there are no other use declarations, so that really is the only
+possible use declaration we can resolve. The issue here would be that
+the super-relative module would not be capable of finding the leaf
+module among the immediate descendants of the crate root. In other
+words, the strategy should not just attempt to remove the module where
+the use declaration is sourced at, but rather traverse the subtree of
+the target module once resolved, and attempt to find the module where
+the use declaration was sourced at. After the first pass, the end result
+of this strategy would look as follows.
+
+```mermaid
+---
+config:
+  layout: elk
+---
+graph
+  root[Crate root] ==> node[Node module]
+  node ==> leaf[Leaf module]
+  leaf ==> node2[Node module]
+  leaf --> root
+  subgraph graph2["&nbsp"]
+  node2
+  end
+```
+
+The second resolution pass would end up doing the same thing, which
+would prompt the resolution driver to terminate. Just to be sure,
+though, the second pass would, again, attempt to resolve the use
+declaration pointing towards the items of the crate root. This would
+bring over the node module and whatever items lived in the crate root
+(in the above example, record Foo.) But that should be about it, because
+the leaf module would be removed off of the imported node module.
+Without getting into the details of the implementation, it seems there's
+at least one thing to note here. What would be the codata pattern of all
+items' list of addressable paths under the leaf module?
