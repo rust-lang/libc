@@ -7,9 +7,9 @@ pub(crate) mod bits {
     #[cfg_attr(
         any(
             target_arch = "mips",
+            target_arch = "mips64",
             target_arch = "mips32r6",
-            target_arch = "mips",
-            target_arch = "mips32r6",
+            target_arch = "mips64r6",
         ),
         path = "../mips/bits/sigaction.rs"
     )]
@@ -23,9 +23,9 @@ pub(crate) mod bits {
     #[cfg_attr(
         any(
             target_arch = "mips",
+            target_arch = "mips64",
             target_arch = "mips32r6",
-            target_arch = "mips",
-            target_arch = "mips32r6",
+            target_arch = "mips64r6",
         ),
         path = "../mips/bits/signum_arch.rs"
     )]
@@ -38,9 +38,9 @@ pub(crate) mod bits {
     #[cfg_attr(
         any(
             target_arch = "mips",
+            target_arch = "mips64",
             target_arch = "mips32r6",
-            target_arch = "mips",
-            target_arch = "mips32r6",
+            target_arch = "mips64r6",
         ),
         path = "../mips/bits/socket_type.rs"
     )]
