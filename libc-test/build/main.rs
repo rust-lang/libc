@@ -1,5 +1,6 @@
 #![allow(clippy::match_like_matches_macro)]
 
+mod linux_version;
 mod semver;
 mod target;
 
@@ -6172,7 +6173,8 @@ impl Versions {
         let src = r#"
             #if defined(__linux__) && defined(__has_include)
             #if __has_include(<linux/version.h>)
-            /* Defines LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL (integers) */
+            /* Newer headers define LINUX_VERSION_MAJOR and LINUX_VERSION_PATCHLEVEL.
+             * Also supports older headers that provide only LINUX_VERSION_CODE. */
             #include "linux/version.h"
             #endif
             #endif
@@ -6250,6 +6252,8 @@ impl Versions {
         let obsd_re = Regex::new(r"^OpenBSD(\d+)_(\d+)$").unwrap();
         let apple_re = Regex::new(r"^__[A-Z]*_(\d+)_(\d+)").unwrap();
 
+        let mut linux_version = linux_version::LinuxVersion::default();
+
         for line in out.lines() {
             let Some(caps) = re.captures(line) else {
                 continue;
@@ -6258,11 +6262,8 @@ impl Versions {
             let value = &caps[2];
 
             match name {
-                "LINUX_VERSION_MAJOR" => {
-                    ret.linux.get_or_insert_default().0 = value.parse().unwrap()
-                }
-                "LINUX_VERSION_PATCHLEVEL" => {
-                    ret.linux.get_or_insert_default().1 = value.parse().unwrap()
+                "LINUX_VERSION_CODE" | "LINUX_VERSION_MAJOR" | "LINUX_VERSION_PATCHLEVEL" => {
+                    linux_version.parse_macro(name, value);
                 }
                 "__GLIBC__" => ret.glibc.get_or_insert_default().0 = value.parse().unwrap(),
                 "__GLIBC_MINOR__" => ret.glibc.get_or_insert_default().1 = value.parse().unwrap(),
@@ -6339,6 +6340,8 @@ impl Versions {
                 _ => (),
             }
         }
+
+        ret.linux = linux_version.get();
 
         println!("cargo:warning=detected versions: {ret:?}");
         ret
