@@ -1,10 +1,14 @@
 use std::cmp::Ordering;
 
+use proc_macro2::Punct;
 use syn::Path;
 use syn::punctuated::Punctuated;
 
-use crate::BoxStr;
 use crate::ffi_items::FfiItems;
+use crate::{
+    BoxStr,
+    ast,
+};
 
 /// Represents a Rust module. `ctest` only considers items for which there is a
 /// corresponding type in this crate.
@@ -32,6 +36,34 @@ impl Module {
     /// Returns the last segment of the module's path; Namely, its identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
+    }
+
+    /// Renames the receiver's path with `new_path`, ensuring that both the
+    /// caches and the aggregate of addressable paths are updated.
+    // [TODO]: use this throughout the ffi_items module to replace the repeated
+    // occurrences of manual renaming implementations.
+    pub(crate) fn rename_path(self, new_path: Path) -> Self {
+        let Module {
+            addressable_paths, ..
+        } = self.clone();
+        Self {
+            cached_path: ast::path_to_string(new_path.clone()),
+            cached_ident: new_path
+                .segments
+                .clone()
+                .last()
+                .expect("msg")
+                .ident
+                .to_string()
+                .into_boxed_str(),
+            path: new_path.clone(),
+            addressable_paths: addressable_paths
+                .clone()
+                .into_iter()
+                .chain([new_path])
+                .collect(),
+            ..self.clone()
+        }
     }
 
     /// Comparison function for use when sorting modules in [`FfiItems::dedup`].

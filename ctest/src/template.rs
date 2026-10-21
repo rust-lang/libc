@@ -760,12 +760,6 @@ impl<'a> TranslateHelper<'a> {
                         // the item as imported throughout the crate's module
                         // tree. The visibility of the item remains the same no
                         // matter where it appears at.
-                        // [TODO]: checking whether the individual occurrence of
-                        // an item in a given module is public is correct. Now,
-                        // we don't modify the visibility of copies of an item
-                        // that exist thanks to a reexport, when we should
-                        // because the visibility of the item is affected by the
-                        // visibility of the use declaration.
                         (generator.skip_private && !item.public)
                             || generator
                                 .skips
@@ -783,7 +777,8 @@ impl<'a> TranslateHelper<'a> {
             // [FIXME]: it may be preferable to rename MapInput::Alias to
             // MapInput::Type, and so avoid having to include another "argument"
             // to the macro. All other item types use the same identifier for
-            // both the variant in MapInput as well as their own type.
+            // both the variant in MapInput as well as their own type. Or maybe
+            // go the other way around, and change Type to Alias.
             filter!(aliases: Type, Alias, "alias");
             filter!(constants: Const, Const, "const");
             filter!(structs: Struct, Struct, "struct");

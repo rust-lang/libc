@@ -15,12 +15,17 @@ pub use field::Field;
 pub use function::Fn;
 pub use module::Module;
 pub use parameter::Parameter;
+use quote::ToTokens;
 pub use static_variable::Static;
 pub use structure::Struct;
+use syn::Path;
 pub use type_alias::Type;
 pub use union::Union;
 
-use crate::MapInput;
+use crate::{
+    BoxStr,
+    MapInput,
+};
 
 /// Transforms an item's absolute path to use `_` as path separator instead of
 /// `::`.
@@ -36,6 +41,15 @@ pub(crate) fn escape_item_path<'a>(item: impl Into<MapInput<'a>>) -> String {
         _ => unimplemented!("other MapInput data constructors do not represent rust items"),
     };
     path.replace("::", "_")
+}
+
+/// Returns a stringified `syn::Path` that is meant to match one-to-one the path
+/// to the item from the crate root.
+pub(crate) fn path_to_string(path: Path) -> BoxStr {
+    path.into_token_stream()
+        .to_string()
+        .replace(|c: char| c.is_ascii_whitespace(), "")
+        .into_boxed_str()
 }
 
 /// The ABI as defined by the extern block.

@@ -9,7 +9,6 @@ use std::ops::{
 };
 
 use proc_macro2::Span;
-use quote::ToTokens;
 use syn::punctuated::Punctuated;
 use syn::token::{
     Brace,
@@ -46,6 +45,7 @@ use crate::{
     Struct,
     Type,
     Union,
+    ast,
 };
 
 enum GenericItem {
@@ -709,7 +709,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     let new_path = new_path!($it.clone());
                     let new_item = $ty {
                         public: r#use.is_public,
-                        cached_path: path_to_string(new_path.clone()),
+                        cached_path: ast::path_to_string(new_path.clone()),
                         path: new_path.clone(),
                         ..$it.clone()
                     };
@@ -824,18 +824,17 @@ fn get_module(target: Path, root: Module) -> Option<Module> {
 /// returned path will be empty. This follows from the parsing strategy for
 /// paths in `FfiItems`. The absolute paths are all `crate`-_unprepended_.
 fn get_parent_path(root: Module) -> Path {
-    // [NOTE]: this performs a `saturating_sub` because there is one and only
-    // one item in the crate's module tree that has an empty path; The crate
-    // root. That is only wrapped in a `Module` of its own only after parsing.
-    // This function currently only gets used during parsing, so there is a
-    // chance this gets called with the virtual module that wraps the crate
-    // root's `FfiItems`. That is not logically possible, because well-formed
-    // input can not have a `use` declaration with `super` in the path at the
-    // crate root. This function is used when stumbling upon `super` in function
-    // `resolve_use`.
+    // [NOTE]: this performs a saturating_sub because there is one and only one
+    // item in the crate's module tree that has an empty path; The crate root.
+    // That is only wrapped in a Module of its own only after parsing.  This
+    // function currently only gets used during parsing, so there is a chance
+    // this gets called with the virtual module that wraps the crate root's
+    // FfiItems. That is not logically possible, because well-formed input can
+    // not have a use declaration with super in the path at the crate root. This
+    // function is used when stumbling upon super in function resolve_use.
     //
     // The above assumption does not change the way this is implemented, except
-    // you could very well change the `saturating_sub` for overflowing
+    // you could very well change the saturating_sub for overflowing
     // subtraction. It is best if this function is protected against what would
     // currently be misuse.
     let new_segments = root
@@ -847,8 +846,7 @@ fn get_parent_path(root: Module) -> Path {
         .fold(Punctuated::new(), |p, s| {
             let mut p = p.clone();
             p.push(s);
-            let p = p.clone();
-            p
+            p.clone()
         });
     Path {
         leading_colon: None,
@@ -903,34 +901,35 @@ fn update_tree(src: Module, dst: Module) -> Module {
 ///
 /// The subtree root module itself also gets the transform applied to its path.
 /// The `cached_path` field of each item is updated accordingly.
-fn manipulate_path(root: Module, f: impl ops::Fn(syn::Path) -> Path + Clone) -> Module {
-    let new_root_path = f(root.path.clone());
-    let new_root_cache = path_to_string(new_root_path.clone());
-    macro_rules! map_items {
-        ($field:ident: $ty:tt) => {{
-            root.items
+fn manipulate_path(root: Module, f: impl ops::Fn(Path) -> Path + Clone) -> Module {
+    let root_path = f(root.path.clone());
+    let root_cache = ast::path_to_string(root_path.clone());
+    macro_rules! map_non_modules {
+        ($($field:ident: $ty:tt),+ $(,)?) => {$(
+            let $field = root.items
                 .$field
                 .clone()
                 .into_iter()
                 .map(|it| {
                     let new_path = f(it.path.clone());
-                    let new_cache = path_to_string(new_path.clone());
                     $ty {
-                        cached_path: new_cache.clone(),
+                        cached_path: ast::path_to_string(new_path.clone()),
                         path: new_path.clone(),
                         ..it.clone()
                     }
                 })
-                .collect::<Vec<_>>()
-        }};
+                .collect::<Vec<_>>();
+        )+};
     }
-    let new_aliases = map_items!(aliases: Type);
-    let new_structs = map_items!(structs: Struct);
-    let new_unions = map_items!(unions: Union);
-    let new_constants = map_items!(constants: Const);
-    let new_foreign_functions = map_items!(foreign_functions: Fn);
-    let new_foreign_statics = map_items!(foreign_statics: Static);
-    let new_modules: Vec<_> = root
+    map_non_modules! {
+        aliases: Type,
+        structs: Struct,
+        unions: Union,
+        constants: Const,
+        foreign_functions: Fn,
+        foreign_statics: Static,
+    }
+    let modules: Vec<_> = root
         .items
         .modules
         .clone()
@@ -938,18 +937,18 @@ fn manipulate_path(root: Module, f: impl ops::Fn(syn::Path) -> Path + Clone) -> 
         .map(|m| manipulate_path(m.clone(), f.clone()))
         .collect();
     let new_items = FfiItems {
-        aliases: new_aliases.clone(),
-        structs: new_structs.clone(),
-        unions: new_unions.clone(),
-        constants: new_constants.clone(),
-        foreign_functions: new_foreign_functions.clone(),
-        foreign_statics: new_foreign_statics.clone(),
-        modules: new_modules.clone(),
+        aliases: aliases.clone(),
+        structs: structs.clone(),
+        unions: unions.clone(),
+        constants: constants.clone(),
+        foreign_functions: foreign_functions.clone(),
+        foreign_statics: foreign_statics.clone(),
+        modules: modules.clone(),
         ..Default::default()
     };
     Module {
-        cached_path: new_root_cache.clone(),
-        path: new_root_path.clone(),
+        cached_path: root_cache.clone(),
+        path: root_path.clone(),
         items: new_items.clone(),
         ..root.clone()
     }
@@ -1025,8 +1024,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                         )
                     };
                     let mut new_path = new_path.clone();
-                    new_path.segments.push(ident);
-                    let new_path = new_path.clone();
+                    new_path.segments.push(ident.clone());
                     new_path.clone()
                 });
                 let nested_modules_with_new_paths: Vec<_> = modules
@@ -1046,8 +1044,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                                 .skip_while(|s| *s != base_path)
                                 .fold(new_path.clone(), |p, s| {
                                     let mut p = p.clone();
-                                    p.segments.push(s);
-                                    let p = p.clone();
+                                    p.segments.push(s.clone());
                                     p.clone()
                                 })
                         })
@@ -1073,7 +1070,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                 // [NOTE]: this removes all use declarations in all descendant
                 // modules of the subtrees to merge because otherwise merged
                 // modules can increase the number of use declarations in the
-                // crate's module tree, which causes non-termination.
+                // crate's module tree, which is one cause of non-termination.
                 let new_nested_modules: Vec<_> = nested_modules_with_new_paths
                     .clone()
                     .into_iter()
@@ -1125,15 +1122,6 @@ fn append_path(base: Path, new: Ident) -> Path {
     } else {
         syn::parse_quote! { #base::#new }
     }
-}
-
-/// Returns a stringified `syn::Path` that is meant to match one-to-one the path
-/// to the item from the crate root.
-fn path_to_string(path: Path) -> BoxStr {
-    path.into_token_stream()
-        .to_string()
-        .replace(|c: char| c.is_ascii_whitespace(), "")
-        .into_boxed_str()
 }
 
 /// Determine whether an item is visible to other crates.
@@ -1192,7 +1180,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
     let public = is_visible(&i.vis);
     let abi = abi.clone();
     let path = append_path(table.current_module.clone(), i.sig.ident.clone());
-    let cached_path = path_to_string(path.clone());
+    let cached_path = ast::path_to_string(path.clone());
     let cached_ident = i.sig.ident.to_string().into_boxed_str();
     let parameters = i
         .sig
@@ -1242,7 +1230,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
     let public = is_visible(&i.vis);
     let abi = abi.clone();
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = path_to_string(path.clone());
+    let cached_path = ast::path_to_string(path.clone());
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
     let link_name = extract_single_link_name(&i.attrs);
@@ -1262,7 +1250,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
 fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = path_to_string(path.clone());
+    let cached_path = ast::path_to_string(path.clone());
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
 
@@ -1279,7 +1267,7 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
 fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = path_to_string(path.clone());
+    let cached_path = ast::path_to_string(path.clone());
     let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = match &i.fields {
         syn::Fields::Named(fields) => collect_fields(&fields.named),
@@ -1300,7 +1288,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
 fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = path_to_string(path.clone());
+    let cached_path = ast::path_to_string(path.clone());
     let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = collect_fields(&i.fields.named);
 
@@ -1317,7 +1305,7 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
 fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = path_to_string(path.clone());
+    let cached_path = ast::path_to_string(path.clone());
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
 
@@ -1423,7 +1411,7 @@ impl<'ast> Visit<'ast> for FfiItems {
             let path = running_items.current_module.clone();
             self.modules.push(Module {
                 public: matches!(vis, Visibility::Public(_)),
-                cached_path: path_to_string(running_items.current_module.clone()),
+                cached_path: ast::path_to_string(running_items.current_module.clone()),
                 cached_ident: ident.to_string().into_boxed_str(),
                 path: path.clone(),
                 addressable_paths: vec![path.clone()],
