@@ -575,6 +575,49 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             })
         };
     }
+    // [NOTE]: this ensures any returned item has the visibility of the use
+    // declaration, and doesn't preserve its own visibility.
+    macro_rules! change_vis {
+        ($it:ident : $ty:tt) => {
+            $ty {
+                public: r#use.is_public,
+                ..$it.clone()
+            }
+        };
+    }
+    let change_vis_in_mod = |m: Module| {
+        macro_rules! c {
+            ($($field:ident: $ty:tt),+ $(,)?) => {$(
+                let $field: Vec<_> = m.items.$field
+                    .clone()
+                    .into_iter()
+                    .map(|it| change_vis!(it: $ty))
+                    .collect();
+            )+};
+        }
+        c! {
+            aliases: Type,
+            constants: Const,
+            structs: Struct,
+            unions: Union,
+            foreign_functions: Fn,
+            foreign_statics: Static,
+            modules: Module,
+        }
+        Module {
+            items: FfiItems {
+                aliases,
+                constants,
+                structs,
+                unions,
+                foreign_functions,
+                foreign_statics,
+                modules,
+                ..m.items.clone()
+            },
+            ..m.clone()
+        }
+    };
     match r#use.tree.clone() {
         RefinedUseTree::Name(UseName { ident }) => {
             println!(
@@ -593,7 +636,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             // declaration under no circumstances, so that case is not
             // considered.
             if is_self(ident.clone()) {
-                single_item!(modules: state.subtree.clone());
+                single_item!(modules: change_vis_in_mod(state.subtree.clone()));
             } else if is_super(ident.clone()) {
                 let parent_path = get_parent_path(state.subtree.clone());
                 let Some(parent) = get_module(parent_path.clone(), state.whole_crate.clone())
@@ -610,16 +653,18 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                          considered malformed input."
                     );
                 };
-                single_item!(modules: parent.clone());
+                single_item!(modules: change_vis_in_mod(parent.clone()));
             }
             match state.subtree.items.search(ident.clone()) {
-                Some(GenericItem::Type(t)) => single_item!(aliases: t.clone()),
-                Some(GenericItem::Struct(s)) => single_item!(structs: s.clone()),
-                Some(GenericItem::Union(u)) => single_item!(unions: u.clone()),
-                Some(GenericItem::Const(c)) => single_item!(constants: c.clone()),
-                Some(GenericItem::Fn(f)) => single_item!(foreign_functions: f.clone()),
-                Some(GenericItem::Static(s)) => single_item!(foreign_statics: s.clone()),
-                Some(GenericItem::Module(m)) => single_item!(modules: m.clone()),
+                Some(GenericItem::Type(t)) => single_item!(aliases: change_vis!(t: Type)),
+                Some(GenericItem::Struct(s)) => single_item!(structs: change_vis!(s: Struct)),
+                Some(GenericItem::Union(u)) => single_item!(unions: change_vis!(u: Union)),
+                Some(GenericItem::Const(c)) => single_item!(constants: change_vis!(c: Const)),
+                Some(GenericItem::Fn(f)) => single_item!(foreign_functions: change_vis!(f: Fn)),
+                Some(GenericItem::Static(s)) => {
+                    single_item!(foreign_statics: change_vis!(s: Static))
+                }
+                Some(GenericItem::Module(m)) => single_item!(modules: change_vis!(m: Module)),
                 None => Resolution::Unresolved,
             }
         }
@@ -632,14 +677,14 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     state.subtree.cached_path.clone()
                 },
             );
-            Resolution::Resolved(state.subtree.items.clone())
+            Resolution::Resolved(change_vis_in_mod(state.subtree.clone()).items)
         }
         RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
             println!(
                 "entered rename resolution case with {:?} in module {}",
                 UseRename {
                     ident: ident.clone(),
-                    as_token: syn::Token![as](Span::call_site()),
+                    as_token: syn::parse_quote! {as},
                     rename: rename.clone(),
                 },
                 state.subtree.cached_path.clone()
@@ -663,6 +708,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 ($field:ident , $ty:tt : $it:expr) => {{
                     let new_path = new_path!($it.clone());
                     let new_item = $ty {
+                        public: r#use.is_public,
                         cached_path: path_to_string(new_path.clone()),
                         path: new_path.clone(),
                         ..$it.clone()
@@ -689,7 +735,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 })
             };
             if is_self(ident.clone()) {
-                single_item!(modules: renamer(state.subtree.clone()));
+                single_item!(modules: change_vis_in_mod(renamer(state.subtree.clone())));
             } else if is_super(ident.clone()) {
                 let parent_path = get_parent_path(state.subtree.clone());
                 let Some(parent) = get_module(parent_path.clone(), state.whole_crate.clone())
@@ -699,12 +745,14 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                          applies here."
                     );
                 };
-                single_item!(modules: renamer(parent.clone()));
+                single_item!(modules: change_vis_in_mod(renamer(parent.clone())));
             } else if is_crate(ident.clone()) {
-                single_item!(modules: renamer(state.whole_crate.clone()));
+                single_item!(modules: change_vis_in_mod(renamer(state.whole_crate.clone())));
             }
             match state.subtree.items.search(ident.clone()) {
-                Some(GenericItem::Module(m)) => single_item!(modules: renamer(m.clone())),
+                Some(GenericItem::Module(m)) => {
+                    single_item!(modules: change_vis_in_mod(renamer(m.clone())))
+                }
                 Some(GenericItem::Type(t)) => renamed_single_item!(aliases, Type: t.clone()),
                 Some(GenericItem::Struct(s)) => renamed_single_item!(structs, Struct: s.clone()),
                 Some(GenericItem::Union(u)) => renamed_single_item!(unions, Union: u.clone()),
