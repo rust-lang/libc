@@ -13,11 +13,18 @@ use crate::translator::{
 };
 use crate::{
     BoxStr,
+    Const,
     Field,
+    Fn,
     MapInput,
+    Module,
     Result,
+    Static,
+    Struct,
     TestGenerator,
     TranslationError,
+    Type,
+    Union,
     VolatileItemKind,
     ast,
     cdecl,
@@ -694,10 +701,20 @@ impl<'a> TranslateHelper<'a> {
     fn filter_ffi_items(&mut self) {
         fn skipper(items: &mut FfiItems, generator: &TestGenerator) {
             let skipped = items.aliases.extract_if(.., |alias| {
-                generator
-                    .skips
-                    .iter()
-                    .any(|f| f(&MapInput::CEnumType(alias.path())))
+                // [NOTE]: the point here is to check whether a given alias,
+                // as an item that may exist in multiple places across the
+                // crate, has a skip set up using one of those possible paths
+                // (which differ for an item that exists in multiple places in
+                // the crate.)
+                let possible_aliases = alias.addressable_paths.clone().into_iter().map(|p| Type {
+                    path: p.clone(),
+                    ..alias.clone()
+                });
+                generator.skips.iter().any(|f| {
+                    possible_aliases
+                        .clone()
+                        .any(|it| f(&MapInput::CEnumType(it.path())))
+                })
             });
 
             for item in skipped {
@@ -707,10 +724,20 @@ impl<'a> TranslateHelper<'a> {
             }
 
             let skipped = items.constants.extract_if(.., |constant| {
+                // [NOTE]: ibid.
+                let possible_constants =
+                    constant
+                        .addressable_paths
+                        .clone()
+                        .into_iter()
+                        .map(|p| Const {
+                            path: p.clone(),
+                            ..constant.clone()
+                        });
                 generator.skips.iter().any(|f| {
-                    f(&MapInput::CEnumType(
-                        &constant.ty.to_token_stream().to_string(),
-                    ))
+                    possible_constants
+                        .clone()
+                        .any(|it| f(&MapInput::CEnumType(&it.ty.to_token_stream().to_string())))
                 })
             });
 
@@ -721,10 +748,29 @@ impl<'a> TranslateHelper<'a> {
             }
 
             macro_rules! filter {
-                ($field:ident, $variant:ident, $label:literal) => {{
+                ($field:ident: $ty:tt, $variant:ident, $label:literal) => {{
+                    // [NOTE]: ibid.
                     let skipped = items.$field.extract_if(.., |item| {
+                        let possible = item.addressable_paths.clone().into_iter().map(|p| $ty {
+                            path: p.clone(),
+                            ..item.clone()
+                        });
+                        // [NOTE]: when checking whether the item is public or
+                        // not, we need not traverse all possible variants of
+                        // the item as imported throughout the crate's module
+                        // tree. The visibility of the item remains the same no
+                        // matter where it appears at.
+                        // [TODO]: checking whether the individual occurrence of
+                        // an item in a given module is public is correct. Now,
+                        // we don't modify the visibility of copies of an item
+                        // that exist thanks to a reexport, when we should
+                        // because the visibility of the item is affected by the
+                        // visibility of the use declaration.
                         (generator.skip_private && !item.public)
-                            || generator.skips.iter().any(|f| f(&MapInput::$variant(item)))
+                            || generator
+                                .skips
+                                .iter()
+                                .any(|f| possible.clone().any(|it| f(&MapInput::$variant(&it))))
                     });
                     for item in skipped {
                         if generator.verbose_skip {
@@ -734,13 +780,17 @@ impl<'a> TranslateHelper<'a> {
                 }};
             }
 
-            filter!(aliases, Alias, "alias");
-            filter!(constants, Const, "const");
-            filter!(structs, Struct, "struct");
-            filter!(unions, Union, "union");
-            filter!(foreign_functions, Fn, "fn");
-            filter!(foreign_statics, Static, "static");
-            filter!(modules, Module, "module");
+            // [FIXME]: it may be preferable to rename MapInput::Alias to
+            // MapInput::Type, and so avoid having to include another "argument"
+            // to the macro. All other item types use the same identifier for
+            // both the variant in MapInput as well as their own type.
+            filter!(aliases: Type, Alias, "alias");
+            filter!(constants: Const, Const, "const");
+            filter!(structs: Struct, Struct, "struct");
+            filter!(unions: Union, Union, "union");
+            filter!(foreign_functions: Fn, Fn, "fn");
+            filter!(foreign_statics: Static, Static, "static");
+            filter!(modules: Module, Module, "module");
 
             // [NOTE]: after dropping the modules that should be skipped from
             // `items`, we can safely iterate through whichever ones remain.
