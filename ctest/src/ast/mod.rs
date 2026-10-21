@@ -8,7 +8,10 @@ mod structure;
 mod type_alias;
 mod union;
 
-use std::fmt;
+use std::{
+    fmt,
+    ops,
+};
 
 pub use constant::Const;
 pub use field::Field;
@@ -18,7 +21,10 @@ pub use parameter::Parameter;
 use quote::ToTokens;
 pub use static_variable::Static;
 pub use structure::Struct;
-use syn::Path;
+use syn::{
+    Path,
+    PathSegment,
+};
 pub use type_alias::Type;
 pub use union::Union;
 
@@ -26,6 +32,45 @@ use crate::{
     BoxStr,
     MapInput,
 };
+
+/// Utility interface for keeping a single renaming function for all parsed
+/// items.
+///
+/// They all share the same set of fields relative to their identifier and path,
+/// all of which need updating whenever the path is renamed. We ensure that the
+/// only place where this happens is in this function for convenience's sake.
+pub(crate) trait RenameUtils: Clone {
+    fn path(self) -> Path;
+    fn addressable_paths(self) -> Vec<Path>;
+    fn mk(
+        self,
+        cached_path: BoxStr,
+        cached_ident: BoxStr,
+        path: Path,
+        addressable_paths: Vec<Path>,
+    ) -> Self;
+
+    fn rename_with(self, new_path: impl ops::Fn(Path) -> Path + Clone) -> Self {
+        self.clone().rename(new_path(self.clone().path()))
+    }
+
+    fn rename(self, new_path: Path) -> Self {
+        self.clone().mk(
+            path_to_string(new_path.clone()),
+            new_path
+                .segments
+                .last()
+                .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
+                .unwrap_or_default(),
+            new_path.clone(),
+            self.addressable_paths()
+                .clone()
+                .into_iter()
+                .chain([new_path.clone()])
+                .collect(),
+        )
+    }
+}
 
 /// Transforms an item's absolute path to use `_` as path separator instead of
 /// `::`.

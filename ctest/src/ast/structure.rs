@@ -1,6 +1,7 @@
 use syn::Path;
 use syn::punctuated::Punctuated;
 
+use crate::ast::RenameUtils;
 use crate::{
     BoxStr,
     Field,
@@ -31,6 +32,32 @@ impl Struct {
     /// Returns the last segment of the struct's path; Namely, its identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
+    }
+}
+
+impl RenameUtils for Struct {
+    fn addressable_paths(self) -> Vec<Path> {
+        self.addressable_paths.clone()
+    }
+
+    fn path(self) -> Path {
+        self.path.clone()
+    }
+
+    fn mk(
+        self,
+        cached_path: BoxStr,
+        cached_ident: BoxStr,
+        path: Path,
+        addressable_paths: Vec<Path>,
+    ) -> Self {
+        Self {
+            cached_path,
+            cached_ident,
+            path,
+            addressable_paths,
+            ..self.clone()
+        }
     }
 }
 

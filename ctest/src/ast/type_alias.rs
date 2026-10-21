@@ -1,6 +1,7 @@
 use syn::Path;
 
 use crate::BoxStr;
+use crate::ast::RenameUtils;
 
 /// Represents a type alias defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
@@ -28,5 +29,31 @@ impl Type {
     /// identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
+    }
+}
+
+impl RenameUtils for Type {
+    fn addressable_paths(self) -> Vec<Path> {
+        self.addressable_paths.clone()
+    }
+
+    fn path(self) -> Path {
+        self.path.clone()
+    }
+
+    fn mk(
+        self,
+        cached_path: BoxStr,
+        cached_ident: BoxStr,
+        path: Path,
+        addressable_paths: Vec<Path>,
+    ) -> Self {
+        Self {
+            cached_path,
+            cached_ident,
+            path,
+            addressable_paths,
+            ..self.clone()
+        }
     }
 }

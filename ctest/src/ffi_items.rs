@@ -3,7 +3,6 @@
 use std::cmp::Ordering;
 use std::iter;
 use std::ops::{
-    self,
     ControlFlow,
     Deref,
 };
@@ -33,6 +32,7 @@ use syn::{
     Visibility,
 };
 
+use crate::ast::RenameUtils;
 use crate::{
     Abi,
     BoxStr,
@@ -697,7 +697,6 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                         ident: rename.clone(),
                         arguments: PathArguments::None,
                     });
-                    let new_segments = new_segments.clone();
                     Path {
                         segments: new_segments.clone(),
                         ..$it.path.clone()
@@ -707,19 +706,14 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             macro_rules! renamed_single_item {
                 ($field:ident , $ty:tt : $it:expr) => {{
                     let new_path = new_path!($it.clone());
-                    let new_item = $ty {
-                        public: r#use.is_public,
-                        cached_path: ast::path_to_string(new_path.clone()),
-                        path: new_path.clone(),
-                        ..$it.clone()
-                    };
+                    let new_item = $it.rename(new_path);
                     single_item!($field: new_item.clone());
                 }};
             }
             let renamer = |m: Module| {
                 let new_path = new_path!(m.clone());
                 let new_path_len = new_path.segments.len();
-                manipulate_path(m.clone(), |p| {
+                m.rename_with(|p| {
                     let new_path = p.segments.clone().into_iter().skip(new_path_len).fold(
                         new_path.clone(),
                         |p, s| {
@@ -897,63 +891,6 @@ fn update_tree(src: Module, dst: Module) -> Module {
     }
 }
 
-/// Applies a transform `f` to the path of each item in subtree `root`.
-///
-/// The subtree root module itself also gets the transform applied to its path.
-/// The `cached_path` field of each item is updated accordingly.
-fn manipulate_path(root: Module, f: impl ops::Fn(Path) -> Path + Clone) -> Module {
-    let root_path = f(root.path.clone());
-    let root_cache = ast::path_to_string(root_path.clone());
-    macro_rules! map_non_modules {
-        ($($field:ident: $ty:tt),+ $(,)?) => {$(
-            let $field = root.items
-                .$field
-                .clone()
-                .into_iter()
-                .map(|it| {
-                    let new_path = f(it.path.clone());
-                    $ty {
-                        cached_path: ast::path_to_string(new_path.clone()),
-                        path: new_path.clone(),
-                        ..it.clone()
-                    }
-                })
-                .collect::<Vec<_>>();
-        )+};
-    }
-    map_non_modules! {
-        aliases: Type,
-        structs: Struct,
-        unions: Union,
-        constants: Const,
-        foreign_functions: Fn,
-        foreign_statics: Static,
-    }
-    let modules: Vec<_> = root
-        .items
-        .modules
-        .clone()
-        .into_iter()
-        .map(|m| manipulate_path(m.clone(), f.clone()))
-        .collect();
-    let new_items = FfiItems {
-        aliases: aliases.clone(),
-        structs: structs.clone(),
-        unions: unions.clone(),
-        constants: constants.clone(),
-        foreign_functions: foreign_functions.clone(),
-        foreign_statics: foreign_statics.clone(),
-        modules: modules.clone(),
-        ..Default::default()
-    };
-    Module {
-        cached_path: root_cache.clone(),
-        path: root_path.clone(),
-        items: new_items.clone(),
-        ..root.clone()
-    }
-}
-
 /// Integrates the resolution items of `src` into `dst`.
 ///
 /// Each resolution item is either one of an `Unresolved` or a `Resolved`
@@ -985,6 +922,15 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                  modules,
                  ..
              }| {
+                let items_without_modules = FfiItems {
+                    aliases: aliases.clone(),
+                    structs: structs.clone(),
+                    unions: unions.clone(),
+                    constants: constants.clone(),
+                    foreign_functions: foreign_functions.clone(),
+                    foreign_statics: foreign_statics.clone(),
+                    ..Default::default()
+                };
                 // [NOTE]: this sequence must have at least one segment, because
                 // the invariant assumed in the closure for path manipulation of
                 // the items to merge assumes so. This is true for all items to
@@ -998,16 +944,6 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     ident: Ident::new("dummy", Span::call_site()),
                     arguments: PathArguments::None,
                 });
-                let dummy_segment = dummy_segment.clone();
-                let items_without_modules = FfiItems {
-                    aliases: aliases.clone(),
-                    structs: structs.clone(),
-                    unions: unions.clone(),
-                    constants: constants.clone(),
-                    foreign_functions: foreign_functions.clone(),
-                    foreign_statics: foreign_statics.clone(),
-                    ..Default::default()
-                };
                 let module = Module {
                     path: Path {
                         leading_colon: None,
@@ -1016,7 +952,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     items: items_without_modules.clone(),
                     ..Default::default()
                 };
-                let new_module = manipulate_path(module.clone(), |p| {
+                let new_module = module.rename_with(|p| {
                     let Some(ident) = p.segments.last().cloned() else {
                         unreachable!(
                             "All parsed items have at least one segment in \
@@ -1037,7 +973,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                                  segment in their paths."
                             );
                         };
-                        manipulate_path(m.clone(), |p| {
+                        m.rename_with(|p| {
                             p.segments
                                 .clone()
                                 .into_iter()

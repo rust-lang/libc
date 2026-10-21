@@ -1,5 +1,6 @@
 use syn::Path;
 
+use crate::ast::RenameUtils;
 use crate::{
     Abi,
     BoxStr,
@@ -44,5 +45,31 @@ impl Fn {
     /// Return the name of the function to be linked C side with.
     pub fn link_name(&self) -> Option<&str> {
         self.link_name.as_deref()
+    }
+}
+
+impl RenameUtils for Fn {
+    fn addressable_paths(self) -> Vec<Path> {
+        self.addressable_paths.clone()
+    }
+
+    fn path(self) -> Path {
+        self.path.clone()
+    }
+
+    fn mk(
+        self,
+        cached_path: BoxStr,
+        cached_ident: BoxStr,
+        path: Path,
+        addressable_paths: Vec<Path>,
+    ) -> Self {
+        Self {
+            cached_path,
+            cached_ident,
+            path,
+            addressable_paths,
+            ..self.clone()
+        }
     }
 }
