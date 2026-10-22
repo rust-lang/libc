@@ -1,10 +1,13 @@
 //! Generation of tests from templates for both Rust and C.
 
+use std::convert;
+
 use askama::Template;
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
+use crate::ast::RenameUtils;
 use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
 use crate::translator::{
@@ -701,49 +704,40 @@ impl<'a> TranslateHelper<'a> {
     fn filter_ffi_items(&mut self) {
         fn skipper(items: &mut FfiItems, generator: &TestGenerator) {
             let skipped = items.aliases.extract_if(.., |alias| {
-                // [NOTE]: the point here is to check whether a given alias,
-                // as an item that may exist in multiple places across the
-                // crate, has a skip set up using one of those possible paths
-                // (which differ for an item that exists in multiple places in
-                // the crate.)
-                let possible_aliases = alias.addressable_paths.clone().into_iter().map(|p| Type {
-                    path: p.clone(),
-                    ..alias.clone()
-                });
+                // [NOTE]: the point here is to check whether a given alias (as
+                // an item that may exist in multiple places across the crate)
+                // has a skip set up using one of those possible paths (which
+                // differ for an item that exists in multiple places in the
+                // crate.)
                 generator.skips.iter().any(|f| {
-                    possible_aliases
-                        .clone()
-                        .any(|it| f(&MapInput::CEnumType(it.path())))
+                    alias
+                        .with_variations(|it| f(&MapInput::CEnumType(Type::path(&it))))
+                        .into_iter()
+                        .any(convert::identity)
                 })
             });
 
             for item in skipped {
                 if generator.verbose_skip {
-                    eprintln!("Skipping C enum type {}", item.path());
+                    eprintln!("Skipping C enum type {}", Type::path(&item));
                 }
             }
 
             let skipped = items.constants.extract_if(.., |constant| {
                 // [NOTE]: ibid.
-                let possible_constants =
-                    constant
-                        .addressable_paths
-                        .clone()
-                        .into_iter()
-                        .map(|p| Const {
-                            path: p.clone(),
-                            ..constant.clone()
-                        });
                 generator.skips.iter().any(|f| {
-                    possible_constants
-                        .clone()
-                        .any(|it| f(&MapInput::CEnumType(&it.ty.to_token_stream().to_string())))
+                    constant
+                        .with_variations(|it| {
+                            f(&MapInput::CEnumType(&it.ty.to_token_stream().to_string()))
+                        })
+                        .into_iter()
+                        .any(convert::identity)
                 })
             });
 
             for item in skipped {
                 if generator.verbose_skip {
-                    eprintln!("Skipping C enum constant {}", item.path());
+                    eprintln!("Skipping C enum constant {}", Const::path(&item));
                 }
             }
 
@@ -751,24 +745,24 @@ impl<'a> TranslateHelper<'a> {
                 ($field:ident: $ty:tt, $variant:ident, $label:literal) => {{
                     // [NOTE]: ibid.
                     let skipped = items.$field.extract_if(.., |item| {
-                        let possible = item.addressable_paths.clone().into_iter().map(|p| $ty {
-                            path: p.clone(),
-                            ..item.clone()
-                        });
                         // [NOTE]: when checking whether the item is public or
                         // not, we need not traverse all possible variants of
                         // the item as imported throughout the crate's module
-                        // tree. The visibility of the item remains the same no
-                        // matter where it appears at.
+                        // tree. The visibility of the item differs across its
+                        // appearances in the module tree, so skipping an item
+                        // because of its visibility in one module should not
+                        // affect the same (possibly public) item in another
+                        // module.
                         (generator.skip_private && !item.public)
-                            || generator
-                                .skips
-                                .iter()
-                                .any(|f| possible.clone().any(|it| f(&MapInput::$variant(&it))))
+                            || generator.skips.iter().any(|f| {
+                                item.with_variations(|it| f(&MapInput::$variant(&it)))
+                                    .into_iter()
+                                    .any(convert::identity)
+                            })
                     });
                     for item in skipped {
                         if generator.verbose_skip {
-                            eprintln!("Skipping {} \"{}\"", $label, item.path())
+                            eprintln!("Skipping {} \"{}\"", $label, $ty::path(&item))
                         }
                     }
                 }};

@@ -50,6 +50,29 @@ pub(crate) trait RenameUtils: Clone {
         addressable_paths: Vec<Path>,
     ) -> Self;
 
+    /// Provided some parsed type, this method will run the given closure on
+    /// each variation of a term of that type (`self`.)
+    ///
+    /// The variations of a given term are given by their addressable paths.
+    /// This is an append-only aggregate all implementors of this interface have
+    /// as one of their projections. The variations are themselves the possible
+    /// paths by which an item may be referred to as a consequence of having
+    /// been imported over to other modules of the crate.
+    ///
+    /// This interface gets access to it through the
+    /// [`RenameUtils::addressable_paths`] projection.
+    ///
+    /// This is a utility to avoid having to go through the variations, as well
+    /// as updating the identifier and paths caches whenever some operation
+    /// needs to be performed on all variations.
+    fn with_variations<T>(&self, f: impl ops::Fn(Self) -> T + Clone) -> Vec<T> {
+        self.clone()
+            .addressable_paths()
+            .into_iter()
+            .map(|p| f(self.clone().rename(p.clone())))
+            .collect()
+    }
+
     fn rename_with(self, new_path: impl ops::Fn(Path) -> Path + Clone) -> Self {
         self.clone().rename(new_path(self.clone().path()))
     }

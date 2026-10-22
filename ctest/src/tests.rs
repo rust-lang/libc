@@ -1,5 +1,4 @@
 use syn::spanned::Spanned;
-use syn::visit::Visit;
 
 use crate::ffi_items::FfiItems;
 use crate::translator::{

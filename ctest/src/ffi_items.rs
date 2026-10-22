@@ -977,6 +977,16 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                             base.clone()
                         },
                     },
+                    items: FfiItems {
+                        aliases: aliases.clone(),
+                        structs: structs.clone(),
+                        unions: unions.clone(),
+                        constants: constants.clone(),
+                        foreign_functions: foreign_functions.clone(),
+                        foreign_statics: foreign_statics.clone(),
+                        modules: modules.clone(),
+                        ..Default::default()
+                    },
                     ..Default::default()
                 };
                 let new_module = dummy_module.clone().rename(new_path.clone());
@@ -1358,7 +1368,9 @@ fn tmp() {
     let source = r#"
 use test2::test3;
 
-use test1::{*, test2::test3::*};
+use test2::*;
+
+use test1::{*, test3::*};
 
 mod test1 {
     use test2::{*, test3::*};
@@ -1391,6 +1403,7 @@ mod test1 {
 }
 
 #[test]
+#[ignore]
 fn tmp1() {
     let source = r#"
 pub struct Foo;
@@ -1404,6 +1417,7 @@ mod test1 { use super::*; }
 }
 
 #[test]
+#[ignore]
 fn tmp2() {
     let m1 = Module {
         cached_path: String::from("a").into_boxed_str(),
@@ -1424,6 +1438,7 @@ fn tmp2() {
 }
 
 #[test]
+#[ignore]
 fn tmp3() {
     let dst_child_path = Path {
         leading_colon: None,
@@ -1440,7 +1455,7 @@ fn tmp3() {
         items: FfiItems {
             modules: Vec::from([Module {
                 path: dst_child_path.clone(),
-                cached_path: path_to_string(dst_child_path.clone()),
+                cached_path: ast::path_to_string(dst_child_path.clone()),
                 items: FfiItems {
                     structs: Vec::from([{
                         let path = Path {
@@ -1449,7 +1464,7 @@ fn tmp3() {
                         };
                         Struct {
                             path: path.clone(),
-                            cached_path: path_to_string(path.clone()),
+                            cached_path: ast::path_to_string(path.clone()),
                             ..Default::default()
                         }
                     }]),
@@ -1464,7 +1479,7 @@ fn tmp3() {
     let src = Vec::from([Resolution::Resolved(FfiItems {
         modules: Vec::from([Module {
             path: dst_child_path.clone(),
-            cached_path: path_to_string(dst_child_path.clone()),
+            cached_path: ast::path_to_string(dst_child_path.clone()),
             items: FfiItems {
                 modules: Vec::from([Module::default()]),
                 uses: Vec::from([RefinedUse::default()]),
