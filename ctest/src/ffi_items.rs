@@ -493,13 +493,24 @@ fn resolve_pass(src: PassPair) -> PassPair {
         subtree: root_with_resolved_children.clone(),
         whole_crate: whole_crate_with_resolved_children.clone(),
     });
-    let new_root_with_duplicates =
-        merge_module(root_with_resolved_children.clone(), resolved_uses.clone());
+    let PassPair {
+        subtree: new_root_with_duplicates,
+        whole_crate: new_whole_crate_with_resolved_children,
+    } = merge_module(
+        PassPair {
+            subtree: root_with_resolved_children.clone(),
+            whole_crate: whole_crate_with_resolved_children.clone(),
+        },
+        resolved_uses.clone(),
+    );
     let new_root = Module {
         items: new_root_with_duplicates.items.clone().dedup(),
         ..new_root_with_duplicates.clone()
     };
-    let new_whole_crate = update_tree(new_root.clone(), whole_crate_with_resolved_children.clone());
+    let new_whole_crate = update_tree(
+        new_root.clone(),
+        new_whole_crate_with_resolved_children.clone(),
+    );
     println!(
         "finished module pass on module {}",
         if &*new_root.cached_path == "" {
@@ -915,8 +926,8 @@ fn update_tree(src: Module, dst: Module) -> Module {
 /// Note that, during merging, the items to be merged may end up duplicating
 /// existing items on `dst`. It is call-site's responsibility to deduplicate
 /// those through [`FfiItems::dedup`].
-fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
-    let new_path = dst.path.clone();
+fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
+    let new_path = state.subtree.path.clone();
     src.clone()
         .into_iter()
         .filter_map(|r| {
@@ -938,7 +949,16 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                  ..
              }| {
                 macro_rules! seek_parent {
-                    ($field:ident) => {{
+                    ($($it:tt),+ $(,)?) => {
+                        seek_parent!(@@ $($it)+)
+                    };
+                    (@@ $head:tt $($tail:tt)*) => {
+                        seek_parent!(@ $head).or_else(|| seek_parent!(@@ $($tail)*))
+                    };
+                    (@@) => {
+                        None
+                    };
+                    (@ $field:tt) => {{
                         $field.first().map(|it| {
                             it.path
                                 .segments
@@ -957,15 +977,18 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                 // We don't invoke unreachable! in the diverging branch because
                 // a resolution item could pack an empty item container if a use
                 // declaration consists a glob import of all items in a module
-                // with no items.
-                let Some(source_module_path) = seek_parent!(aliases)
-                    .or_else(|| seek_parent!(structs))
-                    .or_else(|| seek_parent!(unions))
-                    .or_else(|| seek_parent!(constants))
-                    .or_else(|| seek_parent!(foreign_functions))
-                    .or_else(|| seek_parent!(foreign_statics))
-                    .or_else(|| seek_parent!(modules))
-                else {
+                // with no items. We can be sure that all items about to be
+                // merged share the same parent because use declarations are
+                // cleansed of groups at parse-time.
+                let Some(source_module_path) = seek_parent!(
+                    aliases,
+                    structs,
+                    unions,
+                    constants,
+                    foreign_functions,
+                    foreign_statics,
+                    modules,
+                ) else {
                     return FfiItems::default();
                 };
                 let dummy_module = Module {
@@ -989,6 +1012,13 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     },
                     ..Default::default()
                 };
+                let new_whole_crate = todo!(
+                    "Use the whole crate module tree in the state to look up \
+                     all of the above items' path aggregates, and then, for \
+                     each item found with some path in their aggregate that is \
+                     equal to any path in the aggregate of the items about to \
+                     be merged, synchronize their path aggregates."
+                );
                 let new_module = dummy_module.clone().rename(new_path.clone());
                 fn remove_uses(m: Module) -> Module {
                     let new_modules: Vec<_> = m
@@ -1018,26 +1048,32 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     .into_iter()
                     .map(remove_uses)
                     .collect();
-                FfiItems {
-                    modules: new_modules_without_uses.clone(),
-                    ..new_module.items.clone()
-                }
+                (
+                    FfiItems {
+                        modules: new_modules_without_uses.clone(),
+                        ..new_module.items.clone()
+                    },
+                    new_whole_crate.clone(),
+                )
             },
         )
         .fold(
-            dst.clone(),
-            |dst,
-             FfiItems {
-                 aliases,
-                 structs,
-                 unions,
-                 constants,
-                 foreign_functions,
-                 foreign_statics,
-                 modules,
-                 ..
-             }| {
-                let mut dst = dst.clone();
+            state.clone(),
+            |state,
+             (
+                FfiItems {
+                    aliases,
+                    structs,
+                    unions,
+                    constants,
+                    foreign_functions,
+                    foreign_statics,
+                    modules,
+                    ..
+                },
+                new_whole_crate,
+            )| {
+                let mut dst = state.subtree.clone();
                 dst.items.aliases.extend_from_slice(&aliases);
                 dst.items.structs.extend_from_slice(&structs);
                 dst.items.unions.extend_from_slice(&unions);
@@ -1049,9 +1085,19 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                     .foreign_statics
                     .extend_from_slice(&foreign_statics);
                 dst.items.modules.extend_from_slice(&modules);
-                dst.clone()
+                PassPair {
+                    subtree: dst.clone(),
+                    whole_crate: todo!(
+                        "Use the whole-crate state that is returned in the map \
+                         once that is implemented."
+                    ),
+                }
             },
         )
+}
+
+fn find_same_path_aggregates(root: Module, path: Vec<Path>) -> Vec<GenericItem> {
+    todo!()
 }
 
 /// Appends a new module-local item to an absolute path that does _not_ start
@@ -1437,58 +1483,58 @@ fn tmp2() {
     println!("{:#?}", ms.clone());
 }
 
-#[test]
-#[ignore]
-fn tmp3() {
-    let dst_child_path = Path {
-        leading_colon: None,
-        segments: {
-            let mut out = Punctuated::new();
-            out.push(PathSegment {
-                ident: Ident::new("foo", Span::call_site()),
-                arguments: PathArguments::None,
-            });
-            out.clone()
-        },
-    };
-    let dst = Module {
-        items: FfiItems {
-            modules: Vec::from([Module {
-                path: dst_child_path.clone(),
-                cached_path: ast::path_to_string(dst_child_path.clone()),
-                items: FfiItems {
-                    structs: Vec::from([{
-                        let path = Path {
-                            leading_colon: None,
-                            segments: Punctuated::new(),
-                        };
-                        Struct {
-                            path: path.clone(),
-                            cached_path: ast::path_to_string(path.clone()),
-                            ..Default::default()
-                        }
-                    }]),
-                    ..Default::default()
-                },
-                ..Default::default()
-            }]),
-            ..Default::default()
-        },
-        ..Default::default()
-    };
-    let src = Vec::from([Resolution::Resolved(FfiItems {
-        modules: Vec::from([Module {
-            path: dst_child_path.clone(),
-            cached_path: ast::path_to_string(dst_child_path.clone()),
-            items: FfiItems {
-                modules: Vec::from([Module::default()]),
-                uses: Vec::from([RefinedUse::default()]),
-                ..Default::default()
-            },
-            ..Default::default()
-        }]),
-        ..Default::default()
-    })]);
-    let merged = merge_module(dst.clone(), src.clone());
-    println!("{:#?}", merged.clone());
-}
+// #[test]
+// #[ignore]
+// fn tmp3() {
+//     let dst_child_path = Path {
+//         leading_colon: None,
+//         segments: {
+//             let mut out = Punctuated::new();
+//             out.push(PathSegment {
+//                 ident: Ident::new("foo", Span::call_site()),
+//                 arguments: PathArguments::None,
+//             });
+//             out.clone()
+//         },
+//     };
+//     let dst = Module {
+//         items: FfiItems {
+//             modules: Vec::from([Module {
+//                 path: dst_child_path.clone(),
+//                 cached_path: ast::path_to_string(dst_child_path.clone()),
+//                 items: FfiItems {
+//                     structs: Vec::from([{
+//                         let path = Path {
+//                             leading_colon: None,
+//                             segments: Punctuated::new(),
+//                         };
+//                         Struct {
+//                             path: path.clone(),
+//                             cached_path: ast::path_to_string(path.clone()),
+//                             ..Default::default()
+//                         }
+//                     }]),
+//                     ..Default::default()
+//                 },
+//                 ..Default::default()
+//             }]),
+//             ..Default::default()
+//         },
+//         ..Default::default()
+//     };
+//     let src = Vec::from([Resolution::Resolved(FfiItems {
+//         modules: Vec::from([Module {
+//             path: dst_child_path.clone(),
+//             cached_path: ast::path_to_string(dst_child_path.clone()),
+//             items: FfiItems {
+//                 modules: Vec::from([Module::default()]),
+//                 uses: Vec::from([RefinedUse::default()]),
+//                 ..Default::default()
+//             },
+//             ..Default::default()
+//         }]),
+//         ..Default::default()
+//     })]);
+//     let merged = merge_module(dst.clone(), src.clone());
+//     println!("{:#?}", merged.clone());
+// }
