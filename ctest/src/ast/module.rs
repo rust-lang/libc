@@ -1,18 +1,16 @@
 use std::cmp::Ordering;
+use std::ops;
 
-use syn::Path;
 use syn::punctuated::Punctuated;
+use syn::{
+    Path,
+    PathSegment,
+};
 
 use crate::ast::RenameUtils;
 use crate::ffi_items::FfiItems;
 use crate::{
     BoxStr,
-    Const,
-    Fn,
-    Static,
-    Struct,
-    Type,
-    Union,
     ast,
 };
 
@@ -81,78 +79,28 @@ impl RenameUtils for Module {
         }
     }
 
+    // [NOTE]: this is implemented in terms of rename_with but it doesn't just
+    // yield the passed path, because that would mean all items would end up
+    // with the same path. Instead, it calls into rename_with and skips as many
+    // segments of all paths in the subtree as the current module has. Then it
+    // appends whatever segments are left to the new path (new_path) we got
+    // passed here. In the case of the module on which this was called, that
+    // means all segments will be skipped and nothing will be appended to the
+    // new path. In all other cases of items within its subtree, they will have
+    // the previous identifier of the ancestor in which this rename request was
+    // originally called trimmed, and whatever segments are left will be
+    // appended to the new path of that (potentially grand-) ancestor.
     fn rename(self, new_path: Path) -> Self {
-        let new_path_len = new_path.segments.len();
-        macro_rules! rename_non_modules {
-            ($($field:ident),+ $(,)?) => {$(
-                let $field = self.items
-                    .$field
-                    .clone()
-                    .into_iter()
-                    .map(|it| {
-                        let mut new_path = new_path.clone();
-                        new_path
-                            .segments
-                            .extend(it.path.segments.clone().into_iter().skip(new_path_len));
-                        it.clone().rename(new_path)
-                    })
-                    .collect();
-            )+};
-        }
-        rename_non_modules! {
-            aliases,
-            structs,
-            constants,
-            foreign_functions,
-            foreign_statics,
-            unions,
-        }
-        let modules = self
-            .items
-            .modules
-            .clone()
-            .into_iter()
-            .map(|it| {
-                it.rename_with(|it| {
-                    let mut new_path = new_path.clone();
-                    new_path
-                        .segments
-                        .extend(it.segments.clone().into_iter().skip(new_path_len));
-                    new_path
-                })
-            })
-            .collect();
-        Module {
-            cached_path: ast::path_to_string(new_path.clone()),
-            cached_ident: new_path
-                .segments
-                .last()
-                .map(|s| s.ident.to_string().into_boxed_str())
-                .unwrap_or_default(),
-            path: new_path.clone(),
-            addressable_paths: self
-                .addressable_paths
-                .clone()
-                .into_iter()
-                .chain([new_path.clone()])
-                .collect(),
-            items: FfiItems {
-                aliases,
-                structs,
-                unions,
-                constants,
-                foreign_functions,
-                foreign_statics,
-                modules,
-                ..self.items.clone()
-            },
-            ..self.clone()
-        }
+        let old_path_len = self.path.segments.len();
+        self.clone().rename_with(|p| {
+            let segments_post_ancestor = p.segments.clone().into_iter().skip(old_path_len);
+            let mut new_path = new_path.clone();
+            new_path.segments.extend(segments_post_ancestor);
+            new_path.clone()
+        })
     }
 
-    fn rename_with(self, f: impl std::ops::Fn(Path) -> Path + Clone) -> Self {
-        let root_path = f(self.path.clone());
-        let root_cache = ast::path_to_string(root_path.clone());
+    fn rename_with(self, f: impl ops::Fn(Path) -> Path + Clone) -> Self {
         macro_rules! map_non_modules {
             ($($field:ident: $ty:tt),+ $(,)?) => {$(
                 let $field = self.items
@@ -176,7 +124,7 @@ impl RenameUtils for Module {
             .modules
             .clone()
             .into_iter()
-            .map(|m| m.rename_with(f.clone()))
+            .map(|m| m.clone().rename_with(f.clone()))
             .collect();
         let new_items = FfiItems {
             aliases: aliases.clone(),
@@ -188,14 +136,20 @@ impl RenameUtils for Module {
             modules: modules.clone(),
             ..Default::default()
         };
+        let new_path = f(self.path.clone());
         Module {
-            cached_path: root_cache.clone(),
-            path: root_path.clone(),
+            cached_path: ast::path_to_string(new_path.clone()),
+            cached_ident: new_path
+                .segments
+                .last()
+                .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
+                .unwrap_or_default(),
+            path: new_path.clone(),
             addressable_paths: self
                 .addressable_paths
                 .clone()
                 .into_iter()
-                .chain([root_path.clone()])
+                .chain([new_path.clone()])
                 .collect(),
             items: new_items.clone(),
             ..self.clone()

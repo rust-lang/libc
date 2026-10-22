@@ -12,6 +12,7 @@ use syn::punctuated::Punctuated;
 use syn::token::{
     Brace,
     Mod,
+    PathSep,
 };
 use syn::visit::{
     self,
@@ -478,8 +479,7 @@ fn resolve_pass(src: PassPair) -> PassPair {
             });
             let mut new_children = children.clone();
             new_children.push(pair.subtree.clone());
-            let new_children = new_children.clone();
-            (pair, new_children)
+            (pair.clone(), new_children.clone())
         },
     );
     let root_with_resolved_children = Module {
@@ -691,12 +691,20 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             );
             macro_rules! new_path {
                 ($it:expr) => {{
-                    let mut new_segments = $it.path.segments.clone();
-                    new_segments.pop();
-                    new_segments.push(PathSegment {
-                        ident: rename.clone(),
-                        arguments: PathArguments::None,
-                    });
+                    let new_segments = $it
+                        .path
+                        .segments
+                        .clone()
+                        .into_iter()
+                        .skip($it.path.segments.len() - 1)
+                        .fold(Punctuated::new(), |p, _| {
+                            let mut p = p.clone();
+                            p.push(PathSegment {
+                                ident: rename.clone(),
+                                arguments: PathArguments::None,
+                            });
+                            p.clone()
+                        });
                     Path {
                         segments: new_segments.clone(),
                         ..$it.path.clone()
@@ -706,14 +714,21 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             macro_rules! renamed_single_item {
                 ($field:ident , $ty:tt : $it:expr) => {{
                     let new_path = new_path!($it.clone());
-                    let new_item = $it.rename(new_path);
+                    let new_item = $it.rename(new_path.clone());
                     single_item!($field: new_item.clone());
                 }};
             }
             let renamer = |m: Module| {
                 let new_path = new_path!(m.clone());
+                // [NOTE]: it may seem better to use the segment length of the
+                // old path of the module, much like we do in function
+                // RenameUtils::rename, but that is not necessary here. We know
+                // the segment length will be the same before and after the
+                // rename because use declarations can only rename the module's
+                // identifier. The module identifier only accounts for one
+                // segment of the item's path.
                 let new_path_len = new_path.segments.len();
-                m.rename_with(|p| {
+                m.clone().rename_with(|p| {
                     let new_path = p.segments.clone().into_iter().skip(new_path_len).fold(
                         new_path.clone(),
                         |p, s| {
@@ -787,8 +802,8 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             };
             resolve_use(
                 RefinedUse {
-                    is_public: r#use.is_public,
                     tree: *tree.clone(),
+                    ..r#use
                 },
                 PassPair {
                     subtree: new_subtree.clone(),
@@ -922,70 +937,49 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                  modules,
                  ..
              }| {
-                let items_without_modules = FfiItems {
-                    aliases: aliases.clone(),
-                    structs: structs.clone(),
-                    unions: unions.clone(),
-                    constants: constants.clone(),
-                    foreign_functions: foreign_functions.clone(),
-                    foreign_statics: foreign_statics.clone(),
-                    ..Default::default()
-                };
-                // [NOTE]: this sequence must have at least one segment, because
-                // the invariant assumed in the closure for path manipulation of
-                // the items to merge assumes so. This is true for all items to
-                // merge, but this module wrapping all those items is only
-                // virtual in nature; The containig items (post-path-renaming)
-                // will be extracted, and the module trashed. But the module,
-                // even though a dummy, will also have the closure further down
-                // below applied to its path, so it needs to be non-empty.
-                let mut dummy_segment = Punctuated::new();
-                dummy_segment.push(PathSegment {
-                    ident: Ident::new("dummy", Span::call_site()),
-                    arguments: PathArguments::None,
-                });
-                let module = Module {
-                    path: Path {
-                        leading_colon: None,
-                        segments: dummy_segment.clone(),
-                    },
-                    items: items_without_modules.clone(),
-                    ..Default::default()
-                };
-                let new_module = module.rename_with(|p| {
-                    let Some(ident) = p.segments.last().cloned() else {
-                        unreachable!(
-                            "All parsed items have at least one segment in \
-                             their paths."
-                        )
-                    };
-                    let mut new_path = new_path.clone();
-                    new_path.segments.push(ident.clone());
-                    new_path.clone()
-                });
-                let nested_modules_with_new_paths: Vec<_> = modules
-                    .clone()
-                    .into_iter()
-                    .map(|m| {
-                        let Some(base_path) = m.path.segments.last().cloned() else {
-                            unreachable!(
-                                "All items post-parsing have at least one \
-                                 segment in their paths."
-                            );
-                        };
-                        m.rename_with(|p| {
-                            p.segments
+                macro_rules! seek_parent {
+                    ($field:ident) => {{
+                        $field.first().map(|it| {
+                            it.path
+                                .segments
                                 .clone()
                                 .into_iter()
-                                .skip_while(|s| *s != base_path)
-                                .fold(new_path.clone(), |p, s| {
-                                    let mut p = p.clone();
-                                    p.segments.push(s.clone());
-                                    p.clone()
-                                })
+                                .take(it.path.segments.len() - 1)
+                                .collect::<Punctuated<PathSegment, PathSep>>()
                         })
-                    })
-                    .collect();
+                    }};
+                }
+                // [NOTE]: this ensures we find the immediate parent to any one
+                // of the items about to be merged. If there really are no items
+                // about to be merged, then we can simply return an empty
+                // FfiItems from the mapping, which would essentially merge no
+                // items down in the fold that finishes up the merging function.
+                // We don't invoke unreachable! in the diverging branch because
+                // a resolution item could pack an empty item container if a use
+                // declaration consists a glob import of all items in a module
+                // with no items.
+                let Some(source_module_path) = seek_parent!(aliases)
+                    .or_else(|| seek_parent!(structs))
+                    .or_else(|| seek_parent!(unions))
+                    .or_else(|| seek_parent!(constants))
+                    .or_else(|| seek_parent!(foreign_functions))
+                    .or_else(|| seek_parent!(foreign_statics))
+                    .or_else(|| seek_parent!(modules))
+                else {
+                    return FfiItems::default();
+                };
+                let dummy_module = Module {
+                    path: Path {
+                        leading_colon: None,
+                        segments: {
+                            let mut base = Punctuated::new();
+                            base.extend(source_module_path);
+                            base.clone()
+                        },
+                    },
+                    ..Default::default()
+                };
+                let new_module = dummy_module.clone().rename(new_path.clone());
                 fn remove_uses(m: Module) -> Module {
                     let new_modules: Vec<_> = m
                         .items
@@ -1007,13 +1001,15 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
                 // modules of the subtrees to merge because otherwise merged
                 // modules can increase the number of use declarations in the
                 // crate's module tree, which is one cause of non-termination.
-                let new_nested_modules: Vec<_> = nested_modules_with_new_paths
+                let new_modules_without_uses: Vec<_> = new_module
+                    .items
+                    .modules
                     .clone()
                     .into_iter()
                     .map(remove_uses)
                     .collect();
                 FfiItems {
-                    modules: new_nested_modules.clone(),
+                    modules: new_modules_without_uses.clone(),
                     ..new_module.items.clone()
                 }
             },
