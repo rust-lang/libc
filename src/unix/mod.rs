@@ -2297,7 +2297,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_os = "solaris"))] {
+    if #[cfg(not(any(target_os = "solaris", target_os = "espidf")))] {
         extern "C" {
             pub fn flock(fd: c_int, operation: c_int) -> c_int;
         }
