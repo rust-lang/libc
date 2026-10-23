@@ -1,10 +1,15 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
 use std::cmp::Ordering;
-use std::iter;
 use std::ops::{
+    self,
     ControlFlow,
     Deref,
+    Not,
+};
+use std::{
+    iter,
+    vec,
 };
 
 use proc_macro2::Span;
@@ -898,31 +903,90 @@ fn is_super(ident: Ident) -> bool {
     ident.to_string() == "super"
 }
 
-/// Integrates module subtree `src` into module subtree `dst`.
+/// Attempts to find some item in module tree `root` with path `target`, then
+/// runs the passed closure on the item, and replaces it with the result.
 ///
-/// It attempts to find `src` in `dst`. It returns an "updated" snapshot of
-/// `dst` with the contents of `src` integrated. Note `src` may or may not have
-/// been found within some subtree of `dst`.
-///
-/// If not found, `dst` is returned unmodified. `src` may also match `dst`
-/// itself. That would return `src`.
-fn update_tree(src: Module, dst: Module) -> Module {
-    if src.path == dst.path {
-        return src.clone().into();
+/// It is key that the generic wrapper around the item returned is the same as
+/// the generic item that was passed in.
+fn update_tree(
+    target: Path,
+    action: impl ops::Fn(GenericItem) -> GenericItem + Clone,
+    root: Module,
+) -> Module {
+    macro_rules! ignored {
+        () => {
+            unimplemented!(
+                "The action is not meant to return an item of a differing kind \
+                 than what was provided."
+            );
+        };
     }
-    let new_children: Vec<_> = dst
-        .items
-        .modules
-        .clone()
-        .into_iter()
-        .map(|m| update_tree(src.clone(), m.clone()))
-        .collect();
+    if target == root.path {
+        let GenericItem::Module(new_root) = action(GenericItem::Module(root.clone())) else {
+            ignored!();
+        };
+        return new_root.into();
+    }
+    macro_rules! exe {
+        (@$found:tt $($field:tt: $ty:tt),+ $(,)?) => {
+            let mut $found = false;
+            $(
+                let $field = if !$found {
+                    root
+                        .items
+                        .$field
+                        .clone()
+                        .into_iter()
+                        .filter(|$ty { path, .. }| *path == target)
+                        .map(|it| {
+                            let new = action(GenericItem::$ty(it.clone()));
+                            let GenericItem::$ty(it) = new.clone() else {
+                                ignored!();
+                            };
+                            it.clone()
+                        })
+                        .collect()
+                } else {
+                    root.items.$field.clone()
+                };
+                if $field.is_empty().not() {
+                    $found = true;
+                }
+            )+
+        };
+    }
+    exe! {
+        @found
+        aliases: Type,
+        structs: Struct,
+        unions: Union,
+        constants: Const,
+        foreign_functions: Fn,
+        foreign_statics: Static,
+        modules: Module,
+    }
+    let modules = if !found {
+        root.items
+            .modules
+            .clone()
+            .into_iter()
+            .map(|m| update_tree(target.clone(), action.clone(), m.clone()))
+            .collect()
+    } else {
+        root.items.modules.clone()
+    };
     Module {
         items: FfiItems {
-            modules: new_children.clone(),
-            ..dst.items.clone()
+            aliases: aliases.clone(),
+            structs: structs.clone(),
+            unions: unions.clone(),
+            constants: constants.clone(),
+            foreign_functions: foreign_functions.clone(),
+            foreign_statics: foreign_statics.clone(),
+            modules: modules.clone(),
+            ..root.items.clone()
         },
-        ..dst.clone()
+        ..root.clone()
     }
 }
 
@@ -1114,14 +1178,9 @@ fn search_and_merge_aggregates(
     reference: GenericItem,
     matches: Vec<GenericItem>,
 ) -> Vec<GenericItem> {
-    let new_nested_matches: Vec<_> = root
-        .modules
-        .clone()
-        .into_iter()
-        .flat_map(|it| {
-            search_and_merge_aggregates(it.items.clone(), reference.clone(), matches.clone())
-        })
-        .collect();
+    let new_nested_matches = root.modules.clone().into_iter().flat_map(|it| {
+        search_and_merge_aggregates(it.items.clone(), reference.clone(), matches.clone())
+    });
     let new_matches = root
         .items()
         .filter_map(|it| {
@@ -1179,6 +1238,28 @@ fn search_and_merge_aggregates(
     matches.extend(new_nested_matches);
     matches.extend(new_matches);
     matches.clone()
+}
+
+fn sync_aggregates(src: FfiItems, whole_crate: Module) -> Module {
+    src.clone()
+        .items()
+        .fold(whole_crate.clone(), |whole_crate, it| {
+            let updated_item_occurrences = search_and_merge_aggregates(
+                FfiItems {
+                    modules: vec![whole_crate.clone()],
+                    ..Default::default()
+                },
+                it.clone(),
+                vec![],
+            );
+            todo!(
+                "Update the whole-crate module tree by integrating each of the \
+                 updated items in updated_item_occurrences. This is blocked on \
+                 getting the refactor of the module tree update function \
+                 finished."
+            );
+        });
+    todo!();
 }
 
 /// Appends a new module-local item to an absolute path that does _not_ start
