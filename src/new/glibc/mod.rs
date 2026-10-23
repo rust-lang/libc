@@ -16,6 +16,7 @@ mod bits {
     pub(crate) mod signum_generic;
     #[cfg(target_os = "linux")]
     pub(crate) use super::sysdeps::unix::linux::bits::{
+        fcntl_linux,
         sigaction,
         signum_arch,
         socket,
@@ -24,9 +25,7 @@ mod bits {
     };
 }
 
-mod io {
-    pub(crate) mod sys;
-}
+pub(crate) mod io;
 
 /// Source directory: `posix/`
 ///
