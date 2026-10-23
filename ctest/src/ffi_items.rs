@@ -49,16 +49,6 @@ use crate::{
     ast,
 };
 
-enum GenericItem {
-    Type(Type),
-    Struct(Struct),
-    Union(Union),
-    Const(Const),
-    Fn(Fn),
-    Static(Static),
-    Module(Module),
-}
-
 /// Represents a collected set of top-level Rust items relevant to FFI
 /// generation or analysis.
 ///
@@ -158,6 +148,34 @@ impl FfiItems {
         *self = resolve_all(root_module.clone()).items.clone();
     }
 
+    /// Yields an iterator over all items in the calling `FfiItems`.
+    ///
+    /// The items in the item container do not include `use` declarations.
+    fn items(&self) -> ItemIterator {
+        let base = self
+            .aliases
+            .clone()
+            .into_iter()
+            .map(GenericItem::Type)
+            .chain(self.structs.clone().into_iter().map(GenericItem::Struct))
+            .chain(self.unions.clone().into_iter().map(GenericItem::Union))
+            .chain(self.constants.clone().into_iter().map(GenericItem::Const))
+            .chain(
+                self.foreign_functions
+                    .clone()
+                    .into_iter()
+                    .map(GenericItem::Fn),
+            )
+            .chain(
+                self.foreign_statics
+                    .clone()
+                    .into_iter()
+                    .map(GenericItem::Static),
+            )
+            .chain(self.modules.clone().into_iter().map(GenericItem::Module));
+        Box::new(base)
+    }
+
     /// Performs a comparison for equality between FfiItems without taking field
     /// current_module into consideration.
     ///
@@ -219,49 +237,25 @@ impl FfiItems {
     ///
     /// The generic item may be pattern-matched to find out specifically which
     /// item was found.
-    fn search(&self, ident: syn::Ident) -> Option<GenericItem> {
-        let aliases = self.aliases.clone().into_iter().map(GenericItem::Type);
-        let structs = self.structs.clone().into_iter().map(GenericItem::Struct);
-        let unions = self.unions.clone().into_iter().map(GenericItem::Union);
-        let constants = self.constants.clone().into_iter().map(GenericItem::Const);
-        let foreign_functions = self
-            .foreign_functions
-            .clone()
-            .into_iter()
-            .map(GenericItem::Fn);
-        let foreign_statics = self
-            .foreign_statics
-            .clone()
-            .into_iter()
-            .map(GenericItem::Static);
-        self.modules
-            .clone()
-            .into_iter()
-            .map(GenericItem::Module)
-            .chain(foreign_statics)
-            .chain(foreign_functions)
-            .chain(constants)
-            .chain(unions)
-            .chain(structs)
-            .chain(aliases)
-            .find(|it| {
-                macro_rules! cmp {
-                    ($($var:tt),+ $(,)?) => {
-                        match it {$(
-                            GenericItem::$var(it) => it.ident() == ident.to_string(),
-                        )+}
-                    };
-                }
-                cmp! {
-                    Type,
-                    Struct,
-                    Union,
-                    Const,
-                    Fn,
-                    Static,
-                    Module,
-                }
-            })
+    fn search(&self, ident: Ident) -> Option<GenericItem> {
+        self.items().find(|it| {
+            macro_rules! cmp {
+                ($($var:tt),+ $(,)?) => {
+                    match it {$(
+                        GenericItem::$var(it) => it.ident() == ident.to_string(),
+                    )+}
+                };
+            }
+            cmp! {
+                Type,
+                Struct,
+                Union,
+                Const,
+                Fn,
+                Static,
+                Module,
+            }
+        })
     }
 
     /// Deduplicates the items in an item container by their path.
@@ -300,7 +294,7 @@ impl FfiItems {
         );
         let mut new_modules = self.modules.clone();
         new_modules.sort_unstable_by(Module::custom_cmp);
-        new_modules.dedup_by(|lhs, rhs| lhs.path == rhs.path);
+        new_modules.dedup_by(|Module { path: lhs, .. }, Module { path: rhs, .. }| *lhs == *rhs);
         FfiItems {
             modules: new_modules.clone(),
             ..new_items.clone()
@@ -326,6 +320,21 @@ impl Default for FfiItems {
         }
     }
 }
+
+/// Sum over any item held within an `FfiItems` term.
+#[derive(Clone)]
+enum GenericItem {
+    Type(Type),
+    Struct(Struct),
+    Union(Union),
+    Const(Const),
+    Fn(Fn),
+    Static(Static),
+    Module(Module),
+}
+
+/// An iterator over all items but `use` declarations in an `FfiItems` term.
+type ItemIterator = Box<dyn Iterator<Item = GenericItem>>;
 
 /// Refined type for [`syn::UsePath`] that does not consider group paths.
 ///
@@ -875,17 +884,17 @@ fn get_parent_path(root: Module) -> Path {
 }
 
 /// Checks if the given identifier was parsed as the Rust keyword `self`.
-fn is_self(ident: syn::Ident) -> bool {
+fn is_self(ident: Ident) -> bool {
     ident.to_string() == "self"
 }
 
 /// Checks if the given identifier was parsed as the Rust keyword `crate`.
-fn is_crate(ident: syn::Ident) -> bool {
+fn is_crate(ident: Ident) -> bool {
     ident.to_string() == "crate"
 }
 
 /// Checks if the given identifier was parsed as the Rust keyword `super`.
-fn is_super(ident: syn::Ident) -> bool {
+fn is_super(ident: Ident) -> bool {
     ident.to_string() == "super"
 }
 
@@ -989,7 +998,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     foreign_statics,
                     modules,
                 ) else {
-                    return FfiItems::default();
+                    return (FfiItems::default(), Module::default());
                 };
                 let dummy_module = Module {
                     path: Path {
@@ -1096,8 +1105,54 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
         )
 }
 
-fn find_same_path_aggregates(root: Module, path: Vec<Path>) -> Vec<GenericItem> {
-    todo!()
+fn of_akin_aggregate(
+    root: Module,
+    reference: GenericItem,
+    matches: Vec<GenericItem>,
+) -> Vec<GenericItem> {
+    let new_nested_matches: Vec<_> = root
+        .items
+        .modules
+        .clone()
+        .into_iter()
+        .flat_map(|it| of_akin_aggregate(it.clone(), reference.clone(), matches.clone()))
+        .collect();
+    let new_matches = root
+        .items
+        .items()
+        .filter_map(|it| match (it.clone(), reference.clone()) {
+            (GenericItem::Type(_), GenericItem::Type(_))
+            | (GenericItem::Struct(_), GenericItem::Struct(_))
+            | (GenericItem::Union(_), GenericItem::Union(_))
+            | (GenericItem::Const(_), GenericItem::Const(_))
+            | (GenericItem::Fn(_), GenericItem::Fn(_))
+            | (GenericItem::Static(_), GenericItem::Static(_))
+            | (GenericItem::Module(_), GenericItem::Module(_)) => it.clone().into(),
+            (GenericItem::Type(_), _)
+            | (GenericItem::Struct(_), _)
+            | (GenericItem::Union(_), _)
+            | (GenericItem::Const(_), _)
+            | (GenericItem::Fn(_), _)
+            | (GenericItem::Static(_), _)
+            | (GenericItem::Module(_), _) => None,
+        })
+        .filter(|it| match (it.clone(), reference.clone()) {
+            (GenericItem::Type(t), GenericItem::Type(r)) => r.akin_aggregates(t),
+            (GenericItem::Struct(s), GenericItem::Struct(r)) => r.akin_aggregates(s),
+            (GenericItem::Union(u), GenericItem::Union(r)) => r.akin_aggregates(u),
+            (GenericItem::Const(c), GenericItem::Const(r)) => r.akin_aggregates(c),
+            (GenericItem::Fn(f), GenericItem::Fn(r)) => r.akin_aggregates(f),
+            (GenericItem::Static(s), GenericItem::Static(r)) => r.akin_aggregates(s),
+            (GenericItem::Module(m), GenericItem::Module(r)) => r.akin_aggregates(m),
+            _ => unreachable!(
+                "The prior filter_map already ensured that the items in the \
+                 iterator match the reference item"
+            ),
+        });
+    let mut matches = matches.clone();
+    matches.extend(new_nested_matches);
+    matches.extend(new_matches);
+    matches.clone()
 }
 
 /// Appends a new module-local item to an absolute path that does _not_ start

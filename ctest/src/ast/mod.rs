@@ -50,6 +50,18 @@ pub(crate) trait RenameUtils: Clone {
         addressable_paths: Vec<Path>,
     ) -> Self;
 
+    /// Checks whether two implementors of the interface contain some common
+    /// path in their path aggregate.
+    fn akin_aggregates(self, other: Self) -> bool {
+        self.clone().addressable_paths().into_iter().any(|p| {
+            other
+                .clone()
+                .addressable_paths()
+                .into_iter()
+                .any(|p2| p == p2)
+        })
+    }
+
     /// Provided some parsed type, this method will run the given closure on
     /// each variation of a term of that type (`self`.)
     ///
