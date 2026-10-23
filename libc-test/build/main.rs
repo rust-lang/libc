@@ -4864,6 +4864,8 @@ fn test_linux(t: &Target) {
             }
             // Needs glibc 2.42 or later.
             "pthread_gettid_np" if gnu && versions.glibc.unwrap() < (2, 42) => true,
+            // Needs glibc 2.43 or later.
+            "openat2" if gnu && versions.glibc.unwrap() < (2, 43) => true,
 
             // FIXME(linux): Deprecated since glibc 2.30. Remove fn once upstream does.
             "sysctl" if gnu => true,
