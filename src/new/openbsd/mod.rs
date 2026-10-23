@@ -5,3 +5,4 @@
 
 pub(crate) mod sys;
 pub(crate) mod unistd;
+pub(crate) mod uvm;
