@@ -243,6 +243,7 @@ cfg_if! {
         pub use sys::ipc::*;
         pub use sys::sensors::*;
         pub use sys::sysctl::*;
+        pub use uvm::uvmexp::*;
     } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         pub use net::bpf::*;
         pub use net::if_::*;

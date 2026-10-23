@@ -491,6 +491,7 @@ fn test_openbsd(t: &Target) {
         "sys/param.h",
         "sys/auxv.h",
         "paths.h",
+        "uvm/uvmexp.h",
     );
 
     cfg.rename_type(|ty| match ty {
