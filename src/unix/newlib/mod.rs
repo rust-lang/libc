@@ -345,7 +345,7 @@ s! {
         __val: u32,
     }
 
-    #[cfg(not(target_os = "vita"))]
+    #[cfg(all(not(target_os = "vita"), not(target_os = "horizon")))]
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -355,9 +355,19 @@ s! {
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
         pub st_size: crate::off_t,
-        pub st_atim: crate::timespec,
-        pub st_mtim: crate::timespec,
-        pub st_ctim: crate::timespec,
+        // `struct timespec st_{a,m,c}tim` in C: `st_spare{1,2,3}` hold `tv_nsec`
+        pub st_atime: crate::time_t,
+        pub st_spare1: c_long,
+        #[cfg(not(all(target_os = "espidf", espidf_time32)))]
+        _atime_pad: Padding<c_int>,
+        pub st_mtime: crate::time_t,
+        pub st_spare2: c_long,
+        #[cfg(not(all(target_os = "espidf", espidf_time32)))]
+        _mtime_pad: Padding<c_int>,
+        pub st_ctime: crate::time_t,
+        pub st_spare3: c_long,
+        #[cfg(not(all(target_os = "espidf", espidf_time32)))]
+        _ctime_pad: Padding<c_int>,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
         pub st_spare4: [c_long; 2usize],
