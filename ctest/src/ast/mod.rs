@@ -42,7 +42,7 @@ use crate::{
 /// only place where this happens is in this function for convenience's sake.
 pub(crate) trait RenameUtils: Clone {
     fn path(self) -> Path;
-    fn addressable_paths(self) -> Vec<Path>;
+    fn aggregate_path(self) -> Vec<Path>;
     fn mk(
         self,
         cached_path: BoxStr,
@@ -56,31 +56,28 @@ pub(crate) trait RenameUtils: Clone {
     fn merge_aggregates(self, other: Self) -> Vec<Path> {
         let we_need = other
             .clone()
-            .addressable_paths()
+            .aggregate_path()
             .into_iter()
             .filter(|a| {
                 self.clone()
-                    .addressable_paths()
+                    .aggregate_path()
                     .into_iter()
                     .any(|b| *a == b)
                     .not()
             })
             .collect::<Vec<_>>();
-        let mut ours = self.clone().addressable_paths();
+        let mut ours = self.clone().aggregate_path();
         ours.extend(we_need);
         ours
     }
 
-    /// Checks whether two implementors of the interface contain some common
-    /// path in their path aggregate.
+    /// Checks whether two interface implementors contain some common path in
+    /// their path aggregate.
     fn akin_aggregates(self, other: Self) -> bool {
-        self.clone().addressable_paths().into_iter().any(|p| {
-            other
-                .clone()
-                .addressable_paths()
-                .into_iter()
-                .any(|p2| p == p2)
-        })
+        self.clone()
+            .aggregate_path()
+            .into_iter()
+            .any(|p| other.clone().aggregate_path().into_iter().any(|p2| p == p2))
     }
 
     /// Provided some parsed type, this method will run the given closure on
@@ -100,7 +97,7 @@ pub(crate) trait RenameUtils: Clone {
     /// needs to be performed on all variations.
     fn with_variations<T>(&self, f: impl ops::Fn(Self) -> T + Clone) -> Vec<T> {
         self.clone()
-            .addressable_paths()
+            .aggregate_path()
             .into_iter()
             .map(|p| f(self.clone().rename(p.clone())))
             .collect()
@@ -119,7 +116,7 @@ pub(crate) trait RenameUtils: Clone {
                 .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
                 .unwrap_or_default(),
             new_path.clone(),
-            self.addressable_paths()
+            self.aggregate_path()
                 .clone()
                 .into_iter()
                 .chain([new_path.clone()])

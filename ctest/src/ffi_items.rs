@@ -1107,8 +1107,9 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
 
 /// Provided an item container, it searches for all items of the same kind, and
 /// with a path aggregate that contains some matching path as the aggregate of
-/// `reference`.
-fn of_akin_aggregate(
+/// `reference`, and ensures the returned items contain an updated path
+/// aggregate that integrates both `reference`'s and theirs.
+fn search_and_merge_aggregates(
     root: FfiItems,
     reference: GenericItem,
     matches: Vec<GenericItem>,
@@ -1117,38 +1118,62 @@ fn of_akin_aggregate(
         .modules
         .clone()
         .into_iter()
-        .flat_map(|it| of_akin_aggregate(it.items.clone(), reference.clone(), matches.clone()))
+        .flat_map(|it| {
+            search_and_merge_aggregates(it.items.clone(), reference.clone(), matches.clone())
+        })
         .collect();
     let new_matches = root
         .items()
-        .filter_map(|it| match (it.clone(), reference.clone()) {
-            (GenericItem::Type(_), GenericItem::Type(_))
-            | (GenericItem::Struct(_), GenericItem::Struct(_))
-            | (GenericItem::Union(_), GenericItem::Union(_))
-            | (GenericItem::Const(_), GenericItem::Const(_))
-            | (GenericItem::Fn(_), GenericItem::Fn(_))
-            | (GenericItem::Static(_), GenericItem::Static(_))
-            | (GenericItem::Module(_), GenericItem::Module(_)) => it.clone().into(),
-            (GenericItem::Type(_), _)
-            | (GenericItem::Struct(_), _)
-            | (GenericItem::Union(_), _)
-            | (GenericItem::Const(_), _)
-            | (GenericItem::Fn(_), _)
-            | (GenericItem::Static(_), _)
-            | (GenericItem::Module(_), _) => None,
+        .filter_map(|it| {
+            macro_rules! exe {
+                ($($ty:tt),+ $(,)?) => {{
+                    match (it.clone(), reference.clone()) {$(
+                        (GenericItem::$ty(iit), GenericItem::$ty(r)) => {
+                            r.clone().akin_aggregates(iit.clone()).then_some(it.clone())
+                        }
+                    )+
+                        _ => None,
+                    }
+                }};
+            }
+            exe! {
+                Type,
+                Struct,
+                Union,
+                Const,
+                Fn,
+                Static,
+                Module,
+            }
         })
-        .filter(|it| match (it.clone(), reference.clone()) {
-            (GenericItem::Type(t), GenericItem::Type(r)) => r.akin_aggregates(t),
-            (GenericItem::Struct(s), GenericItem::Struct(r)) => r.akin_aggregates(s),
-            (GenericItem::Union(u), GenericItem::Union(r)) => r.akin_aggregates(u),
-            (GenericItem::Const(c), GenericItem::Const(r)) => r.akin_aggregates(c),
-            (GenericItem::Fn(f), GenericItem::Fn(r)) => r.akin_aggregates(f),
-            (GenericItem::Static(s), GenericItem::Static(r)) => r.akin_aggregates(s),
-            (GenericItem::Module(m), GenericItem::Module(r)) => r.akin_aggregates(m),
-            _ => unreachable!(
-                "The prior filter_map already ensured that the items in the \
-                 iterator match the reference item"
-            ),
+        .map(|it| {
+            macro_rules! exe {
+                ($($ty:tt),+ $(,)?) => {{
+                    match (it.clone(), reference.clone()) {$(
+                        (GenericItem::$ty(iit), GenericItem::$ty(r)) => {
+                            let new_path_aggregate = iit.clone().merge_aggregates(r.clone());
+                            GenericItem::$ty($ty {
+                                path_aggregate: new_path_aggregate.clone(),
+                                ..iit.clone()
+                            })
+                        },
+                    )+
+                        _ => unreachable!(
+                            "The above filter_map got rid of all items that \
+                             were not of the same kind as reference."
+                        ),
+                    }
+                }};
+            }
+            exe! {
+                Type,
+                Struct,
+                Union,
+                Const,
+                Fn,
+                Static,
+                Module,
+            }
         });
     let mut matches = matches.clone();
     matches.extend(new_nested_matches);
@@ -1263,7 +1288,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         cached_path,
         cached_ident,
         path: path.clone(),
-        addressable_paths: vec![path.clone()],
+        path_aggregate: vec![path.clone()],
         link_name,
         parameters,
         return_type,
@@ -1285,7 +1310,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
         cached_path,
         cached_ident,
         path: path.clone(),
-        addressable_paths: vec![path.clone()],
+        path_aggregate: vec![path.clone()],
         link_name,
         ty,
     });
@@ -1303,7 +1328,7 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        addressable_paths: vec![path.clone()],
+        path_aggregate: vec![path.clone()],
         ty,
     });
 }
@@ -1324,7 +1349,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        addressable_paths: vec![path.clone()],
+        path_aggregate: vec![path.clone()],
         fields,
     });
 }
@@ -1341,7 +1366,7 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        addressable_paths: vec![path.clone()],
+        path_aggregate: vec![path.clone()],
         fields,
     });
 }
@@ -1358,7 +1383,7 @@ fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        addressable_paths: vec![path.clone()],
+        path_aggregate: vec![path.clone()],
         ty,
     });
 }
@@ -1458,7 +1483,7 @@ impl<'ast> Visit<'ast> for FfiItems {
                 cached_path: ast::path_to_string(running_items.current_module.clone()),
                 cached_ident: ident.to_string().into_boxed_str(),
                 path: path.clone(),
-                addressable_paths: vec![path.clone()],
+                path_aggregate: vec![path.clone()],
                 items: running_items.clone(),
             });
         }

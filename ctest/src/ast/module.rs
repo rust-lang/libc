@@ -22,7 +22,7 @@ pub struct Module {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) addressable_paths: Vec<Path>,
+    pub(crate) path_aggregate: Vec<Path>,
     pub(crate) items: FfiItems,
 }
 
@@ -55,8 +55,8 @@ impl Module {
 }
 
 impl RenameUtils for Module {
-    fn addressable_paths(self) -> Vec<Path> {
-        self.addressable_paths.clone()
+    fn aggregate_path(self) -> Vec<Path> {
+        self.path_aggregate.clone()
     }
 
     fn path(self) -> Path {
@@ -74,7 +74,7 @@ impl RenameUtils for Module {
             cached_path,
             cached_ident,
             path,
-            addressable_paths,
+            path_aggregate: addressable_paths,
             ..self.clone()
         }
     }
@@ -145,8 +145,8 @@ impl RenameUtils for Module {
                 .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
                 .unwrap_or_default(),
             path: new_path.clone(),
-            addressable_paths: self
-                .addressable_paths
+            path_aggregate: self
+                .path_aggregate
                 .clone()
                 .into_iter()
                 .chain([new_path.clone()])
@@ -168,7 +168,7 @@ impl Default for Module {
             cached_path: String::new().into_boxed_str(),
             cached_ident: String::new().into_boxed_str(),
             path: dpath.clone(),
-            addressable_paths: vec![dpath.clone()],
+            path_aggregate: vec![dpath.clone()],
             items: FfiItems::default(),
         }
     }

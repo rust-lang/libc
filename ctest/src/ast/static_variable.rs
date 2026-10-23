@@ -21,7 +21,7 @@ pub struct Static {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) addressable_paths: Vec<Path>,
+    pub(crate) path_aggregate: Vec<Path>,
     pub(crate) link_name: Option<BoxStr>,
     pub(crate) ty: Type,
 }
@@ -49,8 +49,8 @@ impl Static {
 }
 
 impl RenameUtils for Static {
-    fn addressable_paths(self) -> Vec<Path> {
-        self.addressable_paths.clone()
+    fn aggregate_path(self) -> Vec<Path> {
+        self.path_aggregate.clone()
     }
 
     fn path(self) -> Path {
@@ -68,7 +68,7 @@ impl RenameUtils for Static {
             cached_path,
             cached_ident,
             path,
-            addressable_paths,
+            path_aggregate: addressable_paths,
             ..self.clone()
         }
     }
