@@ -473,6 +473,7 @@ fn test_openbsd(t: &Target) {
         "sys/param.h",
         "sys/auxv.h",
         "paths.h",
+        "uvm/uvmexp.h",
     );
 
     cfg.rename_type(|ty| match ty {
@@ -530,6 +531,7 @@ fn test_openbsd(t: &Target) {
 
     cfg.alias_is_c_enum(move |ty| match ty {
         "sensor_type" | "sensor_status" => true,
+        "uvm_exp_counters" => true,
         _ => false,
     });
 

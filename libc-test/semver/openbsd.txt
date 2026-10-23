@@ -1002,6 +1002,19 @@ UT_NAMESIZE
 VDISCARD
 VDSUSP
 VLNEXT
+VM_ANONMIN
+VM_LOADAVG
+VM_MALLOC_CONF
+VM_MAXID
+VM_MAXSLP
+VM_METER
+VM_NKMEMPAGES
+VM_PSSTRINGS
+VM_SWAPENCRYPT
+VM_USPACE
+VM_UVMEXP
+VM_VNODEMIN
+VM_VTEXTMIN
 VREPRINT
 VSTATUS
 VWERASE
@@ -1342,6 +1355,7 @@ posix_spawnattr_setsigmask
 posix_spawnp
 ppoll
 preadv
+ps_strings
 pseudo_AF_HDRCMPLT
 pseudo_AF_PFLOW
 pseudo_AF_PIP
@@ -1464,6 +1478,8 @@ uselocale
 utimensat
 utmp
 utrace
+uvm_exp_counters
+uvmexp
 wait4
 waitid
 xucred
