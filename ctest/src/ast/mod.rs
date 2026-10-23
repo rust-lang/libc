@@ -8,9 +8,10 @@ mod structure;
 mod type_alias;
 mod union;
 
-use std::{
-    fmt,
-    ops,
+use std::fmt;
+use std::ops::{
+    self,
+    Not,
 };
 
 pub use constant::Const;
@@ -49,6 +50,26 @@ pub(crate) trait RenameUtils: Clone {
         path: Path,
         addressable_paths: Vec<Path>,
     ) -> Self;
+
+    /// Diffs the path aggregates of both `self` and `other`, and yields a
+    /// unified path aggregate integrating the paths from both.
+    fn merge_aggregates(self, other: Self) -> Vec<Path> {
+        let we_need = other
+            .clone()
+            .addressable_paths()
+            .into_iter()
+            .filter(|a| {
+                self.clone()
+                    .addressable_paths()
+                    .into_iter()
+                    .any(|b| *a == b)
+                    .not()
+            })
+            .collect::<Vec<_>>();
+        let mut ours = self.clone().addressable_paths();
+        ours.extend(we_need);
+        ours
+    }
 
     /// Checks whether two implementors of the interface contain some common
     /// path in their path aggregate.

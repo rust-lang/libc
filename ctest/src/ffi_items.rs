@@ -1105,20 +1105,21 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
         )
 }
 
+/// Provided an item container, it searches for all items of the same kind, and
+/// with a path aggregate that contains some matching path as the aggregate of
+/// `reference`.
 fn of_akin_aggregate(
-    root: Module,
+    root: FfiItems,
     reference: GenericItem,
     matches: Vec<GenericItem>,
 ) -> Vec<GenericItem> {
     let new_nested_matches: Vec<_> = root
-        .items
         .modules
         .clone()
         .into_iter()
-        .flat_map(|it| of_akin_aggregate(it.clone(), reference.clone(), matches.clone()))
+        .flat_map(|it| of_akin_aggregate(it.items.clone(), reference.clone(), matches.clone()))
         .collect();
     let new_matches = root
-        .items
         .items()
         .filter_map(|it| match (it.clone(), reference.clone()) {
             (GenericItem::Type(_), GenericItem::Type(_))
