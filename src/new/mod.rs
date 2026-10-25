@@ -177,6 +177,7 @@ cfg_if! {
 cfg_if! {
     if #[cfg(target_os = "android")] {
         use bionic_libc::kernel_uapi::linux;
+        pub use linux::fs::*;
         pub use linux::types::*;
         pub use sys::socket::*;
     } else if #[cfg(target_os = "linux")] {
@@ -186,6 +187,7 @@ cfg_if! {
         pub use linux::can::j1939::*;
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
+        pub use linux::fs::*;
         pub use linux::futex::*;
         pub use linux::if_addr::*;
         pub use linux::if_link::*;

@@ -3,6 +3,7 @@
 //! <https://github.com/torvalds/linux/tree/master/include/uapi/linux>
 
 pub(crate) mod can;
+pub(crate) mod fs;
 pub(crate) mod futex;
 pub(crate) mod if_addr;
 pub(crate) mod if_link;
