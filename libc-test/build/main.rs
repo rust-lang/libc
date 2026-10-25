@@ -2154,6 +2154,9 @@ fn test_android(t: &Target) {
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
+            // FIXME(android): Missing from the NDK r27 headers used in CI.
+            "procmap_query" => true,
+
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
@@ -2178,6 +2181,10 @@ fn test_android(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
+            // FIXME(android): Missing from the NDK r27 headers used in CI.
+            "PAGE_IS_SOFT_DIRTY" => true,
+            n if n.starts_with("PROCMAP_QUERY") => true,
+
             // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
             | "IPV6_FLOWINFO"
             | "IPV6_FLOWLABEL_MGR"
@@ -4358,6 +4365,8 @@ fn test_linux(t: &Target) {
             "ptp_sys_offset_extended" if kernel < (6, 12) => true,
             "epoll_params" if old_musl => true,
             "epoll_params" => kernel < (6, 9),
+            "procmap_query" => kernel < (6, 11),
+            "page_region" | "pm_scan_arg" => kernel < (6, 7),
             "mnt_ns_info" => kernel < (6, 12),
 
             // FIXME(linux): Only requires >= 6.12 kernel headers, but including `uio.h` creates
@@ -4747,6 +4756,12 @@ fn test_linux(t: &Target) {
             "SECCOMP_IOCTL_NOTIF_SET_FLAGS" => kernel < (6, 6),
 
             "EPIOCSPARAMS" | "EPIOCGPARAMS" => kernel < (6, 9),
+            "PAGEMAP_SCAN" => kernel < (6, 7),
+            "PAGE_IS_SOFT_DIRTY" => kernel < (6, 8),
+            "PAGE_IS_GUARD" => kernel < (6, 16),
+            "PAGE_IS_ACCESSED" => kernel < (7, 3),
+            n if n.starts_with("PAGE_IS_") || n.starts_with("PM_SCAN_") => kernel < (6, 7),
+            n if n.starts_with("PROCMAP_QUERY") => kernel < (6, 11),
             "MAP_DROPPABLE" => kernel < (6, 11),
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => kernel < (6, 12),
 
