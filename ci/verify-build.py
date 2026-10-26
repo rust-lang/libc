@@ -167,6 +167,7 @@ TARGETS = [
     Target("aarch64-wrs-vxworks", dist=False),
     Target("armebv7r-none-eabihf", dist=False),
     Target("armv7-rtems-eabihf", dist=False),
+    Target("armv7-unknown-linux-uclibceabihf", dist=False),
     Target("armv7-wrs-vxworks-eabihf", dist=False),
     Target("armv7r-none-eabihf", dist=False),
     Target("armv7s-apple-ios", dist=False),
