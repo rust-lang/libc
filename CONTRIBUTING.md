@@ -142,6 +142,8 @@ Common sources include:
 * OpenBSD: <https://github.com/openbsd> (official mirror),
   <https://cvsweb.openbsd.org/src> (original)
 * RedoxOS: <https://gitlab.redox-os.org/redox-os/relibc>
+* RTEMS: <https://github.com/rtems/rtems> (official mirror),
+  <https://gitlab.rtems.org/rtems/rtos/rtems> (original)
 * Uclibc: <https://github.com/wbx-github/uclibc-ng> (mirror),
   <https://git.uclibc-ng.org/git/uclibc-ng.git> (original)
 * WASI: <https://github.com/WebAssembly/wasi-libc>
