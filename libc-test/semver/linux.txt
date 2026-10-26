@@ -4239,6 +4239,7 @@ input_event
 input_id
 input_keymap_entry
 input_mask
+ip6_mtuinfo
 ip_mreq_source
 ip_mreqn
 ipc_perm
