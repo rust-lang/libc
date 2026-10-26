@@ -890,12 +890,25 @@ pub const IPV6_MULTICAST_HOPS: c_int = 0x7;
 pub const IPV6_MULTICAST_LOOP: c_int = 0x8;
 pub const IPV6_PKTINFO: c_int = 0xb;
 pub const IPV6_HOPLIMIT: c_int = 0xc;
+pub const IPV6_NEXTHOP: c_int = 0xd;
+pub const IPV6_HOPOPTS: c_int = 0xe;
+pub const IPV6_DSTOPTS: c_int = 0xf;
+pub const IPV6_RTHDR: c_int = 0x10;
+pub const IPV6_RTHDRDSTOPTS: c_int = 0x11;
 pub const IPV6_RECVPKTINFO: c_int = 0x12;
+pub const IPV6_RECVHOPLIMIT: c_int = 0x13;
+pub const IPV6_RECVHOPOPTS: c_int = 0x14;
+pub const IPV6_RECVRTHDR: c_int = 0x16;
+pub const IPV6_CHECKSUM: c_int = 0x18;
 pub const IPV6_RECVTCLASS: c_int = 0x19;
+pub const IPV6_USE_MIN_MTU: c_int = 0x20;
 pub const IPV6_DONTFRAG: c_int = 0x21;
 pub const IPV6_SEC_OPT: c_int = 0x22;
+pub const IPV6_RECVPATHMTU: c_int = 0x24;
+pub const IPV6_PATHMTU: c_int = 0x25;
 pub const IPV6_TCLASS: c_int = 0x26;
 pub const IPV6_V6ONLY: c_int = 0x27;
+pub const IPV6_RECVDSTOPTS: c_int = 0x28;
 pub const IPV6_BOUND_IF: c_int = 0x41;
 
 cfg_if! {

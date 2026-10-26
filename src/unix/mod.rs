@@ -420,6 +420,32 @@ cfg_if! {
     }
 }
 
+// IPv6 definitions from `netinet/in.h`
+cfg_if! {
+    if #[cfg(any(
+        target_os = "android",
+        target_os = "dragonfly",
+        target_os = "emscripten",
+        target_os = "freebsd",
+        target_os = "illumos",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "netbsd",
+        target_os = "openbsd",
+        target_os = "solaris",
+        target_vendor = "apple",
+    ))] {
+        s2! {
+            #[cfg(not(target_os = "android"))]
+            pub struct ip6_mtuinfo {
+                #[custom_default(unsafe { mem::zeroed() })]
+                pub ip6m_addr: crate::sockaddr_in6,
+                pub ip6m_mtu: u32,
+            }
+        }
+    }
+}
+
 cfg_if! {
     if #[cfg(any(target_os = "nto", target_os = "qnx", target_os = "aix"))] {
         pub const FNM_PERIOD: c_int = 1 << 1;
