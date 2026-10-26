@@ -4329,8 +4329,8 @@ const fn _ALIGN(p: usize) -> usize {
 
 // include/paths.h
 pub const _PATH_DEFPATH: *const c_char =
-    cstr(b"/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin\0");
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+    cstr!("/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {

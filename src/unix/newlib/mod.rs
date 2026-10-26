@@ -888,7 +888,7 @@ pub const PRIO_PGRP: c_int = 1;
 pub const PRIO_USER: c_int = 2;
 
 // include/paths.h from newlib's libc
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
