@@ -34,50 +34,95 @@ use crate::{
     MapInput,
 };
 
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) struct PathAggregateStore {
+    value: Vec<Path>,
+}
+
+impl PathAggregateStore {
+    pub(crate) const fn new() -> Self {
+        Self { value: Vec::new() }
+    }
+
+    pub(crate) fn push(self, p: Path) -> Self {
+        let PathAggregateStore { mut value } = self;
+        value.push(p);
+        Self { value }
+    }
+}
+
+impl Default for PathAggregateStore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Utility interface for keeping a single renaming function for all parsed
 /// items.
 ///
 /// They all share the same set of fields relative to their identifier and path,
 /// all of which need updating whenever the path is renamed. We ensure that the
 /// only place where this happens is in this function for convenience's sake.
-pub(crate) trait RenameUtils: Clone {
+pub(crate) trait PathUtils: Clone {
     fn path(self) -> Path;
-    fn aggregate_path(self) -> Vec<Path>;
+    fn path_aggregate(self) -> PathAggregateStore;
     fn mk(
         self,
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        addressable_paths: PathAggregateStore,
     ) -> Self;
+
+    // [TODO]: override the default impelemnteation for modules, so as to allow
+    // the items living within the subtree rooted at the module to also adopt the
+    // new path in their aggreagtes.
+    // [TODO]: change all call sites where the path aggregate is modified
+    // manually with uses of this method.
+    fn add_path(self, path: Path) -> Self {
+        let aggregate = self.clone().path_aggregate();
+        let new_aggregate = aggregate.push(path);
+        self.clone().mk(
+            path_to_string(self.clone().path()),
+            ident_to_string(self.clone().path()),
+            self.clone().path(),
+            new_aggregate,
+        )
+    }
 
     /// Diffs the path aggregates of both `self` and `other`, and yields a
     /// unified path aggregate integrating the paths from both.
-    fn merge_aggregates(self, other: Self) -> Vec<Path> {
+    fn merge_aggregates(self, other: Self) -> PathAggregateStore {
         let we_need = other
             .clone()
-            .aggregate_path()
+            .path_aggregate()
+            .value
             .into_iter()
             .filter(|a| {
                 self.clone()
-                    .aggregate_path()
+                    .path_aggregate()
+                    .value
                     .into_iter()
                     .any(|b| *a == b)
                     .not()
             })
             .collect::<Vec<_>>();
-        let mut ours = self.clone().aggregate_path();
+        let mut ours = self.clone().path_aggregate().value;
         ours.extend(we_need);
-        ours
+        PathAggregateStore { value: ours }
     }
 
     /// Checks whether two interface implementors contain some common path in
     /// their path aggregate.
     fn akin_aggregates(self, other: Self) -> bool {
-        self.clone()
-            .aggregate_path()
-            .into_iter()
-            .any(|p| other.clone().aggregate_path().into_iter().any(|p2| p == p2))
+        self.clone().path_aggregate().value.into_iter().any(|p| {
+            other
+                .clone()
+                .path_aggregate()
+                .value
+                .into_iter()
+                .any(|p2| p == p2)
+        })
     }
 
     /// Provided some parsed type, this method will run the given closure on
@@ -97,7 +142,8 @@ pub(crate) trait RenameUtils: Clone {
     /// needs to be performed on all variations.
     fn with_variations<T>(&self, f: impl ops::Fn(Self) -> T + Clone) -> Vec<T> {
         self.clone()
-            .aggregate_path()
+            .path_aggregate()
+            .value
             .into_iter()
             .map(|p| f(self.clone().rename(p.clone())))
             .collect()
@@ -116,11 +162,7 @@ pub(crate) trait RenameUtils: Clone {
                 .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
                 .unwrap_or_default(),
             new_path.clone(),
-            self.aggregate_path()
-                .clone()
-                .into_iter()
-                .chain([new_path.clone()])
-                .collect(),
+            self.path_aggregate().push(new_path),
         )
     }
 }
@@ -148,6 +190,15 @@ pub(crate) fn path_to_string(path: Path) -> BoxStr {
         .to_string()
         .replace(|c: char| c.is_ascii_whitespace(), "")
         .into_boxed_str()
+}
+
+/// Returns a stringified representation of the last segment in the passed
+/// identifier.
+pub(crate) fn ident_to_string(path: Path) -> BoxStr {
+    path.segments
+        .last()
+        .map(|it| it.ident.to_string().into_boxed_str())
+        .unwrap_or_default()
 }
 
 /// The ABI as defined by the extern block.

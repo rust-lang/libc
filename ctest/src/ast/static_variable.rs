@@ -3,7 +3,7 @@ use syn::{
     Type,
 };
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::{
     Abi,
     BoxStr,
@@ -48,8 +48,8 @@ impl Static {
     }
 }
 
-impl RenameUtils for Static {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Static {
+    fn path_aggregate(self) -> Vec<Path> {
         self.path_aggregate.clone()
     }
 

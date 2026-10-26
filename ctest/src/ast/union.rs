@@ -1,6 +1,6 @@
 use syn::Path;
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::{
     BoxStr,
     Field,
@@ -34,8 +34,8 @@ impl Union {
     }
 }
 
-impl RenameUtils for Union {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Union {
+    fn path_aggregate(self) -> Vec<Path> {
         self.path_aggregate.clone()
     }
 

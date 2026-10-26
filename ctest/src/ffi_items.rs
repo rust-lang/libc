@@ -38,7 +38,7 @@ use syn::{
     Visibility,
 };
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::{
     Abi,
     BoxStr,

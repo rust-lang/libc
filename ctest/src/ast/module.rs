@@ -7,7 +7,7 @@ use syn::{
     PathSegment,
 };
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::ffi_items::FfiItems;
 use crate::{
     BoxStr,
@@ -54,8 +54,8 @@ impl Module {
     }
 }
 
-impl RenameUtils for Module {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Module {
+    fn path_aggregate(self) -> Vec<Path> {
         self.path_aggregate.clone()
     }
 

@@ -7,7 +7,7 @@ use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::cdecl::Constness;
 use crate::ffi_items::FfiItems;
 use crate::translator::{

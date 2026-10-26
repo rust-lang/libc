@@ -1,6 +1,6 @@
 use syn::Path;
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::{
     Abi,
     BoxStr,
@@ -48,8 +48,8 @@ impl Fn {
     }
 }
 
-impl RenameUtils for Fn {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Fn {
+    fn path_aggregate(self) -> Vec<Path> {
         self.path_aggregate.clone()
     }
 

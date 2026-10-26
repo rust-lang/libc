@@ -1,7 +1,7 @@
 use syn::Path;
 
 use crate::BoxStr;
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 
 /// Represents a type alias defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
@@ -32,8 +32,8 @@ impl Type {
     }
 }
 
-impl RenameUtils for Type {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Type {
+    fn path_aggregate(self) -> Vec<Path> {
         self.path_aggregate.clone()
     }
 

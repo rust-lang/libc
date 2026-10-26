@@ -1,7 +1,7 @@
 use syn::Path;
 use syn::punctuated::Punctuated;
 
-use crate::ast::RenameUtils;
+use crate::ast::PathUtils;
 use crate::{
     BoxStr,
     Field,
@@ -35,8 +35,8 @@ impl Struct {
     }
 }
 
-impl RenameUtils for Struct {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Struct {
+    fn path_aggregate(self) -> Vec<Path> {
         self.path_aggregate.clone()
     }
 

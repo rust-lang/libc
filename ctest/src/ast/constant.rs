@@ -4,7 +4,10 @@ use syn::{
 };
 
 use crate::BoxStr;
-use crate::ast::RenameUtils;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
 
 /// Represents a constant variable defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
@@ -13,7 +16,7 @@ pub struct Const {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: Vec<Path>,
+    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) ty: Type,
 }
 
@@ -34,8 +37,8 @@ impl Const {
     }
 }
 
-impl RenameUtils for Const {
-    fn aggregate_path(self) -> Vec<Path> {
+impl PathUtils for Const {
+    fn path_aggregate(self) -> PathAggregateStore {
         self.path_aggregate.clone()
     }
 
@@ -48,13 +51,13 @@ impl RenameUtils for Const {
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        path_aggregate: PathAggregateStore,
     ) -> Self {
         Self {
             cached_path,
             cached_ident,
             path,
-            path_aggregate: addressable_paths,
+            path_aggregate,
             ..self.clone()
         }
     }
