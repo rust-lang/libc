@@ -64,5 +64,7 @@ harness = false
 #              once MSRV is above 1.64 and replaced with `[lints] workspace=true`
 
 [lints.rust]
+# older Rust doesn't know `target_os = "qnx"`, see CHECK_CFG_EXTRA in libc's build.rs
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("qnx"))'] }
 
 [lints.clippy]
