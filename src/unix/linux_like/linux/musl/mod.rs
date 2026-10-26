@@ -191,7 +191,7 @@ s! {
     }
 
     pub struct regex_t {
-        __re_nsub: size_t,
+        pub __re_nsub: size_t,
         __opaque: *mut c_void,
         __padding: Padding<[*mut c_void; 4usize]>,
         __nsub2: size_t,

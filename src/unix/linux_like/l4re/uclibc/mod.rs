@@ -159,7 +159,7 @@ s! {
         __syntax: c_ulong,
         __fastmap: *mut c_char,
         __translate: *mut c_char,
-        __re_nsub: size_t,
+        pub __re_nsub: size_t,
         __bitfield: u8,
     }
 

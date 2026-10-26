@@ -138,7 +138,7 @@ s2! {
 
     pub struct regex_t {
         __re_magic: c_int,
-        __re_nsub: size_t,
+        pub __re_nsub: size_t,
         #[custom_default(ptr::null_mut())]
         __re_endp: *const c_char,
         #[custom_default(ptr::null_mut())]
