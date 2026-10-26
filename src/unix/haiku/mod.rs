@@ -405,7 +405,7 @@ s! {
         __syntax: c_ulong,
         __fastmap: *mut c_char,
         __translate: *mut c_char,
-        pub __re_nsub: size_t,
+        pub re_nsub: size_t,
         __bitfield: u8,
     }
 
