@@ -125,7 +125,6 @@ macro_rules! prelude {
             pub(crate) use crate::types::u32_cast_ioctl;
             #[allow(unused_imports)]
             pub(crate) use crate::types::{
-                cstr,
                 replace_array_items,
                 u16_cast_short,
                 u32_cast_int,
@@ -1038,6 +1037,24 @@ macro_rules! offset_of {
         let off = (fptr as usize).checked_sub(ptr as usize).unwrap();
         core::assert!(off <= core::mem::size_of::<$Ty>());
         off
+    }};
+}
+
+/// Append `\0` to a string literal and return a char pointer.
+// FIXME(msrv): we can opt to use C-string literals directly in 1.77
+macro_rules! cstr {
+    ($s:literal $(,)?) => {{
+        const S: &str = {
+            let s: &str = core::concat!($s, "\0");
+            let bytes = s.as_bytes();
+            let mut i = 0;
+            while i < bytes.len() - 1 {
+                assert!(bytes[i] != 0);
+                i += 1;
+            }
+            s
+        };
+        S.as_ptr().cast::<core::ffi::c_char>()
     }};
 }
 
