@@ -101,8 +101,10 @@ EUCLEAN
 EUNATCH
 EUSERS
 EXFULL
+FILENAME_MAX
 FIONREAD
 F_DUPFD_CLOEXEC
+HOST_NAME_MAX
 IMAXBEL
 IPPROTO_ICMP
 IPPROTO_IDP
@@ -258,6 +260,7 @@ _CS_POSIX_V7_WIDTH_RESTRICTED_ENVS
 _IOFBF
 _IOLBF
 _IONBF
+_PATH_BSHELL
 _PC_2_SYMLINKS
 _PC_ALLOC_SIZE_MIN
 _PC_ASYNC_IO
@@ -301,6 +304,7 @@ chroot
 clearerr
 clock_getres
 clock_gettime
+clock_settime
 difftime
 dirfd
 endgrent
@@ -311,11 +315,18 @@ epoll_create1
 epoll_ctl
 epoll_event
 epoll_wait
+execl
+execle
+execlp
+execv
+execve
+execvp
 explicit_bzero
 faccessat
 fchdir
 fdopendir
 fmemopen
+fork
 getdtablesize
 getgrent
 getgrgid
@@ -346,6 +357,7 @@ open_memstream
 open_wmemstream
 openat
 openpty
+pause
 pipe2
 pthread_condattr_setclock
 qsort
@@ -378,5 +390,6 @@ strlcpy
 strncasecmp
 strndup
 strsignal
+system
 ttyname_r
 utimensat

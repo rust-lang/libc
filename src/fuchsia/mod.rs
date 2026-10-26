@@ -310,9 +310,9 @@ s! {
         __next: *mut c_void,
         __prev: *mut c_void,
         #[cfg(target_pointer_width = "32")]
-        __dummy4: [c_char; 24],
+        __dummy4: Padding<[c_char; 24]>,
         #[cfg(target_pointer_width = "64")]
-        __dummy4: [c_char; 16],
+        __dummy4: Padding<[c_char; 16]>,
     }
 
     // FIXME(1.0): This should not implement `PartialEq`
@@ -777,7 +777,7 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct stack_t {
@@ -841,7 +841,7 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     pub struct msghdr {
@@ -858,7 +858,7 @@ s! {
 
     pub struct cmsghdr {
         pub cmsg_len: crate::socklen_t,
-        pub __pad1: c_int,
+        __pad1: Padding<c_int>,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }
@@ -924,7 +924,7 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
@@ -1183,8 +1183,10 @@ cfg_if! {
 
 pub const HOST_NAME_MAX: c_int = 255;
 
-pub const INT_MIN: c_int = -1 - 0x7fffffff;
-pub const INT_MAX: c_int = 0x7fffffff;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
+pub const INT_MIN: c_int = c_int::MIN;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
+pub const INT_MAX: c_int = c_int::MAX;
 
 pub const SIG_DFL: sighandler_t = 0 as sighandler_t;
 pub const SIG_IGN: sighandler_t = 1 as sighandler_t;
@@ -3184,21 +3186,28 @@ f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot &= !(1 << (fd % size));
     }
 
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
+        let Some(slot) = (*set).fds_bits.get(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        (*slot & (1 << (fd % size))) != 0
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot |= 1 << (fd % size);
     }
 
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
@@ -3826,6 +3835,10 @@ extern "C" {
     pub fn mkstemp(template: *mut c_char) -> c_int;
     pub fn mkdtemp(template: *mut c_char) -> *mut c_char;
 
+    #[deprecated(
+        since = "0.2.190",
+        note = "function is obsolete; prefer tmpfile, mkstemp, or similar"
+    )]
     pub fn tmpnam(ptr: *mut c_char) -> *mut c_char;
 
     pub fn openlog(ident: *const c_char, logopt: c_int, facility: c_int);

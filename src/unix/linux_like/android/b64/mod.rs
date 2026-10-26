@@ -60,7 +60,7 @@ s! {
         pub f_namelen: u64,
         pub f_frsize: u64,
         pub f_flags: u64,
-        pub f_spare: [u64; 4],
+        f_spare: Padding<[u64; 4]>,
     }
 
     pub struct sysinfo {
@@ -73,11 +73,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 0],
+        _f: Padding<[c_char; 0]>,
     }
 
     // FIXME(1.0,deprecate): lfs binding to be removed
@@ -93,7 +93,7 @@ s! {
         pub f_namelen: u64,
         pub f_frsize: u64,
         pub f_flags: u64,
-        pub f_spare: [u64; 4],
+        f_spare: Padding<[u64; 4]>,
     }
 
     // FIXME(1.0,deprecate): lfs binding to be removed
@@ -109,7 +109,7 @@ s! {
         pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct pthread_barrier_t {

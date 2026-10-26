@@ -149,12 +149,12 @@ s! {
         pub st_ctime_nsec: c_long,
         pub st_size: off_t,
         pub st_blocks: i64,
-        pub __old_st_blksize: u32,
+        __old_st_blksize: u32,
         pub st_flags: u32,
         pub st_gen: u32,
-        pub st_lspare: i32,
+        st_lspare: Padding<i32>,
         pub st_blksize: i64,
-        pub st_qspare2: i64,
+        st_qspare2: Padding<i64>,
     }
 
     pub struct if_data {
@@ -339,7 +339,7 @@ s! {
         pub kp_auxflags: c_int,
         pub kp_lwp: crate::kinfo_lwp,
         pub kp_ktaddr: crate::uintptr_t,
-        kp_spare: [c_int; 2],
+        kp_spare: Padding<[c_int; 2]>,
     }
 
     pub struct cpuctl_msr_args_t {
@@ -397,7 +397,7 @@ s! {
     }
 
     pub struct statfs {
-        __spare2: c_long,
+        __spare2: Padding<c_long>,
         pub f_bsize: c_long,
         pub f_iosize: c_long,
         pub f_blocks: c_long,
@@ -415,10 +415,10 @@ s! {
         pub f_mntonname: [c_char; 80],
         pub f_syncreads: c_long,
         pub f_asyncreads: c_long,
-        __spares1: c_short,
+        __spares1: Padding<c_short>,
         pub f_mntfromname: [c_char; 80],
-        __spares2: c_short,
-        __spare: [c_long; 2],
+        __spares2: Padding<c_short>,
+        __spare: Padding<[c_long; 2]>,
     }
 
     pub struct sigevent {
@@ -1231,6 +1231,12 @@ pub const RTAX_MPLS3: c_int = 10;
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
 pub const RTAX_MAX: c_int = 11;
+
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(
+    b"/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/pkg/bin:/usr/pkg/sbin\0",
+);
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
 
 const fn _CMSG_ALIGN(n: usize) -> usize {
     (n + (size_of::<c_long>() - 1)) & !(size_of::<c_long>() - 1)

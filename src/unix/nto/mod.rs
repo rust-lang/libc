@@ -111,9 +111,9 @@ s! {
         pub st_rdev: crate::dev_t,
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
-        pub __old_st_mtime: crate::_Time32t,
-        pub __old_st_atime: crate::_Time32t,
-        pub __old_st_ctime: crate::_Time32t,
+        __old_st_mtime: crate::_Time32t,
+        __old_st_atime: crate::_Time32t,
+        __old_st_ctime: crate::_Time32t,
         pub st_mode: mode_t,
         pub st_nlink: crate::nlink_t,
         pub st_blocksize: crate::blksize_t,
@@ -511,7 +511,7 @@ s! {
         pub f_basetype: [c_char; 16],
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        f_filler: [c_uint; 21],
+        f_filler: Padding<[c_uint; 21]>,
     }
 
     pub struct aiocb {
@@ -755,7 +755,7 @@ s_no_extra_traits! {
         pub __rcond: crate::pthread_cond_t, // union
         pub __wcond: crate::pthread_cond_t, // union
         pub __owner: c_uint,
-        pub __spare: c_uint,
+        __spare: Padding<c_uint>,
     }
 
     // There is no canonical definition of c_longdouble in Rust. For both AArch64 and x86_64,
@@ -771,7 +771,7 @@ s_no_extra_traits! {
     // form would be bogus and it would potentially change the size of the data type. On QNX SDP 8, this
     // got fixed and both C and C++ are using the same definition.
     pub struct max_align_t {
-        _ll: crate::c_longlong,
+        _ll: c_longlong,
         _ld: i128,
     }
 }
@@ -2315,7 +2315,7 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __rcond: PTHREAD_COND_INITIALIZER,
     __wcond: PTHREAD_COND_INITIALIZER,
     __owner: -2i32 as c_uint,
-    __spare: 0,
+    __spare: Padding::new(0),
 };
 #[cfg(target_os = "qnx")]
 pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t { __u: 0, __owner: 0 };
@@ -2362,21 +2362,28 @@ f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot &= !(1 << (fd % size));
     }
 
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
+        let Some(slot) = (*set).fds_bits.get(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        (*slot & (1 << (fd % size))) != 0
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot |= 1 << (fd % size);
     }
 
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {

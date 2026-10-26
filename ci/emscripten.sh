@@ -4,7 +4,7 @@ set -eux
 
 # Note: keep in sync with:
 # https://github.com/rust-lang/rust/blob/master/src/doc/rustc/src/platform-support/wasm32-unknown-emscripten.md#requirements
-emsdk_version=3.1.68
+emsdk_version=6.0.11
 
 git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable

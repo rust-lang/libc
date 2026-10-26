@@ -22,7 +22,6 @@ NFT_MSG_GETOBJ
 NFT_MSG_GETOBJ_RESET
 NFT_MSG_NEWOBJ
 SIGSTKFLT
-SIGUNUSED
 SO_BSDCOMPAT
 SO_PRIORITY
 SO_PROTOCOL
@@ -34,7 +33,6 @@ SYS_bdflush
 SYS_chmod
 SYS_chown
 SYS_creat
-SYS_create_module
 SYS_dup2
 SYS_epoll_create
 SYS_epoll_wait
@@ -44,7 +42,6 @@ SYS_fork
 SYS_fstat
 SYS_fstatfs64
 SYS_futimesat
-SYS_get_kernel_syms
 SYS_getdents
 SYS_getpgrp
 SYS_getpmsg
@@ -64,7 +61,6 @@ SYS_pause
 SYS_pipe
 SYS_poll
 SYS_putpmsg
-SYS_query_module
 SYS_readdir
 SYS_readlink
 SYS_rename

@@ -369,8 +369,8 @@ s! {
         pub sem_count: u32,
         pub sem_type: u16,
         pub sem_magic: u16,
-        pub sem_pad1: [u64; 3],
-        pub sem_pad2: [u64; 2],
+        sem_pad1: Padding<[u64; 3]>,
+        sem_pad2: Padding<[u64; 2]>,
     }
 
     pub struct flock {
@@ -380,7 +380,7 @@ s! {
         pub l_len: off_t,
         pub l_sysid: c_int,
         pub l_pid: crate::pid_t,
-        pub l_pad: [c_long; 4],
+        l_pad: Padding<[c_long; 4]>,
     }
 
     pub struct if_nameindex {
@@ -399,7 +399,7 @@ s! {
     pub struct port_event {
         pub portev_events: c_int,
         pub portev_source: c_ushort,
-        pub portev_pad: c_ushort,
+        portev_pad: Padding<c_ushort>,
         pub portev_object: crate::uintptr_t,
         pub portev_user: *mut c_void,
     }
@@ -530,6 +530,10 @@ s! {
         pub sigev_notify_attributes: *const crate::pthread_attr_t,
         __sigev_pad2: Padding<c_int>,
     }
+
+    pub struct icmp6_filter {
+        __icmp6_filt: [u32; 8],
+    }
 }
 
 s_no_extra_traits! {
@@ -539,7 +543,7 @@ s_no_extra_traits! {
         pub si_code: c_int,
         pub si_errno: c_int,
         #[cfg(target_pointer_width = "64")]
-        pub si_pad: c_int,
+        si_pad: Padding<c_int>,
 
         __data_pad: [c_int; SIGINFO_DATA_SIZE],
     }
@@ -879,6 +883,7 @@ pub const IP_PKTINFO: c_int = 0x1a;
 pub const IP_DONTFRAG: c_int = 0x1b;
 pub const IP_SEC_OPT: c_int = 0x22;
 
+pub const ICMP6_FILTER: c_int = 0x1;
 pub const IPV6_UNICAST_HOPS: c_int = 0x5;
 pub const IPV6_MULTICAST_IF: c_int = 0x6;
 pub const IPV6_MULTICAST_HOPS: c_int = 0x7;
@@ -2253,23 +2258,30 @@ f! {
     }
 
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
-        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        (*set).fds_bits[fd / bits] &= !(1 << (fd % bits));
-        return;
+        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / bits) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot &= !(1 << (fd % bits));
     }
 
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
-        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        return ((*set).fds_bits[fd / bits] & (1 << (fd % bits))) != 0;
+        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
+        let Some(slot) = (*set).fds_bits.get(fd / bits) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        (*slot & (1 << (fd % bits))) != 0
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
-        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
         let fd = fd as usize;
-        (*set).fds_bits[fd / bits] |= 1 << (fd % bits);
-        return;
+        let bits = size_of_val(&(*set).fds_bits[0]) * 8;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / bits) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot |= 1 << (fd % bits);
     }
 
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
@@ -2318,6 +2330,30 @@ f! {
 
     pub const safe fn MR_GET_TYPE(flags: c_uint) -> c_uint {
         flags & 0x0000ffff
+    }
+
+    pub const safe fn ICMP6_FILTER_WILLPASS(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.__icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) != 0
+    }
+
+    pub const safe fn ICMP6_FILTER_WILLBLOCK(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.__icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) == 0
+    }
+
+    pub safe fn ICMP6_FILTER_SETPASSALL(filt: &mut icmp6_filter) -> () {
+        filt.__icmp6_filt.fill(u32::MAX)
+    }
+
+    pub safe fn ICMP6_FILTER_SETBLOCKALL(filt: &mut icmp6_filter) -> () {
+        filt.__icmp6_filt.fill(0)
+    }
+
+    pub safe fn ICMP6_FILTER_SETPASS(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.__icmp6_filt[(typ >> 5) as usize] |= 1 << (typ & 31);
+    }
+
+    pub safe fn ICMP6_FILTER_SETBLOCK(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.__icmp6_filt[(typ >> 5) as usize] &= !(1 << (typ & 31));
     }
 }
 
@@ -2397,7 +2433,7 @@ extern "C" {
     pub fn pthread_create(
         native: *mut crate::pthread_t,
         attr: *const crate::pthread_attr_t,
-        f: extern "C" fn(*mut c_void) -> *mut c_void,
+        f: Option<unsafe extern "C" fn(*mut c_void) -> *mut c_void>,
         value: *mut c_void,
     ) -> c_int;
     pub fn pthread_attr_getstack(

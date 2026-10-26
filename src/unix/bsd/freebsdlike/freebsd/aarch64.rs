@@ -12,24 +12,25 @@ s! {
         pub gp_lr: crate::register_t,
         pub gp_sp: crate::register_t,
         pub gp_elr: crate::register_t,
-        pub gp_spsr: u32,
-        pub gp_pad: c_int,
+        // gp_spsr was widened for FreeBSD 14.0.  This struct layout is backwards-compatible, because
+        // FreeBSD only runs on little endian aarch64.
+        pub gp_spsr: u64,
     }
 
     pub struct fpregs {
-        pub fp_q: u128,
+        pub fp_q: [u128; 32],
         pub fp_sr: u32,
         pub fp_cr: u32,
         pub fp_flags: c_int,
-        pub fp_pad: c_int,
+        fp_pad: Padding<c_int>,
     }
 
     pub struct mcontext_t {
         pub mc_gpregs: gpregs,
         pub mc_fpregs: fpregs,
         pub mc_flags: c_int,
-        pub mc_pad: c_int,
-        pub mc_spare: [u64; 8],
+        mc_pad: Padding<c_int>,
+        mc_spare: Padding<[u64; 8]>,
     }
 }
 

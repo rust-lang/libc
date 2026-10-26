@@ -1,0 +1,61 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    ":maintainLockFilesMonthly",
+    "helpers:pinGitHubActionDigestsToSemver",
+  ],
+  commitMessagePrefix: "deps:",
+  baseBranchPatterns: ["main", "libc-0.2"],
+  lockFileMaintenance: {
+    enabled: true,
+    // See https://github.com/renovatebot/renovate/discussions/45739#discussioncomment-18324060
+    branchTopic: "{{baseBranch}}-lock-file-maintenance",
+    // Every other Monday. Renovate requires a range, hence `* *` rather
+    // than `0 0`.
+    schedule: ["* * 1-7,15-21 * 1"],
+  },
+  // Don't update docker files that need an old version
+  ignorePaths: ["ci/docker/{arm,powerpc}-unknown-linux-gnu*"],
+  packageRules: [
+    {
+      matchCategories: ["rust"],
+      matchJsonata: ["isBreaking != true"],
+      // Disable non-breaking change updates because they
+      // are updated periodically with lockfile maintainance.
+      enabled: false,
+    },
+    {
+      matchCategories: ["rust"],
+      // Separate PRs against main and 0.2
+      addLabels: ["stable-declined"],
+    },
+    {
+      matchManagers: ["github-actions"],
+      // Every other Monday
+      schedule: "* * 1-7,15-21 * 1",
+      commitMessagePrefix: "ci:",
+      // Group all updates into one PR
+      groupName: "Github Actions"
+    },
+    {
+      matchManagers: ["github-actions"],
+      matchBaseBranches: ["main"],
+      // Separate PRs against main and 0.2
+      addLabels: ["stable-declined"],
+    },
+    {
+      // We do docker updates manually
+      matchDatasources: ["docker"],
+      enabled: false,
+    },
+  ],
+  // Receive any update that fixes security vulnerabilities.
+  // We need this because we disabled "patch" updates for Rust.
+  // Note: You need to enable "Dependabot alerts" in "Code security" GitHub
+  // Settings to receive security updates.
+  // See https://docs.renovatebot.com/configuration-options/#vulnerabilityalerts
+  vulnerabilityAlerts: {
+    enabled: true,
+  },
+}

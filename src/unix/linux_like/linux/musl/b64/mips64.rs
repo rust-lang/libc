@@ -84,7 +84,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 5],
+        f_spare: Padding<[c_ulong; 5]>,
     }
 
     // FIXME(1.0,deprecate): lfs binding to be removed
@@ -100,7 +100,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 5],
+        f_spare: Padding<[c_ulong; 5]>,
     }
 }
 
@@ -274,14 +274,11 @@ pub const SYS_swapoff: c_long = 5000 + 163;
 pub const SYS_reboot: c_long = 5000 + 164;
 pub const SYS_sethostname: c_long = 5000 + 165;
 pub const SYS_setdomainname: c_long = 5000 + 166;
-#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
-pub const SYS_create_module: c_long = 5000 + 167;
+// 167 was SYS_create_module
 pub const SYS_init_module: c_long = 5000 + 168;
 pub const SYS_delete_module: c_long = 5000 + 169;
-#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
-pub const SYS_get_kernel_syms: c_long = 5000 + 170;
-#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
-pub const SYS_query_module: c_long = 5000 + 171;
+// 170 was SYS_get_kernel_syms
+// 171 was SYS_query_module
 pub const SYS_quotactl: c_long = 5000 + 172;
 pub const SYS_nfsservctl: c_long = 5000 + 173;
 pub const SYS_getpmsg: c_long = 5000 + 174;

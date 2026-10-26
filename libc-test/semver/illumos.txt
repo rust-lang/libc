@@ -3,6 +3,13 @@ F_DUP2FD_CLOEXEC
 F_DUP2FD_CLOFORK
 F_DUP3FD
 F_DUPFD_CLOFORK
+ICMP6_FILTER
+ICMP6_FILTER_SETBLOCK
+ICMP6_FILTER_SETBLOCKALL
+ICMP6_FILTER_SETPASS
+ICMP6_FILTER_SETPASSALL
+ICMP6_FILTER_WILLBLOCK
+ICMP6_FILTER_WILLPASS
 IPV6_MINHOPCOUNT
 IP_MINTTL
 MSG_CMSG_CLOEXEC
@@ -22,6 +29,14 @@ TFD_NONBLOCK
 TFD_TIMER_ABSTIME
 TFD_TIMER_CANCEL_ON_SET
 _CS_PATH
+execl
+execle
+execlp
+execv
+execve
+execvp
+fork
+icmp6_filter
 posix_fadvise
 posix_fallocate
 posix_spawn_file_actions_addfchdir_np
@@ -30,6 +45,7 @@ pthread_attr_getstackaddr
 pthread_attr_setstack
 ptsname_r
 syncfs
+system
 timerfd_create
 timerfd_gettime
 timerfd_settime

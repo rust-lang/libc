@@ -19,8 +19,7 @@ case "$(uname -s)" in
 esac
 
 if [ "$os" = "windows" ] && [ -n "${TARGET:-}" ]; then
-    toolchain="$toolchain-$TARGET"
-    rustup set profile minimal
+    toolchain="$toolchain-${RUST_HOST:-$TARGET}"
 fi
 
 rustup set profile minimal

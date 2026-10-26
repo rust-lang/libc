@@ -117,10 +117,10 @@ s! {
         pub maxerror: c_long,
         pub esterror: c_long,
         pub tai: c_long,
-        pub __glibc_reserved1: c_long,
-        pub __glibc_reserved2: c_long,
-        pub __glibc_reserved3: c_long,
-        pub __glibc_reserved4: c_long,
+        __glibc_reserved1: Padding<c_long>,
+        __glibc_reserved2: Padding<c_long>,
+        __glibc_reserved3: Padding<c_long>,
+        __glibc_reserved4: Padding<c_long>,
     }
 
     pub struct regex_t {
@@ -136,7 +136,7 @@ s! {
 
     pub struct Elf64_Chdr {
         pub ch_type: crate::Elf64_Word,
-        pub ch_reserved: crate::Elf64_Word,
+        ch_reserved: Padding<crate::Elf64_Word>,
         pub ch_size: crate::Elf64_Xword,
         pub ch_addralign: crate::Elf64_Xword,
     }
@@ -408,32 +408,6 @@ s! {
     }
 }
 
-impl siginfo_t {
-    pub unsafe fn si_addr(&self) -> *mut c_void {
-        #[repr(C)]
-        struct siginfo_sigfault {
-            _si_signo: c_int,
-            _si_errno: c_int,
-            _si_code: c_int,
-            si_addr: *mut c_void,
-        }
-        (*(self as *const siginfo_t).cast::<siginfo_sigfault>()).si_addr
-    }
-
-    pub unsafe fn si_value(&self) -> crate::sigval {
-        #[repr(C)]
-        struct siginfo_timer {
-            _si_signo: c_int,
-            _si_errno: c_int,
-            _si_code: c_int,
-            _si_tid: c_int,
-            _si_overrun: c_int,
-            si_sigval: crate::sigval,
-        }
-        (*(self as *const siginfo_t).cast::<siginfo_timer>()).si_sigval
-    }
-}
-
 s_no_extra_traits! {
     pub struct aiocb {
         pub aio_fildes: c_int,
@@ -460,60 +434,11 @@ s_no_extra_traits! {
 
     // linux/if_ether.h
 
-    #[repr(C, packed)]
+    #[repr(packed)]
     pub struct ethhdr {
         pub h_dest: [c_uchar; crate::ETH_ALEN as usize],
         pub h_source: [c_uchar; crate::ETH_ALEN as usize],
         pub h_proto: crate::__be16,
-    }
-
-    // Internal, for casts to access union fields
-    struct sifields_sigchld {
-        si_pid: crate::pid_t,
-        si_uid: crate::uid_t,
-        si_status: c_int,
-        si_utime: c_long,
-        si_stime: c_long,
-    }
-
-    // Internal, for casts to access union fields
-    union sifields {
-        _align_pointer: *mut c_void,
-        sigchld: sifields_sigchld,
-    }
-
-    // Internal, for casts to access union fields. Note that some variants
-    // of sifields start with a pointer, which makes the alignment of
-    // sifields vary on 32-bit and 64-bit architectures.
-    struct siginfo_f {
-        _siginfo_base: [c_int; 3],
-        sifields: sifields,
-    }
-}
-
-impl siginfo_t {
-    unsafe fn sifields(&self) -> &sifields {
-        &(*(self as *const siginfo_t).cast::<siginfo_f>()).sifields
-    }
-
-    pub unsafe fn si_pid(&self) -> crate::pid_t {
-        self.sifields().sigchld.si_pid
-    }
-
-    pub unsafe fn si_uid(&self) -> crate::uid_t {
-        self.sifields().sigchld.si_uid
-    }
-
-    pub unsafe fn si_status(&self) -> c_int {
-        self.sifields().sigchld.si_status
-    }
-
-    pub unsafe fn si_utime(&self) -> c_long {
-        self.sifields().sigchld.si_utime
-    }
-
-    pub unsafe fn si_stime(&self) -> c_long {
-        self.sifields().sigchld.si_stime
     }
 }
 
@@ -625,8 +550,6 @@ pub const RTLD_DI_PROFILEOUT: c_int = 8;
 pub const RTLD_DI_TLS_MODID: c_int = 9;
 pub const RTLD_DI_TLS_DATA: c_int = 10;
 
-pub const SOCK_NONBLOCK: c_int = O_NONBLOCK;
-
 pub const SOL_RXRPC: c_int = 272;
 pub const SOL_PPPOL2TP: c_int = 273;
 pub const SOL_PNPIPE: c_int = 275;
@@ -664,11 +587,6 @@ pub const LC_ALL_MASK: c_int = crate::LC_CTYPE_MASK
 
 pub const ENOTSUP: c_int = EOPNOTSUPP;
 
-pub const SOCK_SEQPACKET: c_int = 5;
-pub const SOCK_DCCP: c_int = 6;
-#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
-pub const SOCK_PACKET: c_int = 10;
-
 pub const AF_IB: c_int = 27;
 pub const AF_MPLS: c_int = 28;
 pub const AF_NFC: c_int = 39;
@@ -684,6 +602,7 @@ pub const BUFSIZ: c_uint = 8192;
 pub const TMP_MAX: c_uint = 238328;
 pub const FOPEN_MAX: c_uint = 16;
 pub const FILENAME_MAX: c_uint = 4096;
+pub const HOST_NAME_MAX: c_int = 64;
 pub const _CS_GNU_LIBC_VERSION: c_int = 2;
 pub const _CS_GNU_LIBPTHREAD_VERSION: c_int = 3;
 pub const _CS_V6_ENV: c_int = 1148;
@@ -766,19 +685,6 @@ pub const _SC_LEVEL4_CACHE_LINESIZE: c_int = 199;
 pub const O_ACCMODE: c_int = 3;
 pub const ST_RELATIME: c_ulong = 4096;
 pub const NI_MAXHOST: crate::socklen_t = 1025;
-
-// Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
-// following are only available on newer Linux versions than the versions
-// currently used in CI in some configurations, so we define them here.
-cfg_if! {
-    if #[cfg(not(target_arch = "s390x"))] {
-        pub const BINDERFS_SUPER_MAGIC: c_long = 0x6c6f6f70;
-        pub const XFS_SUPER_MAGIC: c_long = 0x58465342;
-    } else if #[cfg(target_arch = "s390x")] {
-        pub const BINDERFS_SUPER_MAGIC: c_uint = 0x6c6f6f70;
-        pub const XFS_SUPER_MAGIC: c_uint = 0x58465342;
-    }
-}
 
 pub const CPU_SETSIZE: c_int = 0x400;
 
@@ -943,6 +849,10 @@ pub const GLOB_ONLYDIR: c_int = 1 << 13;
 pub const GLOB_TILDE_CHECK: c_int = 1 << 14;
 
 pub const MADV_COLLAPSE: c_int = 25;
+
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
 
 cfg_if! {
     if #[cfg(any(

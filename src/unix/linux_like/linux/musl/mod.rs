@@ -57,89 +57,12 @@ cfg_if! {
     }
 }
 
-impl siginfo_t {
-    pub unsafe fn si_addr(&self) -> *mut c_void {
-        #[repr(C)]
-        struct siginfo_sigfault {
-            _si_signo: c_int,
-            _si_errno: c_int,
-            _si_code: c_int,
-            si_addr: *mut c_void,
-        }
-        (*(self as *const siginfo_t).cast::<siginfo_sigfault>()).si_addr
-    }
-
-    pub unsafe fn si_value(&self) -> crate::sigval {
-        #[repr(C)]
-        struct siginfo_si_value {
-            _si_signo: c_int,
-            _si_errno: c_int,
-            _si_code: c_int,
-            _si_timerid: c_int,
-            _si_overrun: c_int,
-            si_value: crate::sigval,
-        }
-        (*(self as *const siginfo_t).cast::<siginfo_si_value>()).si_value
-    }
-}
-
-s_no_extra_traits! {
-    // Internal, for casts to access union fields
-    struct sifields_sigchld {
-        si_pid: crate::pid_t,
-        si_uid: crate::uid_t,
-        si_status: c_int,
-        si_utime: c_long,
-        si_stime: c_long,
-    }
-
-    // Internal, for casts to access union fields
-    union sifields {
-        _align_pointer: *mut c_void,
-        sigchld: sifields_sigchld,
-    }
-
-    // Internal, for casts to access union fields. Note that some variants
-    // of sifields start with a pointer, which makes the alignment of
-    // sifields vary on 32-bit and 64-bit architectures.
-    struct siginfo_f {
-        _siginfo_base: [c_int; 3],
-        sifields: sifields,
-    }
-}
-
-impl siginfo_t {
-    unsafe fn sifields(&self) -> &sifields {
-        &(*(self as *const siginfo_t).cast::<siginfo_f>()).sifields
-    }
-
-    pub unsafe fn si_pid(&self) -> crate::pid_t {
-        self.sifields().sigchld.si_pid
-    }
-
-    pub unsafe fn si_uid(&self) -> crate::uid_t {
-        self.sifields().sigchld.si_uid
-    }
-
-    pub unsafe fn si_status(&self) -> c_int {
-        self.sifields().sigchld.si_status
-    }
-
-    pub unsafe fn si_utime(&self) -> c_long {
-        self.sifields().sigchld.si_utime
-    }
-
-    pub unsafe fn si_stime(&self) -> c_long {
-        self.sifields().sigchld.si_stime
-    }
-}
-
 s! {
     #[repr(align(8))]
     pub struct fanotify_event_metadata {
         pub event_len: c_uint,
         pub vers: c_uchar,
-        pub reserved: c_uchar,
+        reserved: Padding<c_uchar>,
         pub metadata_len: c_ushort,
         pub mask: c_ulonglong,
         pub fd: c_int,
@@ -155,25 +78,45 @@ s! {
         pub sa_restorer: Option<extern "C" fn()>,
     }
 
-    // `mips*` targets swap the `s_errno` and `s_code` fields otherwise this struct is
-    // target-agnostic (see https://www.openwall.com/lists/musl/2016/01/27/1/2)
-    //
-    // FIXME(union): C implementation uses unions
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))]
-        pub si_errno: c_int,
-        pub si_code: c_int,
-        #[cfg(any(target_arch = "mips", target_arch = "mips64"))]
-        pub si_errno: c_int,
-        #[doc(hidden)]
-        #[deprecated(
-            since = "0.2.54",
-            note = "Please leave a comment on https://github.com/rust-lang/libc/pull/1316 \
-                  if you're using this field"
-        )]
-        pub _pad: [c_int; 29],
-        _align: [usize; 0],
+    // musl's uint64_t is an unsigned long instead of an unsigned long long on
+    // 64-bit targets, so it's not a __u64 (which is c_ulonglong), but rather a
+    // real u64. This is also how we handle musl's uint64_t elsewhere.
+    pub struct statx {
+        pub stx_mask: u32,
+        pub stx_blksize: u32,
+        pub stx_attributes: u64,
+        pub stx_nlink: u32,
+        pub stx_uid: u32,
+        pub stx_gid: u32,
+        pub stx_mode: u16,
+        __statx_pad1: Padding<[u16; 1]>,
+        pub stx_ino: u64,
+        pub stx_size: u64,
+        pub stx_blocks: u64,
+        pub stx_attributes_mask: u64,
+        pub stx_atime: statx_timestamp,
+        pub stx_btime: statx_timestamp,
+        pub stx_ctime: statx_timestamp,
+        pub stx_mtime: statx_timestamp,
+        pub stx_rdev_major: u32,
+        pub stx_rdev_minor: u32,
+        pub stx_dev_major: u32,
+        pub stx_dev_minor: u32,
+        pub stx_mnt_id: u64,
+        pub stx_dio_mem_align: u32,
+        pub stx_dio_offset_align: u32,
+        pub stx_subvol: u64,
+        pub stx_atomic_write_unit_min: u32,
+        pub stx_atomic_write_unit_max: u32,
+        pub stx_atomic_write_segments_max: u32,
+        __statx_pad2: Padding<[u32; 1]>,
+        __statx_pad3: Padding<[u64; 9]>,
+    }
+
+    pub struct statx_timestamp {
+        pub tv_sec: i64,
+        pub tv_nsec: u32,
+        __statx_timestamp_pad1: Padding<[i32; 1]>,
     }
 
     pub struct statvfs {
@@ -256,19 +199,19 @@ s! {
     }
 
     pub struct rtentry {
-        pub rt_pad1: c_ulong,
+        rt_pad1: Padding<c_ulong>,
         pub rt_dst: crate::sockaddr,
         pub rt_gateway: crate::sockaddr,
         pub rt_genmask: crate::sockaddr,
         pub rt_flags: c_ushort,
-        pub rt_pad2: c_short,
-        pub rt_pad3: c_ulong,
+        rt_pad2: Padding<c_short>,
+        rt_pad3: Padding<c_ulong>,
         pub rt_tos: c_uchar,
         pub rt_class: c_uchar,
         #[cfg(target_pointer_width = "64")]
-        pub rt_pad4: [c_short; 3usize],
+        rt_pad4: Padding<[c_short; 3usize]>,
         #[cfg(not(target_pointer_width = "64"))]
-        pub rt_pad4: [c_short; 1usize],
+        rt_pad4: Padding<[c_short; 1usize]>,
         pub rt_metric: c_short,
         pub rt_dev: *mut c_char,
         pub rt_mtu: c_ulong,
@@ -283,7 +226,7 @@ s! {
 
     pub struct Elf64_Chdr {
         pub ch_type: crate::Elf64_Word,
-        pub ch_reserved: crate::Elf64_Word,
+        ch_reserved: Padding<crate::Elf64_Word>,
         pub ch_size: crate::Elf64_Xword,
         pub ch_addralign: crate::Elf64_Xword,
     }
@@ -315,7 +258,7 @@ s! {
         pub errcnt: c_long,
         pub stbcnt: c_long,
         pub tai: c_int,
-        pub __padding: [c_int; 11],
+        __padding: Padding<[c_int; 11]>,
     }
 
     pub struct ntptimeval {
@@ -401,7 +344,7 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     // MIPS/s390x implementation is special (see arch folders)
@@ -419,7 +362,7 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     pub struct sysinfo {
@@ -432,11 +375,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub __reserved: [c_char; 256],
+        __reserved: Padding<[c_char; 256]>,
     }
 
     pub struct utmpx {
@@ -489,7 +432,7 @@ s_no_extra_traits! {
         pub aio_offset: off_t,
         __next: *mut c_void,
         __prev: *mut c_void,
-        __dummy4: [c_char; 32 - 2 * size_of::<*const ()>()],
+        __dummy4: Padding<[c_char; 32 - 2 * size_of::<*const ()>()]>,
     }
 }
 
@@ -577,6 +520,7 @@ pub const BUFSIZ: c_uint = 1024;
 pub const TMP_MAX: c_uint = 10000;
 pub const FOPEN_MAX: c_uint = 1000;
 pub const FILENAME_MAX: c_uint = 4096;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const O_PATH: c_int = 0o10000000;
 pub const O_EXEC: c_int = 0o10000000;
 pub const O_SEARCH: c_int = 0o10000000;
@@ -587,16 +531,7 @@ pub const PTHREAD_STACK_MIN: size_t = 2048;
 
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
-pub const SOCK_SEQPACKET: c_int = 5;
-pub const SOCK_DCCP: c_int = 6;
-pub const SOCK_NONBLOCK: c_int = O_NONBLOCK;
-#[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
-pub const SOCK_PACKET: c_int = 10;
-
 pub const SOMAXCONN: c_int = 128;
-
-#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
-pub const SIGUNUSED: c_int = crate::SIGSYS;
 
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
@@ -637,17 +572,6 @@ pub const PTRACE_LISTEN: c_int = 0x4208;
 pub const PTRACE_PEEKSIGINFO: c_int = 0x4209;
 pub const PTRACE_GETSIGMASK: c_uint = 0x420a;
 pub const PTRACE_SETSIGMASK: c_uint = 0x420b;
-
-pub const AF_IB: c_int = 27;
-pub const AF_MPLS: c_int = 28;
-pub const AF_NFC: c_int = 39;
-pub const AF_VSOCK: c_int = 40;
-pub const AF_XDP: c_int = 44;
-pub const PF_IB: c_int = AF_IB;
-pub const PF_MPLS: c_int = AF_MPLS;
-pub const PF_NFC: c_int = AF_NFC;
-pub const PF_VSOCK: c_int = AF_VSOCK;
-pub const PF_XDP: c_int = AF_XDP;
 
 pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
@@ -751,6 +675,10 @@ pub const _CS_V7_ENV: c_int = 1149;
 pub const UT_HOSTSIZE: usize = 256;
 pub const UT_LINESIZE: usize = 32;
 pub const UT_NAMESIZE: usize = 32;
+
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/local/bin:/bin:/usr/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
 
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {

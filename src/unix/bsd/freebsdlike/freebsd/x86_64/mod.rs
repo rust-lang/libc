@@ -62,21 +62,21 @@ s! {
         pub fpr_env: [u32; 7],
         pub fpr_acc: [[u8; 10]; 8],
         pub fpr_ex_sw: u32,
-        pub fpr_pad: [u8; 64],
+        fpr_pad: Padding<[u8; 64]>,
     }
 
     pub struct fpreg {
         pub fpr_env: [u64; 4],
         pub fpr_acc: [[u8; 16]; 8],
         pub fpr_xacc: [[u8; 16]; 16],
-        pub fpr_spare: [u64; 12],
+        fpr_spare: Padding<[u64; 12]>,
     }
 
     pub struct xmmreg {
         pub xmm_env: [u32; 8],
         pub xmm_acc: [[u8; 16]; 8],
         pub xmm_reg: [[u8; 16]; 8],
-        pub xmm_pad: [u8; 224],
+        xmm_pad: Padding<[u8; 224]>,
     }
     #[repr(align(16))]
     #[cfg_attr(not(any(freebsd11, freebsd12, freebsd13, freebsd14)), non_exhaustive)]
@@ -120,12 +120,12 @@ s! {
         pub mc_xfpustate_len: register_t,
         // freebsd < 15
         #[cfg(any(freebsd11, freebsd12, freebsd13))]
-        pub mc_spare: [c_long; 4],
+        mc_spare: Padding<[c_long; 4]>,
         // freebsd >= 15
         #[cfg(not(any(freebsd11, freebsd12, freebsd13)))]
         pub mc_tlsbase: register_t,
         #[cfg(not(any(freebsd11, freebsd12, freebsd13)))]
-        pub mc_spare: [c_long; 3],
+        mc_spare: Padding<[c_long; 3]>,
     }
 }
 

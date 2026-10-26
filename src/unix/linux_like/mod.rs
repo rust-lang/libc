@@ -213,11 +213,6 @@ s! {
         pub ar_op: u16,
     }
 
-    pub struct mmsghdr {
-        pub msg_hdr: crate::msghdr,
-        pub msg_len: c_uint,
-    }
-
     pub struct sockaddr_un {
         pub sun_family: sa_family_t,
         pub sun_path: [c_char; 108],
@@ -244,6 +239,10 @@ s! {
     pub struct if_nameindex {
         pub if_index: c_uint,
         pub if_name: *mut c_char,
+    }
+
+    pub struct icmp6_filter {
+        icmp6_filt: [u32; 8],
     }
 }
 
@@ -274,11 +273,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(any(
-        target_env = "gnu",
-        target_os = "android",
-        all(target_env = "musl", musl_v1_2)
-    ))] {
+    if #[cfg(any(target_env = "gnu", target_os = "android"))] {
         s! {
             pub struct statx {
                 pub stx_mask: crate::__u32,
@@ -470,8 +465,6 @@ pub const F_SEAL_WRITE: c_int = 0x0008;
 
 // FIXME(#235): Include file sealing fcntls once we have a way to verify them.
 
-pub const SIGTRAP: c_int = 5;
-
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: c_int = 1;
 
@@ -493,8 +486,6 @@ pub const RUSAGE_SELF: c_int = 0;
 pub const O_RDONLY: c_int = 0;
 pub const O_WRONLY: c_int = 1;
 pub const O_RDWR: c_int = 2;
-
-pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
 
 pub const S_IFIFO: mode_t = 0o1_0000;
 pub const S_IFCHR: mode_t = 0o2_0000;
@@ -520,17 +511,24 @@ pub const F_OK: c_int = 0;
 pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
 pub const X_OK: c_int = 1;
-pub const SIGHUP: c_int = 1;
-pub const SIGINT: c_int = 2;
-pub const SIGQUIT: c_int = 3;
-pub const SIGILL: c_int = 4;
-pub const SIGABRT: c_int = 6;
-pub const SIGFPE: c_int = 8;
-pub const SIGKILL: c_int = 9;
-pub const SIGSEGV: c_int = 11;
-pub const SIGPIPE: c_int = 13;
-pub const SIGALRM: c_int = 14;
-pub const SIGTERM: c_int = 15;
+
+cfg_if! {
+    // defined in src/new/glibc
+    if #[cfg(not(all(target_os = "linux", target_env = "gnu")))] {
+        pub const SIGHUP: c_int = 1;
+        pub const SIGINT: c_int = 2;
+        pub const SIGQUIT: c_int = 3;
+        pub const SIGILL: c_int = 4;
+        pub const SIGTRAP: c_int = 5;
+        pub const SIGABRT: c_int = 6;
+        pub const SIGFPE: c_int = 8;
+        pub const SIGKILL: c_int = 9;
+        pub const SIGSEGV: c_int = 11;
+        pub const SIGPIPE: c_int = 13;
+        pub const SIGALRM: c_int = 14;
+        pub const SIGTERM: c_int = 15;
+    }
+}
 
 const SIGEV_MAX_SIZE: usize = 64;
 cfg_if! {
@@ -555,6 +553,8 @@ pub const XATTR_REPLACE: c_int = 0x2;
 cfg_if! {
     if #[cfg(target_os = "android")] {
         pub const RLIM64_INFINITY: c_ulonglong = !0;
+    } else if #[cfg(all(target_os = "l4re", target_pointer_width = "64"))] {
+        pub const RLIM64_INFINITY: crate::rlim_t = !0;
     } else {
         pub const RLIM64_INFINITY: crate::rlim64_t = !0;
     }
@@ -811,10 +811,6 @@ pub const MSG_WAITFORONE: c_int = 0x10000;
 pub const MSG_FASTOPEN: c_int = 0x20000000;
 pub const MSG_CMSG_CLOEXEC: c_int = 0x40000000;
 
-pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
-
-pub const SOCK_RAW: c_int = 3;
-pub const SOCK_RDM: c_int = 4;
 pub const IP_TOS: c_int = 1;
 pub const IP_TTL: c_int = 2;
 pub const IP_HDRINCL: c_int = 3;
@@ -1009,6 +1005,8 @@ pub const IPV6_PMTUDISC_PROBE: c_int = 3;
 pub const IPV6_PMTUDISC_INTERFACE: c_int = 4;
 pub const IPV6_PMTUDISC_OMIT: c_int = 5;
 
+pub const ICMP6_FILTER: c_int = 1;
+
 pub const TCP_NODELAY: c_int = 1;
 pub const TCP_MAXSEG: c_int = 2;
 pub const TCP_CORK: c_int = 3;
@@ -1063,12 +1061,6 @@ cfg_if! {
         pub const TCP_MD5SIG_MAXKEYLEN: usize = 80;
     }
 }
-
-pub const SO_DEBUG: c_int = 1;
-
-pub const SHUT_RD: c_int = 0;
-pub const SHUT_WR: c_int = 1;
-pub const SHUT_RDWR: c_int = 2;
 
 pub const LOCK_SH: c_int = 1;
 pub const LOCK_EX: c_int = 2;
@@ -1589,6 +1581,7 @@ cfg_if! {
         pub const AFFS_SUPER_MAGIC: c_long = 0x0000adff;
         pub const AFS_SUPER_MAGIC: c_long = 0x5346414f;
         pub const AUTOFS_SUPER_MAGIC: c_long = 0x0187;
+        pub const BCACHEFS_SUPER_MAGIC: c_long = u32_cast_long(0xca451a4e);
         pub const BPF_FS_MAGIC: c_long = u32_cast_long(0xcafe4a11);
         pub const BTRFS_SUPER_MAGIC: c_long = u32_cast_long(0x9123683e);
         pub const CGROUP2_SUPER_MAGIC: c_long = 0x63677270;
@@ -1643,6 +1636,7 @@ cfg_if! {
         pub const AFFS_SUPER_MAGIC: c_uint = 0x0000adff;
         pub const AFS_SUPER_MAGIC: c_uint = 0x5346414f;
         pub const AUTOFS_SUPER_MAGIC: c_uint = 0x0187;
+        pub const BCACHEFS_SUPER_MAGIC: c_long = 0xca451a4e;
         pub const BPF_FS_MAGIC: c_uint = 0xcafe4a11;
         pub const BTRFS_SUPER_MAGIC: c_uint = 0x9123683e;
         pub const CGROUP2_SUPER_MAGIC: c_uint = 0x63677270;
@@ -1698,8 +1692,8 @@ cfg_if! {
 cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
+        target_env = "musl",
         target_os = "android",
-        all(target_env = "musl", musl_v1_2),
         target_os = "l4re"
     ))] {
         pub const AT_STATX_SYNC_TYPE: c_int = 0x6000;
@@ -1722,6 +1716,12 @@ cfg_if! {
         pub const STATX_ALL: c_uint = 0x0fff;
         pub const STATX_MNT_ID: c_uint = 0x1000;
         pub const STATX_DIOALIGN: c_uint = 0x2000;
+        pub const STATX_MNT_ID_UNIQUE: c_uint = 0x00004000;
+        pub const STATX_SUBVOL: c_uint = 0x00008000;
+        pub const STATX_WRITE_ATOMIC: c_uint = 0x00010000;
+        // Not in the Android NDK as of r29.
+        #[cfg(not(target_os = "android"))]
+        pub const STATX_DIO_READ_ALIGN: c_uint = 0x00020000;
         pub const STATX__RESERVED: c_int = u32_cast_int(0x80000000);
         pub const STATX_ATTR_COMPRESSED: c_int = 0x0004;
         pub const STATX_ATTR_IMMUTABLE: c_int = 0x0010;
@@ -1732,6 +1732,7 @@ cfg_if! {
         pub const STATX_ATTR_MOUNT_ROOT: c_int = 0x2000;
         pub const STATX_ATTR_VERITY: c_int = 0x100000;
         pub const STATX_ATTR_DAX: c_int = 0x200000;
+        pub const STATX_ATTR_WRITE_ATOMIC: c_int = 0x00400000;
     }
 }
 
@@ -1848,21 +1849,28 @@ f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot &= !(1 << (fd % size));
     }
 
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
+        let Some(slot) = (*set).fds_bits.get(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        (*slot & (1 << (fd % size))) != 0
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot |= 1 << (fd % size);
     }
 
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {
@@ -1940,6 +1948,30 @@ f! {
     #[allow(ellipsis_inclusive_range_patterns)]
     pub const safe fn KERNEL_VERSION(a: u32, b: u32, c: u32) -> u32 {
         ((a << 16) + (b << 8)) + if c > 255 { 255 } else { c }
+    }
+
+    pub const safe fn ICMP6_FILTER_WILLPASS(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) == 0
+    }
+
+    pub const safe fn ICMP6_FILTER_WILLBLOCK(typ: u8, filt: &icmp6_filter) -> bool {
+        (filt.icmp6_filt[(typ >> 5) as usize] & (1 << (typ & 31))) != 0
+    }
+
+    pub safe fn ICMP6_FILTER_SETPASSALL(filt: &mut icmp6_filter) -> () {
+        filt.icmp6_filt.fill(0)
+    }
+
+    pub safe fn ICMP6_FILTER_SETBLOCKALL(filt: &mut icmp6_filter) -> () {
+        filt.icmp6_filt.fill(u32::MAX)
+    }
+
+    pub safe fn ICMP6_FILTER_SETPASS(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.icmp6_filt[(typ >> 5) as usize] &= !(1 << (typ & 31));
+    }
+
+    pub safe fn ICMP6_FILTER_SETBLOCK(typ: u8, filt: &mut icmp6_filter) -> () {
+        filt.icmp6_filt[(typ >> 5) as usize] |= 1 << (typ & 31);
     }
 }
 
@@ -2145,8 +2177,10 @@ cfg_if! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn fstatfs64(fd: c_int, buf: *mut statfs64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
             pub fn statvfs64(path: *const c_char, buf: *mut statvfs64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
             pub fn fstatvfs64(fd: c_int, buf: *mut statvfs64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn statfs64(path: *const c_char, buf: *mut statfs64) -> c_int;
@@ -2165,14 +2199,26 @@ cfg_if! {
                 flags: c_int,
             ) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn ftruncate64(fd: c_int, length: off64_t) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn lseek64(fd: c_int, offset: off64_t, whence: c_int) -> off64_t;
             #[cfg_attr(gnu_time_bits64, link_name = "__lstat64_time64")]
             #[cfg(not(target_os = "l4re"))]
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn lstat64(path: *const c_char, buf: *mut stat64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn mmap64(
                 addr: *mut c_void,
                 len: size_t,
@@ -2186,6 +2232,10 @@ cfg_if! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn openat64(fd: c_int, path: *const c_char, oflag: c_int, ...) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn posix_fadvise64(
                 fd: c_int,
                 offset: off64_t,
@@ -2193,8 +2243,16 @@ cfg_if! {
                 advise: c_int,
             ) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn pread64(fd: c_int, buf: *mut c_void, count: size_t, offset: off64_t) -> ssize_t;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn pwrite64(
                 fd: c_int,
                 buf: *const c_void,
@@ -2214,6 +2272,10 @@ cfg_if! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub fn stat64(path: *const c_char, buf: *mut stat64) -> c_int;
             // FIXME(1.0,deprecate): lfs binding to be removed
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                allow(deprecated)
+            )]
             pub fn truncate64(path: *const c_char, length: off64_t) -> c_int;
         }
     }
@@ -2271,8 +2333,8 @@ cfg_if! {
 cfg_if! {
     if #[cfg(any(
         target_env = "gnu",
+        target_env = "musl",
         target_os = "android",
-        all(target_env = "musl", musl_v1_2)
     ))] {
         extern "C" {
             pub fn statx(

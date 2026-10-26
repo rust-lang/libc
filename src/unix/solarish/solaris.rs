@@ -36,7 +36,7 @@ s! {
         pub aio_resultp: crate::aio_result_t,
         pub aio_state: c_char,
         pub aio_returned: c_char,
-        pub aio__pad1: [c_char; 2],
+        aio__pad1: Padding<[c_char; 2]>,
         pub aio_flags: c_int,
     }
 
@@ -55,7 +55,7 @@ s! {
         pub shm_amp: *mut c_void,
         pub shm_gransize: u64,
         pub shm_allocated: u64,
-        pub shm_pad4: [i64; 1],
+        shm_pad4: Padding<[i64; 1]>,
     }
 
     pub struct xrs_t {
@@ -72,7 +72,7 @@ s! {
         pub ut_exit: exit_status,
         pub ut_tv: crate::timeval,
         pub ut_session: c_int,
-        pub pad: [c_int; 5],
+        pad: Padding<[c_int; 5]>,
         pub ut_syslen: c_short,
         pub ut_host: [c_char; 257],
     }
@@ -87,7 +87,7 @@ s_no_extra_traits! {
 
     pub union door_desc_t__d_data {
         pub d_desc: door_desc_t__d_data__d_desc,
-        d_resv: [c_int; 5], /* Check out /usr/include/sys/door.h */
+        d_resv: Padding<[c_int; 5]>, /* Check out /usr/include/sys/door.h */
     }
 
     pub struct door_desc_t {
@@ -171,13 +171,15 @@ extern "C" {
         num_desc: c_uint,
     ) -> c_int;
     pub fn door_create(
-        server_procedure: extern "C" fn(
-            cookie: *mut c_void,
-            argp: *mut c_char,
-            arg_size: size_t,
-            dp: *mut door_desc_t,
-            n_desc: c_uint,
-        ),
+        server_procedure: Option<
+            unsafe extern "C" fn(
+                cookie: *mut c_void,
+                argp: *mut c_char,
+                arg_size: size_t,
+                dp: *mut door_desc_t,
+                n_desc: c_uint,
+            ),
+        >,
         cookie: *mut c_void,
         attributes: door_attr_t,
     ) -> c_int;

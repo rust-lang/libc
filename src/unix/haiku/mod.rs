@@ -665,6 +665,14 @@ pub const SIGEV_NONE: c_int = 0;
 pub const SIGEV_SIGNAL: c_int = 1;
 pub const SIGEV_THREAD: c_int = 2;
 
+pub const AI_PASSIVE: c_int = 0x001;
+pub const AI_CANONNAME: c_int = 0x002;
+pub const AI_NUMERICHOST: c_int = 0x004;
+pub const AI_NUMERICSERV: c_int = 0x008;
+pub const AI_ALL: c_int = 0x100;
+pub const AI_ADDRCONFIG: c_int = 0x400;
+pub const AI_V4MAPPED: c_int = 0x800;
+
 pub const EAI_AGAIN: c_int = 2;
 pub const EAI_BADFLAGS: c_int = 3;
 pub const EAI_FAIL: c_int = 4;
@@ -938,6 +946,7 @@ pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
 pub const BUFSIZ: c_uint = 8192;
 pub const FILENAME_MAX: c_uint = 256;
 pub const FOPEN_MAX: c_uint = 128;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const L_tmpnam: c_uint = 512;
 pub const TMP_MAX: c_uint = 32768;
 
@@ -1165,6 +1174,14 @@ pub const SCM_RIGHTS: c_int = 0x01;
 pub const SOMAXCONN: c_int = 32;
 
 pub const NI_MAXHOST: size_t = 1025;
+pub const NI_MAXSERV: size_t = 32;
+
+pub const NI_NOFQDN: c_int = 0x01;
+pub const NI_NUMERICHOST: c_int = 0x02;
+pub const NI_NAMEREQD: c_int = 0x04;
+pub const NI_NUMERICSERV: c_int = 0x08;
+pub const NI_DGRAM: c_int = 0x10;
+pub const NI_NUMERICSCOPE: c_int = 0x40;
 
 pub const WNOHANG: c_int = 0x01;
 pub const WUNTRACED: c_int = 0x02;
@@ -1386,6 +1403,10 @@ pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x10;
 pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x20;
 pub const POSIX_SPAWN_SETSID: c_short = 0x40;
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 const fn CMSG_ALIGN(len: usize) -> usize {
     len + size_of::<usize>() - 1 & !(size_of::<usize>() - 1)
 }
@@ -1429,21 +1450,28 @@ f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot &= !(1 << (fd % size));
     }
 
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
+        let Some(slot) = (*set).fds_bits.get(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        (*slot & (1 << (fd % size))) != 0
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot |= 1 << (fd % size);
     }
 
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {

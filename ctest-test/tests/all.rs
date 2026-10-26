@@ -131,7 +131,7 @@ fn test_non_existent_header() {
     // Test non-existent header
     let mut cfg = ctest::TestGenerator::new();
     cfg.header("nonexistent_header.h").include("src");
-    let err = ctest::generate_test(&mut cfg, "src/t1.rs", "missing_header_gen.rs");
+    let err = cfg.try_build_test("src/t1.rs", "missing_header_gen.rs");
 
     assert!(err.is_err(), "Expected error with non-existent header");
 }
@@ -141,7 +141,7 @@ fn test_invalid_include_path() {
     // Test invalid include path
     let mut cfg = ctest::TestGenerator::new();
     cfg.header("t1.h").include("nonexistent_directory");
-    let err = ctest::generate_test(&mut cfg, "src/t1.rs", "invalid_include_gen.rs");
+    let err = cfg.try_build_test("src/t1.rs", "invalid_include_gen.rs");
 
     assert!(err.is_err(), "Expected error with invalid include path");
 }

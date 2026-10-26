@@ -80,15 +80,17 @@ class TargetResult:
 FREEBSD_VERSIONS = [11, 12, 13, 14, 15]
 
 TARGETS = [
-    # Tier 1
+    # Tier 1 with host tools
     Target("aarch64-apple-darwin"),
     Target("aarch64-pc-windows-msvc"),
     Target("aarch64-unknown-linux-gnu"),
-    Target("i686-pc-windows-msvc"),
     Target("i686-unknown-linux-gnu"),
     Target("x86_64-pc-windows-gnu"),
     Target("x86_64-pc-windows-msvc"),
     Target("x86_64-unknown-linux-gnu"),
+    #
+    # Tier 1 without host tools
+    Target("i686-pc-windows-msvc"),
     #
     # Tier 2 with host tools
     Target("aarch64-pc-windows-gnullvm", min_toolchain=Toolchain.STABLE),
@@ -98,7 +100,6 @@ TARGETS = [
     Target("arm-unknown-linux-gnueabihf"),
     Target("armv7-unknown-linux-gnueabihf"),
     Target("armv7-unknown-linux-ohos", min_toolchain=Toolchain.STABLE),
-    Target("i686-pc-windows-gnu"),
     Target("loongarch64-unknown-linux-gnu", min_toolchain=Toolchain.STABLE),
     Target("loongarch64-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
     Target("powerpc-unknown-linux-gnu"),
@@ -107,6 +108,7 @@ TARGETS = [
     Target("powerpc64le-unknown-linux-gnu"),
     Target("powerpc64le-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
     Target("riscv64gc-unknown-linux-gnu"),
+    Target("riscv64gc-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
     Target("s390x-unknown-linux-gnu"),
     Target("sparcv9-sun-solaris"),
     Target("x86_64-apple-darwin"),
@@ -136,10 +138,10 @@ TARGETS = [
     Target("i586-unknown-linux-gnu"),
     Target("i586-unknown-linux-musl"),
     Target("i686-linux-android"),
+    Target("i686-pc-windows-gnu"),
     Target("i686-unknown-freebsd"),
     Target("i686-unknown-linux-musl"),
     Target("nvptx64-nvidia-cuda", min_toolchain=Toolchain.STABLE),
-    Target("riscv64gc-unknown-linux-musl", min_toolchain=Toolchain.STABLE),
     Target("sparc64-unknown-linux-gnu"),
     Target("thumbv7neon-linux-androideabi", min_toolchain=Toolchain.STABLE),
     Target("thumbv7neon-unknown-linux-gnueabihf", min_toolchain=Toolchain.STABLE),
@@ -157,6 +159,7 @@ TARGETS = [
     # there is no need to do this given the target tier policy, but the cost is small
     # and the saved churn from accidental breakage is significant, so we keep it around.
     Target("aarch64-unknown-freebsd", dist=False),
+    Target("aarch64-unknown-helenos", dist=False),
     Target("aarch64-unknown-hermit", dist=False),
     Target("aarch64-unknown-illumos", dist=False),
     Target("aarch64-unknown-netbsd", dist=False),
@@ -164,6 +167,7 @@ TARGETS = [
     Target("aarch64-wrs-vxworks", dist=False),
     Target("armebv7r-none-eabihf", dist=False),
     Target("armv7-rtems-eabihf", dist=False),
+    Target("armv7-unknown-linux-uclibceabihf", dist=False),
     Target("armv7-wrs-vxworks-eabihf", dist=False),
     Target("armv7r-none-eabihf", dist=False),
     Target("armv7s-apple-ios", dist=False),
@@ -171,6 +175,7 @@ TARGETS = [
     Target("i386-apple-ios", dist=False),
     Target("i686-apple-darwin", dist=False),
     Target("i686-unknown-haiku", dist=False),
+    Target("i686-unknown-helenos", dist=False),
     Target("i686-unknown-hurd-gnu", dist=False),
     Target("i686-unknown-netbsd", dist=False),
     Target("i686-unknown-openbsd", dist=False),
@@ -183,6 +188,7 @@ TARGETS = [
     Target("mips64el-unknown-linux-muslabi64", dist=False),
     Target("mipsel-unknown-linux-gnu", dist=False),
     Target("mipsel-unknown-linux-musl", dist=False),
+    Target("powerpc-unknown-helenos", dist=False),
     Target("powerpc-unknown-linux-gnuspe", dist=False),
     Target("powerpc-unknown-netbsd", dist=False),
     Target("powerpc-wrs-vxworks", dist=False),
@@ -204,12 +210,14 @@ TARGETS = [
     Target("riscv64imac-unknown-none-elf", dist=False),
     Target("s390x-unknown-linux-musl", dist=False),
     Target("sparc-unknown-linux-gnu", dist=False),
+    Target("sparc64-unknown-helenos", dist=False),
     Target("sparc64-unknown-netbsd", dist=False),
     Target("thumbv7em-none-eabihf", dist=False),
     Target("thumbv7m-none-eabi", dist=False),
     Target("thumbv8m.main-none-eabi", dist=False),
     Target("x86_64-unknown-dragonfly", dist=False),
     Target("x86_64-unknown-haiku", dist=False),
+    Target("x86_64-unknown-helenos", dist=False),
     Target("x86_64-unknown-hermit", dist=False),
     Target("x86_64-unknown-l4re-uclibc", dist=False),
     Target("x86_64-unknown-openbsd", dist=False),
@@ -404,13 +412,18 @@ def test_target(cfg: Cfg, target: Target) -> TargetResult:
     run(cmd, rustflags=rustflags)
     run([*cmd, "--features=extra_traits"], rustflags=rustflags)
 
-    if "gnu" in target_env and target_bits == "32":
-        # Equivalent of _TIME_BITS=64
-        run(cmd, rustflags=f'{rustflags} --cfg=libc_unstable_gnu_time_bits="64"')
+    if (
+        ("gnu" in target_env and target_bits == "32")
+        or "musl" in target_env
+        or "uclibc" in target_env
+    ):
+        # Global toggle for `_TIME_BITS=64` on glibc, musl breaking changes and
+        # uClibc buil-time options concerning 64-bit `time_t`.
+        run(cmd, rustflags=f"{rustflags} --cfg=libc_unstable_time64")
 
-    if "musl" in target_env:
-        # Check with breaking changes from musl, including 64-bit time_t on 32-bit
-        run(cmd, rustflags=f"{rustflags} --cfg=libc_unstable_musl_v1_2")
+    if "uclibc" in target_env:
+        # Equivalent of UCLIBC_USE_TIME64 on 32-bit targets, ignored on 64-bit
+        run(cmd, rustflags=f"{rustflags} --cfg=libc_unstable_uclibc_time64")
 
     # Test again without default features, i.e. without `std`
     run([*cmd, "--no-default-features"], rustflags=rustflags)

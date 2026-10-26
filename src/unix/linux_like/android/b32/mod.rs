@@ -8,6 +8,9 @@ pub type off64_t = c_longlong;
 pub type sigset_t = c_ulong;
 pub type socklen_t = i32;
 pub type time64_t = i64;
+// `struct stat64` is a synonym for `struct stat`, provided by Bionic for source
+// compatibility with other systems.
+pub type stat64 = stat;
 
 s! {
     // FIXME(1.0): This should not implement `PartialEq`
@@ -24,6 +27,9 @@ s! {
         pub rlim_max: u64,
     }
 
+    // Note that the 32-bit `dev_t`, `ino_t`, `off_t` and `blkcnt_t` typedefs do
+    // not match the wider fields Bionic actually uses here, so they cannot be
+    // spelled with those aliases.
     pub struct stat {
         pub st_dev: c_ulonglong,
         __pad0: Padding<[c_uchar; 4]>,
@@ -37,33 +43,11 @@ s! {
         pub st_size: c_longlong,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: c_ulonglong,
-        pub st_atime: c_long,
+        pub st_atime: crate::time_t,
         pub st_atime_nsec: c_long,
-        pub st_mtime: c_long,
+        pub st_mtime: crate::time_t,
         pub st_mtime_nsec: c_long,
-        pub st_ctime: c_long,
-        pub st_ctime_nsec: c_long,
-        pub st_ino: c_ulonglong,
-    }
-
-    pub struct stat64 {
-        pub st_dev: c_ulonglong,
-        __pad0: Padding<[c_uchar; 4]>,
-        __st_ino: crate::ino_t,
-        pub st_mode: c_uint,
-        pub st_nlink: crate::nlink_t,
-        pub st_uid: crate::uid_t,
-        pub st_gid: crate::gid_t,
-        pub st_rdev: c_ulonglong,
-        __pad3: Padding<[c_uchar; 4]>,
-        pub st_size: c_longlong,
-        pub st_blksize: crate::blksize_t,
-        pub st_blocks: c_ulonglong,
-        pub st_atime: c_long,
-        pub st_atime_nsec: c_long,
-        pub st_mtime: c_long,
-        pub st_mtime_nsec: c_long,
-        pub st_ctime: c_long,
+        pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_long,
         pub st_ino: c_ulonglong,
     }
@@ -80,7 +64,7 @@ s! {
         pub f_namelen: u32,
         pub f_frsize: u32,
         pub f_flags: u32,
-        pub f_spare: [u32; 4],
+        f_spare: Padding<[u32; 4]>,
     }
 
     pub struct statvfs64 {
@@ -154,7 +138,7 @@ s! {
         pub f_namelen: u32,
         pub f_frsize: u32,
         pub f_flags: u32,
-        pub f_spare: [u32; 4],
+        f_spare: Padding<[u32; 4]>,
     }
 
     pub struct sysinfo {
@@ -167,11 +151,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 8],
+        _f: Padding<[c_char; 8]>,
     }
 }
 

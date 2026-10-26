@@ -9,6 +9,11 @@ pub type shmatt_t = c_ulong;
 pub type mqd_t = c_int;
 pub type msgqnum_t = c_ulong;
 pub type msglen_t = c_ulong;
+// nfds_t is 32-bit on wasm64 since 6.0.1:
+// https://github.com/emscripten-core/emscripten/pull/27115
+#[cfg(not(emscripten_nfds_is_ulong))]
+pub type nfds_t = c_uint;
+#[cfg(emscripten_nfds_is_ulong)]
 pub type nfds_t = c_ulong;
 pub type nl_item = c_int;
 pub type idtype_t = c_uint;
@@ -23,8 +28,17 @@ pub type off_t = i64;
 pub type blkcnt_t = i32;
 
 pub type blksize_t = c_long;
-pub type fsblkcnt_t = u32;
-pub type fsfilcnt_t = u32;
+cfg_if! {
+    // `fsblkcnt_t` and `fsfilcnt_t` are 64-bit since v4.0.12, see:
+    // https://github.com/emscripten-core/emscripten/pull/24769
+    if #[cfg(not(emscripten_fsblkcnt_is_32bit))] {
+        pub type fsblkcnt_t = u64;
+        pub type fsfilcnt_t = u64;
+    } else {
+        pub type fsblkcnt_t = u32;
+        pub type fsfilcnt_t = u32;
+    }
+}
 pub type rlim_t = u64;
 pub type nlink_t = u32;
 
@@ -112,7 +126,7 @@ s! {
         __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct signalfd_siginfo {
@@ -212,7 +226,12 @@ s! {
     }
 
     pub struct sigset_t {
-        __val: [c_ulong; 32],
+        // sigset_t is smaller since Emscripten v5.0.5:
+        // https://github.com/emscripten-core/emscripten/pull/26574
+        #[cfg(not(emscripten_sigset_large))]
+        __val: [c_ulong; 2],
+        #[cfg(emscripten_sigset_large)]
+        __val: [c_ulong; 128 / size_of::<c_long>()],
     }
 
     pub struct msghdr {
@@ -309,14 +328,14 @@ s! {
         pub f_namelen: c_ulong,
         pub f_frsize: c_ulong,
         pub f_flags: c_ulong,
-        pub f_spare: [c_ulong; 4],
+        f_spare: Padding<[c_ulong; 4]>,
     }
 
     pub struct siginfo_t {
         pub si_signo: c_int,
         pub si_errno: c_int,
         pub si_code: c_int,
-        pub _pad: [c_int; 29],
+        _pad: Padding<[c_int; 29]>,
         _align: [usize; 0],
     }
 
@@ -372,11 +391,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub __reserved: [c_char; 256],
+        __reserved: Padding<[c_char; 256]>,
     }
 
     pub struct mq_attr {
@@ -392,6 +411,11 @@ s! {
     pub struct pthread_cond_t {
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
     }
+
+    pub struct mmsghdr {
+        pub msg_hdr: crate::msghdr,
+        pub msg_len: c_uint,
+    }
 }
 
 s_no_extra_traits! {
@@ -400,6 +424,16 @@ s_no_extra_traits! {
         priv_: [f64; 3],
     }
 }
+
+// socket.h
+
+pub const SHUT_RD: c_int = 0;
+pub const SHUT_WR: c_int = 1;
+pub const SHUT_RDWR: c_int = 2;
+
+pub const SOCK_RAW: c_int = 3;
+pub const SOCK_RDM: c_int = 4;
+pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
 
 pub const MADV_SOFT_OFFLINE: c_int = 101;
 pub const MS_NOUSER: c_ulong = 0x80000000;
@@ -478,6 +512,7 @@ pub const NOSTR: crate::nl_item = 0x50003;
 
 pub const FILENAME_MAX: c_uint = 4096;
 pub const L_tmpnam: c_uint = 20;
+pub const HOST_NAME_MAX: c_int = 255;
 pub const _PC_LINK_MAX: c_int = 0;
 pub const _PC_MAX_CANON: c_int = 1;
 pub const _PC_MAX_INPUT: c_int = 2;
@@ -807,6 +842,8 @@ pub const O_TRUNC: c_int = 512;
 pub const O_NOATIME: c_int = 0o1000000;
 pub const O_CLOEXEC: c_int = 0x80000;
 
+pub const EPOLL_CLOEXEC: c_int = 0x80000;
+
 // Defined as wasi value.
 pub const EPERM: c_int = 63;
 pub const ENOENT: c_int = 44;
@@ -973,10 +1010,6 @@ pub const RLIM_NLIMITS: c_int = RLIMIT_NLIMITS;
 
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
-#[doc(hidden)]
-#[deprecated(since = "0.2.55", note = "Use SIGSYS instead")]
-pub const SIGUNUSED: c_int = crate::SIGSYS;
-
 pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_MUTEXATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 8;
@@ -1083,6 +1116,7 @@ pub const B3500000: crate::speed_t = 0o010016;
 pub const B4000000: crate::speed_t = 0o010017;
 
 pub const SO_BINDTODEVICE: c_int = 25;
+pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
 pub const SO_TIMESTAMP: c_int = 63;
 pub const SO_MARK: c_int = 36;
 pub const SO_RXQ_OVFL: c_int = 40;
@@ -1151,6 +1185,7 @@ pub const IPPROTO_MAX: c_int = 263;
 
 pub const SOL_SOCKET: c_int = 1;
 
+pub const SO_DEBUG: c_int = 1;
 pub const SO_REUSEADDR: c_int = 2;
 pub const SO_TYPE: c_int = 3;
 pub const SO_ERROR: c_int = 4;
@@ -1280,6 +1315,10 @@ pub const PRIO_PGRP: c_int = 1;
 pub const PRIO_USER: c_int = 2;
 
 pub const SOMAXCONN: c_int = 128;
+
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/local/bin:/bin:/usr/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
 
 f! {
     pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
@@ -1481,6 +1520,22 @@ extern "C" {
         timeout: *const crate::timespec,
     ) -> c_int;
     pub fn faccessat(dirfd: c_int, pathname: *const c_char, mode: c_int, flags: c_int) -> c_int;
+    pub fn epoll_create(size: c_int) -> c_int;
+    pub fn epoll_create1(flags: c_int) -> c_int;
+    pub fn epoll_ctl(epfd: c_int, op: c_int, fd: c_int, event: *mut crate::epoll_event) -> c_int;
+    pub fn epoll_wait(
+        epfd: c_int,
+        events: *mut crate::epoll_event,
+        maxevents: c_int,
+        timeout: c_int,
+    ) -> c_int;
+    pub fn epoll_pwait(
+        epfd: c_int,
+        events: *mut crate::epoll_event,
+        maxevents: c_int,
+        timeout: c_int,
+        sigmask: *const crate::sigset_t,
+    ) -> c_int;
 }
 
 // Alias <foo> to <foo>64 to mimic glibc's LFS64 support

@@ -262,7 +262,7 @@ s! {
     pub struct genlmsghdr {
         pub cmd: u8,
         pub version: u8,
-        pub reserved: u16,
+        reserved: Padding<u16>,
     }
 
     pub struct inotify_event {
@@ -279,7 +279,7 @@ s! {
 
     pub struct fanotify_event_info_header {
         pub info_type: __u8,
-        pub pad: __u8,
+        pad: Padding<__u8>,
         pub len: __u16,
     }
 
@@ -291,7 +291,7 @@ s! {
 
     pub struct sockaddr_vm {
         pub svm_family: crate::sa_family_t,
-        pub svm_reserved1: c_ushort,
+        svm_reserved1: Padding<c_ushort>,
         pub svm_port: c_uint,
         pub svm_cid: c_uint,
         pub svm_flags: u8,
@@ -303,7 +303,7 @@ s! {
         pub ee_origin: u8,
         pub ee_type: u8,
         pub ee_code: u8,
-        pub ee_pad: u8,
+        ee_pad: Padding<u8>,
         pub ee_info: u32,
         pub ee_data: u32,
     }
@@ -362,19 +362,19 @@ s! {
     pub struct ptp_clock_time {
         pub sec: crate::__s64,
         pub nsec: __u32,
-        pub reserved: __u32,
+        reserved: Padding<__u32>,
     }
 
     pub struct ptp_extts_request {
         pub index: c_uint,
         pub flags: c_uint,
-        pub rsv: [c_uint; 2],
+        rsv: Padding<[c_uint; 2]>,
     }
 
     pub struct ptp_sys_offset_extended {
         pub n_samples: c_uint,
         pub clockid: __kernel_clockid_t,
-        pub rsv: [c_uint; 2],
+        rsv: Padding<[c_uint; 2]>,
         pub ts: [[ptp_clock_time; 3]; PTP_MAX_SAMPLES as usize],
     }
 
@@ -382,14 +382,14 @@ s! {
         pub device: ptp_clock_time,
         pub sys_realtime: ptp_clock_time,
         pub sys_monoraw: ptp_clock_time,
-        pub rsv: [c_uint; 4],
+        rsv: Padding<[c_uint; 4]>,
     }
 
     pub struct ptp_extts_event {
         pub t: ptp_clock_time,
         index: c_uint,
         flags: c_uint,
-        rsv: [c_uint; 2],
+        rsv: Padding<[c_uint; 2]>,
     }
 
     // linux/wireless.h
@@ -533,7 +533,7 @@ s! {
         pub busy_poll_usecs: u32,
         pub busy_poll_budget: u16,
         pub prefer_busy_poll: u8,
-        pub __pad: u8, // Must be zero
+        __pad: Padding<u8>, // Must be zero
     }
 
     #[cfg_attr(
@@ -613,7 +613,7 @@ s! {
     pub struct fanotify_event_metadata {
         pub event_len: __u32,
         pub vers: __u8,
-        pub reserved: __u8,
+        reserved: Padding<__u8>,
         pub metadata_len: __u16,
         pub mask: __u64,
         pub fd: c_int,
@@ -624,7 +624,7 @@ s! {
 
     pub struct ptp_sys_offset {
         pub n_samples: c_uint,
-        pub rsv: [c_uint; 3],
+        rsv: Padding<[c_uint; 3]>,
         // FIXME(garando): replace length with `2 * PTP_MAX_SAMPLES + 1` when supported
         pub ts: [ptp_clock_time; 51],
     }
@@ -634,7 +634,7 @@ s! {
         pub index: c_uint,
         pub func: c_uint,
         pub chan: c_uint,
-        pub rsv: [c_uint; 5],
+        rsv: Padding<[c_uint; 5]>,
     }
 
     pub struct ptp_clock_caps {
@@ -647,7 +647,7 @@ s! {
         pub cross_timestamping: c_int,
         pub adjust_phase: c_int,
         pub max_phase_adj: c_int,
-        pub rsv: [c_int; 11],
+        rsv: Padding<[c_int; 11]>,
     }
 
     // linux/if_xdp.h
@@ -1013,7 +1013,7 @@ s! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_env = "gnu"))] {
+    if #[cfg(not(any(target_env = "gnu", target_env = "uclibc")))] {
         extern_ty! {
             // FIXME(1.0,deprecate): lfs binding to be removed
             pub type fpos64_t; // FIXME(linux): fill this out with a struct
@@ -1316,12 +1316,6 @@ pub const FALLOC_FL_ZERO_RANGE: c_int = 0x10;
 pub const FALLOC_FL_INSERT_RANGE: c_int = 0x20;
 pub const FALLOC_FL_UNSHARE_RANGE: c_int = 0x40;
 
-#[deprecated(
-    since = "0.2.55",
-    note = "ENOATTR is not available on Linux; use ENODATA instead"
-)]
-pub const ENOATTR: c_int = crate::ENODATA;
-
 pub const SO_ORIGINAL_DST: c_int = 80;
 
 pub const IP_RECVFRAGSIZE: c_int = 25;
@@ -1333,6 +1327,11 @@ pub const IPV6_RECVFRAGSIZE: c_int = 77;
 pub const IPV6_FREEBIND: c_int = 78;
 pub const IPV6_FLOWINFO_FLOWLABEL: c_int = 0x000fffff;
 pub const IPV6_FLOWINFO_PRIORITY: c_int = 0x0ff00000;
+
+// netinet/in.h
+// NOTE: These are in addition to the constants defined in src/unix/mod.rs
+
+pub const IPPROTO_MAX: c_int = 263;
 
 // SO_MEMINFO offsets
 pub const SK_MEMINFO_RMEM_ALLOC: c_int = 0;
@@ -1479,6 +1478,7 @@ pub const ETH_P_AOE: c_int = 0x88A2;
 pub const ETH_P_8021AD: c_int = 0x88A8;
 pub const ETH_P_802_EX1: c_int = 0x88B5;
 pub const ETH_P_TIPC: c_int = 0x88CA;
+pub const ETH_P_LLDP: c_int = 0x88CC;
 pub const ETH_P_MACSEC: c_int = 0x88E5;
 pub const ETH_P_8021AH: c_int = 0x88E7;
 pub const ETH_P_MVRP: c_int = 0x88F5;
@@ -1782,7 +1782,7 @@ pub const NF_BR_POST_ROUTING: c_int = 4;
 pub const NF_BR_BROUTING: c_int = 5;
 pub const NF_BR_NUMHOOKS: c_int = 6;
 
-pub const NF_BR_PRI_FIRST: c_int = crate::INT_MIN;
+pub const NF_BR_PRI_FIRST: c_int = c_int::MIN;
 pub const NF_BR_PRI_NAT_DST_BRIDGED: c_int = -300;
 pub const NF_BR_PRI_FILTER_BRIDGED: c_int = -200;
 pub const NF_BR_PRI_BRNF: c_int = 0;
@@ -1792,7 +1792,7 @@ pub const NF_BR_PRI_NAT_SRC: c_int = 300;
 
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
-pub const NF_BR_PRI_LAST: c_int = crate::INT_MAX;
+pub const NF_BR_PRI_LAST: c_int = c_int::MAX;
 
 // linux/netfilter_ipv4.h
 pub const NF_IP_PRE_ROUTING: c_int = 0;
@@ -1802,7 +1802,7 @@ pub const NF_IP_LOCAL_OUT: c_int = 3;
 pub const NF_IP_POST_ROUTING: c_int = 4;
 pub const NF_IP_NUMHOOKS: c_int = 5;
 
-pub const NF_IP_PRI_FIRST: c_int = crate::INT_MIN;
+pub const NF_IP_PRI_FIRST: c_int = c_int::MIN;
 pub const NF_IP_PRI_RAW_BEFORE_DEFRAG: c_int = -450;
 pub const NF_IP_PRI_CONNTRACK_DEFRAG: c_int = -400;
 pub const NF_IP_PRI_RAW: c_int = -300;
@@ -1815,11 +1815,11 @@ pub const NF_IP_PRI_SECURITY: c_int = 50;
 pub const NF_IP_PRI_NAT_SRC: c_int = 100;
 pub const NF_IP_PRI_SELINUX_LAST: c_int = 225;
 pub const NF_IP_PRI_CONNTRACK_HELPER: c_int = 300;
-pub const NF_IP_PRI_CONNTRACK_CONFIRM: c_int = crate::INT_MAX;
+pub const NF_IP_PRI_CONNTRACK_CONFIRM: c_int = c_int::MAX;
 
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
-pub const NF_IP_PRI_LAST: c_int = crate::INT_MAX;
+pub const NF_IP_PRI_LAST: c_int = c_int::MAX;
 
 // linux/netfilter_ipv6.h
 pub const NF_IP6_PRE_ROUTING: c_int = 0;
@@ -1829,7 +1829,7 @@ pub const NF_IP6_LOCAL_OUT: c_int = 3;
 pub const NF_IP6_POST_ROUTING: c_int = 4;
 pub const NF_IP6_NUMHOOKS: c_int = 5;
 
-pub const NF_IP6_PRI_FIRST: c_int = crate::INT_MIN;
+pub const NF_IP6_PRI_FIRST: c_int = c_int::MIN;
 pub const NF_IP6_PRI_RAW_BEFORE_DEFRAG: c_int = -450;
 pub const NF_IP6_PRI_CONNTRACK_DEFRAG: c_int = -400;
 pub const NF_IP6_PRI_RAW: c_int = -300;
@@ -1845,7 +1845,7 @@ pub const NF_IP6_PRI_CONNTRACK_HELPER: c_int = 300;
 
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
-pub const NF_IP6_PRI_LAST: c_int = crate::INT_MAX;
+pub const NF_IP6_PRI_LAST: c_int = c_int::MAX;
 
 // linux/netfilter_ipv6/ip6_tables.h
 pub const IP6T_SO_ORIGINAL_DST: c_int = 80;
@@ -2532,12 +2532,6 @@ pub const MAP_DROPPABLE: c_int = 0x8;
 // uapi/linux/vm_sockets.h
 pub const VMADDR_CID_ANY: c_uint = 0xFFFFFFFF;
 pub const VMADDR_CID_HYPERVISOR: c_uint = 0;
-#[deprecated(
-    since = "0.2.74",
-    note = "VMADDR_CID_RESERVED is removed since Linux v5.6 and \
-            replaced with VMADDR_CID_LOCAL"
-)]
-pub const VMADDR_CID_RESERVED: c_uint = 1;
 pub const VMADDR_CID_LOCAL: c_uint = 1;
 pub const VMADDR_CID_HOST: c_uint = 2;
 pub const VMADDR_PORT_ANY: c_uint = 0xFFFFFFFF;
@@ -2563,6 +2557,20 @@ pub const IN_IGNORED: u32 = 0x0000_8000;
 pub const IN_ONLYDIR: u32 = 0x0100_0000;
 pub const IN_DONT_FOLLOW: u32 = 0x0200_0000;
 pub const IN_EXCL_UNLINK: u32 = 0x0400_0000;
+
+// uapi/linux/magic.h
+// Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
+// following are only available on newer Linux versions than the versions
+// currently used in CI in some configurations, so we define them here.
+cfg_if! {
+    if #[cfg(not(target_arch = "s390x"))] {
+        pub const BINDERFS_SUPER_MAGIC: c_long = 0x6c6f6f70;
+        pub const XFS_SUPER_MAGIC: c_long = 0x58465342;
+    } else if #[cfg(target_arch = "s390x")] {
+        pub const BINDERFS_SUPER_MAGIC: c_uint = 0x6c6f6f70;
+        pub const XFS_SUPER_MAGIC: c_uint = 0x58465342;
+    }
+}
 
 // uapi/linux/securebits.h
 const SECURE_NOROOT: c_int = 0;
@@ -3306,12 +3314,11 @@ pub const XDP_OPTIONS_ZEROCOPY: crate::__u32 = 1 << 0;
 
 pub const XDP_PGOFF_RX_RING: crate::off_t = 0;
 pub const XDP_PGOFF_TX_RING: crate::off_t = 0x80000000u32 as crate::off_t;
-pub const XDP_UMEM_PGOFF_FILL_RING: crate::c_ulonglong = 0x100000000;
-pub const XDP_UMEM_PGOFF_COMPLETION_RING: crate::c_ulonglong = 0x180000000;
+pub const XDP_UMEM_PGOFF_FILL_RING: c_ulonglong = 0x100000000;
+pub const XDP_UMEM_PGOFF_COMPLETION_RING: c_ulonglong = 0x180000000;
 
-pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: crate::c_int = 48;
-pub const XSK_UNALIGNED_BUF_ADDR_MASK: crate::c_ulonglong =
-    (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
+pub const XSK_UNALIGNED_BUF_OFFSET_SHIFT: c_int = 48;
+pub const XSK_UNALIGNED_BUF_ADDR_MASK: c_ulonglong = (1 << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1;
 
 pub const XDP_PKT_CONTD: crate::__u32 = 1 << 0;
 
@@ -3576,10 +3583,10 @@ extern "C" {
     #[cfg_attr(musl_redir_time64, link_name = "__sigtimedwait_time64")]
     pub fn sigtimedwait(
         set: *const sigset_t,
-        info: *mut siginfo_t,
+        info: *mut crate::siginfo_t,
         timeout: *const crate::timespec,
     ) -> c_int;
-    pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
+    pub fn sigwaitinfo(set: *const sigset_t, info: *mut crate::siginfo_t) -> c_int;
     pub fn accept4(fd: c_int, addr: *mut crate::sockaddr, len: *mut socklen_t, flg: c_int)
         -> c_int;
     pub fn reboot(how_to: c_int) -> c_int;

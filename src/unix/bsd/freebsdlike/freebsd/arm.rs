@@ -13,7 +13,7 @@ s! {
         pub __gregs: crate::__gregset_t,
         pub mc_vfp_size: usize,
         pub mc_vfp_ptr: *mut c_void,
-        pub mc_spare: [c_uint; 33],
+        mc_spare: Padding<[c_uint; 33]>,
     }
 }
 

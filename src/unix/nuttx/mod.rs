@@ -35,6 +35,7 @@ pub type suseconds_t = i32;
 pub type tcflag_t = u32;
 pub type clockid_t = c_int;
 pub type time_t = i64;
+pub type pollevent_t = u32;
 
 cfg_if! {
     if #[cfg(any(target_arch = "riscv32", target_arch = "riscv64"))] {
@@ -274,6 +275,17 @@ s! {
         pub imr_interface: in_addr,
         pub imr_sourceaddr: in_addr,
     }
+
+    pub struct pollfd {
+        pub fd: c_int,
+        pub events: pollevent_t,
+        pub revents: pollevent_t,
+
+        // Used internally by NuttX
+        pub arg: *const c_void,
+        pub cb: *const c_void,
+        pub r#priv: *const c_void,
+    }
 }
 
 // Reserved two pointer size for reserved area for some structures.
@@ -295,11 +307,11 @@ const __DEFAULT_RESERVED_SIZE__: usize = 2;
 
 const __SOCKADDR_STORAGE_SIZE__: usize = 36;
 const __PTHREAD_ATTR_SIZE__: usize = 5;
-const __PTHREAD_MUTEX_SIZE__: usize = 9;
-const __PTHREAD_COND_SIZE__: usize = 7;
+const __PTHREAD_MUTEX_SIZE__: usize = 13; // Assumes CONFIG_LIBC_MUTEX_BACKTRACE=0
+const __PTHREAD_COND_SIZE__: usize = 12;
 const __PTHREAD_CONDATTR_SIZE__: usize = 5;
-const __PTHREAD_RWLOCK_SIZE__: usize = 17;
-const __SEM_SIZE__: usize = 6;
+const __PTHREAD_RWLOCK_SIZE__: usize = 28;
+const __SEM_SIZE__: usize = 10;
 const __NAME_MAX__: usize = 64;
 const __FDSET_SIZE__: usize = 10;
 const __SIGSET_SIZE__: usize = 8;
@@ -473,24 +485,25 @@ pub const F_GETFL: i32 = 0x2;
 pub const F_SETFD: i32 = 8;
 pub const F_SETFL: i32 = 9;
 // open flag settings for open() (and related APIs)
-pub const O_RDONLY: i32 = 0x1;
-pub const O_WRONLY: i32 = 0x2;
-pub const O_RDWR: i32 = 0x3;
-pub const O_CREAT: i32 = 0x4;
-pub const O_EXCL: i32 = 0x8;
-pub const O_NOCTTY: i32 = 0x0;
-pub const O_TRUNC: i32 = 0x20;
-pub const O_APPEND: i32 = 0x10;
-pub const O_NONBLOCK: i32 = 0x40;
-pub const O_DSYNC: i32 = 0x80;
-pub const O_DIRECT: i32 = 0x200;
-pub const O_LARGEFILE: i32 = 0x2000;
-pub const O_DIRECTORY: i32 = 0x800;
-pub const O_NOFOLLOW: i32 = 0x1000;
+pub const O_RDONLY: i32 = 0x0;
+pub const O_WRONLY: i32 = 0x1;
+pub const O_RDWR: i32 = 0x2;
+pub const O_CREAT: i32 = 0x40;
+pub const O_EXCL: i32 = 0x80;
+pub const O_NOCTTY: i32 = 0x100;
+pub const O_TRUNC: i32 = 0x200;
+pub const O_APPEND: i32 = 0x400;
+pub const O_NONBLOCK: i32 = 0x800;
+pub const O_DSYNC: i32 = 0x1000;
+pub const O_DIRECT: i32 = 0x4000;
+pub const O_LARGEFILE: i32 = 0x8000;
+pub const O_DIRECTORY: i32 = 0x10000;
+pub const O_NOFOLLOW: i32 = 0x20000;
 pub const O_NOATIME: i32 = 0x40000;
-pub const O_CLOEXEC: i32 = 0x400;
-pub const O_ACCMODE: i32 = 0x0003;
+pub const O_CLOEXEC: i32 = 0x80000;
+pub const O_ACCMODE: i32 = 0x3;
 pub const AT_FDCWD: i32 = -100;
+pub const AT_SYMLINK_NOFOLLOW: i32 = 0x100;
 pub const AT_REMOVEDIR: i32 = 0x200;
 
 // sys/types.h
@@ -517,18 +530,23 @@ pub const S_IROTH: u32 = 0x004;
 pub const S_IWOTH: u32 = 0x002;
 pub const S_IXOTH: u32 = 0x001;
 
+// termios.h
+pub const ICANON: tcflag_t = 1 << 1;
+pub const ECHO: tcflag_t = 1 << 3;
+pub const TCSANOW: c_int = 0;
+
 // sys/poll.h
-pub const POLLIN: i16 = 0x01;
-pub const POLLRDNORM: i16 = 0x01;
-pub const POLLRDBAND: i16 = 0x01;
-pub const POLLPRI: i16 = 0x02;
-pub const POLLOUT: i16 = 0x04;
-pub const POLLWRNORM: i16 = 0x04;
-pub const POLLWRBAND: i16 = 0x04;
-pub const POLLHUP: i16 = 0x10;
-pub const POLLRDHUP: i16 = 0x10;
-pub const POLLERR: i16 = 0x08;
-pub const POLLNVAL: i16 = 0x20;
+pub const POLLIN: pollevent_t = 0x01;
+pub const POLLRDNORM: pollevent_t = 0x01;
+pub const POLLRDBAND: pollevent_t = 0x01;
+pub const POLLPRI: pollevent_t = 0x02;
+pub const POLLOUT: pollevent_t = 0x04;
+pub const POLLWRNORM: pollevent_t = 0x04;
+pub const POLLWRBAND: pollevent_t = 0x04;
+pub const POLLHUP: pollevent_t = 0x10;
+pub const POLLRDHUP: pollevent_t = 0x10;
+pub const POLLERR: pollevent_t = 0x08;
+pub const POLLNVAL: pollevent_t = 0x20;
 
 // sys/socket.h
 // Supported Protocol Families
@@ -696,4 +714,8 @@ extern "C" {
     pub fn eventfd(count: c_uint, flags: c_int) -> c_int;
     // unistd.h
     pub fn pipe2(fds: *mut c_int, flags: c_int) -> c_int;
+
+    pub fn sem_init(sem: *mut sem_t, pshared: c_int, value: c_uint) -> c_int;
+    pub fn sem_destroy(sem: *mut sem_t) -> c_int;
+    pub fn sem_getvalue(sem: *mut sem_t, sval: *mut c_int) -> c_int;
 }

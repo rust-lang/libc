@@ -44,13 +44,7 @@ cfg_if::cfg_if! {
     ))] {
         pub type MajorRetType = libc::c_int;
         pub type MinorRetType = libc::c_int;
-    } else if #[cfg(any(
-        target_os = "macos",
-        target_os = "ios",
-        target_os = "tvos",
-        target_os = "watchos",
-        target_os = "visionos"
-    ))] {
+    } else if #[cfg(target_vendor = "apple")] {
         pub type MajorRetType = i32;
         pub type MinorRetType = i32;
     }

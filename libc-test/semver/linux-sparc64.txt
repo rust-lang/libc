@@ -29,7 +29,6 @@ SYS_bdflush
 SYS_chmod
 SYS_chown
 SYS_creat
-SYS_create_module
 SYS_dup2
 SYS_epoll_create
 SYS_epoll_wait
@@ -43,7 +42,6 @@ SYS_fstat64
 SYS_fstatat64
 SYS_fstatfs64
 SYS_futimesat
-SYS_get_kernel_syms
 SYS_getdents
 SYS_getdomainname
 SYS_getpagesize
@@ -67,7 +65,6 @@ SYS_pciconfig_write
 SYS_perfctr
 SYS_pipe
 SYS_poll
-SYS_query_module
 SYS_readdir
 SYS_readlink
 SYS_rename

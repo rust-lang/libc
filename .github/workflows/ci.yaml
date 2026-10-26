@@ -75,7 +75,7 @@ jobs:
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
-      - run: cargo clippy --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
+      - run: cargo clippy --locked --workspace --exclude libc-test --exclude ctest-test --all-targets -- -D warnings
 
   # This runs `cargo build --target ...` for all T1 and T2 targets`
   verify_build:
@@ -90,7 +90,7 @@ jobs:
           - toolchain: nightly
             half: 2
           - toolchain: beta
-            only: '(aarch64|x86_64)' # just a spot check for beta
+            only: "(aarch64|x86_64)" # just a spot check for beta
           - toolchain: stable
           - toolchain: 1.65.0 # msrv
     runs-on: ubuntu-26.04
@@ -105,7 +105,7 @@ jobs:
         run: ./ci/install-rust.sh
 
       - name: Install semver-checks
-        uses: taiki-e/install-action@6c6fd71fe4fb72c3697d269963d0e15df8adedad # v2.85.10
+        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
         if: matrix.toolchain == 'stable'
         with:
           tool: cargo-semver-checks
@@ -114,14 +114,9 @@ jobs:
         if: matrix.toolchain == 'stable'
         run: ./ci/prep-semver-baseline.sh
 
-      # FIXME(ci): These `du` statements are temporary for debugging cache
-      - name: Target size before restoring cache
-        run: du -sh target | sort -k 2 || true
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
-      - name: Target size after restoring cache
-        run: du -sh target | sort -k 2 || true
 
       - name: Execute build check
         run: |
@@ -143,18 +138,32 @@ jobs:
             ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
             ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
             ${{ matrix.half && format('--half "{0}"', matrix.half) }}
-      - name: Target size after job completion
-        run: du -sh target | sort -k 2
 
   test_tier1:
     name: Test tier1
     needs: calculate_vars
     strategy:
       matrix:
-        include: ${{ fromJSON(needs.calculate_vars.outputs.test_tier1_matrix) }}
+        include:
+          - target: aarch64-apple-darwin
+            os: macos-26
+          - target: aarch64-pc-windows-msvc
+            os: windows-11-arm
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-26.04-arm
+          - target: i686-pc-windows-msvc
+            os: windows-2025
+            host: x86_64-pc-windows-msvc # Tier 1 without host tools
+          - target: i686-unknown-linux-gnu
+          - target: x86_64-pc-windows-gnu
+            os: windows-2025
+          - target: x86_64-pc-windows-msvc
+            os: windows-2025
+          - target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os && matrix.os || 'ubuntu-26.04' }}
     timeout-minutes: 25
     env:
+      RUST_HOST: ${{ matrix.host }}
       TARGET: ${{ matrix.target }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -184,7 +193,7 @@ jobs:
         id: create_artifacts
         if: always()
         run: echo "step is actually running" && python3 ci/create-artifacts.py
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
           name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
@@ -220,18 +229,27 @@ jobs:
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
+      - name: Install `cargo-apple-runner`
+        if: matrix.cargo-apple-runner
+        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
+        with:
+          tool: cargo-apple-runner
+
       - name: Run natively
-        if: runner.os != 'Linux'
+        if: runner.os != 'Linux' && !matrix.cargo-apple-runner
         run: ./ci/run.sh ${{ matrix.target }}
       - name: Run in Docker
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && !matrix.cargo-apple-runner
         run: ./ci/run-docker.sh ${{ matrix.target }}
+      - name: Run on Apple's simulator
+        if: matrix.cargo-apple-runner
+        run: ./ci/run-apple-simulator.sh ${{ matrix.target }}
 
       - name: Create CI artifacts
         id: create_artifacts
         if: always()
         run: ./ci/create-artifacts.py
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always() && steps.create_artifacts.outcome == 'success'
         with:
           name: ${{ env.ARCHIVE_NAME }}-${{ matrix.target }}${{ matrix.artifact-tag && format('-{0}', matrix.artifact-tag) }}
@@ -252,7 +270,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Test on FreeBSD
-        uses: vmactions/freebsd-vm@83b151f58c6047089f4c80eb5ba2039d158ce093 # v1.5.3
+        uses: vmactions/freebsd-vm@c46abacb49f09938ca4e1702d15d836285d694cc # v1.5.9
         if: contains(matrix.target, 'freebsd')
         with:
           release: ${{ matrix.release }}
@@ -267,7 +285,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: Test on Solaris
-        uses: vmactions/solaris-vm@315163f088b66e55bbcc45928bd224d4973b2312 # v1.3.8
+        uses: vmactions/solaris-vm@87d3c436511cef802cd1637f86f73b1a97715c8c # v1.4.1
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
@@ -279,7 +297,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@00081e82b14bc40114eb97f32b4455306828516b # v1.4.6
+        uses: vmactions/netbsd-vm@c8a0d7ddb84619a7a8cc4e652efa7950b3fd9f92 # v1.5.2
         if: contains(matrix.target, 'netbsd')
         with:
           release: "10.1"
@@ -291,7 +309,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on illumos
-        uses: vmactions/omnios-vm@027e3ec08fed6fb740ab5f300c2605f9de02997a # v1.3.4
+        uses: vmactions/omnios-vm@9576f0b6d15e7696548409baa533bc0a339caf42 # v1.3.7
         if: contains(matrix.target, 'illumos')
         with:
           # Use the latest LTS
@@ -310,38 +328,24 @@ jobs:
     env:
       RUSTFLAGS: "" # No need to check warnings on old MSRV, clear `-Dwarnings`
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    - run: |
-        msrv="$(
-          cargo metadata --format-version 1 |
-          jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
-        )"
-        echo "MSRV: $msrv"
-        echo "MSRV=$msrv" >> "$GITHUB_ENV"
-    - name: Install Rust
-      run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-    - run: cargo build -p ctest
-
-  docs:
-    name: Ensure docs build
-    runs-on: ubuntu-26.04
-    timeout-minutes: 10
-    steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    - name: Install Rust
-      # FIXME(rust-lang/rust#160439): unpin once the issue is fixed
-      run: rustup update nightly-2026-08-02 --no-self-update && rustup default nightly-2026-08-02
-    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
-    - run: cargo doc --workspace --no-deps
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: |
+          msrv="$(
+            cargo metadata --format-version 1 |
+            jq -r --arg CRATE_NAME ctest '.packages | map(select((.name == $CRATE_NAME) and (.id | startswith("path+file")))) | first | .rust_version'
+          )"
+          echo "MSRV: $msrv"
+          echo "MSRV=$msrv" >> "$GITHUB_ENV"
+      - name: Install Rust
+        run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - run: cargo build -p ctest
 
   zizmor:
     name: Zizmor (Static analysis for GitHub Actions)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       security-events: write
     timeout-minutes: 10
@@ -352,7 +356,7 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
@@ -367,7 +371,6 @@ jobs:
       - test_tier2_vm
       - verify_build
       - ctest_msrv
-      - docs
       - clippy
       - zizmor
     # GitHub branch protection is exceedingly silly and treats "jobs skipped because a dependency

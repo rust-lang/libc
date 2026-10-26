@@ -795,7 +795,7 @@ pub const EM_M32R: u16 = 88;
 pub const EM_MN10300: u16 = 89;
 pub const EM_MN10200: u16 = 90;
 pub const EM_PJ: u16 = 91;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(target_os = "l4re"))]
 pub const EM_OPENRISC: u16 = 92;
 #[cfg(target_env = "uclibc")]
 pub const EM_OR1K: u16 = 92;
@@ -876,7 +876,7 @@ pub const AT_EXECFN: c_ulong = 31;
 // defined in arch/<arch>/include/uapi/asm/auxvec.h but has the same value
 // wherever it is defined.
 pub const AT_SYSINFO_EHDR: c_ulong = 33;
-#[cfg(not(target_env = "uclibc"))]
+#[cfg(not(target_os = "l4re"))]
 pub const AT_MINSIGSTKSZ: c_ulong = 51;
 
 pub const GLOB_ERR: c_int = 1 << 0;
@@ -944,17 +944,6 @@ pub const PTHREAD_INHERIT_SCHED: c_int = 0;
 pub const PTHREAD_EXPLICIT_SCHED: c_int = 1;
 #[cfg(not(target_os = "l4re"))]
 pub const __SIZEOF_PTHREAD_COND_T: usize = 48;
-
-// netinet/in.h
-// NOTE: These are in addition to the constants defined in src/unix/mod.rs
-
-#[deprecated(
-    since = "0.2.80",
-    note = "This value was increased in the newer kernel \
-            and we'll change this following upstream in the future release. \
-            See #1896 for more info."
-)]
-pub const IPPROTO_MAX: c_int = 256;
 
 // System V IPC
 pub const IPC_PRIVATE: crate::key_t = 0;
@@ -1941,18 +1930,56 @@ extern "C" {
 cfg_if! {
     if #[cfg(not(any(target_env = "musl", target_env = "ohos")))] {
         extern "C" {
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64",),
+                deprecated(
+                    since = "0.2.190",
+                    note = "Use `freopen` instead. LFS is being phased out, see \
+                            rust-lang/libc#4805."
+                )
+            )]
             pub fn freopen64(
                 filename: *const c_char,
                 mode: *const c_char,
                 file: *mut crate::FILE,
             ) -> *mut crate::FILE;
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.190",
+                    note = "Use `fseeko` instead. LFS is being phased out, see rust-lang/libc#4805."
+                )
+            )]
             pub fn fseeko64(
                 stream: *mut crate::FILE,
+                #[cfg(any(
+                    not(target_os = "l4re"),
+                    all(target_os = "l4re", not(target_pointer_width = "64"))
+                ))]
                 offset: crate::off64_t,
+                #[cfg(all(target_os = "l4re", target_pointer_width = "64"))] offset: crate::off_t,
                 whence: c_int,
             ) -> c_int;
+            #[cfg_attr(
+                all(target_os = "l4re", target_pointer_width = "64"),
+                deprecated(
+                    since = "0.2.190",
+                    note = "Use `fsetpos` instead. LFS is being phased out, see \
+                            rust-lang/libc#4805."
+                )
+            )]
             pub fn fsetpos64(stream: *mut crate::FILE, ptr: *const crate::fpos64_t) -> c_int;
+            #[cfg(any(
+                not(target_os = "l4re"),
+                all(target_os = "l4re", not(target_pointer_width = "64"))
+            ))]
             pub fn ftello64(stream: *mut crate::FILE) -> crate::off64_t;
+            #[cfg(all(target_os = "l4re", target_pointer_width = "64"))]
+            #[deprecated(
+                since = "0.2.190",
+                note = "Use `ftello` instead. LFS is being phased out, see rust-lang/libc#4805."
+            )]
+            pub fn ftello64(stream: *mut crate::FILE) -> crate::off_t;
         }
     }
 }

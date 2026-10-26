@@ -1,4 +1,4 @@
-FROM ubuntu:26.04
+FROM debian:13
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     adb \

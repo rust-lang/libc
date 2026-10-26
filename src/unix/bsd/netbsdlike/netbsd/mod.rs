@@ -207,7 +207,7 @@ s! {
         pub st_blksize: crate::blksize_t,
         pub st_flags: u32,
         pub st_gen: u32,
-        pub st_spare: [u32; 2],
+        st_spare: Padding<[u32; 2]>,
     }
 
     pub struct addrinfo {
@@ -262,7 +262,7 @@ s! {
         ptm_owner: crate::pthread_t,
         ptm_waiters: *mut u8,
         ptm_recursed: c_uint,
-        ptm_spare2: *mut c_void,
+        ptm_spare2: Padding<*mut c_void>,
     }
 
     pub struct pthread_mutexattr_t {
@@ -739,7 +739,7 @@ s! {
         pub tcpi_snd_rexmitpack: u32,
         pub tcpi_rcv_ooopack: u32,
         pub tcpi_snd_zerowin: u32,
-        pub __tcpi_pad: [u32; 26],
+        __tcpi_pad: Padding<[u32; 26]>,
     }
 
     pub struct in_pktinfo {
@@ -1111,6 +1111,13 @@ pub const MAP_ALIGNMENT_64PB: c_int = 56 << MAP_ALIGNMENT_SHIFT;
 // mremap flag
 pub const MAP_REMAPDUP: c_int = 0x004;
 
+// minherit syscall inherit values
+pub const MAP_INHERIT_SHARE: c_int = 0;
+pub const MAP_INHERIT_COPY: c_int = 1;
+pub const MAP_INHERIT_NONE: c_int = 2;
+pub const MAP_INHERIT_DONATE_COPY: c_int = 3;
+pub const MAP_INHERIT_ZERO: c_int = 4;
+
 pub const DCCP_TYPE_REQUEST: c_int = 0;
 pub const DCCP_TYPE_RESPONSE: c_int = 1;
 pub const DCCP_TYPE_DATA: c_int = 2;
@@ -1333,7 +1340,7 @@ cfg_if! {
             ptm_waiters: ptr::null_mut(),
             ptm_owner: 0,
             ptm_recursed: 0,
-            ptm_spare2: ptr::null_mut(),
+            ptm_spare2: Padding::new(ptr::null_mut()),
         };
     } else {
         pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
@@ -1343,7 +1350,7 @@ cfg_if! {
             ptm_waiters: ptr::null_mut(),
             ptm_owner: 0,
             ptm_recursed: 0,
-            ptm_spare2: ptr::null_mut(),
+            ptm_spare2: Padding::new(ptr::null_mut()),
         };
     }
 }
@@ -1813,6 +1820,10 @@ const fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin:/usr/pkg/bin:/usr/local/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
@@ -1868,7 +1879,7 @@ f! {
     }
 
     pub const safe fn WIFSTOPPED(status: c_int) -> bool {
-        (status & 0o177) == 0o177
+        (status & 0o177) == 0o177 && !WIFCONTINUED(status)
     }
 
     pub const safe fn WIFCONTINUED(status: c_int) -> bool {
@@ -1910,6 +1921,7 @@ extern "C" {
     pub fn chflags(path: *const c_char, flags: c_ulong) -> c_int;
     pub fn fchflags(fd: c_int, flags: c_ulong) -> c_int;
     pub fn lchflags(path: *const c_char, flags: c_ulong) -> c_int;
+    pub fn lchmod(path: *const c_char, mode: crate::mode_t) -> c_int;
 
     pub fn extattr_list_fd(
         fd: c_int,

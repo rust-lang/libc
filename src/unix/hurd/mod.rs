@@ -1,7 +1,10 @@
 #![allow(dead_code)]
 
-use crate::c_schar;
 use crate::prelude::*;
+use crate::{
+    c_schar,
+    ptrdiff_t,
+};
 
 // types
 pub type __s16_type = c_short;
@@ -578,7 +581,7 @@ s! {
     pub struct statx_timestamp {
         pub tv_sec: i64,
         pub tv_nsec: u32,
-        pub __statx_timestamp_pad1: [i32; 1],
+        __statx_timestamp_pad1: Padding<[i32; 1]>,
     }
 
     pub struct statfs {
@@ -2634,43 +2637,80 @@ pub const TCP_REPAIR_OFF: c_int = 0;
 pub const TCP_REPAIR_OFF_NO_WP: c_int = -1;
 
 // stdint.h
-pub const INT8_MIN: i8 = -128;
-pub const INT16_MIN: i16 = -32768;
-pub const INT32_MIN: i32 = -2147483648;
-pub const INT8_MAX: i8 = 127;
-pub const INT16_MAX: i16 = 32767;
-pub const INT32_MAX: i32 = 2147483647;
-pub const UINT8_MAX: u8 = 255;
-pub const UINT16_MAX: u16 = 65535;
-pub const UINT32_MAX: u32 = 4294967295;
-pub const INT_LEAST8_MIN: int_least8_t = -128;
-pub const INT_LEAST16_MIN: int_least16_t = -32768;
-pub const INT_LEAST32_MIN: int_least32_t = -2147483648;
-pub const INT_LEAST8_MAX: int_least8_t = 127;
-pub const INT_LEAST16_MAX: int_least16_t = 32767;
-pub const INT_LEAST32_MAX: int_least32_t = 2147483647;
-pub const UINT_LEAST8_MAX: uint_least8_t = 255;
-pub const UINT_LEAST16_MAX: uint_least16_t = 65535;
-pub const UINT_LEAST32_MAX: uint_least32_t = 4294967295;
-pub const INT_FAST8_MIN: int_fast8_t = -128;
-pub const INT_FAST16_MIN: int_fast16_t = -2147483648;
-pub const INT_FAST32_MIN: int_fast32_t = -2147483648;
-pub const INT_FAST8_MAX: int_fast8_t = 127;
-pub const INT_FAST16_MAX: int_fast16_t = 2147483647;
-pub const INT_FAST32_MAX: int_fast32_t = 2147483647;
-pub const UINT_FAST8_MAX: uint_fast8_t = 255;
-pub const UINT_FAST16_MAX: uint_fast16_t = 4294967295;
-pub const UINT_FAST32_MAX: uint_fast32_t = 4294967295;
-pub const INTPTR_MIN: __intptr_t = -2147483648;
-pub const INTPTR_MAX: __intptr_t = 2147483647;
-pub const UINTPTR_MAX: usize = 4294967295;
-pub const PTRDIFF_MIN: __ptrdiff_t = -2147483648;
-pub const PTRDIFF_MAX: __ptrdiff_t = 2147483647;
-pub const SIG_ATOMIC_MIN: __sig_atomic_t = -2147483648;
-pub const SIG_ATOMIC_MAX: __sig_atomic_t = 2147483647;
-pub const SIZE_MAX: usize = 4294967295;
-pub const WINT_MIN: wint_t = 0;
-pub const WINT_MAX: wint_t = 4294967295;
+#[deprecated(since = "0.2.190", note = "Use `i8::MIN` instead.")]
+pub const INT8_MIN: i8 = i8::MIN;
+#[deprecated(since = "0.2.190", note = "Use `i16::MIN` instead.")]
+pub const INT16_MIN: i16 = i16::MIN;
+#[deprecated(since = "0.2.190", note = "Use `i32::MIN` instead.")]
+pub const INT32_MIN: i32 = i32::MIN;
+#[deprecated(since = "0.2.190", note = "Use `i8::MAX` instead.")]
+pub const INT8_MAX: i8 = i8::MAX;
+#[deprecated(since = "0.2.190", note = "Use `i16::MAX` instead.")]
+pub const INT16_MAX: i16 = i16::MAX;
+#[deprecated(since = "0.2.190", note = "Use `i32::MAX` instead.")]
+pub const INT32_MAX: i32 = i32::MAX;
+#[deprecated(since = "0.2.190", note = "Use `u8::MAX` instead.")]
+pub const UINT8_MAX: u8 = u8::MAX;
+#[deprecated(since = "0.2.190", note = "Use `u16::MAX` instead.")]
+pub const UINT16_MAX: u16 = u16::MAX;
+#[deprecated(since = "0.2.190", note = "Use `u32::MAX` instead.")]
+pub const UINT32_MAX: u32 = u32::MAX;
+#[deprecated(since = "0.2.190", note = "Use `int_least8_t::MIN` instead.")]
+pub const INT_LEAST8_MIN: int_least8_t = int_least8_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `int_least16_t::MIN` instead.")]
+pub const INT_LEAST16_MIN: int_least16_t = int_least16_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `int_least32_t::MIN` instead.")]
+pub const INT_LEAST32_MIN: int_least32_t = int_least32_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `int_least8_t::MAX` instead.")]
+pub const INT_LEAST8_MAX: int_least8_t = int_least8_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `int_least16_t::MAX` instead.")]
+pub const INT_LEAST16_MAX: int_least16_t = int_least16_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `int_least32_t::MAX` instead.")]
+pub const INT_LEAST32_MAX: int_least32_t = int_least32_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uint_least8_t::MAX` instead.")]
+pub const UINT_LEAST8_MAX: uint_least8_t = uint_least8_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uint_least16_t::MAX` instead.")]
+pub const UINT_LEAST16_MAX: uint_least16_t = uint_least16_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uint_least32_t::MAX` instead.")]
+pub const UINT_LEAST32_MAX: uint_least32_t = uint_least32_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `int_fast8_t::MIN` instead.")]
+pub const INT_FAST8_MIN: int_fast8_t = int_fast8_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `int_fast16_t::MIN` instead.")]
+pub const INT_FAST16_MIN: int_fast16_t = int_fast16_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `int_fast32_t::MIN` instead.")]
+pub const INT_FAST32_MIN: int_fast32_t = int_fast32_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `int_fast8_t::MAX` instead.")]
+pub const INT_FAST8_MAX: int_fast8_t = int_fast8_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `int_fast16_t::MAX` instead.")]
+pub const INT_FAST16_MAX: int_fast16_t = int_fast16_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `int_fast32_t::MAX` instead.")]
+pub const INT_FAST32_MAX: int_fast32_t = int_fast32_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uint_fast8_t::MAX` instead.")]
+pub const UINT_FAST8_MAX: uint_fast8_t = uint_fast8_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uint_fast16_t::MAX` instead.")]
+pub const UINT_FAST16_MAX: uint_fast16_t = uint_fast16_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uint_fast32_t::MAX` instead.")]
+pub const UINT_FAST32_MAX: uint_fast32_t = uint_fast32_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `intptr_t::MIN` instead.")]
+pub const INTPTR_MIN: intptr_t = intptr_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `intptr_t::MAX` instead.")]
+pub const INTPTR_MAX: intptr_t = intptr_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `uintptr_t::MAX` instead.")]
+pub const UINTPTR_MAX: uintptr_t = uintptr_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `ptrdiff_t::MIN` instead.")]
+pub const PTRDIFF_MIN: ptrdiff_t = ptrdiff_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `ptrdiff_t::MAX` instead.")]
+pub const PTRDIFF_MAX: ptrdiff_t = ptrdiff_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
+pub const SIG_ATOMIC_MIN: __sig_atomic_t = c_int::MIN;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
+pub const SIG_ATOMIC_MAX: __sig_atomic_t = c_int::MAX;
+#[deprecated(since = "0.2.190", note = "Use `size_t::MAX` instead.")]
+pub const SIZE_MAX: size_t = size_t::MAX;
+#[deprecated(since = "0.2.190", note = "Use `wint_t::MIN` instead.")]
+pub const WINT_MIN: wint_t = wint_t::MIN;
+#[deprecated(since = "0.2.190", note = "Use `wint_t::MAX` instead.")]
+pub const WINT_MAX: wint_t = wint_t::MAX;
 pub const INT8_WIDTH: usize = 8;
 pub const UINT8_WIDTH: usize = 8;
 pub const INT16_WIDTH: usize = 16;
@@ -2799,6 +2839,12 @@ pub const XATTR_CREATE: c_int = 0x1;
 pub const XATTR_REPLACE: c_int = 0x2;
 
 // spawn.h
+pub const POSIX_SPAWN_RESETIDS: c_short = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: c_short = 0x02;
+pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x04;
+pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x08;
+pub const POSIX_SPAWN_SETSCHEDPARAM: c_short = 0x10;
+pub const POSIX_SPAWN_SETSCHEDULER: c_short = 0x20;
 pub const POSIX_SPAWN_USEVFORK: c_short = 64;
 pub const POSIX_SPAWN_SETSID: c_short = 128;
 
@@ -3569,21 +3615,28 @@ f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] &= !(1 << (fd % size));
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot &= !(1 << (fd % size));
     }
 
     pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0;
+        let Some(slot) = (*set).fds_bits.get(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        (*slot & (1 << (fd % size))) != 0
     }
 
     pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) -> () {
         let fd = fd as usize;
         let size = size_of_val(&(*set).fds_bits[0]) * 8;
-        (*set).fds_bits[fd / size] |= 1 << (fd % size);
-        return;
+        let Some(slot) = (*set).fds_bits.get_mut(fd / size) else {
+            panic!("fd {fd} out of range: valid fds are 0..FD_SETSIZE (0..{FD_SETSIZE})");
+        };
+        *slot |= 1 << (fd % size);
     }
 
     pub unsafe fn FD_ZERO(set: *mut fd_set) -> () {

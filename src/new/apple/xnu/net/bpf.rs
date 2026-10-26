@@ -28,7 +28,7 @@ s_no_extra_traits! {
 
     pub union __c_anonymous_bfl_u {
         pub bflu_list: *mut u32,
-        pub bflu_pad: u64,
+        bflu_pad: Padding<u64>,
     }
 }
 

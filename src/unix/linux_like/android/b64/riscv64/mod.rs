@@ -60,10 +60,10 @@ s_no_extra_traits! {
     }
 }
 
-pub const O_DIRECT: c_int = 0x40000;
-pub const O_DIRECTORY: c_int = 0x200000;
-pub const O_NOFOLLOW: c_int = 0x400000;
-pub const O_LARGEFILE: c_int = 0x100000;
+pub const O_DIRECT: c_int = 0o40000;
+pub const O_DIRECTORY: c_int = 0o200000;
+pub const O_NOFOLLOW: c_int = 0o400000;
+pub const O_LARGEFILE: c_int = 0o100000;
 
 pub const SIGSTKSZ: size_t = 8192;
 pub const MINSIGSTKSZ: size_t = 2048;

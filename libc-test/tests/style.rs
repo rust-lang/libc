@@ -29,6 +29,15 @@ const SKIP_PREFIXES: &[&str] = &[
 ];
 
 #[test]
+#[cfg_attr(
+    any(
+        target_os = "ios",
+        target_os = "tvos",
+        target_os = "watchos",
+        target_os = "visionos",
+    ),
+    ignore = "source code is not available for cross-compiled tests"
+)]
 fn check_style() {
     let src_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../src");
     walk(&src_root).unwrap();

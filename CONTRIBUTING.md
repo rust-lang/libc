@@ -112,27 +112,72 @@ chance of being accepted:
 
 ### Source links
 
-Please include permalinks to headers in commit messages for all API changes.
+Please include permalinks to headers in commit messages for all API changes;
+the maintainers need to compare changes against these sources, and we also want
+to keep a record of exactly what the API looked like when bindings were written.
 Common sources include:
 
-* Linux uapi: https://github.com/torvalds/linux/tree/master/include/uapi
-* Glibc: https://github.com/sailfishos-mirror/glibc (original is https://sourceware.org/git/?p=glibc.git;a=tree)
-* Musl: https://github.com/kraj/musl (original is https://git.musl-libc.org/cgit/musl/tree/)
-* Apple XNU: https://github.com/apple-oss-distributions/xnu, libc https://github.com/apple-oss-distributions/Libc/tree/main/include
-* Android: https://cs.android.com/android/platform/superproject/main
-* FreeBSD: https://github.com/freebsd/freebsd-src/tree/main/lib/libc
-* Illumos: https://github.com/illumos/illumos-gate/tree/master/usr/src/lib/libc
-* Fuchsia: https://cs.opensource.google/fuchsia/fuchsia/+/main:zircon/
+* Apple XNU: <https://github.com/apple-oss-distributions/xnu>,
+  libc <https://github.com/apple-oss-distributions/Libc/tree/main/include>
+* Android: <https://cs.android.com/android/platform/superproject/main>
+* Cygwin: <https://github.com/cygwin/cygwin> (official mirror),
+  <https://cygwin.com/cgit/newlib-cygwin/tree> (original)
+* DragonFlyBSD: <https://github.com/DragonFlyBSD/DragonFlyBSD> (official mirror),
+  <https://gitweb.dragonflybsd.org/?p=dragonfly.git;a=tree> (original)
+* Emscripten: <https://github.com/emscripten-core/emscripten>
+* FreeBSD: <https://github.com/freebsd/freebsd-src> (official mirror),
+  <https://cgit.freebsd.org/src/tree> (original)
+* Fuchsia: <https://cs.opensource.google/fuchsia/fuchsia/+/main:zircon/>
+* Glibc: <https://github.com/sailfishos-mirror/glibc> (unofficial mirror),
+  <https://sourceware.org/git/?p=glibc.git;a=tree> (original)
+* Illumos: <https://github.com/illumos/illumos-gate> (official mirror),
+  <https://code.illumos.org/plugins/gitiles/illumos-gate/+/refs/heads/master> (original)
+* L4RE: <https://github.com/kernkonzept/l4re-core> (original)
+* Linux uapi: <https://github.com/torvalds/linux/tree/master/include/uapi> (official mirror),
+  <https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/> (original)
+* Musl: <https://github.com/kraj/musl> (unofficial mirror),
+  <https://git.musl-libc.org/cgit/musl/tree> (original)
+* NetBSD: <https://github.com/NetBSD> (official mirror),
+  <https://cvsweb.netbsd.org/bsdweb.cgi> (original)
+* OpenBSD: <https://github.com/openbsd> (official mirror),
+  <https://cvsweb.openbsd.org/src> (original)
+* RedoxOS: <https://gitlab.redox-os.org/redox-os/relibc>
+* RTEMS: <https://github.com/rtems/rtems> (official mirror),
+  <https://gitlab.rtems.org/rtems/rtos/rtems> (original)
+* Uclibc: <https://github.com/wbx-github/uclibc-ng> (mirror),
+  <https://git.uclibc-ng.org/git/uclibc-ng.git> (original)
+* WASI: <https://github.com/WebAssembly/wasi-libc>
+* Windows GNU: <https://github.com/mingw-w64/mingw-w64> (unofficial mirror),
+  <https://sourceforge.net/p/mingw-w64/mingw-w64/ci/master/tree/> (original)
+* Windows MSVC: <https://github.com/microsoft/win32metadata>
 
 After navigating to the relevant file and selecting relevant lines, get a
-permalink. On GitHub this is available by clicking the triple dots and
-selecting "copy permalink", and on the Android and Fuchsia source viewers
-this is available via l-r (links->commit).
+permalink:
 
-If sources are closed, link to documentation or paste relevant C declarations.
+* On GitHub, click the triple dots and selecting "copy permalink".
+* On the Android and Fuchsia source viewers, type l-r (links->commit).
+* Cgit is trickier. Locate the latest commit by clicking "summary", clicking
+  the commit message tagged with "master" (or other name as applicable), and
+  copying the sha from that commit. Next, insert `?id=abcd1234...` in the URL,
+  (before line number indicators like `#123`) and copy the result. This should
+  look something like
+  <https://git.musl-libc.org/cgit/musl/tree/include/sys/stat.h?id=f21a96538f78fa8e2040831b4209b35f2fb581da#n80>.
+* For CVSweb, navigate to the file of interest and click on the "annotate" link
+  for the desired revision. Example:
+  <https://cvsweb.netbsd.org/bsdweb.cgi/src/sys/sys/stat.h?annotate=1.70>.
+
+If sources are not public, link to documentation or paste relevant C
+declarations.
 
 (Including this information in the PR description is fine too, commit messages
 are preferred because they become part of history.)
+
+### Manual pages
+
+Including links to manpages is not required but can also be very helpful to
+include. Some platforms also publish manpages but not sources.
+
+See documentation in `src/lib.rs` for links to online manuals.
 
 ## Breaking change policy
 

@@ -112,7 +112,7 @@ impl<'a> Translator<'a> {
             }
             syn::Type::Array(array) => self.translate_array(array),
             syn::Type::Reference(reference) => self.translate_reference(reference),
-            syn::Type::BareFn(function) => self.translate_bare_fn(function),
+            syn::Type::FnPtr(function) => self.translate_bare_fn(function),
             syn::Type::Never(_) => Ok(cdecl::named("void", Constness::Mut)),
             syn::Type::Slice(slice) => Err(TranslationError::new(
                 TranslationErrorKind::NotFfiCompatible,
@@ -152,7 +152,7 @@ impl<'a> Translator<'a> {
                         let type_name = translate_primitive_type(&last_segment.ident.to_string());
                         Ok(ptr_with_inner(
                             cdecl::named(&type_name, Constness::Mut),
-                            reference.mutability,
+                            translate_mut(reference.mutability),
                         ))
                     }
                     _ => Err(TranslationError::new(
@@ -165,9 +165,9 @@ impl<'a> Translator<'a> {
             syn::Type::Reference(_)
             | syn::Type::Ptr(_)
             | syn::Type::Array(_)
-            | syn::Type::BareFn(_) => {
+            | syn::Type::FnPtr(_) => {
                 let ty = self.translate_type(reference.elem.deref())?;
-                Ok(ptr_with_inner(ty, reference.mutability))
+                Ok(ptr_with_inner(ty, translate_mut(reference.mutability)))
             }
 
             _ => Err(TranslationError::new(
@@ -181,7 +181,7 @@ impl<'a> Translator<'a> {
     /// Translate a Rust function pointer type to its C equivalent.
     pub(crate) fn translate_bare_fn(
         &self,
-        function: &syn::TypeBareFn,
+        function: &syn::TypeFnPtr,
     ) -> Result<cdecl::CTy, TranslationError> {
         if function.lifetimes.is_some() {
             return Err(TranslationError::new(
@@ -219,7 +219,7 @@ impl<'a> Translator<'a> {
         {
             // Option<T> is ONLY ffi-safe if it contains a function pointer, or a reference.
             match inner_ty {
-                syn::Type::Reference(_) | syn::Type::BareFn(_) => {
+                syn::Type::Reference(_) | syn::Type::FnPtr(_) => {
                     return self.translate_type(inner_ty);
                 }
                 _ => {
@@ -252,7 +252,10 @@ impl<'a> Translator<'a> {
     /// Translate a Rust pointer into its equivalent C pointer.
     fn translate_ptr(&self, ptr: &syn::TypePtr) -> Result<cdecl::CTy, TranslationError> {
         let inner_type = self.translate_type(ptr.elem.deref())?;
-        Ok(ptr_with_inner(inner_type, ptr.mutability))
+        Ok(ptr_with_inner(
+            inner_type,
+            translate_ptr_mut(&ptr.mutability),
+        ))
     }
 
     /// Determine whether a C type is a signed type.
@@ -294,7 +297,15 @@ impl<'a> Translator<'a> {
     }
 }
 
-/// Translate mutability from Rust to C.
+/// Translate Rust mutability from a raw pointer to C non-constness.
+fn translate_ptr_mut(mutability: &syn::PointerMutability) -> Constness {
+    match mutability {
+        syn::PointerMutability::Const(_) => Constness::Const,
+        syn::PointerMutability::Mut(_) => Constness::Mut,
+    }
+}
+
+/// Translate Rust mutability from a reference to C non-constness.
 fn translate_mut(mutability: Option<syn::Token![mut]>) -> Constness {
     mutability.map_or(Constness::Const, |_| Constness::Mut)
 }
@@ -338,11 +349,7 @@ pub(crate) fn translate_primitive_type(ty: &str) -> String {
 /// Basically, `syn` always gives us the `constness` of the inner type of a pointer.
 /// However `cdecl::ptr` wants the `constness` of the pointer. So we just modify
 /// the way it is built so that `cdecl::ptr` takes the `constness` of the inner type.
-pub(crate) fn ptr_with_inner(
-    inner: cdecl::CTy,
-    mutability: Option<syn::Token![mut]>,
-) -> cdecl::CTy {
-    let constness = translate_mut(mutability);
+pub(crate) fn ptr_with_inner(inner: cdecl::CTy, constness: Constness) -> cdecl::CTy {
     let mut ty = Box::new(inner);
     match ty.deref_mut() {
         cdecl::CTy::Named { name: _, qual } => qual.constness = constness,

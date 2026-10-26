@@ -346,8 +346,8 @@ s! {
         pub ifm_hdrlen: c_ushort,
         pub ifm_index: c_ushort,
         pub ifm_tableid: c_ushort,
-        pub ifm_pad1: c_uchar,
-        pub ifm_pad2: c_uchar,
+        ifm_pad1: Padding<c_uchar>,
+        ifm_pad2: Padding<c_uchar>,
         pub ifm_addrs: c_int,
         pub ifm_flags: c_int,
         pub ifm_xflags: c_int,
@@ -863,7 +863,7 @@ impl siginfo_t {
             _uid: crate::uid_t,
             _utime: crate::clock_t,
             _stime: crate::clock_t,
-            _status: crate::c_int,
+            _status: c_int,
         }
         (*(self as *const siginfo_t).cast::<siginfo_proc>())._status
     }
@@ -1096,6 +1096,12 @@ pub const MAP_NORESERVE: c_int = 0x0000;
 pub const MAP_HASSEMAPHORE: c_int = 0x0000;
 pub const MAP_TRYFIXED: c_int = 0;
 
+// minherit syscall inherit values
+pub const MAP_INHERIT_SHARE: c_int = 0;
+pub const MAP_INHERIT_COPY: c_int = 1;
+pub const MAP_INHERIT_NONE: c_int = 2;
+pub const MAP_INHERIT_ZERO: c_int = 3;
+
 pub const EIPSEC: c_int = 82;
 pub const ENOMEDIUM: c_int = 85;
 pub const EMEDIUMTYPE: c_int = 86;
@@ -1241,6 +1247,7 @@ pub const _SC_PHYS_PAGES: c_int = 500;
 pub const _SC_AVPHYS_PAGES: c_int = 501;
 pub const _SC_NPROCESSORS_CONF: c_int = 502;
 pub const _SC_NPROCESSORS_ONLN: c_int = 503;
+pub const HOST_NAME_MAX: c_int = 255;
 
 pub const FD_SETSIZE: c_int = 1024;
 
@@ -1831,6 +1838,11 @@ const fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char =
+    cstr(b"/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         (cmsg as *mut c_uchar).offset(_ALIGN(size_of::<cmsghdr>()) as isize)
@@ -2050,6 +2062,7 @@ extern "C" {
     pub fn getfsstat(buf: *mut statfs, bufsize: size_t, flags: c_int) -> c_int;
 
     pub fn elf_aux_info(aux: c_int, buf: *mut c_void, buflen: c_int) -> c_int;
+    pub fn getexecpath(buf: *mut c_char, bufsize: size_t) -> c_int;
 }
 
 #[link(name = "execinfo")]

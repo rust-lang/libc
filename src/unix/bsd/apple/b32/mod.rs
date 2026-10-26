@@ -4,7 +4,7 @@ use crate::prelude::*;
 
 pub type boolean_t = c_int;
 
-s! {
+s2! {
     pub struct if_data {
         pub ifi_type: c_uchar,
         pub ifi_typelen: c_uchar,
@@ -13,7 +13,7 @@ s! {
         pub ifi_hdrlen: c_uchar,
         pub ifi_recvquota: c_uchar,
         pub ifi_xmitquota: c_uchar,
-        pub ifi_unused1: c_uchar,
+        ifi_unused1: Padding<c_uchar>,
         pub ifi_mtu: u32,
         pub ifi_metric: u32,
         pub ifi_baudrate: u32,
@@ -31,12 +31,14 @@ s! {
         pub ifi_recvtiming: u32,
         pub ifi_xmittiming: u32,
         pub ifi_lastchange: crate::timeval,
-        pub ifi_unused2: u32,
+        ifi_unused2: Padding<u32>,
         pub ifi_hwassist: u32,
-        pub ifi_reserved1: u32,
-        pub ifi_reserved2: u32,
+        ifi_reserved1: Padding<u32>,
+        ifi_reserved2: Padding<u32>,
     }
 
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
+    #[cfg(target_os = "macos")]
     pub struct bpf_hdr {
         pub bh_tstamp: crate::timeval,
         pub bh_caplen: u32,
@@ -49,22 +51,24 @@ s! {
     }
 }
 
-s_no_extra_traits! {
+s_no_extra_traits2! {
     #[repr(align(16))]
     pub struct max_align_t {
         priv_: [f64; 2],
     }
 }
 
-#[doc(hidden)]
-#[deprecated(since = "0.2.55")]
-pub const NET_RT_MAXID: c_int = 10;
-
-pub const BIOCSETF: c_ulong = 0x80084267;
-pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
-pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
-pub const BIOCSETFNR: c_ulong = 0x8008427e;
+cfg_if! {
+    if #[cfg(target_os = "macos")] {
+        pub const BIOCSETF: c_ulong = 0x80084267;
+        pub const BIOCSRTIMEOUT: c_ulong = 0x8008426d;
+        pub const BIOCGRTIMEOUT: c_ulong = 0x4008426e;
+        pub const BIOCSETFNR: c_ulong = 0x8008427e;
+    }
+}
 
 extern "C" {
+    // `exchangedata` is prohibited on tvOS and watchOS.
+    #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn exchangedata(path1: *const c_char, path2: *const c_char, options: c_ulong) -> c_int;
 }

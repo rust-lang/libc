@@ -33,7 +33,7 @@ fn test_ctest() {
         // The parameter `a` of the functions `T1r`, `T1s`, `T1t`, `T1v` is an array.
         .array_arg(|f, p| matches!(f.ident(), "T1r" | "T1s" | "T1t" | "T1v") && p.ident() == "a")
         .skip_roundtrip(|n| n == "Arr");
-    ctest::generate_test(&mut t1gen, "src/t1.rs", "t1gen.rs").unwrap();
+    t1gen.build_test("src/t1.rs", "t1gen.rs");
 
     let mut t2gen = ctest::TestGenerator::new();
     t2gen
@@ -44,7 +44,7 @@ fn test_ctest() {
         .rename_union_ty(|ty| (ty == "T2Union").then_some(ty.to_string()))
         .alias_is_c_enum(|e| e == "enum_repr_too_small" || e == "enum_wrong_signedness")
         .skip_roundtrip(|_| true);
-    ctest::generate_test(&mut t2gen, "src/t2.rs", "t2gen.rs").unwrap();
+    t2gen.build_test("src/t2.rs", "t2gen.rs");
 }
 
 fn do_cc() {

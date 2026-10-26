@@ -156,8 +156,10 @@ s! {
         _pad2: Padding<[c_int; 7]>,
     }
 
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
     pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t,
+        pub sa_sigaction: crate::sig_t,
         pub sa_flags: c_int,
         pub sa_mask: sigset_t,
     }
@@ -579,6 +581,11 @@ pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
 pub const MAP_FAILED: *mut c_void = !0 as *mut c_void;
 
+// minherit syscall inherit values
+pub const INHERIT_SHARE: c_int = 0;
+pub const INHERIT_COPY: c_int = 1;
+pub const INHERIT_NONE: c_int = 2;
+
 pub const MCL_CURRENT: c_int = 0x0001;
 pub const MCL_FUTURE: c_int = 0x0002;
 
@@ -995,18 +1002,6 @@ pub const LOCK_NB: c_int = 4;
 pub const LOCK_UN: c_int = 8;
 
 pub const MAP_COPY: c_int = 0x0002;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.54",
-    note = "Removed in FreeBSD 11, unused in DragonFlyBSD"
-)]
-pub const MAP_RENAME: c_int = 0x0020;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.54",
-    note = "Removed in FreeBSD 11, unused in DragonFlyBSD"
-)]
-pub const MAP_NORESERVE: c_int = 0x0040;
 pub const MAP_HASSEMAPHORE: c_int = 0x0200;
 pub const MAP_STACK: c_int = 0x0400;
 pub const MAP_NOSYNC: c_int = 0x0800;

@@ -367,14 +367,14 @@ s! {
         m_rb_link: crate::uintptr_t,
         #[cfg(target_pointer_width = "32")]
         m_pad: Padding<u32>,
-        m_spare: [u32; 2],
+        m_spare: Padding<[u32; 2]>,
     }
 
     pub struct ucond {
         c_has_waiters: u32,
         c_flags: u32,
         c_clockid: u32,
-        c_spare: [u32; 1],
+        c_spare: Padding<[u32; 1]>,
     }
 
     pub struct uuid {
@@ -434,9 +434,9 @@ s! {
         #[cfg(not(freebsd11))]
         pub kve_vn_rdev: u64,
         #[cfg(not(freebsd11))]
-        _kve_is_spare: [c_int; 8],
+        _kve_is_spare: Padding<[c_int; 8]>,
         #[cfg(freebsd11)]
-        _kve_is_spare: [c_int; 12],
+        _kve_is_spare: Padding<[c_int; 12]>,
         pub kve_path: [c_char; crate::PATH_MAX as usize],
     }
 
@@ -557,7 +557,7 @@ s! {
         pub t_pw: i16,
         pub t_sl: i16,
         pub t_sw: i16,
-        pub t_pad: [u16; 3],
+        t_pad: Padding<[u16; 3]>,
     }
 
     pub struct sockstat {
@@ -620,7 +620,7 @@ s! {
         pub ifm_flags: c_int,
         /// index for associated ifp
         pub ifm_index: c_ushort,
-        pub _ifm_spare1: c_ushort,
+        _ifm_spare1: Padding<c_ushort>,
         /// statistics and other data about if
         pub ifm_data: if_data,
     }
@@ -639,12 +639,12 @@ s! {
         /// index for associated ifp
         pub ifm_index: c_ushort,
         /// spare space to grow if_index, see if_var.h
-        pub _ifm_spare1: c_ushort,
+        _ifm_spare1: Padding<c_ushort>,
         /// length of if_msghdrl incl. if_data
         pub ifm_len: c_ushort,
         /// offset of if_data from beginning
         pub ifm_data_off: c_ushort,
-        pub _ifm_spare2: c_int,
+        _ifm_spare2: Padding<c_int>,
         /// statistics and other data about if
         pub ifm_data: if_data,
     }
@@ -662,7 +662,7 @@ s! {
         pub ifam_flags: c_int,
         /// index for associated ifp
         pub ifam_index: c_ushort,
-        pub _ifam_spare1: c_ushort,
+        _ifam_spare1: Padding<c_ushort>,
         /// value of ifa_ifp->if_metric
         pub ifam_metric: c_int,
     }
@@ -681,7 +681,7 @@ s! {
         /// index for associated ifp
         pub ifam_index: c_ushort,
         /// spare space to grow if_index, see if_var.h
-        pub _ifam_spare1: c_ushort,
+        _ifam_spare1: Padding<c_ushort>,
         /// length of ifa_msghdrl incl. if_data
         pub ifam_len: c_ushort,
         /// offset of if_data from beginning
@@ -705,7 +705,7 @@ s! {
         pub ifmam_flags: c_int,
         /// index for associated ifp
         pub ifmam_index: c_ushort,
-        pub _ifmam_spare1: c_ushort,
+        _ifmam_spare1: Padding<c_ushort>,
     }
 
     pub struct if_announcemsghdr {
@@ -778,8 +778,10 @@ s! {
         pub offset: u8,
         /// read length
         pub len: u8,
-        pub spare0: u8,
-        pub spare1: u32,
+        // "page" on FreeBSD 16
+        spare0: Padding<u8>,
+        // "bank" plus "spare" on FreeBSD 16
+        spare1: Padding<u32>,
         /// read buffer
         pub data: [u8; 8],
     }
@@ -789,8 +791,8 @@ s! {
         pub ifrh_name: [c_char; crate::IFNAMSIZ as usize],
         /// RSS_FUNC_
         pub ifrh_func: u8,
-        pub ifrh_spare0: u8,
-        pub ifrh_spare1: u16,
+        ifrh_spare0: Padding<u8>,
+        ifrh_spare1: Padding<u16>,
         /// RSS_TYPE_
         pub ifrh_types: u32,
     }
@@ -809,7 +811,7 @@ s! {
         /// number of drops in send queue
         pub ifmd_snd_drops: c_int,
         /// for future expansion
-        pub ifmd_filler: [c_int; 4],
+        ifmd_filler: Padding<[c_int; 4]>,
         /// generic information and statistics
         pub ifmd_data: if_data,
     }
@@ -859,7 +861,7 @@ s! {
         pub hz: c_int,
         /// micro-seconds per hz tick
         pub tick: c_int,
-        pub spare: c_int,
+        spare: Padding<c_int>,
         /// statistics clock frequency
         pub stathz: c_int,
         /// profiling clock frequency
@@ -1060,11 +1062,11 @@ s! {
         #[cfg(any(freebsd15, freebsd14, freebsd13))]
         pub tcpi_dupacks: u32,
         #[cfg(any(freebsd14, freebsd13))]
-        pub __tcpi_pad: [u32; 10],
+        __tcpi_pad: Padding<[u32; 10]>,
         #[cfg(freebsd15)]
-        pub __tcpi_pad: [u32; 14],
+        __tcpi_pad: Padding<[u32; 14]>,
         #[cfg(not(any(freebsd15, freebsd14, freebsd13)))]
-        pub __tcpi_pad: [u32; 26],
+        __tcpi_pad: Padding<[u32; 26]>,
     }
 
     pub struct _umtx_time {
@@ -1132,7 +1134,7 @@ s! {
         pub sinfo_assoc_id: crate::sctp_assoc_t,
         pub sinfo_keynumber: u16,
         pub sinfo_keynumber_valid: u16,
-        pub __reserve_pad: [u8; SCTP_ALIGN_RESV_PAD],
+        __reserve_pad: Padding<[u8; SCTP_ALIGN_RESV_PAD]>,
     }
 
     pub struct sctp_extrcvinfo {
@@ -1152,7 +1154,7 @@ s! {
         pub serinfo_next_ppid: u32,
         pub sinfo_keynumber: u16,
         pub sinfo_keynumber_valid: u16,
-        pub __reserve_pad: [u8; SCTP_ALIGN_RESV_PAD_SHORT],
+        __reserve_pad: Padding<[u8; SCTP_ALIGN_RESV_PAD_SHORT]>,
     }
 
     pub struct sctp_sndinfo {
@@ -1384,7 +1386,7 @@ s! {
         pub ut_user: [c_char; 32],
         pub ut_line: [c_char; 16],
         pub ut_host: [c_char; 128],
-        pub __ut_spare: [c_char; 64],
+        __ut_spare: Padding<[c_char; 64]>,
     }
 
     pub struct xucred {
@@ -1496,7 +1498,7 @@ s! {
         pub ifrk_name: [c_char; crate::IFNAMSIZ as usize],
         /// RSS_FUNC_
         pub ifrk_func: u8,
-        pub ifrk_spare0: u8,
+        ifrk_spare0: Padding<u8>,
         pub ifrk_keylen: u16,
         pub ifrk_key: [u8; crate::RSS_KEYLEN as usize],
     }
@@ -1601,9 +1603,9 @@ s! {
         _priv: [u8; 304], // FIXME(freebsd): this is really a giant union
         pub kf_status: u16,
         _kf_pad1: Padding<u16>,
-        _kf_ispare0: c_int,
+        _kf_ispare0: Padding<c_int>,
         pub kf_cap_rights: crate::cap_rights_t,
-        _kf_cap_spare: u64,
+        _kf_cap_spare: Padding<u64>,
         pub kf_path: [c_char; crate::PATH_MAX as usize],
     }
 }
@@ -1612,7 +1614,7 @@ s_no_extra_traits! {
     pub struct __aiocb_private {
         status: c_long,
         error: c_long,
-        spare: *mut c_void,
+        spare: Padding<*mut c_void>,
     }
 
     pub struct aiocb {
@@ -1620,8 +1622,8 @@ s_no_extra_traits! {
         pub aio_offset: off_t,
         pub aio_buf: *mut c_void,
         pub aio_nbytes: size_t,
-        __spare__: [c_int; 2],
-        __spare2__: *mut c_void,
+        __spare__: Padding<[c_int; 2]>,
+        __spare2__: Padding<*mut c_void>,
         pub aio_lio_opcode: c_int,
         pub aio_reqprio: c_int,
         _aiocb_private: __aiocb_private,
@@ -1632,7 +1634,7 @@ s_no_extra_traits! {
         pub _threadid: crate::__lwpid_t,
         pub _sigev_thread: __c_anonymous_sigev_thread,
         pub _kevent_flags: c_ushort,
-        __spare__: [c_long; 8],
+        __spare__: Padding<[c_long; 8]>,
     }
 
     pub union __c_anonymous_cr_pid {
@@ -1690,17 +1692,17 @@ s_no_extra_traits! {
         pub uc_link: *mut crate::ucontext_t,
         pub uc_stack: crate::stack_t,
         pub uc_flags: c_int,
-        __spare__: [c_int; 4],
+        __spare__: Padding<[c_int; 4]>,
     }
 
     #[repr(align(8))]
     pub struct xinpgen {
         pub xig_len: ksize_t,
         pub xig_count: u32,
-        _xig_spare32: u32,
+        _xig_spare32: Padding<u32>,
         pub xig_gen: inp_gen_t,
         pub xig_sogen: so_gen_t,
-        _xig_spare64: [u64; 4],
+        _xig_spare64: Padding<[u64; 4]>,
     }
 
     pub struct in_addr_4in6 {
@@ -1732,8 +1734,8 @@ s_no_extra_traits! {
         // Note: this field is called `gen` in upstream FreeBSD, but `gen` is
         // reserved keyword in Rust since the 2024 Edition, hence `gennum`.
         pub gennum: u64,
-        _rsrv1: [u64; 8],
-        _rsrv2: [u32; 8],
+        _rsrv1: Padding<[u64; 8]>,
+        _rsrv2: Padding<[u32; 8]>,
         pub iv: [u8; 32],
         pub cipher_algorithm: i32,
         pub auth_algorithm: i32,
@@ -2200,6 +2202,8 @@ pub const NOTE_EXIT: u32 = 0x80000000;
 pub const NOTE_FORK: u32 = 0x40000000;
 pub const NOTE_EXEC: u32 = 0x20000000;
 pub const NOTE_PDATAMASK: u32 = 0x000fffff;
+#[deprecated(since = "1.0.0", note = "Not stable across OS versions")]
+#[doc(hidden)]
 pub const NOTE_PCTRLMASK: u32 = 0xf0000000;
 pub const NOTE_TRACK: u32 = 0x00000001;
 pub const NOTE_TRACKERR: u32 = 0x00000002;
@@ -2212,12 +2216,8 @@ pub const NOTE_ABSTIME: u32 = 0x00000010;
 
 pub const MADV_PROTECT: c_int = 10;
 
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.72",
-    note = "CTL_UNSPEC is deprecated. Use CTL_SYSCTL instead"
-)]
-pub const CTL_UNSPEC: c_int = 0;
+pub const INHERIT_ZERO: c_int = 3;
+
 pub const CTL_SYSCTL: c_int = 0;
 pub const CTL_KERN: c_int = 1;
 pub const CTL_VM: c_int = 2;
@@ -2685,13 +2685,6 @@ pub const IFF_POINTOPOINT: c_int = 0x10;
 pub const IFF_KNOWSEPOCH: c_int = 0x20;
 /// (d) resources allocated
 pub const IFF_RUNNING: c_int = 0x40;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.54",
-    note = "IFF_DRV_RUNNING is deprecated. Use the portable IFF_RUNNING instead"
-)]
-/// (d) resources allocate
-pub const IFF_DRV_RUNNING: c_int = 0x40;
 /// (n) no address resolution protocol
 pub const IFF_NOARP: c_int = 0x80;
 /// (n) receive all packets
@@ -2700,10 +2693,6 @@ pub const IFF_PROMISC: c_int = 0x100;
 pub const IFF_ALLMULTI: c_int = 0x200;
 /// (d) tx hardware queue is full
 pub const IFF_OACTIVE: c_int = 0x400;
-#[doc(hidden)]
-#[deprecated(since = "0.2.54", note = "Use the portable `IFF_OACTIVE` instead")]
-/// (d) tx hardware queue is full
-pub const IFF_DRV_OACTIVE: c_int = 0x400;
 /// (i) can't hear own transmissions
 pub const IFF_SIMPLEX: c_int = 0x800;
 /// per link layer defined bit
@@ -2908,12 +2897,6 @@ pub const IPPROTO_BLT: c_int = 30;
 pub const IPPROTO_NSP: c_int = 31;
 /// Merit Internodal
 pub const IPPROTO_INP: c_int = 32;
-#[doc(hidden)]
-#[deprecated(
-    since = "0.2.72",
-    note = "IPPROTO_SEP is deprecated. Use IPPROTO_DCCP instead"
-)]
-pub const IPPROTO_SEP: c_int = 33;
 /// Datagram Congestion Control Protocol
 pub const IPPROTO_DCCP: c_int = 33;
 /// Third Party Connect
@@ -3269,6 +3252,10 @@ pub const AT_SYMLINK_FOLLOW: c_int = 0x400;
 pub const AT_REMOVEDIR: c_int = 0x800;
 pub const AT_RESOLVE_BENEATH: c_int = 0x2000;
 pub const AT_EMPTY_PATH: c_int = 0x4000;
+pub const AT_RENAME_NOREPLACE: c_int = 0x0001;
+pub const AT_RENAME_EXCHANGE: c_int = 0x0002;
+pub const RENAME_NOREPLACE: c_uint = AT_RENAME_NOREPLACE as c_uint;
+pub const RENAME_EXCHANGE: c_uint = AT_RENAME_EXCHANGE as c_uint;
 
 pub const AT_NULL: c_int = 0;
 pub const AT_IGNORE: c_int = 1;
@@ -3311,7 +3298,6 @@ pub const _UUID_NODE_LEN: usize = 6;
 // Flags which can be passed to pdfork(2)
 pub const PD_DAEMON: c_int = 0x00000001;
 pub const PD_CLOEXEC: c_int = 0x00000002;
-pub const PD_ALLOWED_AT_FORK: c_int = PD_DAEMON | PD_CLOEXEC;
 
 // Values for struct rtprio (type_ field)
 pub const RTP_PRIO_REALTIME: c_ushort = 2;
@@ -4341,6 +4327,11 @@ const fn _ALIGN(p: usize) -> usize {
     (p + _ALIGNBYTES) & !_ALIGNBYTES
 }
 
+// include/paths.h
+pub const _PATH_DEFPATH: *const c_char =
+    cstr(b"/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin\0");
+pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
         (cmsg as *mut c_uchar).add(_ALIGN(size_of::<cmsghdr>()))
@@ -4960,11 +4951,20 @@ extern "C" {
         idx1: c_ulong,
         idx2: c_ulong,
     ) -> c_int;
+    pub fn renameat2(
+        olddirfd: c_int,
+        oldpath: *const c_char,
+        newdirfd: c_int,
+        newpath: *const c_char,
+        flags: c_uint,
+    ) -> c_int;
     pub fn dlvsym(
         handle: *mut c_void,
         symbol: *const c_char,
         version: *const c_char,
     ) -> *mut c_void;
+
+    pub fn lchmod(path: *const c_char, mode: crate::mode_t) -> c_int;
 }
 
 #[link(name = "memstat")]

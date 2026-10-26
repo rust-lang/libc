@@ -81,10 +81,18 @@ unexpected_cfgs = "allow"
     let output = cmd.output()?;
 
     if !output.status.success() {
-        let stderr = std::str::from_utf8(&output.stderr)?;
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stdout = String::from_utf8_lossy(&output.stdout);
         return Err(format!(
-            "macro expansion failed with {}: {}, {:?}",
-            output.status, stderr, cmd
+            "macro expansion failed with status {}, running command {cmd:?}\n\
+            \n\
+            ==== stderr ====\n\
+            {stderr}\n\
+            \n\
+            ==== stdout ====\n\
+            {stdout}\n\
+            ",
+            output.status
         )
         .into());
     }

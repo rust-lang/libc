@@ -4,7 +4,7 @@
 
 use crate::prelude::*;
 
-s_with_default! {
+s2! {
     pub struct rt_metrics {
         pub rmx_locks: c_ulong,
         pub rmx_mtu: c_ulong,

@@ -23,7 +23,7 @@ s! {
         pub st_uid: crate::uid_t,
         pub st_gid: crate::gid_t,
         pub st_rdev: crate::dev_t,
-        pub st_pad2: [c_long; 1],
+        st_pad2: Padding<[c_long; 1]>,
         pub st_size: off_t,
         st_pad3: Padding<c_long>,
         pub st_atime: crate::time_t,
@@ -70,10 +70,10 @@ s! {
         pub f_ffree: crate::fsfilcnt64_t,
         pub f_favail: crate::fsfilcnt64_t,
         pub f_fsid: c_ulong,
-        pub __f_unused: c_int,
+        __f_unused: Padding<c_int>,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        pub __f_spare: [c_int; 6],
+        __f_spare: Padding<[c_int; 6]>,
     }
 
     pub struct pthread_attr_t {
@@ -95,13 +95,6 @@ s! {
 
     pub struct sigset_t {
         __val: [c_ulong; 4],
-    }
-
-    pub struct siginfo_t {
-        pub si_signo: c_int,
-        pub si_code: c_int,
-        pub si_errno: c_int,
-        pub _pad: [c_int; 29],
     }
 
     pub struct glob64_t {
@@ -181,7 +174,7 @@ s! {
         pub f_fsid: crate::fsid_t,
 
         pub f_namelen: c_long,
-        f_spare: [c_long; 6],
+        f_spare: Padding<[c_long; 6]>,
     }
 
     pub struct statfs64 {
@@ -196,7 +189,7 @@ s! {
         pub f_fsid: crate::fsid_t,
         pub f_namelen: c_long,
         pub f_flags: c_long,
-        pub f_spare: [c_long; 5],
+        f_spare: Padding<[c_long; 5]>,
     }
 
     pub struct msghdr {
@@ -244,11 +237,11 @@ s! {
         pub totalswap: c_ulong,
         pub freeswap: c_ulong,
         pub procs: c_ushort,
-        pub pad: c_ushort,
+        pad: Padding<c_ushort>,
         pub totalhigh: c_ulong,
         pub freehigh: c_ulong,
         pub mem_unit: c_uint,
-        pub _f: [c_char; 8],
+        _f: Padding<[c_char; 8]>,
     }
 
     // FIXME(1.0): this is actually a union
@@ -392,12 +385,10 @@ pub const SYS_modify_ldt: c_long = 4000 + 123;
 pub const SYS_adjtimex: c_long = 4000 + 124;
 pub const SYS_mprotect: c_long = 4000 + 125;
 pub const SYS_sigprocmask: c_long = 4000 + 126;
-#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
-pub const SYS_create_module: c_long = 4000 + 127;
+// 4000 + 127 was SYS_create_module
 pub const SYS_init_module: c_long = 4000 + 128;
 pub const SYS_delete_module: c_long = 4000 + 129;
-#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
-pub const SYS_get_kernel_syms: c_long = 4000 + 130;
+// 4000 + 130 was SYS_get_kernel_syms
 pub const SYS_quotactl: c_long = 4000 + 131;
 pub const SYS_getpgid: c_long = 4000 + 132;
 pub const SYS_fchdir: c_long = 4000 + 133;
@@ -453,8 +444,7 @@ pub const SYS_socket: c_long = 4000 + 183;
 pub const SYS_socketpair: c_long = 4000 + 184;
 pub const SYS_setresuid: c_long = 4000 + 185;
 pub const SYS_getresuid: c_long = 4000 + 186;
-#[deprecated(since = "0.2.70", note = "Functional up to 2.6 kernel")]
-pub const SYS_query_module: c_long = 4000 + 187;
+// 4000 + 187 was SYS_query_module
 pub const SYS_poll: c_long = 4000 + 188;
 pub const SYS_nfsservctl: c_long = 4000 + 189;
 pub const SYS_setresgid: c_long = 4000 + 190;

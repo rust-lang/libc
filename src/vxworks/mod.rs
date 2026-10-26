@@ -676,8 +676,10 @@ pub const EAI_SERVICE: c_int = 9;
 pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 
-pub const INT_MAX: c_int = 0x7fffffff;
-pub const INT_MIN: c_int = -INT_MAX - 1;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MAX` instead.")]
+pub const INT_MAX: c_int = c_int::MAX;
+#[deprecated(since = "0.2.190", note = "Use `c_int::MIN` instead.")]
+pub const INT_MIN: c_int = c_int::MIN;
 
 // FIXME(vxworks): This is not defined in vxWorks, but we have to define it here
 // to make the building pass for getrandom and std
@@ -1774,6 +1776,10 @@ extern "C" {
     pub fn ftello(stream: *mut crate::FILE) -> off_t;
     pub fn mkstemp(template: *mut c_char) -> c_int;
 
+    #[deprecated(
+        since = "0.2.190",
+        note = "function is obsolete; prefer tmpfile, mkstemp, or similar"
+    )]
     pub fn tmpnam(ptr: *mut c_char) -> *mut c_char;
 
     pub fn openlog(ident: *const c_char, logopt: c_int, facility: c_int);
