@@ -401,6 +401,7 @@ fn test_openbsd(t: &Target) {
     cfg.flag("-Wno-deprecated-declarations");
 
     let x86_64 = t.x86_64();
+    let openbsd = VERSIONS.openbsd.unwrap();
 
     headers!(
         cfg,
@@ -537,6 +538,15 @@ fn test_openbsd(t: &Target) {
 
             // Removed in OpenBSD 7.8
             "CTL_FS" | "SO_NETPROC" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |func| {
+        match func.ident() {
+            // Added in OpenBSD 8.0
+            "getexecpath" => openbsd < (8, 0),
 
             _ => false,
         }
