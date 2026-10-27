@@ -420,7 +420,7 @@ cfg_if! {
     }
 }
 
-// IPv6 definitions from `netinet/in.h`
+// Definitions from `netinet/in.h`
 cfg_if! {
     if #[cfg(any(
         target_os = "android",
@@ -435,6 +435,9 @@ cfg_if! {
         target_os = "solaris",
         target_vendor = "apple",
     ))] {
+        pub const INET_ADDRSTRLEN: usize = 16;
+        pub const INET6_ADDRSTRLEN: usize = 46;
+
         s2! {
             #[cfg(not(target_os = "android"))]
             pub struct ip6_mtuinfo {
