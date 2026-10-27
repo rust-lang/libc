@@ -1,7 +1,10 @@
 use syn::Path;
 
 use crate::BoxStr;
-use crate::ast::PathUtils;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
 
 /// Represents a type alias defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
@@ -10,7 +13,7 @@ pub struct Type {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: Vec<Path>,
+    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) ty: syn::Type,
 }
 
@@ -33,7 +36,7 @@ impl Type {
 }
 
 impl PathUtils for Type {
-    fn path_aggregate(self) -> Vec<Path> {
+    fn path_aggregate(self) -> PathAggregateStore {
         self.path_aggregate.clone()
     }
 
@@ -46,7 +49,7 @@ impl PathUtils for Type {
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        addressable_paths: PathAggregateStore,
     ) -> Self {
         Self {
             cached_path,

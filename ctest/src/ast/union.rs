@@ -1,6 +1,9 @@
 use syn::Path;
 
-use crate::ast::PathUtils;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
 use crate::{
     BoxStr,
     Field,
@@ -13,7 +16,7 @@ pub struct Union {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: Vec<Path>,
+    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) fields: Vec<Field>,
 }
 
@@ -35,7 +38,7 @@ impl Union {
 }
 
 impl PathUtils for Union {
-    fn path_aggregate(self) -> Vec<Path> {
+    fn path_aggregate(self) -> PathAggregateStore {
         self.path_aggregate.clone()
     }
 
@@ -48,7 +51,7 @@ impl PathUtils for Union {
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        addressable_paths: PathAggregateStore,
     ) -> Self {
         Self {
             cached_path,

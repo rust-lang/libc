@@ -3,7 +3,10 @@ use syn::{
     Type,
 };
 
-use crate::ast::PathUtils;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
 use crate::{
     Abi,
     BoxStr,
@@ -21,7 +24,7 @@ pub struct Static {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: Vec<Path>,
+    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) link_name: Option<BoxStr>,
     pub(crate) ty: Type,
 }
@@ -49,7 +52,7 @@ impl Static {
 }
 
 impl PathUtils for Static {
-    fn path_aggregate(self) -> Vec<Path> {
+    fn path_aggregate(self) -> PathAggregateStore {
         self.path_aggregate.clone()
     }
 
@@ -62,7 +65,7 @@ impl PathUtils for Static {
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        addressable_paths: PathAggregateStore,
     ) -> Self {
         Self {
             cached_path,

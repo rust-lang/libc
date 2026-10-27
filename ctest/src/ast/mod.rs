@@ -13,6 +13,7 @@ use std::ops::{
     self,
     Not,
 };
+use std::vec::IntoIter;
 
 pub use constant::Const;
 pub use field::Field;
@@ -22,10 +23,7 @@ pub use parameter::Parameter;
 use quote::ToTokens;
 pub use static_variable::Static;
 pub use structure::Struct;
-use syn::{
-    Path,
-    PathSegment,
-};
+use syn::Path;
 pub use type_alias::Type;
 pub use union::Union;
 
@@ -48,6 +46,23 @@ impl PathAggregateStore {
         let PathAggregateStore { mut value } = self;
         value.push(p);
         Self { value }
+    }
+}
+
+pub(crate) type AddressablePaths = IntoIter<Path>;
+
+impl IntoIterator for PathAggregateStore {
+    type IntoIter = AddressablePaths;
+    type Item = Path;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.value.into_iter()
+    }
+}
+
+impl Extend<Path> for PathAggregateStore {
+    fn extend<I: IntoIterator<Item = Path>>(&mut self, iter: I) {
+        self.value.extend(iter);
     }
 }
 
@@ -74,7 +89,7 @@ pub(crate) trait PathUtils: Clone {
         addressable_paths: PathAggregateStore,
     ) -> Self;
 
-    // [TODO]: override the default impelemnteation for modules, so as to allow
+    // [TODO]: override the default impelementation for modules, so as to allow
     // the items living within the subtree rooted at the module to also adopt the
     // new path in their aggreagtes.
     // [TODO]: change all call sites where the path aggregate is modified
@@ -90,39 +105,42 @@ pub(crate) trait PathUtils: Clone {
         )
     }
 
+    /// Diffs the path aggregates of two interface implementors of the same
+    /// type.
+    ///
+    /// The resulting collection contains the paths in the aggregate of `other`
+    /// that are missing from the aggregate of the receiver.
+    fn diff_aggregates(self, other: Self) -> impl Iterator<Item = Path> {
+        other.clone().path_aggregate().into_iter().filter(move |p| {
+            self.clone()
+                .path_aggregate()
+                .into_iter()
+                .any(|ip| *p == ip)
+                .not()
+        })
+    }
+
     /// Diffs the path aggregates of both `self` and `other`, and yields a
     /// unified path aggregate integrating the paths from both.
+    ///
+    /// This uses the `diff_aggregates` trait method to compute the differences
+    /// between the receiver and `other`, and then yields the path aggregate
+    /// resulting from adding those missing paths to the the receiver's path
+    /// aggregate.
     fn merge_aggregates(self, other: Self) -> PathAggregateStore {
-        let we_need = other
-            .clone()
-            .path_aggregate()
-            .value
-            .into_iter()
-            .filter(|a| {
-                self.clone()
-                    .path_aggregate()
-                    .value
-                    .into_iter()
-                    .any(|b| *a == b)
-                    .not()
-            })
-            .collect::<Vec<_>>();
-        let mut ours = self.clone().path_aggregate().value;
+        let we_need = self.clone().diff_aggregates(other.clone());
+        let mut ours = self.clone().path_aggregate();
         ours.extend(we_need);
-        PathAggregateStore { value: ours }
+        ours
     }
 
     /// Checks whether two interface implementors contain some common path in
     /// their path aggregate.
     fn akin_aggregates(self, other: Self) -> bool {
-        self.clone().path_aggregate().value.into_iter().any(|p| {
-            other
-                .clone()
-                .path_aggregate()
-                .value
-                .into_iter()
-                .any(|p2| p == p2)
-        })
+        self.clone()
+            .path_aggregate()
+            .into_iter()
+            .any(|p| other.clone().path_aggregate().into_iter().any(|p2| p == p2))
     }
 
     /// Provided some parsed type, this method will run the given closure on
@@ -143,7 +161,6 @@ pub(crate) trait PathUtils: Clone {
     fn with_variations<T>(&self, f: impl ops::Fn(Self) -> T + Clone) -> Vec<T> {
         self.clone()
             .path_aggregate()
-            .value
             .into_iter()
             .map(|p| f(self.clone().rename(p.clone())))
             .collect()
@@ -156,11 +173,7 @@ pub(crate) trait PathUtils: Clone {
     fn rename(self, new_path: Path) -> Self {
         self.clone().mk(
             path_to_string(new_path.clone()),
-            new_path
-                .segments
-                .last()
-                .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
-                .unwrap_or_default(),
+            ident_to_string(new_path.clone()),
             new_path.clone(),
             self.path_aggregate().push(new_path),
         )

@@ -1,7 +1,10 @@
 use syn::Path;
 use syn::punctuated::Punctuated;
 
-use crate::ast::PathUtils;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
 use crate::{
     BoxStr,
     Field,
@@ -14,7 +17,7 @@ pub struct Struct {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: Vec<Path>,
+    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) fields: Vec<Field>,
 }
 
@@ -36,7 +39,7 @@ impl Struct {
 }
 
 impl PathUtils for Struct {
-    fn path_aggregate(self) -> Vec<Path> {
+    fn path_aggregate(self) -> PathAggregateStore {
         self.path_aggregate.clone()
     }
 
@@ -49,7 +52,7 @@ impl PathUtils for Struct {
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        addressable_paths: PathAggregateStore,
     ) -> Self {
         Self {
             cached_path,
@@ -72,7 +75,7 @@ impl Default for Struct {
             cached_path: String::new().into_boxed_str(),
             cached_ident: String::new().into_boxed_str(),
             path: dpath.clone(),
-            path_aggregate: vec![dpath.clone()],
+            path_aggregate: PathAggregateStore::new().push(dpath.clone()),
             fields: vec![],
         }
     }

@@ -156,7 +156,7 @@ impl FfiItems {
     /// Yields an iterator over all items in the calling `FfiItems`.
     ///
     /// The items in the item container do not include `use` declarations.
-    fn items(&self) -> ItemIterator {
+    pub(crate) fn items(&self) -> ItemIterator {
         let base = self
             .aliases
             .clone()
@@ -326,9 +326,130 @@ impl Default for FfiItems {
     }
 }
 
+impl Extend<GenericItem> for FfiItems {
+    fn extend<I: IntoIterator<Item = GenericItem>>(&mut self, iter: I) {
+        let unpartitioned_items: Vec<_> = iter.into_iter().collect();
+        let mut partitioned_items = unpartitioned_items.clone();
+        partitioned_items.sort_by(|it1, it2| match (it1.clone(), it2.clone()) {
+            (GenericItem::Type(_), GenericItem::Type(_))
+            | (GenericItem::Struct(_), GenericItem::Struct(_))
+            | (GenericItem::Union(_), GenericItem::Union(_))
+            | (GenericItem::Const(_), GenericItem::Const(_))
+            | (GenericItem::Fn(_), GenericItem::Fn(_))
+            | (GenericItem::Static(_), GenericItem::Static(_))
+            | (GenericItem::Module(_), GenericItem::Module(_)) => Ordering::Equal,
+            (GenericItem::Type(_), GenericItem::Struct(_))
+            | (GenericItem::Type(_), GenericItem::Union(_))
+            | (GenericItem::Type(_), GenericItem::Const(_))
+            | (GenericItem::Type(_), GenericItem::Fn(_))
+            | (GenericItem::Type(_), GenericItem::Static(_))
+            | (GenericItem::Type(_), GenericItem::Module(_))
+            | (GenericItem::Struct(_), GenericItem::Union(_))
+            | (GenericItem::Struct(_), GenericItem::Const(_))
+            | (GenericItem::Struct(_), GenericItem::Fn(_))
+            | (GenericItem::Struct(_), GenericItem::Static(_))
+            | (GenericItem::Struct(_), GenericItem::Module(_))
+            | (GenericItem::Union(_), GenericItem::Const(_))
+            | (GenericItem::Union(_), GenericItem::Fn(_))
+            | (GenericItem::Union(_), GenericItem::Static(_))
+            | (GenericItem::Union(_), GenericItem::Module(_))
+            | (GenericItem::Const(_), GenericItem::Fn(_))
+            | (GenericItem::Const(_), GenericItem::Static(_))
+            | (GenericItem::Const(_), GenericItem::Module(_))
+            | (GenericItem::Static(_), GenericItem::Module(_))
+            | (GenericItem::Fn(_), GenericItem::Static(_))
+            | (GenericItem::Fn(_), GenericItem::Module(_)) => Ordering::Less,
+            (GenericItem::Struct(_), GenericItem::Type(_))
+            | (GenericItem::Union(_), GenericItem::Type(_))
+            | (GenericItem::Union(_), GenericItem::Struct(_))
+            | (GenericItem::Const(_), GenericItem::Type(_))
+            | (GenericItem::Const(_), GenericItem::Struct(_))
+            | (GenericItem::Const(_), GenericItem::Union(_))
+            | (GenericItem::Fn(_), GenericItem::Type(_))
+            | (GenericItem::Fn(_), GenericItem::Struct(_))
+            | (GenericItem::Fn(_), GenericItem::Union(_))
+            | (GenericItem::Fn(_), GenericItem::Const(_))
+            | (GenericItem::Static(_), GenericItem::Type(_))
+            | (GenericItem::Static(_), GenericItem::Struct(_))
+            | (GenericItem::Static(_), GenericItem::Union(_))
+            | (GenericItem::Static(_), GenericItem::Const(_))
+            | (GenericItem::Static(_), GenericItem::Fn(_))
+            | (GenericItem::Module(_), GenericItem::Type(_))
+            | (GenericItem::Module(_), GenericItem::Struct(_))
+            | (GenericItem::Module(_), GenericItem::Union(_))
+            | (GenericItem::Module(_), GenericItem::Const(_))
+            | (GenericItem::Module(_), GenericItem::Fn(_))
+            | (GenericItem::Module(_), GenericItem::Static(_)) => Ordering::Greater,
+        });
+        macro_rules! get_partitions {
+            ($([$it:tt: $ty:tt, $start:expr, $end:expr]),+ $(,)?) => {$(
+                let $it = partitioned_items
+                    .get($start..$end)
+                    .map(ToOwned::to_owned)
+                    .map(|it| {
+                        it
+                            .into_iter()
+                            .map(|it| match it.clone() {
+                                GenericItem::$ty(it) => it,
+                                _ => unreachable!(
+                                    concat!(
+                                        "Items got sorted out while \
+                                         partitioning. This bucket corresponds \
+                                         with that of ",
+                                        stringify!($it),
+                                    ),
+                                ),
+                            })
+                            .collect::<Vec<_>>()
+                    })
+                    .expect(
+                        concat!(
+                            "Items got sorted out while partitioning. This \
+                             bucket corresponds with that of ",
+                            stringify!($it),
+                        ),
+                    );
+            )+};
+        }
+        let aliases_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Type(_)));
+        let structs_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Struct(_)));
+        let unions_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Union(_)));
+        let constants_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Const(_)));
+        let foreign_functions_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Fn(_)));
+        let foreign_statics_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Static(_)));
+        let modules_idx =
+            partitioned_items.partition_point(|it| matches!(it, GenericItem::Module(_)));
+        get_partitions! {
+            [aliases: Type, aliases_idx, structs_idx],
+            [structs: Struct, structs_idx, unions_idx],
+            [unions: Union, unions_idx, constants_idx],
+            [constants: Const, constants_idx, foreign_functions_idx],
+            [foreign_functions: Fn, foreign_functions_idx, foreign_statics_idx],
+            [foreign_statics: Static, foreign_statics_idx, modules_idx],
+            [modules: Module, modules_idx, partitioned_items.len()],
+        }
+        *self = FfiItems {
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+            modules,
+            ..self.clone()
+        }
+    }
+}
+
 /// Sum over any item held within an `FfiItems` term.
 #[derive(Clone)]
-enum GenericItem {
+pub(crate) enum GenericItem {
     Type(Type),
     Struct(Struct),
     Union(Union),

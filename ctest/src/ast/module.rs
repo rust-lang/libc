@@ -1,16 +1,25 @@
 use std::cmp::Ordering;
 use std::ops;
 
+use syn::Path;
 use syn::punctuated::Punctuated;
-use syn::{
-    Path,
-    PathSegment,
-};
 
-use crate::ast::PathUtils;
-use crate::ffi_items::FfiItems;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
+use crate::ffi_items::{
+    FfiItems,
+    GenericItem,
+};
 use crate::{
     BoxStr,
+    Const,
+    Fn,
+    Static,
+    Struct,
+    Type,
+    Union,
     ast,
 };
 
@@ -22,7 +31,7 @@ pub struct Module {
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: Vec<Path>,
+    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) items: FfiItems,
 }
 
@@ -55,7 +64,7 @@ impl Module {
 }
 
 impl PathUtils for Module {
-    fn path_aggregate(self) -> Vec<Path> {
+    fn path_aggregate(self) -> PathAggregateStore {
         self.path_aggregate.clone()
     }
 
@@ -68,7 +77,7 @@ impl PathUtils for Module {
         cached_path: BoxStr,
         cached_ident: BoxStr,
         path: Path,
-        addressable_paths: Vec<Path>,
+        addressable_paths: PathAggregateStore,
     ) -> Self {
         Self {
             cached_path,
@@ -76,6 +85,83 @@ impl PathUtils for Module {
             path,
             path_aggregate: addressable_paths,
             ..self.clone()
+        }
+    }
+
+    fn add_path(self, path: Path) -> Self {
+        fn handle_item(it: GenericItem, original: Path, new: Path) -> GenericItem {
+            macro_rules! map {
+                ($($ty:tt),+ $(,)?) => {
+                    match it.clone() {
+                        $(
+                        GenericItem::$ty(it) => {
+                            let kept_segments = it
+                                .clone()
+                                .path()
+                                .segments
+                                .into_iter()
+                                .skip(original.segments.len());
+                            let mut new_path = new.clone();
+                            new_path.segments.extend(kept_segments);
+                            GenericItem::$ty($ty {
+                                path_aggregate: it.clone().path_aggregate(),
+                                ..it.clone()
+                            })
+                        }
+                        )+
+                        GenericItem::Module(m) => {
+                            let kept_segments = m
+                                .clone()
+                                .path()
+                                .segments
+                                .into_iter()
+                                .skip(original.segments.len());
+                            let mut new_path = new.clone();
+                            new_path.segments.extend(kept_segments);
+                            let new_items: FfiItems = m
+                                .items
+                                .items()
+                                .map(|it| handle_item(it.clone(), original.clone(), new.clone()))
+                                .collect();
+                            GenericItem::Module(Module {
+                                path_aggregate: m.clone().path_aggregate().push(new_path.clone()),
+                                items: new_items.clone(),
+                                ..m.clone()
+                            })
+                        }
+                    }
+                };
+            }
+            map! {
+                Type,
+                Struct,
+                Union,
+                Const,
+                Fn,
+                Static,
+            }
+        }
+        let new_aggregate = self.path_aggregate.clone().push(path.clone());
+        let diff = self.clone().diff_aggregates(self.clone().mk(
+            ast::path_to_string(self.path.clone()),
+            ast::ident_to_string(self.path.clone()),
+            self.path.clone(),
+            new_aggregate.clone(),
+        ));
+        let new_module = diff.into_iter().fold(self.clone(), |m, p| {
+            let new_items: FfiItems = self
+                .items
+                .items()
+                .map(|it| handle_item(it.clone(), m.path.clone(), p.clone()))
+                .collect();
+            Module {
+                items: new_items.clone(),
+                ..m.clone()
+            }
+        });
+        Module {
+            path_aggregate: new_aggregate.clone(),
+            ..new_module.clone()
         }
     }
 
@@ -139,18 +225,9 @@ impl PathUtils for Module {
         let new_path = f(self.path.clone());
         Module {
             cached_path: ast::path_to_string(new_path.clone()),
-            cached_ident: new_path
-                .segments
-                .last()
-                .map(|PathSegment { ident, .. }| ident.to_string().into_boxed_str())
-                .unwrap_or_default(),
+            cached_ident: ast::ident_to_string(new_path.clone()),
             path: new_path.clone(),
-            path_aggregate: self
-                .path_aggregate
-                .clone()
-                .into_iter()
-                .chain([new_path.clone()])
-                .collect(),
+            path_aggregate: self.path_aggregate.clone().push(new_path.clone()),
             items: new_items.clone(),
             ..self.clone()
         }
@@ -168,7 +245,7 @@ impl Default for Module {
             cached_path: String::new().into_boxed_str(),
             cached_ident: String::new().into_boxed_str(),
             path: dpath.clone(),
-            path_aggregate: vec![dpath.clone()],
+            path_aggregate: PathAggregateStore::new().push(dpath.clone()),
             items: FfiItems::default(),
         }
     }
