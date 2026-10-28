@@ -5677,6 +5677,7 @@ fn test_aix(t: &Target) {
         "netdb.h",
         "netinet/tcp.h",
         "netinet/sctp.h",
+        "paths.h",
         "pthread.h",
         "pwd.h",
         "rpcsvc/mount.h",
