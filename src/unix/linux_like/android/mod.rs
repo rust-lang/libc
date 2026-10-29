@@ -68,6 +68,14 @@ extern_ty! {
 }
 
 s! {
+    // linux/openat2.h
+    #[non_exhaustive]
+    pub struct open_how {
+        pub flags: crate::__u64,
+        pub mode: crate::__u64,
+        pub resolve: crate::__u64,
+    }
+
     pub struct stack_t {
         pub ss_sp: *mut c_void,
         pub ss_flags: c_int,

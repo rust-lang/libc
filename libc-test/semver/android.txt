@@ -3763,6 +3763,7 @@ off64_t
 off_t
 open
 open64
+open_how
 open_memstream
 open_wmemstream
 openat
