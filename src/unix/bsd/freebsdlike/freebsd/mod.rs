@@ -2184,6 +2184,7 @@ pub const NOTE_FFAND: u32 = 0x40000000;
 pub const NOTE_FFOR: u32 = 0x80000000;
 pub const NOTE_FFCOPY: u32 = 0xc0000000;
 pub const NOTE_FFCTRLMASK: u32 = 0xc0000000;
+pub const NOTE_PCTRLMASK: u32 = 0xfc000000;
 pub const NOTE_FFLAGSMASK: u32 = 0x00ffffff;
 pub const NOTE_LOWAT: u32 = 0x00000001;
 pub const NOTE_FILE_POLL: u32 = 0x00000002;
