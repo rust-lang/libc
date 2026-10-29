@@ -240,9 +240,15 @@ s! {
         pub if_index: c_uint,
         pub if_name: *mut c_char,
     }
-
     pub struct icmp6_filter {
         icmp6_filt: [u32; 8],
+    }
+
+    #[non_exhaustive]
+    pub struct open_how {
+        pub flags: crate::__u64,
+        pub mode: crate::__u64,
+        pub resolve: crate::__u64,
     }
 }
 
