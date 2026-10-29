@@ -38,7 +38,10 @@ use syn::{
     Visibility,
 };
 
-use crate::ast::PathUtils;
+use crate::ast::{
+    PathAggregateStore,
+    PathUtils,
+};
 use crate::{
     Abi,
     BoxStr,
@@ -326,10 +329,19 @@ impl Default for FfiItems {
     }
 }
 
-impl Extend<GenericItem> for FfiItems {
-    fn extend<I: IntoIterator<Item = GenericItem>>(&mut self, iter: I) {
+impl FromIterator<GenericItem> for FfiItems {
+    fn from_iter<I: IntoIterator<Item = GenericItem>>(iter: I) -> FfiItems {
         let unpartitioned_items: Vec<_> = iter.into_iter().collect();
         let mut partitioned_items = unpartitioned_items.clone();
+        // [NOTE]: this is expected to sort all items by their kind, such that
+        // we end up with the following ordering:
+        // 1. Type aliases.
+        // 2. Stucts.
+        // 3. Unions.
+        // 4. Constants.
+        // 5. Foreign functions.
+        // 6. Foreign statics.
+        // 7. Modules.
         partitioned_items.sort_by(|it1, it2| match (it1.clone(), it2.clone()) {
             (GenericItem::Type(_), GenericItem::Type(_))
             | (GenericItem::Struct(_), GenericItem::Struct(_))
@@ -382,59 +394,48 @@ impl Extend<GenericItem> for FfiItems {
             | (GenericItem::Module(_), GenericItem::Static(_)) => Ordering::Greater,
         });
         macro_rules! get_partitions {
-            ($([$it:tt: $ty:tt, $start:expr, $end:expr]),+ $(,)?) => {$(
-                let $it = partitioned_items
-                    .get($start..$end)
-                    .map(ToOwned::to_owned)
-                    .map(|it| {
-                        it
-                            .into_iter()
-                            .map(|it| match it.clone() {
-                                GenericItem::$ty(it) => it,
-                                _ => unreachable!(
-                                    concat!(
-                                        "Items got sorted out while \
-                                         partitioning. This bucket corresponds \
-                                         with that of ",
-                                        stringify!($it),
-                                    ),
-                                ),
-                            })
-                            .collect::<Vec<_>>()
-                    })
-                    .expect(
-                        concat!(
-                            "Items got sorted out while partitioning. This \
-                             bucket corresponds with that of ",
-                            stringify!($it),
-                        ),
-                    );
+            ($([$field:ident, $ty:tt]),+ $(,)?) => {$(
+                let start =
+                    partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)).not());
+                let end = partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)));
+                let $field = if start >= end {
+                    Vec::new()
+                } else {
+                    partitioned_items
+                        .get(start..end)
+                        .map(|it| {
+                            it.clone()
+                                .into_iter()
+                                .map(|it| match it {
+                                    GenericItem::$ty(it) => it.clone(),
+                                    _ => unreachable!(concat!(
+                                        "Items have been sorted by their kind \
+                                         before. This is expected to \
+                                         correspond with the bucket ",
+                                        stringify!($field),
+                                        ".",
+                                    )),
+                                })
+                                .collect()
+                        })
+                        .expect(
+                            "The slice must be valid because the range is \
+                             logical, and the components of the range are \
+                             indices into the collection.",
+                        )
+                };
             )+};
         }
-        let aliases_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Type(_)));
-        let structs_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Struct(_)));
-        let unions_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Union(_)));
-        let constants_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Const(_)));
-        let foreign_functions_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Fn(_)));
-        let foreign_statics_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Static(_)));
-        let modules_idx =
-            partitioned_items.partition_point(|it| matches!(it, GenericItem::Module(_)));
         get_partitions! {
-            [aliases: Type, aliases_idx, structs_idx],
-            [structs: Struct, structs_idx, unions_idx],
-            [unions: Union, unions_idx, constants_idx],
-            [constants: Const, constants_idx, foreign_functions_idx],
-            [foreign_functions: Fn, foreign_functions_idx, foreign_statics_idx],
-            [foreign_statics: Static, foreign_statics_idx, modules_idx],
-            [modules: Module, modules_idx, partitioned_items.len()],
+            [aliases, Type],
+            [structs, Struct],
+            [unions, Union],
+            [constants, Const],
+            [foreign_functions, Fn],
+            [foreign_statics, Static],
+            [modules, Module],
         }
-        *self = FfiItems {
+        FfiItems {
             aliases,
             structs,
             unions,
@@ -442,7 +443,7 @@ impl Extend<GenericItem> for FfiItems {
             foreign_functions,
             foreign_statics,
             modules,
-            ..self.clone()
+            ..Default::default()
         }
     }
 }
@@ -1490,7 +1491,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         cached_path,
         cached_ident,
         path: path.clone(),
-        path_aggregate: vec![path.clone()],
+        path_aggregate: PathAggregateStore::new().push(path.clone()),
         link_name,
         parameters,
         return_type,
@@ -1512,7 +1513,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
         cached_path,
         cached_ident,
         path: path.clone(),
-        path_aggregate: vec![path.clone()],
+        path_aggregate: PathAggregateStore::new().push(path.clone()),
         link_name,
         ty,
     });
@@ -1530,7 +1531,7 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        path_aggregate: vec![path.clone()],
+        path_aggregate: PathAggregateStore::new().push(path.clone()),
         ty,
     });
 }
@@ -1551,7 +1552,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        path_aggregate: vec![path.clone()],
+        path_aggregate: PathAggregateStore::new().push(path.clone()),
         fields,
     });
 }
@@ -1568,7 +1569,7 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        path_aggregate: vec![path.clone()],
+        path_aggregate: PathAggregateStore::new().push(path.clone()),
         fields,
     });
 }
@@ -1585,7 +1586,7 @@ fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
         cached_path,
         cached_ident,
         path: path.clone(),
-        path_aggregate: vec![path.clone()],
+        path_aggregate: PathAggregateStore::new().push(path.clone()),
         ty,
     });
 }
@@ -1685,7 +1686,7 @@ impl<'ast> Visit<'ast> for FfiItems {
                 cached_path: ast::path_to_string(running_items.current_module.clone()),
                 cached_ident: ident.to_string().into_boxed_str(),
                 path: path.clone(),
-                path_aggregate: vec![path.clone()],
+                path_aggregate: PathAggregateStore::new().push(path.clone()),
                 items: running_items.clone(),
             });
         }

@@ -89,11 +89,12 @@ pub(crate) trait PathUtils: Clone {
         addressable_paths: PathAggregateStore,
     ) -> Self;
 
-    // [TODO]: override the default impelementation for modules, so as to allow
-    // the items living within the subtree rooted at the module to also adopt the
-    // new path in their aggreagtes.
-    // [TODO]: change all call sites where the path aggregate is modified
-    // manually with uses of this method.
+    /// Provided a path, it ensures the path aggregate of a given item
+    /// integrates the new path.
+    ///
+    /// Unlike methods `rename` and `rename_with`, this does not change the path
+    /// of the item itself, but rather produces an updated receiver with only
+    /// the path aggregate store expanded.
     fn add_path(self, path: Path) -> Self {
         let aggregate = self.clone().path_aggregate();
         let new_aggregate = aggregate.push(path);
