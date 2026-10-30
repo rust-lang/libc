@@ -8,6 +8,7 @@ pub type timer_t = *mut c_void;
 pub type useconds_t = u32;
 pub type key_t = c_int;
 pub type id_t = c_uint;
+pub type sighandler_t = size_t;
 
 extern_ty! {
     pub type timezone;

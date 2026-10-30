@@ -2,6 +2,11 @@ use crate::prelude::*;
 
 pub type blkcnt_t = i32;
 pub type blksize_t = i32;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform."
+)]
+pub type sighandler_t = size_t;
 
 cfg_if! {
     if #[cfg(target_os = "rtems")] {
