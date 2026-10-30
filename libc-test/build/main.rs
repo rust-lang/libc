@@ -5053,6 +5053,12 @@ fn test_linux(t: &Target) {
             ("iw_encode_ext", "key") => true,
             // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
             ("tcp_info", "tcpi_snd_rcv_wscale") => true,
+            // glibc 2.44 made these bitfields of a u32
+            ("tcp_info", "tcpi_accecn_opt_seen" | "tcpi_accecn_fail_mode")
+                if gnu && versions.glibc.unwrap() >= (2, 44) =>
+            {
+                true
+            }
             // the `tcpi_delivery_fastopen_bitfields` map two bitfield fields stored in a u8
             ("tcp_info", "tcpi_delivery_fastopen_bitfields") if musl => true,
             // either fsid_t or int[2] type
