@@ -553,7 +553,7 @@ s! {
 
     pub struct regex_t {
         re_magic: c_int,
-        re_nsub: size_t,
+        pub re_nsub: size_t,
         re_endp: *const c_char,
         re_g: *mut c_void,
     }
