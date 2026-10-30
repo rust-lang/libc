@@ -47,6 +47,48 @@ impl PathAggregateStore {
         value.push(p);
         Self { value }
     }
+
+    // [TODO]: change previous uses of the below methods through the generic
+    // renaming trait to use the inherent methods.
+
+    /// Checks if any two path aggregates are known to correspond with those of
+    /// the same item.
+    ///
+    /// In other words, it checks if the item owning the receiver path aggregate
+    /// and the item owning the `other` path aggregate are different occurrences
+    /// of the same item across the crate's module tree.
+    pub(crate) fn akin(&self, other: &Self) -> bool {
+        let ours = &self.value;
+        let theirs = &other.value;
+        ours.iter().any(|p1| theirs.iter().any(|p2| p1 == p2))
+    }
+
+    /// Diffs any two given path aggregates and returns the set of paths that
+    /// were present in `other` but missing in the receiver.
+    ///
+    /// Note that if the receiver contains more paths than `other`, the returned
+    /// collection will be empty. In other words, the operation is not
+    /// reflexive (`self.diff(other) != other.diff(self)`.)
+    pub(crate) fn diff(&self, other: &Self) -> Vec<Path> {
+        let ours = &self.value;
+        let theirs = &other.value;
+        theirs
+            .clone()
+            .into_iter()
+            .filter(|p1| ours.iter().any(|p2| p1 == p2))
+            .collect()
+    }
+
+    /// Yields a new path aggregate that integrates the paths of the receiver
+    /// with those of `other`.
+    ///
+    /// Unlike diffing, the resulting path aggregate store unifies the paths
+    /// from both parties; The receiver and `other`.
+    pub(crate) fn merge(&self, other: &Self) -> Self {
+        let diff = self.diff(other);
+        diff.into_iter()
+            .fold(self.clone(), PathAggregateStore::push)
+    }
 }
 
 pub(crate) type AddressablePaths = IntoIter<Path>;
@@ -104,44 +146,6 @@ pub(crate) trait PathUtils: Clone {
             self.clone().path(),
             new_aggregate,
         )
-    }
-
-    /// Diffs the path aggregates of two interface implementors of the same
-    /// type.
-    ///
-    /// The resulting collection contains the paths in the aggregate of `other`
-    /// that are missing from the aggregate of the receiver.
-    fn diff_aggregates(self, other: Self) -> impl Iterator<Item = Path> {
-        other.clone().path_aggregate().into_iter().filter(move |p| {
-            self.clone()
-                .path_aggregate()
-                .into_iter()
-                .any(|ip| *p == ip)
-                .not()
-        })
-    }
-
-    /// Diffs the path aggregates of both `self` and `other`, and yields a
-    /// unified path aggregate integrating the paths from both.
-    ///
-    /// This uses the `diff_aggregates` trait method to compute the differences
-    /// between the receiver and `other`, and then yields the path aggregate
-    /// resulting from adding those missing paths to the the receiver's path
-    /// aggregate.
-    fn merge_aggregates(self, other: Self) -> PathAggregateStore {
-        let we_need = self.clone().diff_aggregates(other.clone());
-        let mut ours = self.clone().path_aggregate();
-        ours.extend(we_need);
-        ours
-    }
-
-    /// Checks whether two interface implementors contain some common path in
-    /// their path aggregate.
-    fn akin_aggregates(self, other: Self) -> bool {
-        self.clone()
-            .path_aggregate()
-            .into_iter()
-            .any(|p| other.clone().path_aggregate().into_iter().any(|p2| p == p2))
     }
 
     /// Provided some parsed type, this method will run the given closure on
