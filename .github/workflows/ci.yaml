@@ -199,6 +199,7 @@ jobs:
           - target: arm-unknown-linux-musleabihf
             env: { TEST_MUSL_V1_2: 1 }
             artifact-tag: new-musl
+          - target: armv7-unknown-linux-gnueabihf
           # FIXME(#4297): Disabled due to spurious failue
           # - target: i686-linux-android
           - target: i686-unknown-linux-musl
