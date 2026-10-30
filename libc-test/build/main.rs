@@ -3870,6 +3870,7 @@ fn test_linux(t: &Target) {
     let gnu = t.gnu();
     let musl = t.musl();
     let uclibc = t.uclibc();
+    let ohos = t.env == "ohos";
 
     match (l4re, gnu, musl, uclibc) {
         (false, true, false, false) => (),
@@ -3922,7 +3923,7 @@ fn test_linux(t: &Target) {
     }
 
     // Some platforms only exist with recent musl. Keep in sync with libc's build.rs.
-    if musl && (loongarch64 || hexagon || pauthtest/* || ohos */ || time64) {
+    if musl && (loongarch64 || hexagon || pauthtest || ohos || time64) {
         musl_v1_2 = true;
     }
 
@@ -3936,7 +3937,7 @@ fn test_linux(t: &Target) {
         if p32 {
             cfg.cfg("musl32_time64", None);
         }
-        if arm32 || ppc32 || x86_32 || mips32 {
+        if !ohos && (arm32 || ppc32 || x86_32 || mips32) {
             cfg.cfg("musl_redir_time64", None);
         }
     }
