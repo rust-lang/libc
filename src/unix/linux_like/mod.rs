@@ -240,10 +240,11 @@ s! {
         pub if_index: c_uint,
         pub if_name: *mut c_char,
     }
-
     pub struct icmp6_filter {
         icmp6_filt: [u32; 8],
     }
+
+
 }
 
 cfg_if! {

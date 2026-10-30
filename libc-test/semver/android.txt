@@ -4191,3 +4191,4 @@ winsize
 wmemchr
 write
 writev
+open_how
