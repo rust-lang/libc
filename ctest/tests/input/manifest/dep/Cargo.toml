@@ -1,0 +1,3 @@
+[package]
+name = "manifest-dep"
+edition = "2021"
