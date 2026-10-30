@@ -3986,6 +3986,7 @@ fn test_linux(t: &Target) {
         "link.h",
         (!l4re, "linux/sysctl.h"),
         "locale.h",
+        (gnu, "mcheck.h"),
         "malloc.h",
         "mntent.h",
         (!l4re, "mqueue.h"),
@@ -4830,6 +4831,7 @@ fn test_linux(t: &Target) {
     let c_enums = [
         "can_state",
         "fsconfig_command",
+        "mcheck_status",
         "membarrier_cmd",
         "pid_type",
         "proc_cn_event",
