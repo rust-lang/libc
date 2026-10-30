@@ -1094,6 +1094,9 @@ pub const TCP_KEEPINTVL: c_int = 0x12;
 pub const TCP_KEEPCNT: c_int = 0x13;
 pub const TCP_NODELAYACK: c_int = 0x14;
 
+// paths.h
+pub const _PATH_BSHELL: *const c_char = cstr!("/usr/bin/bsh");
+
 // pthread.h
 pub const PTHREAD_BARRIER_SERIAL_THREAD: c_int = 2;
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
