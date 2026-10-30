@@ -21,6 +21,12 @@ pub struct Person {
 }
 
 #[repr(C)]
+pub struct VarBuf {
+    pub len: u32,
+    pub data: [u8; 0],
+}
+
+#[repr(C)]
 pub union Word {
     pub word: u16,
     pub byte: [Byte; 2],
