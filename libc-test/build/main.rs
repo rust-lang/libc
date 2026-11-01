@@ -4032,6 +4032,8 @@ fn test_linux(t: &Target) {
         (!l4re, "sys/epoll.h"),
         (!l4re, "sys/eventfd.h"),
         "sys/file.h",
+        (!l4re, "linux/kd.h"),
+        (!l4re, "linux/vt.h"),
         (!l4re, "sys/fsuid.h"),
         (!l4re, "sys/klog.h"),
         (!l4re, "sys/inotify.h"),
