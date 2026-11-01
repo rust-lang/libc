@@ -3847,7 +3847,7 @@ fn test_linux(t: &Target) {
     let gnu = t.gnu();
     let musl = t.musl();
     let uclibc = t.uclibc();
-    let ohos = t.env == "ohos";
+    let ohos = t.ohos();
 
     match (l4re, gnu, musl, uclibc) {
         (false, true, false, false) => (),
