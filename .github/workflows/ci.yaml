@@ -52,7 +52,7 @@ jobs:
         with:
           persist-credentials: false
       - run: rustup update stable --no-self-update
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
@@ -86,7 +86,7 @@ jobs:
         run: ./ci/install-rust.sh
 
       - name: Install semver-checks
-        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
+        uses: taiki-e/install-action@1919c4a95903d2c33e4a221102edca87309fc14b # v2.89.0
         if: matrix.toolchain == 'stable'
         with:
           tool: cargo-semver-checks
@@ -95,7 +95,7 @@ jobs:
         if: matrix.toolchain == 'stable'
         run: ./ci/prep-semver-baseline.sh
 
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
 
@@ -151,7 +151,7 @@ jobs:
           persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: ${{ matrix.target }}
 
@@ -266,7 +266,7 @@ jobs:
           persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: ${{ matrix.target }}
 
@@ -279,7 +279,7 @@ jobs:
 
       - name: Install `cargo-apple-runner`
         if: matrix.cargo-apple-runner
-        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
+        uses: taiki-e/install-action@1919c4a95903d2c33e4a221102edca87309fc14b # v2.89.0
         with:
           tool: cargo-apple-runner
 
@@ -342,7 +342,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: Test on Solaris
-        uses: vmactions/solaris-vm@87d3c436511cef802cd1637f86f73b1a97715c8c # v1.4.1
+        uses: vmactions/solaris-vm@1c166978f5a2c1f87f1c9d4d8dd85ae3d1eff6f7 # v1.4.2
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
@@ -397,7 +397,7 @@ jobs:
           echo "MSRV=$msrv" >> "$GITHUB_ENV"
       - name: Install Rust
         run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
       - run: cargo build -p ctest
 
   zizmor:
@@ -413,7 +413,7 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.
