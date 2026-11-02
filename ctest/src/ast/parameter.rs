@@ -4,7 +4,6 @@ use crate::BoxStr;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Parameter {
     pub(crate) ident: BoxStr,
-    #[expect(unused)]
     pub(crate) ty: syn::Type,
 }
 

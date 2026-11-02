@@ -141,13 +141,8 @@ impl PathUtils for Module {
                 Static,
             }
         }
-        let new_aggregate = self.path_aggregate.clone().push(path.clone());
-        let diff = self.clone().diff_aggregates(self.clone().mk(
-            ast::path_to_string(self.path.clone()),
-            ast::ident_to_string(self.path.clone()),
-            self.path.clone(),
-            new_aggregate.clone(),
-        ));
+        let new_aggregate = self.path_aggregate.push(path.clone());
+        let diff = self.path_aggregate.diff(&new_aggregate);
         let new_module = diff.into_iter().fold(self.clone(), |m, p| {
             let new_items: FfiItems = self
                 .items
@@ -178,11 +173,14 @@ impl PathUtils for Module {
     // appended to the new path of that (potentially grand-) ancestor.
     fn rename(self, new_path: Path) -> Self {
         let old_path_len = self.path.segments.len();
-        self.clone().rename_with(|p| {
-            let segments_post_ancestor = p.segments.clone().into_iter().skip(old_path_len);
-            let mut new_path = new_path.clone();
-            new_path.segments.extend(segments_post_ancestor);
-            new_path.clone()
+        self.rename_with(|p| {
+            p.segments
+                .into_iter()
+                .skip(old_path_len)
+                .fold(new_path.clone(), |new_path, s| Path {
+                    segments: new_path.segments.clone().into_iter().chain([s]).collect(),
+                    ..new_path
+                })
         })
     }
 

@@ -16,16 +16,13 @@ use crate::{
 #[derive(Debug, Clone, PartialEq)]
 pub struct Fn {
     pub(crate) public: bool,
-    #[expect(unused)]
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
     pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) link_name: Option<BoxStr>,
-    #[expect(unused)]
     pub(crate) parameters: Vec<Parameter>,
-    #[expect(unused)]
     pub(crate) return_type: Option<syn::Type>,
 }
 

@@ -8,12 +8,11 @@ mod structure;
 mod type_alias;
 mod union;
 
-use std::fmt;
-use std::ops::{
-    self,
-    Not,
-};
 use std::vec::IntoIter;
+use std::{
+    fmt,
+    ops,
+};
 
 pub use constant::Const;
 pub use field::Field;
@@ -32,6 +31,12 @@ use crate::{
     MapInput,
 };
 
+/// Container for all paths by which a given item may be addressed throughout
+/// the crate.
+///
+/// This is used to store all paths by which an item may be referred to, after
+/// it has potentially been imported to modules other than the one it was
+/// declared in.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct PathAggregateStore {
     value: Vec<Path>,
@@ -42,14 +47,12 @@ impl PathAggregateStore {
         Self { value: Vec::new() }
     }
 
-    pub(crate) fn push(self, p: Path) -> Self {
-        let PathAggregateStore { mut value } = self;
+    /// Appends a new path to the path aggregate store.
+    pub(crate) fn push(&self, p: Path) -> Self {
+        let PathAggregateStore { mut value } = self.clone();
         value.push(p);
         Self { value }
     }
-
-    // [TODO]: change previous uses of the below methods through the generic
-    // renaming trait to use the inherent methods.
 
     /// Checks if any two path aggregates are known to correspond with those of
     /// the same item.
@@ -84,10 +87,10 @@ impl PathAggregateStore {
     ///
     /// Unlike diffing, the resulting path aggregate store unifies the paths
     /// from both parties; The receiver and `other`.
+    #[expect(unused)]
     pub(crate) fn merge(&self, other: &Self) -> Self {
         let diff = self.diff(other);
-        diff.into_iter()
-            .fold(self.clone(), PathAggregateStore::push)
+        diff.into_iter().fold(self.clone(), |agg, p| agg.push(p))
     }
 }
 

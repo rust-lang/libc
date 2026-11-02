@@ -394,7 +394,8 @@ impl FromIterator<GenericItem> for FfiItems {
             | (GenericItem::Module(_), GenericItem::Static(_)) => Ordering::Greater,
         });
         macro_rules! get_partitions {
-            ($([$field:ident, $ty:tt]),+ $(,)?) => {$(
+            ($([$field:ident, $ty:tt]),+ $(,)?) => {
+                $(
                 let start =
                     partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)).not());
                 let end = partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)));
@@ -404,8 +405,7 @@ impl FromIterator<GenericItem> for FfiItems {
                     partitioned_items
                         .get(start..end)
                         .map(|it| {
-                            it.clone()
-                                .into_iter()
+                            it.into_iter()
                                 .map(|it| match it {
                                     GenericItem::$ty(it) => it.clone(),
                                     _ => unreachable!(concat!(
@@ -424,7 +424,8 @@ impl FromIterator<GenericItem> for FfiItems {
                              indices into the collection.",
                         )
                 };
-            )+};
+                )+
+            };
         }
         get_partitions! {
             [aliases, Type],
@@ -644,7 +645,8 @@ fn resolve_pass(src: PassPair) -> PassPair {
         ..new_root_with_duplicates.clone()
     };
     let new_whole_crate = update_tree(
-        new_root.clone(),
+        new_root.path.clone(),
+        |_| GenericItem::Module(new_root.clone()),
         new_whole_crate_with_resolved_children.clone(),
     );
     println!(
@@ -1050,35 +1052,29 @@ fn update_tree(
         return new_root.into();
     }
     macro_rules! exe {
-        (@$found:tt $($field:tt: $ty:tt),+ $(,)?) => {
-            let mut $found = false;
+        ($($field:tt: $ty:tt),+ $(,)?) => {
             $(
-                let $field = if !$found {
-                    root
-                        .items
-                        .$field
-                        .clone()
-                        .into_iter()
-                        .filter(|$ty { path, .. }| *path == target)
-                        .map(|it| {
-                            let new = action(GenericItem::$ty(it.clone()));
-                            let GenericItem::$ty(it) = new.clone() else {
-                                ignored!();
-                            };
-                            it.clone()
-                        })
-                        .collect()
-                } else {
-                    root.items.$field.clone()
-                };
-                if $field.is_empty().not() {
-                    $found = true;
-                }
+            let $field: Vec<_> = root
+                .items
+                .$field
+                .clone()
+                .into_iter()
+                .map(|it| {
+                    if it.path == target {
+                        let new = action(GenericItem::$ty(it.clone()));
+                        let GenericItem::$ty(it) = new.clone() else {
+                            ignored!();
+                        };
+                        it
+                    } else {
+                        it
+                    }
+                })
+                .collect();
             )+
         };
     }
     exe! {
-        @found
         aliases: Type,
         structs: Struct,
         unions: Union,
@@ -1087,16 +1083,14 @@ fn update_tree(
         foreign_statics: Static,
         modules: Module,
     }
-    let modules = if !found {
-        root.items
-            .modules
-            .clone()
-            .into_iter()
-            .map(|m| update_tree(target.clone(), action.clone(), m.clone()))
-            .collect()
-    } else {
-        root.items.modules.clone()
-    };
+    // [NOTE]: this additionally processes modules if no matching item has been
+    // found in the current module, by recursing with the same function on each
+    // of the child modules.
+    let modules: Vec<_> = modules
+        .clone()
+        .into_iter()
+        .map(|m| update_tree(target.clone(), action.clone(), m.clone()))
+        .collect();
     Module {
         items: FfiItems {
             aliases: aliases.clone(),
@@ -1123,7 +1117,7 @@ fn update_tree(
 /// those through [`FfiItems::dedup`].
 fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
     let new_path = state.subtree.path.clone();
-    src.clone()
+    let processed_items: Vec<_> = src
         .into_iter()
         .filter_map(|r| {
             if let Resolution::Resolved(items) = r.clone() {
@@ -1184,16 +1178,16 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     foreign_statics,
                     modules,
                 ) else {
-                    return (FfiItems::default(), Module::default());
+                    return FfiItems::default();
                 };
+                // [NOTE]: the dummy module is only in charge of wrapping all
+                // items we want to rename with a path that makes up some
+                // initial portion of the path segments of all descendant items'
+                // path.
                 let dummy_module = Module {
                     path: Path {
                         leading_colon: None,
-                        segments: {
-                            let mut base = Punctuated::new();
-                            base.extend(source_module_path);
-                            base.clone()
-                        },
+                        segments: source_module_path,
                     },
                     items: FfiItems {
                         aliases: aliases.clone(),
@@ -1207,14 +1201,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     },
                     ..Default::default()
                 };
-                let new_whole_crate = todo!(
-                    "Use the whole crate module tree in the state to look up \
-                     all of the above items' path aggregates, and then, for \
-                     each item found with some path in their aggregate that is \
-                     equal to any path in the aggregate of the items about to \
-                     be merged, synchronize their path aggregates."
-                );
-                let new_module = dummy_module.clone().rename(new_path.clone());
+                let new_dummy_module = dummy_module.rename(new_path.clone());
                 fn remove_uses(m: Module) -> Module {
                     let new_modules: Vec<_> = m
                         .items
@@ -1226,125 +1213,126 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     Module {
                         items: FfiItems {
                             uses: vec![],
-                            modules: new_modules.clone(),
+                            modules: new_modules,
                             ..m.items.clone()
                         },
-                        ..m.clone()
+                        ..m
                     }
                 }
                 // [NOTE]: this removes all use declarations in all descendant
                 // modules of the subtrees to merge because otherwise merged
                 // modules can increase the number of use declarations in the
                 // crate's module tree, which is one cause of non-termination.
-                let new_modules_without_uses: Vec<_> = new_module
+                let new_modules_without_uses: Vec<_> = new_dummy_module
                     .items
                     .modules
                     .clone()
                     .into_iter()
                     .map(remove_uses)
                     .collect();
-                (
-                    FfiItems {
-                        modules: new_modules_without_uses.clone(),
-                        ..new_module.items.clone()
-                    },
-                    new_whole_crate.clone(),
-                )
-            },
-        )
-        .fold(
-            state.clone(),
-            |state,
-             (
                 FfiItems {
-                    aliases,
-                    structs,
-                    unions,
-                    constants,
-                    foreign_functions,
-                    foreign_statics,
-                    modules,
-                    ..
-                },
-                new_whole_crate,
-            )| {
-                let mut dst = state.subtree.clone();
-                dst.items.aliases.extend_from_slice(&aliases);
-                dst.items.structs.extend_from_slice(&structs);
-                dst.items.unions.extend_from_slice(&unions);
-                dst.items.constants.extend_from_slice(&constants);
-                dst.items
-                    .foreign_functions
-                    .extend_from_slice(&foreign_functions);
-                dst.items
-                    .foreign_statics
-                    .extend_from_slice(&foreign_statics);
-                dst.items.modules.extend_from_slice(&modules);
-                PassPair {
-                    subtree: dst.clone(),
-                    whole_crate: todo!(
-                        "Use the whole-crate state that is returned in the map \
-                         once that is implemented."
-                    ),
+                    modules: new_modules_without_uses,
+                    ..new_dummy_module.items
                 }
             },
         )
+        .collect();
+
+    processed_items.into_iter().fold(
+        state.clone(),
+        |PassPair {
+             subtree,
+             whole_crate,
+         },
+         it| {
+            // [TODO]: this is still wrong but it also seems to be headed in the
+            // right direction.
+            let new_whole_crate = sync_driver(it.clone(), whole_crate);
+            let Some(new_subtree) = get_module(subtree.path, new_whole_crate.clone()) else {
+                unreachable!(
+                    "The subtree is bound to be found in the whole-crate \
+                     module tree because it was sourced from it, and syncing \
+                     the path aggregates of items should not suddently remove \
+                     modules."
+                );
+            };
+            PassPair {
+                subtree: Module {
+                    items: new_subtree.items.items().chain(it.items()).collect(),
+                    ..new_subtree
+                },
+                whole_crate: new_whole_crate,
+            }
+        },
+    )
 }
 
-/// Provided an item container, it searches for all items of the same kind, and
-/// with a path aggregate that contains some matching path as the aggregate of
-/// `reference`, and ensures the returned items contain an updated path
-/// aggregate that integrates both `reference`'s and theirs.
-fn search_and_merge_aggregates(
-    root: FfiItems,
-    reference: GenericItem,
-    matches: Vec<GenericItem>,
-) -> Vec<GenericItem> {
-    let new_nested_matches = root.modules.clone().into_iter().flat_map(|it| {
-        search_and_merge_aggregates(it.items.clone(), reference.clone(), matches.clone())
-    });
-    let new_matches = root
+/// Provided an item container with the most up-to-date occurrences of some
+/// item(s,) this function will propagate the state of the path aggregate of
+/// each of those items throughout the entirety of the subtree rooted at the
+/// `whole_crate` module tree.
+fn sync_driver(items: FfiItems, tree: Module) -> Module {
+    items.items().fold(tree, |m, it| {
+        macro_rules! exe {
+            ($($ty:tt),+ $(,)?) => {
+                match it {$(
+                    GenericItem::$ty(it) => sync_aggregates(&it.path_aggregate, m),
+                )+}
+            };
+        }
+        exe! {
+            Type,
+            Struct,
+            Union,
+            Const,
+            Fn,
+            Static,
+            Module,
+        }
+    })
+}
+
+/// Provided a reference path aggregate corresponding with that of an item, this
+/// function traverses module `m` in search of all occurrences of such an item
+/// and "updates" such ocurrences to integrate the reference path aggregate
+/// store.
+fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
+    let akin = |agg: &PathAggregateStore| agg.akin(reference);
+    let new_m = if akin(&m.path_aggregate) {
+        // [NOTE]: this we diff instead of merging because merging will get us a
+        // set of path aggregates that contain both the ones already in m, as
+        // well as the ones that were part of reference but not part of m.
+        // Diffing gets us only the paths in reference that are not part of m's
+        // path aggregate.
+        let new_agg = m.path_aggregate.diff(reference);
+        new_agg.into_iter().fold(m, Module::add_path)
+    } else {
+        m
+    };
+    let new_items: FfiItems = new_m
+        .items
         .items()
-        .filter_map(|it| {
-            macro_rules! exe {
-                ($($ty:tt),+ $(,)?) => {{
-                    match (it.clone(), reference.clone()) {$(
-                        (GenericItem::$ty(iit), GenericItem::$ty(r)) => {
-                            r.clone().akin_aggregates(iit.clone()).then_some(it.clone())
-                        }
-                    )+
-                        _ => None,
-                    }
-                }};
-            }
-            exe! {
-                Type,
-                Struct,
-                Union,
-                Const,
-                Fn,
-                Static,
-                Module,
-            }
-        })
         .map(|it| {
             macro_rules! exe {
-                ($($ty:tt),+ $(,)?) => {{
-                    match (it.clone(), reference.clone()) {$(
-                        (GenericItem::$ty(iit), GenericItem::$ty(r)) => {
-                            let new_path_aggregate = iit.clone().merge_aggregates(r.clone());
-                            GenericItem::$ty($ty {
-                                path_aggregate: new_path_aggregate.clone(),
-                                ..iit.clone()
-                            })
-                        },
-                    )+
-                        _ => unreachable!(
-                            "The above filter_map got rid of all items that \
-                             were not of the same kind as reference."
-                        ),
+                ($($ty:tt),+ $(,)?) => {
+                    match it {
+                        $(
+                        GenericItem::$ty(it) => {
+                            if akin(&it.path_aggregate) {
+                                GenericItem::$ty($ty {
+                                    path_aggregate: reference.clone(),
+                                    ..it
+                                })
+                            } else {
+                                GenericItem::$ty(it)
+                            }
+                        }
+                        )+
+                        GenericItem::Module(it) => {
+                            GenericItem::Module(sync_aggregates(reference, it))
+                        }
                     }
-                }};
+                };
             }
             exe! {
                 Type,
@@ -1353,35 +1341,13 @@ fn search_and_merge_aggregates(
                 Const,
                 Fn,
                 Static,
-                Module,
             }
-        });
-    let mut matches = matches.clone();
-    matches.extend(new_nested_matches);
-    matches.extend(new_matches);
-    matches.clone()
-}
-
-fn sync_aggregates(src: FfiItems, whole_crate: Module) -> Module {
-    src.clone()
-        .items()
-        .fold(whole_crate.clone(), |whole_crate, it| {
-            let updated_item_occurrences = search_and_merge_aggregates(
-                FfiItems {
-                    modules: vec![whole_crate.clone()],
-                    ..Default::default()
-                },
-                it.clone(),
-                vec![],
-            );
-            todo!(
-                "Update the whole-crate module tree by integrating each of the \
-                 updated items in updated_item_occurrences. This is blocked on \
-                 getting the refactor of the module tree update function \
-                 finished."
-            );
-        });
-    todo!();
+        })
+        .collect();
+    Module {
+        items: new_items,
+        ..new_m
+    }
 }
 
 /// Appends a new module-local item to an absolute path that does _not_ start
@@ -1695,6 +1661,21 @@ impl<'ast> Visit<'ast> for FfiItems {
 
 #[test]
 fn tmp() {
+    /*
+     * time should exist with the following paths:
+     * [time, test1::time, test1::test2::time]
+     * Foo should exist with the following paths:
+     * [
+     *   Foo,
+     *   test2::test3::Foo,
+     *   test2::Foo,
+     *   test3::Foo,
+     *   test1::Foo,
+     *   test1::test3::Foo,
+     *   test1::test2::Foo,
+     *   test1::test2::test3::Foo,
+     * ]
+     */
     let source = r#"
 use test2::test3;
 
@@ -1724,11 +1705,27 @@ mod test1 {
     }
 }
     "#;
+    fn remove_uses(it: FfiItems) -> FfiItems {
+        let modules: Vec<_> = it
+            .modules
+            .clone()
+            .into_iter()
+            .map(|m| {
+                let items = remove_uses(m.items.clone());
+                Module { items, ..m.clone() }
+            })
+            .collect();
+        FfiItems {
+            modules,
+            uses: vec![],
+            ..it.clone()
+        }
+    }
     let file = syn::parse_file(source).unwrap();
     let items = FfiItems::default();
     let mut items = items.clone();
     items.visit_file(&file);
-    let items = items.clone();
+    let items = remove_uses(items.clone());
     println!("{:#?}", items);
 }
 

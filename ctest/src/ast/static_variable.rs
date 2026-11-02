@@ -19,7 +19,6 @@ use crate::{
 #[derive(Debug, Clone, PartialEq)]
 pub struct Static {
     pub(crate) public: bool,
-    #[expect(unused)]
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
