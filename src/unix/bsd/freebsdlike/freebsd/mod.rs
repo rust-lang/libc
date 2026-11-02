@@ -3457,8 +3457,8 @@ pub const KVME_TYPE_PHYS: c_int = 5;
 pub const KVME_TYPE_DEAD: c_int = 6;
 pub const KVME_TYPE_SG: c_int = 7;
 pub const KVME_TYPE_MGTDEVICE: c_int = 8;
-// Present in `sys/user.h` but is undefined for whatever reason...
-// pub const KVME_TYPE_GUARD: c_int = 9;
+
+pub const KVME_TYPE_GUARD: c_int = 9;
 pub const KVME_TYPE_UNKNOWN: c_int = 255;
 pub const KVME_PROT_READ: c_int = 0x00000001;
 pub const KVME_PROT_WRITE: c_int = 0x00000002;
