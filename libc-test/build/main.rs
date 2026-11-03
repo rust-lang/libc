@@ -401,6 +401,7 @@ fn test_openbsd(t: &Target) {
     cfg.flag("-Wno-deprecated-declarations");
 
     let x86_64 = t.x86_64();
+    let openbsd = VERSIONS.openbsd.unwrap();
 
     headers!(
         cfg,
@@ -490,6 +491,7 @@ fn test_openbsd(t: &Target) {
         "sys/param.h",
         "sys/auxv.h",
         "paths.h",
+        "uvm/uvmexp.h",
     );
 
     cfg.rename_type(|ty| match ty {
@@ -537,6 +539,15 @@ fn test_openbsd(t: &Target) {
 
             // Removed in OpenBSD 7.8
             "CTL_FS" | "SO_NETPROC" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |func| {
+        match func.ident() {
+            // Added in OpenBSD 8.0
+            "getexecpath" => openbsd < (8, 0),
 
             _ => false,
         }
@@ -5677,6 +5688,7 @@ fn test_aix(t: &Target) {
         "netdb.h",
         "netinet/tcp.h",
         "netinet/sctp.h",
+        "paths.h",
         "pthread.h",
         "pwd.h",
         "rpcsvc/mount.h",
