@@ -438,4 +438,4 @@ jobs:
     steps:
       # Manually check the status of all dependencies. `if: failure()` does not work.
       - name: check if any dependency failed
-        run: jq --exit-status 'all(.result == "success")' <<< "$NEEDS"
+        run: jq --exit-status 'all(.[]; .result == "success")' <<< "$NEEDS"
