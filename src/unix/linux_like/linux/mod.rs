@@ -3351,6 +3351,17 @@ pub const EPIOCGPARAMS: Ioctl = _IOR::<epoll_params>(EPOLL_IOC_TYPE, 0x02);
 pub const SI_DETHREAD: c_int = -7;
 pub const TRAP_PERF: c_int = 6;
 
+// linux/kcmp.h
+pub const KCMP_FILE: c_int = 0;
+pub const KCMP_VM: c_int = 1;
+pub const KCMP_FILES: c_int = 2;
+pub const KCMP_FS: c_int = 3;
+pub const KCMP_SIGHAND: c_int = 4;
+pub const KCMP_IO: c_int = 5;
+pub const KCMP_SYSVSEM: c_int = 6;
+pub const KCMP_EPOLL_TFD: c_int = 7;
+pub const KCMP_TYPES: c_int = 8;
+
 f! {
     pub unsafe fn SO_EE_OFFENDER(ee: *const crate::sock_extended_err) -> *mut crate::sockaddr {
         ee.offset(1) as *mut crate::sockaddr
