@@ -45,7 +45,6 @@ pub const _PC_2_SYMLINKS: c_int = 20;
 // sysconf constants (from hexagon/include/sys/unistd.h)
 pub const _SC_NPROCESSORS_ONLN: c_int = 1;
 
-
 extern "C" {
     // File operations
     pub fn access(pathname: *const c_char, mode: c_int) -> c_int;
