@@ -2197,6 +2197,11 @@ pub const P_FORCED: c_int = 0x10000000;
 pub const PI_TYPELEN: c_int = 16;
 pub const PI_FPUTYPE: c_int = 32;
 
+pub const _CS_PATH: c_int = 65;
+
+// paths.h
+pub const _PATH_BSHELL: *const c_char = cstr!("/usr/bin/sh");
+
 // sys/auxv.h
 pub const AT_SUN_HWCAP: c_uint = 2009;
 
