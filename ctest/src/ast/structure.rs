@@ -39,12 +39,12 @@ impl Struct {
 }
 
 impl PathUtils for Struct {
-    fn path_aggregate(self) -> PathAggregateStore {
-        self.path_aggregate.clone()
+    fn path_aggregate(&self) -> &PathAggregateStore {
+        &self.path_aggregate
     }
 
-    fn path(self) -> Path {
-        self.path.clone()
+    fn path(&self) -> &Path {
+        &self.path
     }
 
     fn mk(
@@ -59,7 +59,7 @@ impl PathUtils for Struct {
             cached_ident,
             path,
             path_aggregate: addressable_paths,
-            ..self.clone()
+            ..self
         }
     }
 }
@@ -71,11 +71,11 @@ impl Default for Struct {
             segments: Punctuated::new(),
         };
         Self {
-            public: bool::default(),
-            cached_path: String::new().into_boxed_str(),
-            cached_ident: String::new().into_boxed_str(),
+            public: Default::default(),
+            cached_path: Default::default(),
+            cached_ident: Default::default(),
             path: dpath.clone(),
-            path_aggregate: PathAggregateStore::new().push(dpath.clone()),
+            path_aggregate: PathAggregateStore::from_iter([dpath]),
             fields: vec![],
         }
     }

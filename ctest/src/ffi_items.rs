@@ -150,11 +150,14 @@ impl FfiItems {
             content: Some((Brace::default(), mod_items.clone())),
             semi: None,
         };
+
         self.visit_item_mod(&file_mod);
+
         let root_module = Module {
             items: self.clone(),
             ..Default::default()
         };
+
         *self = resolve_all(root_module).items;
     }
 
@@ -183,6 +186,7 @@ impl FfiItems {
                     .map(GenericItem::Static),
             )
             .chain(self.modules.clone().into_iter().map(GenericItem::Module));
+
         Box::new(base)
     }
 
@@ -218,6 +222,7 @@ impl FfiItems {
     /// possibly some more items.
     pub(super) fn custom_cmp(&self, other: &Self) -> Ordering {
         let (ours, theirs) = (self.modules.len(), other.modules.len());
+
         // [NOTE]: the goal here is to have modules with "larger" subtrees
         // appear first in the item container, so declaring them to be "smaller"
         // is required for slice::sort_unstable_by to put them first in the
@@ -250,10 +255,11 @@ impl FfiItems {
             macro_rules! cmp {
                 ($($var:tt),+ $(,)?) => {
                     match it {$(
-                        GenericItem::$var(it) => it.ident() == ident.to_string(),
+                        GenericItem::$var(it) => ident == it.ident(),
                     )+}
                 };
             }
+
             cmp! {
                 Type,
                 Struct,
@@ -272,26 +278,32 @@ impl FfiItems {
     /// to have the same path will not get deduplicated. A consequence of
     /// calling this method is that the items are also sorted by their paths.
     fn dedup(self) -> FfiItems {
-        macro_rules! key_fn {
-            () => {
-                |it| it.cached_path.clone()
-            };
-        }
         macro_rules! dedup {
             ($($it:tt),+ $(,)?) => {{
+                macro_rules! key_fn {
+                    () => {
+                        |it| it.cached_path.clone()
+                    };
+                }
+
                 let items = self.clone();
+
                 $(
                     let mut $it = self.$it;
+
                     $it.sort_unstable_by_key(key_fn!());
                     $it.dedup_by_key(key_fn!());
+
                     let items = FfiItems {
                         $it: $it,
                         ..items
                     };
                 )+
+
                 items
             }};
         }
+
         let new_items = dedup!(
             aliases,
             structs,
@@ -300,9 +312,11 @@ impl FfiItems {
             foreign_functions,
             foreign_statics,
         );
+
         let mut new_modules = self.modules;
         new_modules.sort_unstable_by(Module::custom_cmp);
         new_modules.dedup_by(|Module { path: lhs, .. }, Module { path: rhs, .. }| *lhs == *rhs);
+
         FfiItems {
             modules: new_modules,
             ..new_items
@@ -332,8 +346,10 @@ impl Default for FfiItems {
 impl FromIterator<GenericItem> for FfiItems {
     fn from_iter<I: IntoIterator<Item = GenericItem>>(iter: I) -> FfiItems {
         let mut partitioned_items: Vec<_> = iter.into_iter().collect();
+
         // [NOTE]: this is expected to sort all items by their kind, such that
         // we end up with the following ordering:
+        //
         // 1. Type aliases.
         // 2. Stucts.
         // 3. Unions.
@@ -341,6 +357,7 @@ impl FromIterator<GenericItem> for FfiItems {
         // 5. Foreign functions.
         // 6. Foreign statics.
         // 7. Modules.
+        //
         // This is then used to partition over the resulting collection and get
         // "buckets" of GenericItem that can be mapped to a concrete type
         // through partial mapping.
@@ -395,6 +412,7 @@ impl FromIterator<GenericItem> for FfiItems {
             | (GenericItem::Module(_), GenericItem::Fn(_))
             | (GenericItem::Module(_), GenericItem::Static(_)) => Ordering::Greater,
         });
+
         macro_rules! get_partitions {
             ($([$field:ident, $ty:tt]),+ $(,)?) => {$(
                 let start =
@@ -427,6 +445,7 @@ impl FromIterator<GenericItem> for FfiItems {
                 };
             )+};
         }
+
         get_partitions! {
             [aliases, Type],
             [structs, Struct],
@@ -436,6 +455,7 @@ impl FromIterator<GenericItem> for FfiItems {
             [foreign_statics, Static],
             [modules, Module],
         }
+
         FfiItems {
             aliases,
             structs,
@@ -570,6 +590,7 @@ fn resolve_all(root: Module) -> Module {
                 subtree: root.clone(),
                 whole_crate: root.clone(),
             });
+
             match new_root == root {
                 true => ControlFlow::Break(new_root),
                 false => ControlFlow::Continue(new_root),
@@ -614,11 +635,14 @@ fn resolve_pass(src: PassPair) -> PassPair {
                 subtree: m,
                 whole_crate: whole_crate,
             });
+
             let mut new_children = children;
             new_children.push(pair.subtree.clone());
+
             (pair, new_children)
         },
     );
+
     let root_with_resolved_children = Module {
         items: FfiItems {
             modules: resolved_children,
@@ -626,10 +650,12 @@ fn resolve_pass(src: PassPair) -> PassPair {
         },
         ..src.subtree
     };
+
     let resolved_uses = resolve_one(PassPair {
         subtree: root_with_resolved_children.clone(),
         whole_crate: whole_crate_with_resolved_children.clone(),
     });
+
     let PassPair {
         subtree: new_root_with_duplicates,
         whole_crate: new_whole_crate_with_resolved_children,
@@ -640,6 +666,7 @@ fn resolve_pass(src: PassPair) -> PassPair {
         },
         resolved_uses,
     );
+
     let new_root = Module {
         items: new_root_with_duplicates.items.dedup(),
         ..new_root_with_duplicates
@@ -649,6 +676,7 @@ fn resolve_pass(src: PassPair) -> PassPair {
         |_| GenericItem::Module(new_root.clone()),
         new_whole_crate_with_resolved_children,
     );
+
     println!(
         "finished module pass on module {}",
         if &*new_root.cached_path == "" {
@@ -657,6 +685,7 @@ fn resolve_pass(src: PassPair) -> PassPair {
             &*new_root.cached_path
         },
     );
+
     PassPair {
         subtree: new_root,
         whole_crate: new_whole_crate,
@@ -680,6 +709,7 @@ fn resolve_one(state: PassPair) -> Vec<Resolution> {
             &*state.subtree.cached_path
         },
     );
+
     state
         .subtree
         .items
@@ -719,59 +749,19 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     macro_rules! single_item {
         ($field:ident: $it:expr) => {
             return Resolution::Resolved(FfiItems {
-                $field: Vec::from([$it]),
+                $field: vec![$it],
                 ..Default::default()
             })
         };
     }
-    // [NOTE]: this ensures any returned item has the visibility of the use
-    // declaration, and doesn't preserve its own visibility.
-    macro_rules! change_vis {
-        ($it:ident : $ty:tt) => {
-            $ty {
-                public: r#use.is_public,
-                ..$it
-            }
-        };
-    }
-    let change_vis_in_mod = |m: Module| {
-        macro_rules! c {
-            ($($field:ident: $ty:tt),+ $(,)?) => {$(
-                let $field: Vec<_> = m.items.$field
-                    .into_iter()
-                    .map(|it| change_vis!(it: $ty))
-                    .collect();
-            )+};
-        }
-        c! {
-            aliases: Type,
-            constants: Const,
-            structs: Struct,
-            unions: Union,
-            foreign_functions: Fn,
-            foreign_statics: Static,
-            modules: Module,
-        }
-        Module {
-            items: FfiItems {
-                aliases,
-                constants,
-                structs,
-                unions,
-                foreign_functions,
-                foreign_statics,
-                modules,
-                ..m.items
-            },
-            ..m
-        }
-    };
-    match r#use.tree.clone() {
+
+    match r#use.tree {
         RefinedUseTree::Name(UseName { ident }) => {
             println!(
                 "entered name resolution case with {} in module {}",
-                ident, state.subtree.cached_path
+                ident, state.subtree.cached_path,
             );
+
             // [NOTE]: self may not appear as the name basecase of a well-formed
             // path. And yet it is still considered here. That is because of
             // path normalization. self may appear as part of a tail group in a
@@ -780,10 +770,10 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             // normalize_path above. That happens at parse-time. That is why
             // this function must consider the case of self as a name basecase.
             // [NOTE]: crate does not appear as the tail end of a path in a use
-            // declaration under no circumstances, so that case is not
-            // considered.
+            // declaration (that is not a rename) under no circumstances, so
+            // that case is not considered here.
             if is_self(&ident) {
-                single_item!(modules: change_vis_in_mod(state.subtree));
+                single_item!(modules: state.subtree);
             } else if is_super(&ident) {
                 let parent_path = get_parent_path(&state.subtree);
                 let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
@@ -799,18 +789,18 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                          considered malformed input."
                     );
                 };
-                single_item!(modules: change_vis_in_mod(parent.clone()));
+
+                single_item!(modules: parent.clone());
             }
+
             match state.subtree.items.search(&ident) {
-                Some(GenericItem::Type(t)) => single_item!(aliases: change_vis!(t: Type)),
-                Some(GenericItem::Struct(s)) => single_item!(structs: change_vis!(s: Struct)),
-                Some(GenericItem::Union(u)) => single_item!(unions: change_vis!(u: Union)),
-                Some(GenericItem::Const(c)) => single_item!(constants: change_vis!(c: Const)),
-                Some(GenericItem::Fn(f)) => single_item!(foreign_functions: change_vis!(f: Fn)),
-                Some(GenericItem::Static(s)) => {
-                    single_item!(foreign_statics: change_vis!(s: Static))
-                }
-                Some(GenericItem::Module(m)) => single_item!(modules: change_vis!(m: Module)),
+                Some(GenericItem::Type(t)) => single_item!(aliases: t),
+                Some(GenericItem::Struct(s)) => single_item!(structs: s),
+                Some(GenericItem::Union(u)) => single_item!(unions: u),
+                Some(GenericItem::Const(c)) => single_item!(constants: c),
+                Some(GenericItem::Fn(f)) => single_item!(foreign_functions: f),
+                Some(GenericItem::Static(s)) => single_item!(foreign_statics: s),
+                Some(GenericItem::Module(m)) => single_item!(modules: m),
                 None => Resolution::Unresolved,
             }
         }
@@ -823,7 +813,8 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     &*state.subtree.cached_path
                 },
             );
-            Resolution::Resolved(change_vis_in_mod(state.subtree).items)
+
+            Resolution::Resolved(state.subtree.items)
         }
         RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
             println!(
@@ -833,84 +824,68 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     as_token: syn::parse_quote! {as},
                     rename: rename.clone(),
                 },
-                state.subtree.cached_path
+                state.subtree.cached_path,
             );
+
             macro_rules! new_path {
                 ($it:expr) => {{
+                    let new_ident = $it.path.segments.iter().rev().take(1).map(|_| PathSegment {
+                        ident: rename.clone(),
+                        arguments: PathArguments::None,
+                    });
                     let new_segments = $it
                         .path
                         .segments
                         .clone()
                         .into_iter()
-                        .skip($it.path.segments.len().saturating_sub(1))
-                        .map(|_| PathSegment {
-                            ident: rename.clone(),
-                            arguments: PathArguments::None,
-                        })
+                        .chain(new_ident)
                         .collect();
+
                     Path {
                         segments: new_segments,
                         ..$it.path
                     }
                 }};
             }
+
+            // [NOTE]: it may seem odd that borrowck doesn't mention the fact
+            // the linear resource in the item at $it hasn't already been used
+            // by the time the linear PathUtils::rename trait method is used.
+            // Notice how new_path! does not make use of any linear resources in
+            // $it; The remaining fields filled in by $it in the syn::Path it
+            // yields have an unrestricted multiplicity (i.e. they're Copy.)
             macro_rules! rename_single_item {
-                ($field:ident , $ty:tt : $it:expr) => {{
+                ($field:ident , $it:expr , $ty:tt) => {{
                     let new_path = new_path!($it);
-                    let new_item = $it.rename(new_path);
-                    single_item!($field: new_item);
+
+                    single_item!($field: $it.rename(new_path));
                 }};
             }
-            let renamer = |m: Module| {
-                let new_path = new_path!(m);
-                // [NOTE]: it may seem better to use the segment length of the
-                // old path of the module, much like we do in function
-                // RenameUtils::rename, but that is not necessary here. We know
-                // the segment length will be the same before and after the
-                // rename because use declarations can only rename the module's
-                // identifier. The module identifier only accounts for one
-                // segment of the item's path.
-                let new_path_len = new_path.segments.len();
-                m.clone().rename_with(|p| {
-                    let segments_we_keep = p.segments.clone().into_iter().skip(new_path_len);
-                    let new_segments = new_path
-                        .segments
-                        .clone()
-                        .into_iter()
-                        .chain(segments_we_keep)
-                        .collect();
-                    Path {
-                        leading_colon: p.leading_colon,
-                        segments: new_segments,
-                    }
-                })
-            };
+
             if is_self(&ident) {
-                single_item!(modules: change_vis_in_mod(renamer(state.subtree)));
+                rename_single_item!(modules, state.subtree, Module);
             } else if is_super(&ident) {
                 let parent_path = get_parent_path(&state.subtree);
-                let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
+                let Some(parent) = get_module(&parent_path, &state.whole_crate).cloned() else {
                     unreachable!(
                         "See the note on super in the name basecase. The same \
                          applies here."
                     );
                 };
-                single_item!(modules: change_vis_in_mod(renamer(parent.clone())));
+
+                rename_single_item!(modules, parent, Module);
             } else if is_crate(&ident) {
-                single_item!(modules: change_vis_in_mod(renamer(state.whole_crate)));
+                rename_single_item!(modules, state.whole_crate, Module);
             }
+
             match state.subtree.items.search(&ident) {
-                Some(GenericItem::Module(m)) => {
-                    single_item!(modules: change_vis_in_mod(renamer(m)))
-                }
-                Some(GenericItem::Type(t)) => rename_single_item!(aliases, Type: t),
-                Some(GenericItem::Struct(s)) => rename_single_item!(structs, Struct: s),
-                Some(GenericItem::Union(u)) => rename_single_item!(unions, Union: u),
-                Some(GenericItem::Const(c)) => rename_single_item!(constants, Const: c),
-                Some(GenericItem::Fn(f)) => rename_single_item!(foreign_functions, Fn: f),
-                Some(GenericItem::Static(s)) => {
-                    rename_single_item!(foreign_statics, Static: s)
-                }
+                Some(GenericItem::Type(t)) => rename_single_item!(aliases, t, Type),
+                Some(GenericItem::Struct(s)) => rename_single_item!(structs, s, Struct),
+                Some(GenericItem::Union(u)) => rename_single_item!(unions, u, Union),
+                Some(GenericItem::Const(c)) => rename_single_item!(constants, c, Const),
+                Some(GenericItem::Fn(f)) => rename_single_item!(foreign_functions, f, Fn),
+                Some(GenericItem::Static(s)) => rename_single_item!(foreign_statics, s, Static),
+                Some(GenericItem::Module(m)) => rename_single_item!(modules, m, Module),
                 None => Resolution::Unresolved,
             }
         }
@@ -918,8 +893,9 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
         RefinedUseTree::Path(RefinedUsePath { ident, tree }) => {
             println!(
                 "entered path resolution case with {} in module {}",
-                ident, state.subtree.cached_path
+                ident, state.subtree.cached_path,
             );
+
             let new_state = if is_self(&ident) {
                 PassPair {
                     subtree: state.subtree,
@@ -933,6 +909,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                          applies here."
                     );
                 };
+
                 PassPair {
                     subtree: parent.clone(),
                     whole_crate: state.whole_crate,
@@ -951,6 +928,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     Some(_) | None => return Resolution::Unresolved,
                 }
             };
+
             resolve_use(
                 RefinedUse {
                     tree: *tree,
@@ -968,6 +946,7 @@ fn get_module<'m>(target: &Path, root: &'m Module) -> Option<&'m Module> {
     if root.path == *target {
         return root.into();
     }
+
     root.items
         .modules
         .iter()
@@ -994,6 +973,7 @@ fn get_parent_path(root: &Module) -> Path {
     // subtraction. It is best if this function is protected against what would
     // currently be misuse.
     let segments_before_ident = root.path.segments.len().saturating_sub(1);
+
     Path {
         leading_colon: None,
         segments: root
@@ -1024,11 +1004,14 @@ fn is_super(ident: &Ident) -> bool {
 /// Attempts to find some item in module tree `root` with path `target`, then
 /// runs the passed closure on the item, and replaces it with the result.
 ///
-/// It is key that the generic wrapper around the item returned is the same as
-/// the generic item that was passed in.
+/// # Panics
+///
+/// The function will panic if the specific injection of the returned
+/// `GenericItem` does not match that of the input `GenericItem` to closure
+/// `action`.
 fn update_tree(
     target: &Path,
-    action: impl ops::Fn(GenericItem) -> GenericItem + Clone,
+    action: impl ops::Fn(GenericItem) -> GenericItem,
     root: Module,
 ) -> Module {
     macro_rules! ignored {
@@ -1039,24 +1022,24 @@ fn update_tree(
             );
         };
     }
+
     if *target == root.path {
         let GenericItem::Module(new_root) = action(GenericItem::Module(root)) else {
             ignored!();
         };
+
         return new_root;
     }
+
     macro_rules! exe {
-        ($($field:tt: $ty:tt),+ $(,)?) => {
-            $(
+        ($($field:tt: $ty:tt),+ $(,)?) => {$(
             let $field: Vec<_> = root
                 .items
                 .$field
-                .clone()
                 .into_iter()
                 .map(|it| {
                     if it.path == *target {
-                        let new = action(GenericItem::$ty(it));
-                        let GenericItem::$ty(it) = new else {
+                        let GenericItem::$ty(it) = action(GenericItem::$ty(it)) else {
                             ignored!();
                         };
                         it
@@ -1065,9 +1048,9 @@ fn update_tree(
                     }
                 })
                 .collect();
-            )+
-        };
+        )+};
     }
+
     exe! {
         aliases: Type,
         structs: Struct,
@@ -1077,13 +1060,12 @@ fn update_tree(
         foreign_statics: Static,
         modules: Module,
     }
-    // [NOTE]: this additionally processes modules if no matching item has been
-    // found in the current module, by recursing with the same function on each
-    // of the child modules.
-    let modules: Vec<_> = modules
+
+    let modules = modules
         .into_iter()
-        .map(|m| update_tree(target, action.clone(), m))
+        .map(|m| update_tree(target, &action, m))
         .collect();
+
     Module {
         items: FfiItems {
             aliases,
@@ -1093,7 +1075,7 @@ fn update_tree(
             foreign_functions,
             foreign_statics,
             modules,
-            ..root.items.clone()
+            ..root.items
         },
         ..root
     }
@@ -1282,22 +1264,29 @@ fn sync_driver(items: &FfiItems, tree: Module) -> Module {
 
 /// Provided a reference path aggregate corresponding with that of an item, this
 /// function traverses module `m` in search of all occurrences of such an item
-/// and "updates" such ocurrences to integrate the reference path aggregate
-/// store.
+/// and "updates" such ocurrences to integrate the paths from `reference`'s path
+/// aggregate store that are not part of any one of those item occurrences.
+///
+/// Note this affects only one concrete item's occurrences throughout the crate.
 fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
     let akin = |agg: &PathAggregateStore| agg.akin(reference);
+
     let new_m = if akin(&m.path_aggregate) {
         // [NOTE]: this we diff instead of merging because merging will get us a
         // set of path aggregates that contain both the ones already in m, as
         // well as the ones that were part of reference but not part of m.
         // Diffing gets us only the paths in reference that are not part of m's
-        // path aggregate.
-        let new_agg = m.path_aggregate.diff(reference);
-        new_agg.into_iter().fold(m, Module::add_path)
+        // path aggregate. We don't just merge the path aggregates and create
+        // a new m with the result because adding a path aggregate to a module
+        // has an effect on the subtree of items rooted at the module in
+        // question (see the Module::add_path trait method override.)
+        let diff = m.path_aggregate.diff(reference);
+        diff.into_iter().fold(m, Module::add_path)
     } else {
         m
     };
-    let new_items: FfiItems = new_m
+
+    let new_items = new_m
         .items
         .items()
         .map(|it| {
@@ -1332,6 +1321,7 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
             }
         })
         .collect();
+
     Module {
         items: new_items,
         ..new_m
@@ -1406,7 +1396,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
     let public = is_visible(&i.vis);
     let abi = abi.clone();
     let path = append_path(table.current_module.clone(), i.sig.ident.clone());
-    let cached_path = ast::path_to_string(path.clone());
+    let cached_path = ast::path_to_string(&path);
     let cached_ident = i.sig.ident.to_string().into_boxed_str();
     let parameters = i
         .sig
@@ -1456,7 +1446,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
     let public = is_visible(&i.vis);
     let abi = abi.clone();
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = ast::path_to_string(path.clone());
+    let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
     let link_name = extract_single_link_name(&i.attrs);
@@ -1476,7 +1466,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
 fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = ast::path_to_string(path.clone());
+    let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
 
@@ -1493,7 +1483,7 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
 fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = ast::path_to_string(path.clone());
+    let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = match &i.fields {
         syn::Fields::Named(fields) => collect_fields(&fields.named),
@@ -1514,7 +1504,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
 fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = ast::path_to_string(path.clone());
+    let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = collect_fields(&i.fields.named);
 
@@ -1531,7 +1521,7 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
 fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
     let public = is_visible(&i.vis);
     let path = append_path(table.current_module.clone(), i.ident.clone());
-    let cached_path = ast::path_to_string(path.clone());
+    let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
 
@@ -1574,7 +1564,7 @@ impl<'ast> Visit<'ast> for FfiItems {
             ident,
             content: Some((_, mod_items)),
             ..
-        } = i.clone()
+        } = i
         else {
             unreachable!(
                 "This runs post cargo-expand, which inlines all \
@@ -1592,9 +1582,8 @@ impl<'ast> Visit<'ast> for FfiItems {
             }
         };
 
-        let uses: Vec<_> = mod_items
+        let uses = mod_items
             .iter()
-            .cloned()
             .filter_map(|it| match it {
                 Item::Type(t) => {
                     visit_item_type(&mut running_items, &t);
@@ -1616,7 +1605,7 @@ impl<'ast> Visit<'ast> for FfiItems {
                     visit_item_foreign_mod(&mut running_items, &m);
                     None
                 }
-                Item::Use(ItemUse { vis, tree, .. }) => normalize_path(tree)
+                Item::Use(ItemUse { vis, tree, .. }) => normalize_path(tree.clone())
                     .into_iter()
                     .map(move |tree| RefinedUse {
                         is_public: matches!(vis, Visibility::Public(_)),
@@ -1629,19 +1618,19 @@ impl<'ast> Visit<'ast> for FfiItems {
             .collect();
 
         visit::visit_item_mod(&mut running_items, i);
-        running_items.uses = uses.clone();
+        running_items.uses = uses;
 
         if is_crate_root {
-            *self = running_items.clone();
+            *self = running_items;
         } else {
             let path = running_items.current_module.clone();
             self.modules.push(Module {
                 public: matches!(vis, Visibility::Public(_)),
-                cached_path: ast::path_to_string(running_items.current_module.clone()),
+                cached_path: ast::path_to_string(&running_items.current_module),
                 cached_ident: ident.to_string().into_boxed_str(),
                 path: path.clone(),
-                path_aggregate: PathAggregateStore::new().push(path.clone()),
-                items: running_items.clone(),
+                path_aggregate: PathAggregateStore::from_iter([path]),
+                items: running_items,
             });
         }
     }
@@ -1650,18 +1639,18 @@ impl<'ast> Visit<'ast> for FfiItems {
 #[test]
 fn tmp() {
     /*
-     * time should exist with the following paths:
-     * [time, test1::time, test1::test2::time]
-     * Foo should exist with the following paths:
+     * time should end up with the following paths:
+     * [time, test1::time, test1::test2::time, test2::time]
+     * Foo should end up with the following paths:
      * [
      *   Foo,
-     *   test2::test3::Foo,
-     *   test2::Foo,
-     *   test3::Foo,
      *   test1::Foo,
      *   test1::test3::Foo,
      *   test1::test2::Foo,
      *   test1::test2::test3::Foo,
+     *   test2::Foo,
+     *   test2::test3::Foo,
+     *   test3::Foo,
      * ]
      */
     let source = r#"

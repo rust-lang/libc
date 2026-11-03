@@ -36,12 +36,12 @@ impl Type {
 }
 
 impl PathUtils for Type {
-    fn path_aggregate(self) -> PathAggregateStore {
-        self.path_aggregate.clone()
+    fn path_aggregate(&self) -> &PathAggregateStore {
+        &self.path_aggregate
     }
 
-    fn path(self) -> Path {
-        self.path.clone()
+    fn path(&self) -> &Path {
+        &self.path
     }
 
     fn mk(
@@ -56,7 +56,7 @@ impl PathUtils for Type {
             cached_ident,
             path,
             path_aggregate: addressable_paths,
-            ..self.clone()
+            ..self
         }
     }
 }

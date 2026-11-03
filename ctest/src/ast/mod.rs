@@ -129,6 +129,20 @@ impl Default for PathAggregateStore {
     }
 }
 
+impl From<Vec<Path>> for PathAggregateStore {
+    fn from(value: Vec<Path>) -> Self {
+        Self { value }
+    }
+}
+
+impl FromIterator<Path> for PathAggregateStore {
+    fn from_iter<I: IntoIterator<Item = Path>>(iter: I) -> Self {
+        Self {
+            value: iter.into_iter().collect(),
+        }
+    }
+}
+
 /// Utility interface for keeping a single renaming function for all parsed
 /// items.
 ///

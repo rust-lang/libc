@@ -170,14 +170,15 @@ impl PathUtils for Module {
     // means all segments will be skipped and nothing will be appended to the
     // new path. In all other cases of items within its subtree, they will have
     // the previous identifier of the ancestor in which this rename request was
-    // originally called trimmed, and whatever segments are left will be
+    // originally called, trimmed, and whatever segments are left will be
     // appended to the new path of that (potentially grand-) ancestor.
     fn rename(self, new_path: Path) -> Self {
         let old_path_len = self.path.segments.len();
         self.rename_with(|p| {
             p.segments
-                .into_iter()
+                .iter()
                 .skip(old_path_len)
+                .cloned()
                 .fold(new_path.clone(), |new_path, s| Path {
                     segments: new_path.segments.clone().into_iter().chain([s]).collect(),
                     ..new_path
@@ -185,14 +186,16 @@ impl PathUtils for Module {
         })
     }
 
-    fn rename_with(self, f: impl ops::Fn(Path) -> Path + Clone) -> Self {
+    fn rename_with(self, f: impl ops::Fn(&Path) -> Path) -> Self {
         macro_rules! map_non_modules {
             ($($field:ident: $ty:tt),+ $(,)?) => {$(
                 let $field = self.items
                     .$field
-                    .clone()
                     .into_iter()
-                    .map(|it| it.clone().rename(f(it.path.clone())))
+                    .map(|it| {
+                        let path = f(&it.path);
+                        it.rename(path)
+                    })
                     .collect::<Vec<_>>();
             )+};
         }
@@ -204,31 +207,30 @@ impl PathUtils for Module {
             foreign_functions: Fn,
             foreign_statics: Static,
         }
-        let modules: Vec<_> = self
+        let modules = self
             .items
             .modules
-            .clone()
             .into_iter()
-            .map(|m| m.clone().rename_with(f.clone()))
+            .map(|m| m.rename_with(&f))
             .collect();
         let new_items = FfiItems {
-            aliases: aliases.clone(),
-            structs: structs.clone(),
-            unions: unions.clone(),
-            constants: constants.clone(),
-            foreign_functions: foreign_functions.clone(),
-            foreign_statics: foreign_statics.clone(),
-            modules: modules.clone(),
-            ..Default::default()
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+            modules,
+            ..self.items
         };
-        let new_path = f(self.path.clone());
+        let new_path = f(&self.path);
         Module {
-            cached_path: ast::path_to_string(new_path.clone()),
-            cached_ident: ast::ident_to_string(new_path.clone()),
+            cached_path: ast::path_to_string(&new_path),
+            cached_ident: ast::ident_to_string(&new_path),
             path: new_path.clone(),
-            path_aggregate: self.path_aggregate.clone().push(new_path.clone()),
-            items: new_items.clone(),
-            ..self.clone()
+            path_aggregate: self.path_aggregate.clone().push(new_path),
+            items: new_items,
+            ..self
         }
     }
 }

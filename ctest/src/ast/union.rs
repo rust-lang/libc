@@ -38,12 +38,12 @@ impl Union {
 }
 
 impl PathUtils for Union {
-    fn path_aggregate(self) -> PathAggregateStore {
-        self.path_aggregate.clone()
+    fn path_aggregate(&self) -> &PathAggregateStore {
+        &self.path_aggregate
     }
 
-    fn path(self) -> Path {
-        self.path.clone()
+    fn path(&self) -> &Path {
+        &self.path
     }
 
     fn mk(
@@ -58,7 +58,7 @@ impl PathUtils for Union {
             cached_ident,
             path,
             path_aggregate: addressable_paths,
-            ..self.clone()
+            ..self
         }
     }
 }
