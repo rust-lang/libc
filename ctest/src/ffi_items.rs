@@ -57,12 +57,11 @@ use crate::{
     ast,
 };
 
-/// Represents a collected set of top-level Rust items relevant to FFI
-/// generation or analysis.
+/// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
 ///
-/// Includes foreign functions/statics, type aliases, structs, unions, and
-/// constants. Modules are collected as recursive `FfiItems`, and currently used
-/// to narrow down tested items to those in a specific module.
+/// Includes foreign functions/statics, type aliases, structs, unions, and constants. Modules are
+/// collected as recursive `FfiItems`, and currently used to narrow down tested items to those in a
+/// specific module.
 #[derive(Clone, Debug)]
 pub(crate) struct FfiItems {
     pub(crate) aliases: Vec<Type>,
@@ -74,9 +73,8 @@ pub(crate) struct FfiItems {
     pub(crate) uses: Vec<RefinedUse>,
     pub(crate) modules: Vec<Module>,
 
-    /// This is used while recursing through parsed modules to gather absolute
-    /// paths to them as identifiers for both the modules and the items within
-    /// them.
+    /// This is used while recursing through parsed modules to gather absolute paths to them as
+    /// identifiers for both the modules and the items within them.
     // [FIXME]: get rid of this and refactor parsing into using a helper that
     // stores this ancilliary state.
     pub(crate) current_module: syn::Path,
@@ -132,9 +130,8 @@ impl FfiItems {
 
     /// Entry point to parse a [`syn::File`].
     ///
-    /// This will also resolve `use`-trees such that the resulting `FfiItems`
-    /// instance is always left with no reexports that are not sourced from
-    /// third-party crates.
+    /// This will also resolve `use`-trees such that the resulting `FfiItems` instance is always
+    /// left with no reexports that are not sourced from third-party crates.
     pub(crate) fn visit_file(&mut self, file: &syn::File) {
         let File {
             attrs,
@@ -190,15 +187,11 @@ impl FfiItems {
         Box::new(base)
     }
 
-    /// Performs a comparison for equality between FfiItems without taking field
-    /// current_module into consideration.
+    /// Performs a comparison for equality between `FfiItems`, without taking fields
+    /// `current_module` nor `uses` into consideration.
     ///
-    /// This is not an implementation of PartialEq for FfiItems because it would
-    /// be unintuitive to have it ignore one field. This is only ever needed
-    /// during use declaration resolution.
-    ///
-    /// The visibility restriction allows the Module type in ast/module.rs to
-    /// have access to it.
+    /// This is not an implementation of `PartialEq` for `FfiItems` because, at the time of writing,
+    /// the logic for use declaration resolution is not yet finished.
     pub(super) fn custom_eq(&self, other: &Self) -> bool {
         self.aliases == other.aliases
             && self.structs == other.structs
@@ -206,20 +199,16 @@ impl FfiItems {
             && self.constants == other.constants
             && self.foreign_functions == other.foreign_functions
             && self.foreign_statics == other.foreign_statics
-            && self.uses == other.uses
             && self.modules == other.modules
     }
 
-    /// Comparison function for use when sorting and deduplicating modules in
-    /// [`FfiItems::dedup`].
+    /// Comparison function for use when sorting and deduplicating modules in [`FfiItems::dedup`].
     ///
-    /// This is used in [`Module::custom_cmp`]. It trusts that the modules to
-    /// compare have the same overall shape, and one will be a "natural"
-    /// extension of the other.
+    /// This is used in [`Module::custom_cmp`]. It trusts that the modules to compare have the same
+    /// overall shape, and one will be a "natural" extension of the other.
     ///
-    /// We consider "extension" here to mean that one module subtree is based on
-    /// the other, and thus only contains both the items from the other and
-    /// possibly some more items.
+    /// We consider "extension" here to mean that one module subtree is based on the other, and thus
+    /// only contains both the items from the other and possibly some more items.
     pub(super) fn custom_cmp(&self, other: &Self) -> Ordering {
         let (ours, theirs) = (self.modules.len(), other.modules.len());
 
@@ -245,11 +234,9 @@ impl FfiItems {
         }
     }
 
-    /// Searches for an item in the container, and returns an owned instance of
-    /// that item.
+    /// Searches for an item in the container, and returns an owned instance of that item.
     ///
-    /// The generic item may be pattern-matched to find out specifically which
-    /// item was found.
+    /// The generic item may be pattern-matched to find out specifically which item was found.
     fn search(&self, ident: &Ident) -> Option<GenericItem> {
         self.items().find(|it| {
             macro_rules! cmp {
@@ -274,9 +261,9 @@ impl FfiItems {
 
     /// Deduplicates the items in an item container by their path.
     ///
-    /// Items of differing kind, like functions and constants, that may happen
-    /// to have the same path will not get deduplicated. A consequence of
-    /// calling this method is that the items are also sorted by their paths.
+    /// Items of differing kind, like functions and constants, that may happen to have the same path
+    /// will not get deduplicated. A consequence of calling this method is that the items are also
+    /// sorted by their paths.
     fn dedup(self) -> FfiItems {
         macro_rules! dedup {
             ($($it:tt),+ $(,)?) => {{
@@ -359,9 +346,9 @@ impl FromIterator<GenericItem> for FfiItems {
         // 7. Modules.
         //
         // This is then used to partition over the resulting collection and get
-        // "buckets" of GenericItem that can be mapped to a concrete type
+        // "buckets" of GenericItems that can be mapped to a concrete type
         // through partial mapping.
-        partitioned_items.sort_by(|it1, it2| match (it1.clone(), it2.clone()) {
+        partitioned_items.sort_by(|it1, it2| match (it1, it2) {
             (GenericItem::Type(_), GenericItem::Type(_))
             | (GenericItem::Struct(_), GenericItem::Struct(_))
             | (GenericItem::Union(_), GenericItem::Union(_))
@@ -414,7 +401,7 @@ impl FromIterator<GenericItem> for FfiItems {
         });
 
         macro_rules! get_partitions {
-            ($([$field:ident, $ty:tt]),+ $(,)?) => {$(
+            ($($field:ident: $ty:tt),+ $(,)?) => {$(
                 let start =
                     partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)).not());
                 let end = partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)));
@@ -447,13 +434,13 @@ impl FromIterator<GenericItem> for FfiItems {
         }
 
         get_partitions! {
-            [aliases, Type],
-            [structs, Struct],
-            [unions, Union],
-            [constants, Const],
-            [foreign_functions, Fn],
-            [foreign_statics, Static],
-            [modules, Module],
+            aliases: Type,
+            structs: Struct,
+            unions: Union,
+            constants: Const,
+            foreign_functions: Fn,
+            foreign_statics: Static,
+            modules: Module,
         }
 
         FfiItems {
@@ -470,7 +457,7 @@ impl FromIterator<GenericItem> for FfiItems {
 }
 
 /// Sum over any item held within an `FfiItems` term.
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub(crate) enum GenericItem {
     Type(Type),
     Struct(Struct),
@@ -486,9 +473,8 @@ type ItemIterator = Box<dyn Iterator<Item = GenericItem>>;
 
 /// Refined type for [`syn::UsePath`] that does not consider group paths.
 ///
-/// This is a lot like [`RefinedUse`] in that it only exists as replacement for
-/// [`syn::UsePath`] but uses [`RefinedUseTree`] instead of [`syn::UseTree`].
-/// See [`RefinedUseTree`] for details.
+/// This is a lot like [`RefinedUse`] in that it only exists as replacement for [`syn::UsePath`] but
+/// uses [`RefinedUseTree`] instead of [`syn::UseTree`]. See [`RefinedUseTree`] for details.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct RefinedUsePath {
     ident: Ident,
@@ -506,12 +492,12 @@ impl Default for RefinedUsePath {
 
 /// Refined type for [`syn::UseTree`] that does not consider group paths.
 ///
-/// This is the byproduct of normalizing a `use` declaration's path through
-/// [`normalize_path`]. That function ensures some such path containing a group
-/// as its tail end is converted into a set of paths without groups.
+/// This is the byproduct of normalizing a `use` declaration's path through [`normalize_path`]. That
+/// function ensures some such path containing a group as its tail end is converted into a set of
+/// paths without groups.
 ///
-/// This enumeration is thus equivalent to `syn::UseTree` but does not consider
-/// the case of `syn::UseTree::Group`.
+/// This enumeration is thus equivalent to `syn::UseTree` but does not consider the case of
+/// [`syn::UseTree::Group`].
 #[derive(Clone, Debug, PartialEq, Default)]
 pub(crate) enum RefinedUseTree {
     Path(RefinedUsePath),
@@ -523,17 +509,17 @@ pub(crate) enum RefinedUseTree {
 
 /// Refined type for `use` declarations that do not consider group paths.
 ///
-/// This exists only for the purpose of refining [`syn::UseTree`], which is used
-/// within [`syn::ItemUse`]. See type [`RefinedUseTree`] for the actual
-/// refinement and details on the purpose of this type.
+/// This exists only for the purpose of refining [`syn::UseTree`], which is used within
+/// [`syn::ItemUse`]. See type [`RefinedUseTree`] for the actual refinement and details on the
+/// purpose of this type.
 #[derive(Clone, Debug, PartialEq, Default)]
 pub(crate) struct RefinedUse {
     is_public: bool,
     tree: RefinedUseTree,
 }
 
-/// Gets rid of group reexports in a `use` declaration by flattenning them into
-/// a set of individual reexports.
+/// Gets rid of group reexports in a `use` declaration by flattenning them into a set of individual
+/// reexports.
 fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
     match path {
         UseTree::Name(n) => vec![RefinedUseTree::Name(n)],
@@ -559,25 +545,23 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
 
 /// Stateful pair carried through resolution passes.
 ///
-/// Each `use` declaration requires access to either one of (1) the module where
-/// it was sourced from, or (2) the crate root's subtree, or (3) any one
-/// ascendant or descendant module of the module where it was sourced from.
+/// Each `use` declaration requires access to either one of (1) the module where it was sourced
+/// from, or (2) the crate root's subtree, or (3) any one ascendant or descendant module of the
+/// module where it was sourced from.
 ///
-/// Points (2) and (3) require having access to the entire crate's module tree.
-/// Some ancestor item is looked up by the parent path to the item being
-/// searched with respect to. Point (1) is satisfied by the `subtree` field.
+/// Points (2) and (3) require having access to the entire crate's module tree. Some ancestor item
+/// is looked up by the parent path to the item being searched with respect to. Point (1) is
+/// satisfied by the `subtree` field.
 #[derive(Debug, Clone)]
 struct PassPair {
     subtree: Module,
     whole_crate: Module,
 }
 
-/// This is the resolution driver. It is the entrypoint for whole crate
-/// resolution.
+/// This is the resolution driver. It is the entrypoint for whole crate resolution.
 ///
-/// It performs passes on a given module. It diffs the results of a whole-crate
-/// pass with the pre-pass state. Equality in that comparison determines
-/// termination.
+/// It performs passes on a given module. It diffs the results of a whole-crate pass with the
+/// pre-pass state. Equality in that comparison determines termination.
 fn resolve_all(root: Module) -> Module {
     let (ControlFlow::Break(m) | ControlFlow::Continue(m)) =
         iter::repeat(()).try_fold(root, |root, _| {
@@ -601,26 +585,24 @@ fn resolve_all(root: Module) -> Module {
 
 /// Represents a resolved or unresolved `use` declaration.
 ///
-/// The state of resolution may change across resolution passes. It is used in
-/// [`merge_module`] to merge whichever `use` declarations resolved to a set of
-/// items back into the module they were sourced from.
+/// The state of resolution may change across resolution passes. It is used in [`merge_module`] to
+/// merge whichever `use` declarations resolved to a set of items back into the module they were
+/// sourced from.
 #[derive(Debug, Clone)]
 enum Resolution {
     Resolved(FfiItems),
     Unresolved,
 }
 
-/// Performs one pass through the provided pair of a subtree and the whole-crate
-/// subtree.
+/// Performs one pass through the provided pair of a subtree and the whole-crate subtree.
 ///
-/// The input pair's fields correspond with the subtree in which to perform the
-/// resolution pass on, and the tree at the crate root. The latter is required
-/// to resolve absolute imports that refer to some item in an ancestor module
-/// that is more than one level up the tree than the subtree being resolved.
+/// The input pair's fields correspond with the subtree in which to perform the resolution pass on,
+/// and the tree at the crate root. The latter is required to resolve absolute imports that refer to
+/// some item in an ancestor module that is more than one level up the tree than the subtree being
+/// resolved.
 ///
-/// The returned pair contains updated snapshots of the input pair. The subtree
-/// may have had new items added to it. The whole-crate module tree is
-/// guaranteed to have integrated these changes.
+/// The returned pair contains updated snapshots of the input pair. The subtree may have had new
+/// items added to it. The whole-crate module tree is guaranteed to have integrated these changes.
 fn resolve_pass(src: PassPair) -> PassPair {
     let (
         PassPair {
@@ -694,9 +676,9 @@ fn resolve_pass(src: PassPair) -> PassPair {
 
 /// Attempts to resolve the `use` declarations in a given module.
 ///
-/// The input pair consists of the module from which to source the `use`
-/// declarations, and of the whole-crate module tree. The latter is used to
-/// resolve certain types of paths in `use` declarations.
+/// The input pair consists of the module from which to source the `use` declarations, and of the
+/// whole-crate module tree. The latter is used to resolve certain types of paths in `use`
+/// declarations.
 ///
 /// See [`resolve_pass`] for details.
 fn resolve_one(state: PassPair) -> Vec<Resolution> {
@@ -724,27 +706,22 @@ fn resolve_one(state: PassPair) -> Vec<Resolution> {
 ///
 /// This can go one of two ways.
 ///
-/// 1. Either the `use` declaration matches a specific module in the stateful
-///    pair, or
+/// 1. Either the `use` declaration matches a specific module in the stateful pair, or
+/// 2. the `use` declaration is assumed to be unresolved in this resolution pass.
 ///
-/// 2. the `use` declaration is assumed to be unresolved in this resolution
-///    pass.
+/// The stateful pair initially consists of the module in which the `use` declaration appears at. If
+/// the `use` declaration refers to an item by a path with more than one segment, this function
+/// recursively munches through it.
 ///
-/// The stateful pair initially consists of the module in which the `use`
-/// declaration appears at. If the `use` declaration refers to an item by a path
-/// with more than one segment, this function recursively munches through it.
+/// These recursive calls will only be made if the extracted path segment matches against some item
+/// in the stateful subtree. Currently, the only types of items that can match on a path that still
+/// has another unmunched segment are modules.
 ///
-/// These recursive calls will only be made if the extracted path segment
-/// matches against some item in the stateful subtree. Currently, the only types
-/// of items that can match on a path that still has another unmunched segment
-/// are modules.
+/// Upon finding the module, the new stateful subtree of the pair becomes this module. This is then
+/// used in the recursive call with the path tail.
 ///
-/// Upon finding the module, the new stateful subtree of the pair becomes this
-/// module. This is then used in the recursive call with the path tail.
-///
-/// The other element of the pair is the whole-crate module tree. That is used
-/// to resolve ancestor paths (when `super` is found) and absolute paths (when
-/// `crate` is found.)
+/// The other element of the pair is the whole-crate module tree. That is used to resolve ancestor
+/// paths (when `super` is found) and absolute paths (when `crate` is found.)
 fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     macro_rules! single_item {
         ($field:ident: $it:expr) => {
@@ -897,13 +874,10 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             );
 
             let new_state = if is_self(&ident) {
-                PassPair {
-                    subtree: state.subtree,
-                    whole_crate: state.whole_crate,
-                }
+                state
             } else if is_super(&ident) {
                 let parent_path = get_parent_path(&state.subtree);
-                let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
+                let Some(parent) = get_module(&parent_path, &state.whole_crate).cloned() else {
                     unreachable!(
                         "See the note on super in the name basecase. The same \
                          applies here."
@@ -911,7 +885,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 };
 
                 PassPair {
-                    subtree: parent.clone(),
+                    subtree: parent,
                     whole_crate: state.whole_crate,
                 }
             } else if is_crate(&ident) {
@@ -919,14 +893,13 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     subtree: state.whole_crate.clone(),
                     whole_crate: state.whole_crate,
                 }
-            } else {
-                match state.subtree.items.search(&ident) {
-                    Some(GenericItem::Module(m)) => PassPair {
-                        subtree: m,
-                        whole_crate: state.whole_crate,
-                    },
-                    Some(_) | None => return Resolution::Unresolved,
+            } else if let Some(GenericItem::Module(m)) = state.subtree.items.search(&ident) {
+                PassPair {
+                    subtree: m,
+                    whole_crate: state.whole_crate,
                 }
+            } else {
+                return Resolution::Unresolved;
             };
 
             resolve_use(
@@ -940,8 +913,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     }
 }
 
-/// Attempts to find a given module, provided its path (`target`,) within a
-/// module subtree (`root`.)
+/// Attempts to find a given module, provided its path (`target`,) within a module subtree (`root`.)
 fn get_module<'m>(target: &Path, root: &'m Module) -> Option<&'m Module> {
     if root.path == *target {
         return root.into();
@@ -955,9 +927,9 @@ fn get_module<'m>(target: &Path, root: &'m Module) -> Option<&'m Module> {
 
 /// Fetches the parent path to a given module.
 ///
-/// If the module is a top-level item (i.e. it appears at the crate root,) the
-/// returned path will be empty. This follows from the parsing strategy for
-/// paths in `FfiItems`. The absolute paths are all `crate`-_unprepended_.
+/// If the module is a top-level item (i.e. it appears at the crate root,) the returned path will be
+/// empty. This follows from the parsing strategy for paths in `FfiItems`. The absolute paths are
+/// all `crate`-_unprepended_.
 fn get_parent_path(root: &Module) -> Path {
     // [NOTE]: this performs a saturating_sub because there is one and only one
     // item in the crate's module tree that has an empty path; The crate root.
@@ -1001,17 +973,16 @@ fn is_super(ident: &Ident) -> bool {
     ident.to_string() == "super"
 }
 
-/// Attempts to find some item in module tree `root` with path `target`, then
-/// runs the passed closure on the item, and replaces it with the result.
+/// Attempts to find some item in module tree `root` with path `target`, then runs the passed
+/// closure on the item, and replaces it with the result.
 ///
 /// # Panics
 ///
-/// The function will panic if the specific injection of the returned
-/// `GenericItem` does not match that of the input `GenericItem` to closure
-/// `action`.
+/// The function will panic if the specific injection of the returned `GenericItem` does not match
+/// that of the input `GenericItem` to closure `action`.
 fn update_tree(
     target: &Path,
-    action: impl ops::Fn(GenericItem) -> GenericItem,
+    action: impl ops::Fn(GenericItem) -> GenericItem + Clone,
     root: Module,
 ) -> Module {
     macro_rules! ignored {
@@ -1042,6 +1013,7 @@ fn update_tree(
                         let GenericItem::$ty(it) = action(GenericItem::$ty(it)) else {
                             ignored!();
                         };
+
                         it
                     } else {
                         it
@@ -1063,7 +1035,7 @@ fn update_tree(
 
     let modules = modules
         .into_iter()
-        .map(|m| update_tree(target, &action, m))
+        .map(|m| update_tree(target, action.clone(), m))
         .collect();
 
     Module {
@@ -1083,13 +1055,12 @@ fn update_tree(
 
 /// Integrates the resolution items of `src` into `dst`.
 ///
-/// Each resolution item is either one of an `Unresolved` or a `Resolved`
-/// variant. The former are essentially ignored. The latter pack an `FfiItems`
-/// that is integrated into `dst`'s own items. That is the merging part.
+/// Each resolution item is either one of an `Unresolved` or a `Resolved` variant. The former are
+/// essentially ignored. The latter pack an `FfiItems` that is integrated into `dst`'s own items.
+/// That is the merging part.
 ///
-/// Note that, during merging, the items to be merged may end up duplicating
-/// existing items on `dst`. It is call-site's responsibility to deduplicate
-/// those through [`FfiItems::dedup`].
+/// Note that, during merging, the items to be merged may end up duplicating existing items on
+/// `dst`. It is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
 fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
     // [NOTE]: we collect all items here because we want the actions in the
     // mapping to take place in whole before we start folding over the items to
@@ -1135,6 +1106,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                         })
                     }};
                 }
+
                 // [NOTE]: this ensures we find the immediate parent to any one
                 // of the items about to be merged. If there really are no items
                 // about to be merged, then we can simply return an empty
@@ -1157,6 +1129,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 ) else {
                     return FfiItems::default();
                 };
+
                 // [NOTE]: the dummy module is only in charge of wrapping all
                 // items we want to rename with a path that makes up some
                 // initial portion of the path segments of all descendant items'
@@ -1180,7 +1153,10 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     },
                     ..Default::default()
                 };
-                let new_dummy_module = dummy_module.rename(state.subtree.path.clone());
+                let Module {
+                    items: new_items, ..
+                } = dummy_module.rename(state.subtree.path.clone());
+
                 fn remove_uses(m: Module) -> Module {
                     Module {
                         items: FfiItems {
@@ -1191,23 +1167,22 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                         ..m
                     }
                 }
+
                 // [NOTE]: this removes all use declarations in all descendant
                 // modules of the subtrees to merge because otherwise merged
                 // modules can increase the number of use declarations in the
                 // crate's module tree, which is one cause of non-termination.
-                let new_modules_without_uses: Vec<_> = new_dummy_module
-                    .items
-                    .modules
-                    .into_iter()
-                    .map(remove_uses)
-                    .collect();
+                let new_modules_without_uses: Vec<_> =
+                    new_items.modules.into_iter().map(remove_uses).collect();
+
                 FfiItems {
                     modules: new_modules_without_uses,
-                    ..new_dummy_module.items
+                    ..new_items
                 }
             },
         )
         .collect();
+
     processed_items.into_iter().fold(
         state,
         |PassPair {
@@ -1218,7 +1193,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
             // [TODO]: this is still wrong but it also seems to be headed in the
             // right direction.
             let new_whole_crate = sync_driver(&it, whole_crate);
-            let Some(new_subtree) = get_module(&subtree.path, &new_whole_crate) else {
+            let Some(new_subtree) = get_module(&subtree.path, &new_whole_crate).cloned() else {
                 unreachable!(
                     "The subtree is bound to be found in the whole-crate \
                      module tree because it was sourced from it, and syncing \
@@ -1226,10 +1201,11 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                      modules."
                 );
             };
+
             PassPair {
                 subtree: Module {
                     items: new_subtree.items.items().chain(it.items()).collect(),
-                    ..new_subtree.clone()
+                    ..new_subtree
                 },
                 whole_crate: new_whole_crate,
             }
@@ -1237,10 +1213,9 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
     )
 }
 
-/// Provided an item container with the most up-to-date occurrences of some
-/// item(s) (`items`,) this function will propagate the state of the path
-/// aggregate of each of those items throughout the entirety of the subtree
-/// rooted at the `tree` module tree.
+/// Provided an item container with the most up-to-date occurrences of some item(s) (`items`,) this
+/// function will propagate the state of the path aggregate of each of those items throughout the
+/// entirety of the subtree rooted at the `tree` module tree.
 fn sync_driver(items: &FfiItems, tree: Module) -> Module {
     items.items().fold(tree, |m, it| {
         macro_rules! exe {
@@ -1262,10 +1237,10 @@ fn sync_driver(items: &FfiItems, tree: Module) -> Module {
     })
 }
 
-/// Provided a reference path aggregate corresponding with that of an item, this
-/// function traverses module `m` in search of all occurrences of such an item
-/// and "updates" such ocurrences to integrate the paths from `reference`'s path
-/// aggregate store that are not part of any one of those item occurrences.
+/// Provided a reference path aggregate corresponding with that of an item, this function traverses
+/// module `m` in search of all occurrences of such an item and "updates" such ocurrences to
+/// integrate the paths from `reference`'s path aggregate store that are not part of any one of
+/// those item occurrences.
 ///
 /// Note this affects only one concrete item's occurrences throughout the crate.
 fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
@@ -1281,6 +1256,7 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
         // has an effect on the subtree of items rooted at the module in
         // question (see the Module::add_path trait method override.)
         let diff = m.path_aggregate.diff(reference);
+
         diff.into_iter().fold(m, Module::add_path)
     } else {
         m
@@ -1328,8 +1304,7 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
     }
 }
 
-/// Appends a new module-local item to an absolute path that does _not_ start
-/// with `crate`.
+/// Appends a new module-local item to an absolute path that does _not_ start with `crate`.
 ///
 /// This is used whenever we need to create paths for either items or modules.
 fn append_path(base: Path, new: Ident) -> Path {
@@ -1342,8 +1317,7 @@ fn append_path(base: Path, new: Ident) -> Path {
 
 /// Determine whether an item is visible to other crates.
 ///
-/// This function assumes that if the visibility is restricted then it is not
-/// meant to be accessed.
+/// This function assumes that if the visibility is restricted then it is not meant to be accessed.
 fn is_visible(vis: &syn::Visibility) -> bool {
     match vis {
         syn::Visibility::Public(_) => true,
@@ -1617,6 +1591,12 @@ impl<'ast> Visit<'ast> for FfiItems {
             .flatten()
             .collect();
 
+        /*
+         * [NOTE]: this doesn't itself parse any items within the module because
+         * the only hook in syn::visit::Visit we have overridden is that of
+         * modules. In other words, this recurses only to attempt to find any
+         * child modules within the module currently being parsed.
+         */
         visit::visit_item_mod(&mut running_items, i);
         running_items.uses = uses;
 

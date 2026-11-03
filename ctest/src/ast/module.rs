@@ -1,5 +1,8 @@
 use std::cmp::Ordering;
-use std::ops;
+use std::ops::{
+    self,
+    Not,
+};
 
 use syn::Path;
 use syn::punctuated::Punctuated;
@@ -23,8 +26,8 @@ use crate::{
     ast,
 };
 
-/// Represents a Rust module. `ctest` only considers items for which there is a
-/// corresponding type in this crate.
+/// Represents a Rust module. `ctest` only considers items for which there is a corresponding type
+/// in this crate.
 #[derive(Debug, Clone)]
 pub struct Module {
     pub(crate) public: bool,
@@ -38,10 +41,9 @@ pub struct Module {
 impl Module {
     /// Returns the full path to the module item.
     ///
-    /// If inside a nested module, this will return a top-level-relative path,
-    /// but not a crate-relative path. For some item `foo` in module
-    /// `crate::bar`, the returned string will be `bar::foo`, and not
-    /// `crate::bar::foo`.
+    /// If inside a nested module, this will return a top-level-relative path, but not a
+    /// crate-relative path. For some item `foo` in module `crate::bar`, the returned string will be
+    /// `bar::foo`, and not `crate::bar::foo`.
     pub fn path(&self) -> &str {
         &self.cached_path
     }
@@ -53,8 +55,8 @@ impl Module {
 
     /// Comparison function for use when sorting modules in [`FfiItems::dedup`].
     ///
-    /// This is not implemented as part of [`Ord`] because the implementation is
-    /// inconsistent with the [`PartialEq`] implementation.
+    /// This is not implemented as part of [`Ord`] because the implementation is inconsistent with
+    /// the [`PartialEq`] implementation.
     pub(crate) fn custom_cmp(&self, other: &Self) -> Ordering {
         match self.cached_path.cmp(&other.cached_path) {
             Ordering::Equal => self.items.custom_cmp(&other.items),
@@ -101,7 +103,12 @@ impl PathUtils for Module {
                                 .into_iter()
                                 .skip(original.segments.len());
                             let new_path = Path {
-                                segments: new.segments.clone().into_iter().chain(kept_segments).collect(),
+                                segments: new
+                                    .segments
+                                    .clone()
+                                    .into_iter()
+                                    .chain(kept_segments)
+                                    .collect(),
                                 ..new.clone()
                             };
 
@@ -118,7 +125,12 @@ impl PathUtils for Module {
                                 .into_iter()
                                 .skip(original.segments.len());
                             let new_path = Path {
-                                segments: new.segments.clone().into_iter().chain(kept_segments).collect(),
+                                segments: new
+                                    .segments
+                                    .clone()
+                                    .into_iter()
+                                    .chain(kept_segments)
+                                    .collect(),
                                 ..new.clone()
                             };
 
@@ -174,6 +186,7 @@ impl PathUtils for Module {
     // appended to the new path of that (potentially grand-) ancestor.
     fn rename(self, new_path: Path) -> Self {
         let old_path_len = self.path.segments.len();
+
         self.rename_with(|p| {
             p.segments
                 .iter()
@@ -186,49 +199,45 @@ impl PathUtils for Module {
         })
     }
 
-    fn rename_with(self, f: impl ops::Fn(&Path) -> Path) -> Self {
-        macro_rules! map_non_modules {
-            ($($field:ident: $ty:tt),+ $(,)?) => {$(
-                let $field = self.items
-                    .$field
-                    .into_iter()
-                    .map(|it| {
-                        let path = f(&it.path);
-                        it.rename(path)
-                    })
-                    .collect::<Vec<_>>();
-            )+};
-        }
-        map_non_modules! {
-            aliases: Type,
-            structs: Struct,
-            unions: Union,
-            constants: Const,
-            foreign_functions: Fn,
-            foreign_statics: Static,
-        }
-        let modules = self
+    fn rename_with(self, f: impl ops::Fn(&Path) -> Path + Clone) -> Self {
+        let new_items = self
             .items
-            .modules
-            .into_iter()
-            .map(|m| m.rename_with(&f))
+            .items()
+            .filter(|it| matches!(it, GenericItem::Module(_)).not())
+            .map(|it| {
+                macro_rules! exe {
+                    ($($ty:tt),+ $(,)?) => {
+                        match it {
+                            $(
+                            GenericItem::$ty(it) => {
+                                let new_path = f(&it.path);
+
+                                GenericItem::$ty(it.rename(new_path))
+                            }
+                            )+
+                            GenericItem::Module(it) => GenericItem::Module(it.rename_with(f.clone())),
+                        }
+                    };
+                }
+
+                exe! {
+                    Type,
+                    Struct,
+                    Union,
+                    Const,
+                    Fn,
+                    Static,
+                }
+            })
             .collect();
-        let new_items = FfiItems {
-            aliases,
-            structs,
-            unions,
-            constants,
-            foreign_functions,
-            foreign_statics,
-            modules,
-            ..self.items
-        };
+
         let new_path = f(&self.path);
+
         Module {
             cached_path: ast::path_to_string(&new_path),
             cached_ident: ast::ident_to_string(&new_path),
             path: new_path.clone(),
-            path_aggregate: self.path_aggregate.clone().push(new_path),
+            path_aggregate: self.path_aggregate.push(new_path),
             items: new_items,
             ..self
         }
@@ -241,13 +250,14 @@ impl Default for Module {
             leading_colon: None,
             segments: Punctuated::new(),
         };
+
         Self {
-            public: bool::default(),
-            cached_path: String::new().into_boxed_str(),
-            cached_ident: String::new().into_boxed_str(),
+            public: Default::default(),
+            cached_path: Default::default(),
+            cached_ident: Default::default(),
             path: dpath.clone(),
-            path_aggregate: PathAggregateStore::new().push(dpath.clone()),
-            items: FfiItems::default(),
+            path_aggregate: PathAggregateStore::from_iter([dpath]),
+            items: Default::default(),
         }
     }
 }
@@ -258,9 +268,17 @@ impl Default for Module {
 // would likely be unintuitive to have its PartialEq not take into account.
 impl PartialEq for Module {
     fn eq(&self, other: &Self) -> bool {
+        if self.path == other.path {
+            assert_eq!(
+                self.path_aggregate, other.path_aggregate,
+                "path aggregates of module {} and {} are not synchronized",
+                self.cached_path, other.cached_path,
+            );
+        }
+
         self.public == other.public
-            && self.cached_path == other.cached_path
             && self.path == other.path
+            && self.path_aggregate == other.path_aggregate
             && self.items.custom_eq(&other.items)
     }
 }

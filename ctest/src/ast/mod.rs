@@ -32,12 +32,10 @@ use crate::{
     MapInput,
 };
 
-/// Container for all paths by which a given item may be addressed throughout
-/// the crate.
+/// Container for all paths by which a given item may be addressed throughout the crate.
 ///
-/// This is used to store all paths by which an item may be referred to, after
-/// it has potentially been imported to modules other than the one it was
-/// declared in.
+/// This is used to store all paths by which an item may be referred to, after it has potentially
+/// been imported to modules other than the one it was declared in.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct PathAggregateStore {
     value: Vec<Path>,
@@ -55,24 +53,23 @@ impl PathAggregateStore {
         Self { value }
     }
 
-    /// Checks if any two path aggregates are known to correspond with those of
-    /// the same item.
+    /// Checks if any two path aggregates are known to correspond with those of the same item.
     ///
-    /// In other words, it checks if the item owning the receiver path aggregate
-    /// and the item owning the `other` path aggregate are different occurrences
-    /// of the same item across the crate's module tree.
+    /// In other words, it checks if the item owning the receiver path aggregate and the item owning
+    /// the `other` path aggregate are different occurrences of the same item across the crate's
+    /// module tree.
     pub(crate) fn akin(&self, other: &Self) -> bool {
         let ours = &self.value;
         let theirs = &other.value;
         ours.iter().any(|p1| theirs.iter().any(|p2| p1 == p2))
     }
 
-    /// Diffs any two given path aggregates and returns the set of paths that
-    /// were present in `other` but missing in the receiver.
+    /// Diffs any two given path aggregates and returns the set of paths that were present in
+    /// `other` but missing in the receiver.
     ///
-    /// Note that if the receiver contains more paths than `other`, the returned
-    /// collection will be empty. In other words, the operation is not
-    /// reflexive (`self.diff(other) != other.diff(self)`.)
+    /// Note that if the receiver contains more paths than `other`, the returned collection will be
+    /// empty. In other words, the operation is not reflexive
+    /// (`self.diff(other) != other.diff(self)`.)
     pub(crate) fn diff(&self, other: &Self) -> Vec<Path> {
         let ours = &self.value;
         let theirs = &other.value;
@@ -83,11 +80,10 @@ impl PathAggregateStore {
             .collect()
     }
 
-    /// Yields a new path aggregate that integrates the paths of the receiver
-    /// with those of `other`.
+    /// Yields a new path aggregate that integrates the paths of the receiver with those of `other`.
     ///
-    /// Unlike diffing, the resulting path aggregate store unifies the paths
-    /// from both parties; The receiver and `other`.
+    /// Unlike diffing, the resulting path aggregate store unifies the paths from both parties; The
+    /// receiver and `other`.
     #[expect(unused)]
     pub(crate) fn merge(self, other: &Self) -> Self {
         self.diff(other)
@@ -143,12 +139,11 @@ impl FromIterator<Path> for PathAggregateStore {
     }
 }
 
-/// Utility interface for keeping a single renaming function for all parsed
-/// items.
+/// Utility interface for keeping a single renaming function for all parsed items.
 ///
-/// They all share the same set of fields relative to their identifier and path,
-/// all of which need updating whenever the path is renamed. We ensure that the
-/// only place where this happens is in this function for convenience's sake.
+/// They all share the same set of fields relative to their identifier and path, all of which need
+/// updating whenever the path is renamed. We ensure that the only place where this happens is in
+/// this function for convenience's sake.
 pub(crate) trait PathUtils: Clone {
     fn path(&self) -> &Path;
     fn path_aggregate(&self) -> &PathAggregateStore;
@@ -160,12 +155,10 @@ pub(crate) trait PathUtils: Clone {
         addressable_paths: PathAggregateStore,
     ) -> Self;
 
-    /// Provided a path, it ensures the path aggregate of a given item
-    /// integrates the new path.
+    /// Provided a path, it ensures the path aggregate of a given item integrates the new path.
     ///
-    /// Unlike methods `rename` and `rename_with`, this does not change the path
-    /// of the item itself, but rather produces an updated receiver with only
-    /// the path aggregate store expanded.
+    /// Unlike methods `rename` and `rename_with`, this does not change the path of the item itself,
+    /// but rather produces an updated receiver with only the path aggregate store expanded.
     fn add_path(self, path: Path) -> Self {
         let old_path = self.path().clone();
         let old_aggregate = self.path_aggregate().clone();
@@ -177,21 +170,18 @@ pub(crate) trait PathUtils: Clone {
         )
     }
 
-    /// Provided some parsed type, this method will run the given closure on
-    /// each variation of a term of that type (`self`.)
+    /// Provided some parsed type, this method will run the given closure on each variation of a
+    /// term of that type (`self`.)
     ///
-    /// The variations of a given term are given by their addressable paths.
-    /// This is an append-only aggregate all implementors of this interface have
-    /// as one of their projections. The variations are themselves the possible
-    /// paths by which an item may be referred to as a consequence of having
-    /// been imported over to other modules of the crate.
+    /// The variations of a given term are given by their addressable paths. This is an append-only
+    /// aggregate all implementors of this interface have as one of their projections. The
+    /// variations are themselves the possible paths by which an item may be referred to as a
+    /// consequence of having been imported over to other modules of the crate.
     ///
-    /// This interface gets access to it through the
-    /// [`RenameUtils::addressable_paths`] projection.
+    /// This interface gets access to it through the [`RenameUtils::addressable_paths`] projection.
     ///
-    /// This is a utility to avoid having to go through the variations, as well
-    /// as updating the identifier and paths caches whenever some operation
-    /// needs to be performed on all variations.
+    /// This is a utility to avoid having to go through the variations, as well as updating the
+    /// identifier and paths caches whenever some operation needs to be performed on all variations.
     fn with_variations<T>(&self, f: impl ops::Fn(&Self) -> T) -> Vec<T> {
         self.path_aggregate()
             .into_iter()
@@ -200,13 +190,15 @@ pub(crate) trait PathUtils: Clone {
             .collect()
     }
 
-    fn rename_with(self, f: impl ops::Fn(&Path) -> Path) -> Self {
+    fn rename_with(self, f: impl ops::Fn(&Path) -> Path + Clone) -> Self {
         let path = self.path().clone();
+
         self.rename(f(&path))
     }
 
     fn rename(self, new_path: Path) -> Self {
         let old_aggregate = self.path_aggregate().clone();
+
         self.mk(
             path_to_string(&new_path),
             ident_to_string(&new_path),
@@ -216,8 +208,7 @@ pub(crate) trait PathUtils: Clone {
     }
 }
 
-/// Transforms an item's absolute path to use `_` as path separator instead of
-/// `::`.
+/// Transforms an item's absolute path to use `_` as path separator instead of `::`.
 pub(crate) fn escape_item_path<'a>(item: impl Into<MapInput<'a>>) -> String {
     let path = match item.into() {
         MapInput::Struct(s) => s.path(),
@@ -232,8 +223,8 @@ pub(crate) fn escape_item_path<'a>(item: impl Into<MapInput<'a>>) -> String {
     path.replace("::", "_")
 }
 
-/// Returns a stringified `syn::Path` that is meant to match one-to-one the path
-/// to the item from the crate root.
+/// Returns a stringified `syn::Path` that is meant to match one-to-one the path to the item from
+/// the crate root.
 pub(crate) fn path_to_string(path: &Path) -> BoxStr {
     path.into_token_stream()
         .to_string()
@@ -241,8 +232,7 @@ pub(crate) fn path_to_string(path: &Path) -> BoxStr {
         .into_boxed_str()
 }
 
-/// Returns a stringified representation of the last segment in the passed
-/// identifier.
+/// Returns a stringified representation of the last segment in the passed identifier.
 pub(crate) fn ident_to_string(path: &Path) -> BoxStr {
     path.segments
         .last()
