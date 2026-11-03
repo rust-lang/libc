@@ -181,6 +181,7 @@ cfg_if! {
     if #[cfg(target_os = "android")] {
         use bionic_libc::kernel_uapi::linux;
         pub use linux::fs::*;
+        pub use linux::kcmp::*;
         pub use linux::types::*;
         pub use sys::socket::*;
     } else if #[cfg(target_os = "linux")] {
@@ -195,6 +196,7 @@ cfg_if! {
         pub use linux::if_addr::*;
         pub use linux::if_link::*;
         pub use linux::if_packet::*;
+        pub use linux::kcmp::*;
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
         pub use linux::mount::*;
