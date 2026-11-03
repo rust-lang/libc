@@ -158,6 +158,11 @@ pub const PRIV_USER: c_uint = PRIV_DEBUG
     | PRIV_TPD_KILLABLE
     | PRIV_PROC_TPD_RESET;
 
+pub const _CS_PATH: c_int = 65;
+
+// paths.h
+pub const _PATH_BSHELL: *const c_char = cstr!("/usr/bin/sh");
+
 extern "C" {
     pub fn fexecve(fd: c_int, argv: *const *mut c_char, envp: *const *mut c_char) -> c_int;
 

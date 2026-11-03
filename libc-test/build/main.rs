@@ -996,6 +996,7 @@ fn test_solarish(t: &Target) {
         "netinet/tcp.h",
         "netinet/udp.h",
         "netinet/icmp6.h",
+        "paths.h",
         "poll.h",
         "port.h",
         "pthread.h",
