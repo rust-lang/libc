@@ -8,6 +8,7 @@ mod structure;
 mod type_alias;
 mod union;
 
+use std::slice::Iter;
 use std::vec::IntoIter;
 use std::{
     fmt,
@@ -48,8 +49,8 @@ impl PathAggregateStore {
     }
 
     /// Appends a new path to the path aggregate store.
-    pub(crate) fn push(&self, p: Path) -> Self {
-        let PathAggregateStore { mut value } = self.clone();
+    pub(crate) fn push(self, p: Path) -> Self {
+        let PathAggregateStore { mut value } = self;
         value.push(p);
         Self { value }
     }
@@ -88,13 +89,15 @@ impl PathAggregateStore {
     /// Unlike diffing, the resulting path aggregate store unifies the paths
     /// from both parties; The receiver and `other`.
     #[expect(unused)]
-    pub(crate) fn merge(&self, other: &Self) -> Self {
-        let diff = self.diff(other);
-        diff.into_iter().fold(self.clone(), |agg, p| agg.push(p))
+    pub(crate) fn merge(self, other: &Self) -> Self {
+        self.diff(other)
+            .into_iter()
+            .fold(self, PathAggregateStore::push)
     }
 }
 
 pub(crate) type AddressablePaths = IntoIter<Path>;
+pub(crate) type RefAddressablePaths<'a> = Iter<'a, Path>;
 
 impl IntoIterator for PathAggregateStore {
     type IntoIter = AddressablePaths;
@@ -102,6 +105,15 @@ impl IntoIterator for PathAggregateStore {
 
     fn into_iter(self) -> Self::IntoIter {
         self.value.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a PathAggregateStore {
+    type IntoIter = RefAddressablePaths<'a>;
+    type Item = &'a Path;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.value.iter()
     }
 }
 
@@ -124,8 +136,8 @@ impl Default for PathAggregateStore {
 /// all of which need updating whenever the path is renamed. We ensure that the
 /// only place where this happens is in this function for convenience's sake.
 pub(crate) trait PathUtils: Clone {
-    fn path(self) -> Path;
-    fn path_aggregate(self) -> PathAggregateStore;
+    fn path(&self) -> &Path;
+    fn path_aggregate(&self) -> &PathAggregateStore;
     fn mk(
         self,
         cached_path: BoxStr,
@@ -141,13 +153,13 @@ pub(crate) trait PathUtils: Clone {
     /// of the item itself, but rather produces an updated receiver with only
     /// the path aggregate store expanded.
     fn add_path(self, path: Path) -> Self {
-        let aggregate = self.clone().path_aggregate();
-        let new_aggregate = aggregate.push(path);
-        self.clone().mk(
-            path_to_string(self.clone().path()),
-            ident_to_string(self.clone().path()),
-            self.clone().path(),
-            new_aggregate,
+        let old_path = self.path().clone();
+        let old_aggregate = self.path_aggregate().clone();
+        self.mk(
+            path_to_string(&old_path),
+            ident_to_string(&old_path),
+            old_path,
+            old_aggregate.push(path),
         )
     }
 
@@ -166,24 +178,26 @@ pub(crate) trait PathUtils: Clone {
     /// This is a utility to avoid having to go through the variations, as well
     /// as updating the identifier and paths caches whenever some operation
     /// needs to be performed on all variations.
-    fn with_variations<T>(&self, f: impl ops::Fn(Self) -> T + Clone) -> Vec<T> {
-        self.clone()
-            .path_aggregate()
+    fn with_variations<T>(&self, f: impl ops::Fn(&Self) -> T) -> Vec<T> {
+        self.path_aggregate()
             .into_iter()
-            .map(|p| f(self.clone().rename(p.clone())))
+            .cloned()
+            .map(|p| f(&self.clone().rename(p)))
             .collect()
     }
 
-    fn rename_with(self, new_path: impl ops::Fn(Path) -> Path + Clone) -> Self {
-        self.clone().rename(new_path(self.clone().path()))
+    fn rename_with(self, f: impl ops::Fn(&Path) -> Path) -> Self {
+        let path = self.path().clone();
+        self.rename(f(&path))
     }
 
     fn rename(self, new_path: Path) -> Self {
-        self.clone().mk(
-            path_to_string(new_path.clone()),
-            ident_to_string(new_path.clone()),
+        let old_aggregate = self.path_aggregate().clone();
+        self.mk(
+            path_to_string(&new_path),
+            ident_to_string(&new_path),
             new_path.clone(),
-            self.path_aggregate().push(new_path),
+            old_aggregate.push(new_path),
         )
     }
 }
@@ -206,7 +220,7 @@ pub(crate) fn escape_item_path<'a>(item: impl Into<MapInput<'a>>) -> String {
 
 /// Returns a stringified `syn::Path` that is meant to match one-to-one the path
 /// to the item from the crate root.
-pub(crate) fn path_to_string(path: Path) -> BoxStr {
+pub(crate) fn path_to_string(path: &Path) -> BoxStr {
     path.into_token_stream()
         .to_string()
         .replace(|c: char| c.is_ascii_whitespace(), "")
@@ -215,7 +229,7 @@ pub(crate) fn path_to_string(path: Path) -> BoxStr {
 
 /// Returns a stringified representation of the last segment in the passed
 /// identifier.
-pub(crate) fn ident_to_string(path: Path) -> BoxStr {
+pub(crate) fn ident_to_string(path: &Path) -> BoxStr {
     path.segments
         .last()
         .map(|it| it.ident.to_string().into_boxed_str())

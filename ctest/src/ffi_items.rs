@@ -545,7 +545,7 @@ fn normalize_path(path: syn::UseTree) -> Vec<RefinedUseTree> {
 ///
 /// Points (2) and (3) require having access to the entire crate's module tree.
 /// Some ancestor item is looked up by the parent path to the item being
-/// searched in respect of. Point (1) is satisfied by the `subtree` field.
+/// searched with respect to. Point (1) is satisfied by the `subtree` field.
 #[derive(Debug, Clone)]
 struct PassPair {
     subtree: Module,
@@ -785,8 +785,8 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             if is_self(&ident) {
                 single_item!(modules: change_vis_in_mod(state.subtree));
             } else if is_super(&ident) {
-                let parent_path = get_parent_path(state.subtree);
-                let Some(parent) = get_module(parent_path, state.whole_crate) else {
+                let parent_path = get_parent_path(&state.subtree);
+                let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
                     unreachable!(
                         "The module path is guaranteed to be found in the \
                          whole crate module tree. It is the path of the \
@@ -888,14 +888,14 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             if is_self(&ident) {
                 single_item!(modules: change_vis_in_mod(renamer(state.subtree)));
             } else if is_super(&ident) {
-                let parent_path = get_parent_path(state.subtree);
-                let Some(parent) = get_module(parent_path, state.whole_crate) else {
+                let parent_path = get_parent_path(&state.subtree);
+                let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
                     unreachable!(
                         "See the note on super in the name basecase. The same \
                          applies here."
                     );
                 };
-                single_item!(modules: change_vis_in_mod(renamer(parent)));
+                single_item!(modules: change_vis_in_mod(renamer(parent.clone())));
             } else if is_crate(&ident) {
                 single_item!(modules: change_vis_in_mod(renamer(state.whole_crate)));
             }
@@ -926,16 +926,15 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     whole_crate: state.whole_crate,
                 }
             } else if is_super(&ident) {
-                let parent_path = get_parent_path(state.subtree.clone());
-                let Some(parent) = get_module(parent_path.clone(), state.whole_crate.clone())
-                else {
+                let parent_path = get_parent_path(&state.subtree);
+                let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
                     unreachable!(
                         "See the note on super in the name basecase. The same \
                          applies here."
                     );
                 };
                 PassPair {
-                    subtree: parent,
+                    subtree: parent.clone(),
                     whole_crate: state.whole_crate,
                 }
             } else if is_crate(&ident) {
@@ -965,14 +964,14 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
 
 /// Attempts to find a given module, provided its path (`target`,) within a
 /// module subtree (`root`.)
-fn get_module(target: Path, root: Module) -> Option<Module> {
-    if root.path == target {
+fn get_module<'m>(target: &Path, root: &'m Module) -> Option<&'m Module> {
+    if root.path == *target {
         return root.into();
     }
     root.items
         .modules
-        .into_iter()
-        .find_map(|m| get_module(target.clone(), m))
+        .iter()
+        .find_map(|m| get_module(target, m))
 }
 
 /// Fetches the parent path to a given module.
@@ -980,7 +979,7 @@ fn get_module(target: Path, root: Module) -> Option<Module> {
 /// If the module is a top-level item (i.e. it appears at the crate root,) the
 /// returned path will be empty. This follows from the parsing strategy for
 /// paths in `FfiItems`. The absolute paths are all `crate`-_unprepended_.
-fn get_parent_path(root: Module) -> Path {
+fn get_parent_path(root: &Module) -> Path {
     // [NOTE]: this performs a saturating_sub because there is one and only one
     // item in the crate's module tree that has an empty path; The crate root.
     // That is only wrapped in a Module of its own only after parsing. This
@@ -1000,8 +999,9 @@ fn get_parent_path(root: Module) -> Path {
         segments: root
             .path
             .segments
-            .into_iter()
+            .iter()
             .take(segments_before_ident)
+            .cloned()
             .collect(),
     }
 }
@@ -1109,6 +1109,9 @@ fn update_tree(
 /// existing items on `dst`. It is call-site's responsibility to deduplicate
 /// those through [`FfiItems::dedup`].
 fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
+    // [NOTE]: we collect all items here because we want the actions in the
+    // mapping to take place in whole before we start folding over the items to
+    // merge.
     let processed_items: Vec<_> = src
         .into_iter()
         .filter_map(|r| {
@@ -1143,9 +1146,9 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                         $field.first().map(|it| {
                             it.path
                                 .segments
-                                .clone()
-                                .into_iter()
+                                .iter()
                                 .take(it.path.segments.len() - 1)
+                                .cloned()
                                 .collect::<Punctuated<PathSegment, PathSep>>()
                         })
                     }};
@@ -1157,9 +1160,9 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 // items down in the fold that finishes up the merging function.
                 // We don't invoke unreachable! in the diverging branch because
                 // a resolution item could pack an empty item container if a use
-                // declaration consists a glob import of all items in a module
-                // with no items. We can be sure that all items about to be
-                // merged share the same parent because use declarations are
+                // declaration consists of a glob import of all items in a
+                // module with no items. We can be sure that all items about to
+                // be merged share the same parent because use declarations are
                 // cleansed of groups at parse-time.
                 let Some(source_module_path) = seek_parent!(
                     aliases,
@@ -1175,7 +1178,9 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 // [NOTE]: the dummy module is only in charge of wrapping all
                 // items we want to rename with a path that makes up some
                 // initial portion of the path segments of all descendant items'
-                // path.
+                // path. This is so that the below call to function
+                // RenameUtils::rename can use it as reference for the subtree
+                // items' path.
                 let dummy_module = Module {
                     path: Path {
                         leading_colon: None,
@@ -1195,12 +1200,10 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 };
                 let new_dummy_module = dummy_module.rename(state.subtree.path.clone());
                 fn remove_uses(m: Module) -> Module {
-                    let new_modules: Vec<_> =
-                        m.items.modules.into_iter().map(remove_uses).collect();
                     Module {
                         items: FfiItems {
                             uses: vec![],
-                            modules: new_modules,
+                            modules: m.items.modules.into_iter().map(remove_uses).collect(),
                             ..m.items
                         },
                         ..m
@@ -1224,7 +1227,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
         )
         .collect();
     processed_items.into_iter().fold(
-        state.clone(),
+        state,
         |PassPair {
              subtree,
              whole_crate,
@@ -1232,8 +1235,8 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
          it| {
             // [TODO]: this is still wrong but it also seems to be headed in the
             // right direction.
-            let new_whole_crate = sync_driver(it.clone(), whole_crate);
-            let Some(new_subtree) = get_module(subtree.path, new_whole_crate.clone()) else {
+            let new_whole_crate = sync_driver(&it, whole_crate);
+            let Some(new_subtree) = get_module(&subtree.path, &new_whole_crate) else {
                 unreachable!(
                     "The subtree is bound to be found in the whole-crate \
                      module tree because it was sourced from it, and syncing \
@@ -1244,7 +1247,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
             PassPair {
                 subtree: Module {
                     items: new_subtree.items.items().chain(it.items()).collect(),
-                    ..new_subtree
+                    ..new_subtree.clone()
                 },
                 whole_crate: new_whole_crate,
             }
@@ -1253,10 +1256,10 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
 }
 
 /// Provided an item container with the most up-to-date occurrences of some
-/// item(s,) this function will propagate the state of the path aggregate of
-/// each of those items throughout the entirety of the subtree rooted at the
-/// `whole_crate` module tree.
-fn sync_driver(items: FfiItems, tree: Module) -> Module {
+/// item(s) (`items`,) this function will propagate the state of the path
+/// aggregate of each of those items throughout the entirety of the subtree
+/// rooted at the `tree` module tree.
+fn sync_driver(items: &FfiItems, tree: Module) -> Module {
     items.items().fold(tree, |m, it| {
         macro_rules! exe {
             ($($ty:tt),+ $(,)?) => {

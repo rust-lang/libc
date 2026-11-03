@@ -38,12 +38,12 @@ impl Const {
 }
 
 impl PathUtils for Const {
-    fn path_aggregate(self) -> PathAggregateStore {
-        self.path_aggregate.clone()
+    fn path_aggregate(&self) -> &PathAggregateStore {
+        &self.path_aggregate
     }
 
-    fn path(self) -> Path {
-        self.path.clone()
+    fn path(&self) -> &Path {
+        &self.path
     }
 
     fn mk(
@@ -58,7 +58,7 @@ impl PathUtils for Const {
             cached_ident,
             path,
             path_aggregate,
-            ..self.clone()
+            ..self
         }
     }
 }

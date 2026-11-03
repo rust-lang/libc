@@ -64,12 +64,12 @@ impl Module {
 }
 
 impl PathUtils for Module {
-    fn path_aggregate(self) -> PathAggregateStore {
-        self.path_aggregate.clone()
+    fn path_aggregate(&self) -> &PathAggregateStore {
+        &self.path_aggregate
     }
 
-    fn path(self) -> Path {
-        self.path.clone()
+    fn path(&self) -> &Path {
+        &self.path
     }
 
     fn mk(
@@ -84,54 +84,60 @@ impl PathUtils for Module {
             cached_ident,
             path,
             path_aggregate: addressable_paths,
-            ..self.clone()
+            ..self
         }
     }
 
     fn add_path(self, path: Path) -> Self {
-        fn handle_item(it: GenericItem, original: Path, new: Path) -> GenericItem {
+        fn handle_item(it: GenericItem, original: &Path, new: &Path) -> GenericItem {
             macro_rules! map {
                 ($($ty:tt),+ $(,)?) => {
-                    match it.clone() {
+                    match it {
                         $(
                         GenericItem::$ty(it) => {
-                            let kept_segments = it
-                                .clone()
-                                .path()
+                            let kept_segments = <$ty as PathUtils>::path(&it)
                                 .segments
+                                .clone()
                                 .into_iter()
                                 .skip(original.segments.len());
-                            let mut new_path = new.clone();
-                            new_path.segments.extend(kept_segments);
+                            let new_path = Path {
+                                segments: new.segments.clone().into_iter().chain(kept_segments).collect(),
+                                ..new.clone()
+                            };
+
                             GenericItem::$ty($ty {
-                                path_aggregate: it.clone().path_aggregate(),
-                                ..it.clone()
+                                path_aggregate: it.path_aggregate().clone().push(new_path),
+                                ..it
                             })
                         }
                         )+
                         GenericItem::Module(m) => {
-                            let kept_segments = m
-                                .clone()
-                                .path()
+                            let kept_segments = <Module as PathUtils>::path(&m)
                                 .segments
+                                .clone()
                                 .into_iter()
                                 .skip(original.segments.len());
-                            let mut new_path = new.clone();
-                            new_path.segments.extend(kept_segments);
-                            let new_items: FfiItems = m
+                            let new_path = Path {
+                                segments: new.segments.clone().into_iter().chain(kept_segments).collect(),
+                                ..new.clone()
+                            };
+
+                            let new_items = m
                                 .items
                                 .items()
-                                .map(|it| handle_item(it.clone(), original.clone(), new.clone()))
+                                .map(|it| handle_item(it, &original, &new))
                                 .collect();
+
                             GenericItem::Module(Module {
-                                path_aggregate: m.clone().path_aggregate().push(new_path.clone()),
-                                items: new_items.clone(),
-                                ..m.clone()
+                                path_aggregate: m.path_aggregate().clone().push(new_path),
+                                items: new_items,
+                                ..m
                             })
                         }
                     }
                 };
             }
+
             map! {
                 Type,
                 Struct,
@@ -141,22 +147,17 @@ impl PathUtils for Module {
                 Static,
             }
         }
-        let new_aggregate = self.path_aggregate.push(path.clone());
-        let diff = self.path_aggregate.diff(&new_aggregate);
-        let new_module = diff.into_iter().fold(self.clone(), |m, p| {
-            let new_items: FfiItems = self
-                .items
-                .items()
-                .map(|it| handle_item(it.clone(), m.path.clone(), p.clone()))
-                .collect();
-            Module {
-                items: new_items.clone(),
-                ..m.clone()
-            }
-        });
+
+        let new_items = self
+            .items
+            .items()
+            .map(|it| handle_item(it, <Self as PathUtils>::path(&self), &path))
+            .collect();
+
         Module {
-            path_aggregate: new_aggregate.clone(),
-            ..new_module.clone()
+            path_aggregate: self.path_aggregate.push(path),
+            items: new_items,
+            ..self
         }
     }
 
