@@ -959,6 +959,8 @@ pub const S_IFDIR: mode_t = 0o4_0000;
 pub const S_IFREG: mode_t = 0o10_0000;
 pub const S_IFLNK: mode_t = 0o12_0000;
 pub const S_IFSOCK: mode_t = 0o14_0000;
+pub const S_IFDOOR: mode_t = 0o15_0000;
+pub const S_IFPORT: mode_t = 0o16_0000;
 pub const S_IFMT: mode_t = 0o17_0000;
 pub const S_IEXEC: mode_t = 0o0100;
 pub const S_IWRITE: mode_t = 0o0200;
@@ -1339,9 +1341,12 @@ pub const RLIMIT_AS: c_int = RLIMIT_VMEM;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: rlim_t = 7;
 pub const RLIM_INFINITY: rlim_t = 0xfffffffffffffffd;
+pub const RLIM_SAVED_MAX: rlim_t = 0xfffffffffffffffe;
+pub const RLIM_SAVED_CUR: rlim_t = 0xffffffffffffffff;
 
 pub const RUSAGE_SELF: c_int = 0;
 pub const RUSAGE_CHILDREN: c_int = -1;
+pub const RUSAGE_LWP: c_int = 1;
 
 pub const MADV_NORMAL: c_int = 0;
 pub const MADV_RANDOM: c_int = 1;
