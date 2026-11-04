@@ -1359,7 +1359,7 @@ pub const F_APP: c_int = 128;
 pub const F_BADJ: c_int = 256;
 pub const L_ctermid: usize = 9;
 pub const L_tmpnam: c_int = 7;
-pub const TMP_MAX: crate::int32_t = 2_147_483_647;
+pub const TMP_MAX: c_int = 2_147_483_647;
 
 pub const P_tmpdir: *const c_char = cstr!("/tmp");
 
