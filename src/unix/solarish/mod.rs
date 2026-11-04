@@ -36,6 +36,7 @@ pub type socklen_t = c_uint;
 pub type sa_family_t = u16;
 pub type pthread_t = c_uint;
 pub type pthread_key_t = c_uint;
+pub type Lmid_t = c_ulong;
 pub type thread_t = c_uint;
 pub type blksize_t = c_int;
 pub type nl_item = c_int;
@@ -308,6 +309,17 @@ s! {
         pub dli_fbase: *mut c_void,
         pub dli_sname: *const c_char,
         pub dli_saddr: *mut c_void,
+    }
+
+    pub struct Dl_serpath {
+        pub dls_name: *mut c_char,
+        pub dls_flags: c_uint,
+    }
+
+    pub struct Dl_serinfo {
+        pub dls_size: size_t,
+        pub dls_cnt: c_uint,
+        pub dls_serpath: [crate::Dl_serpath; 1],
     }
 
     pub struct stat {
@@ -1823,6 +1835,32 @@ pub const RTLD_NODELETE: c_int = 0x1000;
 pub const RTLD_FIRST: c_int = 0x2000;
 pub const RTLD_CONFGEN: c_int = 0x10000;
 
+pub const RTLD_DL_SYMENT: c_int = 1;
+pub const RTLD_DL_LINKMAP: c_int = 2;
+
+pub const RTLD_DI_LMID: c_int = 1;
+pub const RTLD_DI_LINKMAP: c_int = 2;
+pub const RTLD_DI_CONFIGADDR: c_int = 3;
+pub const RTLD_DI_SERINFO: c_int = 4;
+pub const RTLD_DI_SERINFOSIZE: c_int = 5;
+pub const RTLD_DI_ORIGIN: c_int = 6;
+pub const RTLD_DI_PROFILENAME: c_int = 7;
+pub const RTLD_DI_PROFILEOUT: c_int = 8;
+pub const RTLD_DI_GETSIGNAL: c_int = 9;
+pub const RTLD_DI_SETSIGNAL: c_int = 10;
+pub const RTLD_DI_ARGSINFO: c_int = 11;
+pub const RTLD_DI_MMAPS: c_int = 12;
+pub const RTLD_DI_MMAPCNT: c_int = 13;
+pub const RTLD_DI_DEFERRED: c_int = 14;
+pub const RTLD_DI_DEFERRED_SYM: c_int = 15;
+
+// link.h
+pub const LM_ID_BASE: crate::Lmid_t = 0x00;
+pub const LM_ID_LDSO: crate::Lmid_t = 0x01;
+pub const LM_ID_BRAND: crate::Lmid_t = 0xfd;
+pub const LM_ID_NONE: crate::Lmid_t = 0xfe;
+pub const LM_ID_NEWLM: crate::Lmid_t = 0xff;
+
 pub const PORT_SOURCE_AIO: c_int = 1;
 pub const PORT_SOURCE_TIMER: c_int = 2;
 pub const PORT_SOURCE_USER: c_int = 3;
@@ -2372,6 +2410,15 @@ extern "C" {
     pub fn labs(i: c_long) -> c_long;
     pub fn rand() -> c_int;
     pub fn srand(seed: c_uint);
+    pub fn dlmopen(lmid: crate::Lmid_t, filename: *const c_char, flag: c_int) -> *mut c_void;
+    pub fn dladdr1(
+        addr: *mut c_void,
+        info: *mut crate::Dl_info,
+        extra_info: *mut *mut c_void,
+        flags: c_int,
+    ) -> c_int;
+    pub fn dlinfo(handle: *mut c_void, request: c_int, p: *mut c_void) -> c_int;
+
     pub fn getentropy(buf: *mut c_void, buflen: size_t) -> c_int;
     pub fn getrandom(bbuf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
 
