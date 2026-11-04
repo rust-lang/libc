@@ -164,8 +164,6 @@ pub const _CS_PATH: c_int = 65;
 pub const _PATH_BSHELL: *const c_char = cstr!("/usr/bin/sh");
 
 extern "C" {
-    pub fn fexecve(fd: c_int, argv: *const *mut c_char, envp: *const *mut c_char) -> c_int;
-
     pub fn mincore(addr: *mut c_void, len: size_t, vec: *mut c_char) -> c_int;
 
     pub fn door_call(d: c_int, params: *mut door_arg_t) -> c_int;
