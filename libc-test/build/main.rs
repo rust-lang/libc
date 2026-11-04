@@ -1069,7 +1069,7 @@ fn test_solarish(t: &Target) {
 
     cfg.rename_struct_ty(move |ty| match ty {
         "FILE" => Some("__FILE".to_string()),
-        "DIR" | "Dl_info" => Some(ty.to_string()),
+        "DIR" | "Dl_info" | "Dl_serinfo" | "Dl_serpath" => Some(ty.to_string()),
         t if t.ends_with("_t") => Some(t.to_string()),
         _ => None,
     });
