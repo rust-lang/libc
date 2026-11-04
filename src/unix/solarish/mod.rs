@@ -2926,6 +2926,22 @@ extern "C" {
     ) -> c_int;
 
     pub fn strsep(string: *mut *mut c_char, delim: *const c_char) -> *mut c_char;
+    pub fn strlcpy(dst: *mut c_char, src: *const c_char, siz: size_t) -> size_t;
+    pub fn strlcat(dst: *mut c_char, src: *const c_char, siz: size_t) -> size_t;
+    pub fn strnstr(big: *const c_char, little: *const c_char, len: size_t) -> *mut c_char;
+    pub fn strchrnul(s: *const c_char, c: c_int) -> *mut c_char;
+    pub fn memmem(
+        haystack: *const c_void,
+        haystacklen: size_t,
+        needle: *const c_void,
+        needlelen: size_t,
+    ) -> *mut c_void;
+    pub fn ffs(i: c_int) -> c_int;
+    pub fn ffsl(i: c_long) -> c_int;
+    pub fn ffsll(i: c_longlong) -> c_int;
+    pub fn fls(i: c_int) -> c_int;
+    pub fn flsl(i: c_long) -> c_int;
+    pub fn flsll(i: c_longlong) -> c_int;
 
     pub fn getisax(array: *mut u32, n: c_uint) -> c_uint;
 
