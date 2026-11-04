@@ -153,6 +153,28 @@ impl Debug for DebugFfiItems {
     }
 }
 
+// [NOTE]: for debugging purposes only. Pretty prints a refined type for
+// syn::UseTree.
+#[derive(Clone)]
+struct PrettyUseTree<'a>(&'a RefinedUseTree);
+
+impl Debug for PrettyUseTree<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(&refined_tree_to_string(&self.0))
+    }
+}
+
+fn refined_tree_to_string(t: &RefinedUseTree) -> String {
+    match t {
+        RefinedUseTree::Path(p) => {
+            format!("{}::{}", p.ident, refined_tree_to_string(&p.tree))
+        }
+        RefinedUseTree::Name(n) => format!("{}", n.ident),
+        RefinedUseTree::Rename(r) => format!("{} as {}", r.ident, r.rename),
+        RefinedUseTree::Glob => format!("*"),
+    }
+}
+
 impl From<FfiItems> for DebugFfiItems {
     fn from(
         FfiItems {
@@ -269,6 +291,23 @@ impl FfiItems {
             semi: None,
         };
 
+        /*
+          [TODO]: the idea here is to change this into using a state monad that
+          lets us worry not about mutable state (even though syn's visitor
+          interface is mutable in nature, it would hide those details from us.)
+          This would carry both the `current_module` state that is now part of
+          FfiItems, as well as the unique ID that is assigned to each parsed
+          item. Then, we can get rid of the path_aggregate field of each of the
+          parsed items and the whole machinery built around it. Once we're
+          actually generating the test templates, we'll have to carry around
+          both the whole-crate FfiItems as well as the FfiItems specific to the
+          module for which the current test is being generated. That may not
+          need any specific type to carry the state because the whole-crate
+          FfiItems would only be needed up to filtering. That's when, for each
+          given item, we search its unique ID in a whole-crate traversal, such
+          that we run the user-configured skip with each of the occurrences of
+          the item in question.
+        */
         self.visit_item_mod(&file_mod);
 
         let root_module = Module {
@@ -870,32 +909,8 @@ fn resolve_one(state: PassPair) -> Vec<Resolution> {
             .items
             .uses
             .iter()
-            .map(|it| {
-                // [NOTE]: we use a dedicated type so as to avoid having the
-                // overarching call to the Debug implementation of the container
-                // cause the inner strings to be quoted.
-                #[derive(Clone)]
-                struct PrettyUseTree<'a>(&'a RefinedUseTree);
-
-                impl Debug for PrettyUseTree<'_> {
-                    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-                        f.pad(&refined_tree_to_string(&self.0))
-                    }
-                }
-
-                fn refined_tree_to_string(t: &RefinedUseTree) -> String {
-                    match t {
-                        RefinedUseTree::Path(p) => {
-                            format!("{}::{}", p.ident, refined_tree_to_string(&p.tree))
-                        }
-                        RefinedUseTree::Name(n) => format!("{}", n.ident),
-                        RefinedUseTree::Rename(r) => format!("{} as {}", r.ident, r.rename),
-                        RefinedUseTree::Glob => format!("*"),
-                    }
-                }
-
-                PrettyUseTree(&it.tree)
-            })
+            .map(|RefinedUse { tree, .. }| tree)
+            .map(PrettyUseTree)
             .collect::<Vec<_>>(),
     );
 
@@ -930,6 +945,16 @@ fn resolve_one(state: PassPair) -> Vec<Resolution> {
 /// The other element of the pair is the whole-crate module tree. That is used to resolve ancestor
 /// paths (when `super` is found) and absolute paths (when `crate` is found.)
 fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
+    macro_rules! log {
+        ($msg:literal $(, $complement:expr)* $(,)?) => {
+            println!(
+                "[resolve_use {:?}] {}",
+                PrettyUseTree(&(r#use.tree)),
+                format_args!($msg $(, $complement)*),
+            );
+        };
+    }
+
     macro_rules! single_item {
         ($field:ident: $it:expr) => {
             return Resolution::Resolved(FfiItems {
@@ -940,10 +965,11 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     }
 
     match r#use.tree {
-        RefinedUseTree::Name(UseName { ident }) => {
-            println!(
-                "[resolve_use] entered name resolution case with {} in module {}",
-                ident, state.subtree.cached_path,
+        RefinedUseTree::Name(UseName { ref ident }) => {
+            log!(
+                "entered name resolution case with {} in module {}",
+                ident,
+                state.subtree.cached_path,
             );
 
             // [NOTE]: self may not appear as the name basecase of a well-formed
@@ -989,8 +1015,8 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             }
         }
         RefinedUseTree::Glob => {
-            println!(
-                "[resolve_use] entered glob resolution case in module {}",
+            log!(
+                "entered glob resolution case in module {}",
                 if &*state.subtree.cached_path == "" {
                     "root"
                 } else {
@@ -1000,9 +1026,13 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
 
             Resolution::Resolved(state.subtree.items)
         }
-        RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
-            println!(
-                "[resolve_use] entered rename resolution case with {:?} in module {}",
+        RefinedUseTree::Rename(UseRename {
+            ref ident,
+            ref rename,
+            ..
+        }) => {
+            log!(
+                "entered rename resolution case with {:?} in module {}",
                 UseRename {
                     ident: ident.clone(),
                     as_token: syn::parse_quote! { as },
@@ -1074,10 +1104,14 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             }
         }
 
-        RefinedUseTree::Path(RefinedUsePath { ident, tree }) => {
-            println!(
-                "[resolve_use] entered path resolution case with {} in module {}",
-                ident, state.subtree.cached_path,
+        RefinedUseTree::Path(RefinedUsePath {
+            ref ident,
+            ref tree,
+        }) => {
+            log!(
+                "entered path resolution case with {} in module {}",
+                ident,
+                state.subtree.cached_path,
             );
 
             let new_state = if is_self(&ident) {
@@ -1109,9 +1143,11 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 return Resolution::Unresolved;
             };
 
+            // [FIXME]: remove the below clone once debugging is done and the
+            // logging macro invocation above is removed.
             resolve_use(
                 RefinedUse {
-                    tree: *tree,
+                    tree: *tree.clone(),
                     ..r#use
                 },
                 new_state,
@@ -1274,7 +1310,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
         src.iter()
             .map(|r| {
                 if let Resolution::Resolved(it) = r {
-                    format!("resolved: {:?}", DebugFfiItems::from(it.clone())).into()
+                    format!("resolved: {:?}", DebugFfiItems::from(it.clone()))
                 } else {
                     format!("unresolved")
                 }

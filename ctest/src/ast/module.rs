@@ -1,8 +1,5 @@
 use std::cmp::Ordering;
-use std::ops::{
-    self,
-    Not,
-};
+use std::ops;
 
 use syn::Path;
 use syn::punctuated::Punctuated;
@@ -203,7 +200,6 @@ impl PathUtils for Module {
         let new_items = self
             .items
             .items()
-            .filter(|it| matches!(it, GenericItem::Module(_)).not())
             .map(|it| {
                 macro_rules! exe {
                     ($($ty:tt),+ $(,)?) => {

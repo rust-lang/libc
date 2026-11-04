@@ -696,11 +696,10 @@ impl<'a> TranslateHelper<'a> {
         helper
     }
 
-    /// Skips entire items such as structs, constants, and aliases from being
-    /// tested.
+    /// Skips entire items such as structs, constants, and aliases from being tested.
     ///
-    /// Does not skip specific tests or specific fields. If `skip_private` is
-    /// `true`, it will skip tests for all private items.
+    /// Does not skip specific tests or specific fields. If `skip_private` is `true`, it will skip
+    /// tests for all private items.
     fn filter_ffi_items(&mut self) {
         fn skipper(items: &mut FfiItems, generator: &TestGenerator) {
             let skipped = items.aliases.extract_if(.., |alias| {
@@ -711,7 +710,7 @@ impl<'a> TranslateHelper<'a> {
                 // crate.)
                 generator.skips.iter().any(|f| {
                     alias
-                        .with_variations(|it| f(&MapInput::CEnumType(Type::path(&it))))
+                        .with_variations(|it| f(&MapInput::CEnumType(&it.cached_path)))
                         .into_iter()
                         .any(convert::identity)
                 })
