@@ -35,8 +35,10 @@ execlp
 execv
 execve
 execvp
+explicit_bzero
 fork
 icmp6_filter
+memrchr
 posix_fadvise
 posix_fallocate
 posix_spawn_file_actions_addfchdir_np
@@ -44,6 +46,12 @@ pthread_attr_get_np
 pthread_attr_getstackaddr
 pthread_attr_setstack
 ptsname_r
+strcasestr_l
+strcoll_l
+strerror_l
+strerrordesc_np
+strerrorname_np
+strxfrm_l
 syncfs
 system
 timerfd_create
