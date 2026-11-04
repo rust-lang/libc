@@ -286,6 +286,12 @@ extern "C" {
     pub fn pwritev(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off_t) -> ssize_t;
     pub fn getpagesizes2(pagesize: *mut size_t, nelem: c_int) -> c_int;
 
+    pub fn execvpe(
+        file: *const c_char,
+        argv: *const *mut c_char,
+        envp: *const *mut c_char,
+    ) -> c_int;
+
     pub fn posix_spawn_file_actions_addfchdir_np(
         file_actions: *mut crate::posix_spawn_file_actions_t,
         fd: c_int,

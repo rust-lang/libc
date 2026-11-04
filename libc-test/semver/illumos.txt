@@ -35,6 +35,7 @@ execlp
 execv
 execve
 execvp
+execvpe
 fork
 icmp6_filter
 posix_fadvise
