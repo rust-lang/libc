@@ -13,7 +13,6 @@ IP_BOUND_IF
 IP_DONTFRAG
 IP_PKTINFO
 IP_TOS
-IP_TTL
 LIO_NOP
 LIO_NOWAIT
 LIO_READ
@@ -48,7 +47,6 @@ aiocb
 arc4random
 arc4random_buf
 arc4random_uniform
-bind
 execl
 execle
 execlp
