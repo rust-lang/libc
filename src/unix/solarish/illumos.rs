@@ -12,6 +12,8 @@ use crate::{
 
 pub type lgrp_rsrc_t = c_int;
 pub type lgrp_affinity_t = c_int;
+pub type msgqnum_t = c_ulong;
+pub type msglen_t = c_ulong;
 
 s! {
     pub struct aiocb {
@@ -40,6 +42,39 @@ s! {
         pub shm_dtime: crate::time_t,
         pub shm_ctime: crate::time_t,
         shm_pad4: Padding<[i64; 4]>,
+    }
+
+    pub struct semid_ds {
+        pub sem_perm: crate::ipc_perm,
+        sem_base: *mut c_void,
+        pub sem_nsems: c_ushort,
+        pub sem_otime: crate::time_t,
+        pub sem_ctime: crate::time_t,
+        sem_binary: c_int,
+        sem_pad3: Padding<[c_long; 3]>,
+    }
+
+    pub struct sembuf {
+        pub sem_num: c_ushort,
+        pub sem_op: c_short,
+        pub sem_flg: c_short,
+    }
+
+    pub struct msqid_ds {
+        pub msg_perm: crate::ipc_perm,
+        msg_first: *mut c_void,
+        msg_last: *mut c_void,
+        pub msg_cbytes: msglen_t,
+        pub msg_qnum: msgqnum_t,
+        pub msg_qbytes: msglen_t,
+        pub msg_lspid: crate::pid_t,
+        pub msg_lrpid: crate::pid_t,
+        pub msg_stime: crate::time_t,
+        pub msg_rtime: crate::time_t,
+        pub msg_ctime: crate::time_t,
+        msg_cv: c_short,
+        msg_qnum_cv: c_short,
+        msg_pad4: Padding<[c_long; 3]>,
     }
 
     pub struct fil_info {
@@ -229,6 +264,25 @@ pub const SI_ADDRESS_WIDTH: c_int = 520;
 pub const IP_MINTTL: c_int = 0x1c;
 pub const IPV6_MINHOPCOUNT: c_int = 0x2f;
 
+// sys/sem.h
+pub const SEM_A: c_int = 0o200;
+pub const SEM_R: c_int = 0o400;
+pub const SEM_UNDO: c_int = 0o10000;
+pub const GETNCNT: c_int = 3;
+pub const GETPID: c_int = 4;
+pub const GETVAL: c_int = 5;
+pub const GETALL: c_int = 6;
+pub const GETZCNT: c_int = 7;
+pub const SETVAL: c_int = 8;
+pub const SETALL: c_int = 9;
+
+// sys/msg.h
+pub const MSG_R: c_int = 0o400;
+pub const MSG_W: c_int = 0o200;
+pub const MSG_RWAIT: c_int = 0o1000;
+pub const MSG_WWAIT: c_int = 0o2000;
+pub const MSG_NOERROR: c_int = 0o10000;
+
 // sys/timerfd.h
 pub const TFD_CLOEXEC: i32 = 0o2000000;
 pub const TFD_NONBLOCK: i32 = 0o4000;
@@ -237,6 +291,26 @@ pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 
 extern "C" {
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
+
+    pub fn semget(key: crate::key_t, nsems: c_int, semflg: c_int) -> c_int;
+    pub fn semop(semid: c_int, sops: *mut sembuf, nsops: size_t) -> c_int;
+    pub fn semtimedop(
+        semid: c_int,
+        sops: *mut sembuf,
+        nsops: size_t,
+        timeout: *const crate::timespec,
+    ) -> c_int;
+    pub fn semctl(semid: c_int, semnum: c_int, cmd: c_int, ...) -> c_int;
+    pub fn msgget(key: crate::key_t, msgflg: c_int) -> c_int;
+    pub fn msgsnd(msqid: c_int, msgp: *const c_void, msgsz: size_t, msgflg: c_int) -> c_int;
+    pub fn msgrcv(
+        msqid: c_int,
+        msgp: *mut c_void,
+        msgsz: size_t,
+        msgtyp: c_long,
+        msgflg: c_int,
+    ) -> ssize_t;
+    pub fn msgctl(msqid: c_int, cmd: c_int, buf: *mut msqid_ds) -> c_int;
 
     pub fn epoll_pwait(
         epfd: c_int,
