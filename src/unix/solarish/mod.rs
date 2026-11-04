@@ -878,6 +878,57 @@ pub const CLD_TRAPPED: c_int = 4;
 pub const CLD_STOPPED: c_int = 5;
 pub const CLD_CONTINUED: c_int = 6;
 
+// sys/siginfo.h
+pub const SI_NOINFO: c_int = 32767;
+pub const SI_DTRACE: c_int = 2050;
+pub const SI_RCTL: c_int = 2049;
+pub const SI_USER: c_int = 0;
+pub const SI_LWP: c_int = -1;
+pub const SI_QUEUE: c_int = -2;
+pub const SI_TIMER: c_int = -3;
+pub const SI_ASYNCIO: c_int = -4;
+pub const SI_MESGQ: c_int = -5;
+
+pub const TRAP_BRKPT: c_int = 1;
+pub const TRAP_TRACE: c_int = 2;
+pub const TRAP_RWATCH: c_int = 3;
+pub const TRAP_WWATCH: c_int = 4;
+pub const TRAP_XWATCH: c_int = 5;
+pub const TRAP_DTRACE: c_int = 6;
+
+pub const POLL_IN: c_int = 1;
+pub const POLL_OUT: c_int = 2;
+pub const POLL_MSG: c_int = 3;
+pub const POLL_ERR: c_int = 4;
+pub const POLL_PRI: c_int = 5;
+pub const POLL_HUP: c_int = 6;
+
+// sys/machsig.h
+pub const ILL_ILLOPC: c_int = 1;
+pub const ILL_ILLOPN: c_int = 2;
+pub const ILL_ILLADR: c_int = 3;
+pub const ILL_ILLTRP: c_int = 4;
+pub const ILL_PRVOPC: c_int = 5;
+pub const ILL_PRVREG: c_int = 6;
+pub const ILL_COPROC: c_int = 7;
+pub const ILL_BADSTK: c_int = 8;
+
+pub const FPE_INTDIV: c_int = 1;
+pub const FPE_INTOVF: c_int = 2;
+pub const FPE_FLTDIV: c_int = 3;
+pub const FPE_FLTOVF: c_int = 4;
+pub const FPE_FLTUND: c_int = 5;
+pub const FPE_FLTRES: c_int = 6;
+pub const FPE_FLTINV: c_int = 7;
+pub const FPE_FLTSUB: c_int = 8;
+
+pub const SEGV_MAPERR: c_int = 1;
+pub const SEGV_ACCERR: c_int = 2;
+
+pub const BUS_ADRALN: c_int = 1;
+pub const BUS_ADRERR: c_int = 2;
+pub const BUS_OBJERR: c_int = 3;
+
 pub const IP_RECVDSTADDR: c_int = 0x7;
 pub const IP_PKTINFO: c_int = 0x1a;
 pub const IP_DONTFRAG: c_int = 0x1b;
@@ -1029,6 +1080,17 @@ pub const SIGVTALRM: c_int = 28;
 pub const SIGPROF: c_int = 29;
 pub const SIGXCPU: c_int = 30;
 pub const SIGXFSZ: c_int = 31;
+pub const SIGWAITING: c_int = 32;
+pub const SIGLWP: c_int = 33;
+pub const SIGFREEZE: c_int = 34;
+pub const SIGTHAW: c_int = 35;
+pub const SIGCANCEL: c_int = 36;
+pub const SIGLOST: c_int = 37;
+pub const SIGXRES: c_int = 38;
+pub const SIGJVM1: c_int = 39;
+pub const SIGJVM2: c_int = 40;
+
+pub const SIG2STR_MAX: usize = 32;
 
 pub const WNOHANG: c_int = 0x40;
 pub const WUNTRACED: c_int = 0x04;
@@ -2785,6 +2847,14 @@ extern "C" {
         link_name = "__posix_sigwait"
     )]
     pub fn sigwait(set: *const sigset_t, sig: *mut c_int) -> c_int;
+    pub fn sigwaitinfo(set: *const sigset_t, info: *mut siginfo_t) -> c_int;
+    pub fn sigtimedwait(
+        set: *const sigset_t,
+        info: *mut siginfo_t,
+        timeout: *const crate::timespec,
+    ) -> c_int;
+    pub fn sig2str(signum: c_int, str: *mut c_char) -> c_int;
+    pub fn str2sig(str: *const c_char, signum: *mut c_int) -> c_int;
     pub fn pthread_atfork(
         prepare: Option<unsafe extern "C" fn()>,
         parent: Option<unsafe extern "C" fn()>,
