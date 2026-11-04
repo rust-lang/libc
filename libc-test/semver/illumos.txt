@@ -29,13 +29,6 @@ TFD_NONBLOCK
 TFD_TIMER_ABSTIME
 TFD_TIMER_CANCEL_ON_SET
 _CS_PATH
-execl
-execle
-execlp
-execv
-execve
-execvp
-fork
 icmp6_filter
 posix_fadvise
 posix_fallocate
@@ -45,7 +38,6 @@ pthread_attr_getstackaddr
 pthread_attr_setstack
 ptsname_r
 syncfs
-system
 timerfd_create
 timerfd_gettime
 timerfd_settime
