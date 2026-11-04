@@ -1,6 +1,11 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
 use std::cmp::Ordering;
+use std::fmt::{
+    self,
+    Debug,
+    Formatter,
+};
 use std::ops::{
     self,
     ControlFlow,
@@ -13,6 +18,7 @@ use std::{
 };
 
 use proc_macro2::Span;
+use quote::ToTokens;
 use syn::punctuated::Punctuated;
 use syn::token::{
     Brace,
@@ -56,6 +62,98 @@ use crate::{
     Union,
     ast,
 };
+
+// [NOTE]: for use only in printf-debugging. It doesn't automatically derive
+// Debug to selectively print out the fields I'm interested in while debugging.
+#[derive(Clone)]
+struct DebugFfiItems {
+    aliases: Vec<Type>,
+    structs: Vec<Struct>,
+    unions: Vec<Union>,
+    constants: Vec<Const>,
+    foreign_functions: Vec<Fn>,
+    foreign_statics: Vec<Static>,
+    modules: Vec<Module>,
+}
+
+impl Debug for DebugFfiItems {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let mut dbg_struct = f.debug_struct("DebugFfiItems");
+
+        #[derive(Clone)]
+        struct PrettyPath<'a>(&'a Path);
+
+        impl Debug for PrettyPath<'_> {
+            fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+                f.pad(&self.0.to_token_stream().to_string())
+            }
+        }
+
+        macro_rules! pretty_print {
+            ($($field:tt: $ty:tt),+ $(,)?) => {$(
+                dbg_struct.field_with(stringify!($field), |f| {
+                    f.pad("[ ")
+                        .and_then(|_| {
+                            self.$field
+                                .iter()
+                                .map(|it| {
+                                    f.pad(&format!(
+                                        concat!(
+                                            stringify!($ty),
+                                            " {{ path: {}, path_aggregate: {:?} }}",
+                                        ),
+                                        it.path.to_token_stream().to_string(),
+                                        (&it.path_aggregate)
+                                            .into_iter()
+                                            .map(PrettyPath)
+                                            .collect::<Vec<_>>(),
+                                    ))
+                                })
+                                .collect::<fmt::Result>()
+                        })
+                        .and_then(|_| f.pad(" ]"))
+                });
+            )+};
+        }
+
+        pretty_print! {
+            aliases: Type,
+            structs: Struct,
+            unions: Union,
+            constants: Const,
+            foreign_functions: Fn,
+            foreign_statics: Static,
+            modules: Module,
+        }
+
+        dbg_struct.finish()
+    }
+}
+
+impl From<FfiItems> for DebugFfiItems {
+    fn from(
+        FfiItems {
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+            modules,
+            ..
+        }: FfiItems,
+    ) -> Self {
+        Self {
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+            modules,
+        }
+    }
+}
 
 /// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
 ///
@@ -405,6 +503,7 @@ impl FromIterator<GenericItem> for FfiItems {
                 let start =
                     partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)).not());
                 let end = partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)));
+
                 let $field = if start >= end {
                     Vec::new()
                 } else {
@@ -798,7 +897,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 "entered rename resolution case with {:?} in module {}",
                 UseRename {
                     ident: ident.clone(),
-                    as_token: syn::parse_quote! {as},
+                    as_token: syn::parse_quote! { as },
                     rename: rename.clone(),
                 },
                 state.subtree.cached_path,
@@ -1062,6 +1161,19 @@ fn update_tree(
 /// Note that, during merging, the items to be merged may end up duplicating existing items on
 /// `dst`. It is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
 fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
+    println!(
+        "preprocessed_items: {:#?}",
+        src.iter()
+            .map(|r| {
+                if let Resolution::Resolved(it) = r {
+                    format!("resolved: {:?}", DebugFfiItems::from(it.clone())).into()
+                } else {
+                    format!("unresolved")
+                }
+            })
+            .collect::<Vec<_>>(),
+    );
+
     // [NOTE]: we collect all items here because we want the actions in the
     // mapping to take place in whole before we start folding over the items to
     // merge.
@@ -1086,15 +1198,13 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                  ..
              }| {
                 macro_rules! seek_parent {
-                    ($($it:tt),+ $(,)?) => {
-                        seek_parent!(@@ $($it)+)
-                    };
+                    ($($it:tt),+ $(,)?) => { seek_parent!(@@ $($it)+) };
+
                     (@@ $head:tt $($tail:tt)*) => {
                         seek_parent!(@ $head).or_else(|| seek_parent!(@@ $($tail)*))
                     };
-                    (@@) => {
-                        None
-                    };
+                    (@@) => { None };
+
                     (@ $field:tt) => {{
                         $field.first().map(|it| {
                             it.path
@@ -1172,7 +1282,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 // modules of the subtrees to merge because otherwise merged
                 // modules can increase the number of use declarations in the
                 // crate's module tree, which is one cause of non-termination.
-                let new_modules_without_uses: Vec<_> =
+                let new_modules_without_uses =
                     new_items.modules.into_iter().map(remove_uses).collect();
 
                 FfiItems {
@@ -1182,6 +1292,15 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
             },
         )
         .collect();
+
+    println!(
+        "processed_items: {:#?}",
+        processed_items
+            .iter()
+            .cloned()
+            .map(|it| format!("{:?}", DebugFfiItems::from(it)))
+            .collect::<Vec<_>>(),
+    );
 
     processed_items.into_iter().fold(
         state,
@@ -1225,6 +1344,7 @@ fn sync_driver(items: &FfiItems, tree: Module) -> Module {
                 )+}
             };
         }
+
         exe! {
             Type,
             Struct,
@@ -1242,7 +1362,20 @@ fn sync_driver(items: &FfiItems, tree: Module) -> Module {
 /// integrate the paths from `reference`'s path aggregate store that are not part of any one of
 /// those item occurrences.
 ///
-/// Note this affects only one concrete item's occurrences throughout the crate.
+/// # Implementation notes
+///
+/// The strategy follows that for any given item `a`, its path aggregate is bound to be unique with
+/// respect to that of another item `b` so long as `a` is not an occurrence of `b` in another module
+/// of the crate's module tree. We thus define the relation `a ~ b` as one where `b` contains some
+/// path in its path aggregate that is also part of `a`'s path aggregate.
+///
+/// If we fix `a` and it holds that `a ~ b`, then it follows that there exists some non-empty set
+/// `B` of all occurrences `b` of `a` in the crate's module tree. Under the assumption that some two
+/// items `a` and `b` may only share path aggregates it they are of the same kind, the below
+/// strategy attempts to find akin path aggregates where `a ~ b` holds. This requires not for a
+/// single kind of item to be checked against the fixed point (here `reference`) because of the
+/// above assumption; Akin path aggregates will only be found for occurrences of the same item, and
+/// thus the same kind of item, in the crate's module tree.
 fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
     let akin = |agg: &PathAggregateStore| agg.akin(reference);
 
@@ -1287,6 +1420,7 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
                     }
                 };
             }
+
             exe! {
                 Type,
                 Struct,
@@ -1307,7 +1441,7 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
 /// Appends a new module-local item to an absolute path that does _not_ start with `crate`.
 ///
 /// This is used whenever we need to create paths for either items or modules.
-fn append_path(base: Path, new: Ident) -> Path {
+fn append_path(base: Path, new: &Ident) -> Path {
     if base.segments.is_empty() {
         syn::parse_quote! { #new }
     } else {
@@ -1369,7 +1503,7 @@ fn extract_single_link_name(attrs: &[syn::Attribute]) -> Option<BoxStr> {
 fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi) {
     let public = is_visible(&i.vis);
     let abi = abi.clone();
-    let path = append_path(table.current_module.clone(), i.sig.ident.clone());
+    let path = append_path(table.current_module.clone(), &i.sig.ident);
     let cached_path = ast::path_to_string(&path);
     let cached_ident = i.sig.ident.to_string().into_boxed_str();
     let parameters = i
@@ -1419,7 +1553,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
 fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, abi: &Abi) {
     let public = is_visible(&i.vis);
     let abi = abi.clone();
-    let path = append_path(table.current_module.clone(), i.ident.clone());
+    let path = append_path(table.current_module.clone(), &i.ident);
     let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
@@ -1439,7 +1573,7 @@ fn visit_foreign_item_static(table: &mut FfiItems, i: &syn::ForeignItemStatic, a
 
 fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
     let public = is_visible(&i.vis);
-    let path = append_path(table.current_module.clone(), i.ident.clone());
+    let path = append_path(table.current_module.clone(), &i.ident);
     let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
@@ -1456,7 +1590,7 @@ fn visit_item_type(table: &mut FfiItems, i: &syn::ItemType) {
 
 fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
     let public = is_visible(&i.vis);
-    let path = append_path(table.current_module.clone(), i.ident.clone());
+    let path = append_path(table.current_module.clone(), &i.ident);
     let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = match &i.fields {
@@ -1477,7 +1611,7 @@ fn visit_item_struct(table: &mut FfiItems, i: &syn::ItemStruct) {
 
 fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
     let public = is_visible(&i.vis);
-    let path = append_path(table.current_module.clone(), i.ident.clone());
+    let path = append_path(table.current_module.clone(), &i.ident);
     let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let fields = collect_fields(&i.fields.named);
@@ -1494,7 +1628,7 @@ fn visit_item_union(table: &mut FfiItems, i: &syn::ItemUnion) {
 
 fn visit_item_const(table: &mut FfiItems, i: &syn::ItemConst) {
     let public = is_visible(&i.vis);
-    let path = append_path(table.current_module.clone(), i.ident.clone());
+    let path = append_path(table.current_module.clone(), &i.ident);
     let cached_path = ast::path_to_string(&path);
     let cached_ident = i.ident.to_string().into_boxed_str();
     let ty = i.ty.deref().clone();
@@ -1551,7 +1685,7 @@ impl<'ast> Visit<'ast> for FfiItems {
             self.clone()
         } else {
             FfiItems {
-                current_module: append_path(self.current_module.clone(), ident.clone()),
+                current_module: append_path(self.current_module.clone(), &ident),
                 ..Default::default()
             }
         };
@@ -1591,12 +1725,10 @@ impl<'ast> Visit<'ast> for FfiItems {
             .flatten()
             .collect();
 
-        /*
-         * [NOTE]: this doesn't itself parse any items within the module because
-         * the only hook in syn::visit::Visit we have overridden is that of
-         * modules. In other words, this recurses only to attempt to find any
-         * child modules within the module currently being parsed.
-         */
+        // [NOTE]: this doesn't itself parse any items within the module because
+        // the only hook in syn::visit::Visit we have overridden is that of
+        // modules. In other words, this recurses only to attempt to find any
+        // child modules within the module currently being parsed.
         visit::visit_item_mod(&mut running_items, i);
         running_items.uses = uses;
 
@@ -1604,6 +1736,7 @@ impl<'ast> Visit<'ast> for FfiItems {
             *self = running_items;
         } else {
             let path = running_items.current_module.clone();
+
             self.modules.push(Module {
                 public: matches!(vis, Visibility::Public(_)),
                 cached_path: ast::path_to_string(&running_items.current_module),
@@ -1662,28 +1795,29 @@ mod test1 {
     }
 }
     "#;
+    let file = syn::parse_file(source).unwrap();
+
     fn remove_uses(it: FfiItems) -> FfiItems {
         let modules: Vec<_> = it
             .modules
-            .clone()
             .into_iter()
-            .map(|m| {
-                let items = remove_uses(m.items.clone());
-                Module { items, ..m.clone() }
+            .map(|m| Module {
+                items: remove_uses(m.items),
+                ..m
             })
             .collect();
+
         FfiItems {
             modules,
             uses: vec![],
-            ..it.clone()
+            ..it
         }
     }
-    let file = syn::parse_file(source).unwrap();
-    let items = FfiItems::default();
-    let mut items = items.clone();
+
+    let mut items = FfiItems::default();
     items.visit_file(&file);
-    let items = remove_uses(items.clone());
-    println!("{:#?}", items);
+
+    println!("{:#?}", remove_uses(items));
 }
 
 #[test]
