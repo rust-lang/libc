@@ -36,6 +36,7 @@ pub type socklen_t = c_uint;
 pub type sa_family_t = u16;
 pub type pthread_t = c_uint;
 pub type pthread_key_t = c_uint;
+pub type pthread_spinlock_t = pthread_mutex_t;
 pub type thread_t = c_uint;
 pub type blksize_t = c_int;
 pub type nl_item = c_int;
@@ -213,6 +214,23 @@ s! {
 
     pub struct pthread_rwlockattr_t {
         __pthread_rwlockattrp: *mut c_void,
+    }
+
+    pub struct pthread_barrier_t {
+        __pthread_barrier_count: u32,
+        __pthread_barrier_current: u32,
+        __pthread_barrier_cycle: u64,
+        __pthread_barrier_reserved: u64,
+        __pthread_barrier_lock: crate::pthread_mutex_t,
+        __pthread_barrier_cond: crate::pthread_cond_t,
+    }
+
+    pub struct pthread_barrierattr_t {
+        __pthread_barrierattrp: *mut c_void,
+    }
+
+    pub struct pthread_once_t {
+        __pthread_once_pad: [u64; 4],
     }
 
     pub struct dirent {
@@ -1308,6 +1326,20 @@ pub const PTHREAD_CREATE_DETACHED: c_int = 0x40;
 pub const PTHREAD_PROCESS_SHARED: c_int = 1;
 pub const PTHREAD_PROCESS_PRIVATE: c_ushort = 0;
 pub const PTHREAD_STACK_MIN: size_t = 4096;
+pub const PTHREAD_SCOPE_PROCESS: c_int = 0;
+pub const PTHREAD_SCOPE_SYSTEM: c_int = 0x01;
+pub const PTHREAD_EXPLICIT_SCHED: c_int = 0;
+pub const PTHREAD_INHERIT_SCHED: c_int = 1;
+pub const PTHREAD_PRIO_NONE: c_int = 0x0;
+pub const PTHREAD_PRIO_INHERIT: c_int = 0x10;
+pub const PTHREAD_PRIO_PROTECT: c_int = 0x20;
+pub const PTHREAD_MUTEX_STALLED: c_int = 0x0;
+pub const PTHREAD_MUTEX_ROBUST: c_int = 0x40;
+pub const PTHREAD_CANCEL_ENABLE: c_int = 0x00;
+pub const PTHREAD_CANCEL_DISABLE: c_int = 0x01;
+pub const PTHREAD_CANCEL_DEFERRED: c_int = 0x00;
+pub const PTHREAD_CANCEL_ASYNCHRONOUS: c_int = 0x02;
+pub const PTHREAD_BARRIER_SERIAL_THREAD: c_int = -2;
 
 pub const SIGSTKSZ: size_t = 8192;
 
@@ -1800,6 +1832,9 @@ pub const PTHREAD_RWLOCK_INITIALIZER: pthread_rwlock_t = pthread_rwlock_t {
     __pthread_rwlock_mutex: PTHREAD_MUTEX_INITIALIZER,
     __pthread_rwlock_readercv: PTHREAD_COND_INITIALIZER,
     __pthread_rwlock_writercv: PTHREAD_COND_INITIALIZER,
+};
+pub const PTHREAD_ONCE_INIT: pthread_once_t = pthread_once_t {
+    __pthread_once_pad: [0; 4],
 };
 pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: c_int = 2;
@@ -2457,6 +2492,180 @@ extern "C" {
     ) -> c_int;
     pub fn pthread_getname_np(tid: crate::pthread_t, name: *mut c_char, len: size_t) -> c_int;
     pub fn pthread_setname_np(tid: crate::pthread_t, name: *const c_char) -> c_int;
+
+    pub fn pthread_attr_getdetachstate(
+        attr: *const crate::pthread_attr_t,
+        detachstate: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_attr_getguardsize(
+        attr: *const crate::pthread_attr_t,
+        guardsize: *mut size_t,
+    ) -> c_int;
+    pub fn pthread_attr_setguardsize(attr: *mut crate::pthread_attr_t, guardsize: size_t) -> c_int;
+    pub fn pthread_attr_getinheritsched(
+        attr: *const crate::pthread_attr_t,
+        inheritsched: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_attr_setinheritsched(
+        attr: *mut crate::pthread_attr_t,
+        inheritsched: c_int,
+    ) -> c_int;
+    pub fn pthread_attr_getschedparam(
+        attr: *const crate::pthread_attr_t,
+        param: *mut crate::sched_param,
+    ) -> c_int;
+    pub fn pthread_attr_setschedparam(
+        attr: *mut crate::pthread_attr_t,
+        param: *const crate::sched_param,
+    ) -> c_int;
+    pub fn pthread_attr_getschedpolicy(
+        attr: *const crate::pthread_attr_t,
+        policy: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_attr_setschedpolicy(attr: *mut crate::pthread_attr_t, policy: c_int) -> c_int;
+    pub fn pthread_attr_getscope(attr: *const crate::pthread_attr_t, scope: *mut c_int) -> c_int;
+    pub fn pthread_attr_setscope(attr: *mut crate::pthread_attr_t, scope: c_int) -> c_int;
+
+    pub fn pthread_once(
+        once_control: *mut crate::pthread_once_t,
+        init_routine: Option<unsafe extern "C" fn()>,
+    ) -> c_int;
+    pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
+    pub fn pthread_setcancelstate(state: c_int, oldstate: *mut c_int) -> c_int;
+    pub fn pthread_setcanceltype(type_: c_int, oldtype: *mut c_int) -> c_int;
+    pub fn pthread_testcancel();
+    pub fn pthread_getschedparam(
+        thread: crate::pthread_t,
+        policy: *mut c_int,
+        param: *mut crate::sched_param,
+    ) -> c_int;
+    pub fn pthread_setschedparam(
+        thread: crate::pthread_t,
+        policy: c_int,
+        param: *const crate::sched_param,
+    ) -> c_int;
+    pub fn pthread_setschedprio(thread: crate::pthread_t, prio: c_int) -> c_int;
+    pub fn pthread_getconcurrency() -> c_int;
+    pub fn pthread_setconcurrency(new_level: c_int) -> c_int;
+
+    pub fn pthread_mutexattr_getpshared(
+        attr: *const crate::pthread_mutexattr_t,
+        pshared: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_setpshared(
+        attr: *mut crate::pthread_mutexattr_t,
+        pshared: c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_getprotocol(
+        attr: *const crate::pthread_mutexattr_t,
+        protocol: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_setprotocol(
+        attr: *mut crate::pthread_mutexattr_t,
+        protocol: c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_getprioceiling(
+        attr: *const crate::pthread_mutexattr_t,
+        prioceiling: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_setprioceiling(
+        attr: *mut crate::pthread_mutexattr_t,
+        prioceiling: c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_getrobust(
+        attr: *const crate::pthread_mutexattr_t,
+        robust: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_setrobust(
+        attr: *mut crate::pthread_mutexattr_t,
+        robust: c_int,
+    ) -> c_int;
+    pub fn pthread_mutexattr_gettype(
+        attr: *const crate::pthread_mutexattr_t,
+        type_: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_mutex_consistent(mutex: *mut crate::pthread_mutex_t) -> c_int;
+    pub fn pthread_mutex_getprioceiling(
+        mutex: *const crate::pthread_mutex_t,
+        prioceiling: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_mutex_setprioceiling(
+        mutex: *mut crate::pthread_mutex_t,
+        prioceiling: c_int,
+        old_ceiling: *mut c_int,
+    ) -> c_int;
+
+    pub fn pthread_condattr_getpshared(
+        attr: *const crate::pthread_condattr_t,
+        pshared: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_condattr_setpshared(
+        attr: *mut crate::pthread_condattr_t,
+        pshared: c_int,
+    ) -> c_int;
+
+    pub fn pthread_rwlock_timedrdlock(
+        rwlock: *mut crate::pthread_rwlock_t,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_timedwrlock(
+        rwlock: *mut crate::pthread_rwlock_t,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlockattr_getpshared(
+        attr: *const crate::pthread_rwlockattr_t,
+        pshared: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_rwlockattr_setpshared(
+        attr: *mut crate::pthread_rwlockattr_t,
+        pshared: c_int,
+    ) -> c_int;
+
+    pub fn pthread_spin_init(lock: *mut crate::pthread_spinlock_t, pshared: c_int) -> c_int;
+    pub fn pthread_spin_destroy(lock: *mut crate::pthread_spinlock_t) -> c_int;
+    pub fn pthread_spin_lock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+    pub fn pthread_spin_trylock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+    pub fn pthread_spin_unlock(lock: *mut crate::pthread_spinlock_t) -> c_int;
+
+    pub fn pthread_barrierattr_init(attr: *mut crate::pthread_barrierattr_t) -> c_int;
+    pub fn pthread_barrierattr_destroy(attr: *mut crate::pthread_barrierattr_t) -> c_int;
+    pub fn pthread_barrierattr_getpshared(
+        attr: *const crate::pthread_barrierattr_t,
+        pshared: *mut c_int,
+    ) -> c_int;
+    pub fn pthread_barrierattr_setpshared(
+        attr: *mut crate::pthread_barrierattr_t,
+        pshared: c_int,
+    ) -> c_int;
+    pub fn pthread_barrier_init(
+        barrier: *mut crate::pthread_barrier_t,
+        attr: *const crate::pthread_barrierattr_t,
+        count: c_uint,
+    ) -> c_int;
+    pub fn pthread_barrier_destroy(barrier: *mut crate::pthread_barrier_t) -> c_int;
+    pub fn pthread_barrier_wait(barrier: *mut crate::pthread_barrier_t) -> c_int;
+
+    pub fn pthread_key_create_once_np(
+        key: *mut crate::pthread_key_t,
+        destructor: Option<unsafe extern "C" fn(*mut c_void)>,
+    ) -> c_int;
+    pub fn pthread_mutex_reltimedlock_np(
+        mutex: *mut crate::pthread_mutex_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_cond_reltimedwait_np(
+        cond: *mut crate::pthread_cond_t,
+        mutex: *mut crate::pthread_mutex_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_reltimedrdlock_np(
+        rwlock: *mut crate::pthread_rwlock_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_reltimedwrlock_np(
+        rwlock: *mut crate::pthread_rwlock_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
     pub fn waitid(
         idtype: idtype_t,
         id: id_t,
