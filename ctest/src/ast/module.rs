@@ -268,14 +268,6 @@ impl Default for Module {
 // would likely be unintuitive to have its PartialEq not take into account.
 impl PartialEq for Module {
     fn eq(&self, other: &Self) -> bool {
-        if self.path == other.path {
-            assert_eq!(
-                self.path_aggregate, other.path_aggregate,
-                "path aggregates of module {} and {} are not synchronized",
-                self.cached_path, other.cached_path,
-            );
-        }
-
         self.public == other.public
             && self.path == other.path
             && self.path_aggregate == other.path_aggregate

@@ -18,7 +18,6 @@ use std::{
 };
 
 use proc_macro2::Span;
-use quote::ToTokens;
 use syn::punctuated::Punctuated;
 use syn::token::{
     Brace,
@@ -85,7 +84,7 @@ impl Debug for DebugFfiItems {
 
         impl Debug for PrettyPath<'_> {
             fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-                f.pad(&self.0.to_token_stream().to_string())
+                f.pad(&ast::path_to_string(self.0))
             }
         }
 
@@ -100,9 +99,9 @@ impl Debug for DebugFfiItems {
                                     f.pad(&format!(
                                         concat!(
                                             stringify!($ty),
-                                            " {{ path: {}, path_aggregate: {:?} }}",
+                                            " {{ path: {:?}, path_aggregate: {:?} }}",
                                         ),
-                                        it.path.to_token_stream().to_string(),
+                                        PrettyPath(&it.path),
                                         (&it.path_aggregate)
                                             .into_iter()
                                             .map(PrettyPath)
@@ -123,8 +122,32 @@ impl Debug for DebugFfiItems {
             constants: Const,
             foreign_functions: Fn,
             foreign_statics: Static,
-            modules: Module,
         }
+
+        dbg_struct.field_with("modules", |f| {
+            f.pad("[ ")
+                .and_then(|_| {
+                    self.modules
+                        .iter()
+                        .map(|m| {
+                            f.pad("[ ")
+                                .and_then(|_| {
+                                    f.pad(&format!(
+                                        "path: {:?}, path_aggregate: {:?}, items: {{ {:?} }}",
+                                        PrettyPath(&m.path),
+                                        (&m.path_aggregate)
+                                            .into_iter()
+                                            .map(PrettyPath)
+                                            .collect::<Vec<_>>(),
+                                        DebugFfiItems::from(m.items.clone()),
+                                    ))
+                                })
+                                .and_then(|_| f.pad(" ]"))
+                        })
+                        .collect::<fmt::Result>()
+                })
+                .and_then(|_| f.pad(" ]"))
+        });
 
         dbg_struct.finish()
     }
@@ -432,6 +455,32 @@ impl FromIterator<GenericItem> for FfiItems {
     fn from_iter<I: IntoIterator<Item = GenericItem>>(iter: I) -> FfiItems {
         let mut partitioned_items: Vec<_> = iter.into_iter().collect();
 
+        println!(
+            "[FfiItems::from_iter] partitioned_items: {:?}",
+            partitioned_items
+                .iter()
+                .map(|it| {
+                    macro_rules! exe {
+                    ($($ty:tt),+ $(,)?) => {
+                        match it {$(
+                            GenericItem::$ty(it) => it.cached_path.clone(),
+                        )+}
+                    };
+                }
+
+                    exe! {
+                        Type,
+                        Struct,
+                        Union,
+                        Const,
+                        Fn,
+                        Static,
+                        Module,
+                    }
+                })
+                .collect::<Vec<_>>()
+        );
+
         // [NOTE]: this is expected to sort all items by their kind, such that
         // we end up with the following ordering:
         //
@@ -472,9 +521,9 @@ impl FromIterator<GenericItem> for FfiItems {
             | (GenericItem::Const(_), GenericItem::Fn(_))
             | (GenericItem::Const(_), GenericItem::Static(_))
             | (GenericItem::Const(_), GenericItem::Module(_))
-            | (GenericItem::Static(_), GenericItem::Module(_))
             | (GenericItem::Fn(_), GenericItem::Static(_))
-            | (GenericItem::Fn(_), GenericItem::Module(_)) => Ordering::Less,
+            | (GenericItem::Fn(_), GenericItem::Module(_))
+            | (GenericItem::Static(_), GenericItem::Module(_)) => Ordering::Less,
             (GenericItem::Struct(_), GenericItem::Type(_))
             | (GenericItem::Union(_), GenericItem::Type(_))
             | (GenericItem::Union(_), GenericItem::Struct(_))
@@ -500,14 +549,27 @@ impl FromIterator<GenericItem> for FfiItems {
 
         macro_rules! get_partitions {
             ($($field:ident: $ty:tt),+ $(,)?) => {$(
+                macro_rules! search_idx {
+                    ($start:expr, $pred:expr) => {{
+                        partitioned_items
+                            .iter()
+                            .enumerate()
+                            .skip($start)
+                            .skip_while(|(_, it)| $pred(it))
+                            .next()
+                            .map(|(idx, _)| idx)
+                            .unwrap_or(partitioned_items.len())
+                    }};
+                }
+
                 let start =
-                    partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)).not());
-                let end = partitioned_items.partition_point(|it| matches!(it, GenericItem::$ty(_)));
+                    search_idx!(0, |it: &&GenericItem| matches!(it, GenericItem::$ty(_)).not());
+                let end = search_idx!(start, |it: &&GenericItem| matches!(it, GenericItem::$ty(_)));
 
                 let $field = if start >= end {
                     Vec::new()
                 } else {
-                    partitioned_items
+                    let partition = partitioned_items
                         .get(start..end)
                         .map(|it| {
                             it.into_iter()
@@ -521,13 +583,27 @@ impl FromIterator<GenericItem> for FfiItems {
                                         ".",
                                     )),
                                 })
-                                .collect()
+                                .collect::<Vec<_>>()
                         })
                         .expect(
                             "The slice must be valid because the range is \
                              logical, and the components of the range are \
                              indices into the collection.",
-                        )
+                        );
+
+                    println!(
+                        concat!(
+                            "[FfiItems::from_iter] ",
+                            stringify!($field),
+                            "_partition: {:?}"
+                        ),
+                        partition
+                            .iter()
+                            .map(|it| &it.cached_path)
+                            .collect::<Vec<_>>(),
+                    );
+
+                    partition
                 };
             )+};
         }
@@ -759,7 +835,7 @@ fn resolve_pass(src: PassPair) -> PassPair {
     );
 
     println!(
-        "finished module pass on module {}",
+        "[resolve_pass] finished module pass on module {}",
         if &*new_root.cached_path == "" {
             "root".into()
         } else {
@@ -782,13 +858,45 @@ fn resolve_pass(src: PassPair) -> PassPair {
 /// See [`resolve_pass`] for details.
 fn resolve_one(state: PassPair) -> Vec<Resolution> {
     println!(
-        "found {} use declarations in module {}",
+        "[resolve_one] found {} use declarations in module {}: {:?}",
         state.subtree.items.uses.len(),
         if &*state.subtree.cached_path == "" {
             "root"
         } else {
             &*state.subtree.cached_path
         },
+        state
+            .subtree
+            .items
+            .uses
+            .iter()
+            .map(|it| {
+                // [NOTE]: we use a dedicated type so as to avoid having the
+                // overarching call to the Debug implementation of the container
+                // cause the inner strings to be quoted.
+                #[derive(Clone)]
+                struct PrettyUseTree<'a>(&'a RefinedUseTree);
+
+                impl Debug for PrettyUseTree<'_> {
+                    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+                        f.pad(&refined_tree_to_string(&self.0))
+                    }
+                }
+
+                fn refined_tree_to_string(t: &RefinedUseTree) -> String {
+                    match t {
+                        RefinedUseTree::Path(p) => {
+                            format!("{}::{}", p.ident, refined_tree_to_string(&p.tree))
+                        }
+                        RefinedUseTree::Name(n) => format!("{}", n.ident),
+                        RefinedUseTree::Rename(r) => format!("{} as {}", r.ident, r.rename),
+                        RefinedUseTree::Glob => format!("*"),
+                    }
+                }
+
+                PrettyUseTree(&it.tree)
+            })
+            .collect::<Vec<_>>(),
     );
 
     state
@@ -834,7 +942,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     match r#use.tree {
         RefinedUseTree::Name(UseName { ident }) => {
             println!(
-                "entered name resolution case with {} in module {}",
+                "[resolve_use] entered name resolution case with {} in module {}",
                 ident, state.subtree.cached_path,
             );
 
@@ -882,7 +990,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
         }
         RefinedUseTree::Glob => {
             println!(
-                "entered glob resolution case in module {}",
+                "[resolve_use] entered glob resolution case in module {}",
                 if &*state.subtree.cached_path == "" {
                     "root"
                 } else {
@@ -894,7 +1002,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
         }
         RefinedUseTree::Rename(UseRename { ident, rename, .. }) => {
             println!(
-                "entered rename resolution case with {:?} in module {}",
+                "[resolve_use] entered rename resolution case with {:?} in module {}",
                 UseRename {
                     ident: ident.clone(),
                     as_token: syn::parse_quote! { as },
@@ -968,7 +1076,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
 
         RefinedUseTree::Path(RefinedUsePath { ident, tree }) => {
             println!(
-                "entered path resolution case with {} in module {}",
+                "[resolve_use] entered path resolution case with {} in module {}",
                 ident, state.subtree.cached_path,
             );
 
@@ -1162,7 +1270,7 @@ fn update_tree(
 /// `dst`. It is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
 fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
     println!(
-        "preprocessed_items: {:#?}",
+        "[merge_module] preprocessed_items: {:#?}",
         src.iter()
             .map(|r| {
                 if let Resolution::Resolved(it) = r {
@@ -1294,7 +1402,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
         .collect();
 
     println!(
-        "processed_items: {:#?}",
+        "[merge_module] processed_items: {:#?}",
         processed_items
             .iter()
             .cloned()
@@ -1311,7 +1419,8 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
          it| {
             // [TODO]: this is still wrong but it also seems to be headed in the
             // right direction.
-            let new_whole_crate = sync_driver(&it, whole_crate);
+            // [FIXME]: get rid of the below clone once debugging is done.
+            let new_whole_crate = sync_driver(&it, whole_crate.clone());
             let Some(new_subtree) = get_module(&subtree.path, &new_whole_crate).cloned() else {
                 unreachable!(
                     "The subtree is bound to be found in the whole-crate \
@@ -1320,6 +1429,17 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                      modules."
                 );
             };
+
+            assert_ne!(
+                whole_crate, new_whole_crate,
+                "old whole-crate module tree matches new whole-crate module \
+                 tree even though there were items to merge",
+            );
+
+            println!(
+                "[merge_module] new_whole_crate: {:?}",
+                DebugFfiItems::from(new_whole_crate.items.clone())
+            );
 
             PassPair {
                 subtree: Module {
@@ -1379,6 +1499,16 @@ fn sync_driver(items: &FfiItems, tree: Module) -> Module {
 fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
     let akin = |agg: &PathAggregateStore| agg.akin(reference);
 
+    println!(
+        "[sync_aggregates] preprocessed_module {}: {:?}",
+        if m.cached_path.is_empty() {
+            "root"
+        } else {
+            &m.cached_path
+        },
+        DebugFfiItems::from(m.items.clone()),
+    );
+
     let new_m = if akin(&m.path_aggregate) {
         // [NOTE]: this we diff instead of merging because merging will get us a
         // set of path aggregates that contain both the ones already in m, as
@@ -1395,7 +1525,7 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
         m
     };
 
-    let new_items = new_m
+    let new_items: FfiItems = new_m
         .items
         .items()
         .map(|it| {
@@ -1403,20 +1533,17 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
                 ($($ty:tt),+ $(,)?) => {
                     match it {
                         $(
-                        GenericItem::$ty(it) => {
-                            if akin(&it.path_aggregate) {
-                                GenericItem::$ty($ty {
-                                    path_aggregate: reference.clone(),
-                                    ..it
-                                })
-                            } else {
-                                GenericItem::$ty(it)
-                            }
+                        GenericItem::$ty(it) if akin(&it.path_aggregate) => {
+                            GenericItem::$ty($ty {
+                                path_aggregate: reference.clone(),
+                                ..it
+                            })
                         }
                         )+
                         GenericItem::Module(it) => {
                             GenericItem::Module(sync_aggregates(reference, it))
                         }
+                        non_matching => non_matching,
                     }
                 };
             }
@@ -1431,6 +1558,16 @@ fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
             }
         })
         .collect();
+
+    println!(
+        "[sync_aggregates] processed_module {}: {:?}",
+        if new_m.cached_path.is_empty() {
+            "root"
+        } else {
+            &new_m.cached_path
+        },
+        DebugFfiItems::from(new_items.clone()),
+    );
 
     Module {
         items: new_items,

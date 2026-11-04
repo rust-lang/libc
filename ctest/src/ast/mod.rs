@@ -50,6 +50,7 @@ impl PathAggregateStore {
     pub(crate) fn push(self, p: Path) -> Self {
         let PathAggregateStore { mut value } = self;
         value.push(p);
+
         Self { value }
     }
 
@@ -59,9 +60,9 @@ impl PathAggregateStore {
     /// the `other` path aggregate are different occurrences of the same item across the crate's
     /// module tree.
     pub(crate) fn akin(&self, other: &Self) -> bool {
-        let ours = &self.value;
-        let theirs = &other.value;
-        ours.iter().any(|p1| theirs.iter().any(|p2| p1 == p2))
+        self.value
+            .iter()
+            .any(|p1| other.value.iter().any(|p2| p1 == p2))
     }
 
     /// Diffs any two given path aggregates and returns the set of paths that were present in
