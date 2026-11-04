@@ -446,6 +446,7 @@ cfg_if! {
 /// for details.
 pub const PATH_MAX: c_int = 4096;
 pub const HOST_NAME_MAX: c_int = 255;
+pub const MB_LEN_MAX: c_int = 4;
 
 // fcntl.h
 pub const F_GETLK: c_int = 5;
@@ -654,6 +655,13 @@ pub const LC_MONETARY: c_int = 3;
 pub const LC_NUMERIC: c_int = 4;
 pub const LC_TIME: c_int = 5;
 pub const LC_ALL: c_int = 6;
+pub const LC_COLLATE_MASK: c_int = 0x1;
+pub const LC_CTYPE_MASK: c_int = 0x2;
+pub const LC_MESSAGES_MASK: c_int = 0x4;
+pub const LC_MONETARY_MASK: c_int = 0x8;
+pub const LC_NUMERIC_MASK: c_int = 0x10;
+pub const LC_TIME_MASK: c_int = 0x20;
+pub const LC_ALL_MASK: c_int = 0b111111;
 
 // netdb.h
 pub const AI_PASSIVE: c_int = 0x0001;
@@ -707,6 +715,12 @@ pub const IPPROTO_PUP: c_int = 12;
 pub const IPPROTO_IDP: c_int = 22;
 pub const IPPROTO_RAW: c_int = 255;
 pub const IPPROTO_MAX: c_int = 255;
+pub const INET_ADDRSTRLEN: usize = 16;
+pub const INET6_ADDRSTRLEN: usize = 46;
+pub const INADDR_UNSPEC_GROUP: u32 = 0xE000_0000;
+pub const INADDR_ALLHOSTS_GROUP: u32 = 0xE000_0001;
+pub const INADDR_ALLRTRS_GROUP: u32 = 0xE000_0002;
+pub const INADDR_MAX_LOCAL_GROUP: u32 = 0xE000_00FF;
 // }
 
 // netinet/tcp.h
@@ -736,6 +750,24 @@ pub const PTHREAD_MUTEX_RECURSIVE: c_int = 3;
 
 pub const PTHREAD_MUTEX_ROBUST: c_int = 0;
 pub const PTHREAD_MUTEX_STALLED: c_int = 1;
+
+pub const PTHREAD_BARRIER_SERIAL_THREAD: c_int = -1;
+pub const PTHREAD_CANCEL_ASYNCHRONOUS: c_int = 0;
+pub const PTHREAD_CANCEL_ENABLE: c_int = 1;
+pub const PTHREAD_CANCEL_DEFERRED: c_int = 2;
+pub const PTHREAD_CANCEL_DISABLE: c_int = 3;
+pub const PTHREAD_CANCELED: *mut c_void = (!0_usize) as *mut c_void;
+pub const PTHREAD_EXPLICIT_SCHED: c_int = 0;
+pub const PTHREAD_INHERIT_SCHED: c_int = 1;
+pub const PTHREAD_CREATE_DETACHED: c_int = 0;
+pub const PTHREAD_CREATE_JOINABLE: c_int = 1;
+pub const PTHREAD_PRIO_INHERIT: c_int = 0;
+pub const PTHREAD_PRIO_NONE: c_int = 0;
+pub const PTHREAD_PRIO_PROTECT: c_int = 0;
+pub const PTHREAD_PROCESS_SHARED: c_int = 0;
+pub const PTHREAD_PROCESS_PRIVATE: c_int = 1;
+pub const PTHREAD_SCOPE_PROCESS: c_int = 0;
+pub const PTHREAD_SCOPE_SYSTEM: c_int = 1;
 
 pub const PTHREAD_MUTEX_INITIALIZER: crate::pthread_mutex_t = crate::pthread_mutex_t {
     bytes: [0; _PTHREAD_MUTEX_SIZE],
@@ -785,6 +817,52 @@ pub const SIGPWR: c_int = 30;
 pub const SIGSYS: c_int = 31;
 pub const NSIG: c_int = 32;
 
+pub const SIGRTMIN: usize = 35;
+pub const SIGRTMAX: usize = 64;
+pub const MINSIGSTKSZ: usize = 2048;
+pub const SIGSTKSZ: usize = 8096;
+
+pub const SI_QUEUE: c_int = -1;
+pub const SI_USER: c_int = 0;
+pub const SI_TIMER: c_int = 1;
+pub const SI_ASYNCIO: c_int = 2;
+pub const SI_MESGQ: c_int = 3;
+
+pub const ILL_ILLOPC: c_int = 1;
+pub const ILL_ILLOPN: c_int = 2;
+pub const ILL_ILLADR: c_int = 3;
+pub const ILL_ILLTRP: c_int = 4;
+pub const ILL_PRVOPC: c_int = 5;
+pub const ILL_PRVREG: c_int = 6;
+pub const ILL_COPROC: c_int = 7;
+pub const ILL_BADSTK: c_int = 8;
+
+pub const FPE_INTDIV: c_int = 1;
+pub const FPE_INTOVF: c_int = 2;
+pub const FPE_FLTDIV: c_int = 3;
+pub const FPE_FLTOVF: c_int = 4;
+pub const FPE_FLTUND: c_int = 5;
+pub const FPE_FLTRES: c_int = 6;
+pub const FPE_FLTINV: c_int = 7;
+pub const FPE_FLTSUB: c_int = 8;
+
+pub const SEGV_MAPERR: c_int = 1;
+pub const SEGV_ACCERR: c_int = 2;
+
+pub const BUS_ADRALN: c_int = 1;
+pub const BUS_ADRERR: c_int = 2;
+pub const BUS_OBJERR: c_int = 3;
+
+pub const TRAP_BRKPT: c_int = 1;
+pub const TRAP_TRACE: c_int = 2;
+
+pub const CLD_EXITED: c_int = 1;
+pub const CLD_KILLED: c_int = 2;
+pub const CLD_DUMPED: c_int = 3;
+pub const CLD_TRAPPED: c_int = 4;
+pub const CLD_STOPPED: c_int = 5;
+pub const CLD_CONTINUED: c_int = 6;
+
 pub const SA_NOCLDWAIT: c_int = 0x0000_0002;
 pub const SA_RESTORER: c_int = 0x0000_0004; // FIXME(redox): remove after relibc removes it
 pub const SA_SIGINFO: c_int = 0x0200_0000;
@@ -802,6 +880,10 @@ pub const LOCK_SH: c_int = 1;
 pub const LOCK_EX: c_int = 2;
 pub const LOCK_NB: c_int = 4;
 pub const LOCK_UN: c_int = 8;
+
+pub const L_SET: c_int = 0;
+pub const L_INCR: c_int = 1;
+pub const L_XTND: c_int = 2;
 
 // sys/epoll.h
 pub const EPOLL_CLOEXEC: c_int = 0x0100_0000;
@@ -838,6 +920,9 @@ pub const S_IRWXU: c_int = 0o0700;
 pub const S_IRUSR: c_int = 0o0400;
 pub const S_IWUSR: c_int = 0o0200;
 pub const S_IXUSR: c_int = 0o0100;
+pub const S_IREAD: mode_t = S_IRUSR;
+pub const S_IWRITE: mode_t = S_IWUSR;
+pub const S_IEXEC: mode_t = S_IXUSR;
 pub const S_IRWXG: c_int = 0o0070;
 pub const S_IRGRP: c_int = 0o0040;
 pub const S_IWGRP: c_int = 0o0020;
@@ -852,6 +937,8 @@ pub const UTIME_OMIT: c_long = u32_cast_long(0xfffffffe);
 // stdlib.h
 pub const EXIT_SUCCESS: c_int = 0;
 pub const EXIT_FAILURE: c_int = 1;
+pub const RAND_MAX: c_int = 2_147_483_647;
+pub const MB_CUR_MAX: c_int = 4;
 
 // sys/ioctl.h
 // FIXME(redox): relibc {
@@ -861,12 +948,22 @@ pub const FIOCLEX: c_ulong = 0x5451;
 // }
 pub const TCGETS: c_ulong = 0x5401;
 pub const TCSETS: c_ulong = 0x5402;
+pub const TCSETSW: c_ulong = 0x5403;
+pub const TCSETSF: c_ulong = 0x5404;
+pub const TCSBRK: c_ulong = 0x5409;
+pub const TCXONC: c_ulong = 0x540A;
 pub const TCFLSH: c_ulong = 0x540B;
 pub const TIOCSCTTY: c_ulong = 0x540E;
 pub const TIOCGPGRP: c_ulong = 0x540F;
 pub const TIOCSPGRP: c_ulong = 0x5410;
 pub const TIOCGWINSZ: c_ulong = 0x5413;
 pub const TIOCSWINSZ: c_ulong = 0x5414;
+pub const TIOCNOTTY: c_ulong = 0x5422;
+pub const TIOCGSID: c_ulong = 0x5429;
+pub const TIOCSPTLCK: c_ulong = 0x4004_5431;
+pub const TIOCGPTLCK: c_ulong = 0x8004_5439;
+pub const TIOCGPTN: c_ulong = 0x8004_5430;
+pub const SIOCATMARK: c_ulong = 0x8905;
 
 // sys/mman.h
 pub const PROT_NONE: c_int = 0x0000;
@@ -879,6 +976,8 @@ pub const MADV_RANDOM: c_int = 1;
 pub const MADV_SEQUENTIAL: c_int = 2;
 pub const MADV_WILLNEED: c_int = 3;
 pub const MADV_DONTNEED: c_int = 4;
+pub const MADV_DONTDUMP: c_int = 5;
+pub const MADV_DODUMP: c_int = 6;
 
 pub const MAP_SHARED: c_int = 0x0001;
 pub const MAP_PRIVATE: c_int = 0x0002;
@@ -886,10 +985,25 @@ pub const MAP_ANON: c_int = 0x0020;
 pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 pub const MAP_FIXED: c_int = 0x0004;
 pub const MAP_FAILED: *mut c_void = !0 as _;
+pub const MAP_STACK: c_int = 0x20000;
+pub const MAP_FIXED_NOREPLACE: c_int = 0x000C;
+pub const MAP_POPULATE: c_int = 0x0001F;
+pub const MAP_HUGETLB: c_int = 0x2E;
 
 pub const MS_ASYNC: c_int = 0x0001;
 pub const MS_INVALIDATE: c_int = 0x0002;
 pub const MS_SYNC: c_int = 0x0004;
+
+pub const MCL_CURRENT: c_int = 1;
+pub const MCL_FUTURE: c_int = 2;
+
+pub const MREMAP_MAYMOVE: c_int = 1;
+
+pub const POSIX_MADV_NORMAL: c_int = 0;
+pub const POSIX_MADV_RANDOM: c_int = 1;
+pub const POSIX_MADV_SEQUENTIAL: c_int = 2;
+pub const POSIX_MADV_WILLNEED: c_int = 3;
+pub const POSIX_MADV_DONTNEED: c_int = 4;
 
 // sys/random.h
 pub const GRND_NONBLOCK: c_uint = 1;
@@ -914,7 +1028,8 @@ pub const RLIMIT_SIGPENDING: c_int = 11;
 pub const RLIMIT_MSGQUEUE: c_int = 12;
 pub const RLIMIT_NICE: c_int = 13;
 pub const RLIMIT_RTPRIO: c_int = 14;
-pub const RLIMIT_NLIMITS: c_int = 15;
+pub const RLIMIT_RTTIME: c_int = 15;
+pub const RLIMIT_NLIMITS: c_int = 16;
 
 pub const RUSAGE_SELF: c_int = 0;
 pub const RUSAGE_CHILDREN: c_int = -1;
@@ -928,10 +1043,12 @@ pub const FD_SETSIZE: c_int = 1024;
 pub const AF_INET: c_int = 2;
 pub const AF_INET6: c_int = 10;
 pub const AF_UNIX: c_int = 1;
+pub const AF_LOCAL: c_int = AF_UNIX;
 pub const AF_UNSPEC: c_int = 0;
 pub const PF_INET: c_int = 2;
 pub const PF_INET6: c_int = 10;
 pub const PF_UNIX: c_int = 1;
+pub const PF_LOCAL: c_int = PF_UNIX;
 pub const PF_UNSPEC: c_int = 0;
 pub const MSG_CTRUNC: c_int = 8;
 pub const MSG_DONTROUTE: c_int = 4;
@@ -941,7 +1058,10 @@ pub const MSG_PEEK: c_int = 2;
 pub const MSG_TRUNC: c_int = 32;
 pub const MSG_DONTWAIT: c_int = 64;
 pub const MSG_WAITALL: c_int = 256;
+pub const MSG_NOSIGNAL: c_int = 0x4000;
+pub const MSG_CMSG_CLOEXEC: c_int = 0x40000000;
 pub const SCM_RIGHTS: c_int = 1;
+pub const SCM_CREDENTIALS: c_int = 2;
 pub const SHUT_RD: c_int = 0;
 pub const SHUT_WR: c_int = 1;
 pub const SHUT_RDWR: c_int = 2;
@@ -975,11 +1095,16 @@ pub const SO_DOMAIN: c_int = 39;
 pub const SOCK_STREAM: c_int = 1;
 pub const SOCK_DGRAM: c_int = 2;
 pub const SOCK_RAW: c_int = 3;
+pub const SOCK_RDM: c_int = 4;
 pub const SOCK_NONBLOCK: c_int = 0o4_000;
 pub const SOCK_CLOEXEC: c_int = 0o2_000_000;
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOL_SOCKET: c_int = 1;
 pub const SOMAXCONN: c_int = 128;
+pub const IP_ADD_SOURCE_MEMBERSHIP: c_int = 70;
+pub const IP_DROP_SOURCE_MEMBERSHIP: c_int = 71;
+pub const MCAST_JOIN_SOURCE_GROUP: c_int = 46;
+pub const MCAST_LEAVE_SOURCE_GROUP: c_int = 47;
 
 // sys/termios.h
 pub const VEOF: usize = 0;
@@ -989,7 +1114,7 @@ pub const VERASE: usize = 3;
 pub const VWERASE: usize = 4;
 pub const VKILL: usize = 5;
 pub const VREPRINT: usize = 6;
-pub const VSWTC: usize = 7;
+pub const VSWTCH: usize = 7;
 pub const VINTR: usize = 8;
 pub const VQUIT: usize = 9;
 pub const VSUSP: usize = 10;
@@ -1012,6 +1137,7 @@ pub const IGNCR: crate::tcflag_t = 0o000_200;
 pub const ICRNL: crate::tcflag_t = 0o000_400;
 pub const IXON: crate::tcflag_t = 0o001_000;
 pub const IXOFF: crate::tcflag_t = 0o002_000;
+pub const IXANY: crate::tcflag_t = 0o004_000;
 
 pub const OPOST: crate::tcflag_t = 0o000_001;
 pub const ONLCR: crate::tcflag_t = 0o000_002;
@@ -1210,6 +1336,11 @@ pub const R_OK: c_int = 4;
 pub const W_OK: c_int = 2;
 pub const X_OK: c_int = 1;
 
+pub const F_ULOCK: c_int = 0;
+pub const F_LOCK: c_int = 1;
+pub const F_TLOCK: c_int = 2;
+pub const F_TEST: c_int = 3;
+
 // stdio.h
 pub const BUFSIZ: c_uint = 1024;
 pub const FILENAME_MAX: c_int = 4096;
@@ -1219,6 +1350,22 @@ pub const _IONBF: c_int = 2;
 pub const SEEK_SET: c_int = 0;
 pub const SEEK_CUR: c_int = 1;
 pub const SEEK_END: c_int = 2;
+
+pub const EOF: c_int = -1;
+pub const UNGET: c_int = 8;
+pub const F_PERM: c_int = 1;
+pub const F_NORD: c_int = 4;
+pub const F_NOWR: c_int = 8;
+pub const F_EOF: c_int = 16;
+pub const F_ERR: c_int = 32;
+pub const F_SVB: c_int = 64;
+pub const F_APP: c_int = 128;
+pub const F_BADJ: c_int = 256;
+pub const L_ctermid: usize = 9;
+pub const L_tmpnam: c_int = 7;
+pub const TMP_MAX: int32_t = 2_147_483_647;
+
+pub const P_tmpdir: *const c_char = cstr!("/tmp");
 
 pub const _PC_LINK_MAX: c_int = 0;
 pub const _PC_MAX_CANON: c_int = 1;
