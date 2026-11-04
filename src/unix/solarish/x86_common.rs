@@ -67,3 +67,6 @@ cfg_if! {
         pub const AT_386_FPINFO_XSAVE_AMD: u32 = 3;
     }
 }
+
+// sys/machsig.h
+pub const FPE_FLTDEN: crate::c_int = 9;
