@@ -452,10 +452,6 @@ pub const MB_LEN_MAX: c_int = 4;
 pub const F_GETLK: c_int = 5;
 pub const F_SETLK: c_int = 6;
 pub const F_SETLKW: c_int = 7;
-pub const F_ULOCK: c_int = 0;
-pub const F_LOCK: c_int = 1;
-pub const F_TLOCK: c_int = 2;
-pub const F_TEST: c_int = 3;
 
 pub const AT_FDCWD: c_int = -100;
 pub const AT_SYMLINK_NOFOLLOW: c_int = 0x200;
@@ -1363,7 +1359,7 @@ pub const F_APP: c_int = 128;
 pub const F_BADJ: c_int = 256;
 pub const L_ctermid: usize = 9;
 pub const L_tmpnam: c_int = 7;
-pub const TMP_MAX: int32_t = 2_147_483_647;
+pub const TMP_MAX: crate::int32_t = 2_147_483_647;
 
 pub const P_tmpdir: *const c_char = cstr!("/tmp");
 
