@@ -1324,8 +1324,17 @@ pub const CLOCK_REALTIME: crate::clockid_t = 3;
 pub const CLOCK_MONOTONIC: crate::clockid_t = 4;
 pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 5;
 pub const CLOCK_THREAD_CPUTIME_ID: crate::clockid_t = 2;
+pub const CLOCK_VIRTUAL: crate::clockid_t = 1;
+pub const CLOCK_HIGHRES: crate::clockid_t = CLOCK_MONOTONIC;
+pub const CLOCK_PROF: crate::clockid_t = CLOCK_THREAD_CPUTIME_ID;
 pub const TIMER_RELTIME: c_int = 0;
 pub const TIMER_ABSTIME: c_int = 1;
+
+// sys/time.h
+pub const ITIMER_REAL: c_int = 0;
+pub const ITIMER_VIRTUAL: c_int = 1;
+pub const ITIMER_PROF: c_int = 2;
+pub const ITIMER_REALPROF: c_int = 3;
 
 pub const RLIMIT_CPU: c_int = 0;
 pub const RLIMIT_FSIZE: c_int = 1;
@@ -2401,6 +2410,13 @@ extern "C" {
         rmtp: *mut crate::timespec,
     ) -> c_int;
     pub fn clock_settime(clk_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
+    pub fn getitimer(which: c_int, curr_value: *mut crate::itimerval) -> c_int;
+    pub fn setitimer(
+        which: c_int,
+        new_value: *const crate::itimerval,
+        old_value: *mut crate::itimerval,
+    ) -> c_int;
+    pub fn strptime(s: *const c_char, format: *const c_char, tm: *mut crate::tm) -> *mut c_char;
     pub fn getnameinfo(
         sa: *const crate::sockaddr,
         salen: crate::socklen_t,

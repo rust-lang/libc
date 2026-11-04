@@ -1,8 +1,11 @@
 AIO_ALLDONE
 AIO_CANCELED
 AIO_NOTCANCELED
+CLOCK_HIGHRES
 CLOCK_PROCESS_CPUTIME_ID
+CLOCK_PROF
 CLOCK_THREAD_CPUTIME_ID
+CLOCK_VIRTUAL
 IPV6_BOUND_IF
 IPV6_DONTFRAG
 IPV6_HOPLIMIT
@@ -14,6 +17,10 @@ IP_DONTFRAG
 IP_PKTINFO
 IP_TOS
 IP_TTL
+ITIMER_PROF
+ITIMER_REAL
+ITIMER_REALPROF
+ITIMER_VIRTUAL
 LIO_NOP
 LIO_NOWAIT
 LIO_READ
@@ -56,6 +63,7 @@ execv
 execve
 execvp
 fork
+getitimer
 in6_pktinfo
 in_pktinfo
 lio_listio
@@ -88,7 +96,9 @@ posix_spawnattr_setsigmask
 posix_spawnp
 recvmsg
 sendmsg
+setitimer
 sigqueue
 strftime
 strftime_l
+strptime
 system
