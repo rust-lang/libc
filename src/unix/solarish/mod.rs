@@ -1230,6 +1230,7 @@ pub const EALREADY: c_int = 149;
 pub const EINPROGRESS: c_int = 150;
 pub const ESTALE: c_int = 151;
 
+pub const EAI_ADDRFAMILY: c_int = 1;
 pub const EAI_AGAIN: c_int = 2;
 pub const EAI_BADFLAGS: c_int = 3;
 pub const EAI_FAIL: c_int = 4;
@@ -1241,8 +1242,18 @@ pub const EAI_SERVICE: c_int = 9;
 pub const EAI_SOCKTYPE: c_int = 10;
 pub const EAI_SYSTEM: c_int = 11;
 pub const EAI_OVERFLOW: c_int = 12;
+pub const EAI_PROTOCOL: c_int = 13;
 
+pub const AI_V4MAPPED: c_int = 0x0001;
+pub const AI_ALL: c_int = 0x0002;
+pub const AI_ADDRCONFIG: c_int = 0x0004;
+pub const AI_PASSIVE: c_int = 0x0008;
 pub const AI_CANONNAME: c_int = 0x0010;
+pub const AI_NUMERICHOST: c_int = 0x0020;
+pub const AI_NUMERICSERV: c_int = 0x0040;
+pub const AI_DEFAULT: c_int = AI_V4MAPPED | AI_ADDRCONFIG;
+
+pub const MAXHOSTNAMELEN: c_int = 256;
 
 pub const NI_NOFQDN: c_uint = 0x0001;
 pub const NI_NUMERICHOST: c_uint = 0x0002;
