@@ -999,6 +999,7 @@ fn test_solarish(t: &Target) {
         "port.h",
         "pthread.h",
         "pwd.h",
+        "regex.h",
         "resolv.h",
         "sched.h",
         "semaphore.h",
