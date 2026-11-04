@@ -55,9 +55,13 @@ execlp
 execv
 execve
 execvp
+fexecve
 fork
+get_nprocs
+get_nprocs_conf
 in6_pktinfo
 in_pktinfo
+issetugid
 lio_listio
 posix_spawn
 posix_spawn_file_actions_addchdir
@@ -86,9 +90,12 @@ posix_spawnattr_setsigdefault
 posix_spawnattr_setsigignore_np
 posix_spawnattr_setsigmask
 posix_spawnp
+ppoll
 recvmsg
 sendmsg
 sigqueue
 strftime
 strftime_l
 system
+wait3
+wait4

@@ -2463,6 +2463,23 @@ extern "C" {
         infop: *mut crate::siginfo_t,
         options: c_int,
     ) -> c_int;
+    pub fn wait3(status: *mut c_int, options: c_int, rusage: *mut crate::rusage) -> crate::pid_t;
+    pub fn wait4(
+        pid: crate::pid_t,
+        status: *mut c_int,
+        options: c_int,
+        rusage: *mut crate::rusage,
+    ) -> crate::pid_t;
+    pub fn ppoll(
+        fds: *mut crate::pollfd,
+        nfds: crate::nfds_t,
+        timeout: *const crate::timespec,
+        sigmask: *const sigset_t,
+    ) -> c_int;
+    pub fn issetugid() -> c_int;
+    pub fn fexecve(fd: c_int, argv: *const *mut c_char, envp: *const *mut c_char) -> c_int;
+    pub fn get_nprocs() -> c_int;
+    pub fn get_nprocs_conf() -> c_int;
 
     #[cfg_attr(target_os = "illumos", link_name = "_glob_ext")]
     pub fn glob(
