@@ -825,6 +825,7 @@ s! {
                 target_arch = "m68k",
                 target_arch = "csky",
                 target_arch = "powerpc",
+                target_arch = "riscv32",
                 target_arch = "sparc",
                 target_arch = "x86_64",
                 target_arch = "x86",
@@ -843,6 +844,7 @@ s! {
                 target_arch = "m68k",
                 target_arch = "csky",
                 target_arch = "powerpc",
+                target_arch = "riscv32",
                 target_arch = "sparc",
                 target_arch = "x86_64",
                 target_arch = "x86",
@@ -865,6 +867,7 @@ s! {
                 target_arch = "m68k",
                 target_arch = "csky",
                 target_arch = "powerpc",
+                target_arch = "riscv32",
                 target_arch = "sparc",
                 target_arch = "x86_64",
                 target_arch = "x86"
@@ -882,6 +885,7 @@ s! {
                 target_arch = "hexagon",
                 target_arch = "m68k",
                 target_arch = "powerpc",
+                target_arch = "riscv32",
                 target_arch = "sparc",
                 target_arch = "x86_64",
                 target_arch = "x86"
@@ -904,6 +908,7 @@ s! {
                 target_arch = "m68k",
                 target_arch = "csky",
                 target_arch = "powerpc",
+                target_arch = "riscv32",
                 target_arch = "sparc",
                 target_arch = "x86_64",
                 target_arch = "x86"
@@ -922,6 +927,7 @@ s! {
                 target_arch = "m68k",
                 target_arch = "csky",
                 target_arch = "powerpc",
+                target_arch = "riscv32",
                 target_arch = "sparc",
                 target_arch = "x86_64",
                 target_arch = "x86"
