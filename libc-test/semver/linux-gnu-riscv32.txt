@@ -1,0 +1,9 @@
+SYS_fadvise64_64
+SYS_fcntl64
+SYS_fstatfs64
+SYS_ftruncate64
+SYS_llseek
+SYS_mmap2
+SYS_sendfile64
+SYS_statfs64
+SYS_truncate64
