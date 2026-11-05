@@ -241,21 +241,22 @@ impl<S, T> StateMonad<S, T> {
         }
     }
 
+    fn set<F>(f: F) -> StateMonad<S, T>
+    where
+        for<'a> F: ops::FnOnce(S) -> (S, T) + 'a,
+    {
+        StateMonad { seq: Box::new(f) }
+    }
+
     fn run(self, init: S) -> (S, T) {
         (self.seq)(init)
     }
 }
 
-macro_rules! set {
-    ($f:expr) => {
-        StateMonad { seq: Box::new($f) }
-    };
-}
-
 #[test]
 fn tmpmonad() {
     let (state, value) = StateMonad::pure(2)
-        .bind(|x| set!(move |s| (s * x, x)))
+        .bind(|x| StateMonad::set(move |s| (s * x, x)))
         .run(3);
 
     assert_eq!((state, value), (6, 2));
@@ -265,6 +266,7 @@ fn tmpmonad() {
 struct ParsingState {
     uid: usize,
     current_module: Path,
+    module_is_public: bool,
 }
 
 /// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
@@ -1905,6 +1907,16 @@ fn visit_item_foreign_mod(table: &mut FfiItems, i: &syn::ItemForeignMod) {
     }
 }
 
+/*
+ * [TODO]: this we can either change into using as value in the state monad a
+ * Module, or otherwise add further state to the parsing state that would carry
+ * the information of a given module. The latter option seems like the one that
+ * would require the least amount of changes.
+ */
+/*
+ * [TODO]: implement the unique ID stuff; Take care of which state is carried
+ * through state monads passed in (eventually) recursive call-sites.
+ */
 impl<'ast> Visit<'ast> for StateMonad<ParsingState, FfiItems> {
     fn visit_item_mod(&mut self, i: &'ast ItemMod) {
         let ItemMod {
@@ -1914,28 +1926,39 @@ impl<'ast> Visit<'ast> for StateMonad<ParsingState, FfiItems> {
             ..
         } = i
         else {
+            /*
+             * [FIXME]: copy over the comment from the Visit implementation for
+             * FfiItems.
+             */
             unreachable!("Ibid.")
         };
 
         let is_crate_root = ident == "__ctest_root_mod";
-        let base_monad = mem::replace(self, set!(|s| (s, FfiItems::default())));
+        let base_monad = mem::replace(self, StateMonad::set(|s| (s, FfiItems::default())));
 
         let current_monad = if is_crate_root {
             base_monad
         } else {
             let ident = ident.clone();
+            let vis = vis.clone();
 
             base_monad.bind(move |items| {
-                set!(move |ParsingState {
-                               uid,
-                               current_module,
-                           }| (
-                    ParsingState {
-                        uid,
-                        current_module: append_path(current_module, &ident),
+                StateMonad::set(
+                    move |ParsingState {
+                              uid,
+                              current_module,
+                              ..
+                          }| {
+                        (
+                            ParsingState {
+                                uid,
+                                current_module: append_path(current_module, &ident),
+                                module_is_public: matches!(vis, Visibility::Public(_)),
+                            },
+                            items,
+                        )
                     },
-                    items
-                ))
+                )
             })
         };
 
@@ -1957,6 +1980,13 @@ impl<'ast> Visit<'ast> for StateMonad<ParsingState, FfiItems> {
             })
             .cloned()
             .fold(current_monad, |monad, it| {
+                /*
+                  [FIXME]: tweak the functions we currently use for parsing
+                  items such that they use the state monad's state rather than
+                  the state currently within FfiItems (i.e. field
+                  current_module.)
+                */
+
                 macro_rules! exe {
                     ($($f:tt: $ty:tt),+ $(,)?) => {
                         match it {
@@ -1973,6 +2003,43 @@ impl<'ast> Visit<'ast> for StateMonad<ParsingState, FfiItems> {
                                 StateMonad::pure(items)
                             }),
                             )+
+                            Item::Mod(it) => {
+                                let mut child_monad = StateMonad::pure(FfiItems::default());
+                                child_monad.visit_item_mod(&it);
+
+                                monad.bind(|items| {
+                                    StateMonad::set(|state: ParsingState| {
+                                        let (ParsingState {
+                                            uid,
+                                            module_is_public,
+                                            current_module,
+                                            ..
+                                        }, child_items) = child_monad.run(state.clone());
+
+                                        // [TODO]: this is still fuzzy.
+                                        let new_state = ParsingState { uid, ..state };
+                                        let new_items = FfiItems {
+                                            modules: items
+                                                .modules
+                                                .into_iter()
+                                                .chain([Module {
+                                                    public: module_is_public,
+                                                    cached_ident:
+                                                        ast::ident_to_string(&current_module),
+                                                    cached_path:
+                                                        ast::path_to_string(&current_module),
+                                                    path: current_module,
+                                                    items: child_items,
+                                                    ..Default::default()
+                                                }])
+                                                .collect(),
+                                            ..items
+                                        };
+
+                                        (new_state, new_items)
+                                    })
+                                })
+                            },
                             Item::Use(ItemUse { vis, tree, .. }) => {
                                 let base = normalize_path(tree).into_iter().map(move |tree| {
                                     RefinedUse {
@@ -2002,48 +2069,31 @@ impl<'ast> Visit<'ast> for StateMonad<ParsingState, FfiItems> {
                 }
             });
 
-        // [TODO]: this will likely need me wrapping the rest of the function in
-        // one huge bind call with which I can get access to the current monad's
-        // state while using the below "child" monad for recursing into other
-        // modules. Then, the monad returned in the outer bind ought integrate
-        // its previous items and the new module parsed off of the child monad.
-        // Though the details of it are a bit fuzzy.
-        let mut child_monad = set!(|s| (
-            ParsingState {
-                current_module: todo!(),
-                uid: todo!(),
-            },
-            FfiItems::default()
-        ));
-        visit::visit_item_mod(&mut child_monad, i);
+        *self = new_monad.bind(move |it| {
+            StateMonad::set(move |state: ParsingState| {
+                let mut child_monad = StateMonad::pure(FfiItems::default());
 
-        if is_crate_root {
-            *self = new_monad;
-        } else {
-            let vis = vis.clone();
+                let (
+                    ParsingState {
+                        uid,
+                        module_is_public,
+                        ..
+                    },
+                    child_items,
+                ) = child_monad.run(state.clone());
+                let new_state = ParsingState {
+                    uid,
+                    current_module: state.current_module,
+                    module_is_public: state.module_is_public,
+                };
+                let new_items = FfiItems {
+                    modules: it.modules.into_iter().chain(child_items.modules).collect(),
+                    ..it
+                };
 
-            *self = new_monad.bind(move |items| {
-                set!(move |s| {
-                    let path = s.current_module.clone();
-                    let items = FfiItems {
-                        modules: items
-                            .modules
-                            .into_iter()
-                            .chain([Module {
-                                public: matches!(vis, Visibility::Public(_)),
-                                cached_path: ast::path_to_string(&path),
-                                cached_ident: ast::ident_to_string(&path),
-                                path: path.clone(),
-                                items: items.clone(),
-                                ..Default::default()
-                            }])
-                            .collect(),
-                        ..items
-                    };
-                    (s, items)
-                })
-            });
-        }
+                (new_state, new_items)
+            })
+        });
     }
 }
 
