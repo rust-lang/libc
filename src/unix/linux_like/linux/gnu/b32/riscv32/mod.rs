@@ -220,7 +220,7 @@ s_no_extra_traits! {
     }
 }
 
-pub const O_LARGEFILE: c_int = 0;
+pub const O_LARGEFILE: c_int = 0o100000;
 pub const VEOF: usize = 4;
 pub const RTLD_DEEPBIND: c_int = 0x8;
 pub const RTLD_GLOBAL: c_int = 0x100;
