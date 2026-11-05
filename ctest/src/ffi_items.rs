@@ -14,6 +14,8 @@ use std::ops::{
 };
 use std::{
     iter,
+    mem,
+    ptr,
     vec,
 };
 
@@ -200,6 +202,70 @@ impl From<FfiItems> for DebugFfiItems {
     }
 }
 
+/// Tuple-based state monad used for keeping track of mutable state while parsing items for
+/// FfiItems.
+///
+/// The monad is currently used for tracking the current module of the item being parsed, as well as
+/// the unique ID of all parsed items. The monad in those cases corresponds with the concrete type
+/// `StateMonad<ParsingState, FfiItems>`. The implementation of `syn::visit::Visit` doesn't avoid
+/// the impure mutable state of that interface but scopes it to polymorphic parameter `T` in
+/// a separate copy of the state monad. After the recursive visitor traversal is done in the copy,
+/// the original and mutated state monads are reconciled.
+struct StateMonad<S, T> {
+    seq: Box<dyn ops::FnOnce(S) -> (S, T)>,
+}
+
+impl<S, T> StateMonad<S, T> {
+    fn pure(value: T) -> Self
+    where
+        for<'a> T: 'a,
+    {
+        Self {
+            seq: Box::new(|s| (s, value)),
+        }
+    }
+
+    fn bind<U, F>(self, f: F) -> StateMonad<S, U>
+    where
+        for<'a> S: 'a,
+        for<'a> T: 'a,
+        for<'a> F: ops::FnOnce(T) -> StateMonad<S, U> + 'a,
+    {
+        StateMonad {
+            seq: Box::new(|s| {
+                let (state, value) = (self.seq)(s);
+
+                (f(value).seq)(state)
+            }),
+        }
+    }
+
+    fn run(self, init: S) -> (S, T) {
+        (self.seq)(init)
+    }
+}
+
+macro_rules! set_state {
+    ($f:expr) => {
+        StateMonad { seq: Box::new($f) }
+    };
+}
+
+#[test]
+fn tmpmonad() {
+    let (state, value) = StateMonad::pure(2)
+        .bind(|x| set_state!(move |s| (s * x, x)))
+        .run(2);
+
+    println!("state: {state}, value: {value}");
+}
+
+#[derive(Debug, Clone)]
+struct ParsingState {
+    uid: usize,
+    current_module: Path,
+}
+
 /// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
 ///
 /// Includes foreign functions/statics, type aliases, structs, unions, and constants. Modules are
@@ -295,7 +361,7 @@ impl FfiItems {
           [TODO]: the idea here is to change this into using a state monad that
           lets us worry not about mutable state (even though syn's visitor
           interface is mutable in nature, it would hide those details from us.)
-          This would carry both the `current_module` state that is now part of
+          This would carry both the current_module state that is now part of
           FfiItems, as well as the unique ID that is assigned to each parsed
           item. Then, we can get rid of the path_aggregate field of each of the
           parsed items and the whole machinery built around it. Once we're
@@ -1835,6 +1901,25 @@ fn visit_item_foreign_mod(table: &mut FfiItems, i: &syn::ItemForeignMod) {
             }
             _ => (),
         }
+    }
+}
+
+impl<'ast> Visit<'ast> for StateMonad<ParsingState, FfiItems> {
+    fn visit_item_mod(&mut self, i: &'ast ItemMod) {
+        let ItemMod {
+            vis,
+            ident,
+            content: Some((_, items)),
+            ..
+        } = i
+        else {
+            unreachable!("Ibid.")
+        };
+
+        let is_crate_root = ident == "__ctest_root_mod";
+        let current_monad = mem::replace(self, set_state!(|s| (s, FfiItems::default())));
+
+        todo!("Port over the rest of FfiItems to this impl.")
     }
 }
 
