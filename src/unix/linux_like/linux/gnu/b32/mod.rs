@@ -188,7 +188,11 @@ s! {
         __glibc_reserved4: Padding<crate::__syscall_ulong_t>,
     }
 
-    #[cfg(gnu_time_bits64)]
+    // glibc uses the 64-bit layout when `__USE_TIME64_REDIRECTS` is set, and
+    // also when `__TIMESIZE == 64 && __WORDSIZE == 32`. The latter is the
+    // default on riscv32, where `time_t` is 64 bits wide on a 32-bit target, so
+    // no time64 redirects are involved.
+    #[cfg(any(gnu_time_bits64, target_arch = "riscv32"))]
     pub struct timex {
         pub modes: c_uint,
         _pad1: Padding<c_int>,
@@ -226,7 +230,7 @@ s! {
         __unused11: Padding<i32>,
     }
 
-    #[cfg(not(gnu_time_bits64))]
+    #[cfg(not(any(gnu_time_bits64, target_arch = "riscv32")))]
     pub struct timex {
         pub modes: c_uint,
         pub offset: c_long,
