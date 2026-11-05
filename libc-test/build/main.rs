@@ -954,6 +954,9 @@ fn test_solarish(t: &Target) {
     // While debugging, "CFLAGS=-ferror-limit=<large num>" is useful to get more error output.
     let mut cfg = ctest_cfg();
     cfg.flag("-Wno-deprecated-declarations");
+    // Avoid the error for definitions such as '{0, 0, 0, 1}' for
+    // 'IN6ADDR_LOOPBACK_INIT' in netinet/in.h.
+    cfg.flag("-Wno-missing-braces");
 
     cfg.define("_XOPEN_SOURCE", Some("700"));
     cfg.define("__EXTENSIONS__", None);
