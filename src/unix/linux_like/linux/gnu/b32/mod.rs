@@ -160,7 +160,8 @@ s! {
             gnu_time_bits64,
             target_arch = "mips",
             target_arch = "mips32r6",
-            target_arch = "powerpc"
+            target_arch = "powerpc",
+            target_arch = "riscv32"
         )))]
         __reserved: Padding<crate::__syscall_ulong_t>,
         #[cfg(all(not(gnu_time_bits64), target_arch = "powerpc"))]
@@ -170,7 +171,8 @@ s! {
             gnu_time_bits64,
             target_arch = "mips",
             target_arch = "mips32r6",
-            target_arch = "powerpc"
+            target_arch = "powerpc",
+            target_arch = "riscv32"
         )))]
         __reserved2: Padding<crate::__syscall_ulong_t>,
         pub sem_nsems: crate::__syscall_ulong_t,
