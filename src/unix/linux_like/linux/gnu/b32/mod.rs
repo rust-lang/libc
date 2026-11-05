@@ -71,6 +71,7 @@ cfg_if! {
         target_arch = "mips",
         target_arch = "mips32r6",
         target_arch = "powerpc",
+        target_arch = "riscv32",
         target_arch = "sparc"
     )))] {
         s! {
