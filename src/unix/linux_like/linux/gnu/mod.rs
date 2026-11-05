@@ -377,14 +377,20 @@ s! {
             target_arch = "aarch64",
             target_arch = "s390x",
             target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+            all(
+                target_pointer_width = "32",
+                not(any(target_arch = "x86_64", target_arch = "riscv32"))
+            )
         ))]
         pub ut_session: c_long,
         #[cfg(any(
             target_arch = "aarch64",
             target_arch = "s390x",
             target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+            all(
+                target_pointer_width = "32",
+                not(any(target_arch = "x86_64", target_arch = "riscv32"))
+            )
         ))]
         pub ut_tv: crate::timeval,
 
@@ -392,14 +398,20 @@ s! {
             target_arch = "aarch64",
             target_arch = "s390x",
             target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+            all(
+                target_pointer_width = "32",
+                not(any(target_arch = "x86_64", target_arch = "riscv32"))
+            )
         )))]
         pub ut_session: i32,
         #[cfg(not(any(
             target_arch = "aarch64",
             target_arch = "s390x",
             target_arch = "loongarch64",
-            all(target_pointer_width = "32", not(target_arch = "x86_64"))
+            all(
+                target_pointer_width = "32",
+                not(any(target_arch = "x86_64", target_arch = "riscv32"))
+            )
         )))]
         pub ut_tv: __timeval,
 
