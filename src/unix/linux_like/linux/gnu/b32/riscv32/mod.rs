@@ -68,33 +68,33 @@ s! {
     }
 
     pub struct statfs {
-        pub f_type: c_long,
-        pub f_bsize: c_long,
+        pub f_type: crate::__fsword_t,
+        pub f_bsize: crate::__fsword_t,
         pub f_blocks: crate::fsblkcnt_t,
         pub f_bfree: crate::fsblkcnt_t,
         pub f_bavail: crate::fsblkcnt_t,
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_long,
-        pub f_frsize: c_long,
-        pub f_flags: c_long,
-        f_spare: Padding<[c_long; 4]>,
+        pub f_namelen: crate::__fsword_t,
+        pub f_frsize: crate::__fsword_t,
+        pub f_flags: crate::__fsword_t,
+        f_spare: Padding<[crate::__fsword_t; 4]>,
     }
 
     pub struct statfs64 {
-        pub f_type: c_long,
-        pub f_bsize: c_long,
+        pub f_type: crate::__fsword_t,
+        pub f_bsize: crate::__fsword_t,
         pub f_blocks: crate::fsblkcnt64_t,
         pub f_bfree: crate::fsblkcnt64_t,
         pub f_bavail: crate::fsblkcnt64_t,
         pub f_files: crate::fsfilcnt64_t,
         pub f_ffree: crate::fsfilcnt64_t,
         pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_long,
-        pub f_frsize: c_long,
-        pub f_flags: c_long,
-        f_spare: Padding<[c_long; 4]>,
+        pub f_namelen: crate::__fsword_t,
+        pub f_frsize: crate::__fsword_t,
+        pub f_flags: crate::__fsword_t,
+        f_spare: Padding<[crate::__fsword_t; 4]>,
     }
 
     pub struct stack_t {
