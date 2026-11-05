@@ -369,7 +369,7 @@ cfg_if! {
     ))] {
         pub const F_SETLK: c_int = 34;
         pub const F_SETLKW: c_int = 35;
-    } else if #[cfg(gnu_file_offset_bits64)] {
+    } else if #[cfg(any(gnu_file_offset_bits64, target_arch = "riscv32"))] {
         pub const F_SETLK: c_int = 13;
         pub const F_SETLKW: c_int = 14;
     } else {
