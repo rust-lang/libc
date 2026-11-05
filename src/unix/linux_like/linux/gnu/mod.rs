@@ -425,7 +425,7 @@ s_no_extra_traits! {
         pub aio_offset: off_t,
         #[cfg(all(
             not(gnu_file_offset_bits64),
-            not(target_arch = "x86_64"),
+            not(any(target_arch = "x86_64", target_arch = "riscv32")),
             target_pointer_width = "32"
         ))]
         __pad: Padding<[c_char; 4]>,
