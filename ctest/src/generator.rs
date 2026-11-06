@@ -1142,8 +1142,8 @@ impl TestGenerator {
         let ast = syn::parse_file(&expanded)
             .map_err(|e| GenerationError::RustSyntax(expanded, e.to_string()))?;
 
-        let mut ffi_items = FfiItems::new();
-        ffi_items.visit_file(&ast);
+        let empty_ffi_items = FfiItems::new();
+        let ffi_items = empty_ffi_items.visit_file(&ast);
 
         let output_directory = self
             .out_dir

@@ -1,37 +1,20 @@
 use std::cmp::Ordering;
-use std::ops;
 
 use syn::Path;
 use syn::punctuated::Punctuated;
 
-use crate::ast::{
-    PathAggregateStore,
-    PathUtils,
-};
-use crate::ffi_items::{
-    FfiItems,
-    GenericItem,
-};
-use crate::{
-    BoxStr,
-    Const,
-    Fn,
-    Static,
-    Struct,
-    Type,
-    Union,
-    ast,
-};
+use crate::BoxStr;
+use crate::ffi_items::FfiItems;
 
 /// Represents a Rust module. `ctest` only considers items for which there is a corresponding type
 /// in this crate.
 #[derive(Debug, Clone)]
 pub struct Module {
+    pub(crate) uid: usize,
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) items: FfiItems,
 }
 
@@ -62,211 +45,30 @@ impl Module {
     }
 }
 
-impl PathUtils for Module {
-    fn path_aggregate(&self) -> &PathAggregateStore {
-        &self.path_aggregate
-    }
-
-    fn path(&self) -> &Path {
-        &self.path
-    }
-
-    fn mk(
-        self,
-        cached_path: BoxStr,
-        cached_ident: BoxStr,
-        path: Path,
-        addressable_paths: PathAggregateStore,
-    ) -> Self {
-        Self {
-            cached_path,
-            cached_ident,
-            path,
-            path_aggregate: addressable_paths,
-            ..self
-        }
-    }
-
-    fn add_path(self, path: Path) -> Self {
-        fn handle_item(it: GenericItem, original: &Path, new: &Path) -> GenericItem {
-            macro_rules! map {
-                ($($ty:tt),+ $(,)?) => {
-                    match it {
-                        $(
-                        GenericItem::$ty(it) => {
-                            let kept_segments = <$ty as PathUtils>::path(&it)
-                                .segments
-                                .clone()
-                                .into_iter()
-                                .skip(original.segments.len());
-                            let new_path = Path {
-                                segments: new
-                                    .segments
-                                    .clone()
-                                    .into_iter()
-                                    .chain(kept_segments)
-                                    .collect(),
-                                ..new.clone()
-                            };
-
-                            GenericItem::$ty($ty {
-                                path_aggregate: it.path_aggregate().clone().push(new_path),
-                                ..it
-                            })
-                        }
-                        )+
-                        GenericItem::Module(m) => {
-                            let kept_segments = <Module as PathUtils>::path(&m)
-                                .segments
-                                .clone()
-                                .into_iter()
-                                .skip(original.segments.len());
-                            let new_path = Path {
-                                segments: new
-                                    .segments
-                                    .clone()
-                                    .into_iter()
-                                    .chain(kept_segments)
-                                    .collect(),
-                                ..new.clone()
-                            };
-
-                            let new_items = m
-                                .items
-                                .items()
-                                .map(|it| handle_item(it, &original, &new))
-                                .collect();
-
-                            GenericItem::Module(Module {
-                                path_aggregate: m.path_aggregate().clone().push(new_path),
-                                items: new_items,
-                                ..m
-                            })
-                        }
-                    }
-                };
-            }
-
-            map! {
-                Type,
-                Struct,
-                Union,
-                Const,
-                Fn,
-                Static,
-            }
-        }
-
-        let new_items = self
-            .items
-            .items()
-            .map(|it| handle_item(it, <Self as PathUtils>::path(&self), &path))
-            .collect();
-
-        Module {
-            path_aggregate: self.path_aggregate.push(path),
-            items: new_items,
-            ..self
-        }
-    }
-
-    // [NOTE]: this is implemented in terms of rename_with but it doesn't just
-    // yield the passed path, because that would mean all items would end up
-    // with the same path. Instead, it calls into rename_with and skips as many
-    // segments of all paths in the subtree as the current module has. Then it
-    // appends whatever segments are left to the new path (new_path) we got
-    // passed here. In the case of the module on which this was called, that
-    // means all segments will be skipped and nothing will be appended to the
-    // new path. In all other cases of items within its subtree, they will have
-    // the previous identifier of the ancestor in which this rename request was
-    // originally called, trimmed, and whatever segments are left will be
-    // appended to the new path of that (potentially grand-) ancestor.
-    fn rename(self, new_path: Path) -> Self {
-        let old_path_len = self.path.segments.len();
-
-        self.rename_with(|p| {
-            p.segments
-                .iter()
-                .skip(old_path_len)
-                .cloned()
-                .fold(new_path.clone(), |new_path, s| Path {
-                    segments: new_path.segments.clone().into_iter().chain([s]).collect(),
-                    ..new_path
-                })
-        })
-    }
-
-    fn rename_with(self, f: impl ops::Fn(&Path) -> Path + Clone) -> Self {
-        let new_items = self
-            .items
-            .items()
-            .map(|it| {
-                macro_rules! exe {
-                    ($($ty:tt),+ $(,)?) => {
-                        match it {
-                            $(
-                            GenericItem::$ty(it) => {
-                                let new_path = f(&it.path);
-
-                                GenericItem::$ty(it.rename(new_path))
-                            }
-                            )+
-                            GenericItem::Module(it) => GenericItem::Module(it.rename_with(f.clone())),
-                        }
-                    };
-                }
-
-                exe! {
-                    Type,
-                    Struct,
-                    Union,
-                    Const,
-                    Fn,
-                    Static,
-                }
-            })
-            .collect();
-
-        let new_path = f(&self.path);
-
-        Module {
-            cached_path: ast::path_to_string(&new_path),
-            cached_ident: ast::ident_to_string(&new_path),
-            path: new_path.clone(),
-            path_aggregate: self.path_aggregate.push(new_path),
-            items: new_items,
-            ..self
-        }
-    }
-}
-
 impl Default for Module {
     fn default() -> Self {
-        let dpath = Path {
-            leading_colon: None,
-            segments: Punctuated::new(),
-        };
-
         Self {
+            uid: Default::default(),
             public: Default::default(),
             cached_path: Default::default(),
             cached_ident: Default::default(),
-            path: dpath.clone(),
-            path_aggregate: PathAggregateStore::from_iter([dpath]),
+            path: Path {
+                leading_colon: None,
+                segments: Punctuated::new(),
+            },
             items: Default::default(),
         }
     }
 }
 
-// [NOTE]: a custom implementation is used because FfiItems does not have a
-// PartialEq implementation. It is best if it does not have one. The
-// current_module field in FfiItems is not meant for use post-parse-time. It
-// would likely be unintuitive to have its PartialEq not take into account.
+/* TODO: this is either wrong or needs a refactor after the refactor that
+ * removed the current_module field of FfiItems. */
+/* NOTE: a custom implementation is used because FfiItems does not have a
+ * PartialEq implementation. It is best if it does not have one. The
+ * current_module field in FfiItems is not meant for use post-parse-time. It
+ * would likely be unintuitive to have its PartialEq not take into account. */
 impl PartialEq for Module {
     fn eq(&self, other: &Self) -> bool {
-        self.public == other.public
-            && self.path == other.path
-            && self.path_aggregate == other.path_aggregate
-            && self.items.custom_eq(&other.items)
+        self.public == other.public && self.path == other.path && self.items.custom_eq(&other.items)
     }
 }

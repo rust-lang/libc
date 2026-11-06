@@ -3,10 +3,6 @@ use syn::{
     Type,
 };
 
-use crate::ast::{
-    PathAggregateStore,
-    PathUtils,
-};
 use crate::{
     Abi,
     BoxStr,
@@ -18,12 +14,12 @@ use crate::{
 /// as a result it does not have a field for storing the expression.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Static {
+    pub(crate) uid: usize,
     pub(crate) public: bool,
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) link_name: Option<BoxStr>,
     pub(crate) ty: Type,
 }
@@ -47,31 +43,5 @@ impl Static {
     /// Return the name of the function to be linked C side with.
     pub fn link_name(&self) -> Option<&str> {
         self.link_name.as_deref()
-    }
-}
-
-impl PathUtils for Static {
-    fn path_aggregate(&self) -> &PathAggregateStore {
-        &self.path_aggregate
-    }
-
-    fn path(&self) -> &Path {
-        &self.path
-    }
-
-    fn mk(
-        self,
-        cached_path: BoxStr,
-        cached_ident: BoxStr,
-        path: Path,
-        addressable_paths: PathAggregateStore,
-    ) -> Self {
-        Self {
-            cached_path,
-            cached_ident,
-            path,
-            path_aggregate: addressable_paths,
-            ..self
-        }
     }
 }

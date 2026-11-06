@@ -4,19 +4,15 @@ use syn::{
 };
 
 use crate::BoxStr;
-use crate::ast::{
-    PathAggregateStore,
-    PathUtils,
-};
 
 /// Represents a constant variable defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Const {
+    pub(crate) uid: usize,
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
-    pub(crate) path_aggregate: PathAggregateStore,
     pub(crate) ty: Type,
 }
 
@@ -34,31 +30,5 @@ impl Const {
     /// Returns the last segment of the constant's path; Namely, its identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
-    }
-}
-
-impl PathUtils for Const {
-    fn path_aggregate(&self) -> &PathAggregateStore {
-        &self.path_aggregate
-    }
-
-    fn path(&self) -> &Path {
-        &self.path
-    }
-
-    fn mk(
-        self,
-        cached_path: BoxStr,
-        cached_ident: BoxStr,
-        path: Path,
-        path_aggregate: PathAggregateStore,
-    ) -> Self {
-        Self {
-            cached_path,
-            cached_ident,
-            path,
-            path_aggregate,
-            ..self
-        }
     }
 }
