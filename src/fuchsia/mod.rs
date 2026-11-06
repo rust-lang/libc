@@ -892,6 +892,12 @@ s! {
         pub c_ospeed: crate::speed_t,
     }
 
+    pub struct in_pktinfo {
+        pub ipi_ifindex: c_int,
+        pub ipi_spec_dst: crate::in_addr,
+        pub ipi_addr: crate::in_addr,
+    }
+
     pub struct in6_pktinfo {
         pub ipi6_addr: crate::in6_addr,
         pub ipi6_ifindex: c_uint,
@@ -1648,6 +1654,7 @@ pub const SOCK_RDM: c_int = 4;
 pub const IP_TOS: c_int = 1;
 pub const IP_TTL: c_int = 2;
 pub const IP_HDRINCL: c_int = 3;
+pub const IP_PKTINFO: c_int = 8;
 pub const IP_RECVTOS: c_int = 13;
 pub const IP_FREEBIND: c_int = 15;
 pub const IP_TRANSPARENT: c_int = 19;
@@ -1665,6 +1672,8 @@ pub const IPV6_ADD_MEMBERSHIP: c_int = 20;
 pub const IPV6_DROP_MEMBERSHIP: c_int = 21;
 pub const IPV6_V6ONLY: c_int = 26;
 pub const IPV6_RECVPKTINFO: c_int = 49;
+pub const IPV6_PKTINFO: c_int = 50;
+pub const IPV6_DONTFRAG: c_int = 62;
 pub const IPV6_RECVTCLASS: c_int = 66;
 pub const IPV6_TCLASS: c_int = 67;
 
