@@ -147,64 +147,19 @@ impl FromIterator<Path> for PathAggregateStore {
 /// this function for convenience's sake.
 pub(crate) trait PathUtils: Clone {
     fn path(&self) -> &Path;
-    fn path_aggregate(&self) -> &PathAggregateStore;
-    fn mk(
-        self,
-        cached_path: BoxStr,
-        cached_ident: BoxStr,
-        path: Path,
-        addressable_paths: PathAggregateStore,
-    ) -> Self;
-
-    /// Provided a path, it ensures the path aggregate of a given item integrates the new path.
-    ///
-    /// Unlike methods `rename` and `rename_with`, this does not change the path of the item itself,
-    /// but rather produces an updated receiver with only the path aggregate store expanded.
-    fn add_path(self, path: Path) -> Self {
-        let old_path = self.path().clone();
-        let old_aggregate = self.path_aggregate().clone();
-        self.mk(
-            path_to_string(&old_path),
-            ident_to_string(&old_path),
-            old_path,
-            old_aggregate.push(path),
-        )
-    }
-
-    /// Provided some parsed type, this method will run the given closure on each variation of a
-    /// term of that type (`self`.)
-    ///
-    /// The variations of a given term are given by their addressable paths. This is an append-only
-    /// aggregate all implementors of this interface have as one of their projections. The
-    /// variations are themselves the possible paths by which an item may be referred to as a
-    /// consequence of having been imported over to other modules of the crate.
-    ///
-    /// This interface gets access to it through the [`RenameUtils::addressable_paths`] projection.
-    ///
-    /// This is a utility to avoid having to go through the variations, as well as updating the
-    /// identifier and paths caches whenever some operation needs to be performed on all variations.
-    fn with_variations<T>(&self, f: impl ops::Fn(&Self) -> T) -> Vec<T> {
-        self.path_aggregate()
-            .into_iter()
-            .cloned()
-            .map(|p| f(&self.clone().rename(p)))
-            .collect()
-    }
+    fn mk(self, cached_path: BoxStr, cached_ident: BoxStr, path: Path) -> Self;
 
     fn rename_with(self, f: impl ops::Fn(&Path) -> Path + Clone) -> Self {
-        let path = self.path().clone();
+        let new_path = f(&self.path());
 
-        self.rename(f(&path))
+        self.rename(new_path)
     }
 
     fn rename(self, new_path: Path) -> Self {
-        let old_aggregate = self.path_aggregate().clone();
-
         self.mk(
             path_to_string(&new_path),
             ident_to_string(&new_path),
-            new_path.clone(),
-            old_aggregate.push(new_path),
+            new_path,
         )
     }
 }

@@ -1,5 +1,6 @@
 use syn::Path;
 
+use crate::ast::PathUtils;
 use crate::{
     BoxStr,
     Field,
@@ -30,5 +31,20 @@ impl Union {
     /// Returns the last segment of the union's path; Namely, its identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
+    }
+}
+
+impl PathUtils for Union {
+    fn path(&self) -> &Path {
+        &self.path
+    }
+
+    fn mk(self, cached_path: BoxStr, cached_ident: BoxStr, path: Path) -> Self {
+        Self {
+            cached_path,
+            cached_ident,
+            path,
+            ..self
+        }
     }
 }

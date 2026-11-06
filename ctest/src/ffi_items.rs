@@ -27,7 +27,6 @@ use syn::token::{
 };
 use syn::visit::Visit;
 use syn::{
-    File,
     FnArg,
     ForeignItem,
     Ident,
@@ -43,10 +42,7 @@ use syn::{
     Visibility,
 };
 
-use crate::ast::{
-    PathAggregateStore,
-    PathUtils,
-};
+use crate::ast::PathUtils;
 use crate::{
     Abi,
     BoxStr,
@@ -62,8 +58,8 @@ use crate::{
     ast,
 };
 
-// [NOTE]: for use only in printf-debugging. It doesn't automatically derive
-// Debug to selectively print out the fields I'm interested in while debugging.
+/* NOTE: for use only in printf-debugging. It doesn't automatically derive Debug
+ * to selectively print out the fields I'm interested in while debugging. */
 #[derive(Clone)]
 struct DebugFfiItems {
     aliases: Vec<Type>,
@@ -97,15 +93,8 @@ impl Debug for DebugFfiItems {
                                 .iter()
                                 .map(|it| {
                                     f.pad(&format!(
-                                        concat!(
-                                            stringify!($ty),
-                                            " {{ path: {:?}, path_aggregate: {:?} }}",
-                                        ),
+                                        concat!(stringify!($ty), " {{ path: {:?} }}"),
                                         PrettyPath(&it.path),
-                                        (&it.path_aggregate)
-                                            .into_iter()
-                                            .map(PrettyPath)
-                                            .collect::<Vec<_>>(),
                                     ))
                                 })
                                 .collect::<fmt::Result>()
@@ -133,12 +122,8 @@ impl Debug for DebugFfiItems {
                             f.pad("[ ")
                                 .and_then(|_| {
                                     f.pad(&format!(
-                                        "path: {:?}, path_aggregate: {:?}, items: {{ {:?} }}",
+                                        "path: {:?}, items: {{ {:?} }}",
                                         PrettyPath(&m.path),
-                                        (&m.path_aggregate)
-                                            .into_iter()
-                                            .map(PrettyPath)
-                                            .collect::<Vec<_>>(),
                                         DebugFfiItems::from(m.items.clone()),
                                     ))
                                 })
@@ -153,8 +138,8 @@ impl Debug for DebugFfiItems {
     }
 }
 
-// [NOTE]: for debugging purposes only. Pretty prints a refined type for
-// syn::UseTree.
+/* NOTE: for debugging purposes only. Pretty prints a refined type for
+ * syn::UseTree. */
 #[derive(Clone)]
 struct PrettyUseTree<'a>(&'a RefinedUseTree);
 
@@ -164,6 +149,7 @@ impl Debug for PrettyUseTree<'_> {
     }
 }
 
+/* NOTE: for debugging purposes only. */
 fn refined_tree_to_string(t: &RefinedUseTree) -> String {
     match t {
         RefinedUseTree::Path(p) => {
@@ -209,8 +195,8 @@ impl From<FfiItems> for DebugFfiItems {
 /// the impure mutable state of that interface but scopes it to polymorphic parameter `T` in a
 /// separate copy of the state monad. After the recursive visitor traversal is done in the copy, the
 /// original and mutated state monads are reconciled by binding the former to the latter.
-// [FIXME]: it may be a better idea to change this into a cps state monad just
-// to see whether they work out better with linear terms.
+/* FIXME: it may be a better idea to change this into a cps state monad just to
+ * see whether they work out better with linear terms. */
 struct StateMonad<S, T> {
     seq: Box<dyn ops::FnOnce(S) -> (S, T)>,
 }
@@ -267,8 +253,8 @@ fn tmpmonad() {
 
 /* FIXME: maybe further separate the state that is "shared" among items (i.e.
  * the uid field at the time of writing) from the state that is particular to
- * the current module being parsed (i.e. fields current_module and
- * module_is_public at the time of writing.) */
+ * the current module being parsed (i.e. field current_module at the time of
+ * writing.) */
 #[derive(Debug, Clone)]
 struct ParsingState {
     uid: usize,
@@ -827,9 +813,9 @@ struct PassPair {
 fn resolve_all(root: Module) -> Module {
     let (ControlFlow::Break(m) | ControlFlow::Continue(m)) =
         iter::repeat(()).try_fold(root, |root, _| {
-            // [NOTE]: it holds that a pass over the crate root will yield the
-            // crate root as its subtree. It is thus safe to ignore the
-            // whole-crate module tree. They are the same at this point.
+            /* NOTE: it holds that a pass over the crate root will yield the
+             * crate root as its subtree. It is thus safe to ignore the
+             * whole-crate module tree. They are the same at this point. */
             let PassPair {
                 subtree: new_root, ..
             } = resolve_pass(PassPair {
@@ -842,6 +828,7 @@ fn resolve_all(root: Module) -> Module {
                 false => ControlFlow::Continue(new_root),
             }
         });
+
     m
 }
 
@@ -856,38 +843,29 @@ enum Resolution {
     Unresolved,
 }
 
-/// Performs one pass through the provided pair of a subtree and the whole-crate subtree.
-///
-/// The input pair's fields correspond with the subtree in which to perform the resolution pass on,
-/// and the tree at the crate root. The latter is required to resolve absolute imports that refer to
-/// some item in an ancestor module that is more than one level up the tree than the subtree being
-/// resolved.
+/// Performs one resolution pass through the subtree rooted at the `subtree` projection of `src`.
 ///
 /// The returned pair contains updated snapshots of the input pair. The subtree may have had new
 /// items added to it. The whole-crate module tree is guaranteed to have integrated these changes.
+/// See [`PassPair`] for details about the role of each of the projections.
 fn resolve_pass(src: PassPair) -> PassPair {
-    let (
-        PassPair {
-            whole_crate: whole_crate_with_resolved_children,
-            ..
-        },
-        resolved_children,
-    ) = src.subtree.items.modules.clone().into_iter().fold(
-        (src.clone(), Vec::new()),
-        |(PassPair { whole_crate, .. }, children), m| {
-            let pair = resolve_pass(PassPair {
-                subtree: m,
-                whole_crate: whole_crate,
-            });
+    let (PassPair { whole_crate, .. }, resolved_children) =
+        src.subtree.items.modules.clone().into_iter().fold(
+            (src.clone(), Vec::new()),
+            |(state, children), m| {
+                let pair = resolve_pass(PassPair {
+                    subtree: m,
+                    ..state
+                });
+                let new_child = pair.subtree.clone();
 
-            let mut new_children = children;
-            new_children.push(pair.subtree.clone());
+                (pair, children.into_iter().chain([new_child]).collect())
+            },
+        );
 
-            (pair, new_children)
-        },
-    );
-
-    let root_with_resolved_children = Module {
+    /* NOTE: unresolved_src's module tree is unresolved only in its zeroth depth
+     * level. */
+    let unresolved_src = Module {
         items: FfiItems {
             modules: resolved_children,
             ..src.subtree.items
@@ -896,42 +874,37 @@ fn resolve_pass(src: PassPair) -> PassPair {
     };
 
     let resolved_uses = resolve_one(PassPair {
-        subtree: root_with_resolved_children.clone(),
-        whole_crate: whole_crate_with_resolved_children.clone(),
+        subtree: unresolved_src.clone(),
+        whole_crate: whole_crate.clone(),
     });
 
-    let PassPair {
-        subtree: new_root_with_duplicates,
-        whole_crate: new_whole_crate_with_resolved_children,
-    } = merge_module(
-        PassPair {
-            subtree: root_with_resolved_children,
-            whole_crate: whole_crate_with_resolved_children,
-        },
-        resolved_uses,
-    );
+    /* NOTE: duplicated_src's module tree is fully resolved but it may contain
+     * duplicates in its zeroth depth level. */
+    let duplicated_src = merge_module(unresolved_src, resolved_uses);
 
-    let new_root = Module {
-        items: new_root_with_duplicates.items.dedup(),
-        ..new_root_with_duplicates
+    /* NOTE: new_src's module tree is ready to be integrated into the
+     * whole-crate module tree. */
+    let new_src = Module {
+        items: duplicated_src.items.dedup(),
+        ..duplicated_src
     };
     let new_whole_crate = update_tree(
-        &new_root.path,
-        |_| GenericItem::Module(new_root.clone()),
-        new_whole_crate_with_resolved_children,
+        &new_src.path,
+        |_| GenericItem::Module(new_src.clone()),
+        whole_crate,
     );
 
     println!(
         "[resolve_pass] finished module pass on module {}",
-        if &*new_root.cached_path == "" {
-            "root".into()
+        if new_src.cached_path.is_empty() {
+            "root"
         } else {
-            &*new_root.cached_path
+            &*new_src.cached_path
         },
     );
 
     PassPair {
-        subtree: new_root,
+        subtree: new_src,
         whole_crate: new_whole_crate,
     }
 }
@@ -947,7 +920,7 @@ fn resolve_one(state: PassPair) -> Vec<Resolution> {
     println!(
         "[resolve_one] found {} use declarations in module {}: {:?}",
         state.subtree.items.uses.len(),
-        if &*state.subtree.cached_path == "" {
+        if state.subtree.cached_path.is_empty() {
             "root"
         } else {
             &*state.subtree.cached_path
@@ -1012,6 +985,15 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
         };
     }
 
+    macro_rules! search {
+        ($matcher:expr; $([$f:expr, $ty:tt]),+ $(,)?) => {
+            match $matcher {
+                $(Some(GenericItem::$ty(it)) => $f(it),)+
+                None => Resolution::Unresolved,
+            }
+        };
+    }
+
     match r#use.tree {
         RefinedUseTree::Name(UseName { ref ident }) => {
             log!(
@@ -1020,46 +1002,48 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 state.subtree.cached_path,
             );
 
-            // [NOTE]: self may not appear as the name basecase of a well-formed
-            // path. And yet it is still considered here. That is because of
-            // path normalization. self may appear as part of a tail group in a
-            // use declaration's path. Path normalization flattens groups into
-            // individual use statements. Path normalization is done through
-            // normalize_path above. That happens at parse-time. That is why
-            // this function must consider the case of self as a name basecase.
-            // [NOTE]: crate does not appear as the tail end of a path in a use
-            // declaration (that is not a rename) under no circumstances, so
-            // that case is not considered here.
+            /* NOTE: self may not appear as the name basecase in well-formed
+             * input, but we consider it here because it is legal as the tail
+             * end of one branch a group use declaration. Post-running
+             * normalize_path, we "flatten" all group use delarations into one.
+             * NOTE: crate does not appear as the tail end of a path in a use
+             * declaration (that is not a rename) under no circumstances. */
             if is_self(&ident) {
                 single_item!(modules: state.subtree);
             } else if is_super(&ident) {
                 let parent_path = get_parent_path(&state.subtree);
-                let Some(parent) = get_module(&parent_path, &state.whole_crate) else {
+                let Some(parent) = get_module(&parent_path, &state.whole_crate).cloned() else {
                     unreachable!(
                         "The module path is guaranteed to be found in the \
                          whole crate module tree. It is the path of the \
                          stateful subtree, which is either the module in which \
                          the use declaration appears at, some descendant of \
                          that module, or some descendant module to the crate \
-                         root after having stumbled on some ancestor-referring \
-                         use declaration. The parent some such module must be \
-                         below the crate root, as otherwise it would be \
-                         considered malformed input."
+                         root after having stumbled on some use declaration \
+                         that referred to an ancestor. The parent of some such \
+                         module must be below the crate root, as otherwise it \
+                         would be considered malformed input."
                     );
                 };
 
-                single_item!(modules: parent.clone());
+                single_item!(modules: parent);
             }
 
-            match state.subtree.items.search(&ident) {
-                Some(GenericItem::Type(t)) => single_item!(aliases: t),
-                Some(GenericItem::Struct(s)) => single_item!(structs: s),
-                Some(GenericItem::Union(u)) => single_item!(unions: u),
-                Some(GenericItem::Const(c)) => single_item!(constants: c),
-                Some(GenericItem::Fn(f)) => single_item!(foreign_functions: f),
-                Some(GenericItem::Static(s)) => single_item!(foreign_statics: s),
-                Some(GenericItem::Module(m)) => single_item!(modules: m),
-                None => Resolution::Unresolved,
+            macro_rules! exe {
+                ($field:tt) => {
+                    |it| single_item!($field: it)
+                };
+            }
+
+            search! {
+                state.subtree.items.search(&ident);
+                [exe!(aliases), Type],
+                [exe!(structs), Struct],
+                [exe!(unions), Union],
+                [exe!(constants), Const],
+                [exe!(foreign_functions), Fn],
+                [exe!(foreign_statics), Static],
+                [exe!(modules), Module],
             }
         }
         RefinedUseTree::Glob => {
@@ -1086,21 +1070,25 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     as_token: syn::parse_quote! { as },
                     rename: rename.clone(),
                 },
-                state.subtree.cached_path,
+                if &*state.subtree.cached_path == "" {
+                    "root"
+                } else {
+                    &*state.subtree.cached_path
+                },
             );
 
             macro_rules! new_path {
                 ($it:expr) => {{
-                    let new_ident = $it.path.segments.iter().rev().take(1).map(|_| PathSegment {
-                        ident: rename.clone(),
-                        arguments: PathArguments::None,
-                    });
                     let new_segments = $it
                         .path
                         .segments
                         .clone()
                         .into_iter()
-                        .chain(new_ident)
+                        .take($it.path.segments.len() - 1)
+                        .chain([PathSegment {
+                            ident: rename.clone(),
+                            arguments: PathArguments::None,
+                        }])
                         .collect();
 
                     Path {
@@ -1110,12 +1098,12 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 }};
             }
 
-            // [NOTE]: it may seem odd that borrowck doesn't mention the fact
-            // the linear resource in the item at $it hasn't already been used
-            // by the time the linear PathUtils::rename trait method is used.
-            // Notice how new_path! does not make use of any linear resources in
-            // $it; The remaining fields filled in by $it in the syn::Path it
-            // yields have an unrestricted multiplicity (i.e. they're Copy.)
+            /* NOTE: it may seem odd that borrowck doesn't mention the fact
+             * the linear resource in the term at $it hasn't already been used
+             * by the time the linear PathUtils::rename trait method is used.
+             * Notice how new_path! does not make use of any linear resources in
+             * $it; The remaining fields filled in by $it in the syn::Path it
+             * yields are Copy. */
             macro_rules! rename_single_item {
                 ($field:ident , $it:expr , $ty:tt) => {{
                     let new_path = new_path!($it);
@@ -1140,15 +1128,21 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 rename_single_item!(modules, state.whole_crate, Module);
             }
 
-            match state.subtree.items.search(&ident) {
-                Some(GenericItem::Type(t)) => rename_single_item!(aliases, t, Type),
-                Some(GenericItem::Struct(s)) => rename_single_item!(structs, s, Struct),
-                Some(GenericItem::Union(u)) => rename_single_item!(unions, u, Union),
-                Some(GenericItem::Const(c)) => rename_single_item!(constants, c, Const),
-                Some(GenericItem::Fn(f)) => rename_single_item!(foreign_functions, f, Fn),
-                Some(GenericItem::Static(s)) => rename_single_item!(foreign_statics, s, Static),
-                Some(GenericItem::Module(m)) => rename_single_item!(modules, m, Module),
-                None => Resolution::Unresolved,
+            macro_rules! exe {
+                ($field:tt: $ty:tt) => {
+                    |it: $ty| rename_single_item!($field, it, $ty)
+                };
+            }
+
+            search! {
+                state.subtree.items.search(&ident);
+                [exe!(aliases: Type), Type],
+                [exe!(structs: Struct), Struct],
+                [exe!(unions: Union), Union],
+                [exe!(constants: Const), Const],
+                [exe!(foreign_functions: Fn), Fn],
+                [exe!(foreign_statics: Static), Static],
+                [exe!(modules: Module), Module],
             }
         }
 
@@ -1191,8 +1185,8 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                 return Resolution::Unresolved;
             };
 
-            // [FIXME]: remove the below clone once debugging is done and the
-            // logging macro invocation above is removed.
+            /* FIXME: remove the below clone once debugging is done and the
+             * logging macro invocation above is removed. */
             resolve_use(
                 RefinedUse {
                     tree: *tree.clone(),
@@ -1352,7 +1346,7 @@ fn update_tree(
 ///
 /// Note that, during merging, the items to be merged may end up duplicating existing items on
 /// `dst`. It is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
-fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
+fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
     println!(
         "[merge_module] preprocessed_items: {:#?}",
         src.iter()
@@ -1366,11 +1360,12 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
             .collect::<Vec<_>>(),
     );
 
-    // [NOTE]: we collect all items here because we want the actions in the
-    // mapping to take place in whole before we start folding over the items to
-    // merge.
-    let processed_items: Vec<_> = src
-        .into_iter()
+    let dst_path = dst.path.clone();
+
+    /* NOTE: we collect all items here because we want the actions in the
+     * mapping to take place in whole before we start folding over the items to
+     * merge. */
+    src.into_iter()
         .filter_map(|r| {
             if let Resolution::Resolved(items) = r {
                 Some(items)
@@ -1409,17 +1404,19 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     }};
                 }
 
-                // [NOTE]: this ensures we find the immediate parent to any one
-                // of the items about to be merged. If there really are no items
-                // about to be merged, then we can simply return an empty
-                // FfiItems from the mapping, which would essentially merge no
-                // items down in the fold that finishes up the merging function.
-                // We don't invoke unreachable! in the diverging branch because
-                // a resolution item could pack an empty item container if a use
-                // declaration consists of a glob import of all items in a
-                // module with no items. We can be sure that all items about to
-                // be merged share the same parent because use declarations are
-                // cleansed of groups at parse-time.
+                /* NOTE: this ensures we find the immediate parent to any one
+                 * of the items about to be merged. If there really are no items
+                 * about to be merged, then we can simply return an empty
+                 * FfiItems from the mapping, which would essentially merge no
+                 * items down in the fold that finalizes the merging function.
+                 * We don't invoke unreachable! in the diverging branch because
+                 * a resolution item could pack an empty item container if a use
+                 * declaration consists of a glob import of all items in a
+                 * module with no items. We can be sure that all items about to
+                 * be merged share the same parent because use declarations are
+                 * cleansed of groups at parse-time. This in turn means that a
+                 * set of use declarations in a given module resolves to items
+                 * from that module's subtree. */
                 let Some(source_module_path) = seek_parent!(
                     aliases,
                     structs,
@@ -1432,12 +1429,12 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     return FfiItems::default();
                 };
 
-                // [NOTE]: the dummy module is only in charge of wrapping all
-                // items we want to rename with a path that makes up some
-                // initial portion of the path segments of all descendant items'
-                // path. This is so that the below call to function
-                // RenameUtils::rename can use it as reference for the subtree
-                // items' path.
+                /* NOTE: the dummy module is only in charge of wrapping all
+                 * items we want to rename with a path that makes up some
+                 * initial portion of the path segments of all descendant items'
+                 * path. This is so that the below call to function
+                 * PathUtils::rename can use it as reference for the subtree
+                 * items' path. */
                 let dummy_module = Module {
                     path: Path {
                         leading_colon: None,
@@ -1457,7 +1454,7 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 };
                 let Module {
                     items: new_items, ..
-                } = dummy_module.rename(state.subtree.path.clone());
+                } = dummy_module.rename(dst_path.clone());
 
                 fn remove_uses(m: Module) -> Module {
                     Module {
@@ -1470,10 +1467,8 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                     }
                 }
 
-                // [NOTE]: this removes all use declarations in all descendant
-                // modules of the subtrees to merge because otherwise merged
-                // modules can increase the number of use declarations in the
-                // crate's module tree, which is one cause of non-termination.
+                /* NOTE: we remove use declarations in the subtree to merge
+                 * because otherwise we can cause non-termination. */
                 let new_modules_without_uses =
                     new_items.modules.into_iter().map(remove_uses).collect();
 
@@ -1483,180 +1478,10 @@ fn merge_module(state: PassPair, src: Vec<Resolution>) -> PassPair {
                 }
             },
         )
-        .collect();
-
-    println!(
-        "[merge_module] processed_items: {:#?}",
-        processed_items
-            .iter()
-            .cloned()
-            .map(|it| format!("{:?}", DebugFfiItems::from(it)))
-            .collect::<Vec<_>>(),
-    );
-
-    processed_items.into_iter().fold(
-        state,
-        |PassPair {
-             subtree,
-             whole_crate,
-         },
-         it| {
-            // [TODO]: this is still wrong but it also seems to be headed in the
-            // right direction.
-            // [FIXME]: get rid of the below clone once debugging is done.
-            let new_whole_crate = sync_driver(&it, whole_crate.clone());
-            let Some(new_subtree) = get_module(&subtree.path, &new_whole_crate).cloned() else {
-                unreachable!(
-                    "The subtree is bound to be found in the whole-crate \
-                     module tree because it was sourced from it, and syncing \
-                     the path aggregates of items should not suddently remove \
-                     modules."
-                );
-            };
-
-            assert_ne!(
-                whole_crate, new_whole_crate,
-                "old whole-crate module tree matches new whole-crate module \
-                 tree even though there were items to merge",
-            );
-
-            println!(
-                "[merge_module] new_whole_crate: {:?}",
-                DebugFfiItems::from(new_whole_crate.items.clone())
-            );
-
-            PassPair {
-                subtree: Module {
-                    items: new_subtree.items.items().chain(it.items()).collect(),
-                    ..new_subtree
-                },
-                whole_crate: new_whole_crate,
-            }
-        },
-    )
-}
-
-/// Provided an item container with the most up-to-date occurrences of some item(s) (`items`,) this
-/// function will propagate the state of the path aggregate of each of those items throughout the
-/// entirety of the subtree rooted at the `tree` module tree.
-fn sync_driver(items: &FfiItems, tree: Module) -> Module {
-    items.items().fold(tree, |m, it| {
-        macro_rules! exe {
-            ($($ty:tt),+ $(,)?) => {
-                match it {$(
-                    GenericItem::$ty(it) => sync_aggregates(&it.path_aggregate, m),
-                )+}
-            };
-        }
-
-        exe! {
-            Type,
-            Struct,
-            Union,
-            Const,
-            Fn,
-            Static,
-            Module,
-        }
-    })
-}
-
-/// Provided a reference path aggregate corresponding with that of an item, this function traverses
-/// module `m` in search of all occurrences of such an item and "updates" such ocurrences to
-/// integrate the paths from `reference`'s path aggregate store that are not part of any one of
-/// those item occurrences.
-///
-/// # Implementation notes
-///
-/// The strategy follows that for any given item `a`, its path aggregate is bound to be unique with
-/// respect to that of another item `b` so long as `a` is not an occurrence of `b` in another module
-/// of the crate's module tree. We thus define the relation `a ~ b` as one where `b` contains some
-/// path in its path aggregate that is also part of `a`'s path aggregate.
-///
-/// If we fix `a` and it holds that `a ~ b`, then it follows that there exists some non-empty set
-/// `B` of all occurrences `b` of `a` in the crate's module tree. Under the assumption that some two
-/// items `a` and `b` may only share path aggregates it they are of the same kind, the below
-/// strategy attempts to find akin path aggregates where `a ~ b` holds. This requires not for a
-/// single kind of item to be checked against the fixed point (here `reference`) because of the
-/// above assumption; Akin path aggregates will only be found for occurrences of the same item, and
-/// thus the same kind of item, in the crate's module tree.
-fn sync_aggregates(reference: &PathAggregateStore, m: Module) -> Module {
-    let akin = |agg: &PathAggregateStore| agg.akin(reference);
-
-    println!(
-        "[sync_aggregates] preprocessed_module {}: {:?}",
-        if m.cached_path.is_empty() {
-            "root"
-        } else {
-            &m.cached_path
-        },
-        DebugFfiItems::from(m.items.clone()),
-    );
-
-    let new_m = if akin(&m.path_aggregate) {
-        // [NOTE]: this we diff instead of merging because merging will get us a
-        // set of path aggregates that contain both the ones already in m, as
-        // well as the ones that were part of reference but not part of m.
-        // Diffing gets us only the paths in reference that are not part of m's
-        // path aggregate. We don't just merge the path aggregates and create
-        // a new m with the result because adding a path aggregate to a module
-        // has an effect on the subtree of items rooted at the module in
-        // question (see the Module::add_path trait method override.)
-        let diff = m.path_aggregate.diff(reference);
-
-        diff.into_iter().fold(m, Module::add_path)
-    } else {
-        m
-    };
-
-    let new_items: FfiItems = new_m
-        .items
-        .items()
-        .map(|it| {
-            macro_rules! exe {
-                ($($ty:tt),+ $(,)?) => {
-                    match it {
-                        $(
-                        GenericItem::$ty(it) if akin(&it.path_aggregate) => {
-                            GenericItem::$ty($ty {
-                                path_aggregate: reference.clone(),
-                                ..it
-                            })
-                        }
-                        )+
-                        GenericItem::Module(it) => {
-                            GenericItem::Module(sync_aggregates(reference, it))
-                        }
-                        non_matching => non_matching,
-                    }
-                };
-            }
-
-            exe! {
-                Type,
-                Struct,
-                Union,
-                Const,
-                Fn,
-                Static,
-            }
+        .fold(dst, |dst, it| Module {
+            items: dst.items.items().chain(it.items()).collect(),
+            ..dst
         })
-        .collect();
-
-    println!(
-        "[sync_aggregates] processed_module {}: {:?}",
-        if new_m.cached_path.is_empty() {
-            "root"
-        } else {
-            &new_m.cached_path
-        },
-        DebugFfiItems::from(new_items.clone()),
-    );
-
-    Module {
-        items: new_items,
-        ..new_m
-    }
 }
 
 /// Appends a new module-local item to an absolute path that does _not_ start with `crate`.
@@ -1767,7 +1592,6 @@ fn visit_foreign_item_fn(monad: ParsingMonad, i: &syn::ForeignItemFn, abi: &Abi)
             move |ParsingState {
                       uid,
                       current_module,
-                      module_is_public,
                   }| {
                 let path = append_path(current_module.clone(), &ident);
                 let new_uid = uid.strict_add(1);
@@ -1792,7 +1616,6 @@ fn visit_foreign_item_fn(monad: ParsingMonad, i: &syn::ForeignItemFn, abi: &Abi)
                 let new_state = ParsingState {
                     uid: new_uid,
                     current_module,
-                    module_is_public,
                 };
 
                 (new_state, new_items)
@@ -1817,7 +1640,6 @@ fn visit_foreign_item_static(
             move |ParsingState {
                       uid,
                       current_module,
-                      module_is_public,
                   }| {
                 let path = append_path(current_module.clone(), &ident);
                 let new_uid = uid.strict_add(1);
@@ -1841,7 +1663,6 @@ fn visit_foreign_item_static(
                 let new_state = ParsingState {
                     uid: new_uid,
                     current_module,
-                    module_is_public,
                 };
 
                 (new_state, new_items)
@@ -1860,7 +1681,6 @@ fn visit_item_type(monad: ParsingMonad, i: &syn::ItemType) -> ParsingMonad {
             move |ParsingState {
                       uid,
                       current_module,
-                      module_is_public,
                   }| {
                 let path = append_path(current_module.clone(), &ident);
                 let new_uid = uid.strict_add(1);
@@ -1882,7 +1702,6 @@ fn visit_item_type(monad: ParsingMonad, i: &syn::ItemType) -> ParsingMonad {
                 let new_state = ParsingState {
                     uid: new_uid,
                     current_module,
-                    module_is_public,
                 };
 
                 (new_state, new_items)
@@ -1905,7 +1724,6 @@ fn visit_item_struct(monad: ParsingMonad, i: &syn::ItemStruct) -> ParsingMonad {
             move |ParsingState {
                       uid,
                       current_module,
-                      module_is_public,
                   }| {
                 let path = append_path(current_module.clone(), &ident);
                 let new_uid = uid.strict_add(1);
@@ -1927,7 +1745,6 @@ fn visit_item_struct(monad: ParsingMonad, i: &syn::ItemStruct) -> ParsingMonad {
                 let new_state = ParsingState {
                     uid: new_uid,
                     current_module,
-                    module_is_public,
                 };
 
                 (new_state, new_items)
@@ -1946,7 +1763,6 @@ fn visit_item_union(monad: ParsingMonad, i: &syn::ItemUnion) -> ParsingMonad {
             move |ParsingState {
                       uid,
                       current_module,
-                      module_is_public,
                   }| {
                 let path = append_path(current_module.clone(), &ident);
                 let new_uid = uid.strict_add(1);
@@ -1968,7 +1784,6 @@ fn visit_item_union(monad: ParsingMonad, i: &syn::ItemUnion) -> ParsingMonad {
                 let new_state = ParsingState {
                     uid: new_uid,
                     current_module,
-                    module_is_public,
                 };
 
                 (new_state, new_items)
@@ -1987,7 +1802,6 @@ fn visit_item_const(monad: ParsingMonad, i: &syn::ItemConst) -> ParsingMonad {
             move |ParsingState {
                       uid,
                       current_module,
-                      module_is_public,
                   }| {
                 let path = append_path(current_module.clone(), &ident);
                 let new_uid = uid.strict_add(1);
@@ -2009,7 +1823,6 @@ fn visit_item_const(monad: ParsingMonad, i: &syn::ItemConst) -> ParsingMonad {
                 let new_state = ParsingState {
                     uid: new_uid,
                     current_module,
-                    module_is_public,
                 };
 
                 (new_state, new_items)
@@ -2056,7 +1869,8 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
             ) = child_monad.run(state.clone());
 
             /* NOTE: here we just assume that the child module was non-empty and
-             * thus the UID ought be incremented anew for the module itself. */
+             * thus the UID ought be incremented anew for the containing
+             * module's UID. */
             let new_uid = uid_after_child.strict_add(1);
             let new_items = FfiItems {
                 modules: items

@@ -4,6 +4,7 @@ use syn::{
 };
 
 use crate::BoxStr;
+use crate::ast::PathUtils;
 
 /// Represents a constant variable defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
@@ -30,5 +31,20 @@ impl Const {
     /// Returns the last segment of the constant's path; Namely, its identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
+    }
+}
+
+impl PathUtils for Const {
+    fn path(&self) -> &Path {
+        &self.path
+    }
+
+    fn mk(self, cached_path: BoxStr, cached_ident: BoxStr, path: Path) -> Self {
+        Self {
+            cached_path,
+            cached_ident,
+            path,
+            ..self
+        }
     }
 }

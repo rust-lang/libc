@@ -1157,7 +1157,7 @@ impl TestGenerator {
             s.push('\n');
         };
 
-        let mut rust_file = RustTestTemplate::new(&ffi_items, self)?
+        let mut rust_file = RustTestTemplate::new(&ffi_items, todo!(), self)?
             .edition(self.edition.unwrap_or(DEFAULT_EDITION))
             .render()
             .map_err(GenerationError::RustTemplateRender)?;
@@ -1169,7 +1169,7 @@ impl TestGenerator {
             .write_all(rust_file.as_bytes())
             .map_err(GenerationError::OsError)?;
 
-        let mut c_file = CTestTemplate::new(&ffi_items, self)?
+        let mut c_file = CTestTemplate::new(&ffi_items, todo!(), self)?
             .render()
             .map_err(GenerationError::CTemplateRender)?;
         ensure_trailing_newline(&mut c_file);

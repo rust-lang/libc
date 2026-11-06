@@ -44,10 +44,11 @@ pub(crate) struct RustTestTemplate {
 impl RustTestTemplate {
     pub(crate) fn new(
         ffi_items: &FfiItems,
+        whole_crate: &FfiItems,
         generator: &TestGenerator,
     ) -> Result<Self, TranslationError> {
         Ok(Self {
-            template: TestTemplate::new(ffi_items, generator)?,
+            template: TestTemplate::new(ffi_items, whole_crate, generator)?,
             extern_keyword: "extern".into(),
         })
     }
@@ -79,10 +80,11 @@ pub(crate) struct CTestTemplate {
 impl CTestTemplate {
     pub(crate) fn new(
         ffi_items: &FfiItems,
+        whole_crate: &FfiItems,
         generator: &TestGenerator,
     ) -> Result<Self, TranslationError> {
         Ok(Self {
-            template: TestTemplate::new(ffi_items, generator)?,
+            template: TestTemplate::new(ffi_items, whole_crate, generator)?,
             headers: generator.headers.clone(),
         })
     }
@@ -104,13 +106,13 @@ pub(crate) struct TestTemplate {
 }
 
 impl TestTemplate {
-    /// Populate all tests for all items depending on the configuration
-    /// provided.
+    /// Populate all tests for all items depending on the configuration provided.
     pub(crate) fn new(
         ffi_items: &FfiItems,
+        whole_crate: &FfiItems,
         generator: &TestGenerator,
     ) -> Result<Self, TranslationError> {
-        let helper = TranslateHelper::new(ffi_items, generator);
+        let helper = TranslateHelper::new(ffi_items, whole_crate, generator);
 
         let mut template = Self::default();
         template.populate_const_and_cstr_tests(&helper)?;
@@ -685,13 +687,17 @@ pub(crate) struct TranslateHelper<'a> {
 
 impl<'a> TranslateHelper<'a> {
     /// Create a new translation helper.
-    pub(crate) fn new(ffi_items: &'a FfiItems, generator: &'a TestGenerator) -> Self {
+    pub(crate) fn new(
+        ffi_items: &'a FfiItems,
+        whole_crate: &FfiItems,
+        generator: &'a TestGenerator,
+    ) -> Self {
         let mut helper = Self {
             filtered_ffi_items: ffi_items.clone(),
             generator,
             translator: Translator::new(ffi_items, generator),
         };
-        helper.filter_ffi_items();
+        helper.filter_ffi_items(whole_crate);
 
         helper
     }
@@ -700,14 +706,17 @@ impl<'a> TranslateHelper<'a> {
     ///
     /// Does not skip specific tests or specific fields. If `skip_private` is `true`, it will skip
     /// tests for all private items.
-    fn filter_ffi_items(&mut self) {
-        fn skipper(items: &mut FfiItems, generator: &TestGenerator) {
+    fn filter_ffi_items(&mut self, whole_crate: &FfiItems) {
+        fn skipper(items: &mut FfiItems, whole_crate: &FfiItems, generator: &TestGenerator) {
+            /* TODO: change all functions leading up to this point with uses of
+             * both the FfiItems that corresponds with that of the module for
+             * which we are generating tests currently, and the FfiItems that
+             * contains the entire crate's module tree. The latter should be
+             * used to perform whole-crate traversals to find all occurrences of
+             * a given item such that we may run each of those against each of
+             * the tests (yes, it's crappy but it's simple.) */
+
             let skipped = items.aliases.extract_if(.., |alias| {
-                // [NOTE]: the point here is to check whether a given alias (as
-                // an item that may exist in multiple places across the crate)
-                // has a skip set up using one of those possible paths (which
-                // differ for an item that exists in multiple places in the
-                // crate.)
                 generator.skips.iter().any(|f| {
                     alias
                         .with_variations(|it| f(&MapInput::CEnumType(&it.cached_path)))
@@ -723,7 +732,6 @@ impl<'a> TranslateHelper<'a> {
             }
 
             let skipped = items.constants.extract_if(.., |constant| {
-                // [NOTE]: ibid.
                 generator.skips.iter().any(|f| {
                     constant
                         .with_variations(|it| {
@@ -742,16 +750,7 @@ impl<'a> TranslateHelper<'a> {
 
             macro_rules! filter {
                 ($field:ident: $ty:tt, $variant:ident, $label:literal) => {{
-                    // [NOTE]: ibid.
                     let skipped = items.$field.extract_if(.., |item| {
-                        // [NOTE]: when checking whether the item is public or
-                        // not, we need not traverse all possible variants of
-                        // the item as imported throughout the crate's module
-                        // tree. The visibility of the item differs across its
-                        // appearances in the module tree, so skipping an item
-                        // because of its visibility in one module should not
-                        // affect the same (possibly public) item in another
-                        // module.
                         (generator.skip_private && !item.public)
                             || generator.skips.iter().any(|f| {
                                 item.with_variations(|it| f(&MapInput::$variant(&it)))
@@ -767,11 +766,11 @@ impl<'a> TranslateHelper<'a> {
                 }};
             }
 
-            // [FIXME]: it may be preferable to rename MapInput::Alias to
-            // MapInput::Type, and so avoid having to include another "argument"
-            // to the macro. All other item types use the same identifier for
-            // both the variant in MapInput as well as their own type. Or maybe
-            // go the other way around, and change Type to Alias.
+            /* FIXME: it may be preferable to rename MapInput::Alias to
+             * MapInput::Type, and so avoid having to include another "argument"
+             * to the macro. All other item types use the same identifier for
+             * both the variant in MapInput as well as their own type. Or maybe
+             * go the other way around, and change Type to Alias. */
             filter!(aliases: Type, Alias, "alias");
             filter!(constants: Const, Const, "const");
             filter!(structs: Struct, Struct, "struct");
@@ -780,14 +779,14 @@ impl<'a> TranslateHelper<'a> {
             filter!(foreign_statics: Static, Static, "static");
             filter!(modules: Module, Module, "module");
 
-            // [NOTE]: after dropping the modules that should be skipped from
-            // `items`, we can safely iterate through whichever ones remain.
+            /* NOTE: after dropping the modules that should be skipped from
+             * items, we can safely iterate through whichever ones remain. */
             for module in &mut items.modules {
-                skipper(&mut module.items, generator);
+                skipper(&mut module.items, whole_crate, generator);
             }
         }
 
-        skipper(&mut self.filtered_ffi_items, self.generator);
+        skipper(&mut self.filtered_ffi_items, whole_crate, self.generator);
     }
 
     /// Returns the equivalent C/Cpp identifier of the Rust item.

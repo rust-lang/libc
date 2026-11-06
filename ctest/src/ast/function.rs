@@ -1,5 +1,6 @@
 use syn::Path;
 
+use crate::ast::PathUtils;
 use crate::{
     Abi,
     BoxStr,
@@ -41,5 +42,20 @@ impl Fn {
     /// Return the name of the function to be linked C side with.
     pub fn link_name(&self) -> Option<&str> {
         self.link_name.as_deref()
+    }
+}
+
+impl PathUtils for Fn {
+    fn path(&self) -> &Path {
+        &self.path
+    }
+
+    fn mk(self, cached_path: BoxStr, cached_ident: BoxStr, path: Path) -> Self {
+        Self {
+            cached_path,
+            cached_ident,
+            path,
+            ..self
+        }
     }
 }
