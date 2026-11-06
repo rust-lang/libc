@@ -539,27 +539,3 @@ pub const REG_SS: c_int = 18;
 pub const AT_SYSINFO: c_ulong = 32;
 pub const AT_SYSINFO_EHDR: c_ulong = 33;
 pub const AT_VECTOR_SIZE_ARCH: c_ulong = 3;
-
-// socketcall values from linux/net.h (only the needed ones, and not public)
-const SYS_ACCEPT4: c_int = 18;
-
-f! {
-    // Sadly, Android before 5.0 (API level 21), the accept4 syscall is not
-    // exposed by the libc. As work-around, we implement it as raw syscall.
-    // Note that for x86, the `accept4` syscall is not available either,
-    // and we must use the `socketcall` syscall instead.
-    // This workaround can be removed if the minimum Android version is bumped.
-    // When the workaround is removed, `accept4` can be moved back
-    // to `linux_like/mod.rs`
-    pub unsafe fn accept4(
-        fd: c_int,
-        addr: *mut crate::sockaddr,
-        len: *mut crate::socklen_t,
-        flg: c_int,
-    ) -> c_int {
-        // Arguments are passed as array of `long int`
-        // (which is big enough on x86 for a pointer).
-        let mut args = [fd as c_long, addr as c_long, len as c_long, flg as c_long];
-        crate::syscall(SYS_socketcall, SYS_ACCEPT4, args[..].as_mut_ptr())
-    }
-}
