@@ -2,9 +2,7 @@
 
 name: Release-plz
 
-permissions:
-  contents: write
-  id-token: write
+permissions: {}
 
 on:
   push:
