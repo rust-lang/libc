@@ -228,6 +228,9 @@ pub const SI_ADDRESS_WIDTH: c_int = 520;
 // netinet/in.h
 pub const IP_MINTTL: c_int = 0x1c;
 pub const IPV6_MINHOPCOUNT: c_int = 0x2f;
+pub const IPPROTO_MH: c_int = 135;
+pub const IPPROTO_HIP: c_int = 139;
+pub const IPPROTO_SHIM6: c_int = 140;
 
 // sys/timerfd.h
 pub const TFD_CLOEXEC: i32 = 0o2000000;
