@@ -210,6 +210,7 @@ jobs:
           - target: loongarch64-unknown-linux-musl
             env: { TEST_MUSL_V1_2: 1 }
             artifact-tag: new-musl
+          - target: powerpc-unknown-linux-gnu
           - target: powerpc64-unknown-linux-gnu
           - target: powerpc64-unknown-linux-musl
           - target: powerpc64-unknown-linux-musl
@@ -243,11 +244,6 @@ jobs:
             artifact-tag: new-musl
           # FIXME: https://github.com/rust-lang/libc/issues/5520
           # - target: x86_64-unknown-redox
-
-          # FIXME(ppc): SIGILL running tests, see
-          # https://github.com/rust-lang/libc/pull/4254#issuecomment-2636288713
-          # - target: powerpc-unknown-linux-gnu
-
           # Testing iOS and tvOS should give us reasonably good coverage for Apple platforms.
           # (watchOS is similar to tvOS, and visionOS is similar to iOS).
           - target: aarch64-apple-ios-sim
