@@ -119,47 +119,6 @@ s! {
         __statx_timestamp_pad1: Padding<[i32; 1]>,
     }
 
-    pub struct statvfs {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_files: crate::fsfilcnt_t,
-        pub f_ffree: crate::fsfilcnt_t,
-        pub f_favail: crate::fsfilcnt_t,
-        #[cfg(target_endian = "little")]
-        pub f_fsid: c_ulong,
-        #[cfg(target_pointer_width = "32")]
-        __pad: Padding<c_int>,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: c_ulong,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        __f_reserved: Padding<[c_int; 6]>,
-    }
-
-    // FIXME(1.0,deprecate): lfs binding to be removed
-    pub struct statvfs64 {
-        pub f_bsize: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_files: crate::fsfilcnt64_t,
-        pub f_ffree: crate::fsfilcnt64_t,
-        pub f_favail: crate::fsfilcnt64_t,
-        #[cfg(target_endian = "little")]
-        pub f_fsid: c_ulong,
-        #[cfg(target_pointer_width = "32")]
-        __pad: Padding<c_int>,
-        #[cfg(target_endian = "big")]
-        pub f_fsid: c_ulong,
-        pub f_flag: c_ulong,
-        pub f_namemax: c_ulong,
-        __f_reserved: Padding<[c_int; 6]>,
-    }
-
     // PowerPC implementations are special, see the subfolders
     #[cfg(not(any(target_arch = "powerpc", target_arch = "powerpc64")))]
     pub struct termios {
@@ -328,41 +287,6 @@ s! {
         pub tcpi_reord_seen: u32,
         pub tcpi_rcv_ooopack: u32,
         pub tcpi_snd_wnd: u32,
-    }
-
-    // MIPS/s390x implementation is special (see arch folders)
-    #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
-    pub struct statfs {
-        pub f_type: c_ulong,
-        pub f_bsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt_t,
-        pub f_bfree: crate::fsblkcnt_t,
-        pub f_bavail: crate::fsblkcnt_t,
-        pub f_files: crate::fsfilcnt_t,
-        pub f_ffree: crate::fsfilcnt_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_flags: c_ulong,
-        f_spare: Padding<[c_ulong; 4]>,
-    }
-
-    // MIPS/s390x implementation is special (see arch folders)
-    // FIXME(1.0,deprecate): lfs binding to be removed
-    #[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "s390x")))]
-    pub struct statfs64 {
-        pub f_type: c_ulong,
-        pub f_bsize: c_ulong,
-        pub f_blocks: crate::fsblkcnt64_t,
-        pub f_bfree: crate::fsblkcnt64_t,
-        pub f_bavail: crate::fsblkcnt64_t,
-        pub f_files: crate::fsfilcnt64_t,
-        pub f_ffree: crate::fsfilcnt64_t,
-        pub f_fsid: crate::fsid_t,
-        pub f_namelen: c_ulong,
-        pub f_frsize: c_ulong,
-        pub f_flags: c_ulong,
-        f_spare: Padding<[c_ulong; 4]>,
     }
 
     pub struct sysinfo {
