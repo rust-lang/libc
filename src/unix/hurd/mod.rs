@@ -1651,12 +1651,6 @@ pub const SEM_VALUE_MAX: c_int = 2147483647;
 pub const MAXNAMLEN: usize = 255;
 
 // netdb.h
-pub const _PATH_HEQUIV: &[u8; 17usize] = b"/etc/hosts.equiv\0";
-pub const _PATH_HOSTS: &[u8; 11usize] = b"/etc/hosts\0";
-pub const _PATH_NETWORKS: &[u8; 14usize] = b"/etc/networks\0";
-pub const _PATH_NSSWITCH_CONF: &[u8; 19usize] = b"/etc/nsswitch.conf\0";
-pub const _PATH_PROTOCOLS: &[u8; 15usize] = b"/etc/protocols\0";
-pub const _PATH_SERVICES: &[u8; 14usize] = b"/etc/services\0";
 pub const HOST_NOT_FOUND: c_int = 1;
 pub const TRY_AGAIN: c_int = 2;
 pub const NO_RECOVERY: c_int = 3;
@@ -2886,6 +2880,10 @@ pub const IFF_MULTICAST: c_int = 0x1000;
 pub const IFF_PORTSEL: c_int = 0x2000;
 pub const IFF_AUTOMEDIA: c_int = 0x4000;
 pub const IFF_DYNAMIC: c_int = 0x8000;
+
+// paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr!("/usr/bin:/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 // random.h
 pub const GRND_NONBLOCK: c_uint = 1;
