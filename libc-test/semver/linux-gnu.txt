@@ -702,3 +702,4 @@ timex
 utmpname
 utmpx
 utmpxname
+wint_t
