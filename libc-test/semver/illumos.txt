@@ -24,11 +24,16 @@ POSIX_FADV_RANDOM
 POSIX_FADV_SEQUENTIAL
 POSIX_FADV_WILLNEED
 POSIX_SPAWN_SETSID
+SFD_CLOEXEC
+SFD_NONBLOCK
 TFD_CLOEXEC
 TFD_NONBLOCK
 TFD_TIMER_ABSTIME
 TFD_TIMER_CANCEL_ON_SET
 _CS_PATH
+eventfd_read
+eventfd_t
+eventfd_write
 execl
 execle
 execlp
@@ -44,6 +49,8 @@ pthread_attr_get_np
 pthread_attr_getstackaddr
 pthread_attr_setstack
 ptsname_r
+signalfd
+signalfd_siginfo
 syncfs
 system
 timerfd_create
