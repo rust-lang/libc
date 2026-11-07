@@ -77,6 +77,9 @@ CTEST_EXTERN uint64_t ctest_align_of__Color(void) { return CTEST_ALIGNOF(enum Co
 CTEST_EXTERN uint64_t ctest_size_of__Person(void) { return sizeof(struct Person); }
 CTEST_EXTERN uint64_t ctest_align_of__Person(void) { return CTEST_ALIGNOF(struct Person); }
 
+CTEST_EXTERN uint64_t ctest_size_of__VarBuf(void) { return sizeof(struct VarBuf); }
+CTEST_EXTERN uint64_t ctest_align_of__VarBuf(void) { return CTEST_ALIGNOF(struct VarBuf); }
+
 CTEST_EXTERN uint64_t ctest_size_of__Word(void) { return sizeof(union Word); }
 CTEST_EXTERN uint64_t ctest_align_of__Word(void) { return CTEST_ALIGNOF(union Word); }
 
@@ -130,6 +133,18 @@ CTEST_EXTERN uint64_t ctest_offset_of__Person__favorite_color(void) {
 
 CTEST_EXTERN uint64_t ctest_size_of__Person__favorite_color(void) {
     return sizeof(((struct Person){}).favorite_color);
+}
+
+CTEST_EXTERN uint64_t ctest_offset_of__VarBuf__len(void) {
+    return offsetof(struct VarBuf, len);
+}
+
+CTEST_EXTERN uint64_t ctest_size_of__VarBuf__len(void) {
+    return sizeof(((struct VarBuf){}).len);
+}
+
+CTEST_EXTERN uint64_t ctest_offset_of__VarBuf__data(void) {
+    return offsetof(struct VarBuf, data);
 }
 
 CTEST_EXTERN uint64_t ctest_offset_of__Word__word(void) {
@@ -197,6 +212,30 @@ ctest_field_ptr__Person__favorite_color(struct Person *b) {
     (void)ptr; 
 
     return &b->favorite_color;
+}
+
+
+typedef uint32_t *ctest_field_ty__VarBuf__len;
+CTEST_EXTERN ctest_field_ty__VarBuf__len
+ctest_field_ptr__VarBuf__len(struct VarBuf *b) {
+    
+    ctest_field_ty__VarBuf__len ptr;
+    ptr = &b->len;
+    (void)ptr; 
+
+    return &b->len;
+}
+
+
+typedef uint8_t (*ctest_field_ty__VarBuf__data)[];
+CTEST_EXTERN ctest_field_ty__VarBuf__data
+ctest_field_ptr__VarBuf__data(struct VarBuf *b) {
+    
+    ctest_field_ty__VarBuf__data ptr;
+    ptr = &b->data;
+    (void)ptr; 
+
+    return &b->data;
 }
 
 

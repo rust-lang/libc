@@ -267,6 +267,22 @@ mod generated_tests {
         check_same(rust_align, c_align, "`Person` align");
     }
 
+    pub fn ctest_size_align_VarBuf() {
+        extern "C" {
+            fn ctest_size_of__VarBuf() -> u64;
+            fn ctest_align_of__VarBuf() -> u64;
+        }
+
+        let rust_size = size_of::<VarBuf>() as u64;
+        let c_size = unsafe { ctest_size_of__VarBuf() };
+
+        let rust_align = align_of::<VarBuf>() as u64;
+        let c_align = unsafe { ctest_align_of__VarBuf() };
+
+        check_same(rust_size, c_size, "`VarBuf` size");
+        check_same(rust_align, c_align, "`VarBuf` align");
+    }
+
     pub fn ctest_size_align_Word() {
         extern "C" {
             fn ctest_size_of__Word() -> u64;
@@ -412,6 +428,41 @@ mod generated_tests {
             "field size `favorite_color` of `Person`");
     }
 
+    pub fn ctest_field_size_offset_VarBuf_len() {
+        extern "C" {
+            fn ctest_offset_of__VarBuf__len() -> u64;
+            fn ctest_size_of__VarBuf__len() -> u64;
+        }
+
+        let uninit_ty = MaybeUninit::<VarBuf>::zeroed();
+        let uninit_ty = uninit_ty.as_ptr();
+
+        
+        let ty_ptr = unsafe { &raw const (*uninit_ty).len   };
+        
+        let val = unsafe { ty_ptr.read_unaligned() };
+
+        
+        let ctest_field_offset = unsafe { ctest_offset_of__VarBuf__len() };
+        check_same(offset_of!(VarBuf, len) as u64, ctest_field_offset,
+            "field offset `len` of `VarBuf`");
+        
+        let ctest_field_size = unsafe { ctest_size_of__VarBuf__len() };
+        check_same(size_of_val(&val) as u64, ctest_field_size,
+            "field size `len` of `VarBuf`");
+    }
+
+    pub fn ctest_field_size_offset_VarBuf_data() {
+        extern "C" {
+            fn ctest_offset_of__VarBuf__data() -> u64;
+        }
+
+        
+        let ctest_field_offset = unsafe { ctest_offset_of__VarBuf__data() };
+        check_same(offset_of!(VarBuf, data) as u64, ctest_field_offset,
+            "field offset `data` of `VarBuf`");
+    }
+
     pub fn ctest_field_size_offset_Word_word() {
         extern "C" {
             fn ctest_offset_of__Word__word() -> u64;
@@ -529,6 +580,40 @@ mod generated_tests {
         let ctest_field_ptr = unsafe { ctest_field_ptr__Person__favorite_color(ty_ptr) };
         check_same(field_ptr.cast(), ctest_field_ptr,
             "field pointer access `favorite_color` of `Person`");
+    }
+
+    pub fn ctest_field_ptr_VarBuf_len() {
+        extern "C" {
+            fn ctest_field_ptr__VarBuf__len(a: *const VarBuf) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VarBuf>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).len) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VarBuf__len(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field pointer access `len` of `VarBuf`");
+    }
+
+    pub fn ctest_field_ptr_VarBuf_data() {
+        extern "C" {
+            fn ctest_field_ptr__VarBuf__data(a: *const VarBuf) -> *mut u8;
+        }
+
+        let uninit_ty = MaybeUninit::<VarBuf>::zeroed();
+        let ty_ptr = uninit_ty.as_ptr();
+        // SAFETY: We don't read `field_ptr`, only compare the pointer itself.
+        // The assumption is made that this does not wrap the address space.
+        let field_ptr = unsafe { &raw const ((*ty_ptr).data) };
+
+        // SAFETY: FFI call with no preconditions
+        let ctest_field_ptr = unsafe { ctest_field_ptr__VarBuf__data(ty_ptr) };
+        check_same(field_ptr.cast(), ctest_field_ptr,
+            "field pointer access `data` of `VarBuf`");
     }
 
     pub fn ctest_field_ptr_Word_word() {
@@ -1141,6 +1226,7 @@ fn run_all() {
     ctest_size_align_gregset_t();
     ctest_size_align_Color();
     ctest_size_align_Person();
+    ctest_size_align_VarBuf();
     ctest_size_align_Word();
     ctest_signededness_Byte();
     ctest_signededness_volatile_char();
@@ -1148,12 +1234,16 @@ fn run_all() {
     ctest_field_size_offset_Person_age();
     ctest_field_size_offset_Person_job();
     ctest_field_size_offset_Person_favorite_color();
+    ctest_field_size_offset_VarBuf_len();
+    ctest_field_size_offset_VarBuf_data();
     ctest_field_size_offset_Word_word();
     ctest_field_size_offset_Word_byte();
     ctest_field_ptr_Person_name();
     ctest_field_ptr_Person_age();
     ctest_field_ptr_Person_job();
     ctest_field_ptr_Person_favorite_color();
+    ctest_field_ptr_VarBuf_len();
+    ctest_field_ptr_VarBuf_data();
     ctest_field_ptr_Word_word();
     ctest_field_ptr_Word_byte();
     ctest_roundtrip_Byte();

@@ -181,8 +181,12 @@ mod generated_tests {
     pub fn {{ item.test_name }}() {
         {{ ctest_extern }} "C" {
             fn ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
+            {%- if !item.field.is_flexible_array() +%}
             fn ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() -> u64;
+            {%- endif +%}
         }
+        {#- /* [T; 0] fields are flexible array members, which have no size in C, so only check their offset */ #}
+        {%- if !item.field.is_flexible_array() +%}
 
         let uninit_ty = MaybeUninit::<{{ item.id }}>::zeroed();
         let uninit_ty = uninit_ty.as_ptr();
@@ -192,15 +196,18 @@ mod generated_tests {
         {# /* SAFETY: we assume that all zeros is a valid bitpattern for `ty_ptr`, otherwise the
             * test should be skipped. */ #}
         let val = unsafe { ty_ptr.read_unaligned() };
+        {%- endif +%}
 
         {# /* SAFETY: FFI call with no preconditions */ #}
         let ctest_field_offset = unsafe { ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}() };
         check_same(offset_of!({{ item.id }}, {{ item.field.rust_ident() }}) as u64, ctest_field_offset,
             "field offset `{{ item.field.rust_ident() }}` of `{{ item.id }}`");
+        {%- if !item.field.is_flexible_array() +%}
         {# /* SAFETY: FFI call with no preconditions */ #}
         let ctest_field_size = unsafe { ctest_size_of__{{ item.id }}__{{ item.field.ident() }}() };
         check_same(size_of_val(&val) as u64, ctest_field_size,
             "field size `{{ item.field.rust_ident() }}` of `{{ item.id }}`");
+        {%- endif +%}
     }
 {%- endfor +%}
 
