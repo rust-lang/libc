@@ -775,7 +775,7 @@ s2! {
         pub sin_other: c_ushort,
     }
 
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
     pub struct sockaddr_ctl {
         pub sc_len: c_uchar,
         pub sc_family: c_uchar,
@@ -1372,7 +1372,7 @@ s2! {
 
     // kern_control.h
     #[exhaustive] // FIXME(exhaustive): review for 1.0
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
     pub struct ctl_info {
         pub ctl_id: u32,
         #[custom_default([0; MAX_KCTL_NAME])]
@@ -2598,7 +2598,7 @@ pub const MINCORE_REFERENCED_OTHER: c_int = 0x8;
 pub const MINCORE_MODIFIED_OTHER: c_int = 0x10;
 
 cfg_if! {
-    if #[cfg(target_os = "macos")] {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
         pub const CTLIOCGINFO: c_ulong = 0xc0644e03;
     }
 }
@@ -2871,7 +2871,7 @@ pub const AF_UTUN: c_int = 38;
 pub const AF_VSOCK: c_int = 40;
 
 cfg_if! {
-    if #[cfg(target_os = "macos")] {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
         // sys/sys_domain.h
         pub const AF_SYS_CONTROL: u16 = 2;
         pub const SYSPROTO_EVENT: c_int = 1;
@@ -3816,7 +3816,7 @@ pub const MH_MAGIC: u32 = 0xfeedface;
 pub const MH_MAGIC_64: u32 = 0xfeedfacf;
 
 cfg_if! {
-    if #[cfg(target_os = "macos")] {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
         // net/if_utun.h
         pub const UTUN_OPT_FLAGS: c_int = 1;
         pub const UTUN_OPT_IFNAME: c_int = 2;
@@ -4374,7 +4374,11 @@ cfg_if! {
 
         pub const DOT3COMPLIANCE_STATS: c_int = 1;
         pub const DOT3COMPLIANCE_COLLS: c_int = 2;
+    }
+}
 
+cfg_if! {
+    if #[cfg(any(target_os = "macos", target_os = "ios"))] {
         // kern_control.h
         pub const MAX_KCTL_NAME: usize = 96;
     }
