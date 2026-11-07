@@ -235,6 +235,13 @@ pub const TFD_NONBLOCK: i32 = 0o4000;
 pub const TFD_TIMER_ABSTIME: i32 = 1 << 0;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 
+// time.h
+pub const TIME_UTC: c_int = 0x1;
+pub const TIME_MONOTONIC: c_int = 0x2;
+pub const TIME_ACTIVE: c_int = 0x3;
+pub const TIME_THREAD_ACTIVE: c_int = 0x4;
+pub const TIME_THREAD_ACTIVE_USR: c_int = 0x5;
+
 extern "C" {
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
 
@@ -302,6 +309,9 @@ extern "C" {
         n: size_t,
         loc: crate::locale_t,
     ) -> c_int;
+
+    pub fn timespec_get(ts: *mut crate::timespec, base: c_int) -> c_int;
+    pub fn timespec_getres(ts: *mut crate::timespec, base: c_int) -> c_int;
 
     pub fn timerfd_create(clockid: c_int, flags: c_int) -> c_int;
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut crate::itimerspec) -> c_int;

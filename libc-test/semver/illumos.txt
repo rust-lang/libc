@@ -28,6 +28,11 @@ TFD_CLOEXEC
 TFD_NONBLOCK
 TFD_TIMER_ABSTIME
 TFD_TIMER_CANCEL_ON_SET
+TIME_ACTIVE
+TIME_MONOTONIC
+TIME_THREAD_ACTIVE
+TIME_THREAD_ACTIVE_USR
+TIME_UTC
 _CS_PATH
 execl
 execle
@@ -49,3 +54,5 @@ system
 timerfd_create
 timerfd_gettime
 timerfd_settime
+timespec_get
+timespec_getres
