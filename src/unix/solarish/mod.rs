@@ -2607,6 +2607,31 @@ extern "C" {
         addrlen: *mut crate::socklen_t,
     ) -> ssize_t;
     pub fn mkstemps(template: *mut c_char, suffixlen: c_int) -> c_int;
+
+    pub fn clearenv() -> c_int;
+    pub fn closefrom(lowfd: c_int);
+    pub fn fdwalk(
+        func: Option<unsafe extern "C" fn(*mut c_void, c_int) -> c_int>,
+        cd: *mut c_void,
+    ) -> c_int;
+    pub fn canonicalize_file_name(path: *const c_char) -> *mut c_char;
+    pub fn rand_r(seed: *mut c_uint) -> c_int;
+    pub fn drand48() -> c_double;
+    pub fn erand48(xseed: *mut c_ushort) -> c_double;
+    pub fn lrand48() -> c_long;
+    pub fn nrand48(xseed: *mut c_ushort) -> c_long;
+    pub fn mrand48() -> c_long;
+    pub fn jrand48(xseed: *mut c_ushort) -> c_long;
+    pub fn srand48(seed: c_long);
+    pub fn seed48(xseed: *mut c_ushort) -> *mut c_ushort;
+    pub fn lcong48(p: *mut c_ushort);
+    pub fn random() -> c_long;
+    pub fn srandom(seed: c_uint);
+    pub fn initstate(seed: c_uint, state: *mut c_char, size: size_t) -> *mut c_char;
+    pub fn setstate(state: *const c_char) -> *mut c_char;
+    pub fn basename(path: *mut c_char) -> *mut c_char;
+    pub fn dirname(path: *mut c_char) -> *mut c_char;
+
     pub fn futimesat(fd: c_int, path: *const c_char, times: *const crate::timeval) -> c_int;
     pub fn futimens(dirfd: c_int, times: *const crate::timespec) -> c_int;
     pub fn utimensat(

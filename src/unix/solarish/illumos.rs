@@ -292,6 +292,30 @@ extern "C" {
     ) -> c_int;
 
     pub fn ptsname_r(fildes: c_int, name: *mut c_char, namelen: size_t) -> c_int;
+    pub fn mkostemp(template: *mut c_char, flags: c_int) -> c_int;
+    pub fn mkostemps(template: *mut c_char, suffixlen: c_int, flags: c_int) -> c_int;
+    pub fn qsort_r(
+        base: *mut c_void,
+        num: size_t,
+        size: size_t,
+        compar: Option<unsafe extern "C" fn(*const c_void, *const c_void, *mut c_void) -> c_int>,
+        arg: *mut c_void,
+    );
+    pub fn reallocarray(ptr: *mut c_void, nmemb: size_t, size: size_t) -> *mut c_void;
+    pub fn reallocf(ptr: *mut c_void, size: size_t) -> *mut c_void;
+    pub fn recallocarray(
+        ptr: *mut c_void,
+        oldnmemb: size_t,
+        nmemb: size_t,
+        size: size_t,
+    ) -> *mut c_void;
+    pub fn freezero(ptr: *mut c_void, size: size_t);
+    pub fn strtonum(
+        nptr: *const c_char,
+        minval: c_longlong,
+        maxval: c_longlong,
+        errstr: *mut *const c_char,
+    ) -> c_longlong;
 
     pub fn syncfs(fd: c_int) -> c_int;
 
