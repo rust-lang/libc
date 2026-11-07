@@ -77,6 +77,38 @@ fn test_extraction_ffi_items() {
 }
 
 #[test]
+fn test_translation_function_abi() {
+    for (abi, target, expected) in [
+        ("C", "i686-pc-windows-msvc", "int32_t (*foo)(void)"),
+        (
+            "system",
+            "i686-pc-windows-msvc",
+            "int32_t (__stdcall *foo)(void)",
+        ),
+        ("system", "x86_64-pc-windows-msvc", "int32_t (*foo)(void)"),
+        (
+            "stdcall",
+            "i686-pc-windows-gnu",
+            "int32_t (__stdcall *foo)(void)",
+        ),
+    ] {
+        let ast = syn::parse_file(&format!("extern \"{abi}\" {{ pub fn foo() -> i32; }}")).unwrap();
+        let mut ffi_items = FfiItems::new();
+        ffi_items.visit_file(&ast);
+        let mut generator = TestGenerator::new();
+        generator.target(target);
+        let translator = Translator::new(&ffi_items, &generator);
+        let translated = translator
+            .translate_function(&ffi_items.foreign_functions()[0])
+            .unwrap();
+        assert_eq!(
+            cdecl::cdecl(&translated, "foo".to_string()).unwrap(),
+            expected
+        );
+    }
+}
+
+#[test]
 fn test_translation_type_ptr() {
     assert_r2cdecl("*const *mut i32", "int32_t *const *foo");
     assert_r2cdecl("*const [u128; 2 + 3]", "unsigned __int128 (*foo)[2 + 3]");
@@ -112,11 +144,10 @@ fn test_translation_type_bare_fn() {
         "unsafe extern \"C\" fn(*const c_char, i32, ...) -> c_int",
         "int (*foo)(const char *, int32_t, ...)",
     );
-    // FIXME(ctest): Reimplement support for ABI in a more robust way.
-    // assert_r2cdecl(
-    //     "Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>",
-    //     "uint8_t (__stdcall **foo)(const char *, uint32_t [16])"
-    // );
+    assert_r2cdecl(
+        "Option<extern \"stdcall\" fn(*const c_char, [u32; 16]) -> u8>",
+        "uint8_t (__stdcall *foo)(const char *, uint32_t [16])",
+    );
 }
 
 #[test]

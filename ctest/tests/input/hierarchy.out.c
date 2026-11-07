@@ -119,7 +119,8 @@ CTEST_EXTERN in6_addr ctest_roundtrip__in6_addr(
 /* Query a function's pointer */
 
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__malloc(void) {
-    return (ctest_void_func)malloc;
+    void *(*ctest_fn)(size_t) = malloc;
+    return (ctest_void_func)ctest_fn;
 }
 
 #ifdef _MSC_VER
