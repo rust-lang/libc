@@ -12,8 +12,27 @@ use crate::{
 
 pub type lgrp_rsrc_t = c_int;
 pub type lgrp_affinity_t = c_int;
+pub type regoff_t = ssize_t;
 
 s! {
+    pub struct regex_t {
+        pub re_nsub: size_t,
+        re_g: *mut c_void,
+        re_magic: c_int,
+        re_endp: *const c_char,
+        re_len: size_t,
+        re_sc: *mut c_void,
+    }
+
+    pub struct regmatch_t {
+        rm_sp: *const c_char,
+        rm_ep: *const c_char,
+        pub rm_so: regoff_t,
+        pub rm_eo: regoff_t,
+        rm_ss: c_int,
+        rm_es: c_int,
+    }
+
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_buf: *mut c_void,
@@ -229,6 +248,47 @@ pub const SI_ADDRESS_WIDTH: c_int = 520;
 pub const IP_MINTTL: c_int = 0x1c;
 pub const IPV6_MINHOPCOUNT: c_int = 0x2f;
 
+// regex.h
+pub const REG_BASIC: c_int = 0x00000;
+pub const REG_EXTENDED: c_int = 0x00001;
+pub const REG_NOSUB: c_int = 0x00002;
+pub const REG_ICASE: c_int = 0x00004;
+pub const REG_NEWLINE: c_int = 0x00008;
+pub const REG_NOTBOL: c_int = 0x00200;
+pub const REG_NOTEOL: c_int = 0x00400;
+pub const REG_DUMP: c_int = 0x02000;
+pub const REG_PEND: c_int = 0x04000;
+pub const REG_NOSPEC: c_int = 0x08000;
+pub const REG_STARTEND: c_int = 0x10000;
+pub const REG_TRACE: c_int = 0x20000;
+pub const REG_LARGE: c_int = 0x40000;
+pub const REG_BACKR: c_int = 0x80000;
+
+pub const REG_OK: c_int = 0;
+pub const REG_NOMATCH: c_int = 1;
+pub const REG_ECOLLATE: c_int = 2;
+pub const REG_EESCAPE: c_int = 3;
+pub const REG_ENEWLINE: c_int = 4;
+pub const REG_ENSUB: c_int = 5;
+pub const REG_ESUBREG: c_int = 6;
+pub const REG_EBRACK: c_int = 7;
+pub const REG_EPAREN: c_int = 8;
+pub const REG_EBRACE: c_int = 9;
+pub const REG_ERANGE: c_int = 10;
+pub const REG_ESPACE: c_int = 11;
+pub const REG_BADRPT: c_int = 12;
+pub const REG_ECTYPE: c_int = 13;
+pub const REG_BADPAT: c_int = 14;
+pub const REG_BADBR: c_int = 15;
+pub const REG_EFATAL: c_int = 16;
+pub const REG_ECHAR: c_int = 17;
+pub const REG_STACK: c_int = 18;
+pub const REG_ENOSYS: c_int = 19;
+pub const REG_EBOL: c_int = 21;
+pub const REG_EEOL: c_int = 22;
+pub const REG_ATOI: c_int = 255;
+pub const REG_ITOA: c_int = 256;
+
 // sys/timerfd.h
 pub const TFD_CLOEXEC: i32 = 0o2000000;
 pub const TFD_NONBLOCK: i32 = 0o4000;
@@ -237,6 +297,22 @@ pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 
 extern "C" {
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
+
+    pub fn regcomp(preg: *mut regex_t, pattern: *const c_char, cflags: c_int) -> c_int;
+    pub fn regexec(
+        preg: *const regex_t,
+        input: *const c_char,
+        nmatch: size_t,
+        pmatch: *mut regmatch_t,
+        eflags: c_int,
+    ) -> c_int;
+    pub fn regerror(
+        errcode: c_int,
+        preg: *const regex_t,
+        errbuf: *mut c_char,
+        errbuf_size: size_t,
+    ) -> size_t;
+    pub fn regfree(preg: *mut regex_t);
 
     pub fn epoll_pwait(
         epfd: c_int,
