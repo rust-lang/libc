@@ -19,8 +19,11 @@ def main():
     # Find the most recently touched file named "ctest_output.c" in the target
     # directory. This will be libc-tests's `OUT_DIR`
     marker_files = [Path(p) for p in glob("target/**/ctest_output.c", recursive=True)]
-    marker_files.sort(key=lambda path: path.stat().st_mtime)
-    build_dir = marker_files[0].parent
+    if not marker_files:
+        print("No ctest output found; skipping artifact creation")
+        return
+
+    build_dir = max(marker_files, key=lambda path: path.stat().st_mtime).parent
     print(f"Located build directory '{build_dir}'")
 
     # Collect all relevant Rust and C files
