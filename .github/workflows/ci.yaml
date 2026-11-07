@@ -100,6 +100,9 @@ jobs:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
 
       - name: Execute build check
+        env:
+          ONLY_FLAG: ${{ matrix.only && format('--only {0}', matrix.only) }}
+          HALF_FLAG: ${{ matrix.half && format('--half {0}', matrix.half) }}
         run: |
           set -eux
           if [ "${TOOLCHAIN}" = "1.65.0" ]; then
@@ -117,8 +120,8 @@ jobs:
           python3 ci/verify-build.py \
             --toolchain "$TOOLCHAIN" \
             ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
-            ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
-            ${{ matrix.half && format('--half "{0}"', matrix.half) }}
+            ${ONLY_FLAG} \
+            ${HALF_FLAG}
 
   test_tier1:
     name: Test tier1
