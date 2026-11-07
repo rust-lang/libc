@@ -113,6 +113,9 @@ cfg_if! {
     } else if #[cfg(target_os = "rtems")] {
         mod rtems;
         // pub(crate) use rtems::*;
+    } else if #[cfg(target_os = "serenity")] {
+        mod serenity;
+        pub(crate) use serenity::*;
     } else if #[cfg(target_os = "solaris")] {
         mod solaris;
         pub(crate) use solaris::*;
@@ -267,6 +270,37 @@ cfg_if! {
         pub use inet::tcp::*;
         pub use stdlib::*;
         pub use vfs::vfs::*;
+    } else if #[cfg(target_os = "serenity")] {
+        pub use dirent_mod::*;
+        pub use dlfcn::*;
+        pub use errno::*;
+        pub use fcntl::*;
+        pub use fd_set_mod::*;
+        pub use locale::*;
+        pub use netdb::*;
+        pub use netinet::r#in::*;
+        pub use netinet::tcp::*;
+        pub use poll::*;
+        pub use pwd::*;
+        pub use sched::*;
+        pub use select::*;
+        pub use semaphore::*;
+        pub use signal::*;
+        pub use stdlib::*;
+        pub use sys::file::*;
+        pub use sys::ioctl::*;
+        pub use sys::limits::*;
+        pub use sys::mman::*;
+        pub use sys::resource::*;
+        pub use sys::socket::*;
+        pub use sys::stat::*;
+        pub use sys::statvfs::*;
+        pub use sys::types::*;
+        pub use sys::uio::*;
+        pub use sys::un::*;
+        pub use sys::wait::*;
+        pub use termios_mod::*;
+        pub use time::*;
     }
 }
 
@@ -286,7 +320,8 @@ cfg_if! {
             target_os = "android",
             target_os = "emscripten",
             target_os = "l4re",
-            target_os = "linux"
+            target_os = "linux",
+            target_os = "serenity",
         ))]
         pub use pthread::*;
         pub use unistd::*;

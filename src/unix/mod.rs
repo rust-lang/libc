@@ -201,6 +201,7 @@ s2! {
     }
 
     // <sys/time.h>
+    #[cfg(not(target_os = "serenity"))]
     #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct itimerval {
         pub it_interval: crate::timeval,
@@ -313,12 +314,14 @@ cfg_if! {
     if #[cfg(not(any(
         target_os = "nto",
         target_os = "qnx",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "serenity"
     )))] {
         pub const USRQUOTA: c_int = 0;
         pub const GRPQUOTA: c_int = 1;
     }
 }
+#[cfg(not(target_os = "serenity"))]
 pub const SIGIOT: c_int = 6;
 
 pub const S_ISUID: mode_t = 0o4000;
@@ -377,7 +380,11 @@ pub const LOG_PRIMASK: c_int = 7;
 pub const LOG_FACMASK: c_int = 0x3f8;
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "nto", target_os = "qnx")))] {
+    if #[cfg(not(any(
+        target_os = "nto",
+        target_os = "qnx",
+        target_os = "serenity"
+    )))] {
         pub const PRIO_MIN: c_int = -20;
         pub const PRIO_MAX: c_int = 20;
     }
@@ -403,12 +410,13 @@ pub const IN6ADDR_ANY_INIT: in6_addr = in6_addr {
 };
 
 cfg_if! {
-    // Not present on iOS/tvOS/watchOS/visionOS
+    // Not present on iOS/tvOS/watchOS/visionOS or Serenity
     if #[cfg(not(any(
         target_os = "ios",
         target_os = "tvos",
         target_os = "watchos",
         target_os = "visionos",
+        target_os = "serenity",
     )))] {
         pub const ARPOP_REQUEST: u16 = 1;
         pub const ARPOP_REPLY: u16 = 2;
@@ -666,6 +674,9 @@ cfg_if! {
             feature = "rustc-dep-of-std",
             link(name = "c", cfg(not(target_feature = "crt-static")))
         )]
+        extern "C" {}
+    } else if #[cfg(target_os = "serenity")] {
+        #[link(name = "c")]
         extern "C" {}
     } else if #[cfg(target_os = "aix")] {
         #[link(name = "c")]
@@ -2588,6 +2599,9 @@ cfg_if! {
     } else if #[cfg(target_os = "nuttx")] {
         mod nuttx;
         pub use self::nuttx::*;
+    } else if #[cfg(target_os = "serenity")] {
+        mod serenity;
+        pub use self::serenity::*;
     } else {
         // Unknown target_os
     }

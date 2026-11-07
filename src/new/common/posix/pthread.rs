@@ -5,14 +5,19 @@
 use crate::prelude::*;
 
 extern "C" {
-    #[cfg(any(target_os = "android", target_os = "linux"))]
+    #[cfg(any(target_os = "android", target_os = "linux", target_os = "serenity",))]
     pub fn pthread_atfork(
         prepare: Option<unsafe extern "C" fn()>,
         parent: Option<unsafe extern "C" fn()>,
         child: Option<unsafe extern "C" fn()>,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_attr_getguardsize(
         attr: *const crate::pthread_attr_t,
         guardsize: *mut size_t,
@@ -29,7 +34,12 @@ extern "C" {
         inheritsched: *mut c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
+    #[cfg(any(
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+        target_vendor = "apple"
+    ))]
     pub fn pthread_attr_getschedparam(
         attr: *const crate::pthread_attr_t,
         param: *mut crate::sched_param,
@@ -45,7 +55,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "serenity",
     ))]
     pub fn pthread_attr_getstack(
         attr: *const crate::pthread_attr_t,
@@ -53,7 +64,12 @@ extern "C" {
         stacksize: *mut size_t,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_attr_setguardsize(attr: *mut crate::pthread_attr_t, guardsize: size_t) -> c_int;
 
     #[cfg(any(
@@ -67,7 +83,12 @@ extern "C" {
         inheritsched: c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", target_os = "linux", target_vendor = "apple"))]
+    #[cfg(any(
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+        target_vendor = "apple"
+    ))]
     pub fn pthread_attr_setschedparam(
         attr: *mut crate::pthread_attr_t,
         param: *const crate::sched_param,
@@ -80,7 +101,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "linux",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "serenity",
     ))]
     pub fn pthread_attr_setstack(
         attr: *mut crate::pthread_attr_t,
@@ -119,10 +141,19 @@ extern "C" {
         shared: c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "l4re", all(target_os = "linux", not(target_env = "ohos"))))]
+    #[cfg(any(
+        target_os = "l4re",
+        target_os = "serenity",
+        all(target_os = "linux", not(target_env = "ohos"))
+    ))]
     pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux",))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "emscripten",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_condattr_getclock(
         attr: *const crate::pthread_condattr_t,
         clock_id: *mut crate::clockid_t,
@@ -139,7 +170,12 @@ extern "C" {
         pshared: *mut c_int,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "linux",))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "emscripten",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_condattr_setclock(
         attr: *mut crate::pthread_condattr_t,
         clock_id: crate::clockid_t,
@@ -162,6 +198,7 @@ extern "C" {
         target_os = "emscripten",
         target_os = "l4re",
         target_os = "linux",
+        target_os = "serenity",
     ))]
     pub fn pthread_create(
         native: *mut crate::pthread_t,
@@ -177,6 +214,7 @@ extern "C" {
         target_os = "android",
         target_os = "l4re",
         target_os = "linux",
+        target_os = "serenity",
         target_vendor = "apple",
     ))]
     pub fn pthread_getschedparam(
@@ -191,7 +229,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "l4re",
-        target_os = "linux"
+        target_os = "linux",
+        target_os = "serenity",
     ))]
     pub fn pthread_kill(thread: crate::pthread_t, sig: c_int) -> c_int;
 
@@ -258,6 +297,7 @@ extern "C" {
         target_os = "emscripten",
         target_os = "linux",
         target_os = "l4re",
+        target_os = "serenity",
         target_vendor = "apple",
     ))]
     pub fn pthread_rwlockattr_getpshared(
@@ -270,6 +310,7 @@ extern "C" {
         target_os = "emscripten",
         target_os = "linux",
         target_os = "l4re",
+        target_os = "serenity",
         target_vendor = "apple",
     ))]
     pub fn pthread_rwlockattr_setpshared(
@@ -278,7 +319,7 @@ extern "C" {
     ) -> c_int;
 
     // FIXME(1.0): These shoul be combined to the version that takes an optional unsafe function.
-    #[cfg(any(target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(target_os = "l4re", target_os = "linux", target_os = "serenity"))]
     pub fn pthread_once(control: *mut crate::pthread_once_t, routine: extern "C" fn()) -> c_int;
     #[cfg(target_vendor = "apple")]
     pub fn pthread_once(
@@ -290,6 +331,7 @@ extern "C" {
         target_os = "android",
         target_os = "l4re",
         target_os = "linux",
+        target_os = "serenity",
         target_vendor = "apple",
     ))]
     pub fn pthread_setschedparam(
@@ -307,7 +349,8 @@ extern "C" {
         target_os = "android",
         target_os = "emscripten",
         target_os = "l4re",
-        target_os = "linux"
+        target_os = "linux",
+        target_os = "serenity",
     ))]
     pub fn pthread_sigmask(
         how: c_int,
@@ -315,18 +358,43 @@ extern "C" {
         oldset: *mut crate::sigset_t,
     ) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_spin_destroy(lock: *mut crate::pthread_spinlock_t) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_spin_init(lock: *mut crate::pthread_spinlock_t, pshared: c_int) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_spin_lock(lock: *mut crate::pthread_spinlock_t) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_spin_trylock(lock: *mut crate::pthread_spinlock_t) -> c_int;
 
-    #[cfg(any(target_os = "android", target_os = "l4re", target_os = "linux"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "l4re",
+        target_os = "linux",
+        target_os = "serenity",
+    ))]
     pub fn pthread_spin_unlock(lock: *mut crate::pthread_spinlock_t) -> c_int;
 }
