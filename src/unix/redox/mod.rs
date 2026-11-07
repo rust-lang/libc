@@ -42,6 +42,20 @@ pub type siginfo_t = siginfo;
 ))]
 pub type mcontext_t = mcontext;
 
+pub type Elf32_Addr = u32;
+pub type Elf32_Half = u16;
+pub type Elf32_Off = u32;
+pub type Elf32_Sword = i32;
+pub type Elf32_Word = u32;
+
+pub type Elf64_Addr = u64;
+pub type Elf64_Half = u16;
+pub type Elf64_Off = u64;
+pub type Elf64_Sword = i32;
+pub type Elf64_Sxword = i64;
+pub type Elf64_Word = u32;
+pub type Elf64_Xword = u64;
+
 extern_ty! {
     pub type timezone;
 }
@@ -91,6 +105,52 @@ s! {
         pub dli_fbase: *mut c_void,
         pub dli_sname: *const c_char,
         pub dli_saddr: *mut c_void,
+    }
+
+    pub struct dl_phdr_info {
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_addr: Elf64_Addr,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_addr: Elf32_Addr,
+
+        pub dlpi_name: *const c_char,
+
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_phdr: *const Elf64_Phdr,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_phdr: *const Elf32_Phdr,
+
+        #[cfg(target_pointer_width = "64")]
+        pub dlpi_phnum: Elf64_Half,
+        #[cfg(target_pointer_width = "32")]
+        pub dlpi_phnum: Elf32_Half,
+
+        pub dlpi_adds: c_ulonglong,
+        pub dlpi_subs: c_ulonglong,
+        pub dlpi_tls_modid: size_t,
+        pub dlpi_tls_data: *mut c_void,
+    }
+
+    pub struct Elf32_Phdr {
+        pub p_type: Elf32_Word,
+        pub p_offset: Elf32_Off,
+        pub p_vaddr: Elf32_Addr,
+        pub p_paddr: Elf32_Addr,
+        pub p_filesz: Elf32_Word,
+        pub p_memsz: Elf32_Word,
+        pub p_flags: Elf32_Word,
+        pub p_align: Elf32_Word,
+    }
+
+    pub struct Elf64_Phdr {
+        pub p_type: Elf64_Word,
+        pub p_flags: Elf64_Word,
+        pub p_offset: Elf64_Off,
+        pub p_vaddr: Elf64_Addr,
+        pub p_paddr: Elf64_Addr,
+        pub p_filesz: Elf64_Xword,
+        pub p_memsz: Elf64_Xword,
+        pub p_align: Elf64_Xword,
     }
 
     pub struct epoll_event {
@@ -1404,6 +1464,18 @@ extern "C" {
         group: crate::gid_t,
         groups: *mut crate::gid_t,
         ngroups: *mut c_int,
+    ) -> c_int;
+
+    // link.h
+    pub fn dl_iterate_phdr(
+        callback: Option<
+            unsafe extern "C" fn(
+                info: *mut crate::dl_phdr_info,
+                size: size_t,
+                data: *mut c_void,
+            ) -> c_int,
+        >,
+        data: *mut c_void,
     ) -> c_int;
 
     // malloc.h
