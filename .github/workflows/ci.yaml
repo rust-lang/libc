@@ -164,10 +164,12 @@ jobs:
 
       - name: Run natively
         if: runner.os != 'Linux'
-        run: ./ci/run.sh ${{ matrix.target }}
+        run: ./ci/run.sh ${TARGET}
+        shell: bash
       - name: Run in Docker
         if: runner.os == 'Linux'
-        run: ./ci/run-docker.sh ${{ matrix.target }}
+        run: ./ci/run-docker.sh ${TARGET}
+        shell: bash
 
       - name: Create CI artifacts
         id: create_artifacts
@@ -286,13 +288,16 @@ jobs:
 
       - name: Run natively
         if: runner.os != 'Linux' && !matrix.cargo-apple-runner
-        run: ./ci/run.sh ${{ matrix.target }}
+        run: ./ci/run.sh ${TARGET}
+        shell: bash
       - name: Run in Docker
         if: runner.os == 'Linux' && !matrix.cargo-apple-runner
-        run: ./ci/run-docker.sh ${{ matrix.target }}
+        run: ./ci/run-docker.sh ${TARGET}
+        shell: bash
       - name: Run on Apple's simulator
         if: matrix.cargo-apple-runner
-        run: ./ci/run-apple-simulator.sh ${{ matrix.target }}
+        run: ./ci/run-apple-simulator.sh ${TARGET}
+        shell: bash
 
       - name: Create CI artifacts
         id: create_artifacts
