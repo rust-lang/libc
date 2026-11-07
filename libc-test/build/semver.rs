@@ -46,6 +46,11 @@ pub(crate) fn do_semver() {
     if vendor != "unknown" {
         process_semver_file(&mut output, &mut semver_root, &vendor);
     }
+    // illumos and Solaris share most of their API, which is listed in
+    // `solarish.txt`.
+    if matches!(os.as_str(), "illumos" | "solaris") {
+        process_semver_file(&mut output, &mut semver_root, "solarish");
+    }
     process_semver_file(&mut output, &mut semver_root, &os);
     let os_arch = format!("{os}-{arch}");
     process_semver_file(&mut output, &mut semver_root, &os_arch);
