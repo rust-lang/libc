@@ -160,8 +160,10 @@ jobs:
 
       - name: Add matrix env variables to the environment
         if: matrix.env
+        env:
+          MATRIX_ENV: ${{ toJson(matrix.env) }}
         run: |
-          echo '${{ toJson(matrix.env) }}' |
+          echo "${MATRIX_ENV}" |
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
@@ -278,8 +280,10 @@ jobs:
 
       - name: Add matrix env variables to the environment
         if: matrix.env
+        env:
+          MATRIX_ENV: ${{ toJson(matrix.env) }}
         run: |
-          echo '${{ toJson(matrix.env) }}' |
+          echo "${MATRIX_ENV}" |
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
