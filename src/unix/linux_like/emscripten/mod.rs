@@ -1418,12 +1418,6 @@ extern "C" {
     pub fn preadv(fd: c_int, iov: *const crate::iovec, iovcnt: c_int, offset: off_t) -> ssize_t;
     pub fn dup3(oldfd: c_int, newfd: c_int, flags: c_int) -> c_int;
     pub fn nl_langinfo_l(item: crate::nl_item, locale: crate::locale_t) -> *mut c_char;
-    pub fn accept4(
-        fd: c_int,
-        addr: *mut crate::sockaddr,
-        len: *mut crate::socklen_t,
-        flg: c_int,
-    ) -> c_int;
     pub fn getnameinfo(
         sa: *const crate::sockaddr,
         salen: crate::socklen_t,
