@@ -405,7 +405,7 @@ jobs:
     name: Zizmor (Static analysis for GitHub Actions)
     runs-on: ubuntu-26.04
     permissions:
-      security-events: write
+      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
     timeout-minutes: 10
     steps:
       - name: Checkout repository
