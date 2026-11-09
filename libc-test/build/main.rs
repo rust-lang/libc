@@ -353,8 +353,14 @@ fn test_apple(t: &Target) {
     });
 
     cfg.skip_struct_field_type(move |struct_, field| {
-        // The type of `bfl_u` is an anonymous union
-        (struct_.ident(), field.ident()) == ("bpf_dltlist", "bfl_u")
+        match (struct_.ident(), field.ident()) {
+            // Anonymous ADT fields
+            ("bpf_dltlist", "bfl_u") => true,
+            ("in_sockinfo", "insi_faddr" | "insi_laddr" | "insi_v4" | "insi_v6") => true,
+            ("un_sockinfo", "unsi_addr" | "unsi_caddr") => true,
+            ("socket_info", "soi_proto") => true,
+            _ => false,
+        }
     });
 
     cfg.volatile_struct_field(|s, f| s.ident() == "aiocb" && f.ident() == "aio_buf");
