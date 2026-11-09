@@ -374,28 +374,17 @@ impl FfiItems {
     /// Yields an iterator over all items in the calling `FfiItems`.
     ///
     /// The items in the item container do not include `use` declarations.
-    pub(crate) fn items(&self) -> ItemIterator {
+    pub(crate) fn items<'a>(&'a self) -> RefItemIterator<'a> {
         let base = self
             .aliases
-            .clone()
-            .into_iter()
-            .map(GenericItem::Type)
-            .chain(self.structs.clone().into_iter().map(GenericItem::Struct))
-            .chain(self.unions.clone().into_iter().map(GenericItem::Union))
-            .chain(self.constants.clone().into_iter().map(GenericItem::Const))
-            .chain(
-                self.foreign_functions
-                    .clone()
-                    .into_iter()
-                    .map(GenericItem::Fn),
-            )
-            .chain(
-                self.foreign_statics
-                    .clone()
-                    .into_iter()
-                    .map(GenericItem::Static),
-            )
-            .chain(self.modules.clone().into_iter().map(GenericItem::Module));
+            .iter()
+            .map(RefGenericItem::Type)
+            .chain(self.structs.iter().map(RefGenericItem::Struct))
+            .chain(self.unions.iter().map(RefGenericItem::Union))
+            .chain(self.constants.iter().map(RefGenericItem::Const))
+            .chain(self.foreign_functions.iter().map(RefGenericItem::Fn))
+            .chain(self.foreign_statics.iter().map(RefGenericItem::Static))
+            .chain(self.modules.iter().map(RefGenericItem::Module));
 
         Box::new(base)
     }
@@ -450,12 +439,12 @@ impl FfiItems {
     /// Searches for an item in the container, and returns an owned instance of that item.
     ///
     /// The generic item may be pattern-matched to find out specifically which item was found.
-    fn search(&self, ident: &Ident) -> Option<GenericItem> {
+    fn search_by_ident<'a>(&'a self, ident: &Ident) -> Option<RefGenericItem<'a>> {
         self.items().find(|it| {
             macro_rules! cmp {
                 ($($var:tt),+ $(,)?) => {
                     match it {$(
-                        GenericItem::$var(it) => ident == it.ident(),
+                        RefGenericItem::$var(it) => ident == it.ident(),
                     )+}
                 };
             }
@@ -470,6 +459,49 @@ impl FfiItems {
                 Module,
             }
         })
+    }
+
+    /** Searches for all occurrences of a given item in the subtree rooted at this `FfiItems`.
+     *
+     * Searching occurrences of a given item is done by looking up the UID of the item throughout
+     * the entire subtree rooted at the receiver. */
+    pub(crate) fn search_occurrences<'a>(&'a self, uid: usize) -> Vec<RefGenericItem<'a>> {
+        fn traverse<'a>(
+            items: &'a FfiItems,
+            uid: usize,
+            gather: Vec<RefGenericItem<'a>>,
+        ) -> Vec<RefGenericItem<'a>> {
+            let gather = if let Some(at_this_level) = items.items().find(|it| {
+                macro_rules! find {
+                    ($($ty:tt),+ $(,)?) => {
+                        match it {$(
+                            RefGenericItem::$ty(it) => it.uid == uid,
+                        )+}
+                    };
+                }
+
+                find! {
+                    Type,
+                    Struct,
+                    Union,
+                    Const,
+                    Fn,
+                    Static,
+                    Module,
+                }
+            }) {
+                gather.into_iter().chain([at_this_level]).collect()
+            } else {
+                gather
+            };
+
+            items
+                .modules
+                .iter()
+                .fold(gather, |gather, m| traverse(&m.items, uid, gather))
+        }
+
+        traverse(self, uid, vec![])
     }
 
     /// Deduplicates the items in an item container by their path.
@@ -524,164 +556,143 @@ impl FfiItems {
     }
 }
 
-impl FromIterator<GenericItem> for FfiItems {
-    fn from_iter<I: IntoIterator<Item = GenericItem>>(iter: I) -> FfiItems {
-        let mut partitioned_items: Vec<_> = iter.into_iter().collect();
+/* FIXME: once debugging is done, remove the repeated logging code in the
+ * FromIterator implementations, and move the one-liner that is left to the
+ * items_from_iter macro. */
 
-        println!(
-            "[FfiItems::from_iter] partitioned_items: {:?}",
-            partitioned_items
-                .iter()
-                .map(|it| {
-                    macro_rules! exe {
-                    ($($ty:tt),+ $(,)?) => {
-                        match it {$(
-                            GenericItem::$ty(it) => it.cached_path.clone(),
-                        )+}
-                    };
-                }
-
-                    exe! {
-                        Type,
-                        Struct,
-                        Union,
-                        Const,
-                        Fn,
-                        Static,
-                        Module,
-                    }
-                })
-                .collect::<Vec<_>>()
-        );
-
-        // [NOTE]: this is expected to sort all items by their kind, such that
-        // we end up with the following ordering:
-        //
-        // 1. Type aliases.
-        // 2. Stucts.
-        // 3. Unions.
-        // 4. Constants.
-        // 5. Foreign functions.
-        // 6. Foreign statics.
-        // 7. Modules.
-        //
-        // This is then used to partition over the resulting collection and get
-        // "buckets" of GenericItems that can be mapped to a concrete type
-        // through partial mapping.
-        partitioned_items.sort_by(|it1, it2| match (it1, it2) {
-            (GenericItem::Type(_), GenericItem::Type(_))
-            | (GenericItem::Struct(_), GenericItem::Struct(_))
-            | (GenericItem::Union(_), GenericItem::Union(_))
-            | (GenericItem::Const(_), GenericItem::Const(_))
-            | (GenericItem::Fn(_), GenericItem::Fn(_))
-            | (GenericItem::Static(_), GenericItem::Static(_))
-            | (GenericItem::Module(_), GenericItem::Module(_)) => Ordering::Equal,
-            (GenericItem::Type(_), GenericItem::Struct(_))
-            | (GenericItem::Type(_), GenericItem::Union(_))
-            | (GenericItem::Type(_), GenericItem::Const(_))
-            | (GenericItem::Type(_), GenericItem::Fn(_))
-            | (GenericItem::Type(_), GenericItem::Static(_))
-            | (GenericItem::Type(_), GenericItem::Module(_))
-            | (GenericItem::Struct(_), GenericItem::Union(_))
-            | (GenericItem::Struct(_), GenericItem::Const(_))
-            | (GenericItem::Struct(_), GenericItem::Fn(_))
-            | (GenericItem::Struct(_), GenericItem::Static(_))
-            | (GenericItem::Struct(_), GenericItem::Module(_))
-            | (GenericItem::Union(_), GenericItem::Const(_))
-            | (GenericItem::Union(_), GenericItem::Fn(_))
-            | (GenericItem::Union(_), GenericItem::Static(_))
-            | (GenericItem::Union(_), GenericItem::Module(_))
-            | (GenericItem::Const(_), GenericItem::Fn(_))
-            | (GenericItem::Const(_), GenericItem::Static(_))
-            | (GenericItem::Const(_), GenericItem::Module(_))
-            | (GenericItem::Fn(_), GenericItem::Static(_))
-            | (GenericItem::Fn(_), GenericItem::Module(_))
-            | (GenericItem::Static(_), GenericItem::Module(_)) => Ordering::Less,
-            (GenericItem::Struct(_), GenericItem::Type(_))
-            | (GenericItem::Union(_), GenericItem::Type(_))
-            | (GenericItem::Union(_), GenericItem::Struct(_))
-            | (GenericItem::Const(_), GenericItem::Type(_))
-            | (GenericItem::Const(_), GenericItem::Struct(_))
-            | (GenericItem::Const(_), GenericItem::Union(_))
-            | (GenericItem::Fn(_), GenericItem::Type(_))
-            | (GenericItem::Fn(_), GenericItem::Struct(_))
-            | (GenericItem::Fn(_), GenericItem::Union(_))
-            | (GenericItem::Fn(_), GenericItem::Const(_))
-            | (GenericItem::Static(_), GenericItem::Type(_))
-            | (GenericItem::Static(_), GenericItem::Struct(_))
-            | (GenericItem::Static(_), GenericItem::Union(_))
-            | (GenericItem::Static(_), GenericItem::Const(_))
-            | (GenericItem::Static(_), GenericItem::Fn(_))
-            | (GenericItem::Module(_), GenericItem::Type(_))
-            | (GenericItem::Module(_), GenericItem::Struct(_))
-            | (GenericItem::Module(_), GenericItem::Union(_))
-            | (GenericItem::Module(_), GenericItem::Const(_))
-            | (GenericItem::Module(_), GenericItem::Fn(_))
-            | (GenericItem::Module(_), GenericItem::Static(_)) => Ordering::Greater,
-        });
-
-        macro_rules! get_partitions {
-            ($($field:ident: $ty:tt),+ $(,)?) => {$(
-                macro_rules! search_idx {
-                    ($start:expr, $pred:expr) => {{
-                        partitioned_items
-                            .iter()
-                            .enumerate()
-                            .skip($start)
-                            .skip_while(|(_, it)| $pred(it))
-                            .next()
-                            .map(|(idx, _)| idx)
-                            .unwrap_or(partitioned_items.len())
-                    }};
-                }
-
-                let start =
-                    search_idx!(0, |it: &&GenericItem| matches!(it, GenericItem::$ty(_)).not());
-                let end = search_idx!(start, |it: &&GenericItem| matches!(it, GenericItem::$ty(_)));
-
-                let $field = if start >= end {
-                    Vec::new()
-                } else {
-                    let partition = partitioned_items
-                        .get(start..end)
-                        .map(|it| {
-                            it.into_iter()
-                                .map(|it| match it {
-                                    GenericItem::$ty(it) => it.clone(),
-                                    _ => unreachable!(concat!(
-                                        "Items have been sorted by their kind \
-                                         before. This is expected to \
-                                         correspond with the bucket ",
-                                        stringify!($field),
-                                        ".",
-                                    )),
-                                })
-                                .collect::<Vec<_>>()
-                        })
-                        .expect(
-                            "The slice must be valid because the range is \
-                             logical, and the components of the range are \
-                             indices into the collection.",
-                        );
-
-                    println!(
-                        concat!(
-                            "[FfiItems::from_iter] ",
-                            stringify!($field),
-                            "_partition: {:?}"
-                        ),
-                        partition
-                            .iter()
-                            .map(|it| &it.cached_path)
-                            .collect::<Vec<_>>(),
-                    );
-
-                    partition
-                };
-            )+};
+macro_rules! get_partitions {
+    ($partitioned_items:tt, $item_ty:tt; $($field:ident: $ty:tt),+ $(,)?) => {$(
+        macro_rules! search_idx {
+            ($start:expr, $pred:expr) => {{
+                $partitioned_items
+                    .iter()
+                    .enumerate()
+                    .skip($start)
+                    .skip_while(|(_, it)| $pred(it))
+                    .next()
+                    .map(|(idx, _)| idx)
+                    .unwrap_or($partitioned_items.len())
+            }};
         }
 
+        let start = search_idx!(0, |it: &&$item_ty| matches!(it, $item_ty::$ty(_)).not());
+        let end = search_idx!(start, |it: &&$item_ty| matches!(it, $item_ty::$ty(_)));
+
+        let $field = if start >= end {
+            Vec::new()
+        } else {
+            let partition = $partitioned_items
+                .get(start..end)
+                .map(|it| {
+                    it.into_iter()
+                        .map(|it| match it {
+                            $item_ty::$ty(it) => (*it).clone(),
+                            _ => unreachable!(concat!(
+                                "Items have been sorted by their kind \
+                                 before. This is expected to \
+                                 correspond with the bucket ",
+                                stringify!($field),
+                                ".",
+                            )),
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .expect(
+                    "The slice must be valid because the range is \
+                     logical, and the components of the range are \
+                     indices into the collection.",
+                );
+
+            println!(
+                concat!(
+                    "[FfiItems::from_iter] ",
+                    stringify!($field),
+                    "_partition: {:?}"
+                ),
+                partition
+                    .iter()
+                    .map(|it| &it.cached_path)
+                    .collect::<Vec<_>>(),
+            );
+
+            partition
+        };
+    )+};
+}
+
+/* NOTE: this doesn't consider a larger chunk of the repeated code between the
+ * FromIterator implementations because that is only concerned with logging,
+ * which will be removed post-debugging and is uses more macros of its own. */
+macro_rules! items_from_iter {
+    ($partitioned_items:tt, $item_ty:tt) => {{
+        /* NOTE: this is expected to sort all items by their kind, such that
+         * we end up with the following ordering:
+         *
+         * 1. Type aliases.
+         * 2. Stucts.
+         * 3. Unions.
+         * 4. Constants.
+         * 5. Foreign functions.
+         * 6. Foreign statics.
+         * 7. Modules.
+         *
+         * This is then used to partition over the resulting collection and get
+         * "buckets" of GenericItems that can be mapped to a concrete type
+         * through partial mapping. */
+        $partitioned_items.sort_by(|it1, it2| match (it1, it2) {
+            ($item_ty::Type(_), $item_ty::Type(_))
+            | ($item_ty::Struct(_), $item_ty::Struct(_))
+            | ($item_ty::Union(_), $item_ty::Union(_))
+            | ($item_ty::Const(_), $item_ty::Const(_))
+            | ($item_ty::Fn(_), $item_ty::Fn(_))
+            | ($item_ty::Static(_), $item_ty::Static(_))
+            | ($item_ty::Module(_), $item_ty::Module(_)) => Ordering::Equal,
+            ($item_ty::Type(_), $item_ty::Struct(_))
+            | ($item_ty::Type(_), $item_ty::Union(_))
+            | ($item_ty::Type(_), $item_ty::Const(_))
+            | ($item_ty::Type(_), $item_ty::Fn(_))
+            | ($item_ty::Type(_), $item_ty::Static(_))
+            | ($item_ty::Type(_), $item_ty::Module(_))
+            | ($item_ty::Struct(_), $item_ty::Union(_))
+            | ($item_ty::Struct(_), $item_ty::Const(_))
+            | ($item_ty::Struct(_), $item_ty::Fn(_))
+            | ($item_ty::Struct(_), $item_ty::Static(_))
+            | ($item_ty::Struct(_), $item_ty::Module(_))
+            | ($item_ty::Union(_), $item_ty::Const(_))
+            | ($item_ty::Union(_), $item_ty::Fn(_))
+            | ($item_ty::Union(_), $item_ty::Static(_))
+            | ($item_ty::Union(_), $item_ty::Module(_))
+            | ($item_ty::Const(_), $item_ty::Fn(_))
+            | ($item_ty::Const(_), $item_ty::Static(_))
+            | ($item_ty::Const(_), $item_ty::Module(_))
+            | ($item_ty::Fn(_), $item_ty::Static(_))
+            | ($item_ty::Fn(_), $item_ty::Module(_))
+            | ($item_ty::Static(_), $item_ty::Module(_)) => Ordering::Less,
+            ($item_ty::Struct(_), $item_ty::Type(_))
+            | ($item_ty::Union(_), $item_ty::Type(_))
+            | ($item_ty::Union(_), $item_ty::Struct(_))
+            | ($item_ty::Const(_), $item_ty::Type(_))
+            | ($item_ty::Const(_), $item_ty::Struct(_))
+            | ($item_ty::Const(_), $item_ty::Union(_))
+            | ($item_ty::Fn(_), $item_ty::Type(_))
+            | ($item_ty::Fn(_), $item_ty::Struct(_))
+            | ($item_ty::Fn(_), $item_ty::Union(_))
+            | ($item_ty::Fn(_), $item_ty::Const(_))
+            | ($item_ty::Static(_), $item_ty::Type(_))
+            | ($item_ty::Static(_), $item_ty::Struct(_))
+            | ($item_ty::Static(_), $item_ty::Union(_))
+            | ($item_ty::Static(_), $item_ty::Const(_))
+            | ($item_ty::Static(_), $item_ty::Fn(_))
+            | ($item_ty::Module(_), $item_ty::Type(_))
+            | ($item_ty::Module(_), $item_ty::Struct(_))
+            | ($item_ty::Module(_), $item_ty::Union(_))
+            | ($item_ty::Module(_), $item_ty::Const(_))
+            | ($item_ty::Module(_), $item_ty::Fn(_))
+            | ($item_ty::Module(_), $item_ty::Static(_)) => Ordering::Greater,
+        });
+
         get_partitions! {
+            $partitioned_items, $item_ty;
             aliases: Type,
             structs: Struct,
             unions: Union,
@@ -701,6 +712,74 @@ impl FromIterator<GenericItem> for FfiItems {
             modules,
             ..Default::default()
         }
+    }};
+}
+
+impl FromIterator<GenericItem> for FfiItems {
+    fn from_iter<I: IntoIterator<Item = GenericItem>>(iter: I) -> Self {
+        let mut partitioned_items: Vec<_> = iter.into_iter().collect();
+
+        println!(
+            "[FfiItems::from_iter] partitioned_items: {:?}",
+            partitioned_items
+                .iter()
+                .map(|it| {
+                    macro_rules! exe {
+                        ($($ty:tt),+ $(,)?) => {
+                            match it {$(
+                                GenericItem::$ty(it) => &it.cached_path,
+                            )+}
+                        };
+                    }
+
+                    exe! {
+                        Type,
+                        Struct,
+                        Union,
+                        Const,
+                        Fn,
+                        Static,
+                        Module,
+                    }
+                })
+                .collect::<Vec<_>>()
+        );
+
+        items_from_iter!(partitioned_items, GenericItem)
+    }
+}
+
+impl<'a> FromIterator<RefGenericItem<'a>> for FfiItems {
+    fn from_iter<I: IntoIterator<Item = RefGenericItem<'a>>>(iter: I) -> FfiItems {
+        let mut partitioned_items: Vec<_> = iter.into_iter().collect();
+
+        println!(
+            "[FfiItems::from_iter] partitioned_items: {:?}",
+            partitioned_items
+                .iter()
+                .map(|it| {
+                    macro_rules! exe {
+                        ($($ty:tt),+ $(,)?) => {
+                            match it {$(
+                                RefGenericItem::$ty(it) => &it.cached_path,
+                            )+}
+                        };
+                    }
+
+                    exe! {
+                        Type,
+                        Struct,
+                        Union,
+                        Const,
+                        Fn,
+                        Static,
+                        Module,
+                    }
+                })
+                .collect::<Vec<_>>()
+        );
+
+        items_from_iter!(partitioned_items, RefGenericItem)
     }
 }
 
@@ -716,8 +795,44 @@ pub(crate) enum GenericItem {
     Module(Module),
 }
 
-/// An iterator over all items but `use` declarations in an `FfiItems` term.
-type ItemIterator = Box<dyn Iterator<Item = GenericItem>>;
+impl<'a> From<RefGenericItem<'a>> for GenericItem {
+    fn from(value: RefGenericItem<'a>) -> Self {
+        macro_rules! clone {
+            ($($ty:tt),+ $(,)?) => {
+                match value {$(
+                    RefGenericItem::$ty(it) => Self::$ty(it.clone()),
+                )+}
+            };
+        }
+
+        clone! {
+            Type,
+            Struct,
+            Union,
+            Const,
+            Fn,
+            Static,
+            Module,
+        }
+    }
+}
+
+/// Sum type akin to [`GenericItem`] but holding references over the items extracted from the
+/// [`FfiItems`] term/constant.
+#[derive(Debug, Clone, Copy)]
+pub(crate) enum RefGenericItem<'a> {
+    Type(&'a Type),
+    Struct(&'a Struct),
+    Union(&'a Union),
+    Const(&'a Const),
+    Fn(&'a Fn),
+    Static(&'a Static),
+    Module(&'a Module),
+}
+
+/// An iterator analogous to [`ItemIterator`] but holding cheap references instead of fully owned
+/// terms.
+type RefItemIterator<'a> = Box<dyn Iterator<Item = RefGenericItem<'a>> + 'a>;
 
 /// Refined type for [`syn::UsePath`] that does not consider group paths.
 ///
@@ -988,7 +1103,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     macro_rules! search {
         ($matcher:expr; $([$f:expr, $ty:tt]),+ $(,)?) => {
             match $matcher {
-                $(Some(GenericItem::$ty(it)) => $f(it),)+
+                $(Some(RefGenericItem::$ty(it)) => $f(it.clone()),)+
                 None => Resolution::Unresolved,
             }
         };
@@ -1036,7 +1151,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             }
 
             search! {
-                state.subtree.items.search(&ident);
+                state.subtree.items.search_by_ident(&ident);
                 [exe!(aliases), Type],
                 [exe!(structs), Struct],
                 [exe!(unions), Union],
@@ -1135,7 +1250,7 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             }
 
             search! {
-                state.subtree.items.search(&ident);
+                state.subtree.items.search_by_ident(&ident);
                 [exe!(aliases: Type), Type],
                 [exe!(structs: Struct), Struct],
                 [exe!(unions: Union), Union],
@@ -1176,9 +1291,11 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     subtree: state.whole_crate.clone(),
                     whole_crate: state.whole_crate,
                 }
-            } else if let Some(GenericItem::Module(m)) = state.subtree.items.search(&ident) {
+            } else if let Some(RefGenericItem::Module(m)) =
+                state.subtree.items.search_by_ident(&ident)
+            {
                 PassPair {
-                    subtree: m,
+                    subtree: m.clone(),
                     whole_crate: state.whole_crate,
                 }
             } else {
@@ -1479,7 +1596,12 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
             },
         )
         .fold(dst, |dst, it| Module {
-            items: dst.items.items().chain(it.items()).collect(),
+            items: dst
+                .items
+                .items()
+                .chain(it.items())
+                .map(GenericItem::from)
+                .collect(),
             ..dst
         })
 }
@@ -1868,9 +1990,9 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
                 child_items,
             ) = child_monad.run(state.clone());
 
-            /* NOTE: here we just assume that the child module was non-empty and
-             * thus the UID ought be incremented anew for the containing
-             * module's UID. */
+            /* NOTE: even if the module was empty and the UID was not modified,
+             * we know the same UID we had before has already been used for
+             * another item. It must be incremented no matter what. */
             let new_uid = uid_after_child.strict_add(1);
             let new_items = FfiItems {
                 modules: items

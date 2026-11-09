@@ -8,6 +8,7 @@ use crate::ast::PathUtils;
 use crate::ffi_items::{
     FfiItems,
     GenericItem,
+    RefGenericItem,
 };
 use crate::{
     BoxStr,
@@ -97,14 +98,14 @@ impl PathUtils for Module {
                     ($($ty:tt),+ $(,)?) => {
                         match it {
                             $(
-                            GenericItem::$ty(it) => {
+                            RefGenericItem::$ty(it) => {
                                 let new_path = f(&it.path);
 
-                                GenericItem::$ty(it.rename(new_path))
+                                GenericItem::$ty(it.clone().rename(new_path))
                             }
                             )+
-                            GenericItem::Module(it) => {
-                                GenericItem::Module(it.rename_with(f.clone()))
+                            RefGenericItem::Module(it) => {
+                                GenericItem::Module(it.clone().rename_with(f.clone()))
                             }
                         }
                     };

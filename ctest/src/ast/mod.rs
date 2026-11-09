@@ -59,6 +59,7 @@ impl PathAggregateStore {
     /// In other words, it checks if the item owning the receiver path aggregate and the item owning
     /// the `other` path aggregate are different occurrences of the same item across the crate's
     /// module tree.
+    #[expect(unused)]
     pub(crate) fn akin(&self, other: &Self) -> bool {
         self.value
             .iter()

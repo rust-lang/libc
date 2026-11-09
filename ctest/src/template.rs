@@ -1,15 +1,15 @@
 //! Generation of tests from templates for both Rust and C.
 
-use std::convert;
-
 use askama::Template;
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::spanned::Spanned;
 
-use crate::ast::PathUtils;
 use crate::cdecl::Constness;
-use crate::ffi_items::FfiItems;
+use crate::ffi_items::{
+    FfiItems,
+    RefGenericItem,
+};
 use crate::translator::{
     TranslationErrorKind,
     Translator,
@@ -708,20 +708,41 @@ impl<'a> TranslateHelper<'a> {
     /// tests for all private items.
     fn filter_ffi_items(&mut self, whole_crate: &FfiItems) {
         fn skipper(items: &mut FfiItems, whole_crate: &FfiItems, generator: &TestGenerator) {
-            /* TODO: change all functions leading up to this point with uses of
-             * both the FfiItems that corresponds with that of the module for
-             * which we are generating tests currently, and the FfiItems that
-             * contains the entire crate's module tree. The latter should be
-             * used to perform whole-crate traversals to find all occurrences of
-             * a given item such that we may run each of those against each of
-             * the tests (yes, it's crappy but it's simple.) */
+            macro_rules! search_map {
+                ($it:tt: $ty:tt) => {{
+                    whole_crate
+                        .search_occurrences($it.uid)
+                        .into_iter()
+                        .map(|it| {
+                            if let RefGenericItem::$ty(it) = it {
+                                it
+                            } else {
+                                unreachable!(
+                                    "The UID of a given item is assigned at \
+                                     parse-time and never mutated. If any \
+                                     occurrences of this one item have been \
+                                     found, that means they have the same UID \
+                                     and are thus of the same kind."
+                                );
+                            }
+                        })
+                }};
+            }
 
             let skipped = items.aliases.extract_if(.., |alias| {
+                let occurrences = search_map!(alias: Type);
+
+                /* NOTE: you may notice here we clone the iterator even though
+                 * borrock does not report it is being used multiple times. That
+                 * is because the iterator will gladly be consumed in whole and
+                 * report there are no matches on the skips after the first skip
+                 * runs through it. We require cloning the iterator of
+                 * occurrences each time we compute possible matches to ensure
+                 * each skip goes through all ocurrences of a given item. */
                 generator.skips.iter().any(|f| {
-                    alias
-                        .with_variations(|it| f(&MapInput::CEnumType(&it.cached_path)))
-                        .into_iter()
-                        .any(convert::identity)
+                    occurrences
+                        .clone()
+                        .any(|it| f(&MapInput::CEnumType(&it.cached_path)))
                 })
             });
 
@@ -732,13 +753,13 @@ impl<'a> TranslateHelper<'a> {
             }
 
             let skipped = items.constants.extract_if(.., |constant| {
+                let occurrences = search_map!(constant: Const);
+
+                /* NOTE: ibid. */
                 generator.skips.iter().any(|f| {
-                    constant
-                        .with_variations(|it| {
-                            f(&MapInput::CEnumType(&it.ty.to_token_stream().to_string()))
-                        })
-                        .into_iter()
-                        .any(convert::identity)
+                    occurrences
+                        .clone()
+                        .any(|it| f(&MapInput::CEnumType(&it.cached_path)))
                 })
             });
 
@@ -751,13 +772,15 @@ impl<'a> TranslateHelper<'a> {
             macro_rules! filter {
                 ($field:ident: $ty:tt, $variant:ident, $label:literal) => {{
                     let skipped = items.$field.extract_if(.., |item| {
+                        let occurrences = search_map!(item: $ty);
+
+                        /* NOTE: ibid. */
                         (generator.skip_private && !item.public)
                             || generator.skips.iter().any(|f| {
-                                item.with_variations(|it| f(&MapInput::$variant(&it)))
-                                    .into_iter()
-                                    .any(convert::identity)
+                                occurrences.clone().any(|it| f(&MapInput::$variant(&it)))
                             })
                     });
+
                     for item in skipped {
                         if generator.verbose_skip {
                             eprintln!("Skipping {} \"{}\"", $label, $ty::path(&item))
@@ -859,6 +882,6 @@ fn tmp() {
     items.visit_file(&file);
     let mut generator = TestGenerator::new();
     generator.skip_fn(|it| it.path() == "t::r::ctime");
-    let translator = TranslateHelper::new(&items, &generator);
+    let translator = TranslateHelper::new(&items, &items, &generator);
     println!("{:#?}", translator.filtered_ffi_items);
 }
