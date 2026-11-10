@@ -60,22 +60,23 @@ use crate::{
 
 /* NOTE: for use only in printf-debugging. It doesn't automatically derive Debug
  * to selectively print out the fields I'm interested in while debugging. */
-#[derive(Clone)]
-struct DebugFfiItems {
-    aliases: Vec<Type>,
-    structs: Vec<Struct>,
-    unions: Vec<Union>,
-    constants: Vec<Const>,
-    foreign_functions: Vec<Fn>,
-    foreign_statics: Vec<Static>,
-    modules: Vec<Module>,
+#[derive(Clone, Copy)]
+struct DebugFfiItems<'a> {
+    aliases: &'a [Type],
+    structs: &'a [Struct],
+    unions: &'a [Union],
+    constants: &'a [Const],
+    foreign_functions: &'a [Fn],
+    foreign_statics: &'a [Static],
+    uses: &'a [RefinedUse],
+    modules: &'a [Module],
 }
 
-impl Debug for DebugFfiItems {
+impl Debug for DebugFfiItems<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut dbg_struct = f.debug_struct("DebugFfiItems");
 
-        #[derive(Clone)]
+        #[derive(Clone, Copy)]
         struct PrettyPath<'a>(&'a Path);
 
         impl Debug for PrettyPath<'_> {
@@ -113,6 +114,23 @@ impl Debug for DebugFfiItems {
             foreign_statics: Static,
         }
 
+        dbg_struct.field_with("uses", |f| {
+            f.pad("[ ")
+                .and_then(|_| {
+                    self.uses
+                        .iter()
+                        .map(|u| {
+                            f.pad(&format!(
+                                "{{ public: {:?}, tree: {:?} }}",
+                                u.public,
+                                PrettyUseTree(&u.tree),
+                            ))
+                        })
+                        .collect::<fmt::Result>()
+                })
+                .and_then(|_| f.pad(" ]"))
+        });
+
         dbg_struct.field_with("modules", |f| {
             f.pad("[ ")
                 .and_then(|_| {
@@ -124,7 +142,7 @@ impl Debug for DebugFfiItems {
                                     f.pad(&format!(
                                         "path: {:?}, items: {{ {:?} }}",
                                         PrettyPath(&m.path),
-                                        DebugFfiItems::from(m.items.clone()),
+                                        DebugFfiItems::from(&m.items),
                                     ))
                                 })
                                 .and_then(|_| f.pad(" ]"))
@@ -161,7 +179,7 @@ fn refined_tree_to_string(t: &RefinedUseTree) -> String {
     }
 }
 
-impl From<FfiItems> for DebugFfiItems {
+impl<'a> From<&'a FfiItems> for DebugFfiItems<'a> {
     fn from(
         FfiItems {
             aliases,
@@ -170,9 +188,9 @@ impl From<FfiItems> for DebugFfiItems {
             constants,
             foreign_functions,
             foreign_statics,
+            uses,
             modules,
-            ..
-        }: FfiItems,
+        }: &'a FfiItems,
     ) -> Self {
         Self {
             aliases,
@@ -181,6 +199,7 @@ impl From<FfiItems> for DebugFfiItems {
             constants,
             foreign_functions,
             foreign_statics,
+            uses,
             modules,
         }
     }
@@ -430,43 +449,11 @@ impl FfiItems {
         Box::new(base)
     }
 
-    /// Comparison function for use when sorting and deduplicating modules in [`FfiItems::dedup`].
-    ///
-    /// This is used in [`Module::custom_cmp`]. It trusts that the modules to compare have the same
-    /// overall shape, and one will be a "natural" extension of the other.
-    ///
-    /// We consider "extension" here to mean that one module subtree is based on the other, and thus
-    /// only contains both the items from the other and possibly some more items.
-    pub(super) fn custom_cmp(&self, other: &Self) -> Ordering {
-        let (ours, theirs) = (self.modules.len(), other.modules.len());
-
-        /* NOTE: the goal here is to have modules with "larger" subtrees
-         * appear first in the item container, so declaring them to be "smaller"
-         * is required for slice::sort_unstable_by to put them first in the
-         * sorted list of modules in FfiItems::dedup. The same applies the other
-         * way around with "smaller" subtrees that we would like to have appear
-         * later in the sorted list of modules. */
-        match ours.cmp(&theirs) {
-            Ordering::Equal => self.modules.iter().zip(&other.modules).fold(
-                Ordering::Equal,
-                |_, (our_m, their_m)| {
-                    /* NOTE: this is intended to not start anew a "regular"
-                     * module comparison through Module::custom_cmp, but to
-                     * rather have all subsequent comparisons be based off of
-                     * the sizes of module subtrees rather than the
-                     * lexicographical comparison of their paths. */
-                    our_m.items.custom_cmp(&their_m.items)
-                },
-            ),
-            other => other.reverse(),
-        }
-    }
-
     /// Searches for an item in the container, without recursing through the subtree rooted at the
     /// receiver.
     ///
     /// The generic item may be pattern-matched to find out specifically which item was found.
-    fn search_by_ident<'a>(&'a self, ident: &Ident) -> Option<RefGenericItem<'a>> {
+    fn search_by_ident(&self, ident: &Ident) -> Option<RefGenericItem<'_>> {
         self.items().find(|it| {
             macro_rules! cmp {
                 ($($var:tt),+ $(,)?) => {
@@ -491,13 +478,13 @@ impl FfiItems {
         })
     }
 
-    /** Searches for all occurrences of a given item in the subtree rooted at this `FfiItems`.
-     *
-     * Searching occurrences of a given item is done by looking up the UID of the item throughout
-     * the entire subtree rooted at the receiver. This is unlike [`FfiItems::search_by_ident`],
-     * which searches throughout the first level of the subtree but does not recurse down subsequent
-     * levels. */
-    pub(crate) fn search_occurrences<'a>(&'a self, id: usize) -> Vec<RefGenericItem<'a>> {
+    /// Searches for all occurrences of a given item in the subtree rooted at this `FfiItems`.
+    ///
+    /// Searching occurrences of a given item is done by looking up the UID of the item throughout
+    /// the entire subtree rooted at the receiver. This is unlike [`FfiItems::search_by_ident`],
+    /// which searches throughout the first level of the subtree but does not recurse down
+    /// subsequent levels.
+    pub(crate) fn search_occurrences(&self, id: usize) -> Vec<RefGenericItem<'_>> {
         fn traverse<'a>(
             items: &'a FfiItems,
             id: usize,
@@ -525,7 +512,10 @@ impl FfiItems {
                     Module,
                 }
             }) {
-                gather.into_iter().chain([at_this_level]).collect()
+                gather
+                    .into_iter()
+                    .chain(iter::once(at_this_level))
+                    .collect()
             } else {
                 gather
             };
@@ -546,32 +536,23 @@ impl FfiItems {
     /// sorted by their paths.
     fn dedup(self) -> FfiItems {
         macro_rules! dedup {
-            ($($it:tt),+ $(,)?) => {{
+            ($($it:tt),+ $(,)?) => {
                 macro_rules! key_fn {
                     () => {
                         |it| it.cached_path.clone()
                     };
                 }
 
-                let items = self.clone();
-
                 $(
                     let mut $it = self.$it;
 
                     $it.sort_unstable_by_key(key_fn!());
                     $it.dedup_by_key(key_fn!());
-
-                    let items = FfiItems {
-                        $it: $it,
-                        ..items
-                    };
                 )+
-
-                items
-            }};
+            };
         }
 
-        let new_items = dedup!(
+        dedup!(
             aliases,
             structs,
             unions,
@@ -580,13 +561,42 @@ impl FfiItems {
             foreign_statics,
         );
 
-        let mut new_modules = self.modules;
-        new_modules.sort_unstable_by(Module::custom_cmp);
-        new_modules.dedup_by(|Module { path: lhs, .. }, Module { path: rhs, .. }| *lhs == *rhs);
+        let mut modules = self.modules;
+
+        fn items_cmp(ours: &FfiItems, other: &FfiItems) -> Ordering {
+            /* NOTE: the goal here is to have modules with "larger" subtrees
+             * appear first in the item container, so declaring them to be
+             * "smaller" is required for slice::sort_unstable_by to put them
+             * first in the sorted list of modules in FfiItems::dedup. The same
+             * applies the other way around with "smaller" subtrees that we
+             * would like to have appear later in the sorted list of modules. */
+            match ours.modules.len().cmp(&other.modules.len()) {
+                Ordering::Equal => ours
+                    .modules
+                    .iter()
+                    .zip(&other.modules)
+                    .fold(Ordering::Equal, |_, (our_m, their_m)| {
+                        items_cmp(&our_m.items, &their_m.items)
+                    }),
+                other => other.reverse(),
+            }
+        }
+
+        modules.sort_unstable_by(|lhs, rhs| match lhs.id.cmp(&rhs.id) {
+            Ordering::Equal => items_cmp(&lhs.items, &rhs.items),
+            other => other,
+        });
+        modules.dedup_by(|Module { id: lhs, .. }, Module { id: rhs, .. }| lhs == rhs);
 
         FfiItems {
-            modules: new_modules,
-            ..new_items
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+            modules,
+            ..self
         }
     }
 }
@@ -1072,12 +1082,17 @@ fn resolve_pass(src: PassPair) -> PassPair {
     );
 
     println!(
-        "[resolve_pass] finished module pass on module {}",
+        "[resolve_pass] finished module pass on module {}: {:?}",
         if new_src.cached_path.is_empty() {
             "root"
         } else {
             &*new_src.cached_path
         },
+        DebugFfiItems::from(&new_src.items),
+    );
+    println!(
+        "[resolve_pass] whole_crate state: {:?}",
+        DebugFfiItems::from(&new_whole_crate.items)
     );
 
     PassPair {
@@ -1182,7 +1197,11 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             log!(
                 "entered name resolution case with {} in module {}",
                 ident,
-                state.subtree.cached_path,
+                if state.subtree.cached_path.is_empty() {
+                    "root"
+                } else {
+                    &*state.subtree.cached_path
+                },
             );
 
             /* NOTE: self may not appear as the name basecase in well-formed
@@ -1336,7 +1355,11 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
             log!(
                 "entered path resolution case with {} in module {}",
                 ident,
-                state.subtree.cached_path,
+                if state.subtree.cached_path.is_empty() {
+                    "root"
+                } else {
+                    &*state.subtree.cached_path
+                },
             );
 
             let new_state = if is_self(&ident) {
@@ -1533,11 +1556,11 @@ fn update_tree(
 /// `dst`. It is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
 fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
     println!(
-        "[merge_module] preprocessed_items: {:#?}",
+        "[merge_module] resolution_outcome: {:#?}",
         src.iter()
             .map(|r| {
                 if let Resolution::Resolved(it) = r {
-                    format!("resolved: {:?}", DebugFfiItems::from(it.clone()))
+                    format!("resolved: {:?}", DebugFfiItems::from(it))
                 } else {
                     format!("unresolved")
                 }
@@ -1547,9 +1570,6 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
 
     let dst_path = dst.path.clone();
 
-    /* NOTE: we collect all items here because we want the actions in the
-     * mapping to take place in whole before we start folding over the items to
-     * merge. */
     src.into_iter()
         .filter_map(|r| {
             if let Resolution::Resolved(items) = r {
@@ -1664,12 +1684,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
             },
         )
         .fold(dst, |dst, it| Module {
-            items: dst
-                .items
-                .items()
-                .chain(it.items())
-                .map(GenericItem::from)
-                .collect(),
+            items: dst.items.items().chain(it.items()).collect(),
             ..dst
         })
 }
@@ -2116,8 +2131,8 @@ impl<'ast> Visit<'ast> for ParsingMonad {
         };
 
         let monad = {
-            /* NOTE: the calling monad is linear in nature, so we need to take
-             * ownership of the receiver. */
+            /* NOTE: the calling monad is linear, so we need to take ownership
+             * of the receiver. */
             let base_monad = mem::replace(self, StateMonad::pure(FfiItems::new()));
             let ident = ident.clone();
 
@@ -2169,60 +2184,7 @@ impl<'ast> Visit<'ast> for ParsingMonad {
 }
 
 #[test]
-fn tmpparse() {
-    let source = r#"
-use test2::test3;
-
-use test2::*;
-
-use test1::{*, test3::*};
-
-mod test1 {
-    use test2::{*, test3::*};
-
-    mod test2 {
-        use test3::*;
-
-        extern "C" {
-            fn time();
-        }
-
-        mod test3 {
-            pub struct Foo;
-
-            fn foo() {
-                extern "C" {
-                    fn ctime();
-                }
-            }
-        }
-    }
-}
-    "#;
-
-    let file = syn::parse_file(source).unwrap();
-    let items = FfiItems::visit_file(&file);
-
-    println!("{:#?}", items);
-}
-
-#[test]
 fn tmp0() {
-    /*
-     * time should end up with the following paths:
-     * [time, test1::time, test1::test2::time, test2::time]
-     * Foo should end up with the following paths:
-     * [
-     *   Foo,
-     *   test1::Foo,
-     *   test1::test3::Foo,
-     *   test1::test2::Foo,
-     *   test1::test2::test3::Foo,
-     *   test2::Foo,
-     *   test2::test3::Foo,
-     *   test3::Foo,
-     * ]
-     */
     let source = r#"
 use test2::test3;
 
@@ -2277,7 +2239,6 @@ mod test1 {
 }
 
 #[test]
-#[ignore]
 fn tmp1() {
     let source = r#"
 pub struct Foo;
@@ -2290,83 +2251,3 @@ mod test1 { use super::*; }
 
     println!("{:#?}", items);
 }
-
-#[test]
-#[ignore]
-fn tmp2() {
-    let m1 = Module {
-        cached_path: Box::from("a"),
-        items: FfiItems::new(),
-        ..Default::default()
-    };
-    let m2 = Module {
-        cached_path: Box::from("a"),
-        items: FfiItems {
-            modules: vec![Module::default()],
-            ..FfiItems::new()
-        },
-        ..Default::default()
-    };
-
-    let mut ms = vec![m1, m2];
-
-    ms.sort_unstable_by(Module::custom_cmp);
-
-    println!("{:#?}", ms);
-}
-
-// #[test]
-// #[ignore]
-// fn tmp3() {
-//     let dst_child_path = Path {
-//         leading_colon: None,
-//         segments: {
-//             let mut out = Punctuated::new();
-//             out.push(PathSegment {
-//                 ident: Ident::new("foo", Span::call_site()),
-//                 arguments: PathArguments::None,
-//             });
-//             out.clone()
-//         },
-//     };
-//     let dst = Module {
-//         items: FfiItems {
-//             modules: Vec::from([Module {
-//                 path: dst_child_path.clone(),
-//                 cached_path: ast::path_to_string(dst_child_path.clone()),
-//                 items: FfiItems {
-//                     structs: Vec::from([{
-//                         let path = Path {
-//                             leading_colon: None,
-//                             segments: Punctuated::new(),
-//                         };
-//                         Struct {
-//                             path: path.clone(),
-//                             cached_path: ast::path_to_string(path.clone()),
-//                             ..Default::default()
-//                         }
-//                     }]),
-//                     ..Default::default()
-//                 },
-//                 ..Default::default()
-//             }]),
-//             ..Default::default()
-//         },
-//         ..Default::default()
-//     };
-//     let src = Vec::from([Resolution::Resolved(FfiItems {
-//         modules: Vec::from([Module {
-//             path: dst_child_path.clone(),
-//             cached_path: ast::path_to_string(dst_child_path.clone()),
-//             items: FfiItems {
-//                 modules: Vec::from([Module::default()]),
-//                 uses: Vec::from([RefinedUse::default()]),
-//                 ..Default::default()
-//             },
-//             ..Default::default()
-//         }]),
-//         ..Default::default()
-//     })]);
-//     let merged = merge_module(dst.clone(), src.clone());
-//     println!("{:#?}", merged.clone());
-// }

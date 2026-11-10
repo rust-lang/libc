@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::ops;
 
 use syn::Path;
@@ -40,17 +39,6 @@ impl Module {
     /// Returns the last segment of the module's path; Namely, its identifier.
     pub fn ident(&self) -> &str {
         &self.cached_ident
-    }
-
-    /// Comparison function for use when sorting modules in [`FfiItems::dedup`].
-    ///
-    /// This is not implemented as part of [`Ord`] because the implementation is inconsistent with
-    /// the [`PartialEq`] implementation.
-    pub(crate) fn custom_cmp(&self, other: &Self) -> Ordering {
-        match self.cached_path.cmp(&other.cached_path) {
-            Ordering::Equal => self.items.custom_cmp(&other.items),
-            other => other,
-        }
     }
 }
 
