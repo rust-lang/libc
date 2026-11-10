@@ -849,16 +849,13 @@ s! {
         pub msg_namelen: crate::socklen_t,
         pub msg_iov: *mut crate::iovec,
         pub msg_iovlen: c_int,
-        __pad1: Padding<c_int>,
         pub msg_control: *mut c_void,
         pub msg_controllen: crate::socklen_t,
-        __pad2: Padding<crate::socklen_t>,
         pub msg_flags: c_int,
     }
 
     pub struct cmsghdr {
         pub cmsg_len: crate::socklen_t,
-        __pad1: Padding<c_int>,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }
@@ -3255,7 +3252,7 @@ f! {
     }
 
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1) as *mut c_uchar
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
@@ -3356,7 +3353,7 @@ fn __CMSG_LEN(cmsg: *const cmsghdr) -> ssize_t {
 }
 
 fn __CMSG_NEXT(cmsg: *const cmsghdr) -> *mut c_uchar {
-    (unsafe { cmsg.offset(__CMSG_LEN(cmsg)) }) as *mut c_uchar
+    (unsafe { (cmsg as *const c_uchar).offset(__CMSG_LEN(cmsg)) }) as *mut c_uchar
 }
 
 fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
