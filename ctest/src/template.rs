@@ -711,7 +711,7 @@ impl<'a> TranslateHelper<'a> {
             macro_rules! search_map {
                 ($it:tt: $ty:tt) => {{
                     whole_crate
-                        .search_occurrences($it.uid)
+                        .search_occurrences($it.id)
                         .into_iter()
                         .map(|it| {
                             if let RefGenericItem::$ty(it) = it {
@@ -873,13 +873,10 @@ impl<'a> TranslateHelper<'a> {
 
 #[test]
 fn tmp() {
-    use syn::visit::Visit;
-
     let file =
         r#"mod t { mod r { extern "C" { fn ctime() -> c_int; fn something() -> c_int; } } }"#;
-    let mut items = FfiItems::new();
     let file = syn::parse_file(file).unwrap();
-    items.visit_file(&file);
+    let items = FfiItems::visit_file(&file);
     let mut generator = TestGenerator::new();
     generator.skip_fn(|it| it.path() == "t::r::ctime");
     let translator = TranslateHelper::new(&items, &items, &generator);

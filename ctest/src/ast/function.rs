@@ -12,7 +12,7 @@ use crate::{
 /// This structure is only used for parsing functions in extern blocks.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Fn {
-    pub(crate) uid: usize,
+    pub(crate) id: usize,
     pub(crate) public: bool,
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,

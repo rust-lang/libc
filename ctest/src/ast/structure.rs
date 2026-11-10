@@ -10,7 +10,7 @@ use crate::{
 /// Represents a struct defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Struct {
-    pub(crate) uid: usize,
+    pub(crate) id: usize,
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
@@ -53,7 +53,7 @@ impl PathUtils for Struct {
 impl Default for Struct {
     fn default() -> Self {
         Self {
-            uid: Default::default(),
+            id: Default::default(),
             public: Default::default(),
             cached_path: Default::default(),
             cached_ident: Default::default(),

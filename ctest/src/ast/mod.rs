@@ -150,6 +150,9 @@ pub(crate) trait PathUtils: Clone {
     fn path(&self) -> &Path;
     fn mk(self, cached_path: BoxStr, cached_ident: BoxStr, path: Path) -> Self;
 
+    /* NOTE: the Clone trait bound here is necessary for the Module override to
+     * be capable of reusing the closure in recursive invocations of the trait
+     * method. */
     fn rename_with(self, f: impl ops::Fn(&Path) -> Path + Clone) -> Self {
         let new_path = f(&self.path());
 
@@ -175,7 +178,10 @@ pub(crate) fn escape_item_path<'a>(item: impl Into<MapInput<'a>>) -> String {
         MapInput::Const(c) => c.path(),
         MapInput::Static(s) => s.path(),
 
-        _ => unimplemented!("other MapInput data constructors do not represent rust items"),
+        _ => unimplemented!(
+            "other MapInput data constructors do not represent rust \
+             items"
+        ),
     };
     path.replace("::", "_")
 }

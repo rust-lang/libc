@@ -15,7 +15,7 @@ use crate::{
 /// as a result it does not have a field for storing the expression.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Static {
-    pub(crate) uid: usize,
+    pub(crate) id: usize,
     pub(crate) public: bool,
     pub(crate) abi: Abi,
     pub(crate) cached_path: BoxStr,

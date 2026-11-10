@@ -19,7 +19,7 @@ use crate::{
 /// in this crate.
 #[derive(Debug, Clone)]
 pub struct Module {
-    pub(crate) uid: usize,
+    pub(crate) id: usize,
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
@@ -104,6 +104,7 @@ impl PathUtils for Module {
                                 GenericItem::$ty(it.clone().rename(new_path))
                             }
                             )+
+                            RefGenericItem::RefinedUse(it) => GenericItem::RefinedUse(it.clone()),
                             RefGenericItem::Module(it) => {
                                 GenericItem::Module(it.clone().rename_with(f.clone()))
                             }
@@ -137,7 +138,7 @@ impl PathUtils for Module {
 impl Default for Module {
     fn default() -> Self {
         Self {
-            uid: Default::default(),
+            id: Default::default(),
             public: Default::default(),
             cached_path: Default::default(),
             cached_ident: Default::default(),
@@ -150,14 +151,8 @@ impl Default for Module {
     }
 }
 
-/* TODO: this is either wrong or needs a refactor after the refactor that
- * removed the current_module field of FfiItems. */
-/* NOTE: a custom implementation is used because FfiItems does not have a
- * PartialEq implementation. It is best if it does not have one. The
- * current_module field in FfiItems is not meant for use post-parse-time. It
- * would likely be unintuitive to have its PartialEq not take into account. */
 impl PartialEq for Module {
     fn eq(&self, other: &Self) -> bool {
-        self.public == other.public && self.path == other.path && self.items.custom_eq(&other.items)
+        self.public == other.public && self.path == other.path && self.items == other.items
     }
 }

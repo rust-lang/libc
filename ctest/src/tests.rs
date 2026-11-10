@@ -64,8 +64,7 @@ fn assert_r2cdecl(rust: &str, expected: &str) {
 fn test_extraction_ffi_items() {
     let ast = syn::parse_file(ALL_ITEMS).unwrap();
 
-    let mut ffi_items = FfiItems::new();
-    ffi_items.visit_file(&ast);
+    let ffi_items = FfiItems::visit_file(&ast);
 
     assert!(collect_idents!(ffi_items.aliases()).is_empty());
     assert_eq!(

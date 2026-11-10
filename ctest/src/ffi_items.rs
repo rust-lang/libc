@@ -242,13 +242,13 @@ type ParsingMonad = StateMonad<ParsingState, FfiItems>;
 
 #[test]
 fn tmpmonad() {
-    use StateMonad;
-
     let (state, value) = StateMonad::pure(2)
+        .bind(|x| StateMonad::set(move |s| (s * x, x)))
+        .bind(|x| StateMonad::pure(x * 2))
         .bind(|x| StateMonad::set(move |s| (s * x, x)))
         .run(3);
 
-    assert_eq!((state, value), (6, 2));
+    assert_eq!((state, value), (24, 4));
 }
 
 /* FIXME: maybe further separate the state that is "shared" among items (i.e.
@@ -261,15 +261,21 @@ struct ParsingState {
     current_module: Path,
 }
 
-impl Default for ParsingState {
-    fn default() -> Self {
+impl ParsingState {
+    const fn new() -> Self {
         Self {
-            uid: Default::default(),
+            uid: 0,
             current_module: Path {
                 leading_colon: None,
-                segments: Default::default(),
+                segments: Punctuated::new(),
             },
         }
+    }
+}
+
+impl Default for ParsingState {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -292,8 +298,25 @@ pub(crate) struct FfiItems {
 
 impl FfiItems {
     /// Creates a new blank FfiItems.
-    pub(crate) fn new() -> Self {
-        Self::default()
+    pub(crate) const fn new() -> Self {
+        macro_rules! new_vec {
+            ($($field:tt),+ $(,)?) => {
+                Self {$(
+                    $field: Vec::new(),
+                )+}
+            };
+        }
+
+        new_vec! {
+            aliases,
+            structs,
+            unions,
+            constants,
+            foreign_functions,
+            foreign_statics,
+            uses,
+            modules,
+        }
     }
 
     /// Return whether the type has parsed a struct with the given identifier.
@@ -341,7 +364,7 @@ impl FfiItems {
     /// Entry point to parse a [`syn::File`].
     ///
     /// This will also resolve `use` declarations, copying items over from one module to another.
-    pub(crate) fn visit_file(self, file: &syn::File) -> FfiItems {
+    pub(crate) fn visit_file(file: &syn::File) -> Self {
         let file_mod = ItemMod {
             attrs: file.attrs.clone(),
             vis: syn::parse_quote! { pub },
@@ -352,17 +375,36 @@ impl FfiItems {
             semi: None,
         };
 
-        /* TODO: change relevant areas of module template to ensure they use
-         * both the FfiItems from the module they're generating tests for as
-         * well as the FfiItems corresponding to the entire crate. The latter
-         * should be used for performing the whole-crate traversals in search
-         * of items with the same unique IDs as those used in each of the items
-         * we're testing the skips against. */
-        let mut parsing_monad = ParsingMonad::pure(self);
+        let mut parsing_monad = ParsingMonad::pure(FfiItems::new());
 
         parsing_monad.visit_item_mod(&file_mod);
 
-        let (_, items) = parsing_monad.run(ParsingState::default());
+        let (_, items) = parsing_monad.run(ParsingState::new());
+
+        /* NOTE: this ensures the dummy path we used for the above module is
+         * removed from the paths of all parsed items. */
+        let dummy_path = Path {
+            leading_colon: None,
+            segments: Punctuated::<PathSegment, PathSep>::new()
+                .into_iter()
+                .chain([PathSegment {
+                    ident: Ident::new("__ctest_root_mod", Span::call_site()),
+                    arguments: PathArguments::None,
+                }])
+                .collect(),
+        };
+        let dummy_module = Module {
+            cached_ident: ast::ident_to_string(&dummy_path),
+            cached_path: ast::path_to_string(&dummy_path),
+            path: dummy_path,
+            items,
+            ..Default::default()
+        };
+        let Module { items, .. } = dummy_module.rename(Path {
+            leading_colon: None,
+            segments: Punctuated::new(),
+        });
+
         let Module { items, .. } = resolve_all(Module {
             items,
             ..Default::default()
@@ -372,8 +414,6 @@ impl FfiItems {
     }
 
     /// Yields an iterator over all items in the calling `FfiItems`.
-    ///
-    /// The items in the item container do not include `use` declarations.
     pub(crate) fn items<'a>(&'a self) -> RefItemIterator<'a> {
         let base = self
             .aliases
@@ -384,24 +424,10 @@ impl FfiItems {
             .chain(self.constants.iter().map(RefGenericItem::Const))
             .chain(self.foreign_functions.iter().map(RefGenericItem::Fn))
             .chain(self.foreign_statics.iter().map(RefGenericItem::Static))
+            .chain(self.uses.iter().map(RefGenericItem::RefinedUse))
             .chain(self.modules.iter().map(RefGenericItem::Module));
 
         Box::new(base)
-    }
-
-    /// Performs a comparison for equality between `FfiItems`, without taking fields
-    /// `current_module` nor `uses` into consideration.
-    ///
-    /// This is not an implementation of `PartialEq` for `FfiItems` because, at the time of writing,
-    /// the logic for use declaration resolution is not yet finished.
-    pub(super) fn custom_eq(&self, other: &Self) -> bool {
-        self.aliases == other.aliases
-            && self.structs == other.structs
-            && self.unions == other.unions
-            && self.constants == other.constants
-            && self.foreign_functions == other.foreign_functions
-            && self.foreign_statics == other.foreign_statics
-            && self.modules == other.modules
     }
 
     /// Comparison function for use when sorting and deduplicating modules in [`FfiItems::dedup`].
@@ -414,21 +440,21 @@ impl FfiItems {
     pub(super) fn custom_cmp(&self, other: &Self) -> Ordering {
         let (ours, theirs) = (self.modules.len(), other.modules.len());
 
-        // [NOTE]: the goal here is to have modules with "larger" subtrees
-        // appear first in the item container, so declaring them to be "smaller"
-        // is required for slice::sort_unstable_by to put them first in the
-        // sorted list of modules in FfiItems::dedup. The same applies the other
-        // way around with "smaller" subtrees that we would like to have appear
-        // later in the sorted list of modules.
+        /* NOTE: the goal here is to have modules with "larger" subtrees
+         * appear first in the item container, so declaring them to be "smaller"
+         * is required for slice::sort_unstable_by to put them first in the
+         * sorted list of modules in FfiItems::dedup. The same applies the other
+         * way around with "smaller" subtrees that we would like to have appear
+         * later in the sorted list of modules. */
         match ours.cmp(&theirs) {
             Ordering::Equal => self.modules.iter().zip(&other.modules).fold(
                 Ordering::Equal,
                 |_, (our_m, their_m)| {
-                    // [NOTE]: this is intended to not start anew a "regular"
-                    // module comparison through Module::custom_cmp, but to
-                    // rather have all subsequent comparisons be based off of
-                    // the sizes of module subtrees rather than the
-                    // lexicographical comparison of their paths.
+                    /* NOTE: this is intended to not start anew a "regular"
+                     * module comparison through Module::custom_cmp, but to
+                     * rather have all subsequent comparisons be based off of
+                     * the sizes of module subtrees rather than the
+                     * lexicographical comparison of their paths. */
                     our_m.items.custom_cmp(&their_m.items)
                 },
             ),
@@ -436,16 +462,20 @@ impl FfiItems {
         }
     }
 
-    /// Searches for an item in the container, and returns an owned instance of that item.
+    /// Searches for an item in the container, without recursing through the subtree rooted at the
+    /// receiver.
     ///
     /// The generic item may be pattern-matched to find out specifically which item was found.
     fn search_by_ident<'a>(&'a self, ident: &Ident) -> Option<RefGenericItem<'a>> {
         self.items().find(|it| {
             macro_rules! cmp {
                 ($($var:tt),+ $(,)?) => {
-                    match it {$(
+                    match it {
+                        $(
                         RefGenericItem::$var(it) => ident == it.ident(),
-                    )+}
+                        )+
+                        RefGenericItem::RefinedUse(_) => false
+                    }
                 };
             }
 
@@ -464,19 +494,24 @@ impl FfiItems {
     /** Searches for all occurrences of a given item in the subtree rooted at this `FfiItems`.
      *
      * Searching occurrences of a given item is done by looking up the UID of the item throughout
-     * the entire subtree rooted at the receiver. */
-    pub(crate) fn search_occurrences<'a>(&'a self, uid: usize) -> Vec<RefGenericItem<'a>> {
+     * the entire subtree rooted at the receiver. This is unlike [`FfiItems::search_by_ident`],
+     * which searches throughout the first level of the subtree but does not recurse down subsequent
+     * levels. */
+    pub(crate) fn search_occurrences<'a>(&'a self, id: usize) -> Vec<RefGenericItem<'a>> {
         fn traverse<'a>(
             items: &'a FfiItems,
-            uid: usize,
+            id: usize,
             gather: Vec<RefGenericItem<'a>>,
         ) -> Vec<RefGenericItem<'a>> {
             let gather = if let Some(at_this_level) = items.items().find(|it| {
                 macro_rules! find {
                     ($($ty:tt),+ $(,)?) => {
-                        match it {$(
-                            RefGenericItem::$ty(it) => it.uid == uid,
-                        )+}
+                        match it {
+                            $(
+                            RefGenericItem::$ty(it) => it.id == id,
+                            )+
+                            RefGenericItem::RefinedUse(_) => false,
+                        }
                     };
                 }
 
@@ -498,10 +533,10 @@ impl FfiItems {
             items
                 .modules
                 .iter()
-                .fold(gather, |gather, m| traverse(&m.items, uid, gather))
+                .fold(gather, |gather, m| traverse(&m.items, id, gather))
         }
 
-        traverse(self, uid, vec![])
+        traverse(self, id, vec![])
     }
 
     /// Deduplicates the items in an item container by their path.
@@ -556,6 +591,19 @@ impl FfiItems {
     }
 }
 
+/// This implementation does not take into account the `use` declarations in the `FfiItems` terms.
+impl PartialEq for FfiItems {
+    fn eq(&self, other: &Self) -> bool {
+        self.aliases == other.aliases
+            && self.structs == other.structs
+            && self.unions == other.unions
+            && self.constants == other.constants
+            && self.foreign_functions == other.foreign_functions
+            && self.foreign_statics == other.foreign_statics
+            && self.modules == other.modules
+    }
+}
+
 /* FIXME: once debugging is done, remove the repeated logging code in the
  * FromIterator implementations, and move the one-liner that is left to the
  * items_from_iter macro. */
@@ -603,26 +651,14 @@ macro_rules! get_partitions {
                      indices into the collection.",
                 );
 
-            println!(
-                concat!(
-                    "[FfiItems::from_iter] ",
-                    stringify!($field),
-                    "_partition: {:?}"
-                ),
-                partition
-                    .iter()
-                    .map(|it| &it.cached_path)
-                    .collect::<Vec<_>>(),
-            );
-
             partition
         };
     )+};
 }
 
-/* NOTE: this doesn't consider a larger chunk of the repeated code between the
- * FromIterator implementations because that is only concerned with logging,
- * which will be removed post-debugging and is uses more macros of its own. */
+/* NOTE: this doesn't consider a larger chunk of the duplicated code between the
+ * FromIterator implementations because the duplicate code that remains is only
+ * concerned with logging, which will be removed once debugging is done. */
 macro_rules! items_from_iter {
     ($partitioned_items:tt, $item_ty:tt) => {{
         /* NOTE: this is expected to sort all items by their kind, such that
@@ -646,28 +682,36 @@ macro_rules! items_from_iter {
             | ($item_ty::Const(_), $item_ty::Const(_))
             | ($item_ty::Fn(_), $item_ty::Fn(_))
             | ($item_ty::Static(_), $item_ty::Static(_))
+            | ($item_ty::RefinedUse(_), $item_ty::RefinedUse(_))
             | ($item_ty::Module(_), $item_ty::Module(_)) => Ordering::Equal,
             ($item_ty::Type(_), $item_ty::Struct(_))
             | ($item_ty::Type(_), $item_ty::Union(_))
             | ($item_ty::Type(_), $item_ty::Const(_))
             | ($item_ty::Type(_), $item_ty::Fn(_))
             | ($item_ty::Type(_), $item_ty::Static(_))
+            | ($item_ty::Type(_), $item_ty::RefinedUse(_))
             | ($item_ty::Type(_), $item_ty::Module(_))
             | ($item_ty::Struct(_), $item_ty::Union(_))
             | ($item_ty::Struct(_), $item_ty::Const(_))
             | ($item_ty::Struct(_), $item_ty::Fn(_))
             | ($item_ty::Struct(_), $item_ty::Static(_))
+            | ($item_ty::Struct(_), $item_ty::RefinedUse(_))
             | ($item_ty::Struct(_), $item_ty::Module(_))
             | ($item_ty::Union(_), $item_ty::Const(_))
             | ($item_ty::Union(_), $item_ty::Fn(_))
             | ($item_ty::Union(_), $item_ty::Static(_))
+            | ($item_ty::Union(_), $item_ty::RefinedUse(_))
             | ($item_ty::Union(_), $item_ty::Module(_))
             | ($item_ty::Const(_), $item_ty::Fn(_))
             | ($item_ty::Const(_), $item_ty::Static(_))
+            | ($item_ty::Const(_), $item_ty::RefinedUse(_))
             | ($item_ty::Const(_), $item_ty::Module(_))
             | ($item_ty::Fn(_), $item_ty::Static(_))
+            | ($item_ty::Fn(_), $item_ty::RefinedUse(_))
             | ($item_ty::Fn(_), $item_ty::Module(_))
-            | ($item_ty::Static(_), $item_ty::Module(_)) => Ordering::Less,
+            | ($item_ty::Static(_), $item_ty::RefinedUse(_))
+            | ($item_ty::Static(_), $item_ty::Module(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Module(_)) => Ordering::Less,
             ($item_ty::Struct(_), $item_ty::Type(_))
             | ($item_ty::Union(_), $item_ty::Type(_))
             | ($item_ty::Union(_), $item_ty::Struct(_))
@@ -683,12 +727,19 @@ macro_rules! items_from_iter {
             | ($item_ty::Static(_), $item_ty::Union(_))
             | ($item_ty::Static(_), $item_ty::Const(_))
             | ($item_ty::Static(_), $item_ty::Fn(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Type(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Struct(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Union(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Const(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Fn(_))
+            | ($item_ty::RefinedUse(_), $item_ty::Static(_))
             | ($item_ty::Module(_), $item_ty::Type(_))
             | ($item_ty::Module(_), $item_ty::Struct(_))
             | ($item_ty::Module(_), $item_ty::Union(_))
             | ($item_ty::Module(_), $item_ty::Const(_))
             | ($item_ty::Module(_), $item_ty::Fn(_))
-            | ($item_ty::Module(_), $item_ty::Static(_)) => Ordering::Greater,
+            | ($item_ty::Module(_), $item_ty::Static(_))
+            | ($item_ty::Module(_), $item_ty::RefinedUse(_)) => Ordering::Greater,
         });
 
         get_partitions! {
@@ -699,6 +750,7 @@ macro_rules! items_from_iter {
             constants: Const,
             foreign_functions: Fn,
             foreign_statics: Static,
+            uses: RefinedUse,
             modules: Module,
         }
 
@@ -709,6 +761,7 @@ macro_rules! items_from_iter {
             constants,
             foreign_functions,
             foreign_statics,
+            uses,
             modules,
             ..Default::default()
         }
@@ -723,12 +776,15 @@ impl FromIterator<GenericItem> for FfiItems {
             "[FfiItems::from_iter] partitioned_items: {:?}",
             partitioned_items
                 .iter()
-                .map(|it| {
+                .filter_map(|it| {
                     macro_rules! exe {
                         ($($ty:tt),+ $(,)?) => {
-                            match it {$(
-                                GenericItem::$ty(it) => &it.cached_path,
-                            )+}
+                            match it {
+                                $(
+                                GenericItem::$ty(it) => (&it.cached_path).into(),
+                                )+
+                                GenericItem::RefinedUse(_) => None,
+                            }
                         };
                     }
 
@@ -757,12 +813,15 @@ impl<'a> FromIterator<RefGenericItem<'a>> for FfiItems {
             "[FfiItems::from_iter] partitioned_items: {:?}",
             partitioned_items
                 .iter()
-                .map(|it| {
+                .filter_map(|it| {
                     macro_rules! exe {
                         ($($ty:tt),+ $(,)?) => {
-                            match it {$(
-                                RefGenericItem::$ty(it) => &it.cached_path,
-                            )+}
+                            match it {
+                                $(
+                                RefGenericItem::$ty(it) => (&it.cached_path).into(),
+                                )+
+                                RefGenericItem::RefinedUse(_) => None
+                            }
                         };
                     }
 
@@ -792,6 +851,7 @@ pub(crate) enum GenericItem {
     Const(Const),
     Fn(Fn),
     Static(Static),
+    RefinedUse(RefinedUse),
     Module(Module),
 }
 
@@ -812,6 +872,7 @@ impl<'a> From<RefGenericItem<'a>> for GenericItem {
             Const,
             Fn,
             Static,
+            RefinedUse,
             Module,
         }
     }
@@ -827,6 +888,7 @@ pub(crate) enum RefGenericItem<'a> {
     Const(&'a Const),
     Fn(&'a Fn),
     Static(&'a Static),
+    RefinedUse(&'a RefinedUse),
     Module(&'a Module),
 }
 
@@ -1104,6 +1166,12 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
         ($matcher:expr; $([$f:expr, $ty:tt]),+ $(,)?) => {
             match $matcher {
                 $(Some(RefGenericItem::$ty(it)) => $f(it.clone()),)+
+                Some(RefGenericItem::RefinedUse(_)) => {
+                    unreachable!(
+                        "Use declarations have no identifier by which to be \
+                         searched."
+                    );
+                },
                 None => Resolution::Unresolved,
             }
         };
@@ -1722,7 +1790,7 @@ fn visit_foreign_item_fn(monad: ParsingMonad, i: &syn::ForeignItemFn, abi: &Abi)
                         .foreign_functions
                         .into_iter()
                         .chain([Fn {
-                            uid: new_uid,
+                            id: new_uid,
                             public,
                             abi,
                             cached_path: ast::path_to_string(&path),
@@ -1770,7 +1838,7 @@ fn visit_foreign_item_static(
                         .foreign_statics
                         .into_iter()
                         .chain([Static {
-                            uid: new_uid,
+                            id: new_uid,
                             public,
                             abi,
                             cached_path: ast::path_to_string(&path),
@@ -1811,7 +1879,7 @@ fn visit_item_type(monad: ParsingMonad, i: &syn::ItemType) -> ParsingMonad {
                         .aliases
                         .into_iter()
                         .chain([Type {
-                            uid: new_uid,
+                            id: new_uid,
                             public,
                             cached_path: ast::path_to_string(&path),
                             cached_ident: ident.to_string().into_boxed_str(),
@@ -1854,7 +1922,7 @@ fn visit_item_struct(monad: ParsingMonad, i: &syn::ItemStruct) -> ParsingMonad {
                         .structs
                         .into_iter()
                         .chain([Struct {
-                            uid: new_uid,
+                            id: new_uid,
                             public,
                             cached_path: ast::path_to_string(&path),
                             cached_ident: ident.to_string().into_boxed_str(),
@@ -1893,7 +1961,7 @@ fn visit_item_union(monad: ParsingMonad, i: &syn::ItemUnion) -> ParsingMonad {
                         .unions
                         .into_iter()
                         .chain([Union {
-                            uid: new_uid,
+                            id: new_uid,
                             public,
                             cached_path: ast::path_to_string(&path),
                             cached_ident: ident.to_string().into_boxed_str(),
@@ -1932,7 +2000,7 @@ fn visit_item_const(monad: ParsingMonad, i: &syn::ItemConst) -> ParsingMonad {
                         .constants
                         .into_iter()
                         .chain([Const {
-                            uid: new_uid,
+                            id: new_uid,
                             public,
                             cached_path: ast::path_to_string(&path),
                             cached_ident: ident.to_string().into_boxed_str(),
@@ -1999,7 +2067,7 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
                     .modules
                     .into_iter()
                     .chain([Module {
-                        uid: new_uid,
+                        id: new_uid,
                         public: vis,
                         cached_ident: ident.to_string().into_boxed_str(),
                         cached_path: ast::path_to_string(&child_path),
@@ -2020,13 +2088,10 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
 }
 
 fn visit_item_use(monad: ParsingMonad, ItemUse { vis, tree, .. }: &syn::ItemUse) -> ParsingMonad {
-    let vis = vis.clone();
+    let public = is_visible(vis);
     let base = normalize_path(tree.clone())
         .into_iter()
-        .map(move |tree| RefinedUse {
-            public: matches!(vis, Visibility::Public(_)),
-            tree,
-        });
+        .map(move |tree| RefinedUse { public, tree });
 
     monad.bind(|items| {
         StateMonad::pure(FfiItems {
@@ -2050,17 +2115,10 @@ impl<'ast> Visit<'ast> for ParsingMonad {
             )
         };
 
-        /* NOTE: here we replace the calling state monad with an empty monad so
-         * that we can get ownership over a linear term. The calling monad in
-         * recursive traversals is unaffected because we recurse down to child
-         * modules with a new monad whose sequencing takes place through the
-         * state of the calling monad. See the Item::Mod branch in the folding
-         * further down below for details. */
-        let base_monad = mem::replace(self, StateMonad::set(|s| (s, FfiItems::default())));
-
-        let current_monad = if ident == "__ctest_root_mod" {
-            base_monad
-        } else {
+        let monad = {
+            /* NOTE: the calling monad is linear in nature, so we need to take
+             * ownership of the receiver. */
+            let base_monad = mem::replace(self, StateMonad::pure(FfiItems::new()));
             let ident = ident.clone();
 
             base_monad.bind(move |items| {
@@ -2087,7 +2145,7 @@ impl<'ast> Visit<'ast> for ParsingMonad {
                 | Item::Use(_) => true,
                 _ => false,
             })
-            .fold(current_monad, |monad, it| {
+            .fold(monad, |monad, it| {
                 macro_rules! exe {
                     ($($f:tt: $ty:tt),+ $(,)?) => {
                         match it {
@@ -2111,7 +2169,45 @@ impl<'ast> Visit<'ast> for ParsingMonad {
 }
 
 #[test]
-fn tmp() {
+fn tmpparse() {
+    let source = r#"
+use test2::test3;
+
+use test2::*;
+
+use test1::{*, test3::*};
+
+mod test1 {
+    use test2::{*, test3::*};
+
+    mod test2 {
+        use test3::*;
+
+        extern "C" {
+            fn time();
+        }
+
+        mod test3 {
+            pub struct Foo;
+
+            fn foo() {
+                extern "C" {
+                    fn ctime();
+                }
+            }
+        }
+    }
+}
+    "#;
+
+    let file = syn::parse_file(source).unwrap();
+    let items = FfiItems::visit_file(&file);
+
+    println!("{:#?}", items);
+}
+
+#[test]
+fn tmp0() {
     /*
      * time should end up with the following paths:
      * [time, test1::time, test1::test2::time, test2::time]
@@ -2175,8 +2271,7 @@ mod test1 {
         }
     }
 
-    let mut items = FfiItems::default();
-    items.visit_file(&file);
+    let items = FfiItems::visit_file(&file);
 
     println!("{:#?}", remove_uses(items));
 }
@@ -2189,31 +2284,35 @@ pub struct Foo;
 
 mod test1 { use super::*; }
     "#;
+
     let file = syn::parse_file(source).unwrap();
-    let mut items = FfiItems::default();
-    items.visit_file(&file);
-    println!("{:#?}", items.clone());
+    let items = FfiItems::visit_file(&file);
+
+    println!("{:#?}", items);
 }
 
 #[test]
 #[ignore]
 fn tmp2() {
     let m1 = Module {
-        cached_path: String::from("a").into_boxed_str(),
-        items: FfiItems::default(),
+        cached_path: Box::from("a"),
+        items: FfiItems::new(),
         ..Default::default()
     };
     let m2 = Module {
-        cached_path: String::from("a").into_boxed_str(),
+        cached_path: Box::from("a"),
         items: FfiItems {
             modules: vec![Module::default()],
-            ..Default::default()
+            ..FfiItems::new()
         },
         ..Default::default()
     };
+
     let mut ms = vec![m1, m2];
+
     ms.sort_unstable_by(Module::custom_cmp);
-    println!("{:#?}", ms.clone());
+
+    println!("{:#?}", ms);
 }
 
 // #[test]

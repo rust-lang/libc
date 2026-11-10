@@ -9,7 +9,7 @@ use crate::ast::PathUtils;
 /// Represents a constant variable defined in Rust.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Const {
-    pub(crate) uid: usize,
+    pub(crate) id: usize,
     pub(crate) public: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
