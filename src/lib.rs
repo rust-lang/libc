@@ -305,6 +305,14 @@ cfg_if! {
         pub use crate::hermit::*;
 
         prelude!();
+    } else if #[cfg(target_os = "qtee")] {
+        mod primitives;
+        pub use crate::primitives::*;
+
+        mod qtee;
+        pub use crate::qtee::*;
+
+        prelude!();
     } else if #[cfg(target_os = "teeos")] {
         mod primitives;
         pub use primitives::*;

@@ -108,6 +108,7 @@ targets = [
     "aarch64-unknown-netbsd",
     "aarch64-unknown-openbsd",
     "aarch64-unknown-qnx",
+    "aarch64-unknown-qtee",
     "aarch64-unknown-redox",
     "aarch64-wrs-vxworks",
     "aarch64_be-unknown-linux-gnu",
