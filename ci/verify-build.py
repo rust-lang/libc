@@ -164,6 +164,7 @@ TARGETS = [
     Target("aarch64-unknown-illumos", dist=False),
     Target("aarch64-unknown-netbsd", dist=False),
     Target("aarch64-unknown-openbsd", dist=False),
+    Target("aarch64-unknown-qtee", dist=False),
     Target("aarch64-wrs-vxworks", dist=False),
     Target("armebv7r-none-eabihf", dist=False),
     Target("armv7-rtems-eabihf", dist=False),
