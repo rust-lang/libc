@@ -1,7 +1,10 @@
 use crate::prelude::*;
 
 pub type clock_t = c_ulong;
-pub type wchar_t = u32;
+#[cfg(target_arch = "xtensa")]
+pub type wchar_t = u16;
+#[cfg(not(target_arch = "xtensa"))]
+pub type wchar_t = i32;
 
 s! {
     pub struct cmsghdr {
