@@ -330,7 +330,8 @@ cfg_if! {
         target_os = "haiku",
         target_os = "illumos",
         target_os = "solaris",
-        target_os = "cygwin"
+        target_os = "cygwin",
+        target_os = "espidf"
     )))] {
         pub const IF_NAMESIZE: size_t = 16;
         pub const IFNAMSIZ: size_t = IF_NAMESIZE;
