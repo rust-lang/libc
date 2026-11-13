@@ -65,6 +65,9 @@ pub const AF_INET6: c_int = 10;
 
 pub const FIONBIO: c_ulong = 2147772030;
 
+pub const IF_NAMESIZE: size_t = 6;
+pub const IFNAMSIZ: size_t = IF_NAMESIZE;
+
 pub const POLLIN: c_short = 1 << 0;
 pub const POLLRDNORM: c_short = 1 << 1;
 pub const POLLRDBAND: c_short = 1 << 2;
