@@ -329,12 +329,12 @@ cfg_if! {
         pub use crate::sgx::*;
 
         prelude!();
-    } else if #[cfg(any(target_env = "wasi", target_os = "wasi"))] {
+    } else if #[cfg(any(target_env = "wasi", target_os = "wasi", target_os = "web"))] {
         mod primitives;
         pub use crate::primitives::*;
 
-        mod wasi;
-        pub use crate::wasi::*;
+        mod wasilibc;
+        pub use crate::wasilibc::*;
 
         prelude!();
     } else if #[cfg(target_os = "xous")] {
