@@ -76,6 +76,7 @@ SO_PRIORITY
 SO_PROTOCOL
 SYS_accept
 SYS_fadvise64
+SYS_fchmodat2
 SYS_fstat
 SYS_msgctl
 SYS_msgget
