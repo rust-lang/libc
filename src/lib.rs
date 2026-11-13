@@ -216,6 +216,8 @@
 #![cfg_attr(feature = "rustc-dep-of-std", allow(unused_features))]
 #![cfg_attr(not(feature = "rustc-dep-of-std"), no_std)]
 #![cfg_attr(feature = "rustc-dep-of-std", no_core)]
+// The `target_os = "web"` cfg is not landed in rust-lang/rust just yet.
+#![allow(unexpected_cfgs)]
 
 #[macro_use]
 mod macros;
@@ -329,7 +331,11 @@ cfg_if! {
         pub use crate::sgx::*;
 
         prelude!();
-    } else if #[cfg(any(target_env = "wasi", target_os = "wasi", target_os = "web"))] {
+    } else if #[cfg(any(
+        target_env = "wasi",
+        target_os = "wasi",
+        target_os = "web"
+    ))] {
         mod primitives;
         pub use crate::primitives::*;
 
