@@ -258,22 +258,29 @@ s! {
         pub detachstate: i32,
     }
 
+    #[cfg_attr(target_os = "espidf", repr(align(4)))]
     pub struct pthread_rwlockattr_t {
         // Unverified
         __size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
     }
 
     #[cfg_attr(
-        all(
-            target_pointer_width = "32",
-            any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+        any(
+            target_os = "espidf",
+            all(
+                target_pointer_width = "32",
+                any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+            )
         ),
         repr(align(4))
     )]
     #[cfg_attr(
-        any(
-            target_pointer_width = "64",
-            not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+        all(
+            not(target_os = "espidf"),
+            any(
+                target_pointer_width = "64",
+                not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+            )
         ),
         repr(align(8))
     )]
@@ -283,16 +290,22 @@ s! {
     }
 
     #[cfg_attr(
-        all(
-            target_pointer_width = "32",
-            any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+        any(
+            target_os = "espidf",
+            all(
+                target_pointer_width = "32",
+                any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+            )
         ),
         repr(align(4))
     )]
     #[cfg_attr(
-        any(
-            target_pointer_width = "64",
-            not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+        all(
+            not(target_os = "espidf"),
+            any(
+                target_pointer_width = "64",
+                not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+            )
         ),
         repr(align(8))
     )]
@@ -328,7 +341,8 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
-    #[repr(align(8))]
+    #[cfg_attr(target_os = "espidf", repr(align(4)))]
+    #[cfg_attr(not(target_os = "espidf"), repr(align(8)))]
     pub struct pthread_cond_t {
         // Unverified
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
@@ -400,7 +414,7 @@ cfg_if! {
         pub const __SIZEOF_PTHREAD_COND_T: usize = 4;
         pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 8;
         pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
-        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 12;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 4;
         pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
     } else if #[cfg(target_os = "vita")] {
         const __PTHREAD_INITIALIZER_BYTE: u8 = 0xff;
