@@ -200,6 +200,7 @@ s! {
         pub c_oflag: crate::tcflag_t,
         pub c_cflag: crate::tcflag_t,
         pub c_lflag: crate::tcflag_t,
+        #[cfg(not(target_os = "espidf"))]
         pub c_line: crate::cc_t,
         pub c_cc: [crate::cc_t; crate::NCCS],
         #[cfg(target_os = "espidf")]
