@@ -12,8 +12,29 @@ use crate::{
 
 pub type lgrp_rsrc_t = c_int;
 pub type lgrp_affinity_t = c_int;
+pub type eventfd_t = u64;
 
 s! {
+    pub struct signalfd_siginfo {
+        pub ssi_signo: u32,
+        pub ssi_errno: i32,
+        pub ssi_code: i32,
+        pub ssi_pid: u32,
+        pub ssi_uid: u32,
+        pub ssi_fd: i32,
+        pub ssi_tid: u32,
+        pub ssi_band: u32,
+        pub ssi_overrun: u32,
+        pub ssi_trapno: u32,
+        pub ssi_status: i32,
+        pub ssi_int: i32,
+        pub ssi_ptr: u64,
+        pub ssi_utime: u64,
+        pub ssi_stime: u64,
+        pub ssi_addr: u64,
+        ssi_pad: Padding<[u8; 48]>,
+    }
+
     pub struct aiocb {
         pub aio_fildes: c_int,
         pub aio_buf: *mut c_void,
@@ -90,6 +111,9 @@ pub const AF_FILE: c_int = 1; // AF_UNIX
 pub const EFD_SEMAPHORE: c_int = 0x1;
 pub const EFD_NONBLOCK: c_int = 0x800;
 pub const EFD_CLOEXEC: c_int = 0x80000;
+
+pub const SFD_CLOEXEC: c_int = 0o2000000;
+pub const SFD_NONBLOCK: c_int = 0o4000;
 
 pub const POLLRDHUP: c_short = 0x4000;
 
@@ -237,6 +261,10 @@ pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 
 extern "C" {
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
+    pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
+    pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
+
+    pub fn signalfd(fd: c_int, mask: *const crate::sigset_t, flags: c_int) -> c_int;
 
     pub fn epoll_pwait(
         epfd: c_int,

@@ -1050,7 +1050,13 @@ fn test_solarish(t: &Target) {
     );
 
     if illumos {
-        headers!(cfg, "sys/epoll.h", "sys/eventfd.h", "sys/timerfd.h",);
+        headers!(
+            cfg,
+            "sys/epoll.h",
+            "sys/eventfd.h",
+            "sys/signalfd.h",
+            "sys/timerfd.h",
+        );
     }
 
     if solaris {
