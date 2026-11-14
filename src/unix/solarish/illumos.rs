@@ -235,6 +235,21 @@ pub const TFD_NONBLOCK: i32 = 0o4000;
 pub const TFD_TIMER_ABSTIME: i32 = 1 << 0;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
 
+// pthread.h
+pub const PTHREAD_MAX_NAMELEN_NP: usize = 32;
+pub const PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP: crate::pthread_mutex_t =
+    crate::pthread_mutex_t {
+        __pthread_mutex_type: crate::PTHREAD_PROCESS_PRIVATE
+            | crate::PTHREAD_MUTEX_ERRORCHECK as u16,
+        ..crate::PTHREAD_MUTEX_INITIALIZER
+    };
+pub const PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP: crate::pthread_mutex_t = crate::pthread_mutex_t {
+    __pthread_mutex_type: crate::PTHREAD_PROCESS_PRIVATE
+        | crate::PTHREAD_MUTEX_RECURSIVE as u16
+        | crate::PTHREAD_MUTEX_ERRORCHECK as u16,
+    ..crate::PTHREAD_MUTEX_INITIALIZER
+};
+
 extern "C" {
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
 
@@ -310,5 +325,55 @@ extern "C" {
         flags: c_int,
         new_value: *const crate::itimerspec,
         old_value: *mut crate::itimerspec,
+    ) -> c_int;
+
+    pub fn pthread_attr_getname_np(
+        attr: *mut crate::pthread_attr_t,
+        buf: *mut c_char,
+        len: size_t,
+    ) -> c_int;
+    pub fn pthread_attr_setname_np(attr: *mut crate::pthread_attr_t, name: *const c_char) -> c_int;
+
+    pub fn pthread_mutex_clocklock(
+        mutex: *mut crate::pthread_mutex_t,
+        clock: crate::clockid_t,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_mutex_relclocklock_np(
+        mutex: *mut crate::pthread_mutex_t,
+        clock: crate::clockid_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_cond_clockwait(
+        cond: *mut crate::pthread_cond_t,
+        mutex: *mut crate::pthread_mutex_t,
+        clock: crate::clockid_t,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_cond_relclockwait_np(
+        cond: *mut crate::pthread_cond_t,
+        mutex: *mut crate::pthread_mutex_t,
+        clock: crate::clockid_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_clockrdlock(
+        rwlock: *mut crate::pthread_rwlock_t,
+        clock: crate::clockid_t,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_clockwrlock(
+        rwlock: *mut crate::pthread_rwlock_t,
+        clock: crate::clockid_t,
+        abstime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_relclockrdlock_np(
+        rwlock: *mut crate::pthread_rwlock_t,
+        clock: crate::clockid_t,
+        reltime: *const crate::timespec,
+    ) -> c_int;
+    pub fn pthread_rwlock_relclockwrlock_np(
+        rwlock: *mut crate::pthread_rwlock_t,
+        clock: crate::clockid_t,
+        reltime: *const crate::timespec,
     ) -> c_int;
 }
