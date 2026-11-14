@@ -88,9 +88,12 @@ CTEST_EXTERN uint64_t ctest_offset_of__{{ item.id }}__{{ item.field.ident() }}(v
     return offsetof({{ item.c_ty }}, {{ item.c_field }});
 }
 
+{%- if !item.field.is_flexible_array() +%}
+
 CTEST_EXTERN uint64_t ctest_size_of__{{ item.id }}__{{ item.field.ident() }}(void) {
     return sizeof((({{ item.c_ty }}){}).{{ item.c_field }});
 }
+{%- endif +%}
 {%- endfor +%}
 
 
