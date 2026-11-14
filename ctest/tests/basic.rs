@@ -164,6 +164,19 @@ fn test_edition_2024_macro() {
     check_entrypoint(&mut gen_, out_dir, crate_path, library_path, include_path);
 }
 
+/// Test if a crate given by its `Cargo.toml` is expanded with its dependencies and build script.
+#[test]
+fn test_entrypoint_manifest() {
+    let crate_path = "tests/input/manifest/Cargo.toml";
+    let (mut gen_, _out_dir) = default_generator(1, None).unwrap();
+    let output_file = gen_.generate_files(crate_path, "manifest.out.a").unwrap();
+
+    let rust_output = fs::read_to_string(output_file.with_extension("rs")).unwrap();
+    // `Pair` uses a type from a dependency and `ANSWER` needs a cfg set by the build script.
+    assert!(rust_output.contains("ctest_size_align_Pair"));
+    assert!(rust_output.contains("ctest_const_ANSWER"));
+}
+
 /// Test if a file with invalid syntax fails to generate tests.
 #[test]
 fn test_entrypoint_invalid_syntax() {
