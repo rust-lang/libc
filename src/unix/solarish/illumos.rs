@@ -169,8 +169,6 @@ pub const LOCK_UN: c_int = 8;
 /// for details.
 pub const _PC_LAST: c_int = 101;
 
-pub const _CS_PATH: c_int = 65;
-
 pub const VSTATUS: usize = 16;
 pub const VERASE2: usize = 17;
 
@@ -234,6 +232,9 @@ pub const TFD_CLOEXEC: i32 = 0o2000000;
 pub const TFD_NONBLOCK: i32 = 0o4000;
 pub const TFD_TIMER_ABSTIME: i32 = 1 << 0;
 pub const TFD_TIMER_CANCEL_ON_SET: i32 = 1 << 1;
+
+// paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr!("/usr/ccs/bin:/usr/bin:/bin");
 
 extern "C" {
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
