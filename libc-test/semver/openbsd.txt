@@ -113,6 +113,14 @@ CMSG_LEN
 CMSG_NXTHDR
 CMSG_SPACE
 CODESET
+CPUSTATES
+CPUSTATS_ONLINE
+CP_IDLE
+CP_INTR
+CP_NICE
+CP_SPIN
+CP_SYS
+CP_USER
 CRNCYSTR
 CRTSCTS
 CRTS_IFLOW
@@ -1198,6 +1206,7 @@ clock_getres
 clock_settime
 closefrom
 cmsghdr
+cpustats
 daemon
 devname
 difftime
