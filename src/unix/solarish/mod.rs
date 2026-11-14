@@ -1571,6 +1571,8 @@ pub const SHM_RDONLY: c_int = 0o10000;
 pub const SHM_RND: c_int = 0o20000;
 pub const SHM_SHARE_MMU: c_int = 0o40000;
 pub const SHM_PAGEABLE: c_int = 0o100000;
+pub const SHM_LOCK: c_int = 3;
+pub const SHM_UNLOCK: c_int = 4;
 
 pub const SHUT_RD: c_int = 0;
 pub const SHUT_WR: c_int = 1;
@@ -2585,6 +2587,8 @@ extern "C" {
     pub fn shmdt(shmaddr: *const c_void) -> c_int;
 
     pub fn shmget(key: key_t, size: size_t, shmflg: c_int) -> c_int;
+
+    pub fn ftok(path: *const c_char, id: c_int) -> key_t;
 
     pub fn shm_open(name: *const c_char, oflag: c_int, mode: mode_t) -> c_int;
     pub fn shm_unlink(name: *const c_char) -> c_int;
