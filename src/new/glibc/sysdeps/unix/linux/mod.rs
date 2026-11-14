@@ -4,6 +4,8 @@
 
 /// Directory: `sysdeps/unix/sysv/linux/bits`
 pub(crate) mod bits {
+    pub(crate) mod fcntl_linux;
+
     #[cfg_attr(
         any(
             target_arch = "mips",
