@@ -453,6 +453,7 @@ fn test_openbsd(t: &Target) {
         "sys/mman.h",
         "sys/param.h",
         "sys/resource.h",
+        "sys/sched.h",
         "sys/shm.h",
         "sys/socket.h",
         "sys/time.h",
