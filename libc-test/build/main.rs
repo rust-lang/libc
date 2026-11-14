@@ -982,6 +982,7 @@ fn test_solarish(t: &Target) {
         "grp.h",
         "ifaddrs.h",
         "langinfo.h",
+        "libgen.h",
         "limits.h",
         "link.h",
         "locale.h",
