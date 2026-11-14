@@ -302,6 +302,23 @@ extern "C" {
         n: size_t,
         loc: crate::locale_t,
     ) -> c_int;
+    pub fn strcasestr_l(
+        haystack: *const c_char,
+        needle: *const c_char,
+        loc: crate::locale_t,
+    ) -> *mut c_char;
+    pub fn strcoll_l(s1: *const c_char, s2: *const c_char, loc: crate::locale_t) -> c_int;
+    pub fn strxfrm_l(
+        dst: *mut c_char,
+        src: *const c_char,
+        n: size_t,
+        loc: crate::locale_t,
+    ) -> size_t;
+    pub fn strerror_l(errnum: c_int, loc: crate::locale_t) -> *mut c_char;
+    pub fn strerrorname_np(errnum: c_int) -> *const c_char;
+    pub fn strerrordesc_np(errnum: c_int) -> *const c_char;
+    pub fn memrchr(s: *const c_void, c: c_int, n: size_t) -> *mut c_void;
+    pub fn explicit_bzero(s: *mut c_void, n: size_t);
 
     pub fn timerfd_create(clockid: c_int, flags: c_int) -> c_int;
     pub fn timerfd_gettime(fd: c_int, curr_value: *mut crate::itimerspec) -> c_int;
