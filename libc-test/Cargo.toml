@@ -53,6 +53,10 @@ name = "linux_strerror_r"
 harness = false
 
 [[test]]
+name = "linux_itimer"
+harness = false
+
+[[test]]
 name = "linux_termios"
 harness = false
 

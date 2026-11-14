@@ -442,6 +442,18 @@ impl TestTemplate {
                 test_name: foreign_fn_test_ident(func.ident()),
                 id: func.ident().into(),
                 c_val: helper.c_ident(func).into_boxed_str(),
+                c_decl: cdecl::cdecl(
+                    &helper.translator.translate_function(func)?,
+                    "ctest_fn".to_string(),
+                )
+                .map_err(|_| {
+                    TranslationError::new(
+                        TranslationErrorKind::InvalidReturn,
+                        func.ident(),
+                        Span::call_site(),
+                    )
+                })?
+                .into_boxed_str(),
             };
 
             self.foreign_fn_tests.push(item.clone());
@@ -554,6 +566,7 @@ pub(crate) struct TestForeignFn {
     pub test_name: BoxStr,
     pub c_val: BoxStr,
     pub id: BoxStr,
+    pub c_decl: BoxStr,
 }
 
 #[derive(Clone, Debug)]

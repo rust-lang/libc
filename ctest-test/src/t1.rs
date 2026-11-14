@@ -78,17 +78,17 @@ extern "C" {
     #[link_name = "T1f"]
     pub fn f() -> ();
 
-    pub fn T1g(a: *mut [i32; 4]);
-    pub fn T1h(a: *const [i32; 4]) -> !;
-    pub fn T1i(a: *mut [i32; 4]);
-    pub fn T1j(a: *const [i32; 4]) -> !;
-    pub fn T1o(a: *mut *mut [i32; 4]);
-    pub fn T1p(a: *const *const [i32; 4]) -> !;
+    pub fn T1g(a: *mut i32);
+    pub fn T1h(a: *const i32) -> !;
+    pub fn T1i(a: *mut i32);
+    pub fn T1j(a: *const i32) -> !;
+    pub fn T1o(a: *mut [i32; 4]);
+    pub fn T1p(a: *mut [i32; 4]) -> !;
 
-    pub fn T1r(a: *mut Arr);
-    pub fn T1s(a: *const Arr) -> !;
-    pub fn T1t(a: *mut *mut Arr);
-    pub fn T1v(a: *const *const Arr) -> !;
+    pub fn T1r(a: *mut i32);
+    pub fn T1s(a: *const i32) -> !;
+    pub fn T1t(a: *mut Arr);
+    pub fn T1v(a: *const Arr) -> !;
 
     pub static T1static: c_uint;
 }
