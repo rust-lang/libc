@@ -849,16 +849,13 @@ s! {
         pub msg_namelen: crate::socklen_t,
         pub msg_iov: *mut crate::iovec,
         pub msg_iovlen: c_int,
-        __pad1: Padding<c_int>,
         pub msg_control: *mut c_void,
         pub msg_controllen: crate::socklen_t,
-        __pad2: Padding<crate::socklen_t>,
         pub msg_flags: c_int,
     }
 
     pub struct cmsghdr {
         pub cmsg_len: crate::socklen_t,
-        __pad1: Padding<c_int>,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }
@@ -890,6 +887,12 @@ s! {
         pub c_cc: [crate::cc_t; 19],
         pub c_ispeed: crate::speed_t,
         pub c_ospeed: crate::speed_t,
+    }
+
+    pub struct in_pktinfo {
+        pub ipi_ifindex: c_int,
+        pub ipi_spec_dst: crate::in_addr,
+        pub ipi_addr: crate::in_addr,
     }
 
     pub struct in6_pktinfo {
@@ -1648,6 +1651,7 @@ pub const SOCK_RDM: c_int = 4;
 pub const IP_TOS: c_int = 1;
 pub const IP_TTL: c_int = 2;
 pub const IP_HDRINCL: c_int = 3;
+pub const IP_PKTINFO: c_int = 8;
 pub const IP_RECVTOS: c_int = 13;
 pub const IP_FREEBIND: c_int = 15;
 pub const IP_TRANSPARENT: c_int = 19;
@@ -1665,6 +1669,8 @@ pub const IPV6_ADD_MEMBERSHIP: c_int = 20;
 pub const IPV6_DROP_MEMBERSHIP: c_int = 21;
 pub const IPV6_V6ONLY: c_int = 26;
 pub const IPV6_RECVPKTINFO: c_int = 49;
+pub const IPV6_PKTINFO: c_int = 50;
+pub const IPV6_DONTFRAG: c_int = 62;
 pub const IPV6_RECVTCLASS: c_int = 66;
 pub const IPV6_TCLASS: c_int = 67;
 
@@ -3246,7 +3252,7 @@ f! {
     }
 
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {
-        cmsg.offset(1) as *mut c_uchar
+        (cmsg as *mut c_uchar).add(CMSG_ALIGN(size_of::<cmsghdr>()))
     }
 
     pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {
@@ -3347,7 +3353,7 @@ fn __CMSG_LEN(cmsg: *const cmsghdr) -> ssize_t {
 }
 
 fn __CMSG_NEXT(cmsg: *const cmsghdr) -> *mut c_uchar {
-    (unsafe { cmsg.offset(__CMSG_LEN(cmsg)) }) as *mut c_uchar
+    (unsafe { (cmsg as *const c_uchar).offset(__CMSG_LEN(cmsg)) }) as *mut c_uchar
 }
 
 fn __MHDR_END(mhdr: *const msghdr) -> *mut c_uchar {
