@@ -3433,6 +3433,17 @@ pub const _PATH_DEFPATH: *const c_char = cstr!(
 );
 pub const _PATH_BSHELL: *const c_char = cstr!("/system/bin/sh");
 
+// linux/kcmp.h
+pub const KCMP_FILE: c_int = 0;
+pub const KCMP_VM: c_int = 1;
+pub const KCMP_FILES: c_int = 2;
+pub const KCMP_FS: c_int = 3;
+pub const KCMP_SIGHAND: c_int = 4;
+pub const KCMP_IO: c_int = 5;
+pub const KCMP_SYSVSEM: c_int = 6;
+pub const KCMP_EPOLL_TFD: c_int = 7;
+pub const KCMP_TYPES: c_int = 8;
+
 // Most `*_SUPER_MAGIC` constants are defined at the `linux_like` level; the
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.
