@@ -3050,16 +3050,16 @@ extern "C" {
     pub fn lgrp_root(cookie: crate::lgrp_cookie_t) -> crate::lgrp_id_t;
 }
 
-pub unsafe fn major(device: crate::dev_t) -> crate::major_t {
-    __major(NEWDEV, device)
+pub fn major(device: crate::dev_t) -> crate::major_t {
+    unsafe { __major(NEWDEV, device) }
 }
 
-pub unsafe fn minor(device: crate::dev_t) -> crate::minor_t {
-    __minor(NEWDEV, device)
+pub fn minor(device: crate::dev_t) -> crate::minor_t {
+    unsafe { __minor(NEWDEV, device) }
 }
 
-pub unsafe fn makedev(maj: crate::major_t, min: crate::minor_t) -> crate::dev_t {
-    __makedev(NEWDEV, maj, min)
+pub fn makedev(maj: crate::major_t, min: crate::minor_t) -> crate::dev_t {
+    unsafe { __makedev(NEWDEV, maj, min) }
 }
 
 mod compat;
