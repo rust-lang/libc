@@ -30,6 +30,11 @@ pub type pthread_t = i32;
 pub type rlim_t = i64;
 pub type sa_family_t = u16;
 pub type socklen_t = c_uint;
+#[deprecated(
+    since = "0.2.191",
+    note = "sighandler_t is a GNU extension and not supported on this platform."
+)]
+pub type sighandler_t = size_t;
 pub type speed_t = usize;
 pub type suseconds_t = i32;
 pub type tcflag_t = u32;
