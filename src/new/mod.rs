@@ -105,6 +105,9 @@ cfg_if! {
     } else if #[cfg(target_os = "openbsd")] {
         mod openbsd;
         pub(crate) use openbsd::*;
+    } else if #[cfg(target_os = "qtee")] {
+        mod qtee;
+        pub(crate) use qtee::*;
     } else if #[cfg(target_os = "qurt")] {
         pub mod qurt;
     } else if #[cfg(target_os = "redox")] {
@@ -267,6 +270,15 @@ cfg_if! {
         pub use inet::tcp::*;
         pub use stdlib::*;
         pub use vfs::vfs::*;
+    } else if #[cfg(target_os = "qtee")] {
+        pub use qsee_error::*;
+        pub use qsee_fs::*;
+        pub use qsee_heap::*;
+        pub use qsee_log::*;
+        pub use qsee_prng::*;
+        pub use qsee_sfs::*;
+        pub use qsee_time::*;
+        pub use qsee_timer::*;
     }
 }
 
