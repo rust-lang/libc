@@ -241,6 +241,7 @@ cfg_if! {
         pub use utmpx_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
+        pub use sys::sched::*;
         pub use sys::sensors::*;
         pub use sys::sysctl::*;
         pub use uvm::uvmexp::*;
