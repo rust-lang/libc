@@ -1002,6 +1002,58 @@ s2! {
         pub pvi_rdir: vnode_info_path,
     }
 
+    #[cfg(target_os = "macos")]
+    pub struct proc_fileinfo {
+        pub fi_openflags: u32,
+        pub fi_status: u32,
+        pub fi_offset: off_t,
+        pub fi_type: i32,
+        pub fi_guardflags: u32,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct vnode_fdinfo {
+        pub pfi: proc_fileinfo,
+        pub pvi: vnode_info,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct vnode_fdinfowithpath {
+        pub pfi: proc_fileinfo,
+        pub pvip: vnode_info_path,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct proc_regioninfo {
+        pub pri_protection: u32,
+        pub pri_max_protection: u32,
+        pub pri_inheritance: u32,
+        pub pri_flags: u32,
+        pub pri_offset: u64,
+        pub pri_behavior: u32,
+        pub pri_user_wired_count: u32,
+        pub pri_user_tag: u32,
+        pub pri_pages_resident: u32,
+        pub pri_pages_shared_now_private: u32,
+        pub pri_pages_swapped_out: u32,
+        pub pri_pages_dirtied: u32,
+        pub pri_ref_count: u32,
+        pub pri_shadow_depth: u32,
+        pub pri_share_mode: u32,
+        pub pri_private_pages_resident: u32,
+        pub pri_shared_pages_resident: u32,
+        pub pri_obj_id: u32,
+        pub pri_depth: u32,
+        pub pri_address: u64,
+        pub pri_size: u64,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct proc_regionwithpathinfo {
+        pub prp_prinfo: proc_regioninfo,
+        pub prp_vip: vnode_info_path,
+    }
+
     #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct vm_statistics {
         pub free_count: natural_t,
@@ -1387,6 +1439,76 @@ s2! {
         pub proc_fdtype: u32,
     }
 
+    #[cfg(target_os = "macos")]
+    pub struct proc_fileportinfo {
+        pub proc_fileport: u32,
+        pub proc_fdtype: u32,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct in4in6_addr {
+        i46a_pad32: Padding<[u32; 3]>,
+        pub i46a_addr4: crate::in_addr,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct __c_anonymous_insi_v4 {
+        pub in4_tos: c_uchar,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct __c_anonymous_insi_v6 {
+        pub in6_hlim: u8,
+        pub in6_cksum: c_int,
+        pub in6_ifindex: c_ushort,
+        pub in6_hops: c_short,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct ndrv_info {
+        pub ndrvsi_if_family: u32,
+        pub ndrvsi_if_unit: u32,
+        pub ndrvsi_if_name: [c_char; crate::IFNAMSIZ],
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct kern_event_info {
+        pub kesi_vendor_code_filter: u32,
+        pub kesi_class_filter: u32,
+        pub kesi_subclass_filter: u32,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct kern_ctl_info {
+        pub kcsi_id: u32,
+        pub kcsi_reg_unit: u32,
+        pub kcsi_flags: u32,
+        pub kcsi_recvbufsize: u32,
+        pub kcsi_sendbufsize: u32,
+        pub kcsi_unit: u32,
+        #[custom_default([0; MAX_KCTL_NAME])]
+        pub kcsi_name: [c_char; MAX_KCTL_NAME],
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct vsock_sockinfo {
+        pub local_cid: u32,
+        pub local_port: u32,
+        pub remote_cid: u32,
+        pub remote_port: u32,
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct sockbuf_info {
+        pub sbi_cc: u32,
+        pub sbi_hiwat: u32,
+        pub sbi_mbcnt: u32,
+        pub sbi_mbmax: u32,
+        pub sbi_lowat: u32,
+        pub sbi_flags: c_short,
+        pub sbi_timeo: c_short,
+    }
+
     #[exhaustive] // FIXME(exhaustive): review for 1.0
     #[repr(packed(4))]
     pub struct kevent {
@@ -1441,6 +1563,12 @@ s2! {
         pub pth_maxpriority: i32,
         #[custom_default([0; MAXTHREADNAMESIZE])]
         pub pth_name: [c_char; MAXTHREADNAMESIZE],
+    }
+
+    #[cfg(target_os = "macos")]
+    pub struct proc_threadwithpathinfo {
+        pub pt: proc_threadinfo,
+        pub pvip: vnode_info_path,
     }
 
     pub struct statfs {
@@ -1829,6 +1957,89 @@ cfg_if! {
                 pub ifru_stat: in6_ifstat,
                 pub ifru_icmp6stat: icmp6_ifstat,
                 pub ifru_scope_id: [u32; SCOPE6_ID_MAX],
+            }
+
+            #[unsafe(union_default_via_zeroed)]
+            pub union __c_anonymous_insi_addr {
+                pub ina_46: in4in6_addr,
+                pub ina_6: crate::in6_addr,
+            }
+
+            pub struct in_sockinfo {
+                pub insi_fport: c_int,
+                pub insi_lport: c_int,
+                pub insi_gencnt: u64,
+                pub insi_flags: u32,
+                pub insi_flow: u32,
+                pub insi_vflag: u8,
+                pub insi_ip_ttl: u8,
+                rfu_1: Padding<u32>,
+                pub insi_faddr: __c_anonymous_insi_addr,
+                pub insi_laddr: __c_anonymous_insi_addr,
+                pub insi_v4: __c_anonymous_insi_v4,
+                pub insi_v6: __c_anonymous_insi_v6,
+            }
+
+            pub struct tcp_sockinfo {
+                pub tcpsi_ini: in_sockinfo,
+                pub tcpsi_state: c_int,
+                pub tcpsi_timer: [c_int; 4],
+                pub tcpsi_mss: c_int,
+                pub tcpsi_flags: u32,
+                rfu_1: Padding<u32>,
+                pub tcpsi_tp: u64,
+            }
+
+            #[unsafe(union_default_via_zeroed)]
+            pub union __c_anonymous_unsi_addr {
+                pub ua_sun: crate::sockaddr_un,
+                pub ua_dummy: [c_char; SOCK_MAXADDRLEN as usize],
+            }
+
+            pub struct un_sockinfo {
+                pub unsi_conn_so: u64,
+                pub unsi_conn_pcb: u64,
+                pub unsi_addr: __c_anonymous_unsi_addr,
+                pub unsi_caddr: __c_anonymous_unsi_addr,
+            }
+
+            #[unsafe(union_default_via_zeroed)]
+            pub union __c_anonymous_soi_proto {
+                pub pri_in: in_sockinfo,
+                pub pri_tcp: tcp_sockinfo,
+                pub pri_un: un_sockinfo,
+                pub pri_ndrv: ndrv_info,
+                pub pri_kern_event: kern_event_info,
+                pub pri_kern_ctl: kern_ctl_info,
+                pub pri_vsock: vsock_sockinfo,
+            }
+
+            pub struct socket_info {
+                pub soi_stat: vinfo_stat,
+                pub soi_so: u64,
+                pub soi_pcb: u64,
+                pub soi_type: c_int,
+                pub soi_protocol: c_int,
+                pub soi_family: c_int,
+                pub soi_options: c_short,
+                pub soi_linger: c_short,
+                pub soi_state: c_short,
+                pub soi_qlen: c_short,
+                pub soi_incqlen: c_short,
+                pub soi_qlimit: c_short,
+                pub soi_timeo: c_short,
+                pub soi_error: c_ushort,
+                pub soi_oobmark: u32,
+                pub soi_rcv: sockbuf_info,
+                pub soi_snd: sockbuf_info,
+                pub soi_kind: c_int,
+                rfu_1: Padding<u32>,
+                pub soi_proto: __c_anonymous_soi_proto,
+            }
+
+            pub struct socket_fdinfo {
+                pub pfi: proc_fileinfo,
+                pub psi: socket_info,
             }
         }
     }
@@ -3779,9 +3990,37 @@ cfg_if! {
         pub const PROC_PIDTBSDINFO: c_int = 3;
         pub const PROC_PIDTASKINFO: c_int = 4;
         pub const PROC_PIDTHREADINFO: c_int = 5;
+        pub const PROC_PIDLISTTHREADS: c_int = 6;
+        pub const PROC_PIDREGIONINFO: c_int = 7;
+        pub const PROC_PIDREGIONPATHINFO: c_int = 8;
         pub const PROC_PIDVNODEPATHINFO: c_int = 9;
+        pub const PROC_PIDTHREADPATHINFO: c_int = 10;
         pub const PROC_PIDT_SHORTBSDINFO: c_int = 13;
+        pub const PROC_PIDLISTFILEPORTS: c_int = 14;
         pub const PROC_PIDPATHINFO_MAXSIZE: c_int = 4096;
+
+        pub const PROC_PIDFDVNODEINFO: c_int = 1;
+        pub const PROC_PIDFDVNODEPATHINFO: c_int = 2;
+        pub const PROC_PIDFDSOCKETINFO: c_int = 3;
+
+        pub const PROC_PIDFILEPORTVNODEPATHINFO: c_int = 2;
+        pub const PROC_PIDFILEPORTSOCKETINFO: c_int = 3;
+
+        pub const PROC_FLAG_THCWD: u32 = 0x100;
+
+        pub const PROC_FP_SHARED: u32 = 1;
+        pub const PROC_FP_CLEXEC: u32 = 2;
+        pub const PROC_FP_GUARDED: u32 = 4;
+        pub const PROC_FP_CLFORK: u32 = 8;
+
+        pub const SOCKINFO_GENERIC: c_int = 0;
+        pub const SOCKINFO_IN: c_int = 1;
+        pub const SOCKINFO_TCP: c_int = 2;
+        pub const SOCKINFO_UN: c_int = 3;
+        pub const SOCKINFO_NDRV: c_int = 4;
+        pub const SOCKINFO_KERN_EVENT: c_int = 5;
+        pub const SOCKINFO_KERN_CTL: c_int = 6;
+        pub const SOCKINFO_VSOCK: c_int = 7;
 
         pub const PROC_PIDLISTFDS: c_int = 1;
         pub const PROC_PIDLISTFD_SIZE: c_int = size_of::<proc_fdinfo>() as c_int;
