@@ -1,7 +1,6 @@
 //! Header: `sys/stat.h`
 
 use super::super::*;
-use crate::prelude::*;
 
 // File type constants for stat.st_mode
 pub const S_IFMT: mode_t = 0o170000;

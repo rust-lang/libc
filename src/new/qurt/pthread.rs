@@ -3,7 +3,6 @@
 //! QuRT provides a subset of POSIX pthread functionality optimized for real-time systems.
 
 use super::*;
-use crate::prelude::*;
 
 // Thread creation attributes (QuRT values differ from POSIX/Linux defaults)
 pub const PTHREAD_CREATE_DETACHED: c_int = 0;

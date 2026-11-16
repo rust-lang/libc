@@ -1,7 +1,6 @@
 //! Header: `stdio.h`
 
 use super::*;
-use crate::prelude::*;
 
 // Buffer size
 pub const BUFSIZ: c_uint = 1024;

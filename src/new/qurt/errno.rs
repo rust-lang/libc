@@ -1,7 +1,6 @@
 //! Header: `errno.h`
 
 use super::*;
-use crate::prelude::*;
 
 // Standard error codes - verified to match QuRT SDK
 pub const EPERM: c_int = 1;

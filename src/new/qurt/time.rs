@@ -1,7 +1,6 @@
 //! Header: `time.h`
 
 use super::*;
-use crate::prelude::*;
 
 // Clock types
 pub const CLOCK_REALTIME: clockid_t = 0;

@@ -1,7 +1,6 @@
 //! Header: `stdlib.h`
 
 use super::*;
-use crate::prelude::*;
 
 // Exit status constants
 pub const EXIT_SUCCESS: c_int = 0;
