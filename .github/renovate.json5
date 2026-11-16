@@ -2,7 +2,6 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
     "config:recommended",
-    ":maintainLockFilesMonthly",
     "helpers:pinGitHubActionDigestsToSemver",
   ],
   commitMessagePrefix: "deps:",
@@ -11,9 +10,9 @@
     enabled: true,
     // See https://github.com/renovatebot/renovate/discussions/45739#discussioncomment-18324060
     branchTopic: "{{baseBranch}}-lock-file-maintenance",
-    // Every other Monday. Renovate requires a range, hence `* *` rather
+    // Every other Monday. Renovate requires a range, hence `* 0-3` rather
     // than `0 0`.
-    schedule: ["* * 1-7,15-21 * 1"],
+    schedule: ["* 0-3 1-7,15-21 * 1"],
   },
   // Don't update docker files that need an old version
   ignorePaths: ["ci/docker/{arm,powerpc}-unknown-linux-gnu*"],
@@ -22,7 +21,7 @@
       matchCategories: ["rust"],
       matchJsonata: ["isBreaking != true"],
       // Disable non-breaking change updates because they
-      // are updated periodically with lockfile maintainance.
+      // are updated periodically with lockfile maintenance.
       enabled: false,
     },
     {
@@ -33,7 +32,7 @@
     {
       matchManagers: ["github-actions"],
       // Every other Monday
-      schedule: "* * 1-7,15-21 * 1",
+      schedule: "* 0-3 1-7,15-21 * 1",
       commitMessagePrefix: "ci:",
       // Group all updates into one PR
       groupName: "Github Actions"
