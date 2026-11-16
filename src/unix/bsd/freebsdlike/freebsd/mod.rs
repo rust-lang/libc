@@ -3457,8 +3457,8 @@ pub const KVME_TYPE_PHYS: c_int = 5;
 pub const KVME_TYPE_DEAD: c_int = 6;
 pub const KVME_TYPE_SG: c_int = 7;
 pub const KVME_TYPE_MGTDEVICE: c_int = 8;
-// Present in `sys/user.h` but is undefined for whatever reason...
-// pub const KVME_TYPE_GUARD: c_int = 9;
+
+pub const KVME_TYPE_GUARD: c_int = 9;
 pub const KVME_TYPE_UNKNOWN: c_int = 255;
 pub const KVME_PROT_READ: c_int = 0x00000001;
 pub const KVME_PROT_WRITE: c_int = 0x00000002;
@@ -4329,8 +4329,8 @@ const fn _ALIGN(p: usize) -> usize {
 
 // include/paths.h
 pub const _PATH_DEFPATH: *const c_char =
-    cstr(b"/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin\0");
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+    cstr!("/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {

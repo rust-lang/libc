@@ -677,8 +677,8 @@ pub const UT_LINESIZE: usize = 32;
 pub const UT_NAMESIZE: usize = 32;
 
 // include/paths.h
-pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/local/bin:/bin:/usr/bin\0");
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+pub const _PATH_DEFPATH: *const c_char = cstr!("/usr/local/bin:/bin:/usr/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 cfg_if! {
     if #[cfg(target_arch = "s390x")] {

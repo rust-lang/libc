@@ -200,6 +200,7 @@ s! {
         pub c_oflag: crate::tcflag_t,
         pub c_cflag: crate::tcflag_t,
         pub c_lflag: crate::tcflag_t,
+        #[cfg(not(target_os = "espidf"))]
         pub c_line: crate::cc_t,
         pub c_cc: [crate::cc_t; crate::NCCS],
         #[cfg(target_os = "espidf")]
@@ -258,22 +259,29 @@ s! {
         pub detachstate: i32,
     }
 
+    #[cfg_attr(target_os = "espidf", repr(align(4)))]
     pub struct pthread_rwlockattr_t {
         // Unverified
         __size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
     }
 
     #[cfg_attr(
-        all(
-            target_pointer_width = "32",
-            any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+        any(
+            target_os = "espidf",
+            all(
+                target_pointer_width = "32",
+                any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+            )
         ),
         repr(align(4))
     )]
     #[cfg_attr(
-        any(
-            target_pointer_width = "64",
-            not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+        all(
+            not(target_os = "espidf"),
+            any(
+                target_pointer_width = "64",
+                not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+            )
         ),
         repr(align(8))
     )]
@@ -283,16 +291,22 @@ s! {
     }
 
     #[cfg_attr(
-        all(
-            target_pointer_width = "32",
-            any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+        any(
+            target_os = "espidf",
+            all(
+                target_pointer_width = "32",
+                any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+            )
         ),
         repr(align(4))
     )]
     #[cfg_attr(
-        any(
-            target_pointer_width = "64",
-            not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+        all(
+            not(target_os = "espidf"),
+            any(
+                target_pointer_width = "64",
+                not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+            )
         ),
         repr(align(8))
     )]
@@ -328,7 +342,8 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
-    #[repr(align(8))]
+    #[cfg_attr(target_os = "espidf", repr(align(4)))]
+    #[cfg_attr(not(target_os = "espidf"), repr(align(8)))]
     pub struct pthread_cond_t {
         // Unverified
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
@@ -400,7 +415,7 @@ cfg_if! {
         pub const __SIZEOF_PTHREAD_COND_T: usize = 4;
         pub const __SIZEOF_PTHREAD_CONDATTR_T: usize = 8;
         pub const __SIZEOF_PTHREAD_RWLOCK_T: usize = 4;
-        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 12;
+        pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 4;
         pub const __SIZEOF_PTHREAD_BARRIER_T: usize = 32;
     } else if #[cfg(target_os = "vita")] {
         const __PTHREAD_INITIALIZER_BYTE: u8 = 0xff;
@@ -888,7 +903,7 @@ pub const PRIO_PGRP: c_int = 1;
 pub const PRIO_USER: c_int = 2;
 
 // include/paths.h from newlib's libc
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 f! {
     pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) -> () {
@@ -928,7 +943,10 @@ extern "C" {
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
 
-    #[cfg_attr(target_os = "linux", link_name = "__xpg_strerror_r")]
+    #[cfg_attr(
+        any(target_os = "linux", target_os = "espidf"),
+        link_name = "__xpg_strerror_r"
+    )]
     pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
 
     pub fn sem_destroy(sem: *mut sem_t) -> c_int;

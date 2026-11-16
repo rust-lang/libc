@@ -263,8 +263,8 @@ pub const UDP_GRO: c_int = 104;
 pub const UDP_SEGMENT: c_int = 103;
 
 // include/paths.h
-pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/bin:/bin\0");
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+pub const _PATH_DEFPATH: *const c_char = cstr!("/usr/bin:/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 extern "C" {
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut crate::timezone) -> c_int;

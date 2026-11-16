@@ -105,6 +105,9 @@ cfg_if! {
     } else if #[cfg(target_os = "openbsd")] {
         mod openbsd;
         pub(crate) use openbsd::*;
+    } else if #[cfg(target_os = "qtee")] {
+        mod qtee;
+        pub(crate) use qtee::*;
     } else if #[cfg(target_os = "qurt")] {
         pub mod qurt;
     } else if #[cfg(target_os = "redox")] {
@@ -177,6 +180,7 @@ cfg_if! {
 cfg_if! {
     if #[cfg(target_os = "android")] {
         use bionic_libc::kernel_uapi::linux;
+        pub use linux::fs::*;
         pub use linux::types::*;
         pub use sys::socket::*;
     } else if #[cfg(target_os = "linux")] {
@@ -186,6 +190,7 @@ cfg_if! {
         pub use linux::can::j1939::*;
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
+        pub use linux::fs::*;
         pub use linux::futex::*;
         pub use linux::if_addr::*;
         pub use linux::if_link::*;
@@ -241,8 +246,10 @@ cfg_if! {
         pub use utmpx_::*;
     } else if #[cfg(target_os = "openbsd")] {
         pub use sys::ipc::*;
+        pub use sys::sched::*;
         pub use sys::sensors::*;
         pub use sys::sysctl::*;
+        pub use uvm::uvmexp::*;
     } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
         pub use net::bpf::*;
         pub use net::if_::*;
@@ -266,6 +273,15 @@ cfg_if! {
         pub use inet::tcp::*;
         pub use stdlib::*;
         pub use vfs::vfs::*;
+    } else if #[cfg(target_os = "qtee")] {
+        pub use qsee_error::*;
+        pub use qsee_fs::*;
+        pub use qsee_heap::*;
+        pub use qsee_log::*;
+        pub use qsee_prng::*;
+        pub use qsee_sfs::*;
+        pub use qsee_time::*;
+        pub use qsee_timer::*;
     }
 }
 

@@ -2688,7 +2688,7 @@ pub const SA_NOCLDSTOP: c_int = 0x00000001;
 
 pub const EPOLL_CLOEXEC: c_int = 0x80000;
 
-pub const EFD_CLOEXEC: c_int = 0x80000;
+pub const EFD_CLOEXEC: c_int = crate::O_CLOEXEC;
 
 pub const BUFSIZ: c_uint = 1024;
 pub const TMP_MAX: c_uint = 10000;

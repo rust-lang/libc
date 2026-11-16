@@ -50,6 +50,21 @@ fn do_cc(t: &Target) {
     {
         cc::Build::new().file("src/sigrt.c").compile("sigrt");
     }
+    if (t.linux() && !t.wali())
+        || t.android()
+        || t.apple()
+        || t.dragonfly()
+        || t.emscripten()
+        || t.freebsd()
+        || t.illumos()
+        || t.netbsd()
+        || t.openbsd()
+        || t.solaris()
+    {
+        cc::Build::new()
+            .file("src/icmp6_filter.c")
+            .compile("icmp6_filter");
+    }
 }
 
 fn do_ctest(t: &Target) {
@@ -191,6 +206,7 @@ fn test_apple(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet6/scope6_var.h",
         (macos, "netinet6/in6_var.h"),
         "os/clock.h",
@@ -385,6 +401,7 @@ fn test_openbsd(t: &Target) {
     cfg.flag("-Wno-deprecated-declarations");
 
     let x86_64 = t.x86_64();
+    let openbsd = VERSIONS.openbsd.unwrap();
 
     headers!(
         cfg,
@@ -419,6 +436,7 @@ fn test_openbsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "net/bpf.h",
         "regex.h",
         "resolv.h",
@@ -435,6 +453,7 @@ fn test_openbsd(t: &Target) {
         "sys/mman.h",
         "sys/param.h",
         "sys/resource.h",
+        "sys/sched.h",
         "sys/shm.h",
         "sys/socket.h",
         "sys/time.h",
@@ -473,6 +492,7 @@ fn test_openbsd(t: &Target) {
         "sys/param.h",
         "sys/auxv.h",
         "paths.h",
+        "uvm/uvmexp.h",
     );
 
     cfg.rename_type(|ty| match ty {
@@ -520,6 +540,15 @@ fn test_openbsd(t: &Target) {
 
             // Removed in OpenBSD 7.8
             "CTL_FS" | "SO_NETPROC" => true,
+
+            _ => false,
+        }
+    });
+
+    cfg.skip_fn(move |func| {
+        match func.ident() {
+            // Added in OpenBSD 8.0
+            "getexecpath" => openbsd < (8, 0),
 
             _ => false,
         }
@@ -966,6 +995,7 @@ fn test_solarish(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "port.h",
         "pthread.h",
@@ -1259,6 +1289,7 @@ fn test_netbsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "poll.h",
         "pthread.h",
         "pwd.h",
@@ -1554,6 +1585,7 @@ fn test_dragonflybsd(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "paths.h",
         "poll.h",
         "pthread.h",
@@ -1983,6 +2015,7 @@ fn test_android(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netpacket/packet.h",
         "poll.h",
         "pthread.h",
@@ -2154,6 +2187,9 @@ fn test_android(t: &Target) {
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
+            // FIXME(android): Missing from the NDK r27 headers used in CI.
+            "procmap_query" => true,
+
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
             "termios2" => true,
@@ -2178,6 +2214,10 @@ fn test_android(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
+            // FIXME(android): Missing from the NDK r27 headers used in CI.
+            "PAGE_IS_SOFT_DIRTY" => true,
+            n if n.starts_with("PROCMAP_QUERY") => true,
+
             // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
             | "IPV6_FLOWINFO"
             | "IPV6_FLOWLABEL_MGR"
@@ -2509,6 +2549,7 @@ fn test_freebsd(t: &Target) {
         "netinet/sctp.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netinet6/in6_var.h",
         "paths.h",
         "poll.h",
@@ -3135,6 +3176,7 @@ fn test_emscripten(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         "netpacket/packet.h",
         "poll.h",
         "pthread.h",
@@ -3975,6 +4017,7 @@ fn test_linux(t: &Target) {
         "netinet/ip.h",
         "netinet/tcp.h",
         "netinet/udp.h",
+        "netinet/icmp6.h",
         (gnu, "netiucv/iucv.h"),
         (l4re, "netpacket/packet.h"),
         "poll.h",
@@ -4358,6 +4401,8 @@ fn test_linux(t: &Target) {
             "ptp_sys_offset_extended" if kernel < (6, 12) => true,
             "epoll_params" if old_musl => true,
             "epoll_params" => kernel < (6, 9),
+            "procmap_query" => kernel < (6, 11),
+            "page_region" | "pm_scan_arg" => kernel < (6, 7),
             "mnt_ns_info" => kernel < (6, 12),
 
             // FIXME(linux): Only requires >= 6.12 kernel headers, but including `uio.h` creates
@@ -4747,6 +4792,12 @@ fn test_linux(t: &Target) {
             "SECCOMP_IOCTL_NOTIF_SET_FLAGS" => kernel < (6, 6),
 
             "EPIOCSPARAMS" | "EPIOCGPARAMS" => kernel < (6, 9),
+            "PAGEMAP_SCAN" => kernel < (6, 7),
+            "PAGE_IS_SOFT_DIRTY" => kernel < (6, 8),
+            "PAGE_IS_GUARD" => kernel < (6, 16),
+            "PAGE_IS_ACCESSED" => kernel < (7, 3),
+            n if n.starts_with("PAGE_IS_") || n.starts_with("PM_SCAN_") => kernel < (6, 7),
+            n if n.starts_with("PROCMAP_QUERY") => kernel < (6, 11),
             "MAP_DROPPABLE" => kernel < (6, 11),
             "SOF_TIMESTAMPING_OPT_RX_FILTER" => kernel < (6, 12),
 
@@ -5029,6 +5080,12 @@ fn test_linux(t: &Target) {
             ("iw_encode_ext", "key") => true,
             // the `tcpi_snd_rcv_wscale` map two bitfield fields stored in a u8
             ("tcp_info", "tcpi_snd_rcv_wscale") => true,
+            // glibc 2.44 made these bitfields of a u32
+            ("tcp_info", "tcpi_accecn_opt_seen" | "tcpi_accecn_fail_mode")
+                if gnu && versions.glibc.unwrap() >= (2, 44) =>
+            {
+                true
+            }
             // the `tcpi_delivery_fastopen_bitfields` map two bitfield fields stored in a u8
             ("tcp_info", "tcpi_delivery_fastopen_bitfields") if musl => true,
             // either fsid_t or int[2] type
@@ -5653,6 +5710,7 @@ fn test_aix(t: &Target) {
         "netdb.h",
         "netinet/tcp.h",
         "netinet/sctp.h",
+        "paths.h",
         "pthread.h",
         "pwd.h",
         "rpcsvc/mount.h",

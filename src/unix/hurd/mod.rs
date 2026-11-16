@@ -1651,12 +1651,6 @@ pub const SEM_VALUE_MAX: c_int = 2147483647;
 pub const MAXNAMLEN: usize = 255;
 
 // netdb.h
-pub const _PATH_HEQUIV: &[u8; 17usize] = b"/etc/hosts.equiv\0";
-pub const _PATH_HOSTS: &[u8; 11usize] = b"/etc/hosts\0";
-pub const _PATH_NETWORKS: &[u8; 14usize] = b"/etc/networks\0";
-pub const _PATH_NSSWITCH_CONF: &[u8; 19usize] = b"/etc/nsswitch.conf\0";
-pub const _PATH_PROTOCOLS: &[u8; 15usize] = b"/etc/protocols\0";
-pub const _PATH_SERVICES: &[u8; 14usize] = b"/etc/services\0";
 pub const HOST_NOT_FOUND: c_int = 1;
 pub const TRY_AGAIN: c_int = 2;
 pub const NO_RECOVERY: c_int = 3;
@@ -2258,6 +2252,14 @@ pub const TIOCM_CD: c_int = 64;
 pub const TIOCM_RNG: c_int = 128;
 pub const TIOCM_RI: c_int = 128;
 pub const TIOCM_DSR: c_int = 256;
+pub const TIOCEXCL: c_ulong = 0x70d;
+pub const TIOCNXCL: c_ulong = 0x70e;
+pub const TIOCSBRK: c_ulong = 0x77b;
+pub const TIOCCBRK: c_ulong = 0x77a;
+pub const TIOCSDTR: c_ulong = 0x779;
+pub const TIOCCDTR: c_ulong = 0x778;
+pub const TIOCGPGRP: c_ulong = 0x60080777;
+pub const TIOCSPGRP: c_ulong = 0xa0080776;
 pub const TIOCPKT_DATA: c_int = 0;
 pub const TIOCPKT_FLUSHREAD: c_int = 1;
 pub const TIOCPKT_FLUSHWRITE: c_int = 2;
@@ -2266,9 +2268,26 @@ pub const TIOCPKT_START: c_int = 8;
 pub const TIOCPKT_NOSTOP: c_int = 16;
 pub const TIOCPKT_DOSTOP: c_int = 32;
 pub const TIOCPKT_IOCTL: c_int = 64;
+pub const TIOCSTOP: c_ulong = 0x76f;
+pub const TIOCSTART: c_ulong = 0x76e;
+pub const TIOCMSET: c_ulong = 0xa008076d;
+pub const TIOCMBIS: c_ulong = 0xa008076c;
+pub const TIOCMBIC: c_ulong = 0xa008076b;
+pub const TIOCMGET: c_ulong = 0x6008076a;
+pub const TIOCREMOTE: c_ulong = 0xa0080769;
+pub const TIOCSWINSZ: c_ulong = 0x90200767;
+pub const TIOCGWINSZ: c_ulong = 0x50200768;
+pub const TIOCSCTTY: c_ulong = 0x761;
 pub const TTYDISC: c_int = 0;
 pub const TABLDISC: c_int = 3;
 pub const SLIPDISC: c_int = 4;
+pub const FIOCLEX: c_ulong = 1;
+pub const FIONCLEX: c_ulong = 2;
+pub const FIONREAD: c_ulong = 0x6008007f;
+pub const FIONBIO: c_ulong = 0xa008007e;
+pub const FIOASYNC: c_ulong = 0xa008007d;
+pub const FIOSETOWN: c_ulong = 0xa008007c;
+pub const FIOGETOWN: c_ulong = 0x6008007b;
 pub const TANDEM: crate::tcflag_t = 1;
 pub const CBREAK: crate::tcflag_t = 2;
 pub const LCASE: crate::tcflag_t = 4;
@@ -2297,16 +2316,6 @@ pub const CRTKIL: crate::tcflag_t = 67108864;
 pub const PASS8: crate::tcflag_t = 134217728;
 pub const CTLECH: crate::tcflag_t = 268435456;
 pub const DECCTQ: crate::tcflag_t = 1073741824;
-
-pub const FIONBIO: c_ulong = 0xa008007e;
-pub const FIONREAD: c_ulong = 0x6008007f;
-pub const TIOCSWINSZ: c_ulong = 0x90200767;
-pub const TIOCGWINSZ: c_ulong = 0x50200768;
-pub const TIOCEXCL: c_ulong = 0x70d;
-pub const TIOCNXCL: c_ulong = 0x70e;
-pub const TIOCSCTTY: c_ulong = 0x761;
-
-pub const FIOCLEX: c_ulong = 1;
 
 // fcntl.h
 pub const O_EXEC: c_int = 4;
@@ -2871,6 +2880,10 @@ pub const IFF_MULTICAST: c_int = 0x1000;
 pub const IFF_PORTSEL: c_int = 0x2000;
 pub const IFF_AUTOMEDIA: c_int = 0x4000;
 pub const IFF_DYNAMIC: c_int = 0x8000;
+
+// paths.h
+pub const _PATH_DEFPATH: *const c_char = cstr!("/usr/bin:/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 // random.h
 pub const GRND_NONBLOCK: c_uint = 1;

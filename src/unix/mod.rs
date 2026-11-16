@@ -330,7 +330,8 @@ cfg_if! {
         target_os = "haiku",
         target_os = "illumos",
         target_os = "solaris",
-        target_os = "cygwin"
+        target_os = "cygwin",
+        target_os = "espidf"
     )))] {
         pub const IF_NAMESIZE: size_t = 16;
         pub const IFNAMSIZ: size_t = IF_NAMESIZE;
@@ -1627,7 +1628,6 @@ extern "C" {
         link_name = "mknod@FBSD_1.0"
     )]
     pub fn mknod(pathname: *const c_char, mode: mode_t, dev: crate::dev_t) -> c_int;
-    #[cfg(not(target_os = "espidf"))]
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn endservent();
     pub fn getservbyname(name: *const c_char, proto: *const c_char) -> *mut servent;
@@ -2297,7 +2297,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_os = "solaris"))] {
+    if #[cfg(not(any(target_os = "solaris", target_os = "espidf")))] {
         extern "C" {
             pub fn flock(fd: c_int, operation: c_int) -> c_int;
         }

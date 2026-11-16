@@ -1317,8 +1317,8 @@ pub const PRIO_USER: c_int = 2;
 pub const SOMAXCONN: c_int = 128;
 
 // include/paths.h
-pub const _PATH_DEFPATH: *const c_char = cstr(b"/usr/local/bin:/bin:/usr/bin\0");
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+pub const _PATH_DEFPATH: *const c_char = cstr!("/usr/local/bin:/bin:/usr/bin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 f! {
     pub unsafe fn CMSG_NXTHDR(mhdr: *const msghdr, cmsg: *const cmsghdr) -> *mut cmsghdr {

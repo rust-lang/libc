@@ -52,7 +52,7 @@ jobs:
         with:
           persist-credentials: false
       - run: rustup update stable --no-self-update
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
       # Here we use the latest stable Rust toolchain already installed by GitHub
       # Ideally we should run it for every target, but we cannot rely on unstable toolchains
       # due to Clippy not being consistent between them.
@@ -86,7 +86,7 @@ jobs:
         run: ./ci/install-rust.sh
 
       - name: Install semver-checks
-        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
+        uses: taiki-e/install-action@ab49d3c64680143e184118bed66a46419fc15519 # v2.90.5
         if: matrix.toolchain == 'stable'
         with:
           tool: cargo-semver-checks
@@ -95,14 +95,17 @@ jobs:
         if: matrix.toolchain == 'stable'
         run: ./ci/prep-semver-baseline.sh
 
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: ${{ matrix.os }}-${{ matrix.toolchain }}
 
       - name: Execute build check
+        env:
+          ONLY_FLAG: ${{ matrix.only && format('--only {0}', matrix.only) }}
+          HALF_FLAG: ${{ matrix.half && format('--half {0}', matrix.half) }}
         run: |
           set -eux
-          if [ "${{ matrix.toolchain }}" = "1.65.0" ]; then
+          if [ "${TOOLCHAIN}" = "1.65.0" ]; then
               # * Remove `-Dwarnings` at the MSRV since lints may be different
               # * Allow `improper_ctypes` since pointers to ZSTs got the warning prior
               #   to 1.72.
@@ -117,8 +120,8 @@ jobs:
           python3 ci/verify-build.py \
             --toolchain "$TOOLCHAIN" \
             ${BASELINE_CRATE_DIR:+"--baseline-crate-dir" "$BASELINE_CRATE_DIR"} \
-            ${{ matrix.only && format('--only "{0}"', matrix.only) }} \
-            ${{ matrix.half && format('--half "{0}"', matrix.half) }}
+            ${ONLY_FLAG} \
+            ${HALF_FLAG}
 
   test_tier1:
     name: Test tier1
@@ -151,23 +154,27 @@ jobs:
           persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: ${{ matrix.target }}
 
       - name: Add matrix env variables to the environment
         if: matrix.env
+        env:
+          MATRIX_ENV: ${{ toJson(matrix.env) }}
         run: |
-          echo '${{ toJson(matrix.env) }}' |
+          echo "${MATRIX_ENV}" |
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
       - name: Run natively
         if: runner.os != 'Linux'
-        run: ./ci/run.sh ${{ matrix.target }}
+        run: ./ci/run.sh ${TARGET}
+        shell: bash
       - name: Run in Docker
         if: runner.os == 'Linux'
-        run: ./ci/run-docker.sh ${{ matrix.target }}
+        run: ./ci/run-docker.sh ${TARGET}
+        shell: bash
 
       - name: Create CI artifacts
         id: create_artifacts
@@ -199,6 +206,7 @@ jobs:
           - target: arm-unknown-linux-musleabihf
             env: { TEST_MUSL_V1_2: 1 }
             artifact-tag: new-musl
+          - target: armv7-unknown-linux-gnueabihf
           # FIXME(#4297): Disabled due to spurious failue
           # - target: i686-linux-android
           - target: i686-unknown-linux-musl
@@ -266,32 +274,37 @@ jobs:
           persist-credentials: false
       - name: Setup Rust toolchain
         run: ./ci/install-rust.sh
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           key: ${{ matrix.target }}
 
       - name: Add matrix env variables to the environment
         if: matrix.env
+        env:
+          MATRIX_ENV: ${{ toJson(matrix.env) }}
         run: |
-          echo '${{ toJson(matrix.env) }}' |
+          echo "${MATRIX_ENV}" |
             jq -r 'to_entries | map("\(.key)=\(.value|tostring)") | .[]' >>$GITHUB_ENV
         shell: bash
 
       - name: Install `cargo-apple-runner`
         if: matrix.cargo-apple-runner
-        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
+        uses: taiki-e/install-action@ab49d3c64680143e184118bed66a46419fc15519 # v2.90.5
         with:
           tool: cargo-apple-runner
 
       - name: Run natively
         if: runner.os != 'Linux' && !matrix.cargo-apple-runner
-        run: ./ci/run.sh ${{ matrix.target }}
+        run: ./ci/run.sh ${TARGET}
+        shell: bash
       - name: Run in Docker
         if: runner.os == 'Linux' && !matrix.cargo-apple-runner
-        run: ./ci/run-docker.sh ${{ matrix.target }}
+        run: ./ci/run-docker.sh ${TARGET}
+        shell: bash
       - name: Run on Apple's simulator
         if: matrix.cargo-apple-runner
-        run: ./ci/run-apple-simulator.sh ${{ matrix.target }}
+        run: ./ci/run-apple-simulator.sh ${TARGET}
+        shell: bash
 
       - name: Create CI artifacts
         id: create_artifacts
@@ -327,7 +340,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Test on FreeBSD
-        uses: vmactions/freebsd-vm@c46abacb49f09938ca4e1702d15d836285d694cc # v1.5.9
+        uses: vmactions/freebsd-vm@811efaaac0668df8bfb8308c3ec997b5ab50037b # v1.6.0
         if: contains(matrix.target, 'freebsd')
         with:
           release: ${{ matrix.release }}
@@ -342,7 +355,7 @@ jobs:
             ./ci/run.sh ${{ matrix.target }}
 
       - name: Test on Solaris
-        uses: vmactions/solaris-vm@87d3c436511cef802cd1637f86f73b1a97715c8c # v1.4.1
+        uses: vmactions/solaris-vm@1c166978f5a2c1f87f1c9d4d8dd85ae3d1eff6f7 # v1.4.2
         if: contains(matrix.target, 'solaris')
         with:
           release: "11.4-gcc"
@@ -354,7 +367,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on NetBSD
-        uses: vmactions/netbsd-vm@c8a0d7ddb84619a7a8cc4e652efa7950b3fd9f92 # v1.5.2
+        uses: vmactions/netbsd-vm@5957cf330aef2e6ddc63c604364c99ce2e02b91d # v1.5.3
         if: contains(matrix.target, 'netbsd')
         with:
           release: "10.1"
@@ -366,7 +379,7 @@ jobs:
           run: ./ci/bsd-run.sh ${{ matrix.target }}
 
       - name: Test on illumos
-        uses: vmactions/omnios-vm@9576f0b6d15e7696548409baa533bc0a339caf42 # v1.3.7
+        uses: vmactions/omnios-vm@aeee92416495d9685b2997d954f6b063ae5b832d # v1.3.8
         if: contains(matrix.target, 'illumos')
         with:
           # Use the latest LTS
@@ -397,14 +410,14 @@ jobs:
           echo "MSRV=$msrv" >> "$GITHUB_ENV"
       - name: Install Rust
         run: rustup update "$MSRV" --no-self-update && rustup default "$MSRV"
-      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
       - run: cargo build -p ctest
 
   zizmor:
     name: Zizmor (Static analysis for GitHub Actions)
     runs-on: ubuntu-26.04
     permissions:
-      security-events: write
+      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
     timeout-minutes: 10
     steps:
       - name: Checkout repository
@@ -413,7 +426,7 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd # v0.8.1
 
   # One job that "summarizes" the success state of this pipeline. This can then be added to branch
   # protection, rather than having to add each job separately.

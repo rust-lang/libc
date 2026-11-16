@@ -1840,8 +1840,8 @@ const fn _ALIGN(p: usize) -> usize {
 
 // include/paths.h
 pub const _PATH_DEFPATH: *const c_char =
-    cstr(b"/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin\0");
-pub const _PATH_BSHELL: *const c_char = cstr(b"/bin/sh\0");
+    cstr!("/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin");
+pub const _PATH_BSHELL: *const c_char = cstr!("/bin/sh");
 
 f! {
     pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut c_uchar {

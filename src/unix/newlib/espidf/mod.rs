@@ -1,7 +1,10 @@
 use crate::prelude::*;
 
 pub type clock_t = c_ulong;
-pub type wchar_t = u32;
+#[cfg(target_arch = "xtensa")]
+pub type wchar_t = u16;
+#[cfg(not(target_arch = "xtensa"))]
+pub type wchar_t = i32;
 
 s! {
     pub struct cmsghdr {
@@ -62,6 +65,9 @@ pub const AF_INET6: c_int = 10;
 
 pub const FIONBIO: c_ulong = 2147772030;
 
+pub const IF_NAMESIZE: size_t = 6;
+pub const IFNAMSIZ: size_t = IF_NAMESIZE;
+
 pub const POLLIN: c_short = 1 << 0;
 pub const POLLRDNORM: c_short = 1 << 1;
 pub const POLLRDBAND: c_short = 1 << 2;
@@ -119,8 +125,6 @@ extern "C" {
     ) -> c_int;
 
     pub fn getrandom(buf: *mut c_void, buflen: size_t, flags: c_uint) -> ssize_t;
-
-    pub fn gethostname(name: *mut c_char, namelen: ssize_t);
 
     #[link_name = "lwip_sendmsg"]
     pub fn sendmsg(s: c_int, msg: *const crate::msghdr, flags: c_int) -> ssize_t;
