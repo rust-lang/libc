@@ -41,3 +41,4 @@ syncfs
 timerfd_create
 timerfd_gettime
 timerfd_settime
+wait4
