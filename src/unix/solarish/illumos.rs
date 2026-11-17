@@ -315,4 +315,11 @@ extern "C" {
         new_value: *const crate::itimerspec,
         old_value: *mut crate::itimerspec,
     ) -> c_int;
+
+    pub fn wait4(
+        pid: crate::pid_t,
+        status: *mut c_int,
+        options: c_int,
+        rusage: *mut crate::rusage,
+    ) -> crate::pid_t;
 }
