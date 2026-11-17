@@ -188,7 +188,7 @@ s! {
         __glibc_reserved4: Padding<crate::__syscall_ulong_t>,
     }
 
-    #[cfg(gnu_time_bits64)]
+    #[cfg(any(gnu_time_bits64, target_arch = "riscv32"))]
     pub struct timex {
         pub modes: c_uint,
         _pad1: Padding<c_int>,
@@ -226,7 +226,7 @@ s! {
         __unused11: Padding<i32>,
     }
 
-    #[cfg(not(gnu_time_bits64))]
+    #[cfg(not(any(gnu_time_bits64, target_arch = "riscv32")))]
     pub struct timex {
         pub modes: c_uint,
         pub offset: c_long,
