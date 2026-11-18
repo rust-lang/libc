@@ -191,6 +191,7 @@ cfg_if! {
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
         pub use linux::fs::*;
+        pub use linux::fsverity::*;
         pub use linux::futex::*;
         pub use linux::if_addr::*;
         pub use linux::if_link::*;

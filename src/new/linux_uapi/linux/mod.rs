@@ -4,6 +4,7 @@
 
 pub(crate) mod can;
 pub(crate) mod fs;
+pub(crate) mod fsverity;
 pub(crate) mod futex;
 pub(crate) mod if_addr;
 pub(crate) mod if_link;
