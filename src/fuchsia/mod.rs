@@ -1070,8 +1070,8 @@ s_no_extra_traits! {
     }
 
     pub union __c_anonymous_ifaddrs_ifa_ifu {
-        ifu_broadaddr: *mut sockaddr,
-        ifu_dstaddr: *mut sockaddr,
+        pub ifu_broadaddr: *mut sockaddr,
+        pub ifu_dstaddr: *mut sockaddr,
     }
 
     pub union __c_anonymous_siginfo_t___si_fields {
