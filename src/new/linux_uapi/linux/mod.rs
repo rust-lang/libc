@@ -10,6 +10,7 @@ pub(crate) mod if_link;
 pub(crate) mod if_packet;
 pub(crate) mod keyctl;
 pub(crate) mod membarrier;
+pub(crate) mod mmc;
 pub(crate) mod mount;
 pub(crate) mod netlink;
 pub(crate) mod pidfd;

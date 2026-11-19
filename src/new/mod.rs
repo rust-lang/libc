@@ -197,6 +197,7 @@ cfg_if! {
         pub use linux::if_packet::*;
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
+        pub use linux::mmc::ioctl::*;
         pub use linux::mount::*;
         pub use linux::netlink::*;
         pub use linux::pidfd::*;
