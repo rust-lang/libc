@@ -1979,6 +1979,7 @@ fn test_android(t: &Target) {
     // API surface (see `Versions`). Detection is required, so unwrap and let a
     // toolchain we can't read fail loudly rather than silently skip every test.
     let android = VERSIONS.android.unwrap();
+    let kernel = VERSIONS.linux.unwrap();
 
     let mut cfg = ctest_cfg();
     cfg.define("_GNU_SOURCE", None);
@@ -2187,8 +2188,7 @@ fn test_android(t: &Target) {
 
     cfg.skip_struct(move |struct_| {
         match struct_.ident() {
-            // FIXME(android): Missing from the NDK r27 headers used in CI.
-            "procmap_query" => true,
+            "procmap_query" => kernel < (6, 11),
 
             // These are tested as part of the linux_fcntl tests since there are
             // header conflicts when including them with all the other structs.
@@ -2214,9 +2214,8 @@ fn test_android(t: &Target) {
 
     cfg.skip_const(move |constant| {
         match constant.ident() {
-            // FIXME(android): Missing from the NDK r27 headers used in CI.
-            "PAGE_IS_SOFT_DIRTY" => true,
-            n if n.starts_with("PROCMAP_QUERY") => true,
+            "PAGE_IS_SOFT_DIRTY" => kernel < (6, 8),
+            n if n.starts_with("PROCMAP_QUERY") => kernel < (6, 11),
 
             // The IPV6 constants are tested in the `linux_ipv6.rs` tests:
             | "IPV6_FLOWINFO"
