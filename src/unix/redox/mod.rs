@@ -384,6 +384,14 @@ s! {
     pub struct mcontext {
         _opaque: [c_uchar; 520],
     }
+
+    pub struct flock {
+        pub l_type: c_short,
+        pub l_whence: c_short,
+        pub l_start: off_t,
+        pub l_len: off_t,
+        pub l_pid: pid_t,
+    }
 }
 
 impl siginfo_t {
@@ -446,22 +454,6 @@ cfg_if! {
 /// for details.
 pub const PATH_MAX: c_int = 4096;
 pub const HOST_NAME_MAX: c_int = 255;
-
-// fcntl.h
-pub const F_GETLK: c_int = 5;
-pub const F_SETLK: c_int = 6;
-pub const F_SETLKW: c_int = 7;
-pub const F_ULOCK: c_int = 0;
-pub const F_LOCK: c_int = 1;
-pub const F_TLOCK: c_int = 2;
-pub const F_TEST: c_int = 3;
-
-pub const AT_FDCWD: c_int = -100;
-pub const AT_SYMLINK_NOFOLLOW: c_int = 0x200;
-pub const AT_REMOVEDIR: c_int = 0x200;
-pub const AT_SYMLINK_FOLLOW: c_int = 0x2000;
-pub const AT_EMPTY_PATH: c_int = 0x4000;
-pub const AT_EACCESS: c_int = 0x400;
 
 // FIXME(redox): relibc {
 pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
@@ -615,13 +607,39 @@ pub const EOWNERDEAD: c_int = 130; /* Owner died */
 pub const ENOTRECOVERABLE: c_int = 131; /* State not recoverable */
 
 // fcntl.h
+
+pub const AT_FDCWD: c_int = -100;
+pub const AT_SYMLINK_NOFOLLOW: c_int = 0x200;
+pub const AT_REMOVEDIR: c_int = 0x200;
+pub const AT_SYMLINK_FOLLOW: c_int = 0x2000;
+pub const AT_EMPTY_PATH: c_int = 0x4000;
+pub const AT_EACCESS: c_int = 0x400;
+
 pub const F_DUPFD: c_int = 0;
 pub const F_GETFD: c_int = 1;
 pub const F_SETFD: c_int = 2;
 pub const F_GETFL: c_int = 3;
 pub const F_SETFL: c_int = 4;
+pub const F_GETLK: c_int = 5;
+pub const F_SETLK: c_int = 6;
+pub const F_SETLKW: c_int = 7;
+
+pub const F_RDLCK: c_int = 0;
+pub const F_WRLCK: c_int = 1;
+pub const F_UNLCK: c_int = 2;
+
+pub const F_OFD_GETLK: c_int = 36;
+pub const F_OFD_SETLK: c_int = 37;
+pub const F_OFD_SETLKW: c_int = 38;
+
+pub const F_ULOCK: c_int = 0;
+pub const F_LOCK: c_int = 1;
+pub const F_TLOCK: c_int = 2;
+pub const F_TEST: c_int = 3;
+
 pub const F_DUPFD_CLOEXEC: c_int = 1030;
 pub const FD_CLOEXEC: c_int = 0x0100_0000;
+
 pub const O_RDONLY: c_int = 0x0001_0000;
 pub const O_WRONLY: c_int = 0x0002_0000;
 pub const O_RDWR: c_int = 0x0003_0000;
