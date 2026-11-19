@@ -194,6 +194,7 @@ s! {
     }
 
     pub struct dirent {
+        pub d_ino: ino_t,
         pub d_type: u8,
         pub d_name: [c_char; __NAME_MAX__ + 1],
     }
