@@ -1439,6 +1439,9 @@ fn test_netbsd(t: &Target) {
             // the futex syscall takes `int` ops.
             "FUTEX_CMD_MASK" => true,
 
+            // Added in NetBSD 11.
+            "MFD_CLOEXEC" | "MFD_ALLOW_SEALING" | "MFD_CLOFORK" => VERSIONS.netbsd < Some((11, 0)),
+
             _ => false,
         }
     });
@@ -1450,6 +1453,9 @@ fn test_netbsd(t: &Target) {
             "qsort_r" => true,
 
             "eventfd" | "eventfd_read" | "eventfd_write" if netbsd9 => true,
+
+            // Added in NetBSD 11.
+            "memfd_create" => VERSIONS.netbsd < Some((11, 0)),
 
             _ => false,
         }

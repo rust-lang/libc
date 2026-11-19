@@ -675,6 +675,9 @@ MAXTC
 MCL_CURRENT
 MCL_FUTURE
 MDMBUF
+MFD_ALLOW_SEALING
+MFD_CLOEXEC
+MFD_CLOFORK
 MINSEC
 MNT_ACLS
 MNT_AUTOMOUNTED
@@ -1452,6 +1455,7 @@ lsetxattr
 lutimes
 lwpid_t
 madvise
+memfd_create
 memmem
 memrchr
 mincore
