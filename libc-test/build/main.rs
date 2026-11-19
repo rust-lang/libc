@@ -4148,6 +4148,7 @@ fn test_linux(t: &Target) {
             "linux/membarrier.h",
             "linux/mempolicy.h",
             "linux/mman.h",
+            "linux/mmc/ioctl.h",
             "linux/module.h",
             "linux/mount.h",
             "linux/net_tstamp.h",
@@ -5119,6 +5120,7 @@ fn test_linux(t: &Target) {
             ("utmpx", "ut_session") if musl => true,
             // `frames` is a flexible array member
             ("bcm_msg_head", "frames") => true,
+            ("mmc_ioc_multi_cmd", "cmds") => true,
             // FAM
             ("af_alg_iv", "iv") => true,
             ("file_handle", "f_handle") if musl || uclibc => true,
@@ -5150,6 +5152,7 @@ fn test_linux(t: &Target) {
         "fanotify_event_info_fid" => true,
         "cmsghdr" => true,
         "bcm_msg_head" => true,
+        "mmc_ioc_multi_cmd" => true,
 
         // FIXME(linux): the call ABI of max_align_t is incorrect on these platforms:
         "max_align_t" if x86_32 => true,

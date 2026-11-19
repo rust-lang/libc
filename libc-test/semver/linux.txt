@@ -1822,6 +1822,10 @@ MFD_HUGETLB
 MFD_NOEXEC_SEAL
 MINSIGSTKSZ
 MMAP_PAGE_ZERO
+MMC_IOC_CMD
+MMC_IOC_MAX_BYTES
+MMC_IOC_MAX_CMDS
+MMC_IOC_MULTI_CMD
 MNT_DETACH
 MNT_EXPIRE
 MNT_FORCE
@@ -4314,6 +4318,8 @@ mkostemp
 mkostemps
 mkstemps
 mmap64
+mmc_ioc_cmd
+mmc_ioc_multi_cmd
 mmsghdr
 mntent
 mount
