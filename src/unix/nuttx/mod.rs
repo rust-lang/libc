@@ -12,7 +12,7 @@ use crate::{
 
 pub type pid_t = c_int;
 pub type nlink_t = u16;
-pub type ino_t = u16;
+pub type ino_t = u32;
 pub type blkcnt_t = u64;
 pub type blksize_t = i16;
 pub type cc_t = u8;
