@@ -4295,8 +4295,11 @@ pub const RB_MULTIPLE: c_int = 0x20000000;
 pub const INC_ISIPV6: c_uchar = 0x01;
 pub const INC_IPV6MINMTU: c_uchar = 0x02;
 
-// sys/time.h
+// sys/_clock_id.h
+#[cfg(not(freebsd15))]
 pub const CLOCK_BOOTTIME: crate::clockid_t = crate::CLOCK_UPTIME;
+#[cfg(freebsd15)]
+pub const CLOCK_BOOTTIME: crate::clockid_t = crate::CLOCK_MONOTONIC;
 pub const CLOCK_REALTIME_COARSE: crate::clockid_t = crate::CLOCK_REALTIME_FAST;
 pub const CLOCK_MONOTONIC_COARSE: crate::clockid_t = crate::CLOCK_MONOTONIC_FAST;
 
