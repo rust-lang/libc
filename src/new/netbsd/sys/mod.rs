@@ -4,6 +4,7 @@
 
 pub(crate) mod file;
 pub(crate) mod ipc;
+pub(crate) mod mman;
 pub(crate) mod socket;
 pub(crate) mod statvfs;
 pub(crate) mod time;
