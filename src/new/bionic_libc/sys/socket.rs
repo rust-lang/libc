@@ -27,6 +27,12 @@ s! {
 }
 
 extern "C" {
+    pub fn accept4(
+        fd: c_int,
+        addr: *mut crate::sockaddr,
+        len: *mut crate::socklen_t,
+        flg: c_int,
+    ) -> c_int;
     pub fn recvmmsg(
         sockfd: c_int,
         msgvec: *mut crate::mmsghdr,
