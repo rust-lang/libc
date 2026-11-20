@@ -285,9 +285,6 @@ fn test_apple(t: &Target) {
 
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_zone_t" => true,
-            // it is a moving target, changing through versions
-            // also contains bitfields members
-            "tcp_connection_info" => true,
 
             // FIXME(macos): The size is changed in recent macOSes.
             "malloc_introspection_t" if x86_64 => true,
@@ -348,6 +345,8 @@ fn test_apple(t: &Target) {
             ("in6_ifreq", "ifr_ifru") => true,
             ("ifkpi", "ifk_data") => true,
             ("ifconf", "ifc_ifcu") => true,
+            // `tcpi_tfo_bitfields` maps the 1-bit `tcpi_tfo_*` bitfields stored in a u32
+            ("tcp_connection_info", "tcpi_tfo_bitfields") => true,
             _ => false,
         }
     });
