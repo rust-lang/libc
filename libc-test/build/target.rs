@@ -208,6 +208,10 @@ impl Target {
         self.env == "uclibc"
     }
 
+    pub fn ohos(&self) -> bool {
+        self.env == "ohos"
+    }
+
     /* os */
 
     pub fn aix(&self) -> bool {
