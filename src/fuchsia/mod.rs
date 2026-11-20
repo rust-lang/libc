@@ -315,15 +315,6 @@ s! {
         __dummy4: Padding<[c_char; 16]>,
     }
 
-    // FIXME(1.0): This should not implement `PartialEq`
-    #[allow(unpredictable_function_pointer_comparisons)]
-    pub struct sigaction {
-        pub sa_sigaction: crate::sighandler_t,
-        pub sa_mask: crate::sigset_t,
-        pub sa_flags: c_int,
-        pub sa_restorer: Option<extern "C" fn()>,
-    }
-
     pub struct termios {
         pub c_iflag: crate::tcflag_t,
         pub c_oflag: crate::tcflag_t,
@@ -1133,6 +1124,18 @@ s_no_extra_traits! {
         si_call_addr: *mut c_void,
         si_syscall: c_int,
         si_arch: c_uint,
+    }
+
+    pub union __c_anonymous_sigaction___sa_handler {
+        sa_handler: Option<extern "C" fn(c_int)>,
+        sa_sigaction: Option<extern "C" fn(c_int, *mut siginfo_t, *mut c_void)>,
+    }
+
+    pub struct sigaction {
+        pub __sa_handler: crate::__c_anonymous_sigaction___sa_handler,
+        pub sa_mask: crate::sigset_t,
+        pub sa_flags: c_int,
+        pub sa_restorer: Option<extern "C" fn()>,
     }
 }
 
