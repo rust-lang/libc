@@ -28,6 +28,13 @@ mod io {
     pub(crate) mod sys;
 }
 
+/// Source directory: `malloc/`
+///
+/// <https://github.com/sailfishos-mirror/glibc/tree/master/malloc>
+pub(crate) mod malloc {
+    pub(crate) mod mcheck;
+}
+
 /// Source directory: `posix/`
 ///
 /// <https://github.com/sailfishos-mirror/glibc/tree/master/posix>
