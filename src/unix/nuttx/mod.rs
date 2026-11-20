@@ -42,6 +42,8 @@ cfg_if! {
         pub type wchar_t = c_int;
     } else if #[cfg(any(target_arch = "arm", target_arch = "aarch64"))] {
         pub type wchar_t = c_uint;
+    } else if #[cfg(target_arch = "xtensa")] {
+        pub type wchar_t = c_ushort;
     }
 }
 
