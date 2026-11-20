@@ -68,6 +68,14 @@ extern_ty! {
 }
 
 s! {
+    // linux/openat2.h
+    #[non_exhaustive]
+    pub struct open_how {
+        pub flags: crate::__u64,
+        pub mode: crate::__u64,
+        pub resolve: crate::__u64,
+    }
+
     pub struct stack_t {
         pub ss_sp: *mut c_void,
         pub ss_flags: c_int,
@@ -961,6 +969,14 @@ pub const PTHREAD_INHERIT_SCHED: c_int = 1;
 pub const RENAME_NOREPLACE: c_int = 1;
 pub const RENAME_EXCHANGE: c_int = 2;
 pub const RENAME_WHITEOUT: c_int = 4;
+
+// linux/openat2.h
+pub const RESOLVE_NO_XDEV: crate::__u64 = 0x01;
+pub const RESOLVE_NO_MAGICLINKS: crate::__u64 = 0x02;
+pub const RESOLVE_NO_SYMLINKS: crate::__u64 = 0x04;
+pub const RESOLVE_BENEATH: crate::__u64 = 0x08;
+pub const RESOLVE_IN_ROOT: crate::__u64 = 0x10;
+pub const RESOLVE_CACHED: crate::__u64 = 0x20;
 
 pub const FIOCLEX: c_int = 0x5451;
 pub const FIONCLEX: c_int = 0x5450;
