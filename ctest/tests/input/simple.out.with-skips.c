@@ -35,6 +35,9 @@ typedef void (*ctest_void_func)(void);
 CTEST_EXTERN uint64_t ctest_size_of__volatile_char(void) { return sizeof(volatile_char); }
 CTEST_EXTERN uint64_t ctest_align_of__volatile_char(void) { return CTEST_ALIGNOF(volatile_char); }
 
+CTEST_EXTERN uint64_t ctest_size_of__VarBuf(void) { return sizeof(struct VarBuf); }
+CTEST_EXTERN uint64_t ctest_align_of__VarBuf(void) { return CTEST_ALIGNOF(struct VarBuf); }
+
 
 /* Query the signedness of a type.
  *
@@ -50,8 +53,44 @@ CTEST_EXTERN uint32_t ctest_signededness_of__volatile_char(void) {
 
 /* Query the offsets of fields and their sizes. */
 
+CTEST_EXTERN uint64_t ctest_offset_of__VarBuf__len(void) {
+    return offsetof(struct VarBuf, len);
+}
+
+CTEST_EXTERN uint64_t ctest_size_of__VarBuf__len(void) {
+    return sizeof(((struct VarBuf){}).len);
+}
+
+CTEST_EXTERN uint64_t ctest_offset_of__VarBuf__data(void) {
+    return offsetof(struct VarBuf, data);
+}
+
 
 /* Query a pointer to a field given a pointer to its struct */
+
+
+typedef uint32_t *ctest_field_ty__VarBuf__len;
+CTEST_EXTERN ctest_field_ty__VarBuf__len
+ctest_field_ptr__VarBuf__len(struct VarBuf *b) {
+    
+    ctest_field_ty__VarBuf__len ptr;
+    ptr = &b->len;
+    (void)ptr; 
+
+    return &b->len;
+}
+
+
+typedef uint8_t (*ctest_field_ty__VarBuf__data)[];
+CTEST_EXTERN ctest_field_ty__VarBuf__data
+ctest_field_ptr__VarBuf__data(struct VarBuf *b) {
+    
+    ctest_field_ty__VarBuf__data ptr;
+    ptr = &b->data;
+    (void)ptr; 
+
+    return &b->data;
+}
 
 #ifdef _MSC_VER
     // Disable signed/unsigned conversion warnings on MSVC.
