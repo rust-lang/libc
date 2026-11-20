@@ -1,7 +1,6 @@
 //! Header: `semaphore.h`
 
 use super::*;
-use crate::prelude::*;
 
 extern "C" {
     pub fn sem_init(sem: *mut sem_t, pshared: c_int, value: c_uint) -> c_int;

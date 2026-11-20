@@ -1,7 +1,6 @@
 //! Header: `fcntl.h`
 
 use super::*;
-use crate::prelude::*;
 
 // File access modes
 pub const O_RDONLY: c_int = 0x0000;

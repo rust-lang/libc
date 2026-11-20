@@ -1,7 +1,6 @@
 //! Header: `signal.h`
 
 use super::*;
-use crate::prelude::*;
 
 // Signal numbers from toolchain signal.h (non-_LINUX_C_LIB_H_ path)
 pub const SIGHUP: c_int = 1;

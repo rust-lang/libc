@@ -3,7 +3,6 @@
 //! Memory mapping functions and constants from Hexagon toolchain.
 
 use super::super::*;
-use crate::prelude::*;
 
 // Memory protection constants
 pub const PROT_NONE: c_int = 0x00;
