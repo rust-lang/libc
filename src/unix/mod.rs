@@ -25,6 +25,7 @@ cfg_if! {
     if #[cfg(any(
         target_os = "espidf",
         target_os = "horizon",
+        target_os = "rtems",
         target_os = "vita"
     ))] {
         pub type uid_t = c_ushort;
@@ -90,12 +91,14 @@ s2! {
         __pad0: Padding<u32>,
     }
 
+    #[cfg(not(target_os = "rtems"))]
     #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rlimit {
         pub rlim_cur: rlim_t,
         pub rlim_max: rlim_t,
     }
 
+    #[cfg(not(target_os = "rtems"))]
     #[exhaustive] // FIXME(exhaustive): review for 1.0
     pub struct rusage {
         pub ru_utime: timeval,
@@ -313,7 +316,8 @@ cfg_if! {
     if #[cfg(not(any(
         target_os = "nto",
         target_os = "qnx",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "rtems"
     )))] {
         pub const USRQUOTA: c_int = 0;
         pub const GRPQUOTA: c_int = 1;
@@ -378,7 +382,11 @@ pub const LOG_PRIMASK: c_int = 7;
 pub const LOG_FACMASK: c_int = 0x3f8;
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "nto", target_os = "qnx")))] {
+    if #[cfg(not(any(
+        target_os = "nto",
+        target_os = "qnx",
+        target_os = "rtems"
+    )))] {
         pub const PRIO_MIN: c_int = -20;
         pub const PRIO_MAX: c_int = 20;
     }
@@ -451,6 +459,7 @@ cfg_if! {
         target_os = "openbsd",
         target_os = "cygwin",
         target_os = "netbsd",
+        target_os = "rtems",
     ))] {
         pub const FNM_PATHNAME: c_int = 1 << 1;
     } else {
@@ -467,6 +476,7 @@ cfg_if! {
         target_os = "openbsd",
         target_os = "netbsd",
         target_os = "cygwin",
+        target_os = "rtems",
     ))] {
         pub const FNM_NOESCAPE: c_int = 1 << 0;
     } else if #[cfg(any(target_os = "nto", target_os = "qnx"))] {
@@ -644,6 +654,9 @@ cfg_if! {
     } else if #[cfg(target_os = "haiku")] {
         #[link(name = "root")]
         #[link(name = "network")]
+        extern "C" {}
+    } else if #[cfg(target_os = "rtems")] {
+        #[link(name = "m")]
         extern "C" {}
     } else if #[cfg(target_env = "newlib")] {
         #[link(name = "c")]
@@ -1024,6 +1037,7 @@ extern "C" {
     #[cfg_attr(musl_redir_time64, link_name = "__stat_time64")]
     pub fn stat(path: *const c_char, buf: *mut stat) -> c_int;
 
+    #[cfg(not(target_os = "rtems"))]
     pub fn pclose(stream: *mut crate::FILE) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -1101,9 +1115,10 @@ extern "C" {
     )]
     pub fn rewinddir(dirp: *mut crate::DIR);
 
+    #[cfg(not(target_os = "rtems"))]
     pub fn fchmodat(dirfd: c_int, pathname: *const c_char, mode: mode_t, flags: c_int) -> c_int;
     pub fn fchown(fd: c_int, owner: crate::uid_t, group: crate::gid_t) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn fchownat(
         dirfd: c_int,
         pathname: *const c_char,
@@ -1111,6 +1126,7 @@ extern "C" {
         group: crate::gid_t,
         flags: c_int,
     ) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "openat64")]
     pub fn openat(dirfd: c_int, pathname: *const c_char, flags: c_int, ...) -> c_int;
     #[cfg_attr(
@@ -1126,10 +1142,10 @@ extern "C" {
         all(not(gnu_time_bits64), gnu_file_offset_bits64),
         link_name = "fstatat64"
     )]
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     #[cfg_attr(musl_redir_time64, link_name = "__fstatat_time64")]
     pub fn fstatat(dirfd: c_int, pathname: *const c_char, buf: *mut stat, flags: c_int) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn linkat(
         olddirfd: c_int,
         oldpath: *const c_char,
@@ -1137,18 +1153,18 @@ extern "C" {
         newpath: *const c_char,
         flags: c_int,
     ) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn mkdirat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn renameat(
         olddirfd: c_int,
         oldpath: *const c_char,
         newdirfd: c_int,
         newpath: *const c_char,
     ) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn symlinkat(target: *const c_char, newdirfd: c_int, linkpath: *const c_char) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn unlinkat(dirfd: c_int, pathname: *const c_char, flags: c_int) -> c_int;
 
     pub fn access(path: *const c_char, amode: c_int) -> c_int;
@@ -1203,6 +1219,7 @@ extern "C" {
         link_name = "getopt$UNIX2003"
     )]
     pub fn getopt(argc: c_int, argv: *const *mut c_char, optstr: *const c_char) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn getpgid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
     pub fn getpid() -> pid_t;
@@ -1234,7 +1251,9 @@ extern "C" {
     pub fn setpgid(pid: pid_t, pgid: pid_t) -> c_int;
     pub fn setsid() -> pid_t;
     pub fn setuid(uid: uid_t) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn setreuid(ruid: uid_t, euid: uid_t) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn setregid(rgid: gid_t, egid: gid_t) -> c_int;
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
@@ -1300,6 +1319,7 @@ extern "C" {
         link_name = "kill$UNIX2003"
     )]
     pub fn kill(pid: pid_t, sig: c_int) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "killpg$UNIX2003"
@@ -1615,7 +1635,7 @@ extern "C" {
     #[cfg_attr(any(gnu_time_bits64, musl_redir_time64), link_name = "__difftime64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
     pub fn difftime(time1: time_t, time0: time_t) -> c_double;
-    #[cfg(not(target_os = "aix"))]
+    #[cfg(not(any(target_os = "aix", target_os = "rtems")))]
     #[cfg_attr(target_os = "netbsd", link_name = "__timegm50")]
     #[cfg_attr(gnu_time_bits64, link_name = "__timegm64")]
     #[cfg_attr(not(musl32_time64), allow(deprecated))]
@@ -1701,6 +1721,7 @@ extern "C" {
     #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
     #[cfg_attr(gnu_file_offset_bits64, link_name = "statvfs64")]
     pub fn statvfs(path: *const c_char, buf: *mut crate::statvfs) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     #[cfg(not(all(target_os = "linux", target_env = "gnu")))] // defined in new/glibc
     #[cfg_attr(gnu_file_offset_bits64, link_name = "fstatvfs64")]
     pub fn fstatvfs(fd: c_int, buf: *mut crate::statvfs) -> c_int;
@@ -2183,6 +2204,7 @@ extern "C" {
     pub fn tcsetattr(fd: c_int, optional_actions: c_int, termios: *const crate::termios) -> c_int;
     pub fn tcflow(fd: c_int, action: c_int) -> c_int;
     pub fn tcflush(fd: c_int, action: c_int) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn tcgetsid(fd: c_int) -> crate::pid_t;
     pub fn tcsendbreak(fd: c_int, duration: c_int) -> c_int;
     #[cfg_attr(gnu_file_offset_bits64, link_name = "mkstemp64")]
@@ -2200,25 +2222,28 @@ extern "C" {
     pub fn setlogmask(maskpri: c_int) -> c_int;
     #[cfg_attr(target_os = "macos", link_name = "syslog$DARWIN_EXTSN")]
     pub fn syslog(priority: c_int, message: *const c_char, ...);
+    #[cfg(not(target_os = "rtems"))]
     #[cfg_attr(
         all(target_os = "macos", target_arch = "x86"),
         link_name = "nice$UNIX2003"
     )]
     pub fn nice(incr: c_int) -> c_int;
 
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn grantpt(fd: c_int) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn posix_openpt(flags: c_int) -> c_int;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn ptsname(fd: c_int) -> *mut c_char;
-    #[cfg(not(target_os = "l4re"))]
+    #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
     pub fn unlockpt(fd: c_int) -> c_int;
 
     #[cfg(not(target_os = "aix"))]
     pub fn strcasestr(cs: *const c_char, ct: *const c_char) -> *mut c_char;
+    #[cfg(not(target_os = "rtems"))]
     pub fn getline(lineptr: *mut *mut c_char, n: *mut size_t, stream: *mut FILE) -> ssize_t;
 
+    #[cfg(not(target_os = "rtems"))]
     #[cfg_attr(gnu_file_offset_bits64, link_name = "lockf64")]
     pub fn lockf(fd: c_int, cmd: c_int, len: off_t) -> c_int;
 
@@ -2289,7 +2314,7 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(target_os = "aix"))] {
+    if #[cfg(not(any(target_os = "aix", target_os = "rtems")))] {
         extern "C" {
             pub fn dladdr(addr: *const c_void, info: *mut Dl_info) -> c_int;
         }
@@ -2297,7 +2322,11 @@ cfg_if! {
 }
 
 cfg_if! {
-    if #[cfg(not(any(target_os = "solaris", target_os = "espidf")))] {
+    if #[cfg(not(any(
+        target_os = "solaris",
+        target_os = "espidf",
+        target_os = "rtems"
+    )))] {
         extern "C" {
             pub fn flock(fd: c_int, operation: c_int) -> c_int;
         }
@@ -2315,6 +2344,7 @@ cfg_if! {
 cfg_if! {
     if #[cfg(not(target_os = "redox"))] {
         extern "C" {
+            #[cfg(not(target_os = "rtems"))]
             pub fn getsid(pid: pid_t) -> pid_t;
             #[cfg_attr(
                 all(target_os = "macos", any(target_arch = "x86", target_arch = "x86_64")),
@@ -2369,7 +2399,7 @@ cfg_if! {
         }
     } else {
         extern "C" {
-            #[cfg(not(target_os = "l4re"))]
+            #[cfg(not(any(target_os = "l4re", target_os = "rtems")))]
             pub fn readlinkat(
                 dirfd: c_int,
                 pathname: *const c_char,
