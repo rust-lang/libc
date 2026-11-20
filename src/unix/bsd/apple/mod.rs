@@ -9,6 +9,7 @@ use crate::{
 };
 
 pub type wchar_t = i32;
+pub type wint_t = c_int;
 pub type clock_t = c_ulong;
 pub type time_t = c_long;
 pub type suseconds_t = i32;
