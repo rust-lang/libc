@@ -168,6 +168,7 @@ fn visit_foreign_item_fn(table: &mut FfiItems, i: &syn::ForeignItemFn, abi: &Abi
         link_name,
         parameters,
         return_type,
+        variadic: i.sig.variadic.is_some(),
     });
 }
 

@@ -367,11 +367,13 @@ CTEST_EXTERN union Word ctest_roundtrip__Word(
 /* Query a function's pointer */
 
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__calloc(void) {
-    return (ctest_void_func)calloc;
+    void *(*ctest_fn)(size_t, size_t) = calloc;
+    return (ctest_void_func)ctest_fn;
 }
 
 CTEST_EXTERN ctest_void_func ctest_foreign_fn__printf(void) {
-    return (ctest_void_func)printf;
+    int (*ctest_fn)(const char *, ...) = printf;
+    return (ctest_void_func)ctest_fn;
 }
 
 #ifdef _MSC_VER

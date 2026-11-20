@@ -39,6 +39,7 @@ pub(crate) enum CTy {
     Fn {
         args: Vec<Self>,
         ret: Box<Self>,
+        abi: Option<&'static str>,
     },
 }
 
@@ -101,6 +102,9 @@ pub(crate) fn cdecl(cty: &CTy, mut name: String) -> Result<String, InvalidReturn
 /// <https://web.archive.org/web/20210523053011/http://cseweb.ucsd.edu/~ricko/rt_lt.rule.html>.
 fn cdecl_impl(cty: &CTy, s: &mut String, prev: Option<&CTy>) -> Result<(), InvalidReturn> {
     cty.check_ret_ty()?;
+    if let CTy::Fn { abi: Some(abi), .. } = cty {
+        s.insert_str(0, abi);
+    }
     cty.parens_if_needed(s, prev);
     match cty {
         CTy::Named { name, qual } => {
@@ -124,7 +128,7 @@ fn cdecl_impl(cty: &CTy, s: &mut String, prev: Option<&CTy>) -> Result<(), Inval
             write!(s, "[{len}]").unwrap();
             cdecl_impl(ty, s, Some(cty))?;
         }
-        CTy::Fn { args, ret } => {
+        CTy::Fn { args, ret, .. } => {
             // Functions act as a RHS `(args...)`, then the return type is applied as normal.
             let mut tmp = String::new();
             s.push('(');
@@ -234,17 +238,20 @@ pub(crate) fn func(args: Vec<CTy>, ret: CTy) -> CTy {
     CTy::Fn {
         args,
         ret: Box::new(ret),
+        abi: None,
     }
 }
 
 /// Create a function pointer with the given arguments and return type.
 ///
 /// By default the function pointer is mutable, with `volatile` and `restrict` keywords not applied.
+#[cfg(test)]
 pub(crate) fn func_ptr(args: Vec<CTy>, ret: CTy) -> CTy {
     CTy::Ptr {
         ty: Box::new(CTy::Fn {
             args,
             ret: Box::new(ret),
+            abi: None,
         }),
         qual: Qual {
             constness: Constness::Mut,
