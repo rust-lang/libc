@@ -257,8 +257,6 @@ impl<S, T> StateMonad<S, T> {
     }
 }
 
-type ParsingMonad = StateMonad<ParsingState, FfiItems>;
-
 #[test]
 fn tmpmonad() {
     let (state, value) = StateMonad::pure(2)
@@ -271,19 +269,19 @@ fn tmpmonad() {
 }
 
 /* FIXME: maybe further separate the state that is "shared" among items (i.e.
- * the uid field at the time of writing) from the state that is particular to
- * the current module being parsed (i.e. field current_module at the time of
+ * the id field at the time of writing) from the state that is particular to the
+ * current module being parsed (i.e. field current_module at the time of
  * writing.) */
 #[derive(Debug, Clone)]
 struct ParsingState {
-    uid: usize,
+    id: usize,
     current_module: Path,
 }
 
 impl ParsingState {
     const fn new() -> Self {
         Self {
-            uid: 0,
+            id: 0,
             current_module: Path {
                 leading_colon: None,
                 segments: Punctuated::new(),
@@ -297,6 +295,8 @@ impl Default for ParsingState {
         Self::new()
     }
 }
+
+type ParsingMonad = StateMonad<ParsingState, FfiItems>;
 
 /// Represents a collected set of top-level Rust items relevant to FFI generation or analysis.
 ///
@@ -480,7 +480,7 @@ impl FfiItems {
 
     /// Searches for all occurrences of a given item in the subtree rooted at this `FfiItems`.
     ///
-    /// Searching occurrences of a given item is done by looking up the UID of the item throughout
+    /// Searching occurrences of a given item is done by looking up the ID of the item throughout
     /// the entire subtree rooted at the receiver. This is unlike [`FfiItems::search_by_ident`],
     /// which searches throughout the first level of the subtree but does not recurse down
     /// subsequent levels.
@@ -1040,13 +1040,16 @@ fn resolve_pass(src: PassPair) -> PassPair {
         src.subtree.items.modules.clone().into_iter().fold(
             (src.clone(), Vec::new()),
             |(state, children), m| {
-                let pair = resolve_pass(PassPair {
+                let new_state = resolve_pass(PassPair {
                     subtree: m,
                     ..state
                 });
-                let new_child = pair.subtree.clone();
+                let new_children = children
+                    .into_iter()
+                    .chain(iter::once(new_state.subtree.clone()))
+                    .collect();
 
-                (pair, children.into_iter().chain([new_child]).collect())
+                (new_state, new_children)
             },
         );
 
@@ -1068,6 +1071,7 @@ fn resolve_pass(src: PassPair) -> PassPair {
     /* NOTE: duplicated_src's module tree is fully resolved but it may contain
      * duplicates in its zeroth depth level. */
     let duplicated_src = merge_module(unresolved_src, resolved_uses);
+    let codata = detect_codata(&duplicated_src);
 
     /* NOTE: new_src's module tree is ready to be integrated into the
      * whole-crate module tree. */
@@ -1178,8 +1182,8 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
     }
 
     macro_rules! search {
-        ($matcher:expr; $([$f:expr, $ty:tt]),+ $(,)?) => {
-            match $matcher {
+        ($scrutinee:expr; $([$f:expr, $ty:tt]),+ $(,)?) => {
+            match $scrutinee {
                 $(Some(RefGenericItem::$ty(it)) => $f(it.clone()),)+
                 Some(RefGenericItem::RefinedUse(_)) => {
                     unreachable!(
@@ -1284,9 +1288,9 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     let new_segments = $it
                         .path
                         .segments
-                        .clone()
-                        .into_iter()
+                        .iter()
                         .take($it.path.segments.len() - 1)
+                        .cloned()
                         .chain([PathSegment {
                             ident: rename.clone(),
                             arguments: PathArguments::None,
@@ -1390,6 +1394,10 @@ fn resolve_use(r#use: RefinedUse, state: PassPair) -> Resolution {
                     whole_crate: state.whole_crate,
                 }
             } else {
+                /* NOTE: this is not unreachable! because the case where the
+                 * use declaration we're currently parsing cannot be resolved
+                 * because it depends on another use declaration resolving first
+                 * would fall here. */
                 return Resolution::Unresolved;
             };
 
@@ -1543,6 +1551,84 @@ fn update_tree(
             ..root.items
         },
         ..root
+    }
+}
+
+/* TODO: document this and test it out. */
+fn detect_codata(m: &Module) -> Vec<&Path> {
+    #[derive(Debug, Clone, Copy)]
+    struct ModuleTreePath<'a> {
+        path: &'a Path,
+        id: usize,
+    }
+
+    fn path_til(items: &FfiItems, id: usize) -> (Vec<ModuleTreePath<'_>>, Option<&FfiItems>) {
+        fn traverse<'a>(
+            items: &'a FfiItems,
+            id: usize,
+            path: Vec<ModuleTreePath<'a>>,
+            target: Option<&'a FfiItems>,
+        ) -> (Vec<ModuleTreePath<'a>>, Option<&'a FfiItems>) {
+            let (ControlFlow::Break(v) | ControlFlow::Continue(v)) =
+                items
+                    .items()
+                    .try_fold((path, target), |(path, target), it| match it {
+                        RefGenericItem::Module(m) if m.id == id => ControlFlow::Break((
+                            path.iter()
+                                .chain(iter::once(&ModuleTreePath {
+                                    path: &m.path,
+                                    id: m.id,
+                                }))
+                                .map(|&it| it)
+                                .collect(),
+                            Some(&m.items),
+                        )),
+                        RefGenericItem::Module(m) => {
+                            let (new_path, new_target) =
+                                traverse(&m.items, id, path.clone(), target);
+
+                            if new_target.is_some() {
+                                ControlFlow::Break((new_path, new_target))
+                            } else {
+                                ControlFlow::Continue((path, target))
+                            }
+                        }
+                        _ => ControlFlow::Continue((path, target)),
+                    });
+
+            v
+        }
+
+        traverse(items, id, vec![], None)
+    }
+
+    fn compare_path_ids(lhs: &[ModuleTreePath<'_>], rhs: &[ModuleTreePath<'_>]) -> bool {
+        let (ControlFlow::Break(eq) | ControlFlow::Continue(eq)) =
+            lhs.iter().zip(rhs).try_fold(true, |_, (lhs, rhs)| {
+                if lhs.id == rhs.id {
+                    ControlFlow::Continue(true)
+                } else {
+                    ControlFlow::Break(false)
+                }
+            });
+
+        eq
+    }
+
+    let (path_til_fst, Some(fst)) = path_til(&m.items, m.id) else {
+        return Vec::new();
+    };
+    let (path_til_snd, Some(_)) = path_til(fst, m.id) else {
+        return Vec::new();
+    };
+
+    if compare_path_ids(&path_til_fst, &path_til_snd) {
+        path_til_snd
+            .into_iter()
+            .map(|ModuleTreePath { path, .. }| path)
+            .collect()
+    } else {
+        Vec::new()
     }
 }
 
@@ -1793,39 +1879,34 @@ fn visit_foreign_item_fn(monad: ParsingMonad, i: &syn::ForeignItemFn, abi: &Abi)
     };
 
     monad.bind(move |items| {
-        StateMonad::set(
-            move |ParsingState {
-                      uid,
-                      current_module,
-                  }| {
-                let path = append_path(current_module.clone(), &ident);
-                let new_uid = uid.strict_add(1);
-                let new_items = FfiItems {
-                    foreign_functions: items
-                        .foreign_functions
-                        .into_iter()
-                        .chain([Fn {
-                            id: new_uid,
-                            public,
-                            abi,
-                            cached_path: ast::path_to_string(&path),
-                            cached_ident: ident.to_string().into_boxed_str(),
-                            path: path,
-                            link_name,
-                            parameters,
-                            return_type,
-                        }])
-                        .collect(),
-                    ..items
-                };
-                let new_state = ParsingState {
-                    uid: new_uid,
-                    current_module,
-                };
+        StateMonad::set(move |ParsingState { id, current_module }| {
+            let path = append_path(current_module.clone(), &ident);
+            let new_id = id.strict_add(1);
+            let new_items = FfiItems {
+                foreign_functions: items
+                    .foreign_functions
+                    .into_iter()
+                    .chain([Fn {
+                        id: new_id,
+                        public,
+                        abi,
+                        cached_path: ast::path_to_string(&path),
+                        cached_ident: ident.to_string().into_boxed_str(),
+                        path: path,
+                        link_name,
+                        parameters,
+                        return_type,
+                    }])
+                    .collect(),
+                ..items
+            };
+            let new_state = ParsingState {
+                id: new_id,
+                current_module,
+            };
 
-                (new_state, new_items)
-            },
-        )
+            (new_state, new_items)
+        })
     })
 }
 
@@ -1841,38 +1922,33 @@ fn visit_foreign_item_static(
     let ty = i.ty.deref().clone();
 
     monad.bind(move |items| {
-        StateMonad::set(
-            move |ParsingState {
-                      uid,
-                      current_module,
-                  }| {
-                let path = append_path(current_module.clone(), &ident);
-                let new_uid = uid.strict_add(1);
-                let new_items = FfiItems {
-                    foreign_statics: items
-                        .foreign_statics
-                        .into_iter()
-                        .chain([Static {
-                            id: new_uid,
-                            public,
-                            abi,
-                            cached_path: ast::path_to_string(&path),
-                            cached_ident: ident.to_string().into_boxed_str(),
-                            path: path,
-                            link_name,
-                            ty,
-                        }])
-                        .collect(),
-                    ..items
-                };
-                let new_state = ParsingState {
-                    uid: new_uid,
-                    current_module,
-                };
+        StateMonad::set(move |ParsingState { id, current_module }| {
+            let path = append_path(current_module.clone(), &ident);
+            let new_id = id.strict_add(1);
+            let new_items = FfiItems {
+                foreign_statics: items
+                    .foreign_statics
+                    .into_iter()
+                    .chain([Static {
+                        id: new_id,
+                        public,
+                        abi,
+                        cached_path: ast::path_to_string(&path),
+                        cached_ident: ident.to_string().into_boxed_str(),
+                        path: path,
+                        link_name,
+                        ty,
+                    }])
+                    .collect(),
+                ..items
+            };
+            let new_state = ParsingState {
+                id: new_id,
+                current_module,
+            };
 
-                (new_state, new_items)
-            },
-        )
+            (new_state, new_items)
+        })
     })
 }
 
@@ -1882,36 +1958,31 @@ fn visit_item_type(monad: ParsingMonad, i: &syn::ItemType) -> ParsingMonad {
     let ident = i.ident.clone();
 
     monad.bind(move |items| {
-        StateMonad::set(
-            move |ParsingState {
-                      uid,
-                      current_module,
-                  }| {
-                let path = append_path(current_module.clone(), &ident);
-                let new_uid = uid.strict_add(1);
-                let new_items = FfiItems {
-                    aliases: items
-                        .aliases
-                        .into_iter()
-                        .chain([Type {
-                            id: new_uid,
-                            public,
-                            cached_path: ast::path_to_string(&path),
-                            cached_ident: ident.to_string().into_boxed_str(),
-                            path: path,
-                            ty,
-                        }])
-                        .collect(),
-                    ..items
-                };
-                let new_state = ParsingState {
-                    uid: new_uid,
-                    current_module,
-                };
+        StateMonad::set(move |ParsingState { id, current_module }| {
+            let path = append_path(current_module.clone(), &ident);
+            let new_id = id.strict_add(1);
+            let new_items = FfiItems {
+                aliases: items
+                    .aliases
+                    .into_iter()
+                    .chain([Type {
+                        id: new_id,
+                        public,
+                        cached_path: ast::path_to_string(&path),
+                        cached_ident: ident.to_string().into_boxed_str(),
+                        path: path,
+                        ty,
+                    }])
+                    .collect(),
+                ..items
+            };
+            let new_state = ParsingState {
+                id: new_id,
+                current_module,
+            };
 
-                (new_state, new_items)
-            },
-        )
+            (new_state, new_items)
+        })
     })
 }
 
@@ -1925,36 +1996,31 @@ fn visit_item_struct(monad: ParsingMonad, i: &syn::ItemStruct) -> ParsingMonad {
     };
 
     monad.bind(move |items| {
-        StateMonad::set(
-            move |ParsingState {
-                      uid,
-                      current_module,
-                  }| {
-                let path = append_path(current_module.clone(), &ident);
-                let new_uid = uid.strict_add(1);
-                let new_items = FfiItems {
-                    structs: items
-                        .structs
-                        .into_iter()
-                        .chain([Struct {
-                            id: new_uid,
-                            public,
-                            cached_path: ast::path_to_string(&path),
-                            cached_ident: ident.to_string().into_boxed_str(),
-                            path: path,
-                            fields,
-                        }])
-                        .collect(),
-                    ..items
-                };
-                let new_state = ParsingState {
-                    uid: new_uid,
-                    current_module,
-                };
+        StateMonad::set(move |ParsingState { id, current_module }| {
+            let path = append_path(current_module.clone(), &ident);
+            let new_id = id.strict_add(1);
+            let new_items = FfiItems {
+                structs: items
+                    .structs
+                    .into_iter()
+                    .chain([Struct {
+                        id: new_id,
+                        public,
+                        cached_path: ast::path_to_string(&path),
+                        cached_ident: ident.to_string().into_boxed_str(),
+                        path: path,
+                        fields,
+                    }])
+                    .collect(),
+                ..items
+            };
+            let new_state = ParsingState {
+                id: new_id,
+                current_module,
+            };
 
-                (new_state, new_items)
-            },
-        )
+            (new_state, new_items)
+        })
     })
 }
 
@@ -1964,36 +2030,31 @@ fn visit_item_union(monad: ParsingMonad, i: &syn::ItemUnion) -> ParsingMonad {
     let fields = collect_fields(&i.fields.named);
 
     monad.bind(move |items| {
-        StateMonad::set(
-            move |ParsingState {
-                      uid,
-                      current_module,
-                  }| {
-                let path = append_path(current_module.clone(), &ident);
-                let new_uid = uid.strict_add(1);
-                let new_items = FfiItems {
-                    unions: items
-                        .unions
-                        .into_iter()
-                        .chain([Union {
-                            id: new_uid,
-                            public,
-                            cached_path: ast::path_to_string(&path),
-                            cached_ident: ident.to_string().into_boxed_str(),
-                            path: path,
-                            fields,
-                        }])
-                        .collect(),
-                    ..items
-                };
-                let new_state = ParsingState {
-                    uid: new_uid,
-                    current_module,
-                };
+        StateMonad::set(move |ParsingState { id, current_module }| {
+            let path = append_path(current_module.clone(), &ident);
+            let new_id = id.strict_add(1);
+            let new_items = FfiItems {
+                unions: items
+                    .unions
+                    .into_iter()
+                    .chain([Union {
+                        id: new_id,
+                        public,
+                        cached_path: ast::path_to_string(&path),
+                        cached_ident: ident.to_string().into_boxed_str(),
+                        path: path,
+                        fields,
+                    }])
+                    .collect(),
+                ..items
+            };
+            let new_state = ParsingState {
+                id: new_id,
+                current_module,
+            };
 
-                (new_state, new_items)
-            },
-        )
+            (new_state, new_items)
+        })
     })
 }
 
@@ -2003,36 +2064,31 @@ fn visit_item_const(monad: ParsingMonad, i: &syn::ItemConst) -> ParsingMonad {
     let ty = i.ty.deref().clone();
 
     monad.bind(move |items| {
-        StateMonad::set(
-            move |ParsingState {
-                      uid,
-                      current_module,
-                  }| {
-                let path = append_path(current_module.clone(), &ident);
-                let new_uid = uid.strict_add(1);
-                let new_items = FfiItems {
-                    constants: items
-                        .constants
-                        .into_iter()
-                        .chain([Const {
-                            id: new_uid,
-                            public,
-                            cached_path: ast::path_to_string(&path),
-                            cached_ident: ident.to_string().into_boxed_str(),
-                            path: path,
-                            ty,
-                        }])
-                        .collect(),
-                    ..items
-                };
-                let new_state = ParsingState {
-                    uid: new_uid,
-                    current_module,
-                };
+        StateMonad::set(move |ParsingState { id, current_module }| {
+            let path = append_path(current_module.clone(), &ident);
+            let new_id = id.strict_add(1);
+            let new_items = FfiItems {
+                constants: items
+                    .constants
+                    .into_iter()
+                    .chain([Const {
+                        id: new_id,
+                        public,
+                        cached_path: ast::path_to_string(&path),
+                        cached_ident: ident.to_string().into_boxed_str(),
+                        path: path,
+                        ty,
+                    }])
+                    .collect(),
+                ..items
+            };
+            let new_state = ParsingState {
+                id: new_id,
+                current_module,
+            };
 
-                (new_state, new_items)
-            },
-        )
+            (new_state, new_items)
+        })
     })
 }
 
@@ -2067,7 +2123,7 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
         StateMonad::set(move |state: ParsingState| {
             let (
                 ParsingState {
-                    uid: uid_after_child,
+                    id: id_after_child,
                     current_module: child_path,
                 },
                 child_items,
@@ -2076,13 +2132,13 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
             /* NOTE: even if the module was empty and the UID was not modified,
              * we know the same UID we had before has already been used for
              * another item. It must be incremented no matter what. */
-            let new_uid = uid_after_child.strict_add(1);
+            let new_id = id_after_child.strict_add(1);
             let new_items = FfiItems {
                 modules: items
                     .modules
                     .into_iter()
                     .chain([Module {
-                        id: new_uid,
+                        id: new_id,
                         public: vis,
                         cached_ident: ident.to_string().into_boxed_str(),
                         cached_path: ast::path_to_string(&child_path),
@@ -2093,7 +2149,7 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
                 ..items
             };
             let new_state = ParsingState {
-                uid: new_uid,
+                id: new_id,
                 ..state
             };
 
