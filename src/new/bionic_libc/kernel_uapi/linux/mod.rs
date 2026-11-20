@@ -3,4 +3,5 @@
 //! <https://cs.android.com/android/platform/superproject/main/+/main:bionic/libc/kernel/uapi/linux/>
 
 pub(crate) mod fs;
+pub(crate) mod kcmp;
 pub(crate) mod types;
