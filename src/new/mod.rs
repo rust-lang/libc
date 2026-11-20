@@ -206,6 +206,7 @@ cfg_if! {
 
         #[cfg(target_env = "gnu")]
         pub use self::{
+            io::fcntl::*,
             net::route::*,
             signal::*,
             sys::mount::*,
