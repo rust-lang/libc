@@ -936,6 +936,7 @@ pub const IPV6_RECVHOPLIMIT: c_int = 37;
 pub const IPV6_JOIN_GROUP: c_int = 12;
 pub const IPV6_LEAVE_GROUP: c_int = 13;
 pub const IPV6_CHECKSUM: c_int = 26;
+pub const IPV6_RTHDRDSTOPTS: c_int = 35;
 pub const IPV6_RECVPKTINFO: c_int = 36;
 pub const IPV6_PKTINFO: c_int = 46;
 pub const IPV6_HOPLIMIT: c_int = 47;

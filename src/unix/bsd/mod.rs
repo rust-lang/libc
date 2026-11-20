@@ -272,6 +272,16 @@ pub const IPV6_MULTICAST_HOPS: c_int = 10;
 pub const IPV6_MULTICAST_LOOP: c_int = 11;
 pub const ICMP6_FILTER: c_int = 18;
 pub const IPV6_V6ONLY: c_int = 27;
+pub const IPV6_RECVRTHDR: c_int = 38;
+pub const IPV6_RECVHOPOPTS: c_int = 39;
+pub const IPV6_RECVDSTOPTS: c_int = 40;
+pub const IPV6_USE_MIN_MTU: c_int = 42;
+pub const IPV6_RECVPATHMTU: c_int = 43;
+pub const IPV6_PATHMTU: c_int = 44;
+pub const IPV6_NEXTHOP: c_int = 48;
+pub const IPV6_HOPOPTS: c_int = 49;
+pub const IPV6_DSTOPTS: c_int = 50;
+pub const IPV6_RTHDR: c_int = 51;
 pub const IPV6_DONTFRAG: c_int = 62;
 
 pub const IPTOS_ECN_NOTECT: u8 = 0x00;
