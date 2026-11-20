@@ -20,14 +20,14 @@ pub type idtype_t = c_uint;
 pub type loff_t = i64;
 pub type pthread_key_t = c_uint;
 
-pub type clock_t = c_long;
+pub type clock_t = c_int;
 pub type time_t = i64;
-pub type suseconds_t = c_long;
+pub type suseconds_t = c_int;
 pub type ino_t = u64;
 pub type off_t = i64;
 pub type blkcnt_t = i32;
 
-pub type blksize_t = c_long;
+pub type blksize_t = c_int;
 cfg_if! {
     // `fsblkcnt_t` and `fsfilcnt_t` are 64-bit since v4.0.12, see:
     // https://github.com/emscripten-core/emscripten/pull/24769
@@ -40,7 +40,7 @@ cfg_if! {
     }
 }
 pub type rlim_t = u64;
-pub type nlink_t = u32;
+pub type nlink_t = c_ulong; // register_t
 
 // FIXME(1.0,deprecate): lfs binding to be removed
 pub type ino64_t = ino_t;
@@ -122,11 +122,15 @@ s! {
         pub f_files: crate::fsfilcnt_t,
         pub f_ffree: crate::fsfilcnt_t,
         pub f_favail: crate::fsfilcnt_t,
+        #[cfg(target_endian = "little")]
         pub f_fsid: c_ulong,
-        __f_unused: Padding<c_int>,
+        #[cfg(target_pointer_width = "32")]
+        __pad: Padding<c_int>,
+        #[cfg(target_endian = "big")]
+        pub f_fsid: c_ulong,
         pub f_flag: c_ulong,
         pub f_namemax: c_ulong,
-        __f_spare: Padding<[c_int; 6]>,
+        __f_reserved: Padding<[c_int; 6]>,
     }
 
     pub struct signalfd_siginfo {
@@ -159,7 +163,7 @@ s! {
     }
 
     pub struct cpu_set_t {
-        bits: [u32; 32],
+        bits: [c_ulong; 128 / size_of::<c_long>()],
     }
 
     // System V IPC
@@ -238,14 +242,26 @@ s! {
         pub msg_name: *mut c_void,
         pub msg_namelen: crate::socklen_t,
         pub msg_iov: *mut crate::iovec,
+        #[cfg(all(target_pointer_width = "64", target_endian = "big"))]
+        __pad1: Padding<c_int>,
         pub msg_iovlen: c_int,
+        #[cfg(all(target_pointer_width = "64", target_endian = "little"))]
+        __pad1: Padding<c_int>,
         pub msg_control: *mut c_void,
+        #[cfg(all(target_pointer_width = "64", target_endian = "big"))]
+        __pad2: Padding<c_int>,
         pub msg_controllen: crate::socklen_t,
+        #[cfg(all(target_pointer_width = "64", target_endian = "little"))]
+        __pad2: Padding<c_int>,
         pub msg_flags: c_int,
     }
 
     pub struct cmsghdr {
+        #[cfg(all(target_pointer_width = "64", target_endian = "big"))]
+        __pad1: Padding<c_int>,
         pub cmsg_len: crate::socklen_t,
+        #[cfg(all(target_pointer_width = "64", target_endian = "little"))]
+        __pad1: Padding<c_int>,
         pub cmsg_level: c_int,
         pub cmsg_type: c_int,
     }
@@ -256,7 +272,7 @@ s! {
     }
 
     pub struct sem_t {
-        __val: [c_int; 4],
+        __val: [c_int; 4 * size_of::<c_long>() / size_of::<c_int>()],
     }
     pub struct stat {
         pub st_dev: crate::dev_t,
@@ -348,12 +364,14 @@ s! {
         pub ha: [c_uchar; crate::MAX_ADDR_LEN],
     }
 
-    #[repr(align(4))]
+    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct pthread_mutex_t {
         size: [u8; crate::__SIZEOF_PTHREAD_MUTEX_T],
     }
 
-    #[repr(align(4))]
+    #[cfg_attr(target_pointer_width = "32", repr(align(4)))]
+    #[cfg_attr(target_pointer_width = "64", repr(align(8)))]
     pub struct pthread_rwlock_t {
         size: [u8; crate::__SIZEOF_PTHREAD_RWLOCK_T],
     }
@@ -1117,7 +1135,10 @@ pub const B4000000: crate::speed_t = 0o010017;
 
 pub const SO_BINDTODEVICE: c_int = 25;
 pub const SCM_TIMESTAMP: c_int = SO_TIMESTAMP;
+#[cfg(target_pointer_width = "32")]
 pub const SO_TIMESTAMP: c_int = 63;
+#[cfg(target_pointer_width = "64")]
+pub const SO_TIMESTAMP: c_int = 29;
 pub const SO_MARK: c_int = 36;
 pub const SO_RXQ_OVFL: c_int = 40;
 pub const SO_PEEK_OFF: c_int = 42;
@@ -1199,8 +1220,14 @@ pub const SO_LINGER: c_int = 13;
 pub const SO_REUSEPORT: c_int = 15;
 pub const SO_RCVLOWAT: c_int = 18;
 pub const SO_SNDLOWAT: c_int = 19;
+#[cfg(target_pointer_width = "32")]
 pub const SO_RCVTIMEO: c_int = 66;
+#[cfg(target_pointer_width = "64")]
+pub const SO_RCVTIMEO: c_int = 20;
+#[cfg(target_pointer_width = "32")]
 pub const SO_SNDTIMEO: c_int = 67;
+#[cfg(target_pointer_width = "64")]
+pub const SO_SNDTIMEO: c_int = 21;
 pub const SO_ACCEPTCONN: c_int = 30;
 
 pub const IPV6_RTHDR_LOOSE: c_int = 0;
@@ -1238,10 +1265,19 @@ pub const EXTPROC: crate::tcflag_t = 0x00010000;
 
 pub const MAP_HUGETLB: c_int = 0x040000;
 
+#[cfg(target_pointer_width = "32")]
 pub const F_GETLK: c_int = 12;
+#[cfg(target_pointer_width = "64")]
+pub const F_GETLK: c_int = 5;
 pub const F_GETOWN: c_int = 9;
+#[cfg(target_pointer_width = "32")]
 pub const F_SETLK: c_int = 13;
+#[cfg(target_pointer_width = "64")]
+pub const F_SETLK: c_int = 6;
+#[cfg(target_pointer_width = "32")]
 pub const F_SETLKW: c_int = 14;
+#[cfg(target_pointer_width = "64")]
+pub const F_SETLKW: c_int = 7;
 pub const F_SETOWN: c_int = 8;
 pub const F_OFD_GETLK: c_int = 36;
 pub const F_OFD_SETLK: c_int = 37;
