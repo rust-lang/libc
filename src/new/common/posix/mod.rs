@@ -9,6 +9,7 @@
     target_os = "l4re",
     target_os = "linux",
     target_os = "qurt",
+    target_os = "serenity",
     target_vendor = "apple",
 ))]
 pub(crate) mod pthread;
