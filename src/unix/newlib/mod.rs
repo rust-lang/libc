@@ -33,6 +33,7 @@ pub type fsblkcnt_t = u64;
 pub type fsfilcnt_t = u32;
 pub type id_t = u32;
 pub type key_t = c_int;
+#[cfg(not(target_os = "rtems"))]
 pub type loff_t = c_longlong;
 pub type mode_t = c_uint;
 pub type nfds_t = u32;
@@ -166,6 +167,7 @@ s! {
 
     // FIXME(1.0): This should not implement `PartialEq`
     #[allow(unpredictable_function_pointer_comparisons)]
+    #[cfg(not(target_os = "rtems"))]
     pub struct sigaction {
         pub sa_handler: extern "C" fn(arg1: c_int),
         pub sa_mask: sigset_t,
@@ -189,11 +191,14 @@ s! {
         pub pw_passwd: *mut c_char,
         pub pw_uid: crate::uid_t,
         pub pw_gid: crate::gid_t,
+        #[cfg(target_os = "rtems")]
+        pub pw_comment: *mut c_char,
         pub pw_gecos: *mut c_char,
         pub pw_dir: *mut c_char,
         pub pw_shell: *mut c_char,
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct termios {
         // Unverified
         pub c_iflag: crate::tcflag_t,
@@ -209,11 +214,16 @@ s! {
         pub c_ospeed: u32,
     }
 
+    #[cfg_attr(target_os = "rtems", repr(align(4)))]
     pub struct sem_t {
         // Unverified
+        #[cfg(not(target_os = "rtems"))]
         __size: [c_char; 16],
+        #[cfg(target_os = "rtems")]
+        __size: [c_char; 28],
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct Dl_info {
         // Unverified
         pub dli_fname: *const c_char,
@@ -222,6 +232,7 @@ s! {
         pub dli_saddr: *mut c_void,
     }
 
+    #[cfg(not(target_os = "rtems"))]
     pub struct utsname {
         // Unverified
         pub sysname: [c_char; 65],
@@ -234,9 +245,13 @@ s! {
 
     pub struct cpu_set_t {
         // Unverified
+        #[cfg(not(target_os = "rtems"))]
         bits: [u32; 32],
+        #[cfg(target_os = "rtems")]
+        bits: [c_long; 1],
     }
 
+    #[cfg_attr(target_os = "rtems", repr(align(8)))]
     pub struct pthread_attr_t {
         // Unverified
         #[cfg(not(target_os = "espidf"))]
@@ -259,7 +274,7 @@ s! {
         pub detachstate: i32,
     }
 
-    #[cfg_attr(target_os = "espidf", repr(align(4)))]
+    #[cfg_attr(any(target_os = "espidf", target_os = "rtems"), repr(align(4)))]
     pub struct pthread_rwlockattr_t {
         // Unverified
         __size: [u8; __SIZEOF_PTHREAD_RWLOCKATTR_T],
@@ -270,7 +285,8 @@ s! {
             target_os = "espidf",
             all(
                 target_pointer_width = "32",
-                any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")
+                any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"),
+                not(target_os = "rtems")
             )
         ),
         repr(align(4))
@@ -280,7 +296,8 @@ s! {
             not(target_os = "espidf"),
             any(
                 target_pointer_width = "64",
-                not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc"))
+                not(any(target_arch = "mips", target_arch = "arm", target_arch = "powerpc")),
+                target_os = "rtems"
             )
         ),
         repr(align(8))
@@ -342,14 +359,15 @@ s! {
         size: [u8; crate::__SIZEOF_PTHREAD_MUTEXATTR_T],
     }
 
-    #[cfg_attr(target_os = "espidf", repr(align(4)))]
-    #[cfg_attr(not(target_os = "espidf"), repr(align(8)))]
+    #[cfg_attr(any(target_os = "espidf", target_os = "rtems"), repr(align(4)))]
+    #[cfg_attr(not(any(target_os = "espidf", target_os = "rtems")), repr(align(8)))]
     pub struct pthread_cond_t {
         // Unverified
         size: [u8; crate::__SIZEOF_PTHREAD_COND_T],
     }
 
-    #[repr(align(4))]
+    #[cfg_attr(target_os = "rtems", repr(align(8)))]
+    #[cfg_attr(not(target_os = "rtems"), repr(align(4)))]
     pub struct pthread_condattr_t {
         // Unverified
         size: [u8; crate::__SIZEOF_PTHREAD_CONDATTR_T],
@@ -375,10 +393,11 @@ s! {
         pub st_ctim: crate::timespec,
         pub st_blksize: crate::blksize_t,
         pub st_blocks: crate::blkcnt_t,
+        #[cfg(not(target_os = "rtems"))]
         st_spare4: Padding<[c_long; 2usize]>,
     }
 
-    #[cfg(not(target_os = "vita"))]
+    #[cfg(not(any(target_os = "rtems", target_os = "vita")))]
     pub struct dirent {
         pub d_ino: crate::ino_t,
         pub d_type: c_uchar,
@@ -631,6 +650,7 @@ pub const S_IROTH: mode_t = 0o0004;
 pub const S_IWOTH: mode_t = 0o0002;
 pub const S_IXOTH: mode_t = 0o0001;
 
+#[cfg(not(target_os = "rtems"))]
 pub const SOL_TCP: c_int = 6;
 
 pub const PF_UNSPEC: c_int = 0;
@@ -650,6 +670,7 @@ pub const AF_INET: c_int = 2;
 
 pub const CLOCK_REALTIME: crate::clockid_t = 1;
 pub const CLOCK_MONOTONIC: crate::clockid_t = 4;
+#[cfg(not(target_os = "rtems"))]
 pub const CLOCK_BOOTTIME: crate::clockid_t = 4;
 
 pub const SOCK_STREAM: c_int = 1;
@@ -717,6 +738,7 @@ pub const IFF_BROADCAST: c_int = 0x2; // broadcast address valid
 pub const IFF_DEBUG: c_int = 0x4; // turn on debugging
 pub const IFF_LOOPBACK: c_int = 0x8; // is a loopback net
 pub const IFF_POINTOPOINT: c_int = 0x10; // interface is point-to-point link
+#[cfg(not(target_os = "rtems"))]
 pub const IFF_NOTRAILERS: c_int = 0x20; // avoid use of trailers
 pub const IFF_RUNNING: c_int = 0x40; // resources allocated
 pub const IFF_NOARP: c_int = 0x80; // no address resolution protocol
@@ -815,7 +837,9 @@ cfg_if! {
 pub const IPV6_V6ONLY: c_int = 27;
 pub const IPV6_JOIN_GROUP: c_int = 12;
 pub const IPV6_LEAVE_GROUP: c_int = 13;
+#[cfg(not(target_os = "rtems"))]
 pub const IPV6_ADD_MEMBERSHIP: c_int = 12;
+#[cfg(not(target_os = "rtems"))]
 pub const IPV6_DROP_MEMBERSHIP: c_int = 13;
 
 cfg_if! {
@@ -898,8 +922,11 @@ cfg_if! {
 pub const EXIT_SUCCESS: c_int = 0;
 pub const EXIT_FAILURE: c_int = 1;
 
+#[cfg(not(target_os = "rtems"))]
 pub const PRIO_PROCESS: c_int = 0;
+#[cfg(not(target_os = "rtems"))]
 pub const PRIO_PGRP: c_int = 1;
+#[cfg(not(target_os = "rtems"))]
 pub const PRIO_USER: c_int = 2;
 
 // include/paths.h from newlib's libc
@@ -939,8 +966,11 @@ f! {
 }
 
 extern "C" {
+    #[cfg(not(target_os = "rtems"))]
     pub fn __errno() -> *mut c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn getrlimit(resource: c_int, rlim: *mut crate::rlimit) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn setrlimit(resource: c_int, rlim: *const crate::rlimit) -> c_int;
 
     #[cfg_attr(
@@ -963,6 +993,7 @@ extern "C" {
     pub fn clock_settime(clock_id: crate::clockid_t, tp: *const crate::timespec) -> c_int;
     pub fn clock_gettime(clock_id: crate::clockid_t, tp: *mut crate::timespec) -> c_int;
     pub fn clock_getres(clock_id: crate::clockid_t, res: *mut crate::timespec) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     #[cfg_attr(target_os = "espidf", link_name = "lwip_close")]
     pub fn closesocket(sockfd: c_int) -> c_int;
     pub fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
@@ -987,6 +1018,7 @@ extern "C" {
         flags: c_int,
     ) -> c_int;
     pub fn memalign(align: size_t, size: size_t) -> *mut c_void;
+    #[cfg(not(target_os = "rtems"))]
     pub fn fexecve(fd: c_int, argv: *const *mut c_char, envp: *const *mut c_char) -> c_int;
     pub fn gettimeofday(tp: *mut crate::timeval, tz: *mut c_void) -> c_int;
     pub fn getgrgid_r(
@@ -996,8 +1028,10 @@ extern "C" {
         buflen: size_t,
         result: *mut *mut crate::group,
     ) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn sigaltstack(ss: *const stack_t, oss: *mut stack_t) -> c_int;
     pub fn sem_close(sem: *mut sem_t) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn getdtablesize() -> c_int;
     pub fn getgrnam_r(
         name: *const c_char,
@@ -1011,6 +1045,7 @@ extern "C" {
     pub fn getgrnam(name: *const c_char) -> *mut crate::group;
     pub fn pthread_kill(thread: crate::pthread_t, sig: c_int) -> c_int;
     pub fn sem_unlink(name: *const c_char) -> c_int;
+    #[cfg(not(target_os = "rtems"))]
     pub fn daemon(nochdir: c_int, noclose: c_int) -> c_int;
     pub fn getpwnam_r(
         name: *const c_char,
@@ -1033,6 +1068,7 @@ extern "C" {
         child: Option<unsafe extern "C" fn()>,
     ) -> c_int;
     pub fn getgrgid(gid: crate::gid_t) -> *mut crate::group;
+    #[cfg(not(target_os = "rtems"))]
     pub fn popen(command: *const c_char, mode: *const c_char) -> *mut crate::FILE;
     pub fn uname(buf: *mut crate::utsname) -> c_int;
 }
