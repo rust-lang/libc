@@ -9,3 +9,5 @@ pub(crate) mod generic;
 pub(crate) mod mips;
 #[cfg(target_arch = "mips64")]
 pub(crate) mod mips64;
+#[cfg(target_arch = "s390x")]
+pub(crate) mod s390x;
