@@ -210,8 +210,6 @@ cfg_if! {
 // FIXME(1.0,deprecate,64): lfs binding to be removed
 pub type rlim64_t = __rlim64_t;
 
-pub type __rusage_who = c_int;
-
 pub type __priority_which = c_uint;
 
 pub type sa_family_t = c_uchar;
@@ -3255,8 +3253,8 @@ pub const RLIMIT_VMEM: crate::__rlimit_resource_t = 10;
 pub const RLIMIT_NLIMITS: crate::__rlimit_resource_t = 11;
 pub const RLIM_NLIMITS: crate::__rlimit_resource_t = 11;
 
-pub const RUSAGE_SELF: __rusage_who = 0;
-pub const RUSAGE_CHILDREN: __rusage_who = -1;
+pub const RUSAGE_SELF: c_int = 0;
+pub const RUSAGE_CHILDREN: c_int = -1;
 
 pub const PRIO_PROCESS: __priority_which = 0;
 pub const PRIO_PGRP: __priority_which = 1;
