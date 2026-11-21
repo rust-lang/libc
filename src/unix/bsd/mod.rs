@@ -265,6 +265,11 @@ pub const IP_TOS: c_int = 3;
 pub const IP_MULTICAST_IF: c_int = 9;
 pub const IP_MULTICAST_TTL: c_int = 10;
 pub const IP_MULTICAST_LOOP: c_int = 11;
+pub const IP_PORTRANGE: c_int = 19;
+
+pub const IP_PORTRANGE_DEFAULT: c_int = 0;
+pub const IP_PORTRANGE_HIGH: c_int = 1;
+pub const IP_PORTRANGE_LOW: c_int = 2;
 
 pub const IPV6_UNICAST_HOPS: c_int = 4;
 pub const IPV6_MULTICAST_IF: c_int = 9;
