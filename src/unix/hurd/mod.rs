@@ -2026,12 +2026,12 @@ pub const TTYDEF_IFLAG: crate::tcflag_t = 11042;
 pub const TTYDEF_LFLAG: crate::tcflag_t = 1483;
 pub const TTYDEF_CFLAG: crate::tcflag_t = 23040;
 pub const TTYDEF_SPEED: crate::tcflag_t = 9600;
-pub const CEOL: u8 = 0u8;
+pub const CEOL: u8 = 0;
 pub const CERASE: u8 = 127;
 pub const CMIN: u8 = 1;
 pub const CQUIT: u8 = 28;
 pub const CTIME: u8 = 0;
-pub const CBRK: u8 = 0u8;
+pub const CBRK: u8 = CEOL;
 
 // dlfcn.h
 pub const RTLD_DEFAULT: *mut c_void = ptr::null_mut();
