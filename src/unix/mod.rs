@@ -1572,7 +1572,8 @@ extern "C" {
             target_os = "freebsd",
             target_os = "cygwin",
             target_os = "dragonfly",
-            target_os = "haiku"
+            target_os = "haiku",
+            target_os = "hurd"
         ),
         link_name = "__res_init"
     )]
