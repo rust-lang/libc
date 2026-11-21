@@ -313,7 +313,8 @@ cfg_if! {
     if #[cfg(not(any(
         target_os = "nto",
         target_os = "qnx",
-        target_os = "l4re"
+        target_os = "l4re",
+        target_os = "hurd"
     )))] {
         pub const USRQUOTA: c_int = 0;
         pub const GRPQUOTA: c_int = 1;
