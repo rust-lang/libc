@@ -3592,6 +3592,8 @@ extern "C" {
     pub fn reboot(how_to: c_int) -> c_int;
     pub fn setfsgid(gid: crate::gid_t) -> c_int;
     pub fn setfsuid(uid: crate::uid_t) -> c_int;
+    pub fn capget(hdrp: crate::cap_user_header_t, datap: crate::cap_user_data_t) -> c_int;
+    pub fn capset(hdrp: crate::cap_user_header_t, datap: crate::cap_user_data_t) -> c_int;
 
     // Not available now on Android
     pub fn mkfifoat(dirfd: c_int, pathname: *const c_char, mode: mode_t) -> c_int;
