@@ -237,6 +237,7 @@ cfg_if! {
         pub use net::if_::*;
         pub use sys::file::*;
         pub use sys::ipc::*;
+        pub use sys::mman::*;
         pub use sys::socket::*;
         pub use sys::statvfs::*;
         pub use sys::time::*;
