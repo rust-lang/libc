@@ -78,9 +78,8 @@ impl PathUtils for Module {
     }
 
     fn rename_with(self, f: impl ops::Fn(&Path) -> Path + Clone) -> Self {
-        let new_items = self
-            .items
-            .items()
+        let new_items = (&self.items)
+            .into_iter()
             .map(|it| {
                 macro_rules! exe {
                     ($($ty:tt),+ $(,)?) => {

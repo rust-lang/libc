@@ -1,5 +1,6 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
+use std::arch::naked_asm;
 use std::cmp::Ordering;
 use std::fmt::{
     self,
@@ -432,29 +433,12 @@ impl FfiItems {
         items
     }
 
-    /// Yields an iterator over all items in the calling `FfiItems`.
-    pub(crate) fn items<'a>(&'a self) -> RefItemIterator<'a> {
-        let base = self
-            .aliases
-            .iter()
-            .map(RefGenericItem::Type)
-            .chain(self.structs.iter().map(RefGenericItem::Struct))
-            .chain(self.unions.iter().map(RefGenericItem::Union))
-            .chain(self.constants.iter().map(RefGenericItem::Const))
-            .chain(self.foreign_functions.iter().map(RefGenericItem::Fn))
-            .chain(self.foreign_statics.iter().map(RefGenericItem::Static))
-            .chain(self.uses.iter().map(RefGenericItem::RefinedUse))
-            .chain(self.modules.iter().map(RefGenericItem::Module));
-
-        Box::new(base)
-    }
-
     /// Searches for an item in the container, without recursing through the subtree rooted at the
     /// receiver.
     ///
     /// The generic item may be pattern-matched to find out specifically which item was found.
     fn search_by_ident(&self, ident: &Ident) -> Option<RefGenericItem<'_>> {
-        self.items().find(|it| {
+        self.into_iter().find(|it| {
             macro_rules! cmp {
                 ($($var:tt),+ $(,)?) => {
                     match it {
@@ -490,7 +474,7 @@ impl FfiItems {
             id: usize,
             gather: Vec<RefGenericItem<'a>>,
         ) -> Vec<RefGenericItem<'a>> {
-            let gather = if let Some(at_this_level) = items.items().find(|it| {
+            let gather = if let Some(at_this_level) = items.into_iter().find(|it| {
                 macro_rules! find {
                     ($($ty:tt),+ $(,)?) => {
                         match it {
@@ -611,6 +595,58 @@ impl PartialEq for FfiItems {
             && self.foreign_functions == other.foreign_functions
             && self.foreign_statics == other.foreign_statics
             && self.modules == other.modules
+    }
+}
+
+macro_rules! items_into_iter {
+    ($src:tt, $iter_function:tt, $item_ty:tt) => {{
+        items_into_iter! {
+            @b
+            base, $src, $iter_function, $item_ty;
+            structs: Struct,
+            unions: Union,
+            constants: Const,
+            foreign_functions: Fn,
+            foreign_statics: Static,
+            uses: RefinedUse,
+            modules: Module,
+        }
+
+        Box::new(base)
+    }};
+    (@b $base:tt, $src:tt, $iter_function:tt, $item_ty:tt; $($field:tt : $ty:tt),+ $(,)?) => {
+        let $base = $src.aliases.$iter_function().map($item_ty::Type);
+
+        items_into_iter!(@r $base, $src, $iter_function, $item_ty; $($field : $ty),+);
+    };
+    (@r
+        $base:tt, $src:tt, $iter_function:tt, $item_ty:tt;
+        $field:tt : $ty:tt $(, $tail:tt : $tail_ty:tt)*
+    ) => {
+        let $base = $base.chain($src.$field.$iter_function().map($item_ty::$ty));
+
+        items_into_iter!(@r $base, $src, $iter_function, $item_ty; $($tail : $tail_ty),*);
+    };
+    (@r $base:tt, $src:tt, $iter_function:tt, $item_ty:tt;) => {
+        let $base = $base;
+    };
+}
+
+impl IntoIterator for FfiItems {
+    type IntoIter = ItemIterator;
+    type Item = GenericItem;
+
+    fn into_iter(self) -> Self::IntoIter {
+        items_into_iter!(self, into_iter, GenericItem)
+    }
+}
+
+impl<'a> IntoIterator for &'a FfiItems {
+    type IntoIter = RefItemIterator<'a>;
+    type Item = RefGenericItem<'a>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        items_into_iter!(self, iter, RefGenericItem)
     }
 }
 
@@ -888,6 +924,10 @@ impl<'a> From<RefGenericItem<'a>> for GenericItem {
     }
 }
 
+/// Iterator over owned items. Used when transforming [`FfiItems`] into an iterator through
+/// its `IntoIterator` implentation.
+type ItemIterator = Box<dyn Iterator<Item = GenericItem>>;
+
 /// Sum type akin to [`GenericItem`] but holding references over the items extracted from the
 /// [`FfiItems`] term/constant.
 #[derive(Debug, Clone, Copy)]
@@ -1073,11 +1113,17 @@ fn resolve_pass(src: PassPair) -> PassPair {
     let duplicated_src = merge_module(unresolved_src, resolved_uses);
     let codata = detect_codata(&duplicated_src);
 
+    let terminating_src = if !codata.is_empty() {
+        cleanse_codata(duplicated_src, &codata)
+    } else {
+        duplicated_src
+    };
+
     /* NOTE: new_src's module tree is ready to be integrated into the
      * whole-crate module tree. */
     let new_src = Module {
-        items: duplicated_src.items.dedup(),
-        ..duplicated_src
+        items: terminating_src.items.dedup(),
+        ..terminating_src
     };
     let new_whole_crate = update_tree(
         &new_src.path,
@@ -1554,8 +1600,12 @@ fn update_tree(
     }
 }
 
-/* TODO: document this and test it out. */
-fn detect_codata(m: &Module) -> Vec<&Path> {
+/// Attempts to detect two nested occurrences of module `m` within its subtree.
+///
+/// It will return the graph path of module paths from `m` (not inclusive) to the first nested
+/// occurrence. The path should be the same between the first and second nested occurrences for this
+/// function to consider it codata.
+fn detect_codata(m: &Module) -> Vec<Path> {
     #[derive(Debug, Clone, Copy)]
     struct ModuleTreePath<'a> {
         path: &'a Path,
@@ -1571,7 +1621,7 @@ fn detect_codata(m: &Module) -> Vec<&Path> {
         ) -> (Vec<ModuleTreePath<'a>>, Option<&'a FfiItems>) {
             let (ControlFlow::Break(v) | ControlFlow::Continue(v)) =
                 items
-                    .items()
+                    .into_iter()
                     .try_fold((path, target), |(path, target), it| match it {
                         RefGenericItem::Module(m) if m.id == id => ControlFlow::Break((
                             path.iter()
@@ -1626,10 +1676,45 @@ fn detect_codata(m: &Module) -> Vec<&Path> {
         path_til_snd
             .into_iter()
             .map(|ModuleTreePath { path, .. }| path)
+            .cloned()
             .collect()
     } else {
         Vec::new()
     }
+}
+
+fn cleanse_codata(m: Module, path: &[Path]) -> Module {
+    let target = path.last().expect("TODO");
+
+    path.iter().try_fold(m, |m, p| {
+        /* FIXME: we can probably avoid cloning here, but that can wait. */
+        let Some(cm) = m.items.modules.iter().find(|m| m.path == *p).cloned() else {
+            unreachable!("TODO.")
+        };
+
+        if cm.path == *target {
+            if p == target {
+                ControlFlow::Break(Module {
+                    items: FfiItems {
+                        modules: m
+                            .items
+                            .modules
+                            .into_iter()
+                            .filter(|m| m.path == cm.path)
+                            .collect(),
+                        ..m.items
+                    },
+                    ..m
+                })
+            } else {
+                todo!()
+            }
+        } else {
+            todo!()
+        }
+    });
+
+    todo!()
 }
 
 /// Integrates the resolution items of `src` into `dst`.
@@ -1638,8 +1723,8 @@ fn detect_codata(m: &Module) -> Vec<&Path> {
 /// essentially ignored. The latter pack an `FfiItems` that is integrated into `dst`'s own items.
 /// That is the merging part.
 ///
-/// Note that, during merging, the items to be merged may end up duplicating existing items on
-/// `dst`. It is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
+/// *NB*: during merging, the items to be merged may end up duplicating existing items on `dst`. It
+/// is call-site's responsibility to deduplicate those through [`FfiItems::dedup`].
 fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
     println!(
         "[merge_module] resolution_outcome: {:#?}",
@@ -1770,7 +1855,7 @@ fn merge_module(dst: Module, src: Vec<Resolution>) -> Module {
             },
         )
         .fold(dst, |dst, it| Module {
-            items: dst.items.items().chain(it.items()).collect(),
+            items: dst.items.into_iter().chain(it.into_iter()).collect(),
             ..dst
         })
 }
