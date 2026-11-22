@@ -151,6 +151,20 @@ pub type __fd_mask = c_long;
 pub type fd_mask = __fd_mask;
 pub type blksize_t = __blksize_t;
 
+pub type Elf32_Half = u16;
+pub type Elf32_Word = u32;
+pub type Elf32_Off = u32;
+pub type Elf32_Addr = u32;
+pub type Elf32_Section = u16;
+
+pub type Elf64_Half = u16;
+pub type Elf64_Word = u32;
+pub type Elf64_Off = u64;
+pub type Elf64_Addr = u64;
+pub type Elf64_Xword = u64;
+pub type Elf64_Sxword = i64;
+pub type Elf64_Section = u16;
+
 cfg_if! {
     if #[cfg(any(target_pointer_width = "64", gnu_file_offset_bits64))] {
         pub type blkcnt_t = __blkcnt64_t;
@@ -1117,6 +1131,106 @@ s! {
 
         pub ut_addr_v6: [i32; 4],
         __glibc_reserved: Padding<[c_char; 20]>,
+    }
+
+    pub struct Elf32_Ehdr {
+        pub e_ident: [c_uchar; 16],
+        pub e_type: Elf32_Half,
+        pub e_machine: Elf32_Half,
+        pub e_version: Elf32_Word,
+        pub e_entry: Elf32_Addr,
+        pub e_phoff: Elf32_Off,
+        pub e_shoff: Elf32_Off,
+        pub e_flags: Elf32_Word,
+        pub e_ehsize: Elf32_Half,
+        pub e_phentsize: Elf32_Half,
+        pub e_phnum: Elf32_Half,
+        pub e_shentsize: Elf32_Half,
+        pub e_shnum: Elf32_Half,
+        pub e_shstrndx: Elf32_Half,
+    }
+
+    pub struct Elf32_Shdr {
+        pub sh_name: Elf32_Word,
+        pub sh_type: Elf32_Word,
+        pub sh_flags: Elf32_Word,
+        pub sh_addr: Elf32_Addr,
+        pub sh_offset: Elf32_Off,
+        pub sh_size: Elf32_Word,
+        pub sh_link: Elf32_Word,
+        pub sh_info: Elf32_Word,
+        pub sh_addralign: Elf32_Word,
+        pub sh_entsize: Elf32_Word,
+    }
+
+    pub struct Elf32_Sym {
+        pub st_name: Elf32_Word,
+        pub st_value: Elf32_Addr,
+        pub st_size: Elf32_Word,
+        pub st_info: c_uchar,
+        pub st_other: c_uchar,
+        pub st_shndx: Elf32_Section,
+    }
+
+    pub struct Elf32_Phdr {
+        pub p_type: Elf32_Word,
+        pub p_offset: Elf32_Off,
+        pub p_vaddr: Elf32_Addr,
+        pub p_paddr: Elf32_Addr,
+        pub p_filesz: Elf32_Word,
+        pub p_memsz: Elf32_Word,
+        pub p_flags: Elf32_Word,
+        pub p_align: Elf32_Word,
+    }
+
+    pub struct Elf64_Ehdr {
+        pub e_ident: [c_uchar; 16],
+        pub e_type: Elf64_Half,
+        pub e_machine: Elf64_Half,
+        pub e_version: Elf64_Word,
+        pub e_entry: Elf64_Addr,
+        pub e_phoff: Elf64_Off,
+        pub e_shoff: Elf64_Off,
+        pub e_flags: Elf64_Word,
+        pub e_ehsize: Elf64_Half,
+        pub e_phentsize: Elf64_Half,
+        pub e_phnum: Elf64_Half,
+        pub e_shentsize: Elf64_Half,
+        pub e_shnum: Elf64_Half,
+        pub e_shstrndx: Elf64_Half,
+    }
+
+    pub struct Elf64_Shdr {
+        pub sh_name: Elf64_Word,
+        pub sh_type: Elf64_Word,
+        pub sh_flags: Elf64_Xword,
+        pub sh_addr: Elf64_Addr,
+        pub sh_offset: Elf64_Off,
+        pub sh_size: Elf64_Xword,
+        pub sh_link: Elf64_Word,
+        pub sh_info: Elf64_Word,
+        pub sh_addralign: Elf64_Xword,
+        pub sh_entsize: Elf64_Xword,
+    }
+
+    pub struct Elf64_Sym {
+        pub st_name: Elf64_Word,
+        pub st_info: c_uchar,
+        pub st_other: c_uchar,
+        pub st_shndx: Elf64_Section,
+        pub st_value: Elf64_Addr,
+        pub st_size: Elf64_Xword,
+    }
+
+    pub struct Elf64_Phdr {
+        pub p_type: Elf64_Word,
+        pub p_flags: Elf64_Word,
+        pub p_offset: Elf64_Off,
+        pub p_vaddr: Elf64_Addr,
+        pub p_paddr: Elf64_Addr,
+        pub p_filesz: Elf64_Xword,
+        pub p_memsz: Elf64_Xword,
+        pub p_align: Elf64_Xword,
     }
 }
 
