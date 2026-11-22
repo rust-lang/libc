@@ -1684,37 +1684,57 @@ fn detect_codata(m: &Module) -> Vec<Path> {
 }
 
 fn cleanse_codata(m: Module, path: &[Path]) -> Module {
-    let target = path.last().expect("TODO");
+    let target = path.last().expect(
+        "This function only ever gets called when there really is codata, \
+         which means `path` is non-empty.",
+    );
+    let next = path.first().expect("Ibid.");
 
-    path.iter().try_fold(m, |m, p| {
-        /* FIXME: we can probably avoid cloning here, but that can wait. */
-        let Some(cm) = m.items.modules.iter().find(|m| m.path == *p).cloned() else {
-            unreachable!("TODO.")
-        };
+    let Some(cm) = m.items.modules.iter().find(|m| m.path == *next) else {
+        unreachable!(
+            "Each call of `cleanse_codata` receives a module and a path slice \
+             where the first element of the slice is always guaranteed to \
+             denote the path of one of the direct descendant modules of `m`."
+        );
+    };
 
-        if cm.path == *target {
-            if p == target {
-                ControlFlow::Break(Module {
-                    items: FfiItems {
-                        modules: m
-                            .items
-                            .modules
-                            .into_iter()
-                            .filter(|m| m.path == cm.path)
-                            .collect(),
-                        ..m.items
-                    },
-                    ..m
-                })
-            } else {
-                todo!()
-            }
-        } else {
-            todo!()
+    if cm.path == *target {
+        let cm_path = cm.path.clone();
+
+        Module {
+            items: FfiItems {
+                modules: m
+                    .items
+                    .modules
+                    .into_iter()
+                    .filter(|m| m.path == cm_path)
+                    .collect(),
+                ..m.items
+            },
+            ..m
         }
-    });
+    } else {
+        let new_cm = cleanse_codata(cm.clone(), &path[2..]);
 
-    todo!()
+        Module {
+            items: FfiItems {
+                modules: m
+                    .items
+                    .modules
+                    .into_iter()
+                    .map(|m| {
+                        if m.path == new_cm.path {
+                            new_cm.clone()
+                        } else {
+                            m
+                        }
+                    })
+                    .collect(),
+                ..m.items
+            },
+            ..m
+        }
+    }
 }
 
 /// Integrates the resolution items of `src` into `dst`.
