@@ -4240,7 +4240,6 @@ extern "C" {
     ) -> c_int;
     pub fn pthread_kill(__threadid: crate::pthread_t, __signo: c_int) -> c_int;
     pub fn pthread_cancel(thread: crate::pthread_t) -> c_int;
-    pub fn __pthread_equal(__t1: __pthread_t, __t2: __pthread_t) -> c_int;
 
     pub fn pthread_getattr_np(__thr: crate::pthread_t, __attr: *mut pthread_attr_t) -> c_int;
 
