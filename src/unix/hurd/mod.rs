@@ -212,8 +212,6 @@ pub type __priority_which = c_uint;
 
 pub type sa_family_t = c_uchar;
 
-pub type in_port_t = u16;
-
 pub type __sigval_t = crate::sigval;
 
 pub type sigevent_t = sigevent;
@@ -302,7 +300,7 @@ s! {
     pub struct sockaddr_in {
         pub sin_len: c_uchar,
         pub sin_family: sa_family_t,
-        pub sin_port: in_port_t,
+        pub sin_port: crate::in_port_t,
         pub sin_addr: crate::in_addr,
         pub sin_zero: [c_uchar; 8usize],
     }
@@ -310,7 +308,7 @@ s! {
     pub struct sockaddr_in6 {
         pub sin6_len: c_uchar,
         pub sin6_family: sa_family_t,
-        pub sin6_port: in_port_t,
+        pub sin6_port: crate::in_port_t,
         pub sin6_flowinfo: u32,
         pub sin6_addr: crate::in6_addr,
         pub sin6_scope_id: u32,
@@ -3343,31 +3341,31 @@ pub const IPPROTO_NONE: c_int = 59;
 pub const IPPROTO_DSTOPTS: c_int = 60;
 pub const IPPROTO_MH: c_int = 135;
 
-pub const IPPORT_ECHO: in_port_t = 7;
-pub const IPPORT_DISCARD: in_port_t = 9;
-pub const IPPORT_SYSTAT: in_port_t = 11;
-pub const IPPORT_DAYTIME: in_port_t = 13;
-pub const IPPORT_NETSTAT: in_port_t = 15;
-pub const IPPORT_FTP: in_port_t = 21;
-pub const IPPORT_TELNET: in_port_t = 23;
-pub const IPPORT_SMTP: in_port_t = 25;
-pub const IPPORT_TIMESERVER: in_port_t = 37;
-pub const IPPORT_NAMESERVER: in_port_t = 42;
-pub const IPPORT_WHOIS: in_port_t = 43;
-pub const IPPORT_MTP: in_port_t = 57;
-pub const IPPORT_TFTP: in_port_t = 69;
-pub const IPPORT_RJE: in_port_t = 77;
-pub const IPPORT_FINGER: in_port_t = 79;
-pub const IPPORT_TTYLINK: in_port_t = 87;
-pub const IPPORT_SUPDUP: in_port_t = 95;
-pub const IPPORT_EXECSERVER: in_port_t = 512;
-pub const IPPORT_LOGINSERVER: in_port_t = 513;
-pub const IPPORT_CMDSERVER: in_port_t = 514;
-pub const IPPORT_EFSSERVER: in_port_t = 520;
-pub const IPPORT_BIFFUDP: in_port_t = 512;
-pub const IPPORT_WHOSERVER: in_port_t = 513;
-pub const IPPORT_ROUTESERVER: in_port_t = 520;
-pub const IPPORT_USERRESERVED: in_port_t = 5000;
+pub const IPPORT_ECHO: crate::in_port_t = 7;
+pub const IPPORT_DISCARD: crate::in_port_t = 9;
+pub const IPPORT_SYSTAT: crate::in_port_t = 11;
+pub const IPPORT_DAYTIME: crate::in_port_t = 13;
+pub const IPPORT_NETSTAT: crate::in_port_t = 15;
+pub const IPPORT_FTP: crate::in_port_t = 21;
+pub const IPPORT_TELNET: crate::in_port_t = 23;
+pub const IPPORT_SMTP: crate::in_port_t = 25;
+pub const IPPORT_TIMESERVER: crate::in_port_t = 37;
+pub const IPPORT_NAMESERVER: crate::in_port_t = 42;
+pub const IPPORT_WHOIS: crate::in_port_t = 43;
+pub const IPPORT_MTP: crate::in_port_t = 57;
+pub const IPPORT_TFTP: crate::in_port_t = 69;
+pub const IPPORT_RJE: crate::in_port_t = 77;
+pub const IPPORT_FINGER: crate::in_port_t = 79;
+pub const IPPORT_TTYLINK: crate::in_port_t = 87;
+pub const IPPORT_SUPDUP: crate::in_port_t = 95;
+pub const IPPORT_EXECSERVER: crate::in_port_t = 512;
+pub const IPPORT_LOGINSERVER: crate::in_port_t = 513;
+pub const IPPORT_CMDSERVER: crate::in_port_t = 514;
+pub const IPPORT_EFSSERVER: crate::in_port_t = 520;
+pub const IPPORT_BIFFUDP: crate::in_port_t = 512;
+pub const IPPORT_WHOSERVER: crate::in_port_t = 513;
+pub const IPPORT_ROUTESERVER: crate::in_port_t = 520;
+pub const IPPORT_USERRESERVED: crate::in_port_t = 5000;
 
 pub const DT_UNKNOWN: c_uchar = 0;
 pub const DT_FIFO: c_uchar = 1;
