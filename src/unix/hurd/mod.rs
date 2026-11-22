@@ -95,8 +95,6 @@ pub type useconds_t = __useconds_t;
 pub type pid_t = __pid_t;
 pub type socklen_t = __socklen_t;
 
-pub type in_addr_t = u32;
-
 pub type _Float32 = f32;
 pub type _Float64 = f64;
 pub type _Float32x = f64;
@@ -298,7 +296,7 @@ s! {
     }
 
     pub struct in_addr {
-        pub s_addr: in_addr_t,
+        pub s_addr: crate::in_addr_t,
     }
 
     pub struct sockaddr_in {
