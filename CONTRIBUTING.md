@@ -92,6 +92,10 @@ There are a few relevant tests in `libc`:
 
 ## Submitting a Pull Request
 
+We use the `libc` API template by default. For changes to
+the `ctest`, append `?template=ctest_api.md` to the PR creation URL.
+With the GitHub CLI, run `gh pr create --template ctest_api.md`.
+
 When you submit a PR, please follow these guidelines to give your PR the best
 chance of being accepted:
 
