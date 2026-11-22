@@ -100,9 +100,6 @@ pub type _Float64 = f64;
 pub type _Float32x = f64;
 pub type _Float64x = f64;
 
-pub type __locale_t = *mut __locale_struct;
-pub type locale_t = __locale_t;
-
 pub type u_char = __u_char;
 pub type u_short = __u_short;
 pub type u_int = __u_int;
@@ -479,10 +476,6 @@ s! {
     pub struct __timeval {
         pub tv_sec: i32,
         pub tv_usec: i32,
-    }
-
-    pub struct __locale_data {
-        pub _address: u8,
     }
 
     pub struct stat {
@@ -910,14 +903,6 @@ s! {
         /// interface name, e.g. "en0"
         pub ifr_name: [c_char; crate::IFNAMSIZ],
         pub ifr_ifru: crate::sockaddr,
-    }
-
-    pub struct __locale_struct {
-        pub __locales: [*mut __locale_data; 13usize],
-        pub __ctype_b: *const c_ushort,
-        pub __ctype_tolower: *const c_int,
-        pub __ctype_toupper: *const c_int,
-        pub __names: [*const c_char; 13usize],
     }
 
     pub struct utsname {
