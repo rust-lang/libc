@@ -23,6 +23,12 @@ struct Person
     enum Color favorite_color;
 };
 
+struct VarBuf
+{
+    uint32_t len;
+    uint8_t data[];
+};
+
 union Word
 {
     uint16_t word;

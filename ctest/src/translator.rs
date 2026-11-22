@@ -243,10 +243,11 @@ impl<'a> Translator<'a> {
 
     /// Translate a Rust array declaration into its C equivalent.
     fn translate_array(&self, array: &syn::TypeArray) -> Result<cdecl::CTy, TranslationError> {
-        Ok(cdecl::array(
-            self.translate_type(array.elem.deref())?,
-            Some(&translate_expr(&array.len)),
-        ))
+        let len = translate_expr(&array.len);
+        // `[T; 0]` is how Rust writes a flexible array member. Zero-length arrays are not valid
+        // standard C (MSVC rejects them), so translate to an array of unknown size, `T[]`.
+        let len = (len != "0").then_some(len.as_str());
+        Ok(cdecl::array(self.translate_type(array.elem.deref())?, len))
     }
 
     /// Translate a Rust pointer into its equivalent C pointer.
