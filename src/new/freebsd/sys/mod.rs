@@ -5,4 +5,5 @@
 pub(crate) mod elf_common;
 pub(crate) mod file;
 pub(crate) mod ioccom;
+pub(crate) mod pciio;
 pub(crate) mod socket;

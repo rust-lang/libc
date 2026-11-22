@@ -263,6 +263,7 @@ cfg_if! {
         pub use sys::elf_common::*;
         pub use sys::file::*;
         pub use sys::ioccom::*;
+        pub use sys::pciio::*;
         pub use sys::socket::*;
     } else if #[cfg(target_os = "helenos")] {
         pub use abi::errno::*;
