@@ -1,0 +1,20 @@
+From: Harald Hoyer <harald@redhat.com>
+Subject: [PATCH] Enable linking to a static position independent executable
+Origin: https://www.openwall.com/lists/musl/2020/04/27/2
+
+--- a/tools/musl-gcc.specs.sh
++++ b/tools/musl-gcc.specs.sh
+@@ -18,11 +18,11 @@ libgcc.a%s %:if-exists(libgcc_eh.a%s)
+
+ *startfile:
+-%{!shared: $libdir/Scrt1.o} $libdir/crti.o crtbeginS.o%s
++%{shared:;static-pie:$libdir/rcrt1.o; :$libdir/Scrt1.o} $libdir/crti.o crtbeginS.o%s
+
+ *endfile:
+ crtendS.o%s $libdir/crtn.o
+
+ *link:
+--dynamic-linker $ldso -nostdlib %{shared:-shared} %{static:-static} %{rdynamic:-export-dynamic}
++-dynamic-linker $ldso -nostdlib %{shared:-shared} %{static:-static} %{static-pie:-static -pie --no-dynamic-linker} %{rdynamic:-export-dynamic}
+
+ *esp_link:

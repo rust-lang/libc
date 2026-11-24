@@ -33,6 +33,7 @@ curl --retry 5 "https://ci-mirrors.rust-lang.org/libc/${musl}.tar.gz" | tar xzf 
 cd "$musl"
 
 # Apply patches
+patch -p1 < ../ci/musl-gcc-static-pie.patch
 if [ "$musl_version" = "$old_musl" ]; then
     patch_dir="$(realpath ../ci/musl-patches-1.1.x)"
     for patchfile in "$patch_dir"/*; do
