@@ -214,6 +214,7 @@ TARGETS = [
     Target("thumbv7em-none-eabihf", dist=False),
     Target("thumbv7m-none-eabi", dist=False),
     Target("thumbv8m.main-none-eabi", dist=False),
+    Target("wasm64-unknown-emscripten", dist=False),
     Target("x86_64-unknown-dragonfly", dist=False),
     Target("x86_64-unknown-haiku", dist=False),
     Target("x86_64-unknown-helenos", dist=False),
