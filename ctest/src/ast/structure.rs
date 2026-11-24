@@ -12,6 +12,7 @@ use crate::{
 pub struct Struct {
     pub(crate) id: usize,
     pub(crate) public: bool,
+    pub(crate) is_codata: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
@@ -57,11 +58,12 @@ impl Default for Struct {
             public: Default::default(),
             cached_path: Default::default(),
             cached_ident: Default::default(),
+            fields: Default::default(),
+            is_codata: Default::default(),
             path: Path {
                 leading_colon: None,
                 segments: Punctuated::new(),
             },
-            fields: vec![],
         }
     }
 }

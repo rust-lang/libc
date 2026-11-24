@@ -8,6 +8,7 @@ use crate::ast::PathUtils;
 pub struct Type {
     pub(crate) id: usize,
     pub(crate) public: bool,
+    pub(crate) is_codata: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,

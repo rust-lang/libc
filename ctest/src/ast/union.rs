@@ -11,6 +11,7 @@ use crate::{
 pub struct Union {
     pub(crate) id: usize,
     pub(crate) public: bool,
+    pub(crate) is_codata: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,

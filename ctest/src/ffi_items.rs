@@ -1131,23 +1131,31 @@ fn resolve_pass(src: PassPair) -> PassPair {
         DebugFfiItems::from(&nonterminating_src.items),
     );
 
-    /* TODO: remember to somehow "mark" the paths that are found to be codata so
-     * that any path that refers to the pattern an arbitrary amount of times
-     * n > 1 is accepted in the filters in src/generator.rs. */
+    let (path_til_fst, path_til_snd) = detect_codata(&nonterminating_src);
+    let codata: Vec<_> = path_til_fst.iter().chain(&path_til_snd).collect();
+
     /* NOTE: new_src is said to be terminating because it contains no instances
      * of modules nested within themselves. If this were allowed, subsequent
      * runs of merge_module would choose the larger subtree, even if it only
      * contained itself nested one more time than the next largest subtree. */
-    let codata = detect_codata(&nonterminating_src);
     let new_src = if !codata.is_empty() {
         println!(
             "[resolve_pass] detected codata in module {} with graph path to \
              codata: {:?}",
             PrettyPath(&nonterminating_src.path),
-            codata.iter().map(PrettyPath).collect::<Vec<_>>(),
+            codata
+                .iter()
+                .map(|&it| it)
+                .map(PrettyPath)
+                .collect::<Vec<_>>(),
         );
 
-        cleanse_codata(nonterminating_src, &codata)
+        mark_codata(
+            cleanse_codata(nonterminating_src, &codata),
+            &path_til_fst
+                .last()
+                .expect("The codata vector is non-empty in this branch."),
+        )
     } else {
         nonterminating_src
     };
@@ -1627,12 +1635,86 @@ fn update_tree(
     }
 }
 
+/// Looks up the provided codata pattern within module `m`, and yields back a module where all items
+/// within the subtree where the codata is detected at are marked as having potentially non-finite
+/// paths.
+///
+/// This "marking" of items ensures that, at filter time, the paths for those items are both assumed
+/// to be those parsed from source and possibly imported from another module, as well as arbitrarily
+/// nested and repeated sequences of the codata pattern.
+fn mark_codata(m: Module, pattern: &Path) -> Module {
+    fn mark_module_subtree(m: Module) -> Module {
+        Module {
+            is_codata: true,
+            items: m
+                .items
+                .into_iter()
+                .map(|it| {
+                    macro_rules! map {
+                        ($($field:tt : $ty:tt),+ $(,)?) => {
+                            match it {
+                                $(GenericItem::$ty(it) => GenericItem::$ty($ty {
+                                    is_codata: true,
+                                    ..it
+                                })),+,
+                                GenericItem::Module(m) => {
+                                    GenericItem::Module(mark_module_subtree(m))
+                                }
+                                use_decl @ GenericItem::RefinedUse(_) => use_decl,
+                            }
+                        };
+                    }
+
+                    map! {
+                        aliases: Type,
+                        structs: Struct,
+                        unions: Union,
+                        constants: Const,
+                        foreign_functions: Fn,
+                        foreign_statics: Static,
+                    }
+                })
+                .collect(),
+            ..m
+        }
+    }
+
+    println!(
+        "[mark_codata] entered codata marking with module {}",
+        PrettyPath(&m.path),
+    );
+
+    Module {
+        items: FfiItems {
+            modules: m
+                .items
+                .modules
+                .into_iter()
+                .map(|m| {
+                    if m.path == *pattern {
+                        println!(
+                            "[mark_codata] found matching child module path: {}",
+                            PrettyPath(&m.path)
+                        );
+
+                        mark_module_subtree(m)
+                    } else {
+                        mark_codata(m, pattern)
+                    }
+                })
+                .collect(),
+            ..m.items
+        },
+        ..m
+    }
+}
+
 /// Attempts to detect two nested occurrences of module `m` within its subtree.
 ///
 /// It will return the graph path of module paths from `m` (not inclusive) to the second nested
 /// occurrence. The path should be the same between the first and second nested occurrences for this
 /// function to consider it codata. The returned path is thus "duplicated."
-fn detect_codata(m: &Module) -> Vec<Path> {
+fn detect_codata(m: &Module) -> (Vec<Path>, Vec<Path>) {
     #[derive(Debug, Clone, Copy)]
     struct ModuleTreePath<'a> {
         path: &'a Path,
@@ -1702,25 +1784,34 @@ fn detect_codata(m: &Module) -> Vec<Path> {
     }
 
     let (path_til_fst, Some(fst)) = path_til(&m.items, m.id) else {
-        return Vec::new();
+        return (Vec::new(), Vec::new());
     };
     let (path_til_snd, Some(_)) = path_til(fst, m.id) else {
-        return Vec::new();
+        return (Vec::new(), Vec::new());
     };
 
     if compare_path_ids(&path_til_fst, &path_til_snd) {
-        /* NOTE: it's important that we return the appended paths because the
-         * occurrence we want to remove is not the first one but the second one.
-         * To do so, we require first traversing the path to the first nested
-         * occurrence, and then reach the second one. */
-        path_til_fst
-            .into_iter()
-            .chain(path_til_snd)
-            .map(|ModuleTreePath { path, .. }| path)
-            .cloned()
-            .collect()
+        macro_rules! clone_paths {
+            ($it:tt) => {
+                $it.into_iter()
+                    .map(|ModuleTreePath { path, .. }| path)
+                    .cloned()
+                    .collect()
+            };
+        }
+
+        /* NOTE: it's important that the paths are not appended, but rather
+         * yield as a pair. After this function gets called, the codata pattern
+         * doesn't only get used for the purposes of removing the nested
+         * occurrences of a module off of its module tree. The codata pattern is
+         * also used when marking items as having potentially non-fininte
+         * paths. */
+        let fst = clone_paths!(path_til_fst);
+        let snd = clone_paths!(path_til_snd);
+
+        (fst, snd)
     } else {
-        Vec::new()
+        (Vec::new(), Vec::new())
     }
 }
 
@@ -1729,13 +1820,13 @@ fn detect_codata(m: &Module) -> Vec<Path> {
 ///
 /// The graph path to the first nested occurrence of `m` may be obtained through function
 /// [`detect_codata`].
-fn cleanse_codata(m: Module, path: &[Path]) -> Module {
+fn cleanse_codata(m: Module, path: &[&Path]) -> Module {
     let next = path.first().expect(
-        "This function only ever gets called when there really is codata, \
-         which means `path` is non-empty.",
+        "This function, at the time of writing, only ever gets called when \
+         there really is codata, which means `path` is non-empty.",
     );
 
-    let Some(cm) = m.items.modules.iter().find(|m| m.path == *next) else {
+    let Some(cm) = m.items.modules.iter().find(|m| m.path == **next) else {
         println!(
             "[cleanse_codata]: couldn't find child module {} with module {:}",
             PrettyPath(next),
@@ -1755,7 +1846,7 @@ fn cleanse_codata(m: Module, path: &[Path]) -> Module {
         PrettyPath(&m.path)
     );
 
-    if cm.path == *path.last().expect("Ibid. (see the note above on `next`.)") {
+    if cm.path == **path.last().expect("Ibid. (see the note above on `next`.)") {
         let cm_path = cm.path.clone();
 
         Module {
@@ -2058,6 +2149,7 @@ fn visit_foreign_item_fn(monad: ParsingMonad, i: &syn::ForeignItemFn, abi: &Abi)
                         link_name,
                         parameters,
                         return_type,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2100,6 +2192,7 @@ fn visit_foreign_item_static(
                         path: path,
                         link_name,
                         ty,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2134,6 +2227,7 @@ fn visit_item_type(monad: ParsingMonad, i: &syn::ItemType) -> ParsingMonad {
                         cached_ident: ident.to_string().into_boxed_str(),
                         path: path,
                         ty,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2172,6 +2266,7 @@ fn visit_item_struct(monad: ParsingMonad, i: &syn::ItemStruct) -> ParsingMonad {
                         cached_ident: ident.to_string().into_boxed_str(),
                         path: path,
                         fields,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2206,6 +2301,7 @@ fn visit_item_union(monad: ParsingMonad, i: &syn::ItemUnion) -> ParsingMonad {
                         cached_ident: ident.to_string().into_boxed_str(),
                         path: path,
                         fields,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2240,6 +2336,7 @@ fn visit_item_const(monad: ParsingMonad, i: &syn::ItemConst) -> ParsingMonad {
                         cached_ident: ident.to_string().into_boxed_str(),
                         path: path,
                         ty,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2306,6 +2403,7 @@ fn visit_item_mod(monad: ParsingMonad, i: &syn::ItemMod) -> ParsingMonad {
                         cached_path: ast::path_to_string(&child_path),
                         path: child_path,
                         items: child_items,
+                        is_codata: false,
                     }])
                     .collect(),
                 ..items
@@ -2468,4 +2566,18 @@ mod test1 { use super::*; }
     let items = FfiItems::visit_file(&file);
 
     println!("{:#?}", items);
+}
+
+#[test]
+fn tmp2() {
+    let source = r#"
+pub struct Foo;
+
+mod test1 { mod test2 { use crate::*; } }
+    "#;
+
+    let file = syn::parse_file(source).unwrap();
+    let items = FfiItems::visit_file(&file);
+
+    println!("{:#?}", items)
 }

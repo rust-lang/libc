@@ -18,6 +18,7 @@ pub struct Static {
     pub(crate) id: usize,
     pub(crate) public: bool,
     pub(crate) abi: Abi,
+    pub(crate) is_codata: bool,
     pub(crate) cached_path: BoxStr,
     pub(crate) cached_ident: BoxStr,
     pub(crate) path: Path,
