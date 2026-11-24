@@ -1,7 +1,7 @@
 use crate::BoxStr;
 
 /// Represents a field in a struct or union defined in Rust.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash)]
 pub struct Field {
     pub(crate) public: bool,
     pub(crate) ident: BoxStr,

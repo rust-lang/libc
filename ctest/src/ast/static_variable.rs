@@ -13,7 +13,7 @@ use crate::{
 ///
 /// This structure is only used for parsing statics in extern blocks,
 /// as a result it does not have a field for storing the expression.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash)]
 pub struct Static {
     pub(crate) id: usize,
     pub(crate) public: bool,

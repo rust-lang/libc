@@ -4,7 +4,7 @@ use crate::BoxStr;
 use crate::ast::PathUtils;
 
 /// Represents a type alias defined in Rust.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash)]
 pub struct Type {
     pub(crate) id: usize,
     pub(crate) public: bool,

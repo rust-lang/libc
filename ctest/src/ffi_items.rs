@@ -1,10 +1,10 @@
 //! Conversion of Rust code to a simplified abstract syntax tree.
 
-use std::arch::naked_asm;
 use std::cmp::Ordering;
 use std::fmt::{
     self,
     Debug,
+    Display,
     Formatter,
 };
 use std::ops::{
@@ -77,15 +77,6 @@ impl Debug for DebugFfiItems<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let mut dbg_struct = f.debug_struct("DebugFfiItems");
 
-        #[derive(Clone, Copy)]
-        struct PrettyPath<'a>(&'a Path);
-
-        impl Debug for PrettyPath<'_> {
-            fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-                f.pad(&ast::path_to_string(self.0))
-            }
-        }
-
         macro_rules! pretty_print {
             ($($field:tt: $ty:tt),+ $(,)?) => {$(
                 dbg_struct.field_with(stringify!($field), |f| {
@@ -154,6 +145,21 @@ impl Debug for DebugFfiItems<'_> {
         });
 
         dbg_struct.finish()
+    }
+}
+
+#[derive(Clone, Copy)]
+struct PrettyPath<'a>(&'a Path);
+
+impl Debug for PrettyPath<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.pad(&ast::path_to_string(self.0))
+    }
+}
+
+impl Display for PrettyPath<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        <Self as Debug>::fmt(self, f)
     }
 }
 
@@ -304,7 +310,7 @@ type ParsingMonad = StateMonad<ParsingState, FfiItems>;
 /// Includes foreign functions/statics, type aliases, structs, unions, and constants. Modules are
 /// collected as recursive `FfiItems`, and currently used to narrow down tested items to those in a
 /// specific module.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Hash)]
 pub(crate) struct FfiItems {
     pub(crate) aliases: Vec<Type>,
     pub(crate) structs: Vec<Struct>,
@@ -950,7 +956,7 @@ type RefItemIterator<'a> = Box<dyn Iterator<Item = RefGenericItem<'a>> + 'a>;
 ///
 /// This is a lot like [`RefinedUse`] in that it only exists as replacement for [`syn::UsePath`] but
 /// uses [`RefinedUseTree`] instead of [`syn::UseTree`]. See [`RefinedUseTree`] for details.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Hash)]
 pub(crate) struct RefinedUsePath {
     ident: Ident,
     tree: Box<RefinedUseTree>,
@@ -973,7 +979,7 @@ impl Default for RefinedUsePath {
 ///
 /// This enumeration is thus equivalent to `syn::UseTree` but does not consider the case of
 /// [`syn::UseTree::Group`].
-#[derive(Clone, Debug, PartialEq, Default)]
+#[derive(Clone, Debug, PartialEq, Default, Hash)]
 pub(crate) enum RefinedUseTree {
     Path(RefinedUsePath),
     Name(UseName),
@@ -987,7 +993,7 @@ pub(crate) enum RefinedUseTree {
 /// This exists only for the purpose of refining [`syn::UseTree`], which is used within
 /// [`syn::ItemUse`]. See type [`RefinedUseTree`] for the actual refinement and details on the
 /// purpose of this type.
-#[derive(Clone, Debug, PartialEq, Default)]
+#[derive(Clone, Debug, PartialEq, Default, Hash)]
 pub(crate) struct RefinedUse {
     public: bool,
     tree: RefinedUseTree,
@@ -1111,20 +1117,41 @@ fn resolve_pass(src: PassPair) -> PassPair {
     /* NOTE: duplicated_src's module tree is fully resolved but it may contain
      * duplicates in its zeroth depth level. */
     let duplicated_src = merge_module(unresolved_src, resolved_uses);
-    let codata = detect_codata(&duplicated_src);
 
-    let terminating_src = if !codata.is_empty() {
-        cleanse_codata(duplicated_src, &codata)
+    /* NOTE: nonterminating_src's module tree contains no duplicate trees but
+     * potentially contains modules nested within themselves more than once. */
+    let nonterminating_src = Module {
+        items: duplicated_src.items.dedup(),
+        ..duplicated_src
+    };
+
+    println!(
+        "[resolve_pass] nonterminating_src: path: {}, items: {:?}",
+        PrettyPath(&nonterminating_src.path),
+        DebugFfiItems::from(&nonterminating_src.items),
+    );
+
+    /* TODO: remember to somehow "mark" the paths that are found to be codata so
+     * that any path that refers to the pattern an arbitrary amount of times
+     * n > 1 is accepted in the filters in src/generator.rs. */
+    /* NOTE: new_src is said to be terminating because it contains no instances
+     * of modules nested within themselves. If this were allowed, subsequent
+     * runs of merge_module would choose the larger subtree, even if it only
+     * contained itself nested one more time than the next largest subtree. */
+    let codata = detect_codata(&nonterminating_src);
+    let new_src = if !codata.is_empty() {
+        println!(
+            "[resolve_pass] detected codata in module {} with graph path to \
+             codata: {:?}",
+            PrettyPath(&nonterminating_src.path),
+            codata.iter().map(PrettyPath).collect::<Vec<_>>(),
+        );
+
+        cleanse_codata(nonterminating_src, &codata)
     } else {
-        duplicated_src
+        nonterminating_src
     };
 
-    /* NOTE: new_src's module tree is ready to be integrated into the
-     * whole-crate module tree. */
-    let new_src = Module {
-        items: terminating_src.items.dedup(),
-        ..terminating_src
-    };
     let new_whole_crate = update_tree(
         &new_src.path,
         |_| GenericItem::Module(new_src.clone()),
@@ -1602,9 +1629,9 @@ fn update_tree(
 
 /// Attempts to detect two nested occurrences of module `m` within its subtree.
 ///
-/// It will return the graph path of module paths from `m` (not inclusive) to the first nested
+/// It will return the graph path of module paths from `m` (not inclusive) to the second nested
 /// occurrence. The path should be the same between the first and second nested occurrences for this
-/// function to consider it codata.
+/// function to consider it codata. The returned path is thus "duplicated."
 fn detect_codata(m: &Module) -> Vec<Path> {
     #[derive(Debug, Clone, Copy)]
     struct ModuleTreePath<'a> {
@@ -1624,18 +1651,27 @@ fn detect_codata(m: &Module) -> Vec<Path> {
                     .into_iter()
                     .try_fold((path, target), |(path, target), it| match it {
                         RefGenericItem::Module(m) if m.id == id => ControlFlow::Break((
-                            path.iter()
-                                .chain(iter::once(&ModuleTreePath {
+                            path.into_iter()
+                                .chain(iter::once(ModuleTreePath {
                                     path: &m.path,
                                     id: m.id,
                                 }))
-                                .map(|&it| it)
                                 .collect(),
                             Some(&m.items),
                         )),
                         RefGenericItem::Module(m) => {
-                            let (new_path, new_target) =
-                                traverse(&m.items, id, path.clone(), target);
+                            let (new_path, new_target) = traverse(
+                                &m.items,
+                                id,
+                                path.clone()
+                                    .into_iter()
+                                    .chain(iter::once(ModuleTreePath {
+                                        path: &m.path,
+                                        id: m.id,
+                                    }))
+                                    .collect(),
+                                target,
+                            );
 
                             if new_target.is_some() {
                                 ControlFlow::Break((new_path, new_target))
@@ -1673,8 +1709,13 @@ fn detect_codata(m: &Module) -> Vec<Path> {
     };
 
     if compare_path_ids(&path_til_fst, &path_til_snd) {
-        path_til_snd
+        /* NOTE: it's important that we return the appended paths because the
+         * occurrence we want to remove is not the first one but the second one.
+         * To do so, we require first traversing the path to the first nested
+         * occurrence, and then reach the second one. */
+        path_til_fst
             .into_iter()
+            .chain(path_til_snd)
             .map(|ModuleTreePath { path, .. }| path)
             .cloned()
             .collect()
@@ -1683,14 +1724,24 @@ fn detect_codata(m: &Module) -> Vec<Path> {
     }
 }
 
+/// Removes nested occurrences of `m` within its own subtree provided the graph path to reach the
+/// first nested occurrence of `m`.
+///
+/// The graph path to the first nested occurrence of `m` may be obtained through function
+/// [`detect_codata`].
 fn cleanse_codata(m: Module, path: &[Path]) -> Module {
-    let target = path.last().expect(
+    let next = path.first().expect(
         "This function only ever gets called when there really is codata, \
          which means `path` is non-empty.",
     );
-    let next = path.first().expect("Ibid.");
 
     let Some(cm) = m.items.modules.iter().find(|m| m.path == *next) else {
+        println!(
+            "[cleanse_codata]: couldn't find child module {} with module {:}",
+            PrettyPath(next),
+            PrettyPath(&m.path),
+        );
+
         unreachable!(
             "Each call of `cleanse_codata` receives a module and a path slice \
              where the first element of the slice is always guaranteed to \
@@ -1698,7 +1749,13 @@ fn cleanse_codata(m: Module, path: &[Path]) -> Module {
         );
     };
 
-    if cm.path == *target {
+    println!(
+        "[cleanse_codata] succeded in finding {} within module {}",
+        PrettyPath(next),
+        PrettyPath(&m.path)
+    );
+
+    if cm.path == *path.last().expect("Ibid. (see the note above on `next`.)") {
         let cm_path = cm.path.clone();
 
         Module {
@@ -1707,14 +1764,14 @@ fn cleanse_codata(m: Module, path: &[Path]) -> Module {
                     .items
                     .modules
                     .into_iter()
-                    .filter(|m| m.path == cm_path)
+                    .filter(|m| m.path != cm_path)
                     .collect(),
                 ..m.items
             },
             ..m
         }
     } else {
-        let new_cm = cleanse_codata(cm.clone(), &path[2..]);
+        let new_cm = cleanse_codata(cm.clone(), &path[1..]);
 
         Module {
             items: FfiItems {
@@ -1722,11 +1779,11 @@ fn cleanse_codata(m: Module, path: &[Path]) -> Module {
                     .items
                     .modules
                     .into_iter()
-                    .map(|m| {
-                        if m.path == new_cm.path {
+                    .map(|cm| {
+                        if cm.path == new_cm.path {
                             new_cm.clone()
                         } else {
-                            m
+                            cm
                         }
                     })
                     .collect(),

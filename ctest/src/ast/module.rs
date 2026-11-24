@@ -16,7 +16,7 @@ use crate::{
 
 /// Represents a Rust module. `ctest` only considers items for which there is a corresponding type
 /// in this crate.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash)]
 pub struct Module {
     pub(crate) id: usize,
     pub(crate) public: bool,
@@ -143,3 +143,5 @@ impl PartialEq for Module {
         self.public == other.public && self.path == other.path && self.items == other.items
     }
 }
+
+impl Eq for Module {}

@@ -7,7 +7,7 @@ use crate::BoxStr;
 use crate::ast::PathUtils;
 
 /// Represents a constant variable defined in Rust.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash)]
 pub struct Const {
     pub(crate) id: usize,
     pub(crate) public: bool,

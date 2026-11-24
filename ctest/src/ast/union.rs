@@ -7,7 +7,7 @@ use crate::{
 };
 
 /// Represents a union defined in Rust.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash)]
 pub struct Union {
     pub(crate) id: usize,
     pub(crate) public: bool,

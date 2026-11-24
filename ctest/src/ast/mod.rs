@@ -204,7 +204,7 @@ pub(crate) fn ident_to_string(path: &Path) -> BoxStr {
 }
 
 /// The ABI as defined by the extern block.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Abi {
     /// The C ABI.
     C,
