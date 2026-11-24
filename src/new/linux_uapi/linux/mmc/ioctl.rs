@@ -11,7 +11,7 @@ use crate::{
 /// `MMC_BLOCK_MAJOR` from `linux/major.h`
 const MMC_BLOCK_MAJOR: u32 = 179;
 
-s! {
+s2! {
     pub struct mmc_ioc_cmd {
         pub write_flag: c_int,
         pub is_acmd: c_int,
