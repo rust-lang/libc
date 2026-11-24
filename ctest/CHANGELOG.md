@@ -1,5 +1,13 @@
 # Changelog
 
+- Add probing of optional compiler flags via `flag_if_supported`
+- Check incompatible pointer types in public fields
+- Support using `-Zbuild-std` in macro expansion
+- Start testing variadics
+- Implement `Clone` for `TestGenerator`
+- Add `try_build_test` and `build_test`
+- Deprecate `generate_test` in favor of `cfg.build_test()`
+
 ## 0.5.1 (2026-04-13)
 
 - Add support for using raw keywords, like `r#type`
