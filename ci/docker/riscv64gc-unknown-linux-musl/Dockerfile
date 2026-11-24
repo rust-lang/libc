@@ -19,6 +19,7 @@ RUN ci/install-musl.sh riscv64 "$MUSL_VERSION"
 
 ENV PATH=$PATH:/musl-riscv64/bin:/rust/bin \
     CC_riscv64gc_unknown_linux_musl=musl-gcc \
+    CFLAGS_riscv64gc_unknown_linux_musl="-fPIC" \
     CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc \
     CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_MUSL_RUNNER="qemu-riscv64 -L /musl-riscv64" \
-    EXTRA_RUSTFLAGS="-Ctarget-feature=+crt-static -Clink-args=-L/musl-riscv64/lib"
+    EXTRA_RUSTFLAGS="-Ctarget-feature=+crt-static -L /musl-riscv64/lib"
