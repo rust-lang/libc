@@ -2890,6 +2890,8 @@ extern "C" {
 
     pub fn ctermid(s: *mut c_char) -> *mut c_char;
     pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
+    pub fn ionotify(fd: c_int, action: c_int, flags: c_int, event: *const crate::sigevent)
+        -> c_int;
 
     pub fn mallinfo() -> crate::mallinfo;
     pub fn getpwent_r(
