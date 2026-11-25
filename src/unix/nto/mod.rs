@@ -2163,6 +2163,8 @@ pub const SIGEMT: c_int = 7;
 pub const SIGEV_NONE: c_int = 0;
 pub const SIGEV_SIGNAL: c_int = if cfg!(target_os = "nto") { 129 } else { 1 };
 pub const SIGEV_THREAD: c_int = if cfg!(target_os = "nto") { 135 } else { 7 };
+#[cfg(target_os = "qnx")]
+pub const SIGEV_PULSE: c_int = 4;
 pub const SO_USELOOPBACK: c_int = 0x0040;
 pub const _SS_ALIGNSIZE: usize = size_of::<i64>();
 pub const _SS_MAXSIZE: usize = 128;
