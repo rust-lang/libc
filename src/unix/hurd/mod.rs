@@ -687,10 +687,6 @@ s! {
         __size: [c_char; 20usize],
     }
 
-    pub struct __pthread {
-        pub _address: u8,
-    }
-
     pub struct __pthread_mutexattr {
         pub __prioceiling: c_int,
         pub __protocol: __pthread_mutex_protocol,
@@ -729,7 +725,7 @@ s! {
 
     pub struct __pthread_cond {
         pub __lock: __pthread_spinlock_t,
-        pub __queue: *mut __pthread,
+        pub __queue: *mut c_void,
         pub __attr: *mut __pthread_condattr,
         pub __wrefs: c_uint,
         pub __data: *mut c_void,
@@ -750,15 +746,15 @@ s! {
         pub __held: __pthread_spinlock_t,
         pub __lock: __pthread_spinlock_t,
         pub __readers: c_int,
-        pub __readerqueue: *mut __pthread,
-        pub __writerqueue: *mut __pthread,
+        pub __readerqueue: *mut c_void,
+        pub __writerqueue: *mut c_void,
         pub __attr: *mut __pthread_rwlockattr,
         pub __data: *mut c_void,
     }
 
     pub struct __pthread_barrier {
         pub __lock: __pthread_spinlock_t,
-        pub __queue: *mut __pthread,
+        pub __queue: *mut c_void,
         pub __pending: c_uint,
         pub __count: c_uint,
         pub __attr: *mut __pthread_barrierattr,
