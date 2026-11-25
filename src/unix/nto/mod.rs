@@ -2134,6 +2134,8 @@ pub const RLIMIT_NPROC: c_int = 8;
 pub const RLIMIT_RSS: c_int = 6;
 pub const RLIMIT_STACK: c_int = 3;
 pub const RLIMIT_VMEM: c_int = 6;
+#[cfg(target_os = "qnx")]
+pub const RLIMIT_SIGEVENT_NP: c_int = 12;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: c_int = if cfg!(target_os = "nto") { 14 } else { 19 };
 
