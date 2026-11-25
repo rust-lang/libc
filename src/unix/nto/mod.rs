@@ -2482,6 +2482,24 @@ f! {
     pub const safe fn minor(dev: crate::dev_t) -> c_uint {
         (dev as c_uint) & 0x3ff
     }
+
+    #[cfg(target_os = "qnx")]
+    pub unsafe fn SIGEV_PULSE_INIT(
+        ev: *mut sigevent,
+        coid: c_int,
+        priority: c_short,
+        code: c_short,
+        value: *mut c_void,
+    ) -> () {
+        (*ev).sigev_notify = SIGEV_PULSE;
+        // `sigev_coid` shares a union with `sigev_signo`.
+        (*ev).sigev_signo = coid;
+        (*ev).sigev_value = crate::sigval { sival_ptr: value };
+        // `__sigev_un2` holds `struct { short sigev_code; short sigev_priority; }`.
+        let st = ptr::addr_of_mut!((*ev).__sigev_un2).cast::<c_short>();
+        *st = code;
+        *st.add(1) = priority;
+    }
 }
 
 // Network related functions are provided by libsocket and regex
