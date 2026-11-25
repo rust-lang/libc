@@ -594,6 +594,7 @@ backtrace_symbols_fd
 clock_adjtime
 close_range
 copy_file_range
+crypt
 ctermid
 ctime_r
 dirname

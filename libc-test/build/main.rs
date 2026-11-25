@@ -3994,6 +3994,7 @@ fn test_linux(t: &Target) {
 
     headers!(
         cfg,
+        (musl, "crypt.h"),
         "ctype.h",
         "dirent.h",
         "dlfcn.h",
@@ -4903,6 +4904,9 @@ fn test_linux(t: &Target) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
+
+            // glibc's crypt lives in libcrypt, which CI sysroots do not provide.
+            "crypt" if gnu => true,
 
             // FIXME(linux): Our API is unsound. The Rust API allows aliasing
             // pointers, but the C API requires pointers not to alias.

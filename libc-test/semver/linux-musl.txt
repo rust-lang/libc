@@ -59,6 +59,7 @@ asctime_r
 basename
 clock_adjtime
 copy_file_range
+crypt
 ctermid
 dirname
 eaccess
