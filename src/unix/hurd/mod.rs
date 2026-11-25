@@ -3774,8 +3774,8 @@ f! {
         let major = major as crate::dev_t;
         let minor = minor as crate::dev_t;
         let mut dev = 0;
-        dev |= major << 8;
-        dev |= minor;
+        dev |= (major & 0x000000ff) << 8;
+        dev |= (minor & 0xffff00ff) << 0;
         dev
     }
 
