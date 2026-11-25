@@ -2137,6 +2137,19 @@ pub const RLIMIT_VMEM: c_int = 6;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: c_int = if cfg!(target_os = "nto") { 14 } else { 19 };
 
+pub const _NOTIFY_COND_MASK: c_int = 0xf000_0000_u32 as c_int;
+pub const _NOTIFY_COND_EXTEN: c_int = 0x8000_0000_u32 as c_int;
+pub const _NOTIFY_COND_OBAND: c_int = 0x4000_0000;
+pub const _NOTIFY_COND_OUTPUT: c_int = 0x2000_0000;
+pub const _NOTIFY_COND_INPUT: c_int = 0x1000_0000;
+
+pub const _NOTIFY_ACTION_MASK: c_int = 0x7;
+pub const _NOTIFY_ACTION_TRANARM: c_int = 0x0;
+pub const _NOTIFY_ACTION_CONDARM: c_int = 0x1;
+pub const _NOTIFY_ACTION_POLL: c_int = 0x2;
+pub const _NOTIFY_ACTION_POLLARM: c_int = 0x3;
+pub const _NOTIFY_ACTION_EDGEARM: c_int = 0x4;
+
 pub const SCHED_ADJTOHEAD: c_int = 5;
 pub const SCHED_ADJTOTAIL: c_int = 6;
 pub const SCHED_MAXPOLICY: c_int = if cfg!(target_os = "nto") { 7 } else { 9 };
