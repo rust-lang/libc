@@ -1,0 +1,15 @@
+FROM ubuntu:26.04
+
+COPY wasi.sh /
+RUN /wasi.sh
+
+# Note that most of these are copied from `wasm32-wasip2/Dockerfile`
+#
+# FIXME: the `-Clink-arg` to export `cabi_realloc` is a bug in the target
+# itself, this should be fixed upstream.
+ENV CARGO_TARGET_WASM32_WASIP3_RUNNER=wasmtime \
+    CARGO_TARGET_WASM32_WASIP3_LINKER=/opt/wasi-sdk/bin/clang \
+    EXTRA_RUSTFLAGS="-Clink-self-contained=n -lwasi-emulated-process-clocks -Clink-arg=-Wl,--export,cabi_realloc" \
+    CC_wasm32_wasip3=/opt/wasi-sdk/bin/clang \
+    CFLAGS_wasm32_wasip3=-D_WASI_EMULATED_PROCESS_CLOCKS \
+    PATH=$PATH:/rust/bin:/wasmtime

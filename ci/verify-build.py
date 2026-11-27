@@ -149,6 +149,7 @@ TARGETS = [
     Target("wasm32-unknown-unknown"),
     Target("wasm32-wasip1", min_toolchain=Toolchain.STABLE),
     Target("wasm32-wasip2", min_toolchain=Toolchain.STABLE),
+    Target("wasm32-wasip3", min_toolchain=Toolchain.STABLE),
     Target("x86_64-fortanix-unknown-sgx"),
     Target("x86_64-linux-android"),
     Target("x86_64-unknown-fuchsia", min_toolchain=Toolchain.STABLE),

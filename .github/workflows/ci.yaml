@@ -240,6 +240,7 @@ jobs:
           - target: wasm32-unknown-emscripten
           - target: wasm32-wasip1
           - target: wasm32-wasip2
+          - target: wasm32-wasip3
           - target: x86_64-apple-darwin
             os: macos-26-intel
           - target: x86_64-linux-android
