@@ -1868,7 +1868,7 @@ fn test_dragonflybsd(t: &Target) {
 
 fn test_wasi(t: &Target) {
     assert!(t.wasi());
-    let p2 = t.wasip2();
+    let p1 = t.wasip1();
     let wasi_sdk = VERSIONS.wasi_sdk.unwrap();
 
     let mut cfg = ctest_cfg();
@@ -1885,9 +1885,9 @@ fn test_wasi(t: &Target) {
         "limits.h",
         "locale.h",
         "malloc.h",
-        (p2, "netdb.h"),
-        (p2, "netinet/in.h"),
-        (p2, "netinet/tcp.h"),
+        (!p1, "netdb.h"),
+        (!p1, "netinet/in.h"),
+        (!p1, "netinet/tcp.h"),
         "poll.h",
         "pthread.h",
         "sched.h",

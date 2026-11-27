@@ -290,8 +290,8 @@ impl Target {
         self.os == "wasi"
     }
 
-    pub fn wasip2(&self) -> bool {
-        self.wasi() && self.env == "p2"
+    pub fn wasip1(&self) -> bool {
+        self.wasi() && self.env == "p1"
     }
 
     pub fn win(&self) -> bool {
