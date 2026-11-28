@@ -42,6 +42,49 @@ s! {
         __ss_align: i64,
         __ss_pad2: Padding<[u8; 112]>,
     }
+
+    // FIXME(1.0): This should not implement `PartialEq`
+    #[allow(unpredictable_function_pointer_comparisons)]
+    pub struct sigaction {
+        pub sa_flags: c_int,
+        pub sa_mask: crate::sigset_t,
+        pub sa_handler: extern "C" fn(arg1: c_int),
+    }
+
+    pub struct termios {
+        pub c_iflag: crate::tcflag_t,
+        pub c_oflag: crate::tcflag_t,
+        pub c_cflag: crate::tcflag_t,
+        pub c_lflag: crate::tcflag_t,
+        pub c_cc: [crate::cc_t; crate::NCCS],
+        pub c_ispeed: crate::speed_t,
+        pub c_ospeed: crate::speed_t,
+    }
+
+    pub struct dirent {
+        pub d_ino: crate::ino_t,
+        pub d_off: crate::off_t,
+        pub d_reclen: u16,
+        pub d_type: u8,
+        pub d_namlen: u16,
+        pub d_name: [c_char; 256],
+    }
+
+    pub struct utsname {
+        pub sysname: [c_char; 48],
+        pub nodename: [c_char; 48],
+        pub release: [c_char; 48],
+        pub version: [c_char; 48],
+        pub machine: [c_char; 48],
+    }
+}
+
+s2! {
+    #[exhaustive] // FIXME(exhaustive): review for 1.0
+    pub struct rusage {
+        pub ru_utime: crate::timeval,
+        pub ru_stime: crate::timeval,
+    }
 }
 
 pub const AF_UNIX: c_int = 1;
@@ -64,7 +107,6 @@ pub const MSG_DONTROUTE: c_int = 0x4;
 pub const MSG_WAITALL: c_int = 0x40;
 pub const MSG_DONTWAIT: c_int = 0x80;
 pub const MSG_NOSIGNAL: c_int = 0x20000;
-pub const MSG_MORE: c_int = 0;
 
 pub const RTLD_DEFAULT: *mut c_void = -2isize as *mut c_void;
 
@@ -78,6 +120,8 @@ pub const AT_EACCESS: c_int = 1;
 pub const AT_SYMLINK_NOFOLLOW: c_int = 2;
 pub const AT_SYMLINK_FOLLOW: c_int = 4;
 pub const AT_REMOVEDIR: c_int = 8;
+
+pub const CLOCK_BOOTTIME: crate::clockid_t = 7;
 
 // signal.h
 pub const SIG_BLOCK: c_int = 1;
@@ -115,11 +159,6 @@ pub const SIGRTMIN: c_int = 27;
 /// Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
 /// for details.
 pub const SIGRTMAX: c_int = 31;
-
-pub const SIGXCPU: c_int = 24;
-pub const SIGXFSZ: c_int = 25;
-pub const SIGVTALRM: c_int = 26;
-pub const SIGPROF: c_int = 27;
 
 pub const SA_NOCLDSTOP: c_ulong = 0x00000001;
 pub const SA_SIGINFO: c_ulong = 0x00000002;
