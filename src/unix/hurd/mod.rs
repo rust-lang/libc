@@ -1393,7 +1393,6 @@ pub const __SIZEOF_PTHREAD_RWLOCKATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_BARRIERATTR_T: usize = 4;
 pub const __SIZEOF_PTHREAD_ONCE_T: usize = 8;
 pub const __PTHREAD_SPIN_LOCK_INITIALIZER: c_int = 0;
-pub const PTHREAD_MUTEX_NORMAL: c_int = 0;
 
 // sys/resource.h
 cfg_if! {
@@ -3325,7 +3324,7 @@ pub const PTHREAD_PRIO_NONE: __pthread_mutex_protocol = 0;
 pub const PTHREAD_PRIO_INHERIT: __pthread_mutex_protocol = 1;
 pub const PTHREAD_PRIO_PROTECT: __pthread_mutex_protocol = 2;
 
-pub const PTHREAD_MUTEX_TIMED: __pthread_mutex_type = 0;
+pub const PTHREAD_MUTEX_NORMAL: __pthread_mutex_type = 0;
 pub const PTHREAD_MUTEX_ERRORCHECK: __pthread_mutex_type = 1;
 pub const PTHREAD_MUTEX_RECURSIVE: __pthread_mutex_type = 2;
 
@@ -3619,7 +3618,7 @@ pub const PTHREAD_MUTEX_INITIALIZER: pthread_mutex_t = pthread_mutex_t {
     __owner_id: 0,
     __cnt: 0,
     __shpid: 0,
-    __type: PTHREAD_MUTEX_TIMED as c_int,
+    __type: PTHREAD_MUTEX_NORMAL as c_int,
     __flags: 0,
     __reserved1: Padding::new(0),
     __reserved2: Padding::new(0),
