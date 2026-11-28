@@ -8,6 +8,7 @@ pub type Lmid_t = c_long;
 pub type regoff_t = c_int;
 pub type __kernel_rwf_t = c_int;
 pub type __be16 = crate::__u16;
+pub type wint_t = c_uint;
 
 cfg_if! {
     if #[cfg(doc)] {
