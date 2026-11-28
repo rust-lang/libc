@@ -29,6 +29,15 @@ s! {
         pub interval_nsec: u64,
     }
 
+    pub struct _pulse {
+        pub type_: u16,
+        pub subtype: u16,
+        pub code: i8,
+        pub zero: [u8; 3],
+        pub value: crate::sigval,
+        pub scoid: i32,
+    }
+
     pub struct _msg_info64 {
         pub nd: u32,
         pub srcnd: u32,

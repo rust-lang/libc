@@ -2134,8 +2134,23 @@ pub const RLIMIT_NPROC: c_int = 8;
 pub const RLIMIT_RSS: c_int = 6;
 pub const RLIMIT_STACK: c_int = 3;
 pub const RLIMIT_VMEM: c_int = 6;
+#[cfg(target_os = "qnx")]
+pub const RLIMIT_SIGEVENT_NP: c_int = 12;
 #[deprecated(since = "0.2.64", note = "Not stable across OS versions")]
 pub const RLIM_NLIMITS: c_int = if cfg!(target_os = "nto") { 14 } else { 19 };
+
+pub const _NOTIFY_COND_MASK: c_int = 0xf000_0000_u32 as c_int;
+pub const _NOTIFY_COND_EXTEN: c_int = 0x8000_0000_u32 as c_int;
+pub const _NOTIFY_COND_OBAND: c_int = 0x4000_0000;
+pub const _NOTIFY_COND_OUTPUT: c_int = 0x2000_0000;
+pub const _NOTIFY_COND_INPUT: c_int = 0x1000_0000;
+
+pub const _NOTIFY_ACTION_MASK: c_int = 0x7;
+pub const _NOTIFY_ACTION_TRANARM: c_int = 0x0;
+pub const _NOTIFY_ACTION_CONDARM: c_int = 0x1;
+pub const _NOTIFY_ACTION_POLL: c_int = 0x2;
+pub const _NOTIFY_ACTION_POLLARM: c_int = 0x3;
+pub const _NOTIFY_ACTION_EDGEARM: c_int = 0x4;
 
 pub const SCHED_ADJTOHEAD: c_int = 5;
 pub const SCHED_ADJTOTAIL: c_int = 6;
@@ -2150,6 +2165,8 @@ pub const SIGEMT: c_int = 7;
 pub const SIGEV_NONE: c_int = 0;
 pub const SIGEV_SIGNAL: c_int = if cfg!(target_os = "nto") { 129 } else { 1 };
 pub const SIGEV_THREAD: c_int = if cfg!(target_os = "nto") { 135 } else { 7 };
+#[cfg(target_os = "qnx")]
+pub const SIGEV_PULSE: c_int = 4;
 pub const SO_USELOOPBACK: c_int = 0x0040;
 pub const _SS_ALIGNSIZE: usize = size_of::<i64>();
 pub const _SS_MAXSIZE: usize = 128;
@@ -2466,6 +2483,24 @@ f! {
 
     pub const safe fn minor(dev: crate::dev_t) -> c_uint {
         (dev as c_uint) & 0x3ff
+    }
+
+    #[cfg(target_os = "qnx")]
+    pub unsafe fn SIGEV_PULSE_INIT(
+        ev: *mut sigevent,
+        coid: c_int,
+        priority: c_short,
+        code: c_short,
+        value: *mut c_void,
+    ) -> () {
+        (*ev).sigev_notify = SIGEV_PULSE;
+        // `sigev_coid` shares a union with `sigev_signo`.
+        (*ev).sigev_signo = coid;
+        (*ev).sigev_value = crate::sigval { sival_ptr: value };
+        // `__sigev_un2` holds `struct { short sigev_code; short sigev_priority; }`.
+        let st = ptr::addr_of_mut!((*ev).__sigev_un2).cast::<c_short>();
+        *st = code;
+        *st.add(1) = priority;
     }
 }
 
@@ -2890,6 +2925,8 @@ extern "C" {
 
     pub fn ctermid(s: *mut c_char) -> *mut c_char;
     pub fn ioctl(fd: c_int, request: c_int, ...) -> c_int;
+    pub fn ionotify(fd: c_int, action: c_int, flags: c_int, event: *const crate::sigevent)
+        -> c_int;
 
     pub fn mallinfo() -> crate::mallinfo;
     pub fn getpwent_r(
