@@ -3,6 +3,10 @@
 use crate::prelude::*;
 
 pub type nto_job_t = crate::sync_t;
+#[cfg(target_os = "nto")]
+pub type rcvid_t = i32;
+#[cfg(target_os = "qnx")]
+pub type rcvid_t = i64;
 
 s! {
     pub struct syspage_entry_info {
@@ -853,25 +857,25 @@ extern "C" {
         __msg: *mut c_void,
         __bytes: usize,
         __info: *mut _msg_info64,
-    ) -> c_int;
+    ) -> rcvid_t;
     pub fn MsgReceive_r(
         __chid: c_int,
         __msg: *mut c_void,
         __bytes: usize,
         __info: *mut _msg_info64,
-    ) -> c_int;
+    ) -> rcvid_t;
     pub fn MsgReceivev(
         __chid: c_int,
         __iov: *const crate::iovec,
         __parts: usize,
         __info: *mut _msg_info64,
-    ) -> c_int;
+    ) -> rcvid_t;
     pub fn MsgReceivev_r(
         __chid: c_int,
         __iov: *const crate::iovec,
         __parts: usize,
         __info: *mut _msg_info64,
-    ) -> c_int;
+    ) -> rcvid_t;
     pub fn MsgReceivePulse(
         __chid: c_int,
         __pulse: *mut c_void,
@@ -899,32 +903,32 @@ extern "C" {
         __info: *mut _msg_info64,
     ) -> c_int;
     pub fn MsgReply(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __status: c_long,
         __msg: *const c_void,
         __bytes: usize,
     ) -> c_int;
     pub fn MsgReply_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __status: c_long,
         __msg: *const c_void,
         __bytes: usize,
     ) -> c_int;
     pub fn MsgReplyv(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __status: c_long,
         __iov: *const crate::iovec,
         __parts: usize,
     ) -> c_int;
     pub fn MsgReplyv_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __status: c_long,
         __iov: *const crate::iovec,
         __parts: usize,
     ) -> c_int;
     #[cfg(target_os = "nto")] // removed in QNX8
     pub fn MsgReadiov(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __iov: *const crate::iovec,
         __parts: usize,
         __offset: usize,
@@ -932,42 +936,42 @@ extern "C" {
     ) -> isize;
     #[cfg(target_os = "nto")] // removed in QNX8
     pub fn MsgReadiov_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __iov: *const crate::iovec,
         __parts: usize,
         __offset: usize,
         __flags: c_int,
     ) -> isize;
-    pub fn MsgRead(__rcvid: c_int, __msg: *mut c_void, __bytes: usize, __offset: usize) -> isize;
-    pub fn MsgRead_r(__rcvid: c_int, __msg: *mut c_void, __bytes: usize, __offset: usize) -> isize;
+    pub fn MsgRead(__rcvid: rcvid_t, __msg: *mut c_void, __bytes: usize, __offset: usize) -> isize;
+    pub fn MsgRead_r(__rcvid: rcvid_t, __msg: *mut c_void, __bytes: usize, __offset: usize) -> isize;
     pub fn MsgReadv(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __iov: *const crate::iovec,
         __parts: usize,
         __offset: usize,
     ) -> isize;
     pub fn MsgReadv_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __iov: *const crate::iovec,
         __parts: usize,
         __offset: usize,
     ) -> isize;
-    pub fn MsgWrite(__rcvid: c_int, __msg: *const c_void, __bytes: usize, __offset: usize)
+    pub fn MsgWrite(__rcvid: rcvid_t, __msg: *const c_void, __bytes: usize, __offset: usize)
         -> isize;
     pub fn MsgWrite_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __msg: *const c_void,
         __bytes: usize,
         __offset: usize,
     ) -> isize;
     pub fn MsgWritev(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __iov: *const crate::iovec,
         __parts: usize,
         __offset: usize,
     ) -> isize;
     pub fn MsgWritev_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __iov: *const crate::iovec,
         __parts: usize,
         __offset: usize,
@@ -987,19 +991,19 @@ extern "C" {
         __code: c_int,
         __value: *mut c_void,
     ) -> c_int;
-    pub fn MsgDeliverEvent(__rcvid: c_int, __event: *const crate::sigevent) -> c_int;
-    pub fn MsgDeliverEvent_r(__rcvid: c_int, __event: *const crate::sigevent) -> c_int;
-    pub fn MsgVerifyEvent(__rcvid: c_int, __event: *const crate::sigevent) -> c_int;
-    pub fn MsgVerifyEvent_r(__rcvid: c_int, __event: *const crate::sigevent) -> c_int;
+    pub fn MsgDeliverEvent(__rcvid: rcvid_t, __event: *const crate::sigevent) -> c_int;
+    pub fn MsgDeliverEvent_r(__rcvid: rcvid_t, __event: *const crate::sigevent) -> c_int;
+    pub fn MsgVerifyEvent(__rcvid: rcvid_t, __event: *const crate::sigevent) -> c_int;
+    pub fn MsgVerifyEvent_r(__rcvid: rcvid_t, __event: *const crate::sigevent) -> c_int;
     pub fn MsgRegisterEvent(__event: *mut crate::sigevent, __coid: c_int) -> c_int;
     pub fn MsgRegisterEvent_r(__event: *mut crate::sigevent, __coid: c_int) -> c_int;
     pub fn MsgUnregisterEvent(__event: *const crate::sigevent) -> c_int;
     pub fn MsgUnregisterEvent_r(__event: *const crate::sigevent) -> c_int;
-    pub fn MsgInfo(__rcvid: c_int, __info: *mut _msg_info64) -> c_int;
-    pub fn MsgInfo_r(__rcvid: c_int, __info: *mut _msg_info64) -> c_int;
+    pub fn MsgInfo(__rcvid: rcvid_t, __info: *mut _msg_info64) -> c_int;
+    pub fn MsgInfo_r(__rcvid: rcvid_t, __info: *mut _msg_info64) -> c_int;
     #[cfg(target_os = "nto")] // removed in QNX8
     pub fn MsgKeyData(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __oper: c_int,
         __key: u32,
         __newkey: *mut u32,
@@ -1008,15 +1012,15 @@ extern "C" {
     ) -> c_int;
     #[cfg(target_os = "nto")] // removed in QNX8
     pub fn MsgKeyData_r(
-        __rcvid: c_int,
+        __rcvid: rcvid_t,
         __oper: c_int,
         __key: u32,
         __newkey: *mut u32,
         __iov: *const crate::iovec,
         __parts: c_int,
     ) -> c_int;
-    pub fn MsgError(__rcvid: c_int, __err: c_int) -> c_int;
-    pub fn MsgError_r(__rcvid: c_int, __err: c_int) -> c_int;
+    pub fn MsgError(__rcvid: rcvid_t, __err: c_int) -> c_int;
+    pub fn MsgError_r(__rcvid: rcvid_t, __err: c_int) -> c_int;
     pub fn MsgCurrent(__rcvid: c_int) -> c_int;
     pub fn MsgCurrent_r(__rcvid: c_int) -> c_int;
     #[cfg(target_os = "nto")] // removed in QNX8
@@ -1038,8 +1042,8 @@ extern "C" {
     ) -> c_int;
     #[cfg(target_os = "nto")] // removed in QNX8
     pub fn MsgReceiveAsync(__chid: c_int, __iov: *const crate::iovec, __parts: c_uint) -> c_int;
-    pub fn MsgPause(__rcvid: c_int, __cookie: c_uint) -> c_int;
-    pub fn MsgPause_r(__rcvid: c_int, __cookie: c_uint) -> c_int;
+    pub fn MsgPause(__rcvid: rcvid_t, __cookie: c_uint) -> c_int;
+    pub fn MsgPause_r(__rcvid: rcvid_t, __cookie: c_uint) -> c_int;
 
     pub fn SignalKill(
         __nd: u32,
