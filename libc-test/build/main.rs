@@ -2589,6 +2589,7 @@ fn test_freebsd(t: &Target) {
         "sys/mman.h",
         "sys/mount.h",
         "sys/msg.h",
+        "sys/pciio.h",
         "sys/procctl.h",
         "sys/procdesc.h",
         "sys/ptrace.h",
