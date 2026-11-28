@@ -1,7 +1,6 @@
 //! Header: `limits.h`
 
 use super::*;
-use crate::prelude::*;
 
 // Character properties
 pub const CHAR_BIT: c_uint = 8;

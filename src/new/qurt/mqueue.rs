@@ -4,7 +4,6 @@
 //! operations since these are declared in QuRT's mqueue.h.
 
 use super::*;
-use crate::prelude::*;
 
 // Message queue priority constants
 pub const MQ_PRIO_DEFAULT: c_int = 0;
