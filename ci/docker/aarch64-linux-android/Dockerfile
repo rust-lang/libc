@@ -16,9 +16,10 @@ WORKDIR /android/
 COPY android-install-ndk.sh android-bionic-sysroot.sh /android/
 # The API level we compile against: this only names the CC wrapper and the
 # toolchain we use. The bionic extracted by android-bionic-sysroot.sh is
-# pinned separately and is newer, i.e. capable of testing newer APIs. The
-# toolchain wrapper is held at the same baseline as arm/x86_64 for now.
-ARG ANDROID_API=24
+# pinned separately and is newer, i.e. capable of testing newer APIs. Held at
+# 26 like x86_64, so API 26 functions get tested; arm stays at 24 because its
+# API level also selects its emulator image.
+ARG ANDROID_API=26
 RUN /android/android-install-ndk.sh
 RUN /android/android-bionic-sysroot.sh
 
