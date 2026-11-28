@@ -1180,6 +1180,10 @@ pub const EPROTO: c_int = 71;
 pub const ELOCKUNMAPPED: c_int = 72;
 pub const ENOTACTIVE: c_int = 73;
 pub const EMULTIHOP: c_int = 74;
+#[cfg_attr(
+    target_os = "illumos",
+    deprecated(since = "0.2.192", note = "Solaris-specific, not defined on illumos")
+)]
 pub const EADI: c_int = 75;
 pub const EBADMSG: c_int = 77;
 pub const ENAMETOOLONG: c_int = 78;
@@ -1562,7 +1566,9 @@ pub const IPC_NOWAIT: c_int = 0x800;
 pub const IPC_PRIVATE: key_t = 0;
 pub const IPC_RMID: c_int = 10;
 pub const IPC_SET: c_int = 11;
-pub const IPC_SEAT: c_int = 12;
+pub const IPC_STAT: c_int = 12;
+#[deprecated(since = "0.2.192", note = "misspelling of `IPC_STAT`")]
+pub const IPC_SEAT: c_int = IPC_STAT;
 
 // sys/shm.h
 pub const SHM_R: c_int = 0o400;
@@ -1979,6 +1985,10 @@ pub const ECHONL: crate::tcflag_t = 0o000100;
 pub const ECHOCTL: crate::tcflag_t = 0o001000;
 pub const ECHOPRT: crate::tcflag_t = 0o002000;
 pub const ECHOKE: crate::tcflag_t = 0o004000;
+#[cfg_attr(
+    target_os = "illumos",
+    deprecated(since = "0.2.192", note = "not defined on illumos")
+)]
 pub const EXTPROC: crate::tcflag_t = 0o200000;
 pub const IGNBRK: crate::tcflag_t = 0o000001;
 pub const BRKINT: crate::tcflag_t = 0o000002;
