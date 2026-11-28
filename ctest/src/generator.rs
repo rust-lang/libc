@@ -741,7 +741,7 @@ impl TestGenerator {
     ///
     /// If the tested crate uses `#![crate_name = "..."]`, this must be called with the
     /// same name. Otherwise, there will be an error about `--crate-name` not
-    /// matching.
+    /// matching. Ignored when the crate is given by its `Cargo.toml`.
     pub fn crate_name(&mut self, name: String) -> &mut Self {
         self.crate_name = Some(name);
         self
@@ -1106,10 +1106,10 @@ impl TestGenerator {
     /// Generate the Rust and C testing files, returning the path to the
     /// generated Rust file.
     ///
-    /// `crate_path` is the path to the crate root that should be scanned for
-    /// API, typically `lib.rs`, and `test_file` is the name of the Rust file
-    /// to generate. This file will be located in `OUT_DIR` or [`out_dir`],
-    /// and `.rs` will be appended if needed.
+    /// `crate_path` is the crate's `Cargo.toml`, or the root file of a crate
+    /// without dependencies, such as `lib.rs`. `test_file` is the name of the
+    /// Rust file to generate. This file will be located in `OUT_DIR` or
+    /// [`out_dir`], and `.rs` will be appended if needed.
     ///
     /// Note that `test_file` must be unique as it is used to name output
     /// files.
@@ -1180,10 +1180,10 @@ impl TestGenerator {
     /// Build the C portion of the test library using [`cc`] and return the name
     /// of the Rust file that contains the test's `fn main()`.
     ///
-    /// `crate_path` is the path to the crate root that should be scanned for
-    /// API, typically `lib.rs`, and `test_file` is the name of the Rust file
-    /// to generate. This file will be located in `OUT_DIR` or [`out_dir`],
-    /// and `.rs` will be appended if needed.
+    /// `crate_path` is the crate's `Cargo.toml`, or the root file of a crate
+    /// without dependencies, such as `lib.rs`. `test_file` is the name of the
+    /// Rust file to generate. This file will be located in `OUT_DIR` or
+    /// [`out_dir`], and `.rs` will be appended if needed.
     ///
     /// `cc` also emits link directives, so the built C files will get linked
     /// automatically by any test that needs them. Note that `test_file` must
