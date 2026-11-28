@@ -1218,12 +1218,6 @@ fn test_solarish(t: &Target) {
             // value is not useful (always 0) so we can ignore it:
             "setservent" | "endservent" => true,
 
-            // Following illumos#3729, getifaddrs was changed to a
-            // redefine_extname symbol in order to preserve compatibility.
-            // Until better symbol binding story is figured out, it must be
-            // excluded from the tests.
-            "getifaddrs" if illumos => true,
-
             // FIXME(ctest): Our API is unsound. The Rust API allows aliasing
             // pointers, but the C API requires pointers not to alias.
             // We should probably be at least using `&`/`&mut` here, see:
