@@ -195,6 +195,7 @@ cfg_if! {
         pub use linux::if_addr::*;
         pub use linux::if_link::*;
         pub use linux::if_packet::*;
+        pub use linux::kd::*;
         pub use linux::keyctl::*;
         pub use linux::membarrier::*;
         pub use linux::mmc::ioctl::*;
@@ -204,6 +205,7 @@ cfg_if! {
         pub use linux::sctp::*;
         pub use linux::tls::*;
         pub use linux::types::*;
+        pub use linux::vt::*;
 
         #[cfg(target_env = "gnu")]
         pub use self::{
