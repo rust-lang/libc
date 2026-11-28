@@ -19,6 +19,7 @@ use crate::{
     BoxStr,
     MapInput,
     TestGenerator,
+    VolatileItemKind,
     cdecl,
 };
 
@@ -208,7 +209,75 @@ impl<'a> Translator<'a> {
             parameters.push(cdecl::named("void", Constness::Mut));
         }
 
-        Ok(cdecl::func_ptr(parameters, return_type))
+        let abi = function.abi.as_ref().map_or(crate::Abi::Rust, |abi| {
+            abi.name.as_ref().map_or(crate::Abi::C, |name| {
+                crate::Abi::from(name.value().as_str())
+            })
+        });
+        let target = crate::get_build_target(self.generator).unwrap_or_default();
+        Ok(cdecl::ptr(
+            cdecl::CTy::Fn {
+                args: parameters,
+                ret: Box::new(return_type),
+                abi: translate_abi(&abi, &target),
+            },
+            Constness::Mut,
+        ))
+    }
+
+    /// Translate a foreign function's signature, including configured C qualifiers.
+    pub(crate) fn translate_function(
+        &self,
+        function: &crate::Fn,
+    ) -> Result<cdecl::CTy, TranslationError> {
+        let mut parameters = Vec::new();
+        for parameter in &function.parameters {
+            let mut ty = self.translate_type(&parameter.ty)?;
+            if self
+                .generator
+                .array_arg
+                .as_ref()
+                .is_some_and(|f| f(function.clone(), parameter.clone()))
+                && let cdecl::CTy::Ptr { ty: inner, .. } = ty
+            {
+                ty = cdecl::array(*inner, None);
+            }
+            if self.generator.volatile_items.iter().any(|f| {
+                f(VolatileItemKind::FnArgument(
+                    function.clone(),
+                    Box::new(parameter.clone()),
+                ))
+            }) {
+                add_volatile(&mut ty);
+            }
+            parameters.push(ty);
+        }
+        if function.variadic {
+            parameters.push(cdecl::variadic());
+        } else if parameters.is_empty() {
+            parameters.push(cdecl::named("void", Constness::Mut));
+        }
+        let mut return_type = match &function.return_type {
+            Some(ty) => self.translate_type(ty)?,
+            None => cdecl::named("void", Constness::Mut),
+        };
+        if self
+            .generator
+            .volatile_items
+            .iter()
+            .any(|f| f(VolatileItemKind::FnReturnType(function.clone())))
+        {
+            add_volatile(&mut return_type);
+        }
+        let target = crate::get_build_target(self.generator).unwrap_or_default();
+        Ok(cdecl::ptr(
+            cdecl::CTy::Fn {
+                args: parameters,
+                ret: Box::new(return_type),
+                abi: translate_abi(&function.abi, &target),
+            },
+            Constness::Mut,
+        ))
     }
 
     /// Translate a Rust path into its C equivalent.
@@ -294,6 +363,21 @@ impl<'a> Translator<'a> {
         } else {
             MapInput::Type(name)
         }
+    }
+}
+
+/// Apply volatile to a pointer's pointee, or directly to a non-pointer type.
+fn add_volatile(ty: &mut cdecl::CTy) {
+    let mut ty = match ty {
+        cdecl::CTy::Ptr { ty, .. } => ty.as_mut(),
+        ty => ty,
+    };
+    while let cdecl::CTy::Array { ty: inner, .. } = ty {
+        ty = inner.as_mut();
+    }
+    match ty {
+        cdecl::CTy::Named { qual, .. } | cdecl::CTy::Ptr { qual, .. } => qual.volatile = true,
+        _ => (),
     }
 }
 
@@ -415,14 +499,13 @@ fn is_rust_primitive(ty: &str) -> bool {
 }
 
 /// Translate ABI of a rust extern function to its C equivalent.
-#[expect(unused)]
-pub(crate) fn translate_abi(abi: &syn::Abi, target: &str) -> Option<&'static str> {
-    let abi_name = abi.name.as_ref().map(|lit| lit.value());
-
-    match abi_name.as_deref() {
-        Some("stdcall") => "__stdcall ".into(),
-        Some("system") if target.contains("i686-pc-windows") => "__stdcall ".into(),
-        Some("C") | Some("system") | None => None,
-        Some(a) => panic!("unknown ABI: {a}"),
+pub(crate) fn translate_abi(abi: &crate::Abi, target: &str) -> Option<&'static str> {
+    match abi {
+        crate::Abi::Other(abi)
+            if abi == "stdcall" || (abi == "system" && target.contains("i686-pc-windows")) =>
+        {
+            Some("__stdcall ")
+        }
+        _ => None,
     }
 }
