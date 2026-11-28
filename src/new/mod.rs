@@ -156,6 +156,7 @@ cfg_if! {
     ))] {
         mod glibc;
         pub(crate) use glibc::*;
+        pub use malloc::mcheck::*;
     } else if #[cfg(any(target_env = "musl", target_env = "ohos"))] {
         // OhOS also uses the musl libc
         mod musl;
