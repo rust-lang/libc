@@ -200,4 +200,6 @@ extern "C" {
     pub fn arc4random_buf(buf: *mut core::ffi::c_void, nbytes: size_t);
 
     pub fn setgroups(ngroups: c_int, grouplist: *const crate::gid_t) -> c_int;
+
+    pub fn dirfd(dirp: *mut crate::DIR) -> c_int;
 }
