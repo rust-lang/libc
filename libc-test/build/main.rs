@@ -4129,6 +4129,7 @@ fn test_linux(t: &Target) {
             "linux/can/j1939.h",
             "linux/can/netlink.h",
             "linux/can/raw.h",
+            "linux/capability.h",
             "linux/cn_proc.h",
             "linux/connector.h",
             "linux/dccp.h",
@@ -4929,6 +4930,9 @@ fn test_linux(t: &Target) {
 
             // FIXME(linux): It now takes c_void instead of timezone since glibc 2.31.
             "gettimeofday" if gnu => true,
+
+            // Exported, but the C library headers have no prototype.
+            "capget" | "capset" => true,
 
             // These are all implemented as static inline functions in uclibc, so
             // they cannot be linked against.

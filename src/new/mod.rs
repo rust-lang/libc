@@ -190,6 +190,7 @@ cfg_if! {
         pub use linux::can::j1939::*;
         pub use linux::can::netlink::*;
         pub use linux::can::raw::*;
+        pub use linux::capability::*;
         pub use linux::fs::*;
         pub use linux::futex::*;
         pub use linux::if_addr::*;
